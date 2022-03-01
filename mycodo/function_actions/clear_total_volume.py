@@ -23,7 +23,7 @@ FUNCTION_ACTION_INFORMATION = {
     'message': 'Clear the total volume saved for a flow meter Input. The Input must have the Clear Total Volume option.',
 
     'usage': 'Executing <strong>self.run_action("{ACTION_ID}")</strong> will clear the total volume for the selected flow meter Input. '
-             'Executing <strong>self.run_action("{ACTION_ID}", value="959019d1-c1fa-41fe-a554-7be3366a9c5b")</strong> will clear the total volume for the flow meter Input with the specified ID (e.g. 959019d1-c1fa-41fe-a554-7be3366a9c5b).',
+             'Executing <strong>self.run_action("{ACTION_ID}", value={"input_id": "959019d1-c1fa-41fe-a554-7be3366a9c5b"})</strong> will clear the total volume for the flow meter Input with the specified ID.',
 
     'dependencies_module': [],
 
@@ -43,13 +43,11 @@ FUNCTION_ACTION_INFORMATION = {
 
 
 class ActionModule(AbstractFunctionAction):
-    """
-    Function Action: Clear Total Volume
-    """
+    """Function Action: Clear Total Volume."""
     def __init__(self, action_dev, testing=False):
         super(ActionModule, self).__init__(action_dev, testing=testing, name=__name__)
 
-        self.none = None
+        self.controller_id = None
 
         action = db_retrieve_table_daemon(
             Actions, unique_id=self.unique_id)
@@ -63,22 +61,16 @@ class ActionModule(AbstractFunctionAction):
         self.action_setup = True
 
     def run_action(self, message, dict_vars):
-        values_set = False
-        if "value" in dict_vars and dict_vars["value"] is not None:
-            try:
-                controller_id = dict_vars["value"]
-                values_set = True
-            except:
-                self.logger.exception("Error setting values passed to action")
-
-        if not values_set:
+        try:
+            controller_id = dict_vars["value"]["input_id"]
+        except:
             controller_id = self.controller_id
 
         this_input = db_retrieve_table_daemon(
             Input, unique_id=controller_id, entry='first')
 
         if not this_input:
-            msg = " Input not found."
+            msg = " Error: Input with ID '{}' not found.".format(controller_id)
             message += msg
             self.logger.error(msg)
             return message
@@ -91,6 +83,8 @@ class ActionModule(AbstractFunctionAction):
             target=self.control.custom_button,
             args=("Input", this_input.unique_id, "clear_total_volume", {},))
         clear_volume.start()
+
+        self.logger.debug("Message: {}".format(message))
 
         return message
 

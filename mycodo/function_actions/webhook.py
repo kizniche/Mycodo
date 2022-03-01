@@ -32,7 +32,7 @@ FUNCTION_ACTION_INFORMATION = {
             'id': 'webhook',
             'type': 'multiline_text',
             'lines': 7,
-            'default_value': """""",
+            'default_value': "",
             'required': True,
             'col_width': 12,
             'name': 'Webhook Request',
@@ -43,9 +43,7 @@ FUNCTION_ACTION_INFORMATION = {
 
 
 class ActionModule(AbstractFunctionAction):
-    """
-    Function Action: Webhook
-    """
+    """Function Action: Webhook"""
     def __init__(self, action_dev, testing=False):
         super(ActionModule, self).__init__(action_dev, testing=testing, name=__name__)
 
@@ -91,12 +89,14 @@ class ActionModule(AbstractFunctionAction):
 
         path_and_query = parsed_url.path + "?" + parsed_url.query
 
-        self.logger.debug("Method: {}".format(method))
-        self.logger.debug("Scheme: {}".format(parsed_url.scheme))
-        self.logger.debug("Netloc: {}".format(parsed_url.netloc))
-        self.logger.debug("Path: {}".format(path_and_query))
-        self.logger.debug("Headers: {}".format(headers))
-        self.logger.debug("Body: {}".format(body))
+        message += " Webhook with method: {me}, scheme: {sc}, netloc: {ne}, " \
+                   "path: {pa}, headers: {he}, body: {bo}.".format(
+            me=method,
+            sc=parsed_url.scheme,
+            ne=parsed_url.netloc,
+            pa=path_and_query,
+            he=headers,
+            bo=body)
 
         if parsed_url.scheme == 'http':
             conn = http.client.HTTPConnection(parsed_url.netloc)
@@ -114,6 +114,8 @@ class ActionModule(AbstractFunctionAction):
         else:
             raise Exception("Got HTTP {} response.".format(response.getcode()))
         response.close()
+
+        self.logger.debug("Message: {}".format(message))
 
         return message
 

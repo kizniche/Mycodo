@@ -22,7 +22,7 @@ FUNCTION_ACTION_INFORMATION = {
     'message': 'A demo action that merely performs a calculation.',
 
     'usage': 'Executing <strong>self.run_action("{ACTION_ID}")</strong> will execute the calculation. '
-             'Executing <strong>self.run_action("{ACTION_ID}", value=24)</strong> will pass the integer value 24 to the action.',
+             'Executing <strong>self.run_action("{ACTION_ID}", value={"integer_1": 24})</strong> will pass the integer value 24 to the action.',
 
     'dependencies_module': [],
 
@@ -120,9 +120,7 @@ FUNCTION_ACTION_INFORMATION = {
 
 
 class ActionModule(AbstractFunctionAction):
-    """
-    Function Action: Generic
-    """
+    """Function Action: Generic."""
     def __init__(self, action_dev, testing=False):
         super(ActionModule, self).__init__(action_dev, testing=testing, name=__name__)
 
@@ -162,13 +160,18 @@ class ActionModule(AbstractFunctionAction):
         self.action_setup = True
 
     def run_action(self, message, dict_vars):
+        try:
+            integer_1 = int(dict_vars["value"]["integer_1"])
+        except:
+            integer_1 = self.integer_1
+
         # These log lines will appear in teh Daemon Log.
         # Logs can be viewed at Config -> Mycodo Logs -> Damon Log.
         self.logger.info(
             "Custom controller started with options: "
             "{}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}".format(
                 self.text_1,
-                self.integer_1,
+                integer_1,
                 self.float_1,
                 self.bool_1,
                 self.select_1,
@@ -181,18 +184,19 @@ class ActionModule(AbstractFunctionAction):
 
         self.logger.info("dict_vars = {}".format(dict_vars))
 
-        try:
-            hours = int(dict_vars["value"])
-        except:
-            hours = 1
+        if not integer_1:
+            msg = " Error: integer_1 not set. Cannot calculate the time."
+            message += msg
+            self.logger.error(msg)
+            return message
 
         now = int(time.time())
 
         message += " The current epoch time is {time}. The epoch {hr} hour{plural} in the future is {epoch}.".format(
             time=now,
-            hr=hours,
-            plural="s" if hours > 1 else "",
-            epoch=now + (hours * 60 * 60))
+            hr=integer_1,
+            plural="s" if integer_1 > 1 else "",
+            epoch=now + (integer_1 * 60 * 60))
 
         self.logger.info("Message: {}".format(message))
 

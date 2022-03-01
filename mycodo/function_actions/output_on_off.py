@@ -11,12 +11,12 @@ from mycodo.utils.constraints_pass import constraints_pass_positive_or_zero_valu
 from mycodo.utils.database import db_retrieve_table_daemon
 
 FUNCTION_ACTION_INFORMATION = {
-    'name_unique': 'output',
-    'name': '{} ({}/{}/{})'.format(
-            TRANSLATIONS['output']['title'],
-            TRANSLATIONS['on']['title'],
-            TRANSLATIONS['off']['title'],
-            TRANSLATIONS['duration']['title']),
+    'name_unique': 'output_on_off',
+    'name': '{}: {}/{}/{}'.format(
+        TRANSLATIONS['output']['title'],
+        TRANSLATIONS['on']['title'],
+        TRANSLATIONS['off']['title'],
+        TRANSLATIONS['duration']['title']),
     'library': None,
     'manufacturer': 'Mycodo',
 
@@ -28,24 +28,24 @@ FUNCTION_ACTION_INFORMATION = {
     'message': lazy_gettext('Turn an On/Off Output On, Off, or On for a duration.'),
 
     'usage': 'Executing <strong>self.run_action("{ACTION_ID}")</strong> will actuate an output. '
-             'Executing <strong>self.run_action("{ACTION_ID}", value=["on", 300])</strong> will set the output state to the values sent (e.g. on for 300 seconds).',
+             'Executing <strong>self.run_action("{ACTION_ID}", value={"output_id": "959019d1-c1fa-41fe-a554-7be3366a9c5b", "channel": 0, "state": "on", "duration": 300})</strong> will set the state of the output with the specified ID and channel. If state is on and a duration is set, the output will turn off after the duration.',
 
     'dependencies_module': [],
 
     'custom_options': [
         {
             'id': 'output',
-            'type': 'select_measurement_channel',
+            'type': 'select_channel',
             'default_value': '',
             'required': True,
             'options_select': [
-                'Output_Channels_Measurements'
+                'Output_Channels'
             ],
             'name': 'Output',
             'phrase': 'Select an output to control'
         },
         {
-            'id': 'output_state',
+            'id': 'state',
             'type': 'select',
             'default_value': '',
             'required': True,
@@ -53,7 +53,7 @@ FUNCTION_ACTION_INFORMATION = {
                 ('on', 'On'),
                 ('off', 'Off')
             ],
-            'name': lazy_gettext('Output State'),
+            'name': lazy_gettext('State'),
             'phrase': 'Turn the output on or off'
         },
         {
@@ -70,16 +70,13 @@ FUNCTION_ACTION_INFORMATION = {
 
 
 class ActionModule(AbstractFunctionAction):
-    """
-    Function Action: Output (On/Off/Duration)
-    """
+    """Function Action: Output (On/Off/Duration)."""
     def __init__(self, action_dev, testing=False):
         super(ActionModule, self).__init__(action_dev, testing=testing, name=__name__)
 
         self.output_device_id = None
-        self.output_measurement_id = None
         self.output_channel_id = None
-        self.output_state = None
+        self.state = None
         self.duration = None
 
         action = db_retrieve_table_daemon(
@@ -94,27 +91,39 @@ class ActionModule(AbstractFunctionAction):
         self.action_setup = True
 
     def run_action(self, message, dict_vars):
-        values_set = False
-        if "value" in dict_vars and dict_vars["value"] is not None:
-            try:
-                state = dict_vars["value"][0]
-                duration = dict_vars["value"][1]
-                values_set = True
-            except:
-                self.logger.exception("Error setting values passed to action")
+        try:
+            output_id = dict_vars["value"]["output_id"]
+        except:
+            output_id = self.output_device_id
 
-        if not values_set:
-            state = self.output_state
+        try:
+            output_channel = dict_vars["value"]["channel"]
+        except:
+            output_channel = self.get_output_channel_from_channel_id(
+                self.output_channel_id)
+
+        try:
+            state = dict_vars["value"]["state"]
+        except:
+            state = self.state
+
+        try:
+            duration = dict_vars["value"]["duration"]
+        except:
             duration = self.duration
 
-        output_channel = self.get_output_channel_from_channel_id(
-            self.output_channel_id)
-
         this_output = db_retrieve_table_daemon(
-            Output, unique_id=self.output_device_id, entry='first')
+            Output, unique_id=output_id, entry='first')
+
+        if not this_output:
+            msg = " Error: Output with ID '{}' not found.".format(this_output)
+            message += msg
+            self.logger.error(msg)
+            return message
+
         message += " Turn output {unique_id} CH{ch} ({id}, {name}) {state}".format(
-            unique_id=self.output_device_id,
-            ch=self.output_channel_id,
+            unique_id=output_id,
+            ch=output_channel,
             id=this_output.id,
             name=this_output.name,
             state=state)
@@ -124,12 +133,14 @@ class ActionModule(AbstractFunctionAction):
 
         output_on_off = threading.Thread(
             target=self.control.output_on_off,
-            args=(self.output_device_id,
+            args=(output_id,
                   state,),
             kwargs={'output_type': 'sec',
                     'amount': duration,
                     'output_channel': output_channel})
         output_on_off.start()
+
+        self.logger.debug("Message: {}".format(message))
 
         return message
 

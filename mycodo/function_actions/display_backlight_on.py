@@ -26,7 +26,7 @@ FUNCTION_ACTION_INFORMATION = {
     'message': 'Turn display backlight on',
 
     'usage': 'Executing <strong>self.run_action("{ACTION_ID}")</strong> will turn the backlight on for the selected display. '
-             'Executing <strong>self.run_action("{ACTION_ID}", value={"display_id": "959019d1-c1fa-41fe-a554-7be3366a9c5b"})</strong> will turn the backlight on for the controller with the specified ID (e.g. 959019d1-c1fa-41fe-a554-7be3366a9c5b).',
+             'Executing <strong>self.run_action("{ACTION_ID}", value={"display_id": "959019d1-c1fa-41fe-a554-7be3366a9c5b"})</strong> will turn the backlight on for the controller with the specified ID.',
 
     'dependencies_module': [],
 
@@ -46,9 +46,7 @@ FUNCTION_ACTION_INFORMATION = {
 
 
 class ActionModule(AbstractFunctionAction):
-    """
-    Function Action: Turn the Display Backlight On
-    """
+    """Function Action: Turn the Display Backlight On."""
     def __init__(self, action_dev, testing=False):
         super(ActionModule, self).__init__(action_dev, testing=testing, name=__name__)
 
@@ -75,7 +73,7 @@ class ActionModule(AbstractFunctionAction):
             CustomController, unique_id=controller_id)
 
         if not display:
-            msg = " Display not found."
+            msg = " Error: Display with ID '{}' not found.".format(controller_id)
             message += msg
             self.logger.error(msg)
             return message
@@ -97,6 +95,8 @@ class ActionModule(AbstractFunctionAction):
             target=self.control.custom_button,
             args=("Function", controller_id, "backlight_on", {},))
         start_flashing.start()
+
+        self.logger.debug("Message: {}".format(message))
 
         return message
 

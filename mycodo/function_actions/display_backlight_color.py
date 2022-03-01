@@ -26,7 +26,7 @@ FUNCTION_ACTION_INFORMATION = {
     'message': 'Set the display backlight color',
 
     'usage': 'Executing <strong>self.run_action("{ACTION_ID}")</strong> will change the backlight color on the selected display. '
-             'Executing <strong>self.run_action("{ACTION_ID}", value={"display_id": "959019d1-c1fa-41fe-a554-7be3366a9c5b", "color": "255,0,0"})</strong> will change the backlight color on the controller with the specified ID and color (e.g. 959019d1-c1fa-41fe-a554-7be3366a9c5b and 255,0,0).',
+             'Executing <strong>self.run_action("{ACTION_ID}", value={"display_id": "959019d1-c1fa-41fe-a554-7be3366a9c5b", "color": "255,0,0"})</strong> will change the backlight color on the controller with the specified ID and color.',
 
     'dependencies_module': [],
 
@@ -54,9 +54,7 @@ FUNCTION_ACTION_INFORMATION = {
 
 
 class ActionModule(AbstractFunctionAction):
-    """
-    Function Action: Set the Display Backlight Color
-    """
+    """Function Action: Set the Display Backlight Color."""
     def __init__(self, action_dev, testing=False):
         super(ActionModule, self).__init__(action_dev, testing=testing, name=__name__)
 
@@ -89,28 +87,32 @@ class ActionModule(AbstractFunctionAction):
             CustomController, unique_id=controller_id)
 
         if not display:
-            msg = " Display not found."
+            msg = " Error: Display with ID '{}' not found.".format(controller_id)
             message += msg
             self.logger.error(msg)
             return message
 
         functions = parse_function_information()
-        if display.device in functions and "function_actions" in functions[display.device]:
-            if "display_backlight_color" not in functions[display.device]["function_actions"]:
-                msg = " Selected display is not capable of flashing"
-                message += msg
-                self.logger.error(msg)
-                return message
+        if (display.device not in functions or
+                "function_actions" not in functions[display.device] or
+                "display_backlight_color" not in functions[display.device]["function_actions"]):
+            msg = " Selected display is not capable of setting the backlight color."
+            message += msg
+            self.logger.error(msg)
+            return message
 
-        message += " Display {unique_id} ({id}, {name}) Flash On.".format(
+        message += " Set display {unique_id} ({id}, {name}) backlight color to {color}.".format(
             unique_id=controller_id,
             id=display.id,
-            name=display.name)
+            name=display.name,
+            color=color)
 
         start_flashing = threading.Thread(
             target=self.control.custom_button,
             args=("Function", controller_id, "display_backlight_color", {"color": color},))
         start_flashing.start()
+
+        self.logger.debug("Message: {}".format(message))
 
         return message
 

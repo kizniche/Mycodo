@@ -26,7 +26,7 @@ FUNCTION_ACTION_INFORMATION = {
 
     'message': 'Take a photo and send an email with it attached.',
 
-    'usage': 'Executing <strong>self.run_action("{ACTION_ID}")</strong> will take a photo and email it to the specified recipient(s) using the SMTP credentials in the system configuration. Separate multiple recipients with commas. The body of the email will be the self-generated message. Executing <strong>self.run_action("{ACTION_ID}", value={"message": "Email message here"})</strong> will send an email with the specified message. A Camera ID can also be specified (e.g. value={"camera_id": "959019d1-c1fa-41fe-a554-7be3366a9c5b", "message": "Email message here"}).',
+    'usage': 'Executing <strong>self.run_action("{ACTION_ID}")</strong> will take a photo and email it to the specified recipient(s) using the SMTP credentials in the system configuration. Separate multiple recipients with commas. The body of the email will be the self-generated message. Executing <strong>self.run_action("{ACTION_ID}", value={"camera_id": "959019d1-c1fa-41fe-a554-7be3366a9c5b", "email_address": ["email1@email.com", "email2@email.com"], "message": "My message"})</strong> will capture a photo using the camera with the specified ID and send an email to the specified email(s) with message and attached photo.',
 
     'dependencies_module': [],
 
@@ -54,13 +54,11 @@ FUNCTION_ACTION_INFORMATION = {
 
 
 class ActionModule(AbstractFunctionAction):
-    """
-    Function Action: Send Email with Photo
-    """
+    """Function Action: Send Email with Photo."""
     def __init__(self, action_dev, testing=False):
         super(ActionModule, self).__init__(action_dev, testing=testing, name=__name__)
 
-        self.controller = None
+        self.controller_id = None
         self.email = None
 
         action = db_retrieve_table_daemon(
@@ -76,42 +74,34 @@ class ActionModule(AbstractFunctionAction):
 
     def run_action(self, message, dict_vars):
         try:
-            message_send = dict_vars["value"]["message"]
+            controller_id = dict_vars["value"]["camera_id"]
         except:
-            message_send = None
+            controller_id = self.controller_id
 
         try:
-            camera_id = dict_vars["value"]["camera_id"]
+            email_recipients = dict_vars["value"]["email_address"]
         except:
-            camera_id = None
-
-        if self.email:
             if "," in self.email:
                 email_recipients = self.email.split(",")
             else:
                 email_recipients = [self.email]
-        else:
-            msg = " No recipients specified."
+
+        if not email_recipients:
+            msg = " Error: No recipients specified."
             self.logger.error(msg)
             message += msg
             return message
 
-        if camera_id:
-            controller_id = camera_id
-        else:
-            controller_id = self.controller_id
-
-        if not controller_id:
-            msg = " Controller not selected."
-            message += msg
-            self.logger.error(msg)
-            return message
+        try:
+            message_send = dict_vars["value"]["message"]
+        except:
+            message_send = None
 
         this_camera = db_retrieve_table_daemon(
             Camera, unique_id=controller_id, entry='first')
 
         if not this_camera:
-            msg = " Camera not found."
+            msg = " Error: Camera with ID '{}' not found.".format(controller_id)
             message += msg
             self.logger.error(msg)
             return message
@@ -135,6 +125,8 @@ class ActionModule(AbstractFunctionAction):
             self.logger.error(
                 "Wait {sec:.0f} seconds to email again.".format(
                     sec=smtp_wait_timer - time.time()))
+
+        self.logger.debug("Message: {}".format(message))
 
         return message
 

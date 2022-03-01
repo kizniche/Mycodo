@@ -17,7 +17,8 @@ MYCODO_DB_PATH = 'sqlite:///' + SQL_DATABASE_MYCODO
 FUNCTION_ACTION_INFORMATION = {
     'name_unique': 'method_pid',
     'name': '{}: {}'.format(
-        TRANSLATIONS['pid']['title'], lazy_gettext('Set Method')),
+        TRANSLATIONS['pid']['title'],
+        lazy_gettext('Set Method')),
     'library': None,
     'manufacturer': 'Mycodo',
 
@@ -29,7 +30,7 @@ FUNCTION_ACTION_INFORMATION = {
     'message': lazy_gettext('Select a method to set the PID to use.'),
 
     'usage': 'Executing <strong>self.run_action("{ACTION_ID}")</strong> will pause the selected PID Controller. '
-             'Executing <strong>self.run_action("{ACTION_ID}", value={"pid_id": "959019d1-c1fa-41fe-a554-7be3366a9c5b", "method_id": "fe8b8f41-131b-448d-ba7b-00a044d24075"})</strong> will set the PID Controller with the specified ID (e.g. 959019d1-c1fa-41fe-a554-7be3366a9c5b) to the method with the specified ID (e.g. "fe8b8f41-131b-448d-ba7b-00a044d24075").',
+             'Executing <strong>self.run_action("{ACTION_ID}", value={"pid_id": "959019d1-c1fa-41fe-a554-7be3366a9c5b", "method_id": "fe8b8f41-131b-448d-ba7b-00a044d24075"})</strong> will set a method for the PID Controller with the specified IDs.',
 
     'dependencies_module': [],
 
@@ -59,9 +60,7 @@ FUNCTION_ACTION_INFORMATION = {
 
 
 class ActionModule(AbstractFunctionAction):
-    """
-    Function Action: PID Set Method
-    """
+    """Function Action: PID Set Method."""
     def __init__(self, action_dev, testing=False):
         super(ActionModule, self).__init__(action_dev, testing=testing, name=__name__)
 
@@ -94,7 +93,7 @@ class ActionModule(AbstractFunctionAction):
             PID, unique_id=controller_id, entry='first')
 
         if not pid:
-            msg = "PID Controller with ID {} doesn't exist.".format(controller_id)
+            msg = "PID Controller with ID '{}' not found.".format(controller_id)
             message += msg
             self.logger.error(msg)
             return message
@@ -103,7 +102,7 @@ class ActionModule(AbstractFunctionAction):
             Method, unique_id=method_id, entry='first')
 
         if not method:
-            msg = "Method with ID {} doesn't exist.".format(method_id)
+            msg = "Method with ID '{}' not found.".format(method_id)
             message += msg
             self.logger.error(msg)
             return message
@@ -126,6 +125,8 @@ class ActionModule(AbstractFunctionAction):
                     PID.unique_id == controller_id).first()
                 mod_pid.method_id = method_id
                 new_session.commit()
+
+        self.logger.debug("Message: {}".format(message))
 
         return message
 

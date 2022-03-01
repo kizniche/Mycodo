@@ -41,9 +41,7 @@ FUNCTION_ACTION_INFORMATION = {
 
 
 class ActionModule(AbstractFunctionAction):
-    """
-    Function Action: Pause
-    """
+    """Function Action: Pause"""
     def __init__(self, action_dev, testing=False):
         super(ActionModule, self).__init__(action_dev, testing=testing, name=__name__)
 
@@ -61,7 +59,12 @@ class ActionModule(AbstractFunctionAction):
         self.action_setup = True
 
     def run_action(self, message, dict_vars):
+        message += " Pause for {} seconds.".format(self.duration)
+
         time.sleep(self.duration)
+
+        self.logger.debug("Message: {}".format(message))
+
         return message
 
     def is_setup(self):

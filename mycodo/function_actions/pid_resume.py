@@ -28,7 +28,7 @@ FUNCTION_ACTION_INFORMATION = {
     'message': lazy_gettext('Resume a PID.'),
 
     'usage': 'Executing <strong>self.run_action("{ACTION_ID}")</strong> will resume the selected PID Controller. '
-             'Executing <strong>self.run_action("{ACTION_ID}", value="959019d1-c1fa-41fe-a554-7be3366a9c5b")</strong> will resume the PID Controller with the specified ID (e.g. 959019d1-c1fa-41fe-a554-7be3366a9c5b).',
+             'Executing <strong>self.run_action("{ACTION_ID}", value="959019d1-c1fa-41fe-a554-7be3366a9c5b")</strong> will resume the PID Controller with the specified ID.',
 
     'dependencies_module': [],
 
@@ -68,22 +68,16 @@ class ActionModule(AbstractFunctionAction):
         self.action_setup = True
 
     def run_action(self, message, dict_vars):
-        values_set = False
-        if "value" in dict_vars and dict_vars["value"] is not None:
-            try:
-                controller_id = dict_vars["value"]
-                values_set = True
-            except:
-                self.logger.exception("Error setting values passed to action")
-
-        if not values_set:
+        try:
+            controller_id = dict_vars["value"]["pid_id"]
+        except:
             controller_id = self.controller_id
 
         pid = db_retrieve_table_daemon(
             PID, unique_id=controller_id, entry='first')
 
         if not pid:
-            msg = "PID Controller with ID {} doesn't exist.".format(controller_id)
+            msg = "PID Controller with ID '{}' not found.".format(controller_id)
             message += msg
             self.logger.error(msg)
             return message
@@ -104,6 +98,8 @@ class ActionModule(AbstractFunctionAction):
                 target=self.control.pid_resume,
                 args=(controller_id,))
             resume_pid.start()
+
+        self.logger.debug("Message: {}".format(message))
 
         return message
 

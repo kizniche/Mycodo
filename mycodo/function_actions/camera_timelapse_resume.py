@@ -26,7 +26,7 @@ FUNCTION_ACTION_INFORMATION = {
     'message': 'Resume a camera time-lapse',
 
     'usage': 'Executing <strong>self.run_action("{ACTION_ID}")</strong> will resume the selected Camera time-lapse. '
-             'Executing <strong>self.run_action("{ACTION_ID}", value="959019d1-c1fa-41fe-a554-7be3366a9c5b")</strong> will resume the Camera time-lapse with the specified ID (e.g. 959019d1-c1fa-41fe-a554-7be3366a9c5b).',
+             'Executing <strong>self.run_action("{ACTION_ID}", value={"camera_id": "959019d1-c1fa-41fe-a554-7be3366a9c5b"})</strong> will resume the Camera time-lapse with the specified ID.',
 
     'dependencies_module': [],
 
@@ -46,9 +46,7 @@ FUNCTION_ACTION_INFORMATION = {
 
 
 class ActionModule(AbstractFunctionAction):
-    """
-    Function Action: Camera Time-lapse Resume
-    """
+    """Function Action: Camera Time-lapse Resume."""
     def __init__(self, action_dev, testing=False):
         super(ActionModule, self).__init__(action_dev, testing=testing, name=__name__)
 
@@ -66,19 +64,13 @@ class ActionModule(AbstractFunctionAction):
         self.action_setup = True
 
     def run_action(self, message, dict_vars):
-        values_set = False
-        if "value" in dict_vars and dict_vars["value"] is not None:
-            try:
-                controller_id = dict_vars["value"]
-                values_set = True
-            except:
-                self.logger.exception("Error setting values passed to action")
-
-        if not values_set:
+        try:
+            controller_id = dict_vars["value"]["camera_id"]
+        except:
             controller_id = self.controller_id
 
         if not controller_id:
-            msg = " Controller not selected."
+            msg = " Error: Controller not selected."
             message += msg
             self.logger.error(msg)
             return message
@@ -87,7 +79,7 @@ class ActionModule(AbstractFunctionAction):
             Camera, unique_id=controller_id, entry='first')
 
         if not this_camera:
-            msg = " Camera not found."
+            msg = " Error: Camera with ID '{}' not found.".format(controller_id)
             message += msg
             self.logger.error(msg)
             return message
@@ -101,6 +93,8 @@ class ActionModule(AbstractFunctionAction):
                 Camera.unique_id == controller_id).first()
             mod_camera.timelapse_paused = False
             new_session.commit()
+
+        self.logger.debug("Message: {}".format(message))
 
         return message
 

@@ -20,8 +20,8 @@ FUNCTION_ACTION_INFORMATION = {
 
     'message': 'Publish to an MQTT server.',
 
-    'usage': 'Executing <strong>self.run_action("{ACTION_ID}", value={"payload": 42})</strong> will publish a value (e.g. 42) to the specified MQTT server. '
-             'You can also specify the topic with the key "topic" (e.g. value={"topic": "my_topic", "payload": 42}). '
+    'usage': 'Executing <strong>self.run_action("{ACTION_ID}", value={"payload": 42})</strong> will publish a payload to the specified MQTT server. '
+             'You can also specify the topic (e.g. value={"topic": "my_topic", "payload": 42}). '
              'Warning: If using multiple MQTT Inputs or Functions, ensure the Client IDs are unique.',
 
     'dependencies_module': [
@@ -98,9 +98,7 @@ FUNCTION_ACTION_INFORMATION = {
 
 
 class ActionModule(AbstractFunctionAction):
-    """
-    Function Action: MQTT Publish
-    """
+    """Function Action: MQTT Publish."""
     def __init__(self, action_dev, testing=False):
         super(ActionModule, self).__init__(action_dev, testing=testing, name=__name__)
 
@@ -129,19 +127,18 @@ class ActionModule(AbstractFunctionAction):
         self.action_setup = True
 
     def run_action(self, message, dict_vars):
-        values_set = False
-        topic = self.topic
-        if "value" in dict_vars:
-            try:
-                payload = dict_vars["value"]["payload"]
-                if "topic" in dict_vars["value"]:
-                    topic = dict_vars["value"]["topic"]
-                values_set = True
-            except:
-                self.logger.exception("Error setting values passed to action")
+        try:
+            topic = dict_vars["value"]["topic"]
+        except:
+            topic = self.topic
 
-        if not values_set:
-            msg = "A payload must be provided"
+        try:
+            payload = dict_vars["value"]["payload"]
+        except:
+            payload = None
+
+        if not payload:
+            msg = " Error: Cannot publish to MQTT without a payload."
             self.logger.error(msg)
             message += msg
             return
@@ -166,6 +163,8 @@ class ActionModule(AbstractFunctionAction):
             msg = " Could not execute MQTT Publish: {}".format(err)
             self.logger.error(msg)
             message += msg
+
+        self.logger.debug("Message: {}".format(message))
 
         return message
 

@@ -25,7 +25,7 @@ FUNCTION_ACTION_INFORMATION = {
     'url_additional': None,
 
     'usage': 'Executing <strong>self.run_action("{ACTION_ID}")</strong> will create a note with the selected tag and note. '
-             'Executing <strong>self.run_action("{ACTION_ID}", value=["tag1,tag2", "note"])</strong> will create a note with the tag(s) (multiple separated by commas) and note (e.g. tags "tag1,tag2" and note "note"). If note is not specified, then the action message is saved as the note (e.g. value=["tag1", ""])',
+             'Executing <strong>self.run_action("{ACTION_ID}", value={"tags": ["tag1", "tag2"], "name": "My Note", "note": "this is a message"})</strong> will execute the action with the specified list of tag(s) and note. If using only one tag, make it the only element of the list (e.g. ["tag1"]). If note is not specified, then the action message will be used as the note.',
 
     'dependencies_module': [],
 
@@ -37,29 +37,36 @@ FUNCTION_ACTION_INFORMATION = {
             'options_select': [
                 'Tag'
             ],
-            'name': lazy_gettext('Note Tags'),
+            'name': lazy_gettext('Tags'),
             'phrase': 'Select one or more tags'
+        },
+        {
+            'id': 'name',
+            'type': 'text',
+            'default_value': 'Name',
+            'required': False,
+            'name': lazy_gettext('Name'),
+            'phrase': 'The name of the note'
         },
         {
             'id': 'note',
             'type': 'text',
-            'default_value': '',
+            'default_value': 'Note',
             'required': False,
-            'name': 'Note',
+            'name': lazy_gettext('Note'),
             'phrase': 'The body of the note'
-        },
+        }
     ]
 }
 
 
 class ActionModule(AbstractFunctionAction):
-    """
-    Function Action: Create Note
-    """
+    """Function Action: Create Note."""
     def __init__(self, action_dev, testing=False):
         super(ActionModule, self).__init__(action_dev, testing=testing, name=__name__)
 
         self.tag = None
+        self.name = None
         self.note = None
 
         action = db_retrieve_table_daemon(
@@ -74,40 +81,44 @@ class ActionModule(AbstractFunctionAction):
         self.action_setup = True
 
     def run_action(self, message, dict_vars):
-        values_set = False
         list_tags = []
-        if "value" in dict_vars and len(dict_vars["value"]) == 2:
-            try:
-                tag = dict_vars["value"][0]
-                if "," in tag:
-                    list_tags = tag.split(',')
-                else:
-                    list_tags = [tag]
-                note = dict_vars["value"][1]
-                values_set = True
-            except:
-                self.logger.exception("Error setting values passed to action")
-
-        if not values_set:
-            list_tags = []
+        try:
+            list_tags = dict_vars["value"]["tag"]
+        except:
             for each_id_set in self.tag:
                 list_tags.append(each_id_set.split(",")[0])
+
+        try:
+            name = dict_vars["value"]["name"]
+        except:
+            name = self.name
+
+        try:
+            note = dict_vars["value"]["note"]
+        except:
             note = self.note
+
+        self.logger.debug("Tag(s): {}. Name: {}. Note: '{}'".format(
+            ",".join(list_tags), name, note))
 
         with session_scope(MYCODO_DB_PATH) as new_session:
             list_tag_names = []
             for each_tag in list_tags:
                 # First check name
-                tag_check = new_session.query(NoteTags).filter(NoteTags.name == each_tag).first()
+                tag_check = new_session.query(NoteTags).filter(
+                    NoteTags.name == each_tag).first()
                 if tag_check:
                     list_tag_names.append(tag_check.name)
                 else:
                     # Next check ID
-                    tag_check = new_session.query(NoteTags).filter(NoteTags.unique_id == each_tag).first()
+                    tag_check = new_session.query(NoteTags).filter(
+                        NoteTags.unique_id == each_tag).first()
                     if tag_check:
                         list_tag_names.append(tag_check.name)
                     else:
-                        self.logger.error("Tag with name or id '{}' does not exist.".format(each_tag))
+                        self.logger.error(
+                            "Tag with name or id '{}' does not exist.".format(
+                                each_tag))
 
             if not list_tag_names:
                 msg = "No valid tags specified. Cannot create note."
@@ -115,19 +126,22 @@ class ActionModule(AbstractFunctionAction):
                 self.logger.error(msg)
                 return message
 
-            message += " Create note with tag(s) '{}'".format(','.join(list_tag_names))
+            message += " Create note with name '{}', tag(s) '{}'".format(
+                name, ','.join(list_tag_names))
             if note:
-                message += " and note {}".format(note)
+                message += ", and note {}".format(note)
             message += "."
 
             new_note = Notes()
-            new_note.name = 'Action'
+            new_note.name = name
             new_note.tags = ','.join(list_tag_names)
             if note:
                 new_note.note = note
             else:
                 new_note.note = message
             new_session.add(new_note)
+
+        self.logger.debug("Message: {}".format(message))
 
         return message
 

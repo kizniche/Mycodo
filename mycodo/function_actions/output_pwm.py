@@ -12,8 +12,9 @@ from mycodo.utils.database import db_retrieve_table_daemon
 
 FUNCTION_ACTION_INFORMATION = {
     'name_unique': 'output_pwm',
-    'name': '{} ({})'.format(
-        TRANSLATIONS['output']['title'], TRANSLATIONS['duty_cycle']['title']),
+    'name': '{}: {}'.format(
+        TRANSLATIONS['output']['title'],
+        TRANSLATIONS['duty_cycle']['title']),
     'library': None,
     'manufacturer': 'Mycodo',
 
@@ -25,18 +26,18 @@ FUNCTION_ACTION_INFORMATION = {
     'message': lazy_gettext('Set a PWM Output to set a duty cycle.'),
 
     'usage': 'Executing <strong>self.run_action("{ACTION_ID}")</strong> will set the PWM output duty cycle. '
-             'Executing <strong>self.run_action("{ACTION_ID}", value=42)</strong> will set the PWM output duty cycle to a specific value (e.g. 42%).',
+             'Executing <strong>self.run_action("{ACTION_ID}", value={"output_id": "959019d1-c1fa-41fe-a554-7be3366a9c5b", "channel": 0, "duty_cycle": 42})</strong> will set the duty cycle of the PWM output with the specified ID and channel.',
 
     'dependencies_module': [],
 
     'custom_options': [
         {
             'id': 'output',
-            'type': 'select_measurement_channel',
+            'type': 'select_channel',
             'default_value': '',
             'required': True,
             'options_select': [
-                'Output_Channels_Measurements',
+                'Output_Channels',
             ],
             'name': 'Output',
             'phrase': 'Select an output to control'
@@ -55,14 +56,11 @@ FUNCTION_ACTION_INFORMATION = {
 
 
 class ActionModule(AbstractFunctionAction):
-    """
-    Function Action: Output (On/Off/Duration)
-    """
+    """Function Action: Output (On/Off/Duration)."""
     def __init__(self, action_dev, testing=False):
         super(ActionModule, self).__init__(action_dev, testing=testing, name=__name__)
 
         self.output_device_id = None
-        self.output_measurement_id = None
         self.output_channel_id = None
         self.duty_cycle = None
 
@@ -78,36 +76,47 @@ class ActionModule(AbstractFunctionAction):
         self.action_setup = True
 
     def run_action(self, message, dict_vars):
-        values_set = False
-        if "value" in dict_vars and dict_vars["value"] is not None:
-            try:
-                duty_cycle = dict_vars["value"]
-                values_set = True
-            except:
-                self.logger.exception("Error setting values passed to action")
+        try:
+            output_id = dict_vars["value"]["output_id"]
+        except:
+            output_id = self.output_device_id
 
-        if not values_set:
+        try:
+            output_channel = dict_vars["value"]["channel"]
+        except:
+            output_channel = self.get_output_channel_from_channel_id(
+                self.output_channel_id)
+
+        try:
+            duty_cycle = dict_vars["value"]["duty_cycle"]
+        except:
             duty_cycle = self.duty_cycle
 
-        output_channel = self.get_output_channel_from_channel_id(
-            self.output_channel_id)
-
         this_output = db_retrieve_table_daemon(
-            Output, unique_id=self.output_device_id, entry='first')
-        message += " Turn output {unique_id} CH{ch} ({id}, {name}) duty cycle to {duty_cycle}%.".format(
-            unique_id=self.output_device_id,
-            ch=self.output_channel_id,
+            Output, unique_id=output_id, entry='first')
+
+        if not this_output:
+            msg = " Error: Output with ID '{}' not found.".format(this_output)
+            message += msg
+            self.logger.error(msg)
+            return message
+
+        message += " Set output {unique_id} CH{ch} ({id}, {name}) duty cycle to {duty_cycle} %.".format(
+            unique_id=output_id,
+            ch=output_channel,
             id=this_output.id,
             name=this_output.name,
             duty_cycle=duty_cycle)
 
         output_on = threading.Thread(
             target=self.control.output_on,
-            args=(self.output_device_id,),
+            args=(output_id,),
             kwargs={'output_type': 'pwm',
                     'amount': duty_cycle,
                     'output_channel': output_channel})
         output_on.start()
+
+        self.logger.debug("Message: {}".format(message))
 
         return message
 

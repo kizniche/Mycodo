@@ -156,11 +156,9 @@ def upgrade_revision(error, revision):
                                                 "output_volume",
                                                 "output_value",
                                                 "output_ramp_pwm"]:
-                        output_id = action.do_unique_id.split(",")[0]
-                        channel_id = action.do_unique_id.split(",")[1]
-                        measure_id = get_measure_id(output_id, channel_id)
-                        custom_options["output"] = "{},{},{}".format(output_id, measure_id, channel_id)
+                        custom_options["output"] = action.do_unique_id
                         if action.action_type == "output":
+                            action.action_type = "output_on_off"
                             custom_options["output_state"] = action.do_output_state
                             custom_options["duration"] = action.do_output_duration
                         elif action.action_type == "output_pwm":

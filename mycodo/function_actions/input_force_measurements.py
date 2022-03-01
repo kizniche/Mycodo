@@ -23,7 +23,7 @@ FUNCTION_ACTION_INFORMATION = {
     'message': lazy_gettext('Force measurements to be conducted for an input'),
 
     'usage': 'Executing <strong>self.run_action("{ACTION_ID}")</strong> will force acquiring measurements for the selected Input. '
-             'Executing <strong>self.run_action("{ACTION_ID}", value={"input_id": "959019d1-c1fa-41fe-a554-7be3366a9c5b"})</strong> will force acquiring measurements for the Input with the specified ID (e.g. 959019d1-c1fa-41fe-a554-7be3366a9c5b),',
+             'Executing <strong>self.run_action("{ACTION_ID}", value={"input_id": "959019d1-c1fa-41fe-a554-7be3366a9c5b"})</strong> will force acquiring measurements for the Input with the specified ID.',
 
     'dependencies_module': [],
 
@@ -44,9 +44,7 @@ FUNCTION_ACTION_INFORMATION = {
 
 
 class ActionModule(AbstractFunctionAction):
-    """
-    Function Action: Force Input Measurements
-    """
+    """Function Action: Force Input Measurements."""
     def __init__(self, action_dev, testing=False):
         super(ActionModule, self).__init__(action_dev, testing=testing, name=__name__)
 
@@ -86,6 +84,8 @@ class ActionModule(AbstractFunctionAction):
             target=self.control.input_force_measurements,
             args=(input_id,))
         force_measurements.start()
+
+        self.logger.debug("Message: {}".format(message))
 
         return message
 

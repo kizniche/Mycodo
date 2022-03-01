@@ -33,9 +33,7 @@ FUNCTION_ACTION_INFORMATION = {
 
 
 class ActionModule(AbstractFunctionAction):
-    """
-    Function Action: System Restart
-    """
+    """Function Action: System Restart"""
     def __init__(self, action_dev, testing=False):
         super(ActionModule, self).__init__(action_dev, testing=testing, name=__name__)
 
@@ -57,6 +55,9 @@ class ActionModule(AbstractFunctionAction):
         cmd = '{path}/mycodo/scripts/mycodo_wrapper restart 2>&1'.format(
             path=INSTALL_DIRECTORY)
         subprocess.Popen(cmd, shell=True)
+
+        self.logger.debug("Message: {}".format(message))
+
         return message
 
     def is_setup(self):

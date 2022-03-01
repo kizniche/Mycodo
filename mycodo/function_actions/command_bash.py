@@ -20,7 +20,8 @@ FUNCTION_ACTION_INFORMATION = {
 
     'message': lazy_gettext('Execute a Linux bash shell command.'),
 
-    'usage': 'Executing <strong>self.run_action("{ACTION_ID}")</strong> will execute the bash command.',
+    'usage': 'Executing <strong>self.run_action("{ACTION_ID}")</strong> will execute the bash command.'
+             'Executing <strong>self.run_action("{ACTION_ID}", value={"user": "mycodo", "command": "/home/pi/my_script.sh on"})</strong> will execute the action with the specified command and user.',
 
     'dependencies_module': [],
 
@@ -46,9 +47,7 @@ FUNCTION_ACTION_INFORMATION = {
 
 
 class ActionModule(AbstractFunctionAction):
-    """
-    Function Action: Shell Command
-    """
+    """Function Action: Shell Command."""
     def __init__(self, action_dev, testing=False):
         super(ActionModule, self).__init__(action_dev, testing=testing, name=__name__)
 
@@ -67,12 +66,24 @@ class ActionModule(AbstractFunctionAction):
         self.action_setup = True
 
     def run_action(self, message, dict_vars):
-        message += " Execute '{com}' ".format(com=self.command)
+        try:
+            command = dict_vars["value"]["command"]
+        except:
+            command = self.command
 
-        cmd_out, cmd_err, cmd_status = cmd_output(self.command, user=self.user)
+        try:
+            user = dict_vars["value"]["user"]
+        except:
+            user = self.user
 
-        message += "(return out: {out}, err: {err}, status: {stat}).".format(
+        message += " Execute '{com}' as {usr}.".format(com=command, usr=user)
+
+        cmd_out, cmd_err, cmd_status = cmd_output(command, user=user)
+
+        message += " (return out: {out}, err: {err}, status: {stat}).".format(
             out=cmd_out, err=cmd_err, stat=cmd_status)
+
+        self.logger.debug("Message: {}".format(message))
 
         return message
 
