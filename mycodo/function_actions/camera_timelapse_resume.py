@@ -69,12 +69,6 @@ class ActionModule(AbstractFunctionAction):
         except:
             controller_id = self.controller_id
 
-        if not controller_id:
-            msg = " Error: Controller not selected."
-            message += msg
-            self.logger.error(msg)
-            return message
-
         this_camera = db_retrieve_table_daemon(
             Camera, unique_id=controller_id, entry='first')
 
