@@ -109,6 +109,4 @@ class AbstractFunctionAction(AbstractBaseController):
                 if trigger and trigger.log_level_debug:
                     debug_level = logging.DEBUG
 
-                self.logger.error("TEST: {}, {}".format(action.function_id, function))
-
                 self.logger.setLevel(debug_level)

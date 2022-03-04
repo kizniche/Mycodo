@@ -155,10 +155,9 @@ class DaemonControl:
     #
 
     def trigger_action(
-            self, action_id, value=None, message='', single_action=True, debug=False):
+            self, action_id, value=None, message='', debug=False):
         return self.proxy().trigger_action(
-            action_id, value=value, message=message,
-            single_action=single_action, debug=debug)
+            action_id, value=value, message=message, debug=debug)
 
     def trigger_all_actions(self, function_id, message='', debug=False):
         return self.proxy().trigger_all_actions(

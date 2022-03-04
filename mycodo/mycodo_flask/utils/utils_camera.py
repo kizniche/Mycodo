@@ -66,7 +66,7 @@ def camera_add(form_camera):
         new_camera.picamera_awb_gain_blue = 3.0
         new_camera.picamera_awb_gain_red = 2.0
         new_camera.picamera_shutter_speed = 0
-        new_camera.output_format = "jpeg"
+        new_camera.output_format = "jpg"
     elif form_camera.library.data == 'picamera':
         new_camera.brightness = 50
         new_camera.contrast = 0.0

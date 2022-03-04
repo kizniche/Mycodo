@@ -1,8 +1,8 @@
 # coding=utf-8
 import logging
 import os
-import threading
 import time
+import traceback
 
 from mycodo.config import PATH_FUNCTION_ACTIONS
 from mycodo.config import PATH_FUNCTION_ACTIONS_CUSTOM
@@ -17,8 +17,6 @@ from mycodo.databases.models import DeviceMeasurements
 from mycodo.databases.models import Input
 from mycodo.databases.models import LCD
 from mycodo.databases.models import Math
-from mycodo.databases.models import NoteTags
-from mycodo.databases.models import Notes
 from mycodo.databases.models import OutputChannel
 from mycodo.databases.models import PID
 from mycodo.databases.models import SMTP
@@ -30,7 +28,6 @@ from mycodo.utils.database import db_retrieve_table_daemon
 from mycodo.utils.influx import get_last_measurement
 from mycodo.utils.influx import get_past_measurements
 from mycodo.utils.modules import load_module_from_file
-from mycodo.utils.send_data import send_email
 from mycodo.utils.system_pi import return_measurement_info
 
 MYCODO_DB_PATH = 'sqlite:///' + SQL_DATABASE_MYCODO
@@ -295,33 +292,11 @@ def action_video(cond_action, message):
     return message, attachment_file
 
 
-def action_lcd_backlight_color(cond_action, message):
-    control = DaemonControl()
-    lcd = db_retrieve_table_daemon(
-        LCD, unique_id=cond_action.do_unique_id)
-    message += " LCD {unique_id} ({id}, {name}) Backlight Color to {color}.".format(
-        unique_id=cond_action.do_unique_id,
-        id=lcd.id,
-        name=lcd.name,
-        color=cond_action.do_action_string)
-
-    lcd_color = threading.Thread(
-        target=control.lcd_backlight_color,
-        args=(cond_action.do_unique_id, cond_action.do_action_string,))
-    lcd_color.start()
-    return message
-
-
 def trigger_action(
         function_actions,
         action_id,
         value=None,
         message='',
-        note_tags=None,
-        email_recipients=None,
-        attachment_file=None,
-        attachment_type=None,
-        single_action=False,
         debug=False):
     """
     Trigger individual action
@@ -334,11 +309,6 @@ def trigger_action(
     :param action_id: unique_id of action
     :param value: a variable to be sent to the action
     :param message: message string to append to that will be sent back
-    :param note_tags: list of note tags to use if creating a note
-    :param email_recipients: list of email addresses to notify if sending an email
-    :param attachment_file: string location of a file to attach to an email
-    :param attachment_type: string type of email attachment
-    :param single_action: True if only one action is being triggered, False if only one of multiple actions
     :param debug: determine if logging level should be DEBUG
 
     :return: message or (message, note_tags, email_recipients, attachment_file, attachment_type)
@@ -346,14 +316,7 @@ def trigger_action(
     cond_action = db_retrieve_table_daemon(Actions, unique_id=action_id)
     if not cond_action:
         message += 'Error: Action with ID {} not found!'.format(action_id)
-        if single_action:
-            return message
-        else:
-            return (message,
-                    note_tags,
-                    email_recipients,
-                    attachment_file,
-                    attachment_type)
+        return message
 
     logger_actions = logging.getLogger("mycodo.trigger_action_{id}".format(
         id=cond_action.unique_id.split('-')[0]))
@@ -368,29 +331,23 @@ def trigger_action(
     if cond_action.action_type in function_actions:
         dict_vars = {"value": value}
 
-        function_action_loaded = load_module_from_file(
-            function_actions[cond_action.action_type]['file_path'], 'function_action')
-        if function_action_loaded:
-            run_function_action = function_action_loaded.ActionModule(cond_action)
-
-        # Run action
-        message = run_function_action.run_action(message, dict_vars)
-
         message += "\n[Action {id}, {name}]:".format(
             id=cond_action.unique_id.split('-')[0],
             name=function_actions[cond_action.action_type]['name'])
 
-    logger_actions.debug("Message: {}".format(message))
-    logger_actions.debug("Note Tags: {}".format(note_tags))
-    logger_actions.debug("Email Recipients: {}".format(email_recipients))
-    logger_actions.debug("Attachment Files: {}".format(attachment_file))
-    logger_actions.debug("Attachment Type: {}".format(attachment_type))
+        try:
+            function_action_loaded = load_module_from_file(
+                function_actions[cond_action.action_type]['file_path'], 'function_action')
+            if function_action_loaded:
+                run_function_action = function_action_loaded.ActionModule(cond_action)
 
-    if single_action:
-        return message
-    else:
-        return (message, note_tags, email_recipients,
-                attachment_file, attachment_type)
+            message = run_function_action.run_action(message, dict_vars)
+        except:
+            message += " Exception executing action: {}".format(traceback.print_exc())
+
+    logger_actions.debug("Message: {}".format(message))
+
+    return message
 
 
 def trigger_function_actions(function_actions, function_id, message='', debug=False):
@@ -411,75 +368,19 @@ def trigger_function_actions(function_actions, function_id, message='', debug=Fa
     else:
         logger_actions.setLevel(logging.INFO)
 
-    # List of all email notification recipients
-    # List is appended with TO email addresses when an email Action is
-    # encountered. An email is sent to all recipients after all actions
-    # have been executed.
-    email_recipients = []
-
-    # List of tags to add to a note
-    note_tags = []
-
-    attachment_file = None
-    attachment_type = None
-
     actions = db_retrieve_table_daemon(Actions)
     actions = actions.filter(
         Actions.function_id == function_id).all()
 
     for cond_action in actions:
-        if cond_action.action_type == 'mqtt_publish':
-            continue  # Actions to skip when triggering all actions
-                      # TODO: incorporate into single-file module when refactored
-
-        (message,
-         note_tags,
-         email_recipients,
-         attachment_file,
-         attachment_type) = trigger_action(
+        message = trigger_action(
             function_actions,
             cond_action.unique_id,
             message=message,
-            single_action=False,
-            note_tags=note_tags,
-            email_recipients=email_recipients,
-            attachment_file=attachment_file,
-            attachment_type=attachment_type,
             debug=debug)
 
-    # Send email after all conditional actions have been checked
-    # In order to append all action messages to send in the email
-    # send_email_at_end will be None or the TO email address
-    if email_recipients:
-        # If the emails per hour limit has not been exceeded
-        smtp_wait_timer, allowed_to_send_notice = check_allowed_to_email()
-        if allowed_to_send_notice:
-            smtp = db_retrieve_table_daemon(SMTP, entry='first')
-            send_email(smtp.host, smtp.protocol, smtp.port,
-                       smtp.user, smtp.passw, smtp.email_from,
-                       email_recipients, message,
-                       attachment_file, attachment_type)
-        else:
-            logger_actions.error("Wait {sec:.0f} seconds to email again.".format(
-                sec=smtp_wait_timer - time.time()))
-
-    # Create a note with the tags from the unique_ids in the list note_tags
-    if note_tags:
-        list_tags = []
-        for each_note_tag_id in note_tags:
-            check_tag = db_retrieve_table_daemon(
-                NoteTags, unique_id=each_note_tag_id)
-            if check_tag:
-                list_tags.append(each_note_tag_id)
-        if list_tags:
-            with session_scope(MYCODO_DB_PATH) as db_session:
-                new_note = Notes()
-                new_note.name = 'Action'
-                new_note.tags = ','.join(list_tags)
-                new_note.note = message
-                db_session.add(new_note)
-
     logger_actions.debug("Message: {}".format(message))
+
     return message
 
 

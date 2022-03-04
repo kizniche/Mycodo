@@ -221,7 +221,7 @@ class InputModule(AbstractInput):
 
         try:
             self.atlas_device = setup_atlas_device(self.input_dev)
-            self.logger.info("Lockfile: {}".format(self.atlas_device.lock_file))
+            self.logger.debug("Lockfile: {}".format(self.atlas_device.lock_file))
 
             if self.temperature_comp_meas_measurement_id:
                 self.atlas_command = AtlasScientificCommand(

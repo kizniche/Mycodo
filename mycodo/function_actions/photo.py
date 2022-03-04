@@ -74,7 +74,7 @@ class ActionModule(AbstractFunctionAction):
             self.logger.error(msg)
             return message
 
-        message += "  Capturing photo with camera {unique_id} ({id}, {name}).".format(
+        message += " Capturing photo with camera {unique_id} ({id}, {name}).".format(
             unique_id=controller_id,
             id=this_camera.id,
             name=this_camera.name)

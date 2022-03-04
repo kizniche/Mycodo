@@ -505,7 +505,7 @@ def action_del(form):
 
 
 def action_execute_all(form):
-    """Execute All Conditional Actions."""
+    """Execute All Actions."""
     messages = {
         "success": [],
         "info": [],
@@ -537,21 +537,21 @@ def action_execute_all(form):
 
     if not messages["error"]:
         try:
-            debug = bool(hasattr(form, 'log_level_debug') and form.log_level_debug.data)
             control = DaemonControl()
             trigger_all_actions = threading.Thread(
                 target=control.trigger_all_actions,
                 args=(form.function_id.data,),
                 kwargs={
-                    'message': "Triggering all actions of function {}".format(form.function_id.data),
-                    'debug': debug
+                    'message': "Executing all actions of {} with ID {}.".format(
+                        function_type, form.function_id.data),
+                    'debug': func.log_level_debug
                 }
             )
             trigger_all_actions.start()
             messages["success"].append('{action} {controller}'.format(
                 action=gettext("Execute All"),
-                controller='{} {}'.format(function_type,
-                                          TRANSLATIONS['actions']['title'])))
+                controller='{} {}'.format(
+                    function_type, TRANSLATIONS['actions']['title'])))
         except Exception as except_msg:
             messages["error"].append(str(except_msg))
 
