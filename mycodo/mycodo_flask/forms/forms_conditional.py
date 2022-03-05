@@ -12,7 +12,7 @@ from wtforms import SelectField
 from wtforms import StringField
 from wtforms import SubmitField
 from wtforms import widgets
-from wtforms.widgets.html5 import NumberInput
+from wtforms.widgets import NumberInput
 
 from mycodo.config import CONDITIONAL_CONDITIONS
 from mycodo.config_translations import TRANSLATIONS

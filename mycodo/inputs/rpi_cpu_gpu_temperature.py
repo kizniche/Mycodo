@@ -37,56 +37,61 @@ INPUT_INFORMATION = {
     ],
     'options_disabled': ['interface'],
 
-    'interfaces': ['RPi']
+    'interfaces': ['RPi'],
+
+    'custom_options': [
+        {
+            'id': 'path_temperature_cpu',
+            'type': 'text',
+            'default_value': '/sys/class/thermal/thermal_zone0/temp',
+            'required': True,
+            'name': "Path for CPU Temperature",
+            'phrase': 'Reads the CPU temperature from this file'
+        },
+        {
+            'id': 'path_temperature_gpu',
+            'type': 'text',
+            'default_value': '/usr/bin/vcgencmd',
+            'required': True,
+            'name': "Path to vcgencmd",
+            'phrase': 'Reads the GPU from vcgencmd'
+        }
+    ]
 }
 
 
 class InputModule(AbstractInput):
     """A sensor support class that monitors the raspberry pi's CPU and GPU temperatures."""
-
     def __init__(self, input_dev, testing=False):
         super(InputModule, self).__init__(input_dev, testing=testing, name=__name__)
 
-    def get_measurement(self):
-        """Gets the Raspberry pi's CPU and GPU temperatures in Celsius."""
-        # import psutil
-        # import resource
-        # open_files_count = 0
-        # for proc in psutil.process_iter():
-        #     if proc.open_files():
-        #         open_files_count += 1
-        # self.logger.info("Open files: {of}".format(of=open_files_count))
-        # soft, hard = resource.getrlimit(resource.RLIMIT_NOFILE)
-        # self.logger.info("LIMIT: Soft: {sft}, Hard: {hrd}".format(sft=soft, hrd=hard))
+        self.path_temperature_cpu = None
+        self.path_temperature_gpu = None
 
+    def get_measurement(self):
+        """Gets the Raspberry pi's CPU and GPU temperatures."""
         self.return_dict = copy.deepcopy(measurements_dict)
 
-        self.logger.debug("Acquiring Measurements...")
-
-        if self.is_enabled(0):
-            # CPU temperature
-            if os.path.exists('/sys/class/thermal/thermal_zone0/temp'):
+        if self.is_enabled(0):  # CPU temperature
+            if os.path.exists(self.path_temperature_cpu):
                 try:
-                    with open('/sys/class/thermal/thermal_zone0/temp') as cpu_temp_file:
-                        temp_cpu = float(cpu_temp_file.read()) / 1000
-                        self.value_set(0, temp_cpu)
-                        self.logger.debug("CPU Temperature: {}".format(temp_cpu))
+                    with open(self.path_temperature_cpu) as cpu_temp_file:
+                        self.value_set(0, float(cpu_temp_file.read()) / 1000)
+                        self.logger.debug("CPU Temperature: {}".format(self.value_get(0)))
                 except Exception as err:
-                    self.logger.error("Could not get CPU temperature: {}".format(err))
+                    self.logger.error("Error getting CPU temperature: {}".format(err))
             else:
-                self.logger.error("CPU temperature: /sys/class/thermal/thermal_zone0/temp doesn't exist")
+                self.logger.error("CPU temperature: could not locate {}".format(self.path_temperature_cpu))
 
-        if self.is_enabled(1):
-            # GPU temperature
-            if os.path.exists('/opt/vc/bin/vcgencmd'):
+        if self.is_enabled(1):  # GPU temperature
+            if os.path.exists(self.path_temperature_gpu):
                 try:
-                    temperature_gpu = subprocess.check_output(('/opt/vc/bin/vcgencmd', 'measure_temp'))
-                    temp_gpu = float(temperature_gpu.split(b'=')[1].split(b"'")[0])
-                    self.value_set(1, temp_gpu)
-                    self.logger.debug("GPU Temperature: {}".format(temp_gpu))
+                    temperature_gpu = subprocess.check_output((self.path_temperature_gpu, 'measure_temp'))
+                    self.value_set(1, float(temperature_gpu.split(b'=')[1].split(b"'")[0]))
+                    self.logger.debug("GPU Temperature: {}".format(self.value_get(1)))
                 except Exception as err:
-                    self.logger.error("Could not get GPU temperature: {}".format(err))
+                    self.logger.error("Error getting GPU temperature: {}".format(err))
             else:
-                self.logger.error("GPU temperature: /opt/vc/bin/vcgencmd doesn't exist")
+                self.logger.error("GPU temperature: Could not locate {}".format(self.path_temperature_gpu))
 
         return self.return_dict

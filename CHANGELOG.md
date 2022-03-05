@@ -33,6 +33,7 @@ Following the upgrade, you will need to reboot to complete the upgrade.
 
 ### Miscellaneous
 
+ - Update several python library versions (requirements.txt)
  - Add button to install all dependencies on Diagnostics page
  - Add Error Codes to log lines and the manual
 

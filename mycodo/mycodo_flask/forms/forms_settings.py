@@ -15,10 +15,10 @@ from wtforms import StringField
 from wtforms import SubmitField
 from wtforms import validators
 from wtforms import widgets
-from wtforms.fields.html5 import EmailField
+from wtforms.fields import EmailField
 from wtforms.validators import DataRequired
 from wtforms.validators import Optional
-from wtforms.widgets.html5 import NumberInput
+from wtforms.widgets import NumberInput
 
 from mycodo.config_translations import TRANSLATIONS
 

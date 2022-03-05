@@ -13,7 +13,7 @@ from wtforms import SubmitField
 from wtforms import validators
 from wtforms import widgets
 from wtforms.validators import DataRequired
-from wtforms.widgets.html5 import NumberInput
+from wtforms.widgets import NumberInput
 
 from mycodo.config_translations import TRANSLATIONS
 from mycodo.mycodo_flask.utils.utils_general import generate_form_widget_list

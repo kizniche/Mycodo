@@ -15,7 +15,7 @@ from wtforms import validators
 from wtforms import widgets
 from wtforms.validators import DataRequired
 from wtforms.validators import Optional
-from wtforms.widgets.html5 import NumberInput
+from wtforms.widgets import NumberInput
 
 from mycodo.config import LCD_INFO
 from mycodo.config_translations import TRANSLATIONS
