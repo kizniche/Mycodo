@@ -250,7 +250,7 @@ case "${1:-''}" in
     ;;
     'uninstall-apt-pip')
         printf "\n#### Uninstalling apt version of pip (if installed)\n"
-        apt-get purge -y python-pip
+        apt purge -y python-pip
     ;;
     'update-alembic')
         printf "\n#### Upgrading Mycodo database with alembic (if needed)\n"
@@ -263,7 +263,7 @@ case "${1:-''}" in
     ;;
     'update-apt')
         printf "\n#### Updating apt repositories\n"
-        apt-get update -y
+        apt update -y
     ;;
     'update-cron')  # TODO: Remove at next major revision
         printf "\n#### Remove Mycodo restart monitor crontab entry (if it exists)\n"
@@ -276,7 +276,7 @@ case "${1:-''}" in
     'install-bcm2835')
         printf "\n#### Installing bcm2835\n"
         cd "${MYCODO_PATH}"/install || return
-        apt-get install -y automake libtool
+        apt install -y automake libtool
         wget ${MCB2835_URL} -O bcm2835.tar.gz
         mkdir bcm2835
         tar xzf bcm2835.tar.gz -C bcm2835 --strip-components=1
@@ -299,7 +299,7 @@ case "${1:-''}" in
         fi
     ;;
     'build-pigpiod')
-        apt-get install -y python3-pigpio
+        apt install -y python3-pigpio
         cd "${MYCODO_PATH}"/install || return
         # wget --quiet -P "${MYCODO_PATH}"/install abyz.co.uk/rpi/pigpio/pigpio.zip
         wget ${PIGPIO_URL} -O pigpio.tar.gz
@@ -322,8 +322,8 @@ case "${1:-''}" in
     ;;
     'uninstall-pigpiod')
         printf "\n#### Uninstalling pigpiod\n"
-        apt-get remove -y python3-pigpio
-        apt-get install -y jq
+        apt remove -y python3-pigpio
+        apt install -y jq
         cd "${MYCODO_PATH}"/install || return
         # wget --quiet -P "${MYCODO_PATH}"/install abyz.co.uk/rpi/pigpio/pigpio.zip
         wget ${PIGPIO_URL} -O pigpio.tar.gz
@@ -438,8 +438,8 @@ case "${1:-''}" in
     ;;
     'update-packages')
         printf "\n#### Installing prerequisite apt packages and update pip\n"
-        apt-get remove -y apache2 python-cffi-backend python3-cffi-backend
-        apt-get install -y "${APT_PKGS}"
+        apt remove -y apache2 python-cffi-backend python3-cffi-backend
+        apt install -y ${APT_PKGS}
         python3 -m pip install --upgrade pip
     ;;
     'update-permissions')
@@ -625,8 +625,8 @@ case "${1:-''}" in
             printf "\nCould not detect architecture\n"
             exit 1
         fi
-        apt-get update
-        apt-get -y install docker-ce-cli
+        apt update
+        apt -y install docker-ce-cli
     ;;
     *)
         printf "Error: Unrecognized command: %s\n%s" "${1}" "${HELP_OPTIONS}"
