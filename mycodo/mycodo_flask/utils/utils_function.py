@@ -355,17 +355,18 @@ def action_add(form):
 
     dict_actions = parse_function_action_information()
 
-    dep_unmet, _, dep_message = return_dependencies(form.action_type.data)
-    if dep_unmet:
-        list_unmet_deps = []
-        for each_dep in dep_unmet:
-            list_unmet_deps.append(each_dep[0])
-        messages["error"].append(
-            f"{form.action_type.data} has unmet dependencies. "
-             "They must be installed before the Action can be added.")
-        dep_name = form.action_type.data
+    if not current_app.config['TESTING']:
+        dep_unmet, _, dep_message = return_dependencies(form.action_type.data)
+        if dep_unmet:
+            list_unmet_deps = []
+            for each_dep in dep_unmet:
+                list_unmet_deps.append(each_dep[0])
+            messages["error"].append(
+                f"{form.action_type.data} has unmet dependencies. "
+                 "They must be installed before the Action can be added.")
+            dep_name = form.action_type.data
 
-        return messages, dep_name, list_unmet_deps, dep_message, None
+            return messages, dep_name, list_unmet_deps, dep_message, None
 
     if form.function_type.data == 'conditional':
         func = Conditional.query.filter(
