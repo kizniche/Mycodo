@@ -350,6 +350,7 @@ def action_add(form):
         "error": []
     }
     action_id = None
+    list_unmet_deps = []
     dep_name = ""
     page_refresh = False
 
@@ -358,7 +359,6 @@ def action_add(form):
     if not current_app.config['TESTING']:
         dep_unmet, _, dep_message = return_dependencies(form.action_type.data)
         if dep_unmet:
-            list_unmet_deps = []
             for each_dep in dep_unmet:
                 list_unmet_deps.append(each_dep[0])
             messages["error"].append(
@@ -415,7 +415,7 @@ def action_add(form):
     except Exception as except_msg:
         messages["error"].append(str(except_msg))
 
-    return messages, dep_name, dep_unmet, action_id, page_refresh
+    return messages, dep_name, list_unmet_deps, action_id, page_refresh
 
 
 def action_mod(form, request_form):
