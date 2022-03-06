@@ -14,10 +14,7 @@ from mycodo.utils.database import db_retrieve_table_daemon
 
 FUNCTION_ACTION_INFORMATION = {
     'name_unique': 'output_ramp_pwm',
-    'name': '{}: {} {}'.format(
-        TRANSLATIONS['output']['title'],
-        TRANSLATIONS['ramp']['title'],
-        TRANSLATIONS['duty_cycle']['title']),
+    'name': f"{TRANSLATIONS['output']['title']}: {TRANSLATIONS['ramp']['title']} {TRANSLATIONS['duty_cycle']['title']}",
     'library': None,
     'manufacturer': 'Mycodo',
 
@@ -115,9 +112,9 @@ class ActionModule(AbstractFunctionAction):
             output_id = self.output_device_id
 
         try:
-            output_channel = dict_vars["value"]["channel"]
+            channel = dict_vars["value"]["channel"]
         except:
-            output_channel = self.get_output_channel_from_channel_id(
+            channel = self.get_output_channel_from_channel_id(
                 self.output_channel_id)
 
         try:
@@ -140,26 +137,18 @@ class ActionModule(AbstractFunctionAction):
         except:
             duration = self.duration
 
-        this_output = db_retrieve_table_daemon(
+        output = db_retrieve_table_daemon(
             Output, unique_id=output_id, entry='first')
 
-        if not this_output:
-            msg = " Error: Output with ID '{}' not found.".format(this_output)
+        if not output:
+            msg = f" Error: Output with ID '{output_id}' not found."
             message += msg
             self.logger.error(msg)
             return message
 
-        message += " Ramp output {unique_id} CH{ch} ({id}, {name}) " \
-                   "duty cycle from {fdc} % to {tdc} % in increments " \
-                   "of {inc} over {sec} seconds.".format(
-            unique_id=output_id,
-            ch=output_channel,
-            id=this_output.id,
-            name=this_output.name,
-            fdc=start,
-            tdc=end,
-            inc=increment,
-            sec=duration)
+        message += f" Ramp output {output_id} CH{channel} ({output.name}) " \
+                   f"duty cycle from {start} % to {end} % in increments " \
+                   f"of {increment} over {duration} seconds."
 
         change_in_duty_cycle = abs(start - end)
         steps = change_in_duty_cycle * 1 / increment
@@ -172,7 +161,7 @@ class ActionModule(AbstractFunctionAction):
             args=(output_id,),
             kwargs={'output_type': 'pwm',
                     'amount': start,
-                    'output_channel': output_channel})
+                    'output_channel': channel})
         output_on.start()
 
         loop_running = True
@@ -197,13 +186,13 @@ class ActionModule(AbstractFunctionAction):
                     args=(output_id,),
                     kwargs={'output_type': 'pwm',
                             'amount': current_duty_cycle,
-                            'output_channel': output_channel})
+                            'output_channel': channel})
                 output_on.start()
 
                 if not loop_running:
                     break
 
-        self.logger.debug("Message: {}".format(message))
+        self.logger.debug(f"Message: {message}")
 
         return message
 

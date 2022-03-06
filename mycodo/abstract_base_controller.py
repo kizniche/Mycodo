@@ -35,9 +35,9 @@ class AbstractBaseController(object):
     in controllers.
     """
     def __init__(self, unique_id=None, testing=False, name=__name__):
-        logger_name = "{}".format(name)
+        logger_name = name
         if not testing and unique_id:
-            logger_name += "_{}".format(unique_id.split('-')[0])
+            logger_name += f"_{unique_id.split('-')[0]}"
         self.logger = logging.getLogger(logger_name)
 
         self.channels_conversion = {}
@@ -66,7 +66,7 @@ class AbstractBaseController(object):
                         Conversion, unique_id=each_measure.conversion_id)
                 return
             except Exception as msg:
-                self.logger.debug("Error: {}".format(msg))
+                self.logger.debug(f"Error: {msg}")
             time.sleep(0.1)
 
     # TODO: Remove in place of JSON function, below, in next major version
@@ -133,8 +133,8 @@ class AbstractBaseController(object):
 
                 if required and not custom_option_set:
                     self.logger.error(
-                        "Option '{}' required but was not found to be set by the user. Setting to default.".format(
-                            each_option_default['id']))
+                        f"Option '{each_option_default['id']}' required but was not found to be set by the user. "
+                         "Setting to default.")
 
                 if each_option_default['type'] == 'integer':
                     setattr(self, each_option_default['id'], int(option_value))
@@ -162,39 +162,27 @@ class AbstractBaseController(object):
                     setattr(self, each_option_default['id'], option_value)
 
                 elif each_option_default['type'] == 'select_measurement':
-                    setattr(self,
-                            '{}_device_id'.format(each_option_default['id']),
-                            device_id)
-                    setattr(self,
-                            '{}_measurement_id'.format(each_option_default['id']),
-                            measurement_id)
+                    setattr(self, f"{each_option_default['id']}_device_id", device_id)
+                    setattr(self, f"{each_option_default['id']}_measurement_id", measurement_id)
 
                 elif each_option_default['type'] == 'select_measurement_channel':
-                    setattr(self,
-                            '{}_device_id'.format(each_option_default['id']),
-                            device_id)
-                    setattr(self,
-                            '{}_measurement_id'.format(each_option_default['id']),
-                            measurement_id)
-                    setattr(self,
-                            '{}_channel_id'.format(each_option_default['id']),
-                            channel_id)
+                    setattr(self, f"{each_option_default['id']}_device_id", device_id)
+                    setattr(self, f"{each_option_default['id']}_measurement_id", measurement_id)
+                    setattr(self, f"{each_option_default['id']}_channel_id", channel_id)
 
                 elif each_option_default['type'] in ['select_type_measurement',
                                                      'select_type_unit']:
                     setattr(self, each_option_default['id'], str(option_value))
 
                 elif each_option_default['type'] == 'select_device':
-                    setattr(self,
-                            '{}_id'.format(each_option_default['id']),
-                            str(option_value))
+                    setattr(self, f"{each_option_default['id']}_id", str(option_value))
 
                 elif each_option_default['type'] in ['message', 'new_line']:
                     pass
 
                 else:
                     self.logger.error(
-                        "setup_custom_options_csv() Unknown custom_option type '{}'".format(each_option_default['type']))
+                        f"setup_custom_options_csv() Unknown custom_option type '{each_option_default['type']}'")
             except Exception:
                 self.logger.exception("Error parsing custom_options")
 
@@ -260,8 +248,8 @@ class AbstractBaseController(object):
 
                 if required and not custom_option_set:
                     self.logger.error(
-                        "Option '{}' required but was not found to be set by the user. Setting to default.".format(
-                            each_option_default['id']))
+                        f"Option '{each_option_default['id']}' required but was not found to be set by the user. "
+                        f"Setting to default.")
 
                 if each_option_default['type'] in ['integer',
                                                    'float',
@@ -273,23 +261,13 @@ class AbstractBaseController(object):
                     setattr(self, each_option_default['id'], option_value)
 
                 elif each_option_default['type'] == 'select_measurement':
-                    setattr(self,
-                            '{}_device_id'.format(each_option_default['id']),
-                            device_id)
-                    setattr(self,
-                            '{}_measurement_id'.format(each_option_default['id']),
-                            measurement_id)
+                    setattr(self, f"{each_option_default['id']}_device_id", device_id)
+                    setattr(self, f"{each_option_default['id']}_measurement_id", measurement_id)
 
                 elif each_option_default['type'] == 'select_measurement_channel':
-                    setattr(self,
-                            '{}_device_id'.format(each_option_default['id']),
-                            device_id)
-                    setattr(self,
-                            '{}_measurement_id'.format(each_option_default['id']),
-                            measurement_id)
-                    setattr(self,
-                            '{}_channel_id'.format(each_option_default['id']),
-                            channel_id)
+                    setattr(self, f"{each_option_default['id']}_device_id", device_id)
+                    setattr(self, f"{each_option_default['id']}_measurement_id", measurement_id)
+                    setattr(self, f"{each_option_default['id']}_channel_id", channel_id)
 
                 elif each_option_default['type'] == 'select_type_measurement':
                     setattr(self, each_option_default['id'], str(option_value))
@@ -298,16 +276,14 @@ class AbstractBaseController(object):
                     setattr(self, each_option_default['id'], str(option_value))
 
                 elif each_option_default['type'] == 'select_device':
-                    setattr(self,
-                            '{}_id'.format(each_option_default['id']),
-                            str(option_value))
+                    setattr(self, f"{each_option_default['id']}_id", str(option_value))
 
                 elif each_option_default['type'] in ['message', 'new_line']:
                     pass
 
                 else:
                     self.logger.error(
-                        "setup_custom_options_json() Unknown option type '{}'".format(each_option_default['type']))
+                        f"setup_custom_options_json() Unknown option type '{each_option_default['type']}'")
             except Exception:
                 self.logger.exception("Error parsing options")
 
@@ -365,8 +341,7 @@ class AbstractBaseController(object):
 
                     if required and not custom_option_set:
                         self.logger.error(
-                            "Option '{}' required but was not found to be set by the user".format(
-                                each_option_default['id']))
+                            f"Option '{each_option_default['id']}' required but was not found to be set by the user")
             except Exception:
                 self.logger.exception("Error parsing options")
 

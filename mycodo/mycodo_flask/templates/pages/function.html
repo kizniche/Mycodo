@@ -320,7 +320,6 @@
               return;
             }
             else if (action === 'add_action' && 'dep_unmet' in data.data && data.data.dep_unmet.length > 0) {
-              console.log("TEST11");
               $(".dependencies_device_name").text(data.data.dep_name);
               $(".dependencies_device").text(data.data.dep_unmet);
               $(".dependencies_unmet").text(data.data.dep_list.join(", "));

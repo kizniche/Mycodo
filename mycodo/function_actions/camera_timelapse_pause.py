@@ -13,8 +13,7 @@ MYCODO_DB_PATH = 'sqlite:///' + SQL_DATABASE_MYCODO
 
 FUNCTION_ACTION_INFORMATION = {
     'name_unique': 'camera_timelapse_pause',
-    'name': '{}: {}: {}'.format(
-        TRANSLATIONS['camera']['title'], TRANSLATIONS['timelapse']['title'], TRANSLATIONS['pause']['title']),
+    'name': f"{TRANSLATIONS['camera']['title']}: {TRANSLATIONS['timelapse']['title']}: {TRANSLATIONS['pause']['title']}",
     'library': None,
     'manufacturer': 'Mycodo',
 
@@ -73,22 +72,19 @@ class ActionModule(AbstractFunctionAction):
             Camera, unique_id=controller_id, entry='first')
 
         if not this_camera:
-            msg = " Error: Camera with ID '{}' not found.".format(controller_id)
+            msg = f" Error: Camera with ID '{controller_id}' not found."
             message += msg
             self.logger.error(msg)
             return message
 
-        message += " Pause timelapse with Camera {unique_id} ({id}, {name}).".format(
-            unique_id=controller_id,
-            id=this_camera.id,
-            name=this_camera.name)
+        message += f" Pause timelapse with Camera {controller_id} ({this_camera.name})."
         with session_scope(MYCODO_DB_PATH) as new_session:
             mod_camera = new_session.query(Camera).filter(
                 Camera.unique_id == controller_id).first()
             mod_camera.timelapse_paused = True
             new_session.commit()
 
-        self.logger.debug("Message: {}".format(message))
+        self.logger.debug(f"Message: {message}")
 
         return message
 

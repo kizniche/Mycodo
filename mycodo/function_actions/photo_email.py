@@ -87,7 +87,7 @@ class ActionModule(AbstractFunctionAction):
                 email_recipients = [self.email]
 
         if not email_recipients:
-            msg = " Error: No recipients specified."
+            msg = f" Error: No recipients specified."
             self.logger.error(msg)
             message += msg
             return message
@@ -101,7 +101,7 @@ class ActionModule(AbstractFunctionAction):
             Camera, unique_id=controller_id, entry='first')
 
         if not this_camera:
-            msg = " Error: Camera with ID '{}' not found.".format(controller_id)
+            msg = f" Error: Camera with ID '{controller_id}' not found."
             message += msg
             self.logger.error(msg)
             return message
@@ -112,21 +112,20 @@ class ActionModule(AbstractFunctionAction):
         # If the emails per hour limit has not been exceeded
         smtp_wait_timer, allowed_to_send_notice = check_allowed_to_email()
         if allowed_to_send_notice:
-            message += " Email '{email}' with photo attached.".format(
-                email=",".join(email_recipients))
+            message += f" Email '{','.join(email_recipients)}' with photo attached."
             if not message_send:
                 message_send = message
             smtp = db_retrieve_table_daemon(SMTP, entry='first')
             send_email(smtp.host, smtp.protocol, smtp.port,
                        smtp.user, smtp.passw, smtp.email_from,
                        email_recipients, message_send,
-                       attachment_file, "still")
+                       attachment_file=attachment_file,
+                       attachment_type="still")
         else:
             self.logger.error(
-                "Wait {sec:.0f} seconds to email again.".format(
-                    sec=smtp_wait_timer - time.time()))
+                f"Wait {smtp_wait_timer - time.time():.0f} seconds to email again.")
 
-        self.logger.debug("Message: {}".format(message))
+        self.logger.debug(f"Message: {message}")
 
         return message
 

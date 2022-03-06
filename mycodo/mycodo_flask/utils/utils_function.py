@@ -57,12 +57,12 @@ def function_add(form_add_func):
             for each_dep in dep_unmet:
                 list_unmet_deps.append(each_dep[0])
             messages["error"].append(
-                "{dev} has unmet dependencies. They must be installed before the Function can be added.".format(
-                    dev=function_name))
+                f"{function_name} has unmet dependencies. "
+                 "They must be installed before the Function can be added.")
             if function_name in dict_controllers:
                 dep_name = dict_controllers[function_name]['function_name']
             else:
-                messages["error"].append("Function not found: {}".format(function_name))
+                messages["error"].append(f"Function not found: {function_name}")
 
             return messages, dep_name, list_unmet_deps, dep_message, None
 
@@ -198,8 +198,7 @@ return status_dict'''
         elif function_name == '':
             messages["error"].append("Must select a function type")
         else:
-            messages["error"].append("Unknown function type: '{}'".format(
-                function_name))
+            messages["error"].append(f"Unknown function type: '{function_name}'")
 
         if not messages["error"]:
             if function_name in dict_controllers:
@@ -262,9 +261,7 @@ return status_dict'''
 
                         new_channel.save()
 
-            messages["success"].append('{action} {controller}'.format(
-                action=TRANSLATIONS['add']['title'],
-                controller=TRANSLATIONS['function']['title']))
+            messages["success"].append(f"{TRANSLATIONS['add']['title']} {TRANSLATIONS['function']['title']}")
 
     except sqlalchemy.exc.OperationalError as except_msg:
         messages["error"].append(str(except_msg))
@@ -298,9 +295,7 @@ def function_mod(form):
 
         if not messages["error"]:
             db.session.commit()
-            messages["success"].append('{action} {controller}'.format(
-                action=TRANSLATIONS['modify']['title'],
-                controller=TRANSLATIONS['function']['title']))
+            messages["success"].append(f"{TRANSLATIONS['modify']['title']} {TRANSLATIONS['function']['title']}")
 
     except sqlalchemy.exc.OperationalError as except_msg:
         messages["error"].append(str(except_msg))
@@ -339,9 +334,7 @@ def function_del(function_id):
 
         delete_entry_with_id(Function, function_id, flash_message=False)
 
-        messages["success"].append('{action} {controller}'.format(
-            action=TRANSLATIONS['delete']['title'],
-            controller=TRANSLATIONS['function']['title']))
+        messages["success"].append(f"{TRANSLATIONS['delete']['title']} {TRANSLATIONS['function']['title']}")
     except Exception as except_msg:
         messages["error"].append(str(except_msg))
 
@@ -368,8 +361,8 @@ def action_add(form):
         for each_dep in dep_unmet:
             list_unmet_deps.append(each_dep[0])
         messages["error"].append(
-            "{dev} has unmet dependencies. They must be installed before the Action can be added.".format(
-                dev=form.action_type.data))
+            f"{form.action_type.data} has unmet dependencies. "
+             "They must be installed before the Action can be added.")
         dep_name = form.action_type.data
 
         return messages, dep_name, list_unmet_deps, dep_message, None
@@ -385,7 +378,7 @@ def action_add(form):
             Function.unique_id == form.function_id.data).first()
     else:
         func = None
-        messages["error"].append("Invalid Function type: {}".format(form.function_type.data))
+        messages["error"].append(f"Invalid Function type: {form.function_type.data}")
 
     if form.function_type.data != 'function' and func and func.is_activated:
         messages["error"].append("Deactivate before adding an Action")
@@ -412,9 +405,7 @@ def action_add(form):
             new_action.save()
             action_id = new_action.unique_id
             page_refresh = True
-            messages["success"].append('{action} {controller}'.format(
-                action=TRANSLATIONS['add']['title'],
-                controller=TRANSLATIONS['actions']['title']))
+            messages["success"].append(f"{TRANSLATIONS['add']['title']} {TRANSLATIONS['actions']['title']}")
 
     except sqlalchemy.exc.OperationalError as except_msg:
         messages["error"].append(str(except_msg))
@@ -452,9 +443,7 @@ def action_mod(form, request_form):
     if not messages["error"]:
         try:
             db.session.commit()
-            messages["success"].append('{action} {controller}'.format(
-                action=TRANSLATIONS['modify']['title'],
-                controller=TRANSLATIONS['actions']['title']))
+            messages["success"].append(f"{TRANSLATIONS['modify']['title']} {TRANSLATIONS['actions']['title']}")
         except sqlalchemy.exc.OperationalError as except_msg:
             messages["error"].append(str(except_msg))
         except sqlalchemy.exc.IntegrityError as except_msg:
@@ -491,9 +480,7 @@ def action_del(form):
                 Actions.unique_id == form.function_action_id.data).first().unique_id
             delete_entry_with_id(
                 Actions, function_action_id, flash_message=False)
-            messages["success"].append('{action} {controller}'.format(
-                action=TRANSLATIONS['delete']['title'],
-                controller=TRANSLATIONS['actions']['title']))
+            messages["success"].append(f"{TRANSLATIONS['delete']['title']} {TRANSLATIONS['actions']['title']}")
         except sqlalchemy.exc.OperationalError as except_msg:
             messages["error"].append(str(except_msg))
         except sqlalchemy.exc.IntegrityError as except_msg:
@@ -524,16 +511,12 @@ def action_execute_all(form):
         function_type = TRANSLATIONS['trigger']['title']
         func = Trigger.query.filter(
             Trigger.unique_id == form.function_id.data).first()
-    elif form.function_type.data == 'function_actions':
+    elif form.function_type.data in ['function', 'function_actions']:
         function_type = TRANSLATIONS['function']['title']
         func = Function.query.filter(
             Function.unique_id == form.function_id.data).first()
     else:
-        messages["error"].append("Unknown Function type: '{}'".format(
-            form.function_type.data))
-
-    if form.function_type.data != 'function_actions' and func and not func.is_activated:
-        messages["error"].append("Activate the Controller before testing all Actions")
+        messages["error"].append(f"Unknown Function type: '{form.function_type.data}'")
 
     if not messages["error"]:
         try:
@@ -542,16 +525,12 @@ def action_execute_all(form):
                 target=control.trigger_all_actions,
                 args=(form.function_id.data,),
                 kwargs={
-                    'message': "Executing all actions of {} with ID {}.".format(
-                        function_type, form.function_id.data),
+                    'message': f"Executing all actions of {function_type} ({func.name}, ID {form.function_id.data}).",
                     'debug': func.log_level_debug
                 }
             )
             trigger_all_actions.start()
-            messages["success"].append('{action} {controller}'.format(
-                action=gettext("Execute All"),
-                controller='{} {}'.format(
-                    function_type, TRANSLATIONS['actions']['title'])))
+            messages["success"].append(f"{gettext('Execute All')} {function_type} {TRANSLATIONS['actions']['title']}")
         except Exception as except_msg:
             messages["error"].append(str(except_msg))
 

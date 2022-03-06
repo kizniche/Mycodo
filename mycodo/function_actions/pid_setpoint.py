@@ -15,10 +15,7 @@ MYCODO_DB_PATH = 'sqlite:///' + SQL_DATABASE_MYCODO
 
 FUNCTION_ACTION_INFORMATION = {
     'name_unique': 'setpoint_pid',
-    'name': '{}: {}: {}'.format(
-        TRANSLATIONS['pid']['title'],
-        lazy_gettext('Set'),
-        lazy_gettext('Setpoint')),
+    'name': f"{TRANSLATIONS['pid']['title']}: {lazy_gettext('Set')}: {lazy_gettext('Setpoint')}",
     'library': None,
     'manufacturer': 'Mycodo',
 
@@ -92,15 +89,13 @@ class ActionModule(AbstractFunctionAction):
             PID, unique_id=controller_id, entry='first')
 
         if not pid:
-            msg = "PID Controller with ID '{}' not found.".format(controller_id)
+            msg = f" Error: PID Controller with ID '{controller_id}' not found."
             message += msg
             self.logger.error(msg)
             return message
 
-        message += " Set Setpoint of PID {unique_id} ({id}, {name}).".format(
-            unique_id=controller_id,
-            id=pid.id,
-            name=pid.name)
+        message += f" Set Setpoint of PID {controller_id} ({pid.name})."
+
         if pid.is_activated:
             setpoint_pid = threading.Thread(
                 target=self.control.pid_set,
@@ -115,7 +110,7 @@ class ActionModule(AbstractFunctionAction):
                 mod_pid.setpoint = setpoint
                 new_session.commit()
 
-        self.logger.debug("Message: {}".format(message))
+        self.logger.debug(f"Message: {message}")
 
         return message
 

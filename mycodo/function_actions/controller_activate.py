@@ -15,8 +15,7 @@ MYCODO_DB_PATH = 'sqlite:///' + SQL_DATABASE_MYCODO
 
 FUNCTION_ACTION_INFORMATION = {
     'name_unique': 'activate_controller',
-    'name': '{}: {}'.format(
-        TRANSLATIONS['controller']['title'], TRANSLATIONS['activate']['title']),
+    'name': f"{TRANSLATIONS['controller']['title']}: {TRANSLATIONS['activate']['title']}",
     'library': None,
     'manufacturer': 'Mycodo',
 
@@ -78,22 +77,19 @@ class ActionModule(AbstractFunctionAction):
         except:
             controller_id = self.controller_id
 
-        self.logger.debug("Finding controller with ID {}".format(controller_id))
+        self.logger.debug(f"Finding controller with ID {controller_id}")
 
         (controller_type,
          controller_object,
          controller_entry) = which_controller(controller_id)
 
         if not controller_entry:
-            msg = " Error: Controller with ID '{}' not found.".format(controller_id)
+            msg = f" Error: Controller with ID '{controller_id}' not found."
             message += msg
             self.logger.error(msg)
             return message
 
-        message += " Activate Controller {unique_id} ({id}, {name}).".format(
-            unique_id=controller_id,
-            id=controller_entry.id,
-            name=controller_entry.name)
+        message += f" Activate Controller {controller_id} ({controller_entry.name})."
 
         if controller_entry.is_activated:
             message += " Notice: Controller is already active!"
@@ -108,7 +104,7 @@ class ActionModule(AbstractFunctionAction):
                 args=(controller_id,))
             activate_controller.start()
 
-        self.logger.debug("Message: {}".format(message))
+        self.logger.debug(f"Message: {message}")
 
         return message
 

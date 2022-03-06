@@ -52,8 +52,7 @@ class AbstractFunctionAction(AbstractBaseController):
 
     def __repr__(self):
         """Representation of object."""
-        return_str = '<{cls}'.format(cls=type(self).__name__)
-        return_str += '>'
+        return_str = f'<{type(self).__name__}>'
         return return_str
 
     def __str__(self):
@@ -63,16 +62,16 @@ class AbstractFunctionAction(AbstractBaseController):
 
     def is_setup(self):
         self.logger.error(
-            "{cls} did not overwrite the is_setup() method. All "
+            f"{type(self).__name__} did not overwrite the is_setup() method. All "
             "subclasses of the AbstractFunctionAction class are required to overwrite "
-            "this method".format(cls=type(self).__name__))
+            "this method")
         raise NotImplementedError
 
     def setup_action(self):
         self.logger.error(
-            "{cls} did not overwrite the setup_output() method. All "
+            f"{type(self).__name__} did not overwrite the setup_output() method. All "
             "subclasses of the AbstractFunctionAction class are required to overwrite "
-            "this method".format(cls=type(self).__name__))
+            "this method")
         raise NotImplementedError
 
     def run_action(self, message, dict_vars):
@@ -86,7 +85,7 @@ class AbstractFunctionAction(AbstractBaseController):
     def setup_logger(self, testing=None, name=None, action=None):
         name = name if name else __name__
         if not testing and action:
-            log_name = "{}_{}".format(name, action.unique_id.split('-')[0])
+            log_name = f"{name}_{action.unique_id.split('-')[0]}"
         else:
             log_name = name
         self.logger = logging.getLogger(log_name)

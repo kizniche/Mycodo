@@ -89,33 +89,27 @@ class ActionModule(AbstractFunctionAction):
 
         path_and_query = parsed_url.path + "?" + parsed_url.query
 
-        message += " Webhook with method: {me}, scheme: {sc}, netloc: {ne}, " \
-                   "path: {pa}, headers: {he}, body: {bo}.".format(
-            me=method,
-            sc=parsed_url.scheme,
-            ne=parsed_url.netloc,
-            pa=path_and_query,
-            he=headers,
-            bo=body)
+        message += f" Webhook with method: {method}, scheme: {parsed_url.scheme}, netloc: {parsed_url.netloc}, " \
+                   f"path: {path_and_query}, headers: {headers}, body: {body}."
 
         if parsed_url.scheme == 'http':
             conn = http.client.HTTPConnection(parsed_url.netloc)
         elif parsed_url.scheme == 'https':
             conn = http.client.HTTPSConnection(parsed_url.netloc)
         else:
-            raise Exception("Unsupported url scheme '{}'".format(parsed_url.scheme))
+            raise Exception(f"Unsupported url scheme '{parsed_url.scheme}'")
 
         conn.request(method, path_and_query, body, headers)
         response = conn.getresponse()
         if self.logger.isEnabledFor(logging.DEBUG):
             self.logger.debug(response.readlines())
         if 200 <= response.getcode() < 300:
-            self.logger.debug("HTTP {} -> OK".format(response.getcode()))
+            self.logger.debug(f"HTTP {response.getcode()} -> OK")
         else:
-            raise Exception("Got HTTP {} response.".format(response.getcode()))
+            raise Exception(f"Got HTTP {response.getcode()} response.")
         response.close()
 
-        self.logger.debug("Message: {}".format(message))
+        self.logger.debug(f"Message: {message}")
 
         return message
 

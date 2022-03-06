@@ -9,7 +9,7 @@ from mycodo.utils.utils import random_alphanumeric
 
 FUNCTION_ACTION_INFORMATION = {
     'name_unique': 'mqtt_publish',
-    'name': 'MQTT: {}'.format(lazy_gettext('Publish')),
+    'name': f"MQTT: {lazy_gettext('Publish')}",
     'library': None,
     'manufacturer': 'Mycodo',
 
@@ -65,7 +65,7 @@ FUNCTION_ACTION_INFORMATION = {
         {
             'id': 'clientid',
             'type': 'text',
-            'default_value': 'client_{}'.format(random_alphanumeric(8)),
+            'default_value': f'client_{random_alphanumeric(8)}',
             'required': True,
             'name': 'Client ID',
             'phrase': 'Unique client ID for connecting to the MQTT server'
@@ -138,7 +138,7 @@ class ActionModule(AbstractFunctionAction):
             payload = None
 
         if not payload:
-            msg = " Error: Cannot publish to MQTT without a payload."
+            msg = f" Error: Cannot publish to MQTT without a payload."
             self.logger.error(msg)
             message += msg
             return
@@ -158,13 +158,13 @@ class ActionModule(AbstractFunctionAction):
                 client_id=self.clientid,
                 keepalive=self.keepalive,
                 auth=auth_dict)
-            message += " MQTT Publish '{payload}'.".format(payload=payload)
+            message += f" MQTT Publish '{payload}'."
         except Exception as err:
-            msg = " Could not execute MQTT Publish: {}".format(err)
+            msg = f" Could not execute MQTT Publish: {err}"
             self.logger.error(msg)
             message += msg
 
-        self.logger.debug("Message: {}".format(message))
+        self.logger.debug(f"Message: {message}")
 
         return message
 

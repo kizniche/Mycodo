@@ -10,8 +10,7 @@ from mycodo.utils.database import db_retrieve_table_daemon
 
 FUNCTION_ACTION_INFORMATION = {
     'name_unique': 'system_restart',
-    'name': '{}: {}'.format(
-        TRANSLATIONS['system']['title'], lazy_gettext('Restart')),
+    'name': f"{TRANSLATIONS['system']['title']}: {lazy_gettext('Restart')}",
     'library': None,
     'manufacturer': 'Mycodo',
 
@@ -52,11 +51,10 @@ class ActionModule(AbstractFunctionAction):
 
     def run_action(self, message, dict_vars):
         message += " System restarting in 10 seconds."
-        cmd = '{path}/mycodo/scripts/mycodo_wrapper restart 2>&1'.format(
-            path=INSTALL_DIRECTORY)
+        cmd = f'{INSTALL_DIRECTORY}/mycodo/scripts/mycodo_wrapper restart 2>&1'
         subprocess.Popen(cmd, shell=True)
 
-        self.logger.debug("Message: {}".format(message))
+        self.logger.debug(f"Message: {message}")
 
         return message
 

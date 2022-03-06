@@ -10,7 +10,7 @@ from mycodo.utils.database import db_retrieve_table_daemon
 
 FUNCTION_ACTION_INFORMATION = {
     'name_unique': 'photo',
-    'name': '{}: {}'.format(TRANSLATIONS['camera']['title'], lazy_gettext('Capture Photo')),
+    'name': f"{TRANSLATIONS['camera']['title']}: {lazy_gettext('Capture Photo')}",
     'library': None,
     'manufacturer': 'Mycodo',
 
@@ -65,23 +65,20 @@ class ActionModule(AbstractFunctionAction):
         except:
             controller_id = self.controller_id
 
-        this_camera = db_retrieve_table_daemon(
+        camera = db_retrieve_table_daemon(
             Camera, unique_id=controller_id, entry='first')
 
-        if not this_camera:
-            msg = " Error: Camera with ID '{}' not found.".format(controller_id)
+        if not camera:
+            msg = f" Error: Camera with ID '{controller_id}' not found."
             message += msg
             self.logger.error(msg)
             return message
 
-        message += " Capturing photo with camera {unique_id} ({id}, {name}).".format(
-            unique_id=controller_id,
-            id=this_camera.id,
-            name=this_camera.name)
+        message += f" Capturing photo with camera {controller_id} ({camera.name})."
 
         camera_record('photo', controller_id)
 
-        self.logger.debug("Message: {}".format(message))
+        self.logger.debug(f"Message: {message}")
 
         return message
 

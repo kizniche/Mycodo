@@ -10,8 +10,7 @@ from mycodo.utils.database import db_retrieve_table_daemon
 
 FUNCTION_ACTION_INFORMATION = {
     'name_unique': 'clear_total_volume',
-    'name': "{}: {}".format(
-        lazy_gettext('Flow Meter'), lazy_gettext('Clear Total Volume')),
+    'name': f"{lazy_gettext('Flow Meter')}: {lazy_gettext('Clear Total Volume')}",
     'library': None,
     'manufacturer': 'Mycodo',
 
@@ -70,21 +69,18 @@ class ActionModule(AbstractFunctionAction):
             Input, unique_id=controller_id, entry='first')
 
         if not this_input:
-            msg = " Error: Input with ID '{}' not found.".format(controller_id)
+            msg = f" Error: Input with ID '{controller_id}' not found."
             message += msg
             self.logger.error(msg)
             return message
 
-        message += " Clear total volume of Input {unique_id} ({id}, {name}).".format(
-            unique_id=controller_id,
-            id=this_input.id,
-            name=this_input.name)
+        message += f" Clear total volume of Input {controller_id} ({this_input.name})."
         clear_volume = threading.Thread(
             target=self.control.custom_button,
             args=("Input", this_input.unique_id, "clear_total_volume", {},))
         clear_volume.start()
 
-        self.logger.debug("Message: {}".format(message))
+        self.logger.debug(f"Message: {message}")
 
         return message
 

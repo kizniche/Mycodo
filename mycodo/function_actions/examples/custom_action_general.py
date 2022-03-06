@@ -168,37 +168,26 @@ class ActionModule(AbstractFunctionAction):
         # These log lines will appear in teh Daemon Log.
         # Logs can be viewed at Config -> Mycodo Logs -> Damon Log.
         self.logger.info(
-            "Custom controller started with options: "
-            "{}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}".format(
-                self.text_1,
-                integer_1,
-                self.float_1,
-                self.bool_1,
-                self.select_1,
-                self.select_measurement_1_device_id,
-                self.select_measurement_1_measurement_id,
-                self.output_1_device_id,
-                self.output_1_measurement_id,
-                self.output_1_channel_id,
-                self.controller_id))
+            f"Custom controller started with options: "
+            f"{self.text_1}, {integer_1}, {self.float_1}, {self.bool_1}, {self.select_1}, "
+            f"{self.select_measurement_1_device_id}, {self.select_measurement_1_measurement_id}, "
+            f"{self.output_1_device_id}, {self.output_1_measurement_id}, {self.output_1_channel_id}, "
+            f"{self.controller_id}")
 
-        self.logger.info("dict_vars = {}".format(dict_vars))
+        self.logger.info(f"dict_vars = {dict_vars}")
 
         if not integer_1:
-            msg = " Error: integer_1 not set. Cannot calculate the time."
+            msg = f" Error: integer_1 not set. Cannot calculate the time."
             message += msg
             self.logger.error(msg)
             return message
 
         now = int(time.time())
+        plural = "s" if integer_1 > 1 else ""
+        message += f" The current epoch time is {now}. The epoch {integer_1} hour{plural} in the " \
+                   f"future is {now + (integer_1 * 60 * 60)}."
 
-        message += " The current epoch time is {time}. The epoch {hr} hour{plural} in the future is {epoch}.".format(
-            time=now,
-            hr=integer_1,
-            plural="s" if integer_1 > 1 else "",
-            epoch=now + (integer_1 * 60 * 60))
-
-        self.logger.info("Message: {}".format(message))
+        self.logger.info(f"Message: {message}")
 
         return message
 

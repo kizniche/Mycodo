@@ -8,8 +8,7 @@ from mycodo.utils.system_pi import cmd_output
 
 FUNCTION_ACTION_INFORMATION = {
     'name_unique': 'command',
-    'name': "{}: {}".format(
-        lazy_gettext('Execute Command'), lazy_gettext('Shell')),
+    'name': f"{lazy_gettext('Execute Command')}: {lazy_gettext('Shell')}",
     'library': None,
     'manufacturer': 'Mycodo',
 
@@ -76,14 +75,13 @@ class ActionModule(AbstractFunctionAction):
         except:
             user = self.user
 
-        message += " Execute '{com}' as {usr}.".format(com=command, usr=user)
+        message += f" Execute '{command}' as {user}."
 
         cmd_out, cmd_err, cmd_status = cmd_output(command, user=user)
 
-        message += " (return out: {out}, err: {err}, status: {stat}).".format(
-            out=cmd_out, err=cmd_err, stat=cmd_status)
+        message += f" return out: {cmd_out}, err: {cmd_err}, status: {cmd_status}."
 
-        self.logger.debug("Message: {}".format(message))
+        self.logger.debug(f"Message: {message}")
 
         return message
 

@@ -86,7 +86,6 @@ def send_email(smtp_host, smtp_protocol, smtp_port, smtp_user, smtp_pass,
         composed = outer.as_string()
 
         # determine port
-        port = None
         if smtp_port:
             port = smtp_port
         elif smtp_protocol == 'ssl':

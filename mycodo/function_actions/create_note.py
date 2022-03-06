@@ -14,7 +14,7 @@ MYCODO_DB_PATH = 'sqlite:///' + SQL_DATABASE_MYCODO
 
 FUNCTION_ACTION_INFORMATION = {
     'name_unique': 'create_note',
-    'name': '{}: {}'.format(TRANSLATIONS['create']['title'], TRANSLATIONS['note']['title']),
+    'name': f"{TRANSLATIONS['create']['title']}: {TRANSLATIONS['note']['title']}",
     'message': lazy_gettext('Create a note with the selected Tag.'),
     'library': None,
     'manufacturer': 'Mycodo',
@@ -98,8 +98,7 @@ class ActionModule(AbstractFunctionAction):
         except:
             note = self.note
 
-        self.logger.debug("Tag(s): {}. Name: {}. Note: '{}'".format(
-            ",".join(list_tags), name, note))
+        self.logger.debug(f"Tag(s): {','.join(list_tags)}, name: {name}, note: '{note}'.")
 
         with session_scope(MYCODO_DB_PATH) as new_session:
             list_tag_names = []
@@ -117,8 +116,7 @@ class ActionModule(AbstractFunctionAction):
                         list_tag_names.append(tag_check.name)
                     else:
                         self.logger.error(
-                            "Tag with name or id '{}' does not exist.".format(
-                                each_tag))
+                            f"Tag with name or id '{each_tag}' does not exist.")
 
             if not list_tag_names:
                 msg = "No valid tags specified. Cannot create note."
@@ -126,10 +124,9 @@ class ActionModule(AbstractFunctionAction):
                 self.logger.error(msg)
                 return message
 
-            message += " Create note with name '{}', tag(s) '{}'".format(
-                name, ','.join(list_tag_names))
+            message += f" Create note with name '{name}', tag(s) '{','.join(list_tag_names)}'"
             if note:
-                message += ", and note {}".format(note)
+                message += f", and note {note}"
             message += "."
 
             new_note = Notes()
@@ -141,7 +138,7 @@ class ActionModule(AbstractFunctionAction):
                 new_note.note = message
             new_session.add(new_note)
 
-        self.logger.debug("Message: {}".format(message))
+        self.logger.debug(f"Message: {message}")
 
         return message
 

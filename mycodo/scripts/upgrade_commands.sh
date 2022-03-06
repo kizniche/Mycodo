@@ -17,7 +17,7 @@ MYCODO_MAJOR_VERSION="8"
 PIGPIO_URL="https://github.com/joan2937/pigpio/archive/v79.tar.gz"
 MCB2835_URL="http://www.airspayce.com/mikem/bcm2835/bcm2835-1.50.tar.gz"
 WIRINGPI_URL="https://project-downloads.drogon.net/wiringpi-latest.deb"
-INFLUXDB_VERSION="1.8.0"
+INFLUXDB_VERSION="1.8.10"
 VIRTUALENV_VERSION="20.7.0"
 SETUPTOOLS_VERSION="60.9.3"  # Also set version in install/requirements.txt
 

@@ -15,8 +15,7 @@ MYCODO_DB_PATH = 'sqlite:///' + SQL_DATABASE_MYCODO
 
 FUNCTION_ACTION_INFORMATION = {
     'name_unique': 'resume_pid',
-    'name': '{}: {}'.format(
-        TRANSLATIONS['pid']['title'], TRANSLATIONS['resume']['title']),
+    'name': f"{TRANSLATIONS['pid']['title']}: {TRANSLATIONS['resume']['title']}",
     'library': None,
     'manufacturer': 'Mycodo',
 
@@ -75,15 +74,13 @@ class ActionModule(AbstractFunctionAction):
             PID, unique_id=controller_id, entry='first')
 
         if not pid:
-            msg = "PID Controller with ID '{}' not found.".format(controller_id)
+            msg = f" Error: PID Controller with ID '{controller_id}' not found."
             message += msg
             self.logger.error(msg)
             return message
 
-        message += " Resume PID {unique_id} ({id}, {name}).".format(
-            unique_id=controller_id,
-            id=pid.id,
-            name=pid.name)
+        message += f" Resume PID {controller_id} ({pid.name})."
+
         if not pid.is_paused:
             message += " Notice: PID is not paused!"
         elif pid.is_activated:
@@ -97,7 +94,7 @@ class ActionModule(AbstractFunctionAction):
                 args=(controller_id,))
             resume_pid.start()
 
-        self.logger.debug("Message: {}".format(message))
+        self.logger.debug(f"Message: {message}")
 
         return message
 

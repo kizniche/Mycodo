@@ -11,7 +11,7 @@ from mycodo.utils.database import db_retrieve_table_daemon
 
 FUNCTION_ACTION_INFORMATION = {
     'name_unique': 'pause_actions',
-    'name': TRANSLATIONS['pause']['title'],
+    'name': f"Actions: {TRANSLATIONS['pause']['title']}",
     'library': None,
     'manufacturer': 'Mycodo',
 
@@ -59,11 +59,11 @@ class ActionModule(AbstractFunctionAction):
         self.action_setup = True
 
     def run_action(self, message, dict_vars):
-        message += " Pause for {} seconds.".format(self.duration)
+        message += f" Pause for {self.duration} seconds."
 
         time.sleep(self.duration)
 
-        self.logger.debug("Message: {}".format(message))
+        self.logger.debug(f"Message: {message}")
 
         return message
 

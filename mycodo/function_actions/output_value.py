@@ -12,9 +12,7 @@ from mycodo.utils.database import db_retrieve_table_daemon
 
 FUNCTION_ACTION_INFORMATION = {
     'name_unique': 'output_value',
-    'name': '{}: {}'.format(
-        TRANSLATIONS['output']['title'],
-        TRANSLATIONS['value']['title']),
+    'name': f"{TRANSLATIONS['output']['title']}: {TRANSLATIONS['value']['title']}",
     'library': None,
     'manufacturer': 'Mycodo',
 
@@ -81,9 +79,9 @@ class ActionModule(AbstractFunctionAction):
             output_id = self.output_device_id
 
         try:
-            output_channel = dict_vars["value"]["channel"]
+            channel = dict_vars["value"]["channel"]
         except:
-            output_channel = self.get_output_channel_from_channel_id(
+            channel = self.get_output_channel_from_channel_id(
                 self.output_channel_id)
 
         try:
@@ -91,31 +89,26 @@ class ActionModule(AbstractFunctionAction):
         except:
             value = self.value
 
-        this_output = db_retrieve_table_daemon(
+        output = db_retrieve_table_daemon(
             Output, unique_id=output_id, entry='first')
 
-        if not this_output:
-            msg = " Error: Output with ID '{}' not found.".format(this_output)
+        if not output:
+            msg = f" Error: Output with ID '{output_id}' not found."
             message += msg
             self.logger.error(msg)
             return message
 
-        message += " Turn output {unique_id} CH{ch} ({id}, {name}) with value of {value}.".format(
-            unique_id=output_id,
-            ch=output_channel,
-            id=this_output.id,
-            name=this_output.name,
-            value=value)
+        message += f" Turn output {output_id} CH{channel} ({output.name}) with value of {value}."
 
         output_on = threading.Thread(
             target=self.control.output_on,
             args=(output_id,),
             kwargs={'output_type': 'value',
                     'amount': value,
-                    'output_channel': output_channel})
+                    'output_channel': channel})
         output_on.start()
 
-        self.logger.debug("Message: {}".format(message))
+        self.logger.debug(f"Message: {message}")
 
         return message
 

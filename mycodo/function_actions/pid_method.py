@@ -16,9 +16,7 @@ MYCODO_DB_PATH = 'sqlite:///' + SQL_DATABASE_MYCODO
 
 FUNCTION_ACTION_INFORMATION = {
     'name_unique': 'method_pid',
-    'name': '{}: {}'.format(
-        TRANSLATIONS['pid']['title'],
-        lazy_gettext('Set Method')),
+    'name': f"{TRANSLATIONS['pid']['title']}: {lazy_gettext('Set Method')}",
     'library': None,
     'manufacturer': 'Mycodo',
 
@@ -93,7 +91,7 @@ class ActionModule(AbstractFunctionAction):
             PID, unique_id=controller_id, entry='first')
 
         if not pid:
-            msg = "PID Controller with ID '{}' not found.".format(controller_id)
+            msg = f" Error: PID Controller with ID '{controller_id}' not found."
             message += msg
             self.logger.error(msg)
             return message
@@ -102,15 +100,12 @@ class ActionModule(AbstractFunctionAction):
             Method, unique_id=method_id, entry='first')
 
         if not method:
-            msg = "Method with ID '{}' not found.".format(method_id)
+            msg = f" Error: Method with ID {method_id} not found."
             message += msg
             self.logger.error(msg)
             return message
 
-        message += " Set Method of PID {unique_id} ({id}, {name}).".format(
-            unique_id=controller_id,
-            id=pid.id,
-            name=pid.name)
+        message += f" Set PID {controller_id} ({pid.name}) to Method {method_id} ({method.name})."
 
         if pid.is_activated:
             method_pid = threading.Thread(
@@ -126,7 +121,7 @@ class ActionModule(AbstractFunctionAction):
                 mod_pid.method_id = method_id
                 new_session.commit()
 
-        self.logger.debug("Message: {}".format(message))
+        self.logger.debug(f"Message: {message}")
 
         return message
 

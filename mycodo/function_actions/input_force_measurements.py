@@ -10,8 +10,7 @@ from mycodo.utils.database import db_retrieve_table_daemon
 
 FUNCTION_ACTION_INFORMATION = {
     'name_unique': 'input_force_measurements',
-    'name': "{}: {}".format(
-        lazy_gettext('Input'), lazy_gettext('Force Measurements')),
+    'name': f"{lazy_gettext('Input')}: {lazy_gettext('Force Measurements')}",
     'library': None,
     'manufacturer': 'Mycodo',
 
@@ -71,21 +70,19 @@ class ActionModule(AbstractFunctionAction):
             Input, unique_id=input_id, entry='first')
 
         if not this_input:
-            msg = "Input not found with ID {}".format(input_id)
+            msg = f" Input not found with ID {input_id}"
             message += msg
             self.logger.error(msg)
             return
 
-        message += " Force measuring from Input {unique_id} ({id}, {name}).".format(
-            unique_id=input_id,
-            id=this_input.id,
-            name=this_input.name)
+        message += f" Force measuring from Input {input_id} ({this_input.name})."
+
         force_measurements = threading.Thread(
             target=self.control.input_force_measurements,
             args=(input_id,))
         force_measurements.start()
 
-        self.logger.debug("Message: {}".format(message))
+        self.logger.debug(f"Message: {message}")
 
         return message
 

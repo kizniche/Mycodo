@@ -67,7 +67,7 @@ class ActionModule(AbstractFunctionAction):
                 email_recipients = [self.email]
 
         if not email_recipients:
-            msg = " Error: No recipients specified."
+            msg = f" Error: No recipients specified."
             self.logger.error(msg)
             message += msg
             return message
@@ -80,8 +80,7 @@ class ActionModule(AbstractFunctionAction):
         # If the emails per hour limit has not been exceeded
         smtp_wait_timer, allowed_to_send_notice = check_allowed_to_email()
         if allowed_to_send_notice:
-            message += " Email '{email}'.".format(
-                email=self.email)
+            message += f" Email '{self.email}'."
             if not message_send:
                 message_send = message
             smtp = db_retrieve_table_daemon(SMTP, entry='first')
@@ -90,10 +89,9 @@ class ActionModule(AbstractFunctionAction):
                        email_recipients, message_send)
         else:
             self.logger.error(
-                "Wait {sec:.0f} seconds to email again.".format(
-                    sec=smtp_wait_timer - time.time()))
+                f"Wait {smtp_wait_timer - time.time():.0f} seconds to email again.")
 
-        self.logger.debug("Message: {}".format(message))
+        self.logger.debug(f"Message: {message}")
 
         return message
 

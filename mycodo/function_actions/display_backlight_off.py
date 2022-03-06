@@ -11,12 +11,9 @@ from mycodo.utils.database import db_retrieve_table_daemon
 
 FUNCTION_ACTION_INFORMATION = {
     'name_unique': 'display_backlight_off',
-    'name': '{}: {}: {}'.format(
-        TRANSLATIONS['display']['title'],
-        lazy_gettext('Backlight'),
-        lazy_gettext('Off')),
+    'name': f"{TRANSLATIONS['display']['title']}: {lazy_gettext('Backlight')}: {lazy_gettext('Off')}",
     'library': None,
-    'manufacturer': 'Disaplay',
+    'manufacturer': 'Display',
 
     'url_manufacturer': None,
     'url_datasheet': None,
@@ -73,7 +70,7 @@ class ActionModule(AbstractFunctionAction):
             CustomController, unique_id=controller_id)
 
         if not display:
-            msg = " Error: Display with ID '{}' not found.".format(controller_id)
+            msg = f" Error: Display with ID '{controller_id}' not found."
             message += msg
             self.logger.error(msg)
             return message
@@ -86,17 +83,14 @@ class ActionModule(AbstractFunctionAction):
                 self.logger.error(msg)
                 return message
 
-        message += " Display {unique_id} ({id}, {name}) Backlight Off.".format(
-            unique_id=controller_id,
-            id=display.id,
-            name=display.name)
+        message += f" Display {controller_id} ({display.name}) Backlight Off."
 
         start_flashing = threading.Thread(
             target=self.control.custom_button,
             args=("Function", controller_id, "backlight_off", {},))
         start_flashing.start()
 
-        self.logger.debug("Message: {}".format(message))
+        self.logger.debug(f"Message: {message}")
 
         return message
 

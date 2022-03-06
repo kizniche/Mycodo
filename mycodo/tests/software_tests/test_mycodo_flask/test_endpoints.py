@@ -9,6 +9,7 @@ import mock
 
 from mycodo.config import FUNCTIONS
 from mycodo.databases.models import Conditional
+from mycodo.databases.models import Actions
 from mycodo.databases.models import CustomController
 from mycodo.databases.models import Function
 from mycodo.databases.models import Input
@@ -23,6 +24,7 @@ from mycodo.tests.software_tests.conftest import login_user
 from mycodo.tests.software_tests.factories import UserFactory
 from mycodo.utils.inputs import parse_input_information
 from mycodo.utils.outputs import parse_output_information
+from mycodo.utils.function_actions import parse_function_action_information
 
 
 # ----------------------
@@ -581,6 +583,69 @@ def test_add_all_function_devices_logged_in_as_admin(_, testapp):
             total_count, function_count)
 
 
+@mock.patch('mycodo.mycodo_flask.routes_authentication.login_log')
+def test_add_all_function_actions_logged_in_as_admin(_, testapp):
+    """Verifies adding all function actions as a logged in admin user."""
+    print("\nTest: test_add_all_function_actions_logged_in_as_admin")
+    login_user(testapp, 'admin', '53CR3t_p4zZW0rD')
+
+    action_count = 0
+
+    choices_action = []
+    dict_actions = parse_function_action_information()
+    for action in dict_actions:
+        choices_action.append(action)
+
+    # Add Execute Actions function
+    response = add_function(testapp, function_type="function_actions")
+    assert 'data' in response.json
+    assert 'messages' in response.json['data']
+    assert 'error' in response.json['data']['messages']
+    assert response.json['data']['messages']['error'] == []
+    assert 'success' in response.json['data']['messages']
+    assert len(response.json['data']['messages']['success']) == 1
+
+    function_dev = Function.query.filter(Function.id == 1).first()
+
+    # Add/delete every action
+    for index, each_action in enumerate(choices_action):
+        print("test_add_all_function_actions_logged_in_as_admin: Adding, saving, and deleting Action ({}/{}): {}".format(
+            index + 1, len(choices_action), each_action))
+        response = add_action(testapp, function_id=function_dev.unique_id, action_type=each_action)
+        assert 'data' in response.json
+        assert 'messages' in response.json['data']
+        assert 'error' in response.json['data']['messages']
+        assert response.json['data']['messages']['error'] == []
+        assert 'success' in response.json['data']['messages']
+        assert len(response.json['data']['messages']['success']) == 1
+
+        action = Actions.query.first()
+
+        # Verify data was entered into the database
+        action_count += 1
+        assert Actions.query.count() == action_count, "Number of Actions doesn't match: In DB {}, Should be: {}".format(
+            Actions.query.count(), action_count)
+
+        # Delete action
+        response = delete_data(testapp, 'action', device_dev=action)
+        assert 'data' in response.json
+        assert 'messages' in response.json['data']
+        assert 'error' in response.json['data']['messages']
+        assert response.json['data']['messages']['error'] == []
+        assert 'success' in response.json['data']['messages']
+        assert len(response.json['data']['messages']['success']) == 1
+        action_count -= 1
+
+    # Delete function
+    response = delete_data(testapp, 'function', device_dev=function_dev)
+    assert 'data' in response.json
+    assert 'messages' in response.json['data']
+    assert 'error' in response.json['data']['messages']
+    assert response.json['data']['messages']['error'] == []
+    assert 'success' in response.json['data']['messages']
+    assert len(response.json['data']['messages']['success']) == 1
+
+
 # ---------------------------
 #   Tests Logged in as Guest
 # ---------------------------
@@ -670,8 +735,31 @@ def add_function(testapp, function_type=''):
     return response
 
 
+def add_action(testapp, function_id=None, action_type=''):
+    """Go to the function page and add action."""
+    form = testapp.get('/function').maybe_follow().forms['mod_function_form']
+    form_dict = {}
+    for each_field in form.fields.items():
+        if each_field[0]:
+            form_dict[each_field[0]] = form[each_field[0]].value
+    if "function_mod" in form_dict:
+        form_dict.pop("function_mod")
+    if "function_delete" in form_dict:
+        form_dict.pop("function_delete")
+    if "execute_all_actions" in form_dict:
+        form_dict.pop("execute_all_actions")
+    if function_id:
+        form_dict['function_id'] = function_id
+    form_dict['function_type'] = 'function'
+    form_dict['add_action'] = 'Add'
+    form_dict['action_type'] = action_type
+    response = testapp.post('/function_submit', form_dict)
+    # response.showbrowser()
+    return response
+
+
 def delete_data(testapp, data_type, device_dev=None):
-    """Go to the data page and delete input/output/function."""
+    """Go to the data page and delete input/output/function/action."""
     response = None
     if data_type == 'input':
         response = testapp.post('/input_submit', {'input_delete': 'Delete', 'input_id': device_dev.unique_id})
@@ -679,6 +767,8 @@ def delete_data(testapp, data_type, device_dev=None):
         response = testapp.post('/output_submit', {'output_delete': 'Delete', 'output_id': device_dev.unique_id})
     elif data_type == 'function':
         response = testapp.post('/function_submit', {'function_delete': 'Delete', 'function_id': device_dev.unique_id})
+    elif data_type == 'action':
+        response = testapp.post('/function_submit', {'delete_action': 'Delete', 'function_action_id': device_dev.unique_id})
     # response.showbrowser()
     return response
 
