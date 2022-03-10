@@ -18,10 +18,14 @@ def test_influxdb():
     measurements_dict[0]["value"] = written_measurement
     add_measurements_influxdb("ID_ASDF", measurements_dict)
 
+    import time
+    time.sleep(2)
+
     last_measurement = read_influxdb_single(
         "ID_ASDF",
         "percent",
         0,
+        measure="duty_cycle",
         duration_sec=1000,
         value='LAST')
 

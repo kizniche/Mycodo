@@ -247,24 +247,6 @@ def test_api_measurement_post_get(_, testapp):
     assert measurement_found_first and measurement_found_second, "Unexpected HTTP Response: \n{body}".format(
         body=response.body)
 
-    # Use historical stored measurement with SUM function
-    endpoint = 'measurements/historical_function/testuniqueid/C/0/{start}/{end}/SUM'.format(
-        start=epoch_start, end=epoch_end)
-    print("test_api_measurement_post_get: testapp.get('/api/{ep}')".format(ep=endpoint))
-    response = testapp.get('/api/{ep}'.format(ep=endpoint), headers=headers)
-    assert response.status_code == 200, "Endpoint Tested: {page}".format(page=endpoint)
-    assert measurements_sum == json.loads(response.text)['value'], "Unexpected HTTP Response: \n{body}".format(
-        body=response.body)
-
-    # Use historical stored measurement with SUM function (epoch_end = 0)
-    endpoint = 'measurements/historical_function/testuniqueid/C/0/{start}/{end}/SUM'.format(
-        start=epoch_start, end=0)
-    print("test_api_measurement_post_get: testapp.get('/api/{ep}')".format(ep=endpoint))
-    response = testapp.get('/api/{ep}'.format(ep=endpoint), headers=headers)
-    assert response.status_code == 200, "Endpoint Tested: {page}".format(page=endpoint)
-    assert measurements_sum == json.loads(response.text)['value'], "Unexpected HTTP Response: \n{body}".format(
-        body=response.body)
-
 
 @mock.patch('mycodo.mycodo_flask.routes_authentication.login_log')
 def test_api_with_guest_apikey_in_header_403_forbidden(_, testapp):
