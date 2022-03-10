@@ -1,4 +1,4 @@
-## 8.12.10 (Unreleased)
+## 8.13.0 (Unreleased)
 
 Following the upgrade, you will need to reboot to complete the upgrade.
 
@@ -16,6 +16,7 @@ Following the upgrade, you will need to reboot to complete the upgrade.
  - Fix Blank Line option of LCDs actually displaying a blank line
  - Fix missing Display Unit option for some LCDs
  - Fix issues with the Output Widget
+ - Fix BME680 Input dependency
  - Fix Gauge Widget stop selection ([#1130](https://github.com/kizniche/mycodo/issues/1130))
 
 ### Features
@@ -34,7 +35,7 @@ Following the upgrade, you will need to reboot to complete the upgrade.
 ### Miscellaneous
 
  - Update influxdb from 1.8.0 to 1.8.10
- - Update several python library versions (requirements.txt)
+ - Update python library versions in requirements.txt
  - Add button to install all dependencies on Diagnostics page
  - Add Error Codes to log lines and the manual
 

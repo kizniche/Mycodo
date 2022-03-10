@@ -15,7 +15,7 @@ from mycodo.utils.atlas_calibration import setup_atlas_device
 from mycodo.utils.constraints_pass import constraints_pass_positive_value
 from mycodo.utils.database import db_retrieve_table_daemon
 from mycodo.utils.influx import add_measurements_influxdb
-from mycodo.utils.influx import read_last_influxdb
+from mycodo.utils.influx import read_influxdb_single
 
 # Measurements
 measurements_dict = {
@@ -270,11 +270,12 @@ class OutputModule(AbstractOutput):
                 DeviceMeasurements.device_id == self.unique_id)
             for each_dev_meas in device_measurements:
                 if each_dev_meas.unit == 'minute':
-                    last_measurement = read_last_influxdb(
+                    last_measurement = read_influxdb_single(
                         self.unique_id,
                         each_dev_meas.unit,
                         each_dev_meas.channel,
-                        measure=each_dev_meas.measurement)
+                        measure=each_dev_meas.measurement,
+                        value='LAST')
                     if last_measurement:
                         try:
                             datetime_ts = datetime.datetime.strptime(

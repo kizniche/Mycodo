@@ -920,4 +920,4 @@ def function_status(unique_id):
         return jsonify(control.function_status(unique_id))
     except Exception as err:
         logger.error("Function Status Error: {}".format(err))
-        return jsonify({'error': err})
+        return jsonify({'error': str(err)})

@@ -713,8 +713,7 @@ class InputModule(AbstractInput):
             last_measurement = self.get_last_measurement(
                 self.temperature_comp_meas_device_id,
                 self.temperature_comp_meas_measurement_id,
-                max_age=self.max_age
-            )
+                max_age=self.max_age)
 
             if last_measurement and len(last_measurement) > 1:
                 device_measurement = get_measurement(

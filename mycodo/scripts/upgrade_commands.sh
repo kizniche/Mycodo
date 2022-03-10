@@ -403,6 +403,7 @@ case "${1:-''}" in
             printf "Correct version of InfluxDB currently installed\n"
         fi
     ;;
+
     'update-influxdb-db-user')
         printf "\n#### Creating InfluxDB database and user\n"
         # Attempt to connect to influxdb 10 times, sleeping 60 seconds every fail

@@ -1,13 +1,15 @@
 # coding=utf-8
 import calendar
+import csv
 import datetime
 import logging
+import os
 import subprocess
 import time
 from importlib import import_module
+from io import StringIO
 
 import flask_login
-import os
 from dateutil.parser import parse as date_parse
 from flask import Response
 from flask import flash
@@ -19,15 +21,9 @@ from flask import url_for
 from flask.blueprints import Blueprint
 from flask_babel import gettext
 from flask_limiter import Limiter
-from influxdb import InfluxDBClient
 from sqlalchemy import and_
 
 from mycodo.config import DOCKER_CONTAINER
-from mycodo.config import INFLUXDB_DATABASE
-from mycodo.config import INFLUXDB_HOST
-from mycodo.config import INFLUXDB_PASSWORD
-from mycodo.config import INFLUXDB_PORT
-from mycodo.config import INFLUXDB_USER
 from mycodo.config import INSTALL_DIRECTORY
 from mycodo.config import LOG_PATH
 from mycodo.config import PATH_CAMERAS
@@ -271,13 +267,6 @@ def last_data(unique_id, measure_type, measurement_id, period):
         return '', 204
 
     if measure_type in ['input', 'math', 'function', 'output', 'pid']:
-        dbcon = InfluxDBClient(
-            INFLUXDB_HOST,
-            INFLUXDB_PORT,
-            INFLUXDB_USER,
-            INFLUXDB_PASSWORD,
-            INFLUXDB_DATABASE)
-
         if measure_type in ['input', 'math', 'function', 'output', 'pid']:
             measure = DeviceMeasurements.query.filter(
                 DeviceMeasurements.unique_id == measurement_id).first()
@@ -305,23 +294,18 @@ def last_data(unique_id, measure_type, measurement_id, period):
                     _, unit, measurement = return_measurement_info(setpoint_measurement, conversion)
         try:
             if period != '0':
-                query_str = query_string(
+                data = query_string(
                     unit, unique_id,
                     measure=measurement, channel=channel,
                     value='LAST', past_sec=period)
             else:
-                query_str = query_string(
+                data = query_string(
                     unit, unique_id,
-                    measure=measurement, channel=channel,
-                    value='LAST')
-            if query_str == 1:
-                return '', 204
+                    measure=measurement, channel=channel, value='LAST')
 
-            raw_data = dbcon.query(query_str).raw
-
-            number = len(raw_data['series'][0]['values'])
-            time_raw = raw_data['series'][0]['values'][number - 1][0]
-            value = raw_data['series'][0]['values'][number - 1][1]
+            number = len(data)
+            time_raw = data[number - 1][0]
+            value = data[number - 1][1]
             value = float(value)
             # Convert date-time to epoch (potential bottleneck for data)
             dt = date_parse(time_raw)
@@ -366,13 +350,6 @@ def past_data(unique_id, measure_type, measurement_id, past_seconds):
             return '', 204
 
     elif measure_type in ['input', 'math', 'function', 'output', 'pid']:
-        dbcon = InfluxDBClient(
-            INFLUXDB_HOST,
-            INFLUXDB_PORT,
-            INFLUXDB_USER,
-            INFLUXDB_PASSWORD,
-            INFLUXDB_DATABASE)
-
         if measure_type in ['input', 'math', 'function', 'output', 'pid']:
             measure = DeviceMeasurements.query.filter(
                 DeviceMeasurements.unique_id == measurement_id).first()
@@ -403,19 +380,14 @@ def past_data(unique_id, measure_type, measurement_id, past_seconds):
                     _, unit, measurement = return_measurement_info(setpoint_measurement, conversion)
 
         try:
-            query_str = query_string(
+            data = query_string(
                 unit, unique_id,
                 measure=measurement,
                 channel=channel,
                 past_sec=past_seconds)
 
-            if query_str == 1:
-                return '', 204
-
-            raw_data = dbcon.query(query_str).raw
-
-            if 'series' in raw_data and raw_data['series']:
-                return jsonify(raw_data['series'][0]['values'])
+            if data:
+                return jsonify(data)
             else:
                 return '', 204
         except Exception as e:
@@ -438,13 +410,6 @@ def generate_thermal_image_from_timestamp(unique_id, timestamp):
     assure_path_exists(save_path)
     path_file = os.path.join(save_path, filename)
 
-    dbcon = InfluxDBClient(
-        INFLUXDB_HOST,
-        INFLUXDB_PORT,
-        INFLUXDB_USER,
-        INFLUXDB_PASSWORD,
-        INFLUXDB_DATABASE)
-
     input_dev = Input.query.filter(Input.unique_id == unique_id).first()
     pixels = []
     success = True
@@ -458,19 +423,15 @@ def generate_thermal_image_from_timestamp(unique_id, timestamp):
     for each_channel in range(input_dev.channels):
         measurement = 'channel_{chan}'.format(
             chan=each_channel)
-        query_str = query_string(measurement, unique_id,
+        data = query_string(measurement, unique_id,
                                  start_str=start_timestamp,
                                  end_str=end_timestamp)
-        if query_str == 1:
-            logger.error('Invalid query string')
+
+        if not data:
+            logger.error('No measurements to export in this time period')
             success = False
         else:
-            raw_data = dbcon.query(query_str).raw
-            if not raw_data or 'series' not in raw_data or not raw_data['series']:
-                logger.error('No measurements to export in this time period')
-                success = False
-            else:
-                pixels.append(raw_data['series'][0]['values'][0][1])
+            pixels.append(data[0][1])
 
     # logger.error("generate_thermal_image_from_timestamp: success: {}, pixels: {}".format(success, pixels))
 
@@ -488,13 +449,6 @@ def export_data(unique_id, measurement_id, start_seconds, end_seconds):
     Return data from start_seconds to end_seconds from influxdb.
     Used for exporting data.
     """
-    dbcon = InfluxDBClient(
-        INFLUXDB_HOST,
-        INFLUXDB_PORT,
-        INFLUXDB_USER,
-        INFLUXDB_PASSWORD,
-        INFLUXDB_DATABASE, timeout=100)
-
     output = Output.query.filter(Output.unique_id == unique_id).first()
     input_dev = Input.query.filter(Input.unique_id == unique_id).first()
     math = Math.query.filter(Math.unique_id == unique_id).first()
@@ -526,16 +480,12 @@ def export_data(unique_id, measurement_id, start_seconds, end_seconds):
     end += utc_offset_timedelta
     end_str = end.strftime('%Y-%m-%dT%H:%M:%S.%fZ')
 
-    query_str = query_string(
+    data = query_string(
         unit, unique_id,
         measure=measurement, channel=channel,
         start_str=start_str, end_str=end_str)
-    if query_str == 1:
-        flash('Invalid query string', 'error')
-        return redirect(url_for('routes_page.page_export'))
-    raw_data = dbcon.query(query_str).raw
 
-    if not raw_data or 'series' not in raw_data or not raw_data['series']:
+    if not data:
         flash('No measurements to export in this time period', 'error')
         return redirect(url_for('routes_page.page_export'))
 
@@ -545,15 +495,13 @@ def export_data(unique_id, measurement_id, start_seconds, end_seconds):
         name=name, meas=measurement, id=unique_id)
     csv_filename = '{id}_{name}_{meas}.csv'.format(
         id=unique_id, name=name, meas=measurement)
-    import csv
-    from io import StringIO
 
-    def iter_csv(data):
+    def iter_csv(_data):
         """Stream CSV file to user for download."""
         line = StringIO()
         writer = csv.writer(line)
         writer.writerow([col_1, col_2])
-        for csv_line in data:
+        for csv_line in _data:
             writer.writerow([
                 str(csv_line[0][:-4]).replace('T', ' '),
                 csv_line[1]
@@ -563,7 +511,7 @@ def export_data(unique_id, measurement_id, start_seconds, end_seconds):
             line.truncate(0)
             line.seek(0)
 
-    response = Response(iter_csv(raw_data['series'][0]['values']), mimetype='text/csv')
+    response = Response(iter_csv(data), mimetype='text/csv')
     response.headers['Content-Disposition'] = 'attachment; filename="{}"'.format(csv_filename)
     return response
 
@@ -575,6 +523,9 @@ def async_data(device_id, device_type, measurement_id, start_seconds, end_second
     Return data from start_seconds to end_seconds from influxdb.
     Used for asynchronous graph display of many points (up to millions).
     """
+    count_points = None
+    first_point = None
+
     if device_type == 'tag':
         notes_list = []
         tag = NoteTags.query.filter(NoteTags.unique_id == device_id).first()
@@ -597,13 +548,6 @@ def async_data(device_id, device_type, measurement_id, start_seconds, end_second
         else:
             return '', 204
 
-    dbcon = InfluxDBClient(
-        INFLUXDB_HOST,
-        INFLUXDB_PORT,
-        INFLUXDB_USER,
-        INFLUXDB_PASSWORD,
-        INFLUXDB_DATABASE)
-
     if device_type in ['input', 'math', 'function', 'output', 'pid']:
         measure = DeviceMeasurements.query.filter(
             DeviceMeasurements.unique_id == measurement_id).first()
@@ -621,38 +565,35 @@ def async_data(device_id, device_type, measurement_id, start_seconds, end_second
     channel, unit, measurement = return_measurement_info(
         measure, conversion)
 
-    # Set the time frame to the past year if start/end not specified
+    # Get all data if start/end not specified
     if start_seconds == '0' and end_seconds == '0':
-        # Get how many points there are in the past year
-        query_str = query_string(
+        # Get how many points there are
+        data = query_string(
             unit, device_id,
             measure=measurement,
             channel=channel,
             value='COUNT')
 
-        if query_str == 1:
+        if not data:
             return '', 204
-        raw_data = dbcon.query(query_str).raw
 
-        count_points = raw_data['series'][0]['values'][0][1]
-        # Get the timestamp of the first point in the past year
-        query_str = query_string(
+        count_points = data[0][1]
+
+        # Get the timestamp of the first point
+        data = query_string(
             unit, device_id,
             measure=measurement,
             channel=channel,
             limit=1)
 
-        if query_str == 1:
+        if not data:
             return '', 204
-        raw_data = dbcon.query(query_str).raw
 
-        try:
-            first_point = raw_data['series'][0]['values'][0][0]
-        except:
-            return '', 204
+        first_point = data[0][0]
 
         end = datetime.datetime.utcnow()
         end_str = end.strftime('%Y-%m-%dT%H:%M:%S.%fZ')
+
     # Set the time frame to the past start epoch to now
     elif start_seconds != '0' and end_seconds == '0':
         start = datetime.datetime.utcfromtimestamp(float(start_seconds))
@@ -660,25 +601,23 @@ def async_data(device_id, device_type, measurement_id, start_seconds, end_second
         end = datetime.datetime.utcnow()
         end_str = end.strftime('%Y-%m-%dT%H:%M:%S.%fZ')
 
-        query_str = query_string(
+        data = query_string(
             unit, device_id,
             measure=measurement,
             channel=channel,
-            value='COUNT',
             start_str=start_str,
-            end_str=end_str)
+            end_str=end_str,
+            value='COUNT')
 
-        if query_str == 1:
-            return '', 204
-        raw_data = dbcon.query(query_str).raw
+        logger.info(f"TEST00: {data}")
 
-        try:
-            count_points = raw_data['series'][0]['values'][0][1]
-        except:
+        if not data:
             return '', 204
+
+        count_points = data[0][1]
 
         # Get the timestamp of the first point in the past year
-        query_str = query_string(
+        data = query_string(
             unit, device_id,
             measure=measurement,
             channel=channel,
@@ -686,39 +625,31 @@ def async_data(device_id, device_type, measurement_id, start_seconds, end_second
             end_str=end_str,
             limit=1)
 
-        if query_str == 1:
+        if not data:
             return '', 204
-        raw_data = dbcon.query(query_str).raw
 
-        try:
-            first_point = raw_data['series'][0]['values'][0][0]
-        except:
-            return '', 204
+        first_point = data[0][0]
     else:
         start = datetime.datetime.utcfromtimestamp(float(start_seconds))
         start_str = start.strftime('%Y-%m-%dT%H:%M:%S.%fZ')
         end = datetime.datetime.utcfromtimestamp(float(end_seconds))
         end_str = end.strftime('%Y-%m-%dT%H:%M:%S.%fZ')
 
-        query_str = query_string(
+        data = query_string(
             unit, device_id,
             measure=measurement,
             channel=channel,
-            value='COUNT',
             start_str=start_str,
-            end_str=end_str)
+            end_str=end_str,
+            value='COUNT')
 
-        if query_str == 1:
+        if not data:
             return '', 204
-        raw_data = dbcon.query(query_str).raw
 
-        try:
-            count_points = raw_data['series'][0]['values'][0][1]
-        except:
-            return '', 204
+        count_points = data[0][1]
 
         # Get the timestamp of the first point in the past year
-        query_str = query_string(
+        data = query_string(
             unit, device_id,
             measure=measurement,
             channel=channel,
@@ -726,14 +657,14 @@ def async_data(device_id, device_type, measurement_id, start_seconds, end_second
             end_str=end_str,
             limit=1)
 
-        if query_str == 1:
+        if not data:
             return '', 204
-        raw_data = dbcon.query(query_str).raw
 
-        try:
-            first_point = raw_data['series'][0]['values'][0][0]
-        except:
-            return '', 204
+        first_point = data[0][0]
+
+    if not first_point:
+        logger.error("No first point")
+        return '', 204
 
     start = datetime.datetime.strptime(
         influx_time_str_to_milliseconds(first_point),
@@ -760,41 +691,36 @@ def async_data(device_id, device_type, measurement_id, start_seconds, end_second
         logger.debug('Group seconds = {}'.format(group_seconds))
 
         try:
-            query_str = query_string(
+            data = query_string(
                 unit, device_id,
                 measure=measurement,
                 channel=channel,
-                value='MEAN',
                 start_str=start_str,
                 end_str=end_str,
-                group_sec=group_seconds)
+                group_sec=group_seconds,
+                value='MEAN')
 
-            if query_str == 1:
+            if not data:
                 return '', 204
-            raw_data = dbcon.query(query_str).raw
 
-            try:
-                return jsonify(raw_data['series'][0]['values'])
-            except:
-                return '', 204
+            return jsonify(data)
         except Exception as e:
             logger.error("URL for 'async_data' raised and error: "
                          "{err}".format(err=e))
             return '', 204
     else:
         try:
-            query_str = query_string(
+            data = query_string(
                 unit, device_id,
                 measure=measurement,
                 channel=channel,
                 start_str=start_str,
                 end_str=end_str)
 
-            if query_str == 1:
+            if not data:
                 return '', 204
-            raw_data = dbcon.query(query_str).raw
 
-            return jsonify(raw_data['series'][0]['values'])
+            return jsonify(data)
         except Exception as e:
             logger.error("URL for 'async_data' raised and error: "
                          "{err}".format(err=e))
@@ -808,39 +734,32 @@ def async_usage_data(device_id, unit, channel, start_seconds, end_seconds):
     Return data from start_seconds to end_seconds from influxdb.
     Used for asynchronous energy usage display of many points (up to millions).
     """
-    dbcon = InfluxDBClient(
-        INFLUXDB_HOST,
-        INFLUXDB_PORT,
-        INFLUXDB_USER,
-        INFLUXDB_PASSWORD,
-        INFLUXDB_DATABASE)
-
     # Set the time frame to the past year if start/end not specified
     if start_seconds == '0' and end_seconds == '0':
         # Get how many points there are in the past year
-        query_str = query_string(
+        data = query_string(
             unit, device_id,
             channel=channel,
             value='COUNT')
 
-        if query_str == 1:
+        if not data:
             return '', 204
-        raw_data = dbcon.query(query_str).raw
 
-        count_points = raw_data['series'][0]['values'][0][1]
+        count_points = data[0][1]
+
         # Get the timestamp of the first point in the past year
-        query_str = query_string(
+        data = query_string(
             unit, device_id,
             channel=channel,
             limit=1)
 
-        if query_str == 1:
+        if not data:
             return '', 204
-        raw_data = dbcon.query(query_str).raw
 
-        first_point = raw_data['series'][0]['values'][0][0]
+        first_point = data[0][0]
         end = datetime.datetime.utcnow()
         end_str = end.strftime('%Y-%m-%dT%H:%M:%S.%fZ')
+
     # Set the time frame to the past start epoch to now
     elif start_seconds != '0' and end_seconds == '0':
         start = datetime.datetime.utcfromtimestamp(float(start_seconds))
@@ -848,64 +767,60 @@ def async_usage_data(device_id, unit, channel, start_seconds, end_seconds):
         end = datetime.datetime.utcnow()
         end_str = end.strftime('%Y-%m-%dT%H:%M:%S.%fZ')
 
-        query_str = query_string(
+        data = query_string(
             unit, device_id,
             channel=channel,
             value='COUNT',
             start_str=start_str,
             end_str=end_str)
 
-        if query_str == 1:
+        if not data:
             return '', 204
-        raw_data = dbcon.query(query_str).raw
 
-        count_points = raw_data['series'][0]['values'][0][1]
+        count_points = data[0][1]
+
         # Get the timestamp of the first point in the past year
-
-        query_str = query_string(
+        data = query_string(
             unit, device_id,
             channel=channel,
             start_str=start_str,
             end_str=end_str,
             limit=1)
 
-        if query_str == 1:
+        if not data:
             return '', 204
-        raw_data = dbcon.query(query_str).raw
 
-        first_point = raw_data['series'][0]['values'][0][0]
+        first_point = data[0][0]
     else:
         start = datetime.datetime.utcfromtimestamp(float(start_seconds))
         start_str = start.strftime('%Y-%m-%dT%H:%M:%S.%fZ')
         end = datetime.datetime.utcfromtimestamp(float(end_seconds))
         end_str = end.strftime('%Y-%m-%dT%H:%M:%S.%fZ')
 
-        query_str = query_string(
+        data = query_string(
             unit, device_id,
             channel=channel,
             value='COUNT',
             start_str=start_str,
             end_str=end_str)
 
-        if query_str == 1:
+        if not data:
             return '', 204
-        raw_data = dbcon.query(query_str).raw
 
-        count_points = raw_data['series'][0]['values'][0][1]
+        count_points = data[0][1]
+
         # Get the timestamp of the first point in the past year
-
-        query_str = query_string(
+        data = query_string(
             unit, device_id,
             channel=channel,
             start_str=start_str,
             end_str=end_str,
             limit=1)
 
-        if query_str == 1:
+        if not data:
             return '', 204
-        raw_data = dbcon.query(query_str).raw
 
-        first_point = raw_data['series'][0]['values'][0][0]
+        first_point = data[0][0]
 
     start = datetime.datetime.strptime(
         influx_time_str_to_milliseconds(first_point),
@@ -932,7 +847,7 @@ def async_usage_data(device_id, unit, channel, start_seconds, end_seconds):
         logger.debug('Group seconds = {}'.format(group_seconds))
 
         try:
-            query_str = query_string(
+            data = query_string(
                 unit, device_id,
                 channel=channel,
                 value='MEAN',
@@ -940,28 +855,26 @@ def async_usage_data(device_id, unit, channel, start_seconds, end_seconds):
                 end_str=end_str,
                 group_sec=group_seconds)
 
-            if query_str == 1:
+            if not data:
                 return '', 204
-            raw_data = dbcon.query(query_str).raw
 
-            return jsonify(raw_data['series'][0]['values'])
+            return jsonify(data)
         except Exception as e:
             logger.error("URL for 'async_data' raised and error: "
                          "{err}".format(err=e))
             return '', 204
     else:
         try:
-            query_str = query_string(
+            data = query_string(
                 unit, device_id,
                 channel=channel,
                 start_str=start_str,
                 end_str=end_str)
 
-            if query_str == 1:
+            if not data:
                 return '', 204
-            raw_data = dbcon.query(query_str).raw
 
-            return jsonify(raw_data['series'][0]['values'])
+            return jsonify(data)
         except Exception as e:
             logger.error("URL for 'async_usage' raised and error: "
                          "{err}".format(err=e))
@@ -1071,28 +984,21 @@ def computer_command(action):
 #
 
 def return_point_timestamp(dev_id, unit, period, measurement=None, channel=None):
-    dbcon = InfluxDBClient(
-        INFLUXDB_HOST,
-        INFLUXDB_PORT,
-        INFLUXDB_USER,
-        INFLUXDB_PASSWORD,
-        INFLUXDB_DATABASE)
-
-    query_str = query_string(
+    data = query_string(
         unit,
         dev_id,
         measure=measurement,
         channel=channel,
         value='LAST',
         past_sec=period)
-    if query_str == 1:
+
+    if not data:
         return [None, None]
 
     try:
-        raw_data = dbcon.query(query_str).raw
-        number = len(raw_data['series'][0]['values'])
-        time_raw = raw_data['series'][0]['values'][number - 1][0]
-        value = raw_data['series'][0]['values'][number - 1][1]
+        number = len(data)
+        time_raw = data[number - 1][0]
+        value = data[number - 1][1]
         value = '{:.3f}'.format(float(value))
         # Convert date-time to epoch (potential bottleneck for data)
         dt = date_parse(time_raw)

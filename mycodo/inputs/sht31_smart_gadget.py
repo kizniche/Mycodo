@@ -6,7 +6,7 @@ import time
 from mycodo.inputs.base_input import AbstractInput
 from mycodo.inputs.sensorutils import calculate_dewpoint
 from mycodo.inputs.sensorutils import calculate_vapor_pressure_deficit
-from mycodo.utils.influx import parse_measurement
+from mycodo.utils.inputs import parse_measurement
 from mycodo.utils.influx import write_influxdb_value
 from mycodo.utils.lockfile import LockFile
 
@@ -279,6 +279,7 @@ class InputModule(AbstractInput):
                     measurement_single,
                     self.channels_measurement[0].channel,
                     measurement_single[0])
+
                 write_influxdb_value(
                     self.unique_id,
                     measurement_single[0]['unit'],
@@ -312,6 +313,7 @@ class InputModule(AbstractInput):
                     measurement_single,
                     self.channels_measurement[1].channel,
                     measurement_single[1])
+
                 write_influxdb_value(
                     self.unique_id,
                     measurement_single[1]['unit'],
@@ -351,6 +353,7 @@ class InputModule(AbstractInput):
                     measurement_single,
                     self.channels_measurement[3].channel,
                     measurement_single[3])
+
                 write_influxdb_value(
                     self.unique_id,
                     measurement_single[3]['unit'],
@@ -375,6 +378,7 @@ class InputModule(AbstractInput):
                     measurement_single,
                     self.channels_measurement[4].channel,
                     measurement_single[4])
+
                 write_influxdb_value(
                     self.unique_id,
                     measurement_single[4]['unit'],

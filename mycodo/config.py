@@ -31,6 +31,108 @@ FINAL_RELEASES = ['5.7.3', '6.4.7', '7.10.0']
 # Accessed at https://127.0.0.1/mycodo-flask-profiler
 ENABLE_FLASK_PROFILER = False
 
+
+# Install path (the parent directory of this script)
+INSTALL_DIRECTORY = os.path.abspath(os.path.dirname(os.path.realpath(__file__)) + '/..')
+
+# Database
+DATABASE_NAME = "mycodo.db"
+ALEMBIC_PATH = os.path.join(INSTALL_DIRECTORY, 'alembic_db')
+DATABASE_PATH = os.path.join(INSTALL_DIRECTORY, 'databases')
+ALEMBIC_UPGRADE_POST = os.path.join(ALEMBIC_PATH, 'alembic_post_upgrade_versions')
+SQL_DATABASE_MYCODO = os.path.join(DATABASE_PATH, DATABASE_NAME)
+MYCODO_DB_PATH = 'sqlite:///' + SQL_DATABASE_MYCODO
+
+# Misc paths
+PATH_1WIRE = '/sys/bus/w1/devices/'
+PATH_CONTROLLERS = os.path.join(INSTALL_DIRECTORY, 'mycodo/controllers')
+PATH_FUNCTIONS = os.path.join(INSTALL_DIRECTORY, 'mycodo/functions')
+PATH_FUNCTION_ACTIONS = os.path.join(INSTALL_DIRECTORY, 'mycodo/function_actions')
+PATH_INPUTS = os.path.join(INSTALL_DIRECTORY, 'mycodo/inputs')
+PATH_OUTPUTS = os.path.join(INSTALL_DIRECTORY, 'mycodo/outputs')
+PATH_WIDGETS = os.path.join(INSTALL_DIRECTORY, 'mycodo/widgets')
+PATH_FUNCTIONS_CUSTOM = os.path.join(PATH_FUNCTIONS, 'custom_functions')
+PATH_FUNCTION_ACTIONS_CUSTOM = os.path.join(PATH_FUNCTION_ACTIONS, 'custom_function_actions')
+PATH_INPUTS_CUSTOM = os.path.join(PATH_INPUTS, 'custom_inputs')
+PATH_OUTPUTS_CUSTOM = os.path.join(PATH_OUTPUTS, 'custom_outputs')
+PATH_WIDGETS_CUSTOM = os.path.join(PATH_WIDGETS, 'custom_widgets')
+PATH_USER_SCRIPTS = os.path.join(INSTALL_DIRECTORY, 'mycodo/user_scripts')
+PATH_HTML_USER = os.path.join(INSTALL_DIRECTORY, 'mycodo/mycodo_flask/templates/user_templates')
+PATH_PYTHON_CODE_USER = os.path.join(INSTALL_DIRECTORY, 'mycodo/user_python_code')
+PATH_MEASUREMENTS_BACKUP = os.path.join(INSTALL_DIRECTORY, 'mycodo/backup_measurements')
+PATH_SETTINGS_BACKUP = os.path.join(INSTALL_DIRECTORY, 'mycodo/backup_settings')
+USAGE_REPORTS_PATH = os.path.join(INSTALL_DIRECTORY, 'output_usage_reports')
+DEPENDENCY_INIT_FILE = os.path.join(INSTALL_DIRECTORY, '.dependency')
+UPGRADE_INIT_FILE = os.path.join(INSTALL_DIRECTORY, '.upgrade')
+BACKUP_PATH = '/var/Mycodo-backups'  # Where Mycodo backups are stored
+
+# Log files
+LOG_PATH = '/var/log/mycodo'  # Where generated logs are stored
+LOGIN_LOG_FILE = os.path.join(LOG_PATH, 'login.log')
+DAEMON_LOG_FILE = os.path.join(LOG_PATH, 'mycodo.log')
+KEEPUP_LOG_FILE = os.path.join(LOG_PATH, 'mycodokeepup.log')
+BACKUP_LOG_FILE = os.path.join(LOG_PATH, 'mycodobackup.log')
+DEPENDENCY_LOG_FILE = os.path.join(LOG_PATH, 'mycododependency.log')
+UPGRADE_LOG_FILE = os.path.join(LOG_PATH, 'mycodoupgrade.log')
+UPGRADE_TMP_LOG_FILE = '/tmp/mycodoupgrade.log'
+RESTORE_LOG_FILE = os.path.join(LOG_PATH, 'mycodorestore.log')
+HTTP_ACCESS_LOG_FILE = '/var/log/nginx/access.log'
+HTTP_ERROR_LOG_FILE = '/var/log/nginx/error.log'
+
+# Lock files
+LOCK_PATH = '/var/lock'
+LOCK_FILE_STREAM = os.path.join(LOCK_PATH, 'mycodo-camera-stream.pid')
+
+# Run files
+RUN_PATH = '/var/run'
+FRONTEND_PID_FILE = os.path.join(RUN_PATH, 'mycodoflask.pid')
+DAEMON_PID_FILE = os.path.join(RUN_PATH, 'mycodo.pid')
+
+# Remote admin
+STORED_SSL_CERTIFICATE_PATH = os.path.join(
+    INSTALL_DIRECTORY, 'mycodo/mycodo_flask/ssl_certs/remote_admin')
+
+# Cameras
+PATH_CAMERAS = os.path.join(INSTALL_DIRECTORY, 'cameras')
+
+# Notes
+PATH_NOTE_ATTACHMENTS = os.path.join(INSTALL_DIRECTORY, 'note_attachments')
+
+# Determine if running in a Docker container
+DOCKER_CONTAINER = os.environ.get('DOCKER_CONTAINER', False) == 'TRUE'
+
+# Pyro5 URI/host, used by mycodo_client.py
+if DOCKER_CONTAINER:
+    PYRO_URI = 'PYRO:mycodo.pyro_server@mycodo_daemon:9080'
+else:
+    PYRO_URI = 'PYRO:mycodo.pyro_server@127.0.0.1:9080'
+
+# InfluxDB time-series database
+INFLUXDB_HOST = 'localhost' if not DOCKER_CONTAINER else 'influxdb'
+INFLUXDB_PORT = 8086
+INFLUXDB_USER = 'mycodo'
+INFLUXDB_PASSWORD = 'mmdu77sj3nIoiajjs'
+INFLUXDB_DATABASE = 'mycodo_db'
+
+# Anonymous statistics
+STATS_INTERVAL = 86400
+STATS_HOST = 'fungi.kylegabriel.com'
+STATS_PORT = 8086
+STATS_USER = 'mycodo_stats'
+STATS_PASSWORD = 'Io8Nasr5JJDdhPOj32222'
+STATS_DATABASE = 'mycodo_stats'
+STATS_CSV = os.path.join(INSTALL_DIRECTORY, 'statistics.csv')
+ID_FILE = os.path.join(INSTALL_DIRECTORY, 'statistics.id')
+
+# Login restrictions
+LOGIN_ATTEMPTS = 5
+LOGIN_BAN_SECONDS = 600  # 10 minutes
+
+# Check for upgrade every 2 days (if enabled)
+UPGRADE_CHECK_INTERVAL = 172800
+
+RELEASE_URL = 'https://api.github.com/repos/kizniche/Mycodo/tags'
+
 LANGUAGES = {
     'en': 'English',
     'de': 'Deutsche (German)',
@@ -48,15 +150,14 @@ LANGUAGES = {
 }
 
 DASHBOARD_WIDGETS = [
-    ('', "{} {} {}".format(lazy_gettext('Add'), lazy_gettext('Dashboard'), lazy_gettext('Widget'))),
+    ('', f"{lazy_gettext('Add')} {lazy_gettext('Dashboard')} {lazy_gettext('Widget')}"),
     ('spacer', lazy_gettext('Spacer')),
     ('graph', lazy_gettext('Graph')),
     ('gauge', lazy_gettext('Gauge')),
     ('indicator', TRANSLATIONS['indicator']['title']),
     ('measurement', TRANSLATIONS['measurement']['title']),
     ('output', TRANSLATIONS['output']['title']),
-    ('output_pwm_slider', '{}: {}'.format(
-        TRANSLATIONS['output']['title'], lazy_gettext('PWM Slider'))),
+    ('output_pwm_slider', f"{TRANSLATIONS['output']['title']}: {lazy_gettext('PWM Slider')}"),
     ('pid_control', lazy_gettext('PID Control')),
     ('python_code', lazy_gettext('Python Code')),
     ('camera', TRANSLATIONS['camera']['title'])
@@ -650,120 +751,19 @@ THEMES = [
 
 THEMES_DARK = ['cyborg', 'darkly', 'slate', 'solar', 'superhero']
 
-# Install path (the parent directory of this script)
-INSTALL_DIRECTORY = os.path.abspath(os.path.dirname(os.path.realpath(__file__)) + '/..')
-
-# Database
-DATABASE_NAME = "mycodo.db"
-ALEMBIC_PATH = os.path.join(INSTALL_DIRECTORY, 'alembic_db')
-DATABASE_PATH = os.path.join(INSTALL_DIRECTORY, 'databases')
-ALEMBIC_UPGRADE_POST = os.path.join(ALEMBIC_PATH, 'alembic_post_upgrade_versions')
-SQL_DATABASE_MYCODO = os.path.join(DATABASE_PATH, DATABASE_NAME)
-MYCODO_DB_PATH = 'sqlite:///' + SQL_DATABASE_MYCODO
-
-# Misc paths
-PATH_1WIRE = '/sys/bus/w1/devices/'
-PATH_CONTROLLERS = os.path.join(INSTALL_DIRECTORY, 'mycodo/controllers')
-PATH_FUNCTIONS = os.path.join(INSTALL_DIRECTORY, 'mycodo/functions')
-PATH_FUNCTION_ACTIONS = os.path.join(INSTALL_DIRECTORY, 'mycodo/function_actions')
-PATH_INPUTS = os.path.join(INSTALL_DIRECTORY, 'mycodo/inputs')
-PATH_OUTPUTS = os.path.join(INSTALL_DIRECTORY, 'mycodo/outputs')
-PATH_WIDGETS = os.path.join(INSTALL_DIRECTORY, 'mycodo/widgets')
-PATH_FUNCTIONS_CUSTOM = os.path.join(PATH_FUNCTIONS, 'custom_functions')
-PATH_FUNCTION_ACTIONS_CUSTOM = os.path.join(PATH_FUNCTION_ACTIONS, 'custom_function_actions')
-PATH_INPUTS_CUSTOM = os.path.join(PATH_INPUTS, 'custom_inputs')
-PATH_OUTPUTS_CUSTOM = os.path.join(PATH_OUTPUTS, 'custom_outputs')
-PATH_WIDGETS_CUSTOM = os.path.join(PATH_WIDGETS, 'custom_widgets')
-PATH_USER_SCRIPTS = os.path.join(INSTALL_DIRECTORY, 'mycodo/user_scripts')
-PATH_HTML_USER = os.path.join(INSTALL_DIRECTORY, 'mycodo/mycodo_flask/templates/user_templates')
-PATH_PYTHON_CODE_USER = os.path.join(INSTALL_DIRECTORY, 'mycodo/user_python_code')
-PATH_MEASUREMENTS_BACKUP = os.path.join(INSTALL_DIRECTORY, 'mycodo/backup_measurements')
-PATH_SETTINGS_BACKUP = os.path.join(INSTALL_DIRECTORY, 'mycodo/backup_settings')
-USAGE_REPORTS_PATH = os.path.join(INSTALL_DIRECTORY, 'output_usage_reports')
-DEPENDENCY_INIT_FILE = os.path.join(INSTALL_DIRECTORY, '.dependency')
-UPGRADE_INIT_FILE = os.path.join(INSTALL_DIRECTORY, '.upgrade')
-BACKUP_PATH = '/var/Mycodo-backups'  # Where Mycodo backups are stored
-
-# Log files
-LOG_PATH = '/var/log/mycodo'  # Where generated logs are stored
-LOGIN_LOG_FILE = os.path.join(LOG_PATH, 'login.log')
-DAEMON_LOG_FILE = os.path.join(LOG_PATH, 'mycodo.log')
-KEEPUP_LOG_FILE = os.path.join(LOG_PATH, 'mycodokeepup.log')
-BACKUP_LOG_FILE = os.path.join(LOG_PATH, 'mycodobackup.log')
-DEPENDENCY_LOG_FILE = os.path.join(LOG_PATH, 'mycododependency.log')
-UPGRADE_LOG_FILE = os.path.join(LOG_PATH, 'mycodoupgrade.log')
-UPGRADE_TMP_LOG_FILE = '/tmp/mycodoupgrade.log'
-RESTORE_LOG_FILE = os.path.join(LOG_PATH, 'mycodorestore.log')
-HTTP_ACCESS_LOG_FILE = '/var/log/nginx/access.log'
-HTTP_ERROR_LOG_FILE = '/var/log/nginx/error.log'
-
-# Lock files
-LOCK_PATH = '/var/lock'
-LOCK_FILE_STREAM = os.path.join(LOCK_PATH, 'mycodo-camera-stream.pid')
-
-# Run files
-RUN_PATH = '/var/run'
-FRONTEND_PID_FILE = os.path.join(RUN_PATH, 'mycodoflask.pid')
-DAEMON_PID_FILE = os.path.join(RUN_PATH, 'mycodo.pid')
-
-# Remote admin
-STORED_SSL_CERTIFICATE_PATH = os.path.join(
-    INSTALL_DIRECTORY, 'mycodo/mycodo_flask/ssl_certs/remote_admin')
-
-# Cameras
-PATH_CAMERAS = os.path.join(INSTALL_DIRECTORY, 'cameras')
-
-# Notes
-PATH_NOTE_ATTACHMENTS = os.path.join(INSTALL_DIRECTORY, 'note_attachments')
-
-# Determine if running in a Docker container
-DOCKER_CONTAINER = os.environ.get('DOCKER_CONTAINER', False) == 'TRUE'
-
-# Pyro5 URI/host, used by mycodo_client.py
-if DOCKER_CONTAINER:
-    PYRO_URI = 'PYRO:mycodo.pyro_server@mycodo_daemon:9080'
-else:
-    PYRO_URI = 'PYRO:mycodo.pyro_server@127.0.0.1:9080'
-
-# Influx sensor/device measurement database
-INFLUXDB_HOST = 'localhost' if not DOCKER_CONTAINER else 'influxdb'
-INFLUXDB_PORT = 8086
-INFLUXDB_USER = 'mycodo'
-INFLUXDB_PASSWORD = 'mmdu77sj3nIoiajjs'
-INFLUXDB_DATABASE = 'mycodo_db'
-
-# Anonymous statistics
-STATS_INTERVAL = 86400
-STATS_HOST = 'fungi.kylegabriel.com'
-STATS_PORT = 8086
-STATS_USER = 'mycodo_stats'
-STATS_PASSWORD = 'Io8Nasr5JJDdhPOj32222'
-STATS_DATABASE = 'mycodo_stats'
-STATS_CSV = os.path.join(INSTALL_DIRECTORY, 'statistics.csv')
-ID_FILE = os.path.join(INSTALL_DIRECTORY, 'statistics.id')
-
-# Login restrictions
-LOGIN_ATTEMPTS = 5
-LOGIN_BAN_SECONDS = 600  # 10 minutes
-
-# Check for upgrade every 2 days (if enabled)
-UPGRADE_CHECK_INTERVAL = 172800
-
-RELEASE_URL = 'https://api.github.com/repos/kizniche/Mycodo/tags'
-
 
 class ProdConfig(object):
     """Production Configuration."""
     SQL_DATABASE_MYCODO = os.path.join(DATABASE_PATH, DATABASE_NAME)
-    MYCODO_DB_PATH = 'sqlite:///{}'.format(SQL_DATABASE_MYCODO)
-    SQLALCHEMY_DATABASE_URI = 'sqlite:///{}'.format(SQL_DATABASE_MYCODO)
+    MYCODO_DB_PATH = f'sqlite:///{SQL_DATABASE_MYCODO}'
+    SQLALCHEMY_DATABASE_URI = f'sqlite:///{SQL_DATABASE_MYCODO}'
     SQLALCHEMY_TRACK_MODIFICATIONS = False
 
     FLASK_PROFILER = {
         "enabled": True,
         "storage": {
             "engine": "sqlalchemy",
-            "db_url": 'sqlite:///{}'.format(os.path.join(DATABASE_PATH, 'profile.db'))
+            "db_url": f"sqlite:///{os.path.join(DATABASE_PATH, 'profile.db')}"
         },
         "basicAuth": {
             "enabled": True,

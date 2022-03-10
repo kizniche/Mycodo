@@ -66,7 +66,7 @@ from mycodo.databases.utils import session_scope
 from mycodo.mycodo_client import DaemonControl
 from mycodo.utils.database import db_retrieve_table_daemon
 from mycodo.utils.influx import add_measurements_influxdb
-from mycodo.utils.influx import read_last_influxdb
+from mycodo.utils.influx import read_influxdb_single
 from mycodo.utils.influx import write_influxdb_value
 from mycodo.utils.method import load_method_handler, parse_db_time
 from mycodo.utils.outputs import parse_output_information
@@ -292,12 +292,13 @@ class PIDController(AbstractController, threading.Thread):
                     channel, unit, measurement = return_measurement_info(
                         measurement, conversion)
 
-                    last_measurement = read_last_influxdb(
+                    last_measurement = read_influxdb_single(
                         device_id,
                         unit,
                         channel,
                         measure=measurement,
-                        duration_sec=self.setpoint_tracking_max_age)
+                        duration_sec=self.setpoint_tracking_max_age,
+                        value='LAST')
 
                     if last_measurement[1] is not None:
                         self.PID_Controller.setpoint = last_measurement[1]
@@ -438,12 +439,13 @@ class PIDController(AbstractController, threading.Thread):
             channel, unit, measurement = return_measurement_info(
                 device_measurement, conversion)
 
-            self.last_measurement = read_last_influxdb(
+            self.last_measurement = read_influxdb_single(
                 self.device_id,
                 unit,
                 channel,
                 measure=measurement,
-                duration_sec=int(self.max_measure_age))
+                duration_sec=int(self.max_measure_age),
+                value='LAST')
 
             if self.last_measurement:
                 self.last_time = self.last_measurement[0]

@@ -34,7 +34,7 @@ from mycodo.mycodo_client import DaemonControl
 from mycodo.utils.constraints_pass import constraints_pass_positive_value
 from mycodo.utils.database import db_retrieve_table_daemon
 from mycodo.utils.influx import add_measurements_influxdb
-from mycodo.utils.influx import parse_measurement
+from mycodo.utils.inputs import parse_measurement
 
 # Measurements
 measurements_dict = {

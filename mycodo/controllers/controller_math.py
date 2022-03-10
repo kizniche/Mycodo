@@ -41,7 +41,7 @@ from mycodo.mycodo_client import DaemonControl
 from mycodo.utils.database import db_retrieve_table_daemon
 from mycodo.utils.influx import add_measurements_influxdb
 from mycodo.utils.influx import average_past_seconds
-from mycodo.utils.influx import read_last_influxdb
+from mycodo.utils.influx import read_influxdb_single
 from mycodo.utils.influx import sum_past_seconds
 from mycodo.utils.system_pi import get_measurement
 from mycodo.utils.system_pi import return_measurement_info
@@ -770,12 +770,13 @@ class MathController(AbstractController, threading.Thread):
                 channel, unit, measurement = return_measurement_info(
                     device_measurement, conversion)
 
-                last_measurement = read_last_influxdb(
+                last_measurement = read_influxdb_single(
                     device_id,
                     unit,
                     channel,
                     measure=measurement,
-                    duration_sec=self.max_measure_age)
+                    duration_sec=self.max_measure_age,
+                    value='LAST')
 
                 if not last_measurement:
                     return False, None
@@ -797,12 +798,13 @@ class MathController(AbstractController, threading.Thread):
         channel, unit, measurement = return_measurement_info(
             device_measurement, conversion)
 
-        measure = read_last_influxdb(
+        measure = read_influxdb_single(
             device_id,
             unit,
             channel,
             measure=measurement,
-            duration_sec=self.max_measure_age)
+            duration_sec=self.max_measure_age,
+            value='LAST')
         if not measure:
             return False, None
         return True, measure

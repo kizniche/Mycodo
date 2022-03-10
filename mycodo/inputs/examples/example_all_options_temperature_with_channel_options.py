@@ -5,7 +5,7 @@ from mycodo.databases.models import InputChannel
 from mycodo.inputs.base_input import AbstractInput
 from mycodo.utils.database import db_retrieve_table_daemon
 from mycodo.utils.influx import add_measurements_influxdb
-from mycodo.utils.influx import parse_measurement
+from mycodo.utils.inputs import parse_measurement
 
 
 def constraints_pass_fan_seconds(mod_input, value):

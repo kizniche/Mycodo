@@ -32,7 +32,7 @@ from mycodo.mycodo_client import DaemonControl
 from mycodo.utils.constraints_pass import constraints_pass_positive_value
 from mycodo.utils.database import db_retrieve_table_daemon
 from mycodo.utils.influx import add_measurements_influxdb
-from mycodo.utils.influx import read_last_influxdb
+from mycodo.utils.influx import read_influxdb_single
 from mycodo.utils.system_pi import get_measurement
 from mycodo.utils.system_pi import return_measurement_info
 
@@ -158,12 +158,13 @@ class CustomModule(AbstractFunction):
                 measurement,
                 self.max_measure_age))
 
-            last_measurement = read_last_influxdb(
+            last_measurement = read_influxdb_single(
                 device_device_id,
                 unit,
                 channel,
                 measure=measurement,
-                duration_sec=self.max_measure_age)
+                duration_sec=self.max_measure_age,
+                value='LAST')
 
             self.logger.debug("last_measurement: {}".format(last_measurement))
 

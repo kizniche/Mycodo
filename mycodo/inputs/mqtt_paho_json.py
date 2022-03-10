@@ -11,7 +11,7 @@ from mycodo.inputs.base_input import AbstractInput
 from mycodo.utils.constraints_pass import constraints_pass_positive_value
 from mycodo.utils.database import db_retrieve_table_daemon
 from mycodo.utils.influx import add_measurements_influxdb
-from mycodo.utils.influx import parse_measurement
+from mycodo.utils.inputs import parse_measurement
 from mycodo.utils.utils import random_alphanumeric
 
 # Measurements

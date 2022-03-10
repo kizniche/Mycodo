@@ -170,6 +170,7 @@ class CustomModule(AbstractFunction):
         last_measurement = self.get_last_measurement(
             self.measurement_device_id,
             self.measurement_measurement_id)[1]
+
         outputState = self.control.output_state(self.output_device_id, self.output_channel)
 
         self.logger.info("Input: {}, output: {}, target: {}, hyst: {}".format(

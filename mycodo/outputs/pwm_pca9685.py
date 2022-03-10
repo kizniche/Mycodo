@@ -14,7 +14,7 @@ from mycodo.outputs.base_output import AbstractOutput
 from mycodo.utils.constraints_pass import constraints_pass_percent
 from mycodo.utils.database import db_retrieve_table_daemon
 from mycodo.utils.influx import add_measurements_influxdb
-from mycodo.utils.influx import read_last_influxdb
+from mycodo.utils.influx import read_influxdb_single
 from mycodo.utils.system_pi import return_measurement_info
 
 
@@ -375,12 +375,12 @@ class OutputModule(AbstractOutput):
                     last_measurement = None
                     if device_measurement:
                         channel, unit, measurement = return_measurement_info(device_measurement, None)
-                        last_measurement = read_last_influxdb(
+                        last_measurement = read_influxdb_single(
                             self.unique_id,
                             unit,
                             channel,
                             measure=measurement,
-                            duration_sec=None)
+                            value='LAST')
 
                     if last_measurement:
                         self.logger.debug("Setting channel {ch} startup duty cycle to last known value of {dc} %".format(

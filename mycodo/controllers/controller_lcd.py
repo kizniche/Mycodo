@@ -66,7 +66,7 @@ from mycodo.databases.models import Output
 from mycodo.databases.models import PID
 from mycodo.databases.models import Unit
 from mycodo.utils.database import db_retrieve_table_daemon
-from mycodo.utils.influx import read_last_influxdb
+from mycodo.utils.influx import read_influxdb_single
 from mycodo.utils.system_pi import add_custom_measurements
 from mycodo.utils.system_pi import add_custom_units
 from mycodo.utils.system_pi import cmd_output
@@ -347,18 +347,20 @@ class LCDController(AbstractController, threading.Thread):
             else:
                 if self.lcd_line[display_id][i]['measure'] == 'time':
                     # Display the time of the last measurement
-                    last_measurement = read_last_influxdb(
+                    last_measurement = read_influxdb_single(
                         self.lcd_line[display_id][i]['id'],
                         '/.*/',
                         None,
-                        duration_sec=self.lcd_max_age[display_id][i])
+                        duration_sec=self.lcd_max_age[display_id][i],
+                        value='LAST')
                 else:
-                    last_measurement = read_last_influxdb(
+                    last_measurement = read_influxdb_single(
                         self.lcd_line[display_id][i]['id'],
                         self.lcd_line[display_id][i]['unit'],
                         self.lcd_line[display_id][i]['channel'],
                         measure=self.lcd_line[display_id][i]['measure'],
-                        duration_sec=self.lcd_max_age[display_id][i])
+                        duration_sec=self.lcd_max_age[display_id][i],
+                        value='LAST')
 
                 if last_measurement:
                     self.lcd_line[display_id][i]['time'] = last_measurement[0]

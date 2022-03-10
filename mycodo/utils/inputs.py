@@ -21,16 +21,111 @@
 #
 #  Contact at kylegabriel.com
 import logging
-
 import os
 
 from mycodo.config import PATH_INPUTS
 from mycodo.config import PATH_INPUTS_CUSTOM
-from mycodo.utils.modules import load_module_from_file
+from mycodo.inputs.sensorutils import convert_units
 from mycodo.utils.logging_utils import set_log_level
+from mycodo.utils.modules import load_module_from_file
 
 logger = logging.getLogger("mycodo.utils.inputs")
 logger.setLevel(set_log_level(logging))
+
+
+def parse_measurement(
+        conversion,
+        measurement,
+        measurements_record,
+        each_channel,
+        each_measurement,
+        timestamp=None):
+    # Unscaled, unconverted measurement
+    measurements_record[each_channel] = {
+        'measurement': each_measurement['measurement'],
+        'unit': each_measurement['unit'],
+        'value': each_measurement['value'],
+        'timestamp_utc': timestamp
+    }
+
+    # Scaling needs to come before conversion
+    # Scale measurement
+    if (measurement.rescaled_measurement and
+            measurement.rescaled_unit):
+        scaled_value = measurements_record[each_channel] = rescale_measurements(
+            measurement, measurements_record[each_channel]['value'])
+        measurements_record[each_channel] = {
+            'measurement': measurement.rescaled_measurement,
+            'unit': measurement.rescaled_unit,
+            'value': scaled_value,
+            'timestamp_utc': timestamp
+        }
+
+    # Convert measurement
+    if measurement.conversion_id not in ['', None] and 'value' in each_measurement:
+        converted_value = convert_units(
+            measurement.conversion_id,
+            measurements_record[each_channel]['value'])
+        measurements_record[each_channel] = {
+            'measurement': None,
+            'unit': conversion.convert_unit_to,
+            'value': converted_value,
+            'timestamp_utc': timestamp
+        }
+    return measurements_record
+
+
+def rescale_measurements(measurement, measurement_value):
+    """Rescale measurement."""
+    rescaled_measurement = None
+    try:
+        if measurement.rescale_method == "linear":
+            # Get the difference between min and max volts
+            diff_voltage = abs(
+                float(measurement.scale_from_max) - float(measurement.scale_from_min))
+
+            # Ensure the value stays within the min/max bounds
+            if measurement_value < float(measurement.scale_from_min):
+                measured_voltage = measurement.scale_from_min
+            elif measurement_value > float(measurement.scale_from_max):
+                measured_voltage = float(measurement.scale_from_max)
+            else:
+                measured_voltage = measurement_value
+
+            # Calculate the percentage of the difference
+            percent_diff = ((measured_voltage - float(measurement.scale_from_min)) /
+                            diff_voltage)
+
+            # Get the units difference between min and max units
+            diff_units = abs(float(measurement.scale_to_max) - float(measurement.scale_to_min))
+
+            # Calculate the measured units from the percent difference
+            if measurement.invert_scale:
+                converted_units = (float(measurement.scale_to_max) -
+                                   (diff_units * percent_diff))
+            else:
+                converted_units = (float(measurement.scale_to_min) +
+                                   (diff_units * percent_diff))
+
+            # Ensure the units stay within the min/max bounds
+            if converted_units < float(measurement.scale_to_min):
+                rescaled_measurement = float(measurement.scale_to_min)
+            elif converted_units > float(measurement.scale_to_max):
+                rescaled_measurement = float(measurement.scale_to_max)
+            else:
+                rescaled_measurement = converted_units
+
+        elif measurement.rescale_method == "equation":
+            replaced_str = measurement.rescale_equation.replace('x', str(measurement_value))
+            rescaled_measurement = eval(replaced_str)
+
+        if rescaled_measurement:
+            return rescaled_measurement
+
+    except Exception as except_msg:
+        logger.exception(
+            "Error while attempting to rescale measurement: {err}".format(
+                err=except_msg))
 
 
 def list_devices_using_interface(interface):
