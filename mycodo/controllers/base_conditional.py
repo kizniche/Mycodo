@@ -41,7 +41,7 @@ class AbstractConditional:
         if message is None:
             message = self.message
         self.message = self.control.trigger_action(
-            action_id, value=value, message=message, single_action=True)
+            action_id, value=value, message=message)
 
     def condition(self, condition_id):
         return self.control.get_condition_measurement(condition_id)

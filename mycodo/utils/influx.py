@@ -25,18 +25,22 @@ logger = logging.getLogger("mycodo.influx")
 logger.setLevel(set_log_level(logging))
 
 
-def add_measurements_influxdb(unique_id, measurements, use_same_timestamp=True):
+def add_measurements_influxdb(unique_id, measurements, use_same_timestamp=True, block=False):
     """
     Parse measurement data into list to be input into influxdb (threaded so returns fast)
     :param unique_id: Unique ID of device
     :param measurements: dict of measurements
     :param use_same_timestamp: Allow influxdb to create the timestamp upon storage
+    :param block: wait until measurements are added before returning
     :return:
     """
-    write_db = threading.Thread(
-        target=write_influxdb_data,
-        args=(unique_id, measurements, use_same_timestamp,))
-    write_db.start()
+    if block:
+        write_influxdb_data(unique_id, measurements, use_same_timestamp)
+    else:
+        write_db = threading.Thread(
+            target=write_influxdb_data,
+            args=(unique_id, measurements, use_same_timestamp,))
+        write_db.start()
 
 
 def write_influxdb_data(unique_id, measurements, use_same_timestamp=True):
