@@ -101,16 +101,9 @@
         </div>
         {% include 'pages/form_options/Custom_Options_Message.html' %}
         {% for each_option in dict_widgets[each_widget]['custom_options'] %}
-          {% if each_option['type'] == 'new_line' %}
-      </div>
-      <div class="row small-gutters" style="padding: 0.5em">
-          {% elif each_option['type'] == 'message' %}
-        <div class="col-12" style="padding-bottom: 0.5em">
-          {{each_option['default_value']|safe}}
-        </div>
-          {% else %}
-        {% include 'pages/form_options_add/Custom_Options.html' %}
-          {% endif %}
+          {% set custom_options_values = [] %}
+          {% set force_default_value = true %}
+          {% include 'pages/form_options/Custom_Options.html' %}
         {% endfor %}
       </div>
       {% endif %}
