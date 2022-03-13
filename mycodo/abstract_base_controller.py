@@ -281,6 +281,10 @@ class AbstractBaseController(object):
                 elif each_option_default['type'] in ['message', 'new_line']:
                     pass
 
+                elif each_option_default['type'] == 'select_channel':
+                    setattr(self, f"{each_option_default['id']}_device_id", device_id)
+                    setattr(self, f"{each_option_default['id']}_channel_id", channel_id)
+
                 else:
                     self.logger.error(
                         f"setup_custom_options_json() Unknown option type '{each_option_default['type']}'")
