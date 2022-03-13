@@ -264,6 +264,10 @@ class AbstractBaseController(object):
                     setattr(self, f"{each_option_default['id']}_device_id", device_id)
                     setattr(self, f"{each_option_default['id']}_measurement_id", measurement_id)
 
+                elif each_option_default['type'] == 'select_channel':
+                    setattr(self, f"{each_option_default['id']}_device_id", device_id)
+                    setattr(self, f"{each_option_default['id']}_channel_id", channel_id)
+
                 elif each_option_default['type'] == 'select_measurement_channel':
                     setattr(self, f"{each_option_default['id']}_device_id", device_id)
                     setattr(self, f"{each_option_default['id']}_measurement_id", measurement_id)
@@ -280,10 +284,6 @@ class AbstractBaseController(object):
 
                 elif each_option_default['type'] in ['message', 'new_line']:
                     pass
-
-                elif each_option_default['type'] == 'select_channel':
-                    setattr(self, f"{each_option_default['id']}_device_id", device_id)
-                    setattr(self, f"{each_option_default['id']}_channel_id", channel_id)
 
                 else:
                     self.logger.error(
