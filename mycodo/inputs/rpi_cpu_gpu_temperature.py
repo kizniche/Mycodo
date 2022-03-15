@@ -68,6 +68,10 @@ class InputModule(AbstractInput):
         self.path_temperature_cpu = None
         self.path_temperature_gpu = None
 
+        if not testing:
+            self.setup_custom_options(
+                INPUT_INFORMATION['custom_options'], input_dev)
+
     def get_measurement(self):
         """Gets the Raspberry pi's CPU and GPU temperatures."""
         self.return_dict = copy.deepcopy(measurements_dict)
