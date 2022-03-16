@@ -44,21 +44,38 @@ def upgrade_revision(error, revision):
 
     elif revision == 'b354722c9b8b':
         import json
+        import os
+        import shutil
+        import subprocess
+        import shlex
+
         from sqlalchemy import and_
         from mycodo.databases.models import Actions
         from mycodo.databases.models import DeviceMeasurements
         from mycodo.databases.models import OutputChannel
         from mycodo.databases.models import Widget
+        from mycodo.config import INSTALL_DIRECTORY
 
-        def get_measure_id(out_id, chan_id):
-            device_channel = session.query(OutputChannel).filter(
-                OutputChannel.unique_id == chan_id).first()
-            device_measurement = session.query(DeviceMeasurements).filter(
-                and_(DeviceMeasurements.device_id == out_id,
-                     DeviceMeasurements.channel == device_channel.channel)).first()
-            if device_measurement:
-                return device_measurement.unique_id
-            return ""
+        # Delete and regenerate virtualenv (removes --system-site-packages)
+        try:
+            print("Deleting virtualenv...")
+            shutil.rmtree(os.path.join(INSTALL_DIRECTORY, 'env'))
+        except Exception as err:
+            print(f"Error removing env: {err}")
+
+        try:
+            print("Setting up virtualenv...")
+            command = f'/bin/bash {INSTALL_DIRECTORY}/mycodo/scripts/upgrade_commands.sh setup-virtualenv-full'
+            process = subprocess.Popen(shlex.split(command), shell=False, stdout=subprocess.PIPE)
+            while True:
+                output = process.stdout.readline()
+                if process.poll() is not None:
+                    break
+                if output:
+                    print(output.strip().decode())
+            rc = process.poll()
+        except Exception as err:
+            print(f"Error setting up virtualenv: {err}")
 
         with session_scope(MYCODO_DB_PATH) as session:
             # Update output widget custom option format for output selection
