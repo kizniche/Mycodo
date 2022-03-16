@@ -185,7 +185,7 @@ CAMERA_INFO = {
         'name': 'OpenCV',
         'dependencies_module': [
             ('pip-pypi', 'imutils', 'imutils'),
-            ('apt', 'python3-opencv', 'python3-opencv'),
+            ('pip-pypi', 'cv2', 'opencv-python==4.5.5.64')
         ],
         'capable_image': True,
         'capable_stream': True
@@ -208,7 +208,7 @@ CAMERA_INFO = {
         'name': 'URL (urllib)',
         'dependencies_module': [
             ('pip-pypi', 'imutils', 'imutils'),
-            ('apt', 'python3-opencv', 'python3-opencv'),
+            ('pip-pypi', 'cv2', 'opencv-python==4.5.5.64')
         ],
         'capable_image': True,
         'capable_stream': True
@@ -217,7 +217,7 @@ CAMERA_INFO = {
         'name': 'URL (requests)',
         'dependencies_module': [
             ('pip-pypi', 'imutils', 'imutils'),
-            ('apt', 'python3-opencv', 'python3-opencv'),
+            ('pip-pypi', 'cv2', 'opencv-python==4.5.5.64')
         ],
         'capable_image': True,
         'capable_stream': False
@@ -471,7 +471,7 @@ METHOD_INFO = {
         'name': "{} ({})".format(lazy_gettext('Daily'), lazy_gettext('Bezier Curve')),
         'dependencies_module': [
             ('apt', 'libatlas-base-dev', 'libatlas-base-dev'),
-            ('apt', 'python3-numpy', 'python3-numpy')
+            ('pip-pypi', 'numpy', 'numpy==1.22.3')
         ] + METHOD_DEP_BASE
     },
     'Cascade': {

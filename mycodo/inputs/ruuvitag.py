@@ -73,8 +73,7 @@ INPUT_INFORMATION = {
     'options_disabled': ['interface'],
 
     'dependencies_module': [
-        ('apt', 'python3-dev', 'python3-dev'),
-        ('apt', 'python3-psutil', 'python3-psutil'),
+        ('pip-pypi', 'psutil', 'psutil==5.9.0'),
         ('apt', 'bluez', 'bluez'),
         ('apt', 'bluez-hcidump', 'bluez-hcidump'),
         ('pip-pypi', 'ruuvitag_sensor', 'ruuvitag-sensor==1.1.0')
