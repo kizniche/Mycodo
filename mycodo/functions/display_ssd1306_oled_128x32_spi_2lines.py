@@ -179,8 +179,8 @@ FUNCTION_INFORMATION = {
         ('pip-pypi', 'usb.core', 'pyusb==1.1.1'),
         ('pip-pypi', 'Adafruit_GPIO', 'Adafruit-GPIO==1.0.3'),
         ('pip-pypi', 'adafruit_extended_bus', 'Adafruit-extended-bus==1.0.2'),
-        ('pip-pypi', 'adafruit_framebuf', 'adafruit-circuitpython-framebuf'),
-        ('pip-pypi', 'adafruit_ssd1306', 'Adafruit-Circuitpython-SSD1306')
+        ('pip-pypi', 'adafruit_framebuf', 'adafruit-circuitpython-framebuf==1.4.9'),
+        ('pip-pypi', 'adafruit_ssd1306', 'adafruit-circuitpython-ssd1306==2.12.4')
     ],
 
     'custom_options': [

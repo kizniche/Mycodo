@@ -184,7 +184,7 @@ CAMERA_INFO = {
     'opencv': {
         'name': 'OpenCV',
         'dependencies_module': [
-            ('pip-pypi', 'imutils', 'imutils'),
+            ('pip-pypi', 'imutils', 'imutils==0.5.4'),
             ('pip-pypi', 'cv2', 'opencv-python==4.5.5.64')
         ],
         'capable_image': True,
@@ -207,7 +207,7 @@ CAMERA_INFO = {
     'http_address': {
         'name': 'URL (urllib)',
         'dependencies_module': [
-            ('pip-pypi', 'imutils', 'imutils'),
+            ('pip-pypi', 'imutils', 'imutils==0.5.4'),
             ('pip-pypi', 'cv2', 'opencv-python==4.5.5.64')
         ],
         'capable_image': True,
@@ -216,7 +216,7 @@ CAMERA_INFO = {
     'http_address_requests': {
         'name': 'URL (requests)',
         'dependencies_module': [
-            ('pip-pypi', 'imutils', 'imutils'),
+            ('pip-pypi', 'imutils', 'imutils==0.5.4'),
             ('pip-pypi', 'cv2', 'opencv-python==4.5.5.64')
         ],
         'capable_image': True,
@@ -249,8 +249,8 @@ LCD_INFO = {
             ('pip-pypi', 'PIL', 'Pillow==8.1.2'),
             ('pip-pypi', 'usb.core', 'pyusb==1.1.1'),
             ('pip-pypi', 'adafruit_extended_bus', 'Adafruit-extended-bus==1.0.2'),
-            ('pip-pypi', 'adafruit_framebuf', 'adafruit-circuitpython-framebuf'),
-            ('pip-pypi', 'adafruit_ssd1306', 'Adafruit-Circuitpython-SSD1306')
+            ('pip-pypi', 'adafruit_framebuf', 'adafruit-circuitpython-framebuf==1.4.9'),
+            ('pip-pypi', 'adafruit_ssd1306', 'adafruit-circuitpython-ssd1306==2.12.4')
         ],
         'interfaces': ['I2C', 'SPI']
     },
@@ -262,8 +262,8 @@ LCD_INFO = {
             ('pip-pypi', 'PIL', 'Pillow==8.1.2'),
             ('pip-pypi', 'usb.core', 'pyusb==1.1.1'),
             ('pip-pypi', 'adafruit_extended_bus', 'Adafruit-extended-bus==1.0.2'),
-            ('pip-pypi', 'adafruit_framebuf', 'adafruit-circuitpython-framebuf'),
-            ('pip-pypi', 'adafruit_ssd1306', 'Adafruit-Circuitpython-SSD1306')
+            ('pip-pypi', 'adafruit_framebuf', 'adafruit-circuitpython-framebuf==1.4.9'),
+            ('pip-pypi', 'adafruit_ssd1306', 'adafruit-circuitpython-ssd1306==2.12.4')
         ],
         'interfaces': ['I2C', 'SPI']
     },
