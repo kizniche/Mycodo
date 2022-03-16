@@ -87,7 +87,7 @@ OUTPUT_INFORMATION = {
     ],
 
     'dependencies_module': [
-        ('pip-pypi', 'smbus2', 'smbus2')
+        ('pip-pypi', 'smbus2', 'smbus2==0.4.1')
     ],
 
     'interfaces': ['I2C'],

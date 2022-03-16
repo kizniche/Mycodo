@@ -19,11 +19,11 @@ MCB2835_URL="http://www.airspayce.com/mikem/bcm2835/bcm2835-1.50.tar.gz"
 WIRINGPI_URL="https://project-downloads.drogon.net/wiringpi-latest.deb"
 INFLUXDB_VERSION="1.8.10"
 VIRTUALENV_VERSION="20.7.0"
-SETUPTOOLS_VERSION="60.9.3"  # Also set version in install/requirements.txt
+SETUPTOOLS_VERSION="60.10.0"  # Also set version in install/requirements.txt
 
 # Required apt packages. This has been tested with Raspbian for the
 # Raspberry Pi and Ubuntu, it should work with most Debian-based systems.
-APT_PKGS="gawk gcc g++ git libffi-dev libi2c-dev logrotate moreutils nginx sqlite3 wget python3 python3-pip python3-dev python3-setuptools python3-smbus python3-pylint-common rng-tools netcat"
+APT_PKGS="gawk gcc g++ git libffi-dev libi2c-dev logrotate moreutils nginx sqlite3 wget python3 python3-pip python3-dev python3-setuptools rng-tools netcat"
 
 PYTHON_BINARY_SYS_LOC="$(python3 -c "import os; print(os.environ['_'])")"
 
@@ -212,7 +212,7 @@ case "${1:-''}" in
             printf "#### Virtualenv doesn't exist. Creating...\n"
             python3 -m pip install virtualenv==${VIRTUALENV_VERSION}
             rm -rf "${MYCODO_PATH}"/env
-            python3 -m virtualenv --system-site-packages -p "${PYTHON_BINARY_SYS_LOC}" "${MYCODO_PATH}"/env
+            python3 -m virtualenv -p "${PYTHON_BINARY_SYS_LOC}" "${MYCODO_PATH}"/env
         else
             printf "#### Virtualenv already exists, skipping creation\n"
         fi

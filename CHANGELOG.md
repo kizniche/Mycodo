@@ -4,6 +4,7 @@ Following the upgrade, you will need to reboot to complete the upgrade.
 
 ### Bugfixes
 
+ - Fix installation on 64-bit OSs
  - Fix missing netcat and wget install dependencies ([#1124](https://github.com/kizniche/mycodo/issues/1124))
  - Fix inability to safe user settings
  - Fix install issue due to outdated apt repository

@@ -1,7 +1,7 @@
 """update function actions
 
 Revision ID: b354722c9b8b
-Revises: 0187ea22dc4b
+Revises: 56a3f39af852
 Create Date: 2022-02-13 20:06:50.915088
 
 """
@@ -15,7 +15,7 @@ from alembic_db.alembic_post_utils import write_revision_post_alembic
 
 # revision identifiers, used by Alembic.
 revision = 'b354722c9b8b'
-down_revision = '0187ea22dc4b'
+down_revision = '56a3f39af852'
 branch_labels = None
 depends_on = None
 
