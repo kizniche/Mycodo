@@ -94,7 +94,7 @@ class InputModule(AbstractInput):
         pin is connected.
 
         """
-        super(InputModule, self).__init__(input_dev, testing=testing, name=__name__)
+        super().__init__(input_dev, testing=testing, name=__name__)
 
         self.grovepi = None
         self.gpio = None

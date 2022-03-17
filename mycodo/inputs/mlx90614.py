@@ -74,7 +74,7 @@ INPUT_INFORMATION = {
 class InputModule(AbstractInput):
     """A sensor support class that measure the MLX90614's ambient and object temperature."""
     def __init__(self, input_dev, testing=False):
-        super(InputModule, self).__init__(input_dev, testing=testing, name=__name__)
+        super().__init__(input_dev, testing=testing, name=__name__)
 
         self.MLX90614_RAWIR1=0x04
         self.MLX90614_RAWIR2=0x05

@@ -18,7 +18,7 @@ class AtlasScientificUART(AbstractBaseAtlasScientific):
     """A Class to communicate with Atlas Scientific sensors via UART."""
 
     def __init__(self, serial_device, baudrate=9600):
-        super(AtlasScientificUART, self).__init__(interface='UART', name=serial_device.replace("/", "_"))
+        super().__init__(interface='UART', name=serial_device.replace("/", "_"))
 
         self.lock_timeout = 10
         self.lock_file = '/var/lock/atlas_UART_{}_{}.lock'.format(

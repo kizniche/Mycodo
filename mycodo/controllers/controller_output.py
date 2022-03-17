@@ -43,7 +43,7 @@ class OutputController(AbstractController, threading.Thread):
     """Class for controlling outputs."""
     def __init__(self, ready, debug):
         threading.Thread.__init__(self)
-        super(OutputController, self).__init__(ready, unique_id=None, name=__name__)
+        super().__init__(ready, unique_id=None, name=__name__)
 
         self.set_log_level_debug(debug)
         self.control = DaemonControl()

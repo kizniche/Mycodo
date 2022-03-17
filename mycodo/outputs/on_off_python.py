@@ -255,7 +255,7 @@ self.logger.info(log_string)""",
 class OutputModule(AbstractOutput):
     """An output support class that operates an output."""
     def __init__(self, output, testing=False):
-        super(OutputModule, self).__init__(output, testing=testing, name=__name__)
+        super().__init__(output, testing=testing, name=__name__)
 
         self.run_python = None
 

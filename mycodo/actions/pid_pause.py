@@ -48,7 +48,7 @@ ACTION_INFORMATION = {
 class ActionModule(AbstractFunctionAction):
     """Function Action: PID Pause."""
     def __init__(self, action_dev, testing=False):
-        super(ActionModule, self).__init__(action_dev, testing=testing, name=__name__)
+        super().__init__(action_dev, testing=testing, name=__name__)
 
         self.controller_id = None
 

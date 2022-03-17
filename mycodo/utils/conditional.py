@@ -54,7 +54,7 @@ control = DaemonControl(pyro_timeout={timeout})
 
 class ConditionalRun(AbstractConditional):
     def __init__(self, logger, function_id, message):
-        super(ConditionalRun, self).__init__(logger, function_id, message, timeout={timeout})
+        super().__init__(logger, function_id, message, timeout={timeout})
 
         self.logger = logger
         self.function_id = function_id

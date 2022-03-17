@@ -138,7 +138,7 @@ class CustomModule(AbstractFunction):
     Class to operate custom controller
     """
     def __init__(self, function, testing=False):
-        super(CustomModule, self).__init__(function, testing=testing, name=__name__)
+        super().__init__(function, testing=testing, name=__name__)
 
         self.timer_loop = time.time()
 

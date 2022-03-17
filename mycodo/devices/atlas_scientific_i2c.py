@@ -22,7 +22,7 @@ class AtlasScientificI2C(AbstractBaseAtlasScientific):
     default_address = 98  # the default address for the sensor
 
     def __init__(self, i2c_address=default_address, i2c_bus=default_bus):
-        super(AtlasScientificI2C, self).__init__(interface='I2C', name="_{}_{}".format(i2c_address, i2c_bus))
+        super().__init__(interface='I2C', name="_{}_{}".format(i2c_address, i2c_bus))
 
         self.lock_timeout = 10
         self.lock_file = '/var/lock/atlas_{}_{}_{}.lock'.format(

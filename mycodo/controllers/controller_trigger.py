@@ -67,7 +67,7 @@ class TriggerController(AbstractController, threading.Thread):
     """
     def __init__(self, ready, unique_id):
         threading.Thread.__init__(self)
-        super(TriggerController, self).__init__(ready, unique_id=unique_id, name=__name__)
+        super().__init__(ready, unique_id=unique_id, name=__name__)
 
         self.unique_id = unique_id
         self.sample_rate = None

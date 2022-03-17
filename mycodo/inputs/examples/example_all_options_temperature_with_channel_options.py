@@ -316,7 +316,7 @@ class InputModule(AbstractInput):
     """A dummy sensor support class."""
 
     def __init__(self, input_dev, testing=False):
-        super(InputModule, self).__init__(input_dev, testing=testing, name=__name__)
+        super().__init__(input_dev, testing=testing, name=__name__)
 
         #
         # Initialize variables (set to None)

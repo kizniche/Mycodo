@@ -122,7 +122,7 @@ class InputModule(AbstractInput):
     A support class for Sensorion's SHT31 Smart Gadget
     """
     def __init__(self, input_dev, testing=False):
-        super(InputModule, self).__init__(input_dev, testing=testing, name=__name__)
+        super().__init__(input_dev, testing=testing, name=__name__)
 
         self.gadget = None
         self.connected = False

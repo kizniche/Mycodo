@@ -47,7 +47,7 @@ class InputModule(AbstractInput):
     A sensor support class that pings a server and returns 1 if it's up and 0 if it's down.
     """
     def __init__(self, input_dev, testing=False):
-        super(InputModule, self).__init__(input_dev, testing=testing, name=__name__)
+        super().__init__(input_dev, testing=testing, name=__name__)
 
         self.location = None
         self.port = None

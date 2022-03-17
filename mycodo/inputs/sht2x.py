@@ -64,7 +64,7 @@ class InputModule(AbstractInput):
     and calculates the dew point
     """
     def __init__(self, input_dev, testing=False):
-        super(InputModule, self).__init__(input_dev, testing=testing, name=__name__)
+        super().__init__(input_dev, testing=testing, name=__name__)
 
         if not testing:
             self.initialize_input()

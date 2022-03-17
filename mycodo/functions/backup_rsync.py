@@ -216,7 +216,7 @@ class CustomModule(AbstractFunction):
     """
 
     def __init__(self, function, testing=False):
-        super(CustomModule, self).__init__(function, testing=testing, name=__name__)
+        super().__init__(function, testing=testing, name=__name__)
 
         self.is_setup = False
         self.timer_loop = time.time()

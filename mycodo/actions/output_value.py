@@ -54,7 +54,7 @@ ACTION_INFORMATION = {
 class ActionModule(AbstractFunctionAction):
     """Function Action: Output (Value)."""
     def __init__(self, action_dev, testing=False):
-        super(ActionModule, self).__init__(action_dev, testing=testing, name=__name__)
+        super().__init__(action_dev, testing=testing, name=__name__)
 
         self.output_device_id = None
         self.output_channel_id = None

@@ -358,7 +358,7 @@ class CustomModule(AbstractController, threading.Thread):
     """
     def __init__(self, ready, unique_id, testing=False):
         threading.Thread.__init__(self)
-        super(CustomModule, self).__init__(ready, unique_id=unique_id, name=__name__)
+        super().__init__(ready, unique_id=unique_id, name=__name__)
 
         self.unique_id = unique_id
         self.log_level_debug = None
@@ -380,7 +380,7 @@ class CustomModule(AbstractFunction):
     Class to operate custom controller
     """
     def __init__(self, function, testing=False):
-        super(CustomModule, self).__init__(function, testing=testing, name=__name__)
+        super().__init__(function, testing=testing, name=__name__)
 
         # Note: The following 2 lines are no longer needed to be defined here. Delete them.
         # self.unique_id = function.unique_id  

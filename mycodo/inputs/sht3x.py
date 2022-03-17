@@ -94,7 +94,7 @@ class InputModule(AbstractInput):
     them calculates the dew point and vapor pressure deficit
     """
     def __init__(self, input_dev, testing=False):
-        super(InputModule, self).__init__(input_dev, testing=testing, name=__name__)
+        super().__init__(input_dev, testing=testing, name=__name__)
 
         self.sensor = None
         self.measurement_count = 0

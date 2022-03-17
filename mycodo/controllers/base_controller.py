@@ -23,7 +23,7 @@ class AbstractController(AbstractBaseController):
     in controllers.
     """
     def __init__(self, ready, unique_id=None, name=__name__):
-        super(AbstractController, self).__init__(unique_id, name=__name__)
+        super().__init__(unique_id, name=__name__)
 
         self.thread_startup_timer = timeit.default_timer()
         self.running = False

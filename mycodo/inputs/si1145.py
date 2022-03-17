@@ -56,7 +56,7 @@ class InputModule(AbstractInput):
 
     def __init__(self, input_dev, testing=False):  # generally reserved for defining variable default values
 
-        super(InputModule, self).__init__(input_dev, testing=testing, name=__name__)
+        super().__init__(input_dev, testing=testing, name=__name__)
 
         self.sensor = None
 

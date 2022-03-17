@@ -77,7 +77,7 @@ class InputModule(AbstractInput):
         This gpio will be set high to power the sensor.
 
         """
-        super(InputModule, self).__init__(input_dev, testing=testing, name=__name__)
+        super().__init__(input_dev, testing=testing, name=__name__)
 
         self.pi = None
         self.pigpio = None

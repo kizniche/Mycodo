@@ -22,9 +22,9 @@ class AbstractInput(AbstractBaseController):
     """
     def __init__(self, input_dev, testing=False, name=__name__):
         if not testing:
-            super(AbstractInput, self).__init__(input_dev.unique_id, testing=testing, name=__name__)
+            super().__init__(input_dev.unique_id, testing=testing, name=__name__)
         else:
-            super(AbstractInput, self).__init__(None, testing=testing, name=__name__)
+            super().__init__(None, testing=testing, name=__name__)
 
         self.logger = None
         self.setup_logger(testing=testing, name=name, input_dev=input_dev)

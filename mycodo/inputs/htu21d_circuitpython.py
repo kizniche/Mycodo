@@ -62,7 +62,7 @@ class InputModule(AbstractInput):
     and calculates the dew point
     """
     def __init__(self, input_dev, testing=False):
-        super(InputModule, self).__init__(input_dev, testing=testing, name=__name__)
+        super().__init__(input_dev, testing=testing, name=__name__)
 
         self.sensor = None
         self.i2c_address = 0x40  # HTU21D-F Address

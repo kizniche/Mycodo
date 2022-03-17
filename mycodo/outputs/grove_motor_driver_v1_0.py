@@ -190,7 +190,7 @@ class OutputModule(AbstractOutput):
     reg_change_i2c = 0x11
 
     def __init__(self, output, testing=False):
-        super(OutputModule, self).__init__(output, testing=testing, name=__name__)
+        super().__init__(output, testing=testing, name=__name__)
 
         self.i2c_address = None
         self.bus = None

@@ -34,9 +34,9 @@ class AbstractOutput(AbstractBaseController):
     """
     def __init__(self, output, testing=False, name=__name__):
         if not testing:
-            super(AbstractOutput, self).__init__(output.unique_id, testing=testing, name=__name__)
+            super().__init__(output.unique_id, testing=testing, name=__name__)
         else:
-            super(AbstractOutput, self).__init__(None, testing=testing, name=__name__)
+            super().__init__(None, testing=testing, name=__name__)
 
         self.output_setup = False
         self.startup_timer = timeit.default_timer()

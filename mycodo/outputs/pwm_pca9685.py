@@ -318,7 +318,7 @@ OUTPUT_INFORMATION = {
 class OutputModule(AbstractOutput):
     """An output support class that operates an output."""
     def __init__(self, output, testing=False):
-        super(OutputModule, self).__init__(output, testing=testing, name=__name__)
+        super().__init__(output, testing=testing, name=__name__)
 
         self.pwm_duty_cycles = {}
         for i in range(16):

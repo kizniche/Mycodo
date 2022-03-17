@@ -29,9 +29,9 @@ class AbstractFunctionAction(AbstractBaseController):
     """
     def __init__(self, action_dev, testing=False, name=__name__):
         if not testing:
-            super(AbstractFunctionAction, self).__init__(action_dev.unique_id, testing=testing, name=__name__)
+            super().__init__(action_dev.unique_id, testing=testing, name=__name__)
         else:
-            super(AbstractFunctionAction, self).__init__(None, testing=testing, name=__name__)
+            super().__init__(None, testing=testing, name=__name__)
 
         self.action = action_dev
         self.action_setup = False

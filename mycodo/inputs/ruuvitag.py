@@ -90,7 +90,7 @@ class InputModule(AbstractInput):
     A support class for the RuuviTag
     """
     def __init__(self, input_dev, testing=False):
-        super(InputModule, self).__init__(input_dev, testing=testing, name=__name__)
+        super().__init__(input_dev, testing=testing, name=__name__)
 
         self.sensor = None
         self.ruuvitag = None

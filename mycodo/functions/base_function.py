@@ -21,9 +21,9 @@ class AbstractFunction(AbstractBaseController):
     """
     def __init__(self, function, testing=False, name=__name__):
         if not testing:
-            super(AbstractFunction, self).__init__(function.unique_id, testing=testing, name=__name__)
+            super().__init__(function.unique_id, testing=testing, name=__name__)
         else:
-            super(AbstractFunction, self).__init__(None, testing=testing, name=__name__)
+            super().__init__(None, testing=testing, name=__name__)
 
         self.logger = None
         self.setup_logger(testing=testing, name=name, function=function)

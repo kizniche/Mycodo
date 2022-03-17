@@ -48,7 +48,7 @@ class InputModule(AbstractInput):
     """A sensor support class that monitors the raspberry pi's cpu load."""
 
     def __init__(self, input_dev, testing=False):
-        super(InputModule, self).__init__(input_dev, testing=testing, name=__name__)
+        super().__init__(input_dev, testing=testing, name=__name__)
 
     def get_measurement(self):
         """Gets the cpu load averages."""

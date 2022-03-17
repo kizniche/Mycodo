@@ -29,7 +29,7 @@ ACTION_INFORMATION = {
 class ActionModule(AbstractFunctionAction):
     """Function Action: System Restart"""
     def __init__(self, action_dev, testing=False):
-        super(ActionModule, self).__init__(action_dev, testing=testing, name=__name__)
+        super().__init__(action_dev, testing=testing, name=__name__)
 
         self.none = None
 

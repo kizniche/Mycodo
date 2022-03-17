@@ -41,7 +41,7 @@ ACTION_INFORMATION = {
 class ActionModule(AbstractFunctionAction):
     """Function Action: Send Email."""
     def __init__(self, action_dev, testing=False):
-        super(ActionModule, self).__init__(action_dev, testing=testing, name=__name__)
+        super().__init__(action_dev, testing=testing, name=__name__)
 
         self.email = None
 

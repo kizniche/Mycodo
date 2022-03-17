@@ -21,9 +21,9 @@ class AbstractWidget(AbstractBaseController):
     """
     def __init__(self, widget, testing=False, name=__name__):
         if not testing:
-            super(AbstractWidget, self).__init__(widget.unique_id, testing=testing, name=__name__)
+            super().__init__(widget.unique_id, testing=testing, name=__name__)
         else:
-            super(AbstractWidget, self).__init__(None, testing=testing, name=__name__)
+            super().__init__(None, testing=testing, name=__name__)
 
         self.startup_timer = timeit.default_timer()
 
