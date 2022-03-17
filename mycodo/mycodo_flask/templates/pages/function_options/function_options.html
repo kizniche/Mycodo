@@ -25,6 +25,18 @@
 
   {% if each_function.function_type == 'function_actions' %}
 
+    <div class="row small-gutters" style="padding: 0.5em">
+
+      <div class="col-12">
+        {{_("Name")}}: Execute Actions
+      </div>
+
+      <div class="col-12" style="padding-top: 0.3em">
+        Sequentially execute all listed Actions.
+      </div>
+
+    </div>
+
     <div class="row small-gutters" style="padding: 0.3em 0.2em 0.3em 0.3em;">
       <div class="col-auto">
         {{form_function_base.name.label(class_='control-label')}}
@@ -40,22 +52,33 @@
       </div>
     </div>
 
+  </form>
+
+  <form method="post" action="/function">
+    {{form_actions.csrf_token}}
+    {{form_actions.device_id(class_='form-control', value=each_function.unique_id)}}
+    {{form_actions.function_type(class_='form-control', value='function')}}
+
     <div class="row align-items-end small-gutters" style="border-bottom: 1px solid #ddd; padding: 1.5em 0 0.2em 0.1em">
       <div class="col-auto">
-        {{form_function_base.action_type(class_='form-control')}}
+        <select class="selectpicker" data-live-search="true" title="{{_('Action')}}: {{dict_translation['select_one']['title']}}" id="action_type_{{each_function.unique_id}}" name="action_type">
+        {% for value, name in choices_actions %}
+          <option value="{{value}}">{{name}}</option>
+        {% endfor %}
+        </select>
       </div>
       <div class="col-auto">
-        <input onclick="return $(this).processRequest(this, 'add_action');" name="add_action" value="{{_('Add Action')}}" class="form-control btn btn-primary btn-sm btn-block" type="button"/>
+        <input onclick="return $(this).processRequest(this, 'add_action');" name="add_action" value="{{_('Add')}}" class="form-control btn btn-primary btn-sm btn-block" type="button"/>
       </div>
     </div>
 
   </form>
 
-  {% set function_type = 'function' %}
+  {% set post_action = "/function" %}
 
   <div id="mod_function_actions_{{each_function.unique_id}}">
-  {% for each_action in actions if each_action.function_id == each_function.unique_id %}
-    {% include 'pages/function_options/actions.html' %}
+  {% for each_action in action if each_action.function_id == each_function.unique_id %}
+    {% include 'pages/actions.html' %}
   {% endfor %}
   </div>
 

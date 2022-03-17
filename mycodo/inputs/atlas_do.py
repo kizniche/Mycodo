@@ -80,7 +80,7 @@ INPUT_INFORMATION = {
         }
     ],
 
-    'custom_actions': [
+    'custom_commands': [
         {
             'type': 'message',
             'default_value': """A one- or two-point calibration can be performed. After exposing the probe to air for 30 seconds until readings stabilize, press Calibrate (Air). If you require accuracy below 1.0 mg/L, you can place the probe in a 0 mg/L solution for 30 to 90 seconds until readings stabilize, then press Calibrate (0 mg/L). You can also clear the currently-saved calibration by pressing Clear Calibration. Status messages will be set to the Daemon Log, accessible from Config -> Mycodo Logs -> Daemon Log."""

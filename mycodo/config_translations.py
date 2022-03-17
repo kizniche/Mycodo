@@ -33,6 +33,8 @@ TRANSLATIONS = {
         'title': lazy_gettext('Cancel')},
     'clear': {
         'title': lazy_gettext('Clear')},
+    'commands': {
+        'title': lazy_gettext('Commands')},
     'completed': {
         'title': lazy_gettext('Completed')},
     'conditional': {

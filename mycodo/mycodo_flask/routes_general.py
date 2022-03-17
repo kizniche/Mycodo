@@ -609,8 +609,6 @@ def async_data(device_id, device_type, measurement_id, start_seconds, end_second
             end_str=end_str,
             value='COUNT')
 
-        logger.info(f"TEST00: {data}")
-
         if not data:
             return '', 204
 

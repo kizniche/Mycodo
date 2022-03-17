@@ -26,6 +26,7 @@ import threading
 import time
 
 from mycodo.controllers.base_controller import AbstractController
+from mycodo.databases.models import Actions
 from mycodo.databases.models import Conversion
 from mycodo.databases.models import DeviceMeasurements
 from mycodo.databases.models import Input
@@ -36,8 +37,8 @@ from mycodo.databases.models import SMTP
 from mycodo.mycodo_client import DaemonControl
 from mycodo.utils.database import db_retrieve_table_daemon
 from mycodo.utils.influx import add_measurements_influxdb
-from mycodo.utils.inputs import parse_measurement
 from mycodo.utils.inputs import parse_input_information
+from mycodo.utils.inputs import parse_measurement
 from mycodo.utils.lockfile import LockFile
 from mycodo.utils.modules import load_module_from_file
 
@@ -221,15 +222,29 @@ class InputController(AbstractController, threading.Thread):
                     self.update_measure()
                     self.get_new_measurement = False
 
-                # Add measurement(s) to influxdb
+                # Acquiring measurements was successful
                 if self.measurement_success:
+                    measurements_dict = self.create_measurements_dict()
+
+                    # Run any actions
+                    message = "Executing actions of Input."
+                    actions = db_retrieve_table_daemon(Actions).filter(
+                        Actions.function_id == self.unique_id).all()
+                    for each_action in actions:
+                        message = self.control.trigger_action(
+                            each_action.unique_id,
+                            value=measurements_dict,
+                            message=message,
+                            debug=self.log_level_debug)
+
+                    # Add measurement(s) to influxdb
                     use_same_timestamp = True
                     if ('measurements_use_same_timestamp' in self.dict_inputs[self.device] and
                             not self.dict_inputs[self.device]['measurements_use_same_timestamp']):
                         use_same_timestamp = False
                     add_measurements_influxdb(
                         self.unique_id,
-                        self.create_measurements_dict(),
+                        measurements_dict,
                         use_same_timestamp=use_same_timestamp)
                     self.measurement_success = False
 
@@ -416,15 +431,15 @@ class InputController(AbstractController, threading.Thread):
     def custom_button_exec_function(self, button_id, args_dict, thread=True):
         """Execute function from custom action button press."""
         try:
-            run_action = getattr(self.measure_input, button_id)
+            run_command = getattr(self.measure_input, button_id)
             if thread:
-                thread_run_action = threading.Thread(
-                    target=run_action,
+                thread_run_command = threading.Thread(
+                    target=run_command,
                     args=(args_dict,))
-                thread_run_action.start()
+                thread_run_command.start()
                 return 0, "Command sent to Input Controller and is running in the background."
             else:
-                return_val = run_action(args_dict)
+                return_val = run_command(args_dict)
                 return 0, "Command sent to Input Controller. Returned: {}".format(return_val)
         except Exception as err:
             msg = "Error executing button press function '{}': {}".format(

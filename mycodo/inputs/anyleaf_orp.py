@@ -60,10 +60,10 @@ INPUT_INFORMATION = {
             'phrase': 'Calibration data: internal ORP'
         },
     ],
-    'custom_actions_message': """Calibrate: Place your probe in a solution of known ORP. Set 
+    'custom_commands_message': """Calibrate: Place your probe in a solution of known ORP. Set 
 the known ORP value in the `Calibration ORP` field, and press `Calibrate`. You don't need to change
  the values under `Custom Options`.""",
-    'custom_actions': [
+    'custom_commands': [
         {
             'id': 'calibration_orp',
             'type': 'float',

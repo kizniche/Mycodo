@@ -83,7 +83,7 @@ INPUT_INFORMATION = {
         }
     ],
 
-    'custom_actions_message': 'Zero point calibration: activate the sensor in a 400 ppmv CO2 environment (outside '
+    'custom_commands_message': 'Zero point calibration: activate the sensor in a 400 ppmv CO2 environment (outside '
                               'air), allow to run for 20 minutes, then press the Calibrate Zero Point button.<br>Span '
                               'point calibration: activate the sensor in an environment with a stable CO2 concentration'
                               ' between 1000 and 2000 ppmv (2000 recommended), allow to run for 20 minutes, enter the '
@@ -91,7 +91,7 @@ INPUT_INFORMATION = {
                               'button. If running a span point calibration, run a zero point calibration first. A span '
                               'point calibration is not necessary and should only be performed if you know what you are'
                               ' doing and can accurately produce a 2000 ppmv environment.',
-    'custom_actions': [
+    'custom_commands': [
         {
             'id': 'calibrate_zero_point',
             'type': 'button',

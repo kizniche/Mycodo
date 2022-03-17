@@ -309,6 +309,8 @@
                         y: 999
                       });
                       {% if not hide_tooltips %}$('input[title]').tooltip({placement: 'top'});{% endif %}
+                      $('#action_type_' + data.data.function_id).selectpicker('refresh');
+                      $('#condition_type_' + data.data.function_id).selectpicker('refresh');
                     }
                     popup_response(data);
                   },
@@ -419,7 +421,7 @@
                 document.getElementById("pid_activity_indicator_" + data.data.function_id).value = "PID Controller [Active]";
               }
               if (action === 'delete_action' && 'action_id' in data.data) {
-                document.getElementById("mod_function_action_" + data.data.action_id).remove();
+                document.getElementById("mod_action_" + data.data.action_id).remove();
                 popup_response(data);
               }
               if (action === 'delete_condition' && 'condition_id' in data.data) {

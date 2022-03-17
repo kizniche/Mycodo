@@ -22,7 +22,9 @@ Following the upgrade, you will need to reboot to complete the upgrade.
 
 ### Features
 
- - Add ability to import custom Action modules (Configure -> Custom Actions))
+ - Add ability to execute Actions for Inputs
+ - Add ability to import custom Action modules (Configure -> Custom Actions)
+ - Add ability to cast MQTT Action payload as integer or float
  - Add camera library: libcamera ([#1117](https://github.com/kizniche/mycodo/issues/1117))
  - Add Input: TTN Integration: Data Storage (TTN v3, Payload jmespath Expression)
  - Add Output: Kasa HS300 Smart WiFi Power Strip
@@ -39,6 +41,7 @@ Following the upgrade, you will need to reboot to complete the upgrade.
  - Update python library versions in requirements.txt
  - Add button to install all dependencies on Diagnostics page
  - Add Error Codes to log lines and the manual
+ - Switch to using suntime for Sunrise/Sunset calculation
 
 
 ## 8.12.9 (2021-12-02)

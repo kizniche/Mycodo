@@ -158,10 +158,10 @@ runSelfUpgrade() {
     printf "Done.\n"
   fi
 
-  if [ -d "${CURRENT_MYCODO_DIRECTORY}"/mycodo/function_actions/custom_function_actions ] ; then
-    printf "Copying mycodo/functions/custom_function_actions..."
-    if ! cp "${CURRENT_MYCODO_DIRECTORY}"/mycodo/functions/custom_function_actions/*.py "${THIS_MYCODO_DIRECTORY}"/mycodo/functions/custom_function_actions/ ; then
-      printf "Failed: Error while trying to copy mycodo/functions/custom_function_actions"
+  if [ -d "${CURRENT_MYCODO_DIRECTORY}"/mycodo/actions/custom_actions ] ; then
+    printf "Copying mycodo/actions/custom_actions..."
+    if ! cp "${CURRENT_MYCODO_DIRECTORY}"/mycodo/actions/custom_actions/*.py "${THIS_MYCODO_DIRECTORY}"/mycodo/actions/custom_actions/ ; then
+      printf "Failed: Error while trying to copy mycodo/actions/custom_actions"
       error_found
     fi
     printf "Done.\n"

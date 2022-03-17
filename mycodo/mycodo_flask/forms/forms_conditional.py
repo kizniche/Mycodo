@@ -46,7 +46,7 @@ class Conditional(FlaskForm):
         widget=NumberInput(step='any'))
     condition_type = SelectField(
         choices=[('', TRANSLATIONS['select_one']['title'])] + CONDITIONAL_CONDITIONS)
-    add_condition = SubmitField(lazy_gettext('Add Condition'))
+    add_condition = SubmitField(lazy_gettext('Add'))
 
 
 class ConditionalConditions(FlaskForm):

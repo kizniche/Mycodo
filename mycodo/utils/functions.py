@@ -93,6 +93,8 @@ def parse_function_information(exclude_custom=False):
             dict_controllers = dict_has_value(dict_controllers, function_custom, 'function_actions')
             dict_controllers = dict_has_value(dict_controllers, function_custom, 'custom_options')
             dict_controllers = dict_has_value(dict_controllers, function_custom, 'custom_channel_options')
-            dict_controllers = dict_has_value(dict_controllers, function_custom, 'custom_actions')
+
+            dict_controllers = dict_has_value(dict_controllers, function_custom, 'custom_commands_message')
+            dict_controllers = dict_has_value(dict_controllers, function_custom, 'custom_commands')
 
     return dict_controllers

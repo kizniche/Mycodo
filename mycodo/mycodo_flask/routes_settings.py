@@ -12,7 +12,7 @@ from flask import request
 from flask import url_for
 from flask.blueprints import Blueprint
 
-from mycodo.config import PATH_FUNCTION_ACTIONS_CUSTOM
+from mycodo.config import PATH_ACTIONS_CUSTOM
 from mycodo.config import PATH_FUNCTIONS_CUSTOM
 from mycodo.config import PATH_INPUTS_CUSTOM
 from mycodo.config import PATH_OUTPUTS_CUSTOM
@@ -189,14 +189,14 @@ def settings_action():
 
     dict_actions = {}
 
-    for each_file in os.listdir(PATH_FUNCTION_ACTIONS_CUSTOM):
+    for each_file in os.listdir(PATH_ACTIONS_CUSTOM):
         if each_file not in excluded_files:
             try:
-                full_path_file = os.path.join(PATH_FUNCTION_ACTIONS_CUSTOM, each_file)
-                action_info = load_module_from_file(full_path_file, 'function_actions')
+                full_path_file = os.path.join(PATH_ACTIONS_CUSTOM, each_file)
+                action_info = load_module_from_file(full_path_file, 'actions')
 
                 if action_info:
-                    func_info = action_info.FUNCTION_ACTION_INFORMATION
+                    func_info = action_info.ACTION_INFORMATION
                     dict_actions[func_info['name_unique']] = {}
                     dict_actions[func_info['name_unique']]['name'] = func_info['name']
             except:

@@ -173,7 +173,7 @@ OUTPUT_INFORMATION = {
 
     'interfaces': ['PYTHON'],
 
-    'custom_actions': [
+    'custom_commands': [
         {
             'type': 'message',
             'default_value': """Set the Duty Cycle."""

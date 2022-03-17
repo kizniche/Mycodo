@@ -58,7 +58,7 @@ INPUT_INFORMATION = {
     'i2c_location': ['0x62'],
     'i2c_address_editable': False,
 
-    'custom_actions': [
+    'custom_commands': [
         {
             'type': 'message',
             'default_value': """You can force the CO2 calibration for a specific CO2 concentration value (in ppmv)."""

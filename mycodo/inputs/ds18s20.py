@@ -54,7 +54,7 @@ INPUT_INFORMATION = {
 
     'interfaces': ['1WIRE'],
 
-    'custom_actions': [
+    'custom_commands': [
         {
             'type': 'message',
             'default_value': """Set the resolution, precision, and response time for the sensor. This setting will be written to the EEPROM to allow persistence after power loss. The EEPROM has a limited amount of writes (>50k)."""

@@ -122,7 +122,7 @@ INPUT_INFORMATION = {
             'name': 'ADC Channel: EC',
             'phrase': 'The ADC channel the EC sensor is connected'
         },
-        {  # This message will be displayed after the new line
+        {
             'type': 'message',
             'default_value': 'Temperature Compensation',
         },
@@ -147,7 +147,7 @@ INPUT_INFORMATION = {
             'name': "{}: {}".format(lazy_gettext('Temperature Compensation'), lazy_gettext('Max Age')),
             'phrase': lazy_gettext('The maximum age (seconds) of the measurement to use')
         },
-        {  # This message will be displayed after the new line
+        {
             'type': 'message',
             'default_value': 'pH Calibration Data',
         },
@@ -172,7 +172,7 @@ INPUT_INFORMATION = {
             'name': 'Cal data: T1 (internal)',
             'phrase': 'Calibration data: Temperature'
         },
-        {  # This starts a new line for the next options
+        {
             'type': 'new_line'
         },
         {
@@ -196,7 +196,7 @@ INPUT_INFORMATION = {
             'name': 'Cal data: T2 (internal)',
             'phrase': 'Calibration data: Temperature'
         },
-        {  # This message will be displayed after the new line
+        {
             'type': 'message',
             'default_value': 'EC Calibration Data'
         },
@@ -221,7 +221,7 @@ INPUT_INFORMATION = {
             'name': 'EC cal data: T1 (internal)',
             'phrase': 'EC calibration data: EC'
         },
-        {  # This starts a new line for the next options
+        {
             'type': 'new_line'
         },
         {
@@ -246,8 +246,8 @@ INPUT_INFORMATION = {
             'phrase': 'EC calibration data: EC'
         },
     ],
-    'custom_actions': [
-        {  # This message will be displayed after the new line
+    'custom_commands': [
+        {
             'type': 'message',
             'default_value': """pH Calibration Actions: Place your probe in a solution of known pH.
             Set the known pH value in the "Calibration buffer pH" field, and press "Calibrate pH, slot 1".
@@ -279,7 +279,7 @@ INPUT_INFORMATION = {
             'wait_for_return': True,
             'name': 'Clear pH Calibration Slots'
         },
-        {  # This message will be displayed after the new line
+        {
             'type': 'message',
             'default_value': """EC Calibration Actions: Place your probe in a solution of known EC.
             Set the known EC value in the "Calibration standard EC" field, and press "Calibrate EC, slot 1".

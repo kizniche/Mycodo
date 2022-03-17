@@ -67,7 +67,7 @@ INPUT_INFORMATION = {
     'i2c_location': ['0x61'],
     'i2c_address_editable': False,
 
-    'custom_actions': [
+    'custom_commands': [
         {
             'type': 'message',
             'default_value': """A soft reset restores factory default values."""

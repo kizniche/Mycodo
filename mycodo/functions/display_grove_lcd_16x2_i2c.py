@@ -181,7 +181,7 @@ FUNCTION_INFORMATION = {
         'display_backlight_color'
     ],
 
-    'custom_actions': [
+    'custom_commands': [
         {
             'id': 'backlight_on',
             'type': 'button',

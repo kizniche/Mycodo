@@ -48,12 +48,12 @@ INPUT_INFORMATION = {
     'uart_baud_rate': 9600,
     'ftdi_location': '/dev/ttyUSB0',
 
-    'custom_actions_message':
+    'custom_commands_message':
         'The I2C address can be changed. Enter a new address in the 0xYY format '
         '(e.g. 0x22, 0x50), then press Set I2C Address. Remember to deactivate and '
         'change the I2C address option after setting the new address.',
 
-    'custom_actions': [
+    'custom_commands': [
         {
             'type': 'message',
             'default_value': """A one- or two-point calibration can be performed. After exposing the probe to a concentration of CO2 between 3,000 and 5,000 ppmv until readings stabilize, press Calibrate (High). You can place the probe in a 0 CO2 environment until readings stabilize, then press Calibrate (Zero). You can also clear the currently-saved calibration by pressing Clear Calibration, returning to the factory-set calibration. Status messages will be set to the Daemon Log, accessible from Config -> Mycodo Logs -> Daemon Log."""

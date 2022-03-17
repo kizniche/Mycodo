@@ -163,8 +163,8 @@ FUNCTION_INFORMATION = {
     # Each button will execute a different function within the Function Controller and pass any
     # input (text, numbers, selections, etc.) the user entered. This is useful for such things as
     # calibration.
-    'custom_actions_message': 'This is a message for custom actions.',
-    'custom_actions': [
+    'custom_commands_message': 'This is a message for custom actions.',
+    'custom_commands': [
         {
             'id': 'button_one_value',
             'type': 'integer',

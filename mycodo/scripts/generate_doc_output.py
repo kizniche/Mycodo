@@ -178,12 +178,12 @@ def generate_controller_doc(out_file, each_data):
     option_headings = [
         ('custom_options', ""),
         ('custom_channel_options', "Channel Options"),
-        ('custom_actions', "Actions"),
+        ('custom_commands', "Commands"),
     ]
 
     for each_opt, each_head in option_headings:
         if each_opt in each_data:
-            if each_opt != 'custom_options':
+            if each_head:
                 out_file.write("\n#### {}\n".format(each_head))
 
             for each_option in each_data[each_opt]:
@@ -212,7 +212,7 @@ def generate_controller_doc(out_file, each_data):
                     elif each_option['type'] == 'bool':
                         out_file.write("\n- Type: Boolean")
 
-                    # Less common stypes
+                    # Less common types
                     elif each_option['type'] == 'select_device':
                         out_file.write("\n- Type: Select Device")
                     elif each_option['type'] == 'select_measurement_channel':
@@ -243,6 +243,7 @@ def generate_controller_doc(out_file, each_data):
                                 if i < len(each_option['options_select']):
                                     out_file.write(", ")
 
+                    # Show the select options
                     if 'default_value' in each_option and each_option['default_value']:
                         if each_option['type'] in ['integer', 'text', 'float', 'bool']:
                             out_file.write("\n- Default Value: {}".format(each_option['default_value']))

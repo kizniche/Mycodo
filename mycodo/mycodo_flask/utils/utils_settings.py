@@ -21,7 +21,7 @@ from mycodo.config import DAEMON_LOG_FILE
 from mycodo.config import DEPENDENCY_INIT_FILE
 from mycodo.config import DEPENDENCY_LOG_FILE
 from mycodo.config import INSTALL_DIRECTORY
-from mycodo.config import PATH_FUNCTION_ACTIONS_CUSTOM
+from mycodo.config import PATH_ACTIONS_CUSTOM
 from mycodo.config import PATH_FUNCTIONS_CUSTOM
 from mycodo.config import PATH_INPUTS_CUSTOM
 from mycodo.config import PATH_OUTPUTS_CUSTOM
@@ -61,7 +61,7 @@ from mycodo.mycodo_flask.utils.utils_general import delete_entry_with_id
 from mycodo.mycodo_flask.utils.utils_general import flash_form_errors
 from mycodo.mycodo_flask.utils.utils_general import flash_success_errors
 from mycodo.utils.database import db_retrieve_table
-from mycodo.utils.function_actions import parse_function_action_information
+from mycodo.utils.actions import parse_action_information
 from mycodo.utils.functions import parse_function_information
 from mycodo.utils.inputs import parse_input_information
 from mycodo.utils.modules import load_module_from_file
@@ -582,9 +582,9 @@ def settings_action_import(form):
 
     try:
         install_dir = os.path.abspath(INSTALL_DIRECTORY)
-        tmp_directory = os.path.join(install_dir, 'mycodo/function_actions/tmp_function_actions')
+        tmp_directory = os.path.join(install_dir, 'mycodo/actions/tmp_actions')
         assure_path_exists(tmp_directory)
-        assure_path_exists(PATH_FUNCTION_ACTIONS_CUSTOM)
+        assure_path_exists(PATH_ACTIONS_CUSTOM)
         tmp_name = 'tmp_action_testing.py'
         full_path_tmp = os.path.join(tmp_directory, tmp_name)
 
@@ -597,41 +597,41 @@ def settings_action_import(form):
 
         try:
             action_info = load_module_from_file(full_path_tmp, 'actions')
-            if not action_info or not hasattr(action_info, 'FUNCTION_ACTION_INFORMATION'):
-                error.append("Could not load FUNCTION_ACTION_INFORMATION dictionary from "
+            if not action_info or not hasattr(action_info, 'ACTION_INFORMATION'):
+                error.append("Could not load ACTION_INFORMATION dictionary from "
                              "the uploaded action module")
         except Exception:
             error.append("Could not load uploaded file as a python module:\n"
                          "{}".format(traceback.format_exc()))
 
-        dict_actions = parse_function_action_information()
+        dict_actions = parse_action_information()
         list_actions = []
         for each_key in dict_actions.keys():
             list_actions.append(each_key.lower())
 
         if not error:
-            if 'name_unique' not in action_info.FUNCTION_ACTION_INFORMATION:
+            if 'name_unique' not in action_info.ACTION_INFORMATION:
                 error.append(
                     "'name_unique' not found in "
-                    "FUNCTION_ACTION_INFORMATION dictionary")
-            elif action_info.FUNCTION_ACTION_INFORMATION['name_unique'] == '':
+                    "ACTION_INFORMATION dictionary")
+            elif action_info.ACTION_INFORMATION['name_unique'] == '':
                 error.append("'name_unique' is empty")
-            elif action_info.FUNCTION_ACTION_INFORMATION['name_unique'].lower() in list_actions:
+            elif action_info.ACTION_INFORMATION['name_unique'].lower() in list_actions:
                 error.append(
                     "'name_unique' is not unique, there "
                     "is already an action with that name ({})".format(
-                        action_info.FUNCTION_ACTION_INFORMATION['name_unique'].lower()))
+                        action_info.ACTION_INFORMATION['name_unique'].lower()))
 
-            if 'name' not in action_info.FUNCTION_ACTION_INFORMATION:
-                error.append("'name' not found in FUNCTION_ACTION_INFORMATION dictionary")
-            elif action_info.FUNCTION_ACTION_INFORMATION['name'] == '':
+            if 'name' not in action_info.ACTION_INFORMATION:
+                error.append("'name' not found in ACTION_INFORMATION dictionary")
+            elif action_info.ACTION_INFORMATION['name'] == '':
                 error.append("'name' is empty")
 
-            if 'dependencies_module' in action_info.FUNCTION_ACTION_INFORMATION:
-                if not isinstance(action_info.FUNCTION_ACTION_INFORMATION['dependencies_module'], list):
+            if 'dependencies_module' in action_info.ACTION_INFORMATION:
+                if not isinstance(action_info.ACTION_INFORMATION['dependencies_module'], list):
                     error.append("'dependencies_module' must be a list of tuples")
                 else:
-                    for each_dep in action_info.FUNCTION_ACTION_INFORMATION['dependencies_module']:
+                    for each_dep in action_info.ACTION_INFORMATION['dependencies_module']:
                         if not isinstance(each_dep, tuple):
                             error.append("'dependencies_module' must be a list of tuples")
                         elif len(each_dep) != 3:
@@ -648,10 +648,10 @@ def settings_action_import(form):
 
         if not error:
             # Determine filename
-            unique_name = '{}.py'.format(action_info.FUNCTION_ACTION_INFORMATION['name_unique'].lower())
+            unique_name = '{}.py'.format(action_info.ACTION_INFORMATION['name_unique'].lower())
 
             # Move module from temp directory to function directory
-            full_path_final = os.path.join(PATH_FUNCTION_ACTIONS_CUSTOM, unique_name)
+            full_path_final = os.path.join(PATH_ACTIONS_CUSTOM, unique_name)
             os.rename(full_path_tmp, full_path_final)
 
             # Reload frontend to refresh the actions
@@ -675,7 +675,7 @@ def settings_action_delete(form):
 
     action_device_name = form.action_id.data
     file_name = '{}.py'.format(form.action_id.data.lower())
-    full_path_file = os.path.join(PATH_FUNCTION_ACTIONS_CUSTOM, file_name)
+    full_path_file = os.path.join(PATH_ACTIONS_CUSTOM, file_name)
 
     # Check if any action entries exist
     action_dev = Actions.query.filter(

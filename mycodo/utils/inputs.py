@@ -301,7 +301,7 @@ def parse_input_information(exclude_custom=False):
             dict_inputs = dict_has_value(dict_inputs, input_custom, 'custom_options')
             dict_inputs = dict_has_value(dict_inputs, input_custom, 'custom_channel_options')
 
-            dict_inputs = dict_has_value(dict_inputs, input_custom, 'custom_actions_message')
-            dict_inputs = dict_has_value(dict_inputs, input_custom, 'custom_actions')
+            dict_inputs = dict_has_value(dict_inputs, input_custom, 'custom_commands_message')
+            dict_inputs = dict_has_value(dict_inputs, input_custom, 'custom_commands')
 
     return dict_inputs

@@ -28,6 +28,7 @@
       <input onclick="return $(this).processRequest(this, 'execute_all_actions');" name="execute_all_actions" value="{{_('Execute All Actions')}}" class="form-control btn btn-primary btn-sm btn-block" type="button"/>
     </div>
   {% endif %}
+
   </div> <!- grid-stack-item-content ->
 </form>
 
@@ -35,7 +36,7 @@
   <div class="modal-dialog modal-xl" role="document">
     <div class="modal-content" style="padding: 1em">
       <div class="modal-header">
-        <h5 class="modal-title">Function Configuration</h5>
+        <h5 class="modal-title">Function Configuration{% if each_function.function_type in dict_controllers %}: {{dict_controllers[each_function.function_type]['function_name']}}{% endif %}</h5>
       </div>
       {% include 'pages/function_options/function_options.html' %}
     </div>

@@ -93,9 +93,6 @@ def trigger_mod(form):
             if -180 > form.longitude.data > 180:
                 messages["error"].append("{id} must be >= -180 and <= 180".format(
                     id=form.longitude.label.text))
-            if form.zenith.data is None:
-                messages["error"].append("{id} must be set".format(
-                    id=form.zenith.label.text))
             if form.date_offset_days.data is None:
                 messages["error"].append("{id} must be set".format(
                     id=form.date_offset_days.label.text))
@@ -105,7 +102,6 @@ def trigger_mod(form):
             trigger.rise_or_set = form.rise_or_set.data
             trigger.latitude = form.latitude.data
             trigger.longitude = form.longitude.data
-            trigger.zenith = form.zenith.data
             trigger.date_offset_days = form.date_offset_days.data
             trigger.time_offset_minutes = form.time_offset_minutes.data
 

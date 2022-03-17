@@ -12,6 +12,7 @@ from flask_babel import gettext
 from mycodo.config import PATH_PYTHON_CODE_USER
 from mycodo.config_translations import TRANSLATIONS
 from mycodo.databases import set_uuid
+from mycodo.databases.models import Actions
 from mycodo.databases.models import DeviceMeasurements
 from mycodo.databases.models import Input
 from mycodo.databases.models import InputChannel
@@ -24,6 +25,7 @@ from mycodo.mycodo_flask.utils.utils_general import custom_channel_options_retur
 from mycodo.mycodo_flask.utils.utils_general import custom_options_return_json
 from mycodo.mycodo_flask.utils.utils_general import delete_entry_with_id
 from mycodo.mycodo_flask.utils.utils_general import return_dependencies
+from mycodo.utils.actions import parse_action_information
 from mycodo.utils.inputs import parse_input_information
 from mycodo.utils.system_pi import parse_custom_option_values
 

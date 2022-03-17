@@ -350,7 +350,7 @@ INPUT_INFORMATION = {
             'phrase': lazy_gettext('Set the calibration method to perform during Input activation')
         },
     ],
-    'custom_actions': [
+    'custom_commands': [
         {
             'type': 'message',
             'default_value': """pH Calibration Actions: Place your probe in a solution of known pH.

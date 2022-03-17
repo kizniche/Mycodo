@@ -47,12 +47,12 @@ INPUT_INFORMATION = {
     'uart_baud_rate': 9600,
     'ftdi_location': '/dev/ttyUSB0',
 
-    'custom_actions_message':
+    'custom_commands_message':
         'The I2C address can be changed. Enter a new address in the 0xYY format '
         '(e.g. 0x22, 0x50), then press Set I2C Address. Remember to deactivate and '
         'change the I2C address option after setting the new address.',
 
-    'custom_actions': [
+    'custom_commands': [
         {
             'id': 'new_i2c_address',
             'type': 'text',

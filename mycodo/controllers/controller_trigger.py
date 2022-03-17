@@ -38,11 +38,11 @@ from mycodo.databases.models import SMTP
 from mycodo.databases.models import Trigger
 from mycodo.databases.utils import session_scope
 from mycodo.mycodo_client import DaemonControl
+from mycodo.utils.actions import parse_action_information
+from mycodo.utils.actions import trigger_controller_actions
 from mycodo.utils.database import db_retrieve_table_daemon
-from mycodo.utils.function_actions import parse_function_action_information
-from mycodo.utils.function_actions import trigger_function_actions
 from mycodo.utils.method import load_method_handler, parse_db_time
-from mycodo.utils.sunriseset import calculate_sunrise_sunset_epoch
+from mycodo.utils.sunriseset import suntime_calculate_next_sunrise_sunset_epoch
 from mycodo.utils.system_pi import epoch_of_next_time
 from mycodo.utils.system_pi import time_between_range
 
@@ -114,12 +114,12 @@ class TriggerController(AbstractController, threading.Thread):
             # Check if the trigger period has elapsed
             if self.trigger_type == 'trigger_sunrise_sunset':
                 while self.running and self.timer_period < time.time():
-                    self.timer_period = calculate_sunrise_sunset_epoch(self.trigger)
-
+                    self.timer_period = suntime_calculate_next_sunrise_sunset_epoch(
+                        self.trigger.latitude, self.trigger.longitude, self.trigger.date_offset_days,
+                        self.trigger.time_offset_minutes, self.trigger.rise_or_set)
                 check_approved = True
 
             elif self.trigger_type == 'trigger_run_pwm_method':
-
                 # Only execute trigger actions when started
                 # Now only set PWM output
                 pwm_duty_cycle, ended = self.get_method_output(
@@ -128,11 +128,11 @@ class TriggerController(AbstractController, threading.Thread):
                 self.timer_period += self.trigger.period
                 self.set_output_duty_cycle(pwm_duty_cycle)
 
-                function_actions = parse_function_action_information()
+                actions = parse_action_information()
 
                 if self.trigger_actions_at_period:
-                    trigger_function_actions(
-                        function_actions,
+                    trigger_controller_actions(
+                        actions,
                         self.unique_id,
                         debug=self.log_level_debug)
                 check_approved = True
@@ -240,7 +240,9 @@ class TriggerController(AbstractController, threading.Thread):
         elif self.trigger_type == 'trigger_sunrise_sunset':
             self.period = 60
             # Set the next trigger at the specified sunrise/sunset time (+-offsets)
-            self.timer_period = calculate_sunrise_sunset_epoch(self.trigger)
+            self.timer_period = suntime_calculate_next_sunrise_sunset_epoch(
+                self.trigger.latitude, self.trigger.longitude, self.trigger.date_offset_days,
+                self.trigger.time_offset_minutes, self.trigger.rise_or_set)
 
     def start_method(self, method_id):
         """Instruct a method to start running."""
@@ -392,7 +394,9 @@ class TriggerController(AbstractController, threading.Thread):
         # Calculate the sunrise/sunset times and find the next time this trigger should trigger
         elif trigger.trigger_type == 'trigger_sunrise_sunset':
             # Since the check time is the trigger time, we will only calculate and set the next trigger time
-            self.timer_period = calculate_sunrise_sunset_epoch(trigger)
+            self.timer_period = suntime_calculate_next_sunrise_sunset_epoch(
+                trigger.latitude, trigger.longitude, trigger.date_offset_days,
+                trigger.time_offset_minutes, trigger.rise_or_set)
 
         # Check if the current time is between the start and end time
         elif trigger.trigger_type == 'trigger_timer_daily_time_span':
@@ -401,9 +405,9 @@ class TriggerController(AbstractController, threading.Thread):
                 return
 
         # If the code hasn't returned by now, action should be executed
-        function_actions = parse_function_action_information()
-        trigger_function_actions(
-            function_actions,
+        actions = parse_action_information()
+        trigger_controller_actions(
+            actions,
             self.unique_id,
             message=message,
             debug=self.log_level_debug)

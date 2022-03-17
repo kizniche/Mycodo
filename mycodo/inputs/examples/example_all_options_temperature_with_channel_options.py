@@ -280,8 +280,8 @@ INPUT_INFORMATION = {
     # Custom actions are buttons and input fields that appear on the web UI for users to
     # execute functions within the Input class, such as to perform calibration. See the
     # button_one() and button_two() functions at the end of the class.
-    'custom_actions_message': 'This is a message displayed for custom actions.',
-    'custom_actions': [
+    'custom_commands_message': 'This is a message displayed for custom actions.',
+    'custom_commands': [
         {
             'id': 'button_one_value',
             'type': 'integer',

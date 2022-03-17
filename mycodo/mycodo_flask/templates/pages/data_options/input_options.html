@@ -85,21 +85,21 @@
     {% if manufacturer_url or datasheet_url or product_purchase_url or additional_url %}
     <div class="col-12">
       {{_("Literature") + ": "}}
-    {%- if manufacturer_url -%}
-      {{_("Manufacturer")}} {% for each_url in dict_inputs[each_input.device]['url_manufacturer'] %}<a href="{{each_url}}" target="_blank">Link {{loop.index}}</a>{{ ", " if not loop.last }}{% endfor %}
-    {%- endif -%}
-    {%- if datasheet_url -%}
-      {% if manufacturer_url %}; {% endif -%}
-      {{_("Datasheet")}} {% for each_url in dict_inputs[each_input.device]['url_datasheet'] %}<a href="{{each_url}}" target="_blank">Link {{loop.index}}</a>{{ ", " if not loop.last }}{% endfor %}
-    {%- endif -%}
-    {%- if product_purchase_url -%}
-      {% if manufacturer_url or datasheet_url %}; {% endif -%}
-      {{_("Product")}} {% for each_url in dict_inputs[each_input.device]['url_product_purchase'] %}<a href="{{each_url}}" target="_blank">Link {{loop.index}}</a>{{ ", " if not loop.last }}{% endfor %}
-    {%- endif -%}
-    {%- if additional_url -%}
-      {% if manufacturer_url or datasheet_url or product_purchase_url %}; {% endif -%}
-      {{_("Additional")}} {% for each_url in dict_inputs[each_input.device]['url_additional'] %}<a href="{{each_url}}" target="_blank">Link {{loop.index}}</a>{{ ", " if not loop.last }}{% endfor %}
-    {%- endif -%}.
+      {%- if manufacturer_url -%}
+        {{_("Manufacturer")}} {% for each_url in dict_inputs[each_input.device]['url_manufacturer'] %}<a href="{{each_url}}" target="_blank">Link {{loop.index}}</a>{{ ", " if not loop.last }}{% endfor %}
+      {%- endif -%}
+      {%- if datasheet_url -%}
+        {% if manufacturer_url %}; {% endif -%}
+        {{_("Datasheet")}} {% for each_url in dict_inputs[each_input.device]['url_datasheet'] %}<a href="{{each_url}}" target="_blank">Link {{loop.index}}</a>{{ ", " if not loop.last }}{% endfor %}
+      {%- endif -%}
+      {%- if product_purchase_url -%}
+        {% if manufacturer_url or datasheet_url %}; {% endif -%}
+        {{_("Product")}} {% for each_url in dict_inputs[each_input.device]['url_product_purchase'] %}<a href="{{each_url}}" target="_blank">Link {{loop.index}}</a>{{ ", " if not loop.last }}{% endfor %}
+      {%- endif -%}
+      {%- if additional_url -%}
+        {% if manufacturer_url or datasheet_url or product_purchase_url %}; {% endif -%}
+        {{_("Additional")}} {% for each_url in dict_inputs[each_input.device]['url_additional'] %}<a href="{{each_url}}" target="_blank">Link {{loop.index}}</a>{{ ", " if not loop.last }}{% endfor %}
+      {%- endif -%}.
     </div>
     {% endif %}
 
@@ -113,25 +113,25 @@
 
   </div>
 
-  {% if each_input.device != 'input_spacer' %}
+    {% if each_input.device != 'input_spacer' %}
   <div class="row small-gutters align-items-end" style="padding: 0.5em">
     <div class="col-12">
-      <h5>{{_('Actions')}}</h5>
+      <h5>{{_('Commands')}}</h5>
     </div>
     {% include 'pages/form_options/Custom_Actions_Message.html' %}
     <div class="col-auto small-gutters">
       <input onclick="return $(this).processRequest(this, 'input_acquire_measurements');" name="input_acquire_measurements" class="form-control btn btn-primary btn-sm btn-block" type="button" value="{{_('Acquire Measurements Now')}}"/>
     </div>
-    {% if each_input.device in custom_actions and custom_actions[each_input.device] %}
-      {% set force_default_value = true %}
-      {% if 'custom_actions' in dict_options %}
-        {% for each_option in dict_options['custom_actions'] %}
-      {% include 'pages/form_options/Custom_Options.html' %}
-        {% endfor %}
+      {% if each_input.device in custom_commands and custom_commands[each_input.device] %}
+        {% set force_default_value = true %}
+        {% if 'custom_commands' in dict_options %}
+          {% for each_option in dict_options['custom_commands'] %}
+        {% include 'pages/form_options/Custom_Options.html' %}
+          {% endfor %}
+        {% endif %}
       {% endif %}
-    {% endif %}
   </div>
-  {% endif %}
+    {% endif %}
 
   <div class="row small-gutters" style="padding: 0.5em">
     <div class="col-12">
@@ -200,7 +200,9 @@
     <div class="col-12">
       <h5>{{_('Custom Options')}}</h5>
     </div>
+      {% if 'custom_options_message' in dict_options %}
     {% include 'pages/form_options/Custom_Options_Message.html' %}
+      {% endif %}
       {% if 'custom_options' in dict_options %}
         {% for each_option in dict_options['custom_options'] %}
     {% include 'pages/form_options/Custom_Options.html' %}
@@ -229,10 +231,13 @@
     {% set unique_id = each_input.unique_id %}
     {% set each_device = each_input %}
     {% set controller_type = "Input" %}
+    {% set force_default_value = true %}
+    {% set channel_options = true %}
 
     {% for each_input_channel in input_channel if each_input_channel.input_id == each_input.unique_id %}
 
       {% set channel = each_input_channel.channel %}
+      {% set name_prefix = each_device.unique_id + "_" + channel|string + "_" %}
 
   <hr/>
   <div class="row">
@@ -259,7 +264,7 @@
         {% if 'custom_channel_options' in dict_options %}
   <div class="row small-gutters" style="padding: 1em">
           {% for each_option in dict_options['custom_channel_options'] %}
-      {% include 'pages/form_options/Custom_Options_Channels.html' %}
+      {% include 'pages/form_options/Custom_Options.html' %}
           {% endfor %}
   </div>
         {% endif %}
@@ -276,12 +281,49 @@
       <h5>{{_('Measurement Settings')}}</h5>
     </div>
   </div>
-  {% if "measurements_variable_amount" in dict_options and dict_options['measurements_variable_amount'] %}
-    {% include 'pages/form_options/Measurements_Select.html' %}
-  {% endif %}
+    {% if "measurements_variable_amount" in dict_options and dict_options['measurements_variable_amount'] %}
+      {% include 'pages/form_options/Measurements_Select.html' %}
+    {% endif %}
   {% include 'pages/form_options/Measurements_Configure.html' %}
-
   {% endif %}
 
   </form>
+
+  <div class="row align-items-end small-gutters" style="border-top: 1px solid #ddd; padding-top: 0.5em">
+    <h5>{{_('Actions')}} <a href="https://kizniche.github.io/Mycodo/Actions" target="_blank"><span style="font-size: 16px" class="fas fa-question-circle"></span></a></h5>
+  </div>
+
+  <form method="post" action="/input">
+    {{form_actions.csrf_token}}
+    {{form_actions.device_id(value=each_input.unique_id)}}
+    {{form_actions.function_type(value='input')}}
+
+    <div class="row align-items-end small-gutters" style="padding: 0.5em 0 0.2em 1em">
+      <div class="col-auto">
+        <select class="selectpicker" data-live-search="true" title="{{_('Action')}}: {{dict_translation['select_one']['title']}}" id="action_type_{{each_input.unique_id}}" name="action_type">
+        {% for value, name in choices_actions %}
+          <option value="{{value}}">{{name}}</option>
+        {% endfor %}
+        </select>
+      </div>
+      <div class="col-auto">
+        <input onclick="return $(this).processRequest(this, 'add_action');" name="add_action" value="{{_('Add')}}" class="form-control btn btn-primary btn-sm btn-block" type="button"/>
+      </div>
+    </div>
+  </form>
+
+  {% set channel_options = false %}
+  {% set post_action = "/input" %}
+
+  <div id="mod_input_actions_{{each_input.unique_id}}">
+    <div class="row small-gutters" style="border-bottom: 1px solid #ddd; padding: 0.3em">
+      <div class="col-12">
+        <strong>Usage:</strong>: Every Period of the Input, each Action is executed with the returned measurements.
+      </div>
+    </div>
+  {% for each_action in action if each_action.function_id == each_input.unique_id %}
+    {% include 'pages/actions.html' %}
+  {% endfor %}
+  </div>
+
 </div>

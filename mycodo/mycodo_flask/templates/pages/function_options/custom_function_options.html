@@ -109,17 +109,17 @@
 
     <div id="return_text_{{each_function.unique_id}}" class="col-12"></div>
 
-    {% if each_function.device in custom_actions %}
+    {% if each_function.device in custom_commands %}
     <div class="row small-gutters align-items-end" style="padding: 0.5em">
       <div class="col-12" style="padding-top: 1em"></div>
       <div class="col-12">
-        <h5>{{_('Actions')}}</h5>
+        <h5>{{_('Commands')}}</h5>
       </div>
       {% include 'pages/form_options/Custom_Actions_Message.html' %}
-      {% if each_function.device in custom_actions and custom_actions[each_function.device] %}
+      {% if each_function.device in custom_commands and custom_commands[each_function.device] %}
         {% set force_default_value = true %}
-        {% if 'custom_actions' in dict_options %}
-          {% for each_option in dict_options['custom_actions'] %}
+        {% if 'custom_commands' in dict_options %}
+          {% for each_option in dict_options['custom_commands'] %}
             {% include 'pages/form_options/Custom_Options.html' %}
           {% endfor %}
         {% endif %}
@@ -176,10 +176,13 @@
       {% endif %}
 
       {% set custom_options_values = custom_options_values_function_channels %}
+      {% set force_default_value = true %}
+      {% set channel_options = true %}
 
       {% for each_function_channel in function_channel if each_function_channel.function_id == each_function.unique_id %}
 
         {% set channel = each_function_channel.channel %}
+        {% set name_prefix = each_device.unique_id + "_" + channel|string + "_" %}
 
     <hr/>
     <div class="row">
@@ -209,7 +212,7 @@
           {% if 'custom_channel_options' in dict_options %}
     <div class="row small-gutters" style="padding: 1em">
             {% for each_option in dict_options['custom_channel_options'] %}
-              {% include 'pages/form_options/Custom_Options_Channels.html' %}
+              {% include 'pages/form_options/Custom_Options.html' %}
             {% endfor %}
     </div>
           {% endif %}

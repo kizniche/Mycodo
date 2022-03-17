@@ -52,7 +52,7 @@ OUTPUT_INFORMATION = {
 
     'interfaces': ['GPIO'],
 
-    'custom_actions': [
+    'custom_commands': [
         {
             'type': 'message',
             'default_value': """Set the Duty Cycle."""

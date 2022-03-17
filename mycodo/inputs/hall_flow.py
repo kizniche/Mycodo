@@ -51,8 +51,8 @@ INPUT_INFORMATION = {
         }
     ],
 
-    'custom_actions_message': 'The total volume can be cleared with the following button or with the Clear Total Volume Function Action.',
-    'custom_actions': [
+    'custom_commands_message': 'The total volume can be cleared with the following button or with the Clear Total Volume Function Action.',
+    'custom_commands': [
         {
             'id': 'clear_total_volume',
             'type': 'button',

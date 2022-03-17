@@ -103,7 +103,7 @@ OUTPUT_INFORMATION = {
         }
     ],
 
-    'custom_actions': [
+    'custom_commands': [
         {
             'type': 'message',
             'default_value': """Calibration: a calibration can be performed to increase the accuracy of the pump. It's a good idea to clear the calibration before calibrating. First, remove all air from the line by pumping the fluid you would like to calibrate to through the pump hose. Next, press Dispense Amount and the pump will be instructed to dispense 10 ml (unless you changed the default value). Measure how much fluid was actually dispensed, enter this value in the Actual Volume Dispensed (ml) field, and press Calibrate to Dispensed Amount. Now any further pump volumes dispensed should be accurate."""

@@ -82,15 +82,15 @@
 
     </div>
 
-  {% if each_output.output_type in custom_actions and custom_actions[each_output.output_type] %}
+  {% if each_output.output_type in custom_commands and custom_commands[each_output.output_type] %}
     {% set force_default_value = true %}
     <div class="row small-gutters align-items-end" style="padding: 0.5em">
       <div class="col-12">
-        <h5>{{_('Actions')}}</h5>
+        <h5>{{_('Commands')}}</h5>
       </div>
       {% include 'pages/form_options/Custom_Actions_Message.html' %}
-      {% if 'custom_actions' in dict_options %}
-        {% for each_option in dict_options['custom_actions'] %}
+      {% if 'custom_commands' in dict_options %}
+        {% for each_option in dict_options['custom_commands'] %}
           {% include 'pages/form_options/Custom_Options.html' %}
         {% endfor %}
       {% endif %}
@@ -134,7 +134,7 @@
 
   {% if ('custom_options' in dict_options and custom_options_values[unique_id]) or
         'custom_options_message' in dict_options %}
-    {% set force_default_value = false %}
+    {% set force_default_value = true %}
     <div class="row small-gutters" style="padding: 0.5em">
       <div class="col-12">
         <h5>{{_('Custom Options')}}</h5>
@@ -168,13 +168,16 @@
   {% endif %}
 
   {% set custom_options_values = custom_options_values_output_channels %}
+  {% set dict_options = dict_outputs[each_output.output_type] %}
+  {% set unique_id = each_output.unique_id %}
+  {% set each_device = each_output %}
+  {% set force_default_value = true %}
+  {% set channel_options = true %}
 
   {% for each_output_channel in output_channel %}
 
-    {% set dict_options = dict_outputs[each_output.output_type] %}
-    {% set unique_id = each_output.unique_id %}
     {% set channel = each_output_channel.channel %}
-    {% set each_device = each_output %}
+    {% set name_prefix = each_device.unique_id + "_" + channel|string + "_" %}
 
     {% if output_channel|length > 1 %}
     <hr/>
@@ -205,7 +208,7 @@
           {% if 'custom_channel_options' in dict_options %}
       <div class="row small-gutters" style="padding: 1em">
             {% for each_option in dict_options['custom_channel_options'] %}
-              {% include 'pages/form_options/Custom_Options_Channels.html' %}
+              {% include 'pages/form_options/Custom_Options.html' %}
             {% endfor %}
       </div>
           {% endif %}

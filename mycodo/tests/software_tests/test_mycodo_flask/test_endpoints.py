@@ -24,7 +24,7 @@ from mycodo.tests.software_tests.conftest import login_user
 from mycodo.tests.software_tests.factories import UserFactory
 from mycodo.utils.inputs import parse_input_information
 from mycodo.utils.outputs import parse_output_information
-from mycodo.utils.function_actions import parse_function_action_information
+from mycodo.utils.actions import parse_action_information
 
 
 # ----------------------
@@ -574,7 +574,7 @@ def test_add_all_function_actions_logged_in_as_admin(_, testapp):
     action_count = 0
 
     choices_action = []
-    dict_actions = parse_function_action_information()
+    dict_actions = parse_action_information()
     for action in dict_actions:
         choices_action.append(action)
 
@@ -750,7 +750,7 @@ def delete_data(testapp, data_type, device_dev=None):
     elif data_type == 'function':
         response = testapp.post('/function_submit', {'function_delete': 'Delete', 'function_id': device_dev.unique_id})
     elif data_type == 'action':
-        response = testapp.post('/function_submit', {'delete_action': 'Delete', 'function_action_id': device_dev.unique_id})
+        response = testapp.post('/function_submit', {'delete_action': 'Delete', 'action_id': device_dev.unique_id})
     # response.showbrowser()
     return response
 

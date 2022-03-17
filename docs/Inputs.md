@@ -18,12 +18,16 @@ There are also example Custom Inputs in the directory [Mycodo/mycodo/inputs/exam
 
 Additionally, I have another github repository devoted to Custom Modules that are not included in the built-in set, at [kizniche/Mycodo-custom](https://github.com/kizniche/Mycodo-custom).
 
-### Input Actions
+### Input Commands
 
-Input Actions are functions within the Input module that can be executed from the Web UI. This is useful for things such as calibration or other functionality specific to the input. By default, there is at least one action, Acquire Measurements Now, which will cause the input to acquire measurements rather than waiting until the next Period has elapsed.
+Input Commands are functions within the Input module that can be executed from the Web UI. This is useful for things such as calibration or other functionality specific to the input. By default, there is at least one action, Acquire Measurements Now, which will cause the input to acquire measurements rather than waiting until the next Period has elapsed.
 
 !!! note
     Actions can only be executed while the Input is active.
+
+### Input Actions
+
+Every Period the Input will acquire measurements and store then in the time-series database. Following measurement acquisition, one or more [Actions](Actions.md) can be executed to enhance the functionality of Inputs. For example, the MQTT Publish Action can be used to publish measurements to an MQTT server.
 
 ### Input Options
 

@@ -77,8 +77,8 @@ OUTPUT_INFORMATION = {
     # Buttons are required to have a function with the same name that will be executed
     # when the button is pressed. Input values will be passed to the button in a
     # dictionary. See the function input_button() at the end of this module.
-    'custom_actions_message': 'This is a message displayed for custom actions.',
-    'custom_actions': [
+    'custom_commands_message': 'This is a message displayed for custom actions.',
+    'custom_commands': [
         {
             'id': 'input_value',
             'type': 'float',

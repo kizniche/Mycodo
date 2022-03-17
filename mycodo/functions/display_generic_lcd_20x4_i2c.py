@@ -179,7 +179,7 @@ FUNCTION_INFORMATION = {
         'backlight_off'
     ],
 
-    'custom_actions': [
+    'custom_commands': [
         {
             'id': 'backlight_on',
             'type': 'button',

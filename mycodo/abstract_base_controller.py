@@ -115,7 +115,8 @@ class AbstractBaseController(object):
                         if option == each_option_default['id']:
                             custom_option_set = True
 
-                            if (each_option_default['type'] == 'select_measurement' and
+                            if (each_option_default['type'] in ['select_measurement',
+                                                                'select_measurement_from_this_input'] and
                                     len(each_option.split(',')) > 2):
                                 device_id = each_option.split(',')[1]
                                 measurement_id = each_option.split(',')[2]
@@ -161,7 +162,7 @@ class AbstractBaseController(object):
                             option_value = float(option_value)
                     setattr(self, each_option_default['id'], option_value)
 
-                elif each_option_default['type'] == 'select_measurement':
+                elif each_option_default['type'] in ['select_measurement', 'select_measurement_from_this_input']:
                     setattr(self, f"{each_option_default['id']}_device_id", device_id)
                     setattr(self, f"{each_option_default['id']}_measurement_id", measurement_id)
 

@@ -120,7 +120,7 @@ INPUT_INFORMATION = {
         },
     ],
 
-    'custom_actions': [
+    'custom_commands': [
         {
             'type': 'message',
             'default_value': 'The EZO-RGB color sensor is designed to be calibrated to a white '

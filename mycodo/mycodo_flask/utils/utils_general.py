@@ -42,7 +42,7 @@ from mycodo.databases.models import User
 from mycodo.databases.models import Widget
 from mycodo.mycodo_client import DaemonControl
 from mycodo.mycodo_flask.extensions import db
-from mycodo.utils.function_actions import parse_function_action_information
+from mycodo.utils.actions import parse_action_information
 from mycodo.utils.functions import parse_function_information
 from mycodo.utils.inputs import parse_input_information
 from mycodo.utils.outputs import parse_output_information
@@ -257,6 +257,7 @@ def custom_options_return_json(
                                 'text',
                                 'select',
                                 'select_measurement',
+                                'select_measurement_from_this_input',
                                 'select_channel',
                                 'select_measurement_channel',
                                 'select_type_measurement',
@@ -734,6 +735,15 @@ def choices_maths(maths, dict_units, dict_measurements):
     for each_math in maths:
         choices = form_math_choices(
             choices, each_math, dict_units, dict_measurements)
+    return choices
+
+
+def choices_actions(actions, dict_units, dict_measurements):
+    """populate form multi-select choices from Math entries."""
+    choices = []
+    for each_function in actions:
+        choices = form_function_choices(
+            choices, each_function, dict_units, dict_measurements)
     return choices
 
 
@@ -1672,7 +1682,7 @@ def return_dependencies(device_type):
 
     list_dependencies = [
         parse_function_information(),
-        parse_function_action_information(),
+        parse_action_information(),
         parse_input_information(),
         parse_output_information(),
         parse_widget_information(),
@@ -1823,12 +1833,21 @@ def generate_form_output_list(dict_outputs):
     return list_outputs_sorted
 
 
-def generate_form_action_list(dict_actions):
+def generate_form_action_list(dict_actions, application=None):
     # Sort dictionary entries by input_manufacturer, then input_name
     # Results in list of sorted dictionary keys
+    def check_application(list1, list2):
+        for val in list1:
+            if val in list2:
+                return True
+        return False
+
     list_tuples_sorted = sorted(dict_actions.items(), key=lambda x: (x[1]['manufacturer'], x[1]['name']))
     list_actions_sorted = []
     for each_action in list_tuples_sorted:
+        if (application and 'application' in dict_actions[each_action[0]] and
+                not check_application(application, dict_actions[each_action[0]]['application'])):
+            continue
         list_actions_sorted.append(each_action[0])
     return list_actions_sorted
 
@@ -1843,7 +1862,7 @@ def generate_form_widget_list(dict_widgets):
     return list_widgets_sorted
 
 
-def custom_action(controller_type, dict_device, unique_id, form):
+def custom_command(controller_type, dict_device, unique_id, form):
     messages = {
         "success": [],
         "info": [],
@@ -1872,13 +1891,13 @@ def custom_action(controller_type, dict_device, unique_id, form):
         return messages
 
     if controller_type != "Output" and not controller.is_activated:
-        messages["error"].append("Activate controller before executing a Custom Action")
+        messages["error"].append("Activate controller before executing a Custom Command")
         return messages
 
     try:
         options = {}
-        if 'custom_actions' in dict_device[device_type]:
-            for each_option in dict_device[device_type]['custom_actions']:
+        if 'custom_commands' in dict_device[device_type]:
+            for each_option in dict_device[device_type]['custom_commands']:
                 if 'id' in each_option and 'type' in each_option:
                     options[each_option['id']] = each_option
 

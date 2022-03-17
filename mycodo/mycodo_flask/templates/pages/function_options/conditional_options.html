@@ -94,22 +94,24 @@
     <h5>{{_('Conditions')}} <a href="https://kizniche.github.io/Mycodo/Functions/#conditional-options" target="_blank"><span style="font-size: 16px" class="fas fa-question-circle"></span></a></h5>
   </div>
 
-  <div class="row align-items-end small-gutters" style="padding-bottom: 0.2em">
-    <form method="post" action="/function">
+  <form method="post" action="/function">
     {{form_conditional.csrf_token}}
     {{form_conditional.function_id(value=each_function.unique_id)}}
     {{form_conditional.function_type(value='conditional')}}
 
     <div class="row align-items-end small-gutters" style="padding: 0.5em 0 0.2em 1em">
       <div class="col-auto">
-        {{form_conditional.condition_type(class_='form-control')}}
+        <select class="selectpicker" data-live-search="true" title="{{_('Condition')}}: {{dict_translation['select_one']['title']}}" id="condition_type_{{each_function.unique_id}}" name="condition_type">
+        {% for value, name in conditional_conditions_list %}
+          <option value="{{value}}">{{name}}</option>
+        {% endfor %}
+        </select>
       </div>
       <div class="col-auto">
-        <input onclick="return $(this).processRequest(this, 'add_condition');" name="add_condition" value="{{_('Add Condition')}}" class="form-control btn btn-primary btn-sm btn-block" type="button"/>
+        <input onclick="return $(this).processRequest(this, 'add_condition');" name="add_condition" value="{{_('Add')}}" class="form-control btn btn-primary btn-sm btn-block" type="button"/>
       </div>
     </div>
-    </form>
-  </div>
+  </form>
 
   <div id="mod_function_conditions_{{each_function.unique_id}}">
   {% for each_condition in conditional_conditions if each_condition.conditional_id == each_function.unique_id %}
@@ -118,38 +120,38 @@
   </div>
 
   <div class="row align-items-end small-gutters" style="border-top: 1px solid #ddd; padding-top: 0.5em">
-    <h5>{{_('Actions')}} <a href="https://kizniche.github.io/Mycodo/Functions/#function-actions" target="_blank"><span style="font-size: 16px" class="fas fa-question-circle"></span></a></h5>
+    <h5>{{_('Actions')}} <a href="https://kizniche.github.io/Mycodo/Actions" target="_blank"><span style="font-size: 16px" class="fas fa-question-circle"></span></a></h5>
   </div>
 
-  <div class="row align-items-end small-gutters" style="padding-bottom: 0.2em">
-    <form method="post" action="/function">
-      {{form_conditional.csrf_token}}
-      {{form_conditional.function_id(class_='form-control', value=each_function.unique_id)}}
-      {{form_conditional.function_type(class_='form-control', value='conditional')}}
+  <form method="post" action="/function">
+    {{form_actions.csrf_token}}
+    {{form_actions.device_id(class_='form-control', value=each_function.unique_id)}}
+    {{form_actions.function_type(class_='form-control', value='conditional')}}
 
-      <div class="row align-items-end small-gutters" style="padding: 0.5em 0 0.2em 1em">
-        <div class="col-auto">
-          {{form_function_base.action_type(class_='form-control')}}
-        </div>
-        <div class="col-auto">
-          <input onclick="return $(this).processRequest(this, 'add_action');" name="add_action" value="{{_('Add Action')}}" class="form-control btn btn-primary btn-sm btn-block" type="button"/>
-        </div>
+    <div class="row align-items-end small-gutters" style="padding: 0.5em 0 0.2em 1em">
+      <div class="col-auto">
+        <select class="selectpicker" data-live-search="true" title="{{_('Action')}}: {{dict_translation['select_one']['title']}}" id="action_type_{{each_function.unique_id}}" name="action_type">
+        {% for value, name in choices_actions %}
+          <option value="{{value}}">{{name}}</option>
+        {% endfor %}
+        </select>
       </div>
-    </form>
-  </div>
-
-  {% set function_type = 'conditional' %}
-
-  <div id="mod_function_actions_{{each_function.unique_id}}">
-  {% if actions %}
-    <div class="row small-gutters" style="border-bottom: 1px solid #ddd; padding: 0.3em">
-      <div class="col-12">
-        <strong>Usage:</strong>: <strong>self.run_all_actions()</strong> will execute all actions sequentially.
+      <div class="col-auto">
+        <input onclick="return $(this).processRequest(this, 'add_action');" name="add_action" value="{{_('Add')}}" class="form-control btn btn-primary btn-sm btn-block" type="button"/>
       </div>
     </div>
-  {% endif %}
-  {% for each_action in actions if each_action.function_id == each_function.unique_id %}
-    {% include 'pages/function_options/actions.html' %}
+  </form>
+
+  {% set post_action = "/function" %}
+
+  <div id="mod_function_actions_{{each_function.unique_id}}">
+    <div class="row small-gutters" style="border-bottom: 1px solid #ddd; padding: 0.3em">
+      <div class="col-12">
+        <strong>Usage:</strong>: <strong>self.run_all_actions()</strong> will sequentially execute all the actions below.
+      </div>
+    </div>
+  {% for each_action in action if each_action.function_id == each_function.unique_id %}
+    {% include 'pages/actions.html' %}
   {% endfor %}
   </div>
 

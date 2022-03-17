@@ -1,6 +1,5 @@
 # coding=utf-8
 """collection of Function endpoints."""
-import datetime
 import json
 import logging
 
@@ -40,24 +39,27 @@ from mycodo.databases.models import Unit
 from mycodo.databases.models import User
 from mycodo.mycodo_client import DaemonControl
 from mycodo.mycodo_flask.extensions import db
+from mycodo.mycodo_flask.forms import forms_action
 from mycodo.mycodo_flask.forms import forms_conditional
 from mycodo.mycodo_flask.forms import forms_custom_controller
 from mycodo.mycodo_flask.forms import forms_function
 from mycodo.mycodo_flask.forms import forms_pid
 from mycodo.mycodo_flask.forms import forms_trigger
 from mycodo.mycodo_flask.routes_static import inject_variables
+from mycodo.mycodo_flask.utils import utils_action
 from mycodo.mycodo_flask.utils import utils_conditional
 from mycodo.mycodo_flask.utils import utils_controller
 from mycodo.mycodo_flask.utils import utils_function
 from mycodo.mycodo_flask.utils import utils_general
 from mycodo.mycodo_flask.utils import utils_pid
 from mycodo.mycodo_flask.utils import utils_trigger
+from mycodo.mycodo_flask.utils.utils_general import generate_form_action_list
 from mycodo.mycodo_flask.utils.utils_misc import determine_controller_type
-from mycodo.utils.function_actions import parse_function_action_information
+from mycodo.utils.actions import parse_action_information
 from mycodo.utils.functions import parse_function_information
 from mycodo.utils.outputs import output_types
 from mycodo.utils.outputs import parse_output_information
-from mycodo.utils.sunriseset import Sun
+from mycodo.utils.sunriseset import suntime_calculate_next_sunrise_sunset_epoch
 from mycodo.utils.system_pi import add_custom_measurements
 from mycodo.utils.system_pi import add_custom_units
 from mycodo.utils.system_pi import csv_to_list_of_str
@@ -100,7 +102,7 @@ def page_function_submit():
     if not utils_general.user_has_permission('edit_controllers'):
         messages["error"].append("Your permissions do not allow this action")
 
-    form_actions = forms_function.Actions()
+    form_actions = forms_action.Actions()
     form_add_function = forms_function.FunctionAdd()
     form_conditional = forms_conditional.Conditional()
     form_conditional_conditions = forms_conditional.ConditionalConditions()
@@ -208,21 +210,24 @@ def page_function_submit():
                     form_mod_pid_base.function_id.data, 'Resume')
 
             # Actions
-            elif form_function_base.add_action.data:
+            elif form_actions.add_action.data:
                 (messages,
                  dep_name,
                  dep_list,
                  action_id,
-                 page_refresh) = utils_function.action_add(form_function_base)
+                 page_refresh) = utils_action.action_add(form_actions)
                 if dep_list:
-                    dep_unmet = form_function_base.action_type.data
+                    dep_unmet = form_actions.action_type.data
+                function_id = form_actions.device_id.data
             elif form_actions.save_action.data:
-                messages = utils_function.action_mod(
+                messages = utils_action.action_mod(
                     form_actions, request.form)
+                function_id = form_actions.device_id.data
             elif form_actions.delete_action.data:
-                messages = utils_function.action_del(form_actions)
+                messages = utils_action.action_del(form_actions)
                 page_refresh = True
-                action_id = form_actions.function_action_id.data
+                function_id = form_actions.device_id.data
+                action_id = form_actions.action_id.data
 
             # Conditions
             elif form_conditional.add_condition.data:
@@ -230,7 +235,6 @@ def page_function_submit():
                  condition_id) = utils_conditional.conditional_condition_add(
                     form_conditional)
                 page_refresh = True
-                function_id = form_actions.function_id.data
             elif form_conditional_conditions.save_condition.data:
                 messages = utils_conditional.conditional_condition_mod(
                     form_conditional_conditions)
@@ -248,7 +252,7 @@ def page_function_submit():
                         custom_button = True
                         break
                 if custom_button:
-                    messages = utils_general.custom_action(
+                    messages = utils_general.custom_command(
                         "Function_Custom",
                         parse_function_information(),
                         form_function.function_id.data,
@@ -313,6 +317,7 @@ def page_function():
     function_id = request.args.get('function_id', None)
     action_id = request.args.get('action_id', None)
     condition_id = request.args.get('condition_id', None)
+
     each_function = None
     each_action = None
     each_condition = None
@@ -357,13 +362,13 @@ def page_function():
                 each_condition = ConditionalConditions.query.filter(
                     ConditionalConditions.unique_id == condition_id).first()
 
+    action = Actions.query.all()
     camera = Camera.query.all()
     conditional = Conditional.query.all()
     conditional_conditions = ConditionalConditions.query.all()
     function = CustomController.query.all()
     function_channel = FunctionChannel.query.all()
     function_dev = Function.query.all()
-    actions = Actions.query.all()
     input_dev = Input.query.all()
     lcd = LCD.query.all()
     math = Math.query.all()
@@ -395,10 +400,10 @@ def page_function():
     form_conditional = forms_conditional.Conditional()
     form_conditional_conditions = forms_conditional.ConditionalConditions()
     form_function = forms_custom_controller.CustomController()
-    form_actions = forms_function.Actions()
+    form_actions = forms_action.Actions()
 
     dict_controllers = parse_function_information()
-    dict_actions = parse_function_action_information()
+    dict_actions = parse_action_information()
 
     # Generate all measurement and units used
     dict_measurements = add_custom_measurements(Measurement.query.all())
@@ -412,7 +417,7 @@ def page_function():
         function_channel, dict_controller=function, key_name='custom_channel_options')
 
     custom_options_values_actions = {}
-    for each_action_dev in actions:
+    for each_action_dev in action:
         try:
             custom_options_values_actions[each_action_dev.unique_id] = json.loads(each_action_dev.custom_options)
         except:
@@ -428,11 +433,18 @@ def page_function():
     # Sort combined list
     choices_functions_add = sorted(choices_functions_add, key=lambda i: i['item'])
 
-    custom_actions = {}
+    custom_commands = {}
     for choice_function in function:
-        if 'custom_actions' in dict_controllers[choice_function.device]:
-            custom_actions[choice_function.device] = True
+        if 'custom_commands' in dict_controllers[choice_function.device]:
+            custom_commands[choice_function.device] = True
 
+    # Generate Action dropdown for use with Inputs
+    choices_actions = []
+    list_actions_sorted = generate_form_action_list(dict_actions, application=["functions"])
+    for name in list_actions_sorted:
+        choices_actions.append((name, dict_actions[name]['name']))
+
+    # Create list of choices to be used in dropdown menus
     choices_function = utils_general.choices_functions(
         function, dict_units, dict_measurements)
     choices_input = utils_general.choices_inputs(
@@ -459,7 +471,7 @@ def page_function():
         'conditional': {},
         'trigger': {}
     }
-    for each_action_dev in actions:
+    for each_action_dev in action:
         if (each_action_dev.function_type == 'conditional' and
                 each_action_dev.unique_id not in actions_dict['conditional']):
             actions_dict['conditional'][each_action_dev.function_id] = True
@@ -501,25 +513,18 @@ def page_function():
         if each_trigger.trigger_type == 'trigger_sunrise_sunset':
             sunrise_set_calc[each_trigger.unique_id] = {}
             try:
-                sun = Sun(latitude=each_trigger.latitude,
-                          longitude=each_trigger.longitude,
-                          zenith=each_trigger.zenith)
-                sunrise = sun.get_sunrise_time()['time_local']
-                sunset = sun.get_sunset_time()['time_local']
+                sunrise = suntime_calculate_next_sunrise_sunset_epoch(
+                    each_trigger.latitude, each_trigger.longitude, 0, 0, "sunrise", return_dt=True)
+                sunset = suntime_calculate_next_sunrise_sunset_epoch(
+                    each_trigger.latitude, each_trigger.longitude, 0, 0, "sunset", return_dt=True)
 
                 # Adjust for date offset
-                new_date = datetime.datetime.now() + datetime.timedelta(
-                    days=each_trigger.date_offset_days)
-
-                sun = Sun(latitude=each_trigger.latitude,
-                          longitude=each_trigger.longitude,
-                          zenith=each_trigger.zenith,
-                          day=new_date.day,
-                          month=new_date.month,
-                          year=new_date.year,
-                          offset_minutes=each_trigger.time_offset_minutes)
-                offset_rise = sun.get_sunrise_time()['time_local']
-                offset_set = sun.get_sunset_time()['time_local']
+                offset_rise = suntime_calculate_next_sunrise_sunset_epoch(
+                    each_trigger.latitude, each_trigger.longitude, each_trigger.date_offset_days,
+                    each_trigger.time_offset_minutes, "sunrise", return_dt=True)
+                offset_set = suntime_calculate_next_sunrise_sunset_epoch(
+                    each_trigger.latitude, each_trigger.longitude, each_trigger.date_offset_days,
+                    each_trigger.time_offset_minutes, "sunset", return_dt=True)
 
                 sunrise_set_calc[each_trigger.unique_id]['sunrise'] = (
                     sunrise.strftime("%Y-%m-%d %H:%M"))
@@ -531,17 +536,18 @@ def page_function():
                     offset_set.strftime("%Y-%m-%d %H:%M"))
             except:
                 logger.exception(1)
-                sunrise_set_calc[each_trigger.unique_id]['sunrise'] = None
-                sunrise_set_calc[each_trigger.unique_id]['sunrise'] = None
-                sunrise_set_calc[each_trigger.unique_id]['offset_sunrise'] = None
-                sunrise_set_calc[each_trigger.unique_id]['offset_sunset'] = None
+                sunrise_set_calc[each_trigger.unique_id]['sunrise'] = "ERROR"
+                sunrise_set_calc[each_trigger.unique_id]['sunrise'] = "ERROR"
+                sunrise_set_calc[each_trigger.unique_id]['offset_sunrise'] = "ERROR"
+                sunrise_set_calc[each_trigger.unique_id]['offset_sunset'] = "ERROR"
 
     if not function_type:
         return render_template('pages/function.html',
                                and_=and_,
-                               actions=actions,
+                               action=action,
                                actions_dict=actions_dict,
                                camera=camera,
+                               choices_actions=choices_actions,
                                choices_controller_ids=choices_controller_ids,
                                choices_custom_functions=choices_custom_functions,
                                choices_function=choices_function,
@@ -564,7 +570,7 @@ def page_function():
                                controllers=controllers,
                                function=function,
                                function_channel=function_channel,
-                               custom_actions=custom_actions,
+                               custom_commands=custom_commands,
                                custom_options_values_actions=custom_options_values_actions,
                                custom_options_values_controllers=custom_options_values_controllers,
                                custom_options_values_function_channels=custom_options_values_function_channels,
@@ -612,9 +618,10 @@ def page_function():
     elif function_type == 'entry':
         return render_template(function_page_entry,
                                and_=and_,
-                               actions=actions,
+                               action=action,
                                actions_dict=actions_dict,
                                camera=camera,
+                               choices_actions=choices_actions,
                                choices_controller_ids=choices_controller_ids,
                                choices_custom_functions=choices_custom_functions,
                                choices_function=choices_function,
@@ -637,7 +644,7 @@ def page_function():
                                controllers=controllers,
                                function=function,
                                function_channel=function_channel,
-                               custom_actions=custom_actions,
+                               custom_commands=custom_commands,
                                custom_options_values_actions=custom_options_values_actions,
                                custom_options_values_controllers=custom_options_values_controllers,
                                custom_options_values_function_channels=custom_options_values_function_channels,
@@ -686,9 +693,10 @@ def page_function():
     elif function_type == 'options':
         return render_template(function_page_options,
                                and_=and_,
-                               actions=actions,
+                               action=action,
                                actions_dict=actions_dict,
                                camera=camera,
+                               choices_actions=choices_actions,
                                choices_controller_ids=choices_controller_ids,
                                choices_custom_functions=choices_custom_functions,
                                choices_function=choices_function,
@@ -712,7 +720,7 @@ def page_function():
                                each_function=each_function,
                                function=function,
                                function_channel=function_channel,
-                               custom_actions=custom_actions,
+                               custom_commands=custom_commands,
                                custom_options_values_actions=custom_options_values_actions,
                                custom_options_values_controllers=custom_options_values_controllers,
                                custom_options_values_function_channels=custom_options_values_function_channels,
@@ -758,11 +766,12 @@ def page_function():
                                units=MEASUREMENTS,
                                user=user)
     elif function_type == 'actions':
-        return render_template('pages/function_options/actions.html',
+        return render_template('pages/actions.html',
                                and_=and_,
-                               actions=actions,
+                               action=action,
                                actions_dict=actions_dict,
                                camera=camera,
+                               choices_actions=choices_actions,
                                choices_controller_ids=choices_controller_ids,
                                choices_custom_functions=choices_custom_functions,
                                choices_function=choices_function,
@@ -787,7 +796,7 @@ def page_function():
                                each_function=each_function,
                                function=function,
                                function_channel=function_channel,
-                               custom_actions=custom_actions,
+                               custom_commands=custom_commands,
                                custom_options_values_actions=custom_options_values_actions,
                                custom_options_values_controllers=custom_options_values_controllers,
                                custom_options_values_function_channels=custom_options_values_function_channels,
@@ -835,7 +844,7 @@ def page_function():
     elif function_type == 'conditions':
         return render_template('pages/function_options/conditional_condition.html',
                                and_=and_,
-                               actions=actions,
+                               action=action,
                                actions_dict=actions_dict,
                                camera=camera,
                                choices_controller_ids=choices_controller_ids,
@@ -858,12 +867,11 @@ def page_function():
                                conditional_conditions=conditional_conditions,
                                conditions_dict=conditions_dict,
                                controllers=controllers,
-                               each_action=each_action,
                                each_condition=each_condition,
                                each_function=each_function,
                                function=function,
                                function_channel=function_channel,
-                               custom_actions=custom_actions,
+                               custom_commands=custom_commands,
                                custom_options_values_actions=custom_options_values_actions,
                                custom_options_values_controllers=custom_options_values_controllers,
                                custom_options_values_function_channels=custom_options_values_function_channels,

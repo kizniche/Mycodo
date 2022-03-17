@@ -47,12 +47,12 @@ MYCODO_DB_PATH = 'sqlite:///' + SQL_DATABASE_MYCODO
 PATH_1WIRE = '/sys/bus/w1/devices/'
 PATH_CONTROLLERS = os.path.join(INSTALL_DIRECTORY, 'mycodo/controllers')
 PATH_FUNCTIONS = os.path.join(INSTALL_DIRECTORY, 'mycodo/functions')
-PATH_FUNCTION_ACTIONS = os.path.join(INSTALL_DIRECTORY, 'mycodo/function_actions')
+PATH_ACTIONS = os.path.join(INSTALL_DIRECTORY, 'mycodo/actions')
 PATH_INPUTS = os.path.join(INSTALL_DIRECTORY, 'mycodo/inputs')
 PATH_OUTPUTS = os.path.join(INSTALL_DIRECTORY, 'mycodo/outputs')
 PATH_WIDGETS = os.path.join(INSTALL_DIRECTORY, 'mycodo/widgets')
 PATH_FUNCTIONS_CUSTOM = os.path.join(PATH_FUNCTIONS, 'custom_functions')
-PATH_FUNCTION_ACTIONS_CUSTOM = os.path.join(PATH_FUNCTION_ACTIONS, 'custom_function_actions')
+PATH_ACTIONS_CUSTOM = os.path.join(PATH_ACTIONS, 'custom_actions')
 PATH_INPUTS_CUSTOM = os.path.join(PATH_INPUTS, 'custom_inputs')
 PATH_OUTPUTS_CUSTOM = os.path.join(PATH_OUTPUTS, 'custom_outputs')
 PATH_WIDGETS_CUSTOM = os.path.join(PATH_WIDGETS, 'custom_widgets')
@@ -683,7 +683,9 @@ FUNCTION_INFO = {
         'name': '{}: {}'.format(
             TRANSLATIONS['trigger']['title'],
             lazy_gettext('Sunrise/Sunset')),
-        'dependencies_module': []
+        'dependencies_module': [
+            ('pip-pypi', 'suntime', 'suntime==1.2.5')
+        ]
     }
 }
 

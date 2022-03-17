@@ -175,35 +175,84 @@ class Sun:
         return dict_sunriseset
 
 
-def calculate_sunrise_sunset_epoch(trigger):
+def calculate_next_sunrise_sunset_epoch(latitude, longitude, zenith, date_offset_days, time_offset_minutes, rise_or_set):
     try:
         # Adjust for date offset
         now = datetime.datetime.now()
-        new_date = now + datetime.timedelta(days=trigger.date_offset_days)
+        new_date = now + datetime.timedelta(days=date_offset_days)
 
-        sun = Sun(latitude=trigger.latitude,
-                  longitude=trigger.longitude,
-                  zenith=trigger.zenith,
+        sun = Sun(latitude=latitude,
+                  longitude=longitude,
+                  zenith=zenith,
                   day=new_date.day,
                   month=new_date.month,
                   year=new_date.year,
-                  offset_minutes=trigger.time_offset_minutes)
+                  offset_minutes=time_offset_minutes)
 
-        if trigger.rise_or_set == 'sunrise':
+        if rise_or_set == 'sunrise':
+            print(f"Old Sunrise: {sun.calc_sun_time(True)['time_local']}")
             return float(sun.calc_sun_time(True)['time_local'].strftime('%s'))
-
-        elif trigger.rise_or_set == 'sunset':
+        elif rise_or_set == 'sunset':
+            print(f"Old Sunset: {sun.calc_sun_time(False)['time_local']}")
             return float(sun.calc_sun_time(False)['time_local'].strftime('%s'))
     except Exception:
         logger.exception("Generating next sunrise/sunset time")
         return None
 
 
+def suntime_calculate_next_sunrise_sunset_epoch(latitude, longitude, date_offset_days, time_offset_minutes, rise_or_set, return_dt=False):
+    try:
+        from suntime import SunTimeException
+        from suntime import Sun as SunTime
+
+        sun = SunTime(latitude, longitude)
+        now = datetime.datetime.now()
+        new_date = now + datetime.timedelta(days=date_offset_days)
+        new_date = new_date + datetime.timedelta(minutes=time_offset_minutes)
+
+        if rise_or_set == 'sunrise':
+            sunrise = sun.get_local_sunrise_time(new_date)
+            if time_offset_minutes != 0:
+                sunrise = sunrise + datetime.timedelta(minutes=time_offset_minutes)
+            while sunrise.timestamp() > now.timestamp():  # Find sunrise for yesterday
+                sunrise = sunrise - datetime.timedelta(days=1)  # Make sunrise tomorrow
+            sunrise = sunrise + datetime.timedelta(days=1)
+            if return_dt:
+                return sunrise
+            else:
+                return float(sunrise.strftime('%s'))
+        elif rise_or_set == 'sunset':
+            sunset = sun.get_local_sunset_time(new_date)
+            if time_offset_minutes != 0:
+                sunset = sunset + datetime.timedelta(minutes=time_offset_minutes)
+            while sunset.timestamp() > now.timestamp():  # Find sunset for yesterday
+                sunset = sunset - datetime.timedelta(days=1)  # Make sunset tomorrow
+            sunset = sunset + datetime.timedelta(days=1)
+            if return_dt:
+                return sunset
+            else:
+                return float(sunset.strftime('%s'))
+    except SunTimeException:
+        logger.exception("Generating next sunrise/sunset time")
+        return
+    except Exception:
+        logger.exception("Generating next sunrise/sunset time")
+        return
+
+
 if __name__ == '__main__':
-    sun = Sun(latitude=33.749249, longitude=-84.387314, zenith=90.8)
+    latitude = 33.749249
+    longitude = -84.387314
+    zenith = 90.8
 
-    sunrise = sun.get_sunrise_time()
-    print("Sunrise: {time}".format(time=sunrise['time_local']))
+    sunrise = calculate_next_sunrise_sunset_epoch(latitude, longitude, zenith, 0, 0, "sunrise")
+    sunset = calculate_next_sunrise_sunset_epoch(latitude, longitude, zenith, 0, 0, "sunset")
 
-    sunset = sun.get_sunset_time()
-    print("Sunset:  {time}".format(time=sunset['time_local']))
+    print(f"Sunrise: {sunrise}")
+    print(f"Sunset:  {sunset}")
+
+    unrise = suntime_calculate_next_sunrise_sunset_epoch(latitude, longitude, 0, 0, "sunrise")
+    sunset = suntime_calculate_next_sunrise_sunset_epoch(latitude, longitude, 0, 0, "sunset")
+
+    print(f"Sunrise: {sunrise}")
+    print(f"Sunset:  {sunset}")

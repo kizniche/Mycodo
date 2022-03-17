@@ -139,11 +139,11 @@ INPUT_INFORMATION = {
             'phrase': 'Calibration data: Temperature'
         },
     ],
-    'custom_actions_message': """Calibrate: Place your probe in a solution of known pH. Set 
+    'custom_commands_message': """Calibrate: Place your probe in a solution of known pH. Set 
 the known pH value in the `Calibration buffer pH` field, and press `Calibrate, slot 1`. Repeat with a second buffer,
 and press `Calibrate, slot 2`. Optionally, repeat a third time with `Calibrate, slot 3`. You don't need to change
  the values under `Custom Options`.""",
-    'custom_actions': [
+    'custom_commands': [
         {
             'id': 'calibration_ph',
             'type': 'float',

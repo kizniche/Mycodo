@@ -105,7 +105,7 @@ def page_output_submit():
                     custom_button = True
                     break
             if custom_button:
-                messages = utils_general.custom_action(
+                messages = utils_general.custom_command(
                     "Output",
                     parse_output_information(),
                     form_mod_output.output_id.data,
@@ -193,10 +193,10 @@ def page_output():
     custom_options_values_output_channels = parse_custom_option_values_output_channels_json(
         output_channel.query.all(), dict_controller=dict_outputs, key_name='custom_channel_options')
 
-    custom_actions = {}
+    custom_commands = {}
     for each_output_dev in output:
-        if 'custom_actions' in dict_outputs[each_output_dev.output_type]:
-            custom_actions[each_output_dev.output_type] = True
+        if 'custom_commands' in dict_outputs[each_output_dev.output_type]:
+            custom_commands[each_output_dev.output_type] = True
 
     # Create dict of Input names
     names_output = {}
@@ -245,7 +245,7 @@ def page_output():
                                choices_output=choices_output,
                                choices_output_channels=choices_output_channels,
                                choices_pid=choices_pid,
-                               custom_actions=custom_actions,
+                               custom_commands=custom_commands,
                                custom_options_values_outputs=custom_options_values_outputs,
                                custom_options_values_output_channels=custom_options_values_output_channels,
                                dict_outputs=dict_outputs,
@@ -273,7 +273,7 @@ def page_output():
                                choices_output=choices_output,
                                choices_output_channels=choices_output_channels,
                                choices_pid=choices_pid,
-                               custom_actions=custom_actions,
+                               custom_commands=custom_commands,
                                custom_options_values_outputs=custom_options_values_outputs,
                                custom_options_values_output_channels=custom_options_values_output_channels,
                                dict_outputs=dict_outputs,
@@ -302,7 +302,7 @@ def page_output():
                                choices_output=choices_output,
                                choices_output_channels=choices_output_channels,
                                choices_pid=choices_pid,
-                               custom_actions=custom_actions,
+                               custom_commands=custom_commands,
                                custom_options_values_outputs=custom_options_values_outputs,
                                custom_options_values_output_channels=custom_options_values_output_channels,
                                dict_outputs=dict_outputs,

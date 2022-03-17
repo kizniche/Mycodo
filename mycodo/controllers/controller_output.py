@@ -406,15 +406,15 @@ class OutputController(AbstractController, threading.Thread):
     def custom_button_exec_function(self, button_id, args_dict, unique_id=None, thread=True):
         """Execute function from custom action button press."""
         try:
-            run_action = getattr(self.output[unique_id], button_id)
+            run_command = getattr(self.output[unique_id], button_id)
             if thread:
-                thread_run_action = threading.Thread(
-                    target=run_action,
+                thread_run_command = threading.Thread(
+                    target=run_command,
                     args=(args_dict,))
-                thread_run_action.start()
+                thread_run_command.start()
                 return 0, "Command sent to Output Controller and is running in the background."
             else:
-                return_val = run_action(args_dict)
+                return_val = run_command(args_dict)
                 return 0, "Command sent to Output Controller. Returned: {}".format(return_val)
         except:
             self.logger.exception("Error executing custom action '{}'".format(

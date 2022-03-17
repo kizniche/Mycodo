@@ -180,7 +180,7 @@ FUNCTION_INFORMATION = {
         }
     ],
 
-    'custom_actions': [
+    'custom_commands': [
         {
             'type': 'message',
             'default_value': 'Backup of settings are only created if the Mycodo version or database versions change. This is due to this Function running periodically- if it created a new backup every Period, there would soon be many identical backups. Therefore, if you want to induce the backup of settings, measurements, or camera directories and sync them to your remote system, use the buttons below.',

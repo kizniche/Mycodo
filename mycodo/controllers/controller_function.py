@@ -117,15 +117,15 @@ class FunctionController(AbstractController, threading.Thread):
     def custom_button_exec_function(self, button_id, args_dict, thread=True):
         """Execute function from custom action button press."""
         try:
-            run_action = getattr(self.run_function, button_id)
+            run_command = getattr(self.run_function, button_id)
             if thread:
-                thread_run_action = threading.Thread(
-                    target=run_action,
+                thread_run_command = threading.Thread(
+                    target=run_command,
                     args=(args_dict,))
-                thread_run_action.start()
+                thread_run_command.start()
                 return 0, "Command sent to Function Controller and is running in the background."
             else:
-                return_val = run_action(args_dict)
+                return_val = run_command(args_dict)
                 return 0, "Command sent to Function Controller. Returned: {}".format(return_val)
         except:
             self.logger.exception(
@@ -137,15 +137,15 @@ class FunctionController(AbstractController, threading.Thread):
         if args_dict is None:
             args_dict = {}
         try:
-            run_action = getattr(self.run_function, action_string)
+            run_command = getattr(self.run_function, action_string)
             if thread:
-                thread_run_action = threading.Thread(
-                    target=run_action,
+                thread_run_command = threading.Thread(
+                    target=run_command,
                     args=(args_dict,))
-                thread_run_action.start()
+                thread_run_command.start()
                 return 0, "Command sent to Function Controller and is running in the background."
             else:
-                return_val = run_action(args_dict)
+                return_val = run_command(args_dict)
                 return 0, "Command sent to Function Controller. Returned: {}".format(return_val)
         except:
             self.logger.exception(

@@ -144,8 +144,8 @@ def parse_output_information(exclude_custom=False):
             dict_outputs = dict_has_value(dict_outputs, output_custom, 'custom_channel_options_message')
             dict_outputs = dict_has_value(dict_outputs, output_custom, 'custom_channel_options')
 
-            dict_outputs = dict_has_value(dict_outputs, output_custom, 'custom_actions_message')
-            dict_outputs = dict_has_value(dict_outputs, output_custom, 'custom_actions')
+            dict_outputs = dict_has_value(dict_outputs, output_custom, 'custom_commands_message')
+            dict_outputs = dict_has_value(dict_outputs, output_custom, 'custom_commands')
 
     return dict_outputs
 

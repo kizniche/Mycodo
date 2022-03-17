@@ -71,8 +71,8 @@ INPUT_INFORMATION = {
         },
     ],
 
-    'custom_actions_message': 'This is a message for custom actions.',
-    'custom_actions': [
+    'custom_commands_message': 'This is a message for custom actions.',
+    'custom_commands': [
         {
             'id': 'button_one_value',
             'type': 'integer',

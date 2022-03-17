@@ -138,6 +138,9 @@
           action === 'input_activate' ||
           action === 'input_deactivate' ||
           action === 'input_acquire_measurements' ||
+          action === 'add_action' ||
+          action === 'save_action' ||
+          action === 'delete_action' ||
           action.startsWith('custom_button_')) {
         toastr['info']('Command sent. Please wait...');
         $.ajax({
@@ -170,6 +173,7 @@
                       });
                       {% if not hide_tooltips %}$('input[title]').tooltip({placement: 'top'});{% endif %}
                       if (action === 'input_duplicate') { $('#modal_config_' + data.data.duplicated_input_id).modal('hide'); }
+                      $('#action_type_' + data.data.input_id).selectpicker('refresh');
                     }
                     popup_response(data);
                   },
@@ -180,6 +184,17 @@
               }
               return;
             }
+            else if (action === 'add_action' && 'dep_unmet' in data.data && data.data.dep_unmet.length > 0) {
+              $(".dependencies_device_name").text(data.data.dep_name);
+              $(".dependencies_device").text(data.data.dep_unmet);
+              $(".dependencies_unmet").text(data.data.dep_list.join(", "));
+              document.getElementById("dependency_unmet").value = data.data.dep_unmet;
+              if (data.data.dep_message.length > 0) {
+                document.getElementById("dependencies_message").innerHTML = "<p>Message about dependencies: " + data.data.dep_message + "</p>";
+              }
+              $('#modal_config_dependency_install').modal('show');
+            }
+
             if (data.data.messages.error.length === 0) {
               if (action === 'input_mod' && 'input_id' in data.data) {
                 if ('return_text' in data.data.messages && data.data.messages.return_text.length > 0) {
@@ -210,7 +225,24 @@
                 document.getElementById('input_activate_' + data.data.input_id).style.display = "";
                 document.getElementById('input_deactivate_' + data.data.input_id).style.display = "none";
               }
-              if ('page_refresh' in data.data && data.data.page_refresh) {
+              if (action === 'delete_action' && 'action_id' in data.data) {
+                document.getElementById("mod_action_" + data.data.action_id).remove();
+                popup_response(data);
+              }
+              if (action === 'add_action' && 'page_refresh' in data.data && data.data.page_refresh) {
+                $.ajax({
+                  type: "GET",
+                  url: '/input?input_type=actions&input_id=' + data.data.input_id + '&action_id=' + data.data.action_id,
+                  success: function (new_options) {
+                    document.getElementById('mod_input_actions_' + data.data.input_id).insertAdjacentHTML('beforeend', (new_options));
+                    popup_response(data);
+                  },
+                  error: function() {
+                    toastr['error']('Error: Could not get Function Actions');
+                  }
+                });
+              }
+              else if (action === 'input_mod' && 'page_refresh' in data.data && data.data.page_refresh) {
                 $.ajax({
                   type: "GET",
                   url: '/input?input_type=options&input_id=' + data.data.input_id,

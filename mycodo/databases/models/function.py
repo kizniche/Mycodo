@@ -90,7 +90,6 @@ class Trigger(CRUDMixin, db.Model):
     rise_or_set = db.Column(db.Text, default='sunrise')
     latitude = db.Column(db.Float, default=33.749249)
     longitude = db.Column(db.Float, default=-84.387314)
-    zenith = db.Column(db.Float, default=90.8)
     date_offset_days = db.Column(db.Integer, default=0)
     time_offset_minutes = db.Column(db.Integer, default=0)
 
@@ -113,6 +112,9 @@ class Trigger(CRUDMixin, db.Model):
     # Edge
     measurement = db.Column(db.Text, default='')
     edge_detected = db.Column(db.Text, default='')
+
+    # Unused  TODO: remove
+    zenith = db.Column(db.Float, default=90.8)
 
 
 class TriggerSchema(ma.SQLAlchemyAutoSchema):

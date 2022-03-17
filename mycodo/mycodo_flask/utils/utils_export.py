@@ -26,7 +26,7 @@ from mycodo.config import INFLUXDB_USER
 from mycodo.config import INSTALL_DIRECTORY
 from mycodo.config import MYCODO_VERSION
 from mycodo.config import PATH_FUNCTIONS_CUSTOM
-from mycodo.config import PATH_FUNCTION_ACTIONS_CUSTOM
+from mycodo.config import PATH_ACTIONS_CUSTOM
 from mycodo.config import PATH_HTML_USER
 from mycodo.config import PATH_INPUTS_CUSTOM
 from mycodo.config import PATH_OUTPUTS_CUSTOM
@@ -323,7 +323,7 @@ def import_settings(form):
 
                 delete_directories = [
                     PATH_FUNCTIONS_CUSTOM,
-                    PATH_FUNCTION_ACTIONS_CUSTOM,
+                    PATH_ACTIONS_CUSTOM,
                     PATH_INPUTS_CUSTOM,
                     PATH_OUTPUTS_CUSTOM,
                     PATH_WIDGETS_CUSTOM,
@@ -348,7 +348,7 @@ def import_settings(form):
 
                 restore_directories = [
                     (PATH_FUNCTIONS_CUSTOM, "custom_functions"),
-                    (PATH_FUNCTION_ACTIONS_CUSTOM, "custom_function_actions"),
+                    (PATH_ACTIONS_CUSTOM, "custom_actions"),
                     (PATH_INPUTS_CUSTOM, "custom_inputs"),
                     (PATH_OUTPUTS_CUSTOM, "custom_outputs"),
                     (PATH_WIDGETS_CUSTOM, "custom_widgets"),

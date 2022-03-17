@@ -82,6 +82,10 @@
 
     {% for each_widget in dict_widgets %}
 
+      {% set dict_options = dict_widgets[each_widget] %}
+      {% set custom_options_values = [] %}
+      {% set force_default_value = true %}
+
     <div class="add_dashboard_widget" style="display: none" id="{{each_widget}}">
       <form method="post" action="/dashboard/{{dashboard_id}}">
       {{form_base.csrf_token}}
@@ -92,17 +96,15 @@
         {% include 'pages/dashboard_options/TEMPLATE_OPTIONS_WIDGET_ADD.html' %}
       </div>
 
-      {% set dict_options = dict_widgets[each_widget] %}
-
       {% if 'custom_options' in dict_widgets[each_widget] %}
       <div class="row small-gutters" style="padding: 0.5em">
         <div class="col-12">
           <h5>{{_('Custom Options')}}</h5>
         </div>
-        {% include 'pages/form_options/Custom_Options_Message.html' %}
+        {% if 'custom_options_message' in dict_options %}
+          {% include 'pages/form_options/Custom_Options_Message.html' %}
+        {% endif %}
         {% for each_option in dict_widgets[each_widget]['custom_options'] %}
-          {% set custom_options_values = [] %}
-          {% set force_default_value = true %}
           {% include 'pages/form_options/Custom_Options.html' %}
         {% endfor %}
       </div>

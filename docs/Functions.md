@@ -351,7 +351,7 @@ And typical Daemon Log output will look like this:
 
 ## Conditional
 
-Conditional controllers are used to perform certain [Actions](Functions.md#function-actions) based a user-generated Conditional Statement.
+Conditional controllers are used to perform certain [Actions](Actions.md) based a user-generated Conditional Statement.
 
 ### Conditional Options
 
@@ -366,6 +366,10 @@ Conditional controllers are used to perform certain [Actions](Functions.md#funct
 <tr>
 <td>Conditional Statement</td>
 <td>User-created Python 3 code that will be executed.</td>
+</tr>
+<tr>
+<td>Conditional Status</td>
+<td>A dictionary can be returned that allows information to be passed to other controllers and widgets. For example, the Function Status Widget will display this information on the Dashboard. This code can be removed if you do not want to return any information.</td>
 </tr>
 <tr>
 <td>Period (seconds)</td>
@@ -671,7 +675,7 @@ Before activating any conditionals, it's advised to thoroughly explore all possi
 
 ## Trigger
 
-A Trigger Controller will execute actions when events are triggered, such as an output turning on or off, a GPIO pin changing it's voltage state (Edge detection, rising or falling), timed events that include various timers (duration, time period, time point, etc), or the sunrise/sunset time at a specific latitude and longitude. Once the trigger is configured, add any number of [Actions](Functions.md#function-actions) to be executed when that event is triggered.
+A Trigger Controller will execute actions when events are triggered, such as an output turning on or off, a GPIO pin changing it's voltage state (Edge detection, rising or falling), timed events that include various timers (duration, time period, time point, etc), or the sunrise/sunset time at a specific latitude and longitude. Once the trigger is configured, add any number of [Actions](Actions.md) to be executed when that event is triggered.
 
 ### Output (On/Off) Options
 

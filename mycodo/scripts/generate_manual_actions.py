@@ -8,7 +8,7 @@ sys.path.append(os.path.abspath(os.path.join(__file__, "../../..")))
 from collections import OrderedDict
 from mycodo.config import INSTALL_DIRECTORY
 from mycodo.scripts.generate_doc_output import generate_controller_doc
-from mycodo.utils.function_actions import parse_function_action_information
+from mycodo.utils.actions import parse_action_information
 
 save_path = os.path.join(INSTALL_DIRECTORY, "docs/Supported-Actions.md")
 
@@ -21,14 +21,14 @@ def repeat_to_length(s, wanted):
 
 
 if __name__ == "__main__":
-    for action_id, action_data in parse_function_action_information(exclude_custom=True).items():
+    for action_id, action_data in parse_action_information(exclude_custom=True).items():
         name_str = ""
         if 'manufacturer' in action_data and action_data['manufacturer']:
-            name_str += "{}".format(action_data['manufacturer'])
+            name_str += f"{action_data['manufacturer']}"
         if 'name' in action_data and action_data['name']:
-            name_str += ": {}".format(action_data['name'])
+            name_str += f": {action_data['name']}"
         if 'library' in action_data and action_data['library']:
-            name_str += ": {}".format(action_data['library'])
+            name_str += f": {action_data['library']}"
 
         if ('manufacturer' in action_data and
                 action_data['manufacturer'] in ['Linux', 'Mycodo', 'Raspberry Pi', 'System']):
@@ -66,19 +66,22 @@ if __name__ == "__main__":
             if not each_list[0]:
                 continue
 
-            out_file.write("## {}\n\n".format(each_list[1]))
+            out_file.write(f"## {each_list[1]}\n\n")
 
             for each_id, each_data in each_list[0].items():
                 name_str = ""
                 if 'name' in each_data and each_data['name']:
-                    name_str += "{}".format(each_data['name'])
+                    name_str += each_data['name']
 
-                out_file.write("### {}\n\n".format(name_str))
+                out_file.write(f"### {name_str}\n\n")
 
                 if 'manufacturer' in each_data and each_data['manufacturer']:
-                    out_file.write("- Manufacturer: {}\n".format(each_data['manufacturer']))
+                    out_file.write(f"- Manufacturer: {each_data['manufacturer']}\n")
 
                 if 'library' in each_data and each_data['library']:
-                    out_file.write("- Libraries: {}\n".format(each_data['library']))
+                    out_file.write(f"- Libraries: {each_data['library']}\n")
+
+                if 'application' in each_data and each_data['application']:
+                    out_file.write(f"- Works with: {', '.join(each_data['application']).title()}\n")
 
                 generate_controller_doc(out_file, each_data)

@@ -70,11 +70,11 @@ from mycodo.databases.models import Trigger
 from mycodo.databases.utils import session_scope
 from mycodo.devices.camera import camera_record
 from mycodo.utils.database import db_retrieve_table_daemon
-from mycodo.utils.function_actions import get_condition_value
-from mycodo.utils.function_actions import get_condition_value_dict
-from mycodo.utils.function_actions import parse_function_action_information
-from mycodo.utils.function_actions import trigger_action
-from mycodo.utils.function_actions import trigger_function_actions
+from mycodo.utils.actions import get_condition_value
+from mycodo.utils.actions import get_condition_value_dict
+from mycodo.utils.actions import parse_action_information
+from mycodo.utils.actions import trigger_action
+from mycodo.utils.actions import trigger_controller_actions
 from mycodo.utils.github_release_info import MycodoRelease
 from mycodo.utils.stats import add_update_csv
 from mycodo.utils.stats import recreate_stat_file
@@ -102,8 +102,8 @@ class DaemonController:
         self.terminated = False
         self.debug = debug
 
-        # Function actions
-        self.function_actions = {}
+        # Actions
+        self.actions = {}
 
         # Controller object that will store the thread objects for each controller
         self.controller = {
@@ -158,7 +158,7 @@ class DaemonController:
         self.logger.debug("Anonymous statistics {state}".format(state=state))
 
     def run(self):
-        self.load_function_actions()
+        self.load_actions()
         self.start_all_controllers(self.debug)
         self.daemon_startup_time = timeit.default_timer() - self.startup_timer
         self.logger.info("Mycodo daemon started in {sec:.3f} seconds".format(sec=self.daemon_startup_time))
@@ -888,8 +888,8 @@ class DaemonController:
         except Exception as msg:
             self.logger.exception("Statistics initialization Error: {e}".format(e=msg))
 
-    def load_function_actions(self):
-        self.function_actions = parse_function_action_information()
+    def load_actions(self):
+        self.actions = parse_action_information()
 
     def start_all_controllers(self, debug):
         """
@@ -998,7 +998,7 @@ class DaemonController:
     def trigger_action(self, action_id, value=None, message='', debug=False):
         try:
             return trigger_action(
-                self.function_actions,
+                self.actions,
                 action_id,
                 value=value,
                 message=message,
@@ -1009,8 +1009,8 @@ class DaemonController:
 
     def trigger_all_actions(self, function_id, message='', debug=False):
         try:
-            return trigger_function_actions(
-                self.function_actions, function_id, message=message, debug=debug)
+            return trigger_controller_actions(
+                self.actions, function_id, message=message, debug=debug)
         except Exception as except_msg:
             message = "Could not trigger Conditional Actions: {err}".format(err=except_msg)
             self.logger.exception(message)
