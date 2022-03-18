@@ -50,9 +50,8 @@ if __name__ == "__main__":
 
     inputs_info = dict(OrderedDict(sorted(inputs_info.items(), key = lambda t: t[0])))
 
-    with session_scope(MYCODO_DB_PATH) as new_session:
-        dict_measurements = add_custom_measurements(new_session.query(Measurement).all())
-        dict_units = add_custom_units(new_session.query(Unit).all())
+    dict_measurements = add_custom_measurements([])
+    dict_units = add_custom_units([])
 
     dict_inputs = {}
     for name, data in inputs_info.items():
