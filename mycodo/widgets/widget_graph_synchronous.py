@@ -50,11 +50,6 @@ logger = logging.getLogger(__name__)
 def execute_at_creation(error, new_widget, dict_widget):
     # Create initial default values
     custom_options_json = json.loads(new_widget.custom_options)
-    custom_options_json['enable_manual_y_axis'] = False
-    custom_options_json['enable_align_ticks'] = False
-    custom_options_json['enable_start_on_tick'] = False
-    custom_options_json['enable_end_on_tick'] = False
-    custom_options_json['enable_graph_legend'] = True
     custom_options_json['disable_data_grouping'] = ""
     custom_options_json['custom_yaxes'] = ""
     custom_options_json['custom_colors'] = ""
