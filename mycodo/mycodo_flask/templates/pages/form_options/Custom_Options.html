@@ -22,9 +22,7 @@
     {%- if each_option['type'] == 'text' -%}text
     {%- elif each_option['type'] in ['float', 'integer'] -%}number
     {%- endif -%}
-
     " value="
-
     {%- if channel_options and custom_options_values[unique_id][channel][each_option['id']] is not none -%}
       {{custom_options_values[unique_id][channel][each_option['id']]}}
     {%- elif custom_options_values and custom_options_values[unique_id][each_option['id']] is not none -%}
@@ -40,7 +38,10 @@
 <div class="col-auto">
   <label class="control-label" for="{{name_prefix}}{{each_option['id']}}">{{each_option['name']}}</label>
   <div class="input-group-text">
-    <input id="{{name_prefix}}{{each_option['id']}}" name="{{name_prefix}}{{each_option['id']}}" title="{{each_option['phrase']}}" type="checkbox" value="y"{% if (channel_options and custom_options_values[unique_id][channel][each_option['id']]) or (custom_options_values and custom_options_values[unique_id][each_option['id']]) %} checked{% endif %}>
+    <input id="{{name_prefix}}{{each_option['id']}}" name="{{name_prefix}}{{each_option['id']}}" title="{{each_option['phrase']}}" type="checkbox" value="y"
+      {%- if (channel_options and custom_options_values[unique_id][channel][each_option['id']]) or
+             (custom_options_values and custom_options_values[unique_id][each_option['id']]) or
+             (force_default_value and 'default_value' in each_option and each_option['default_value'])%} checked{% endif %}>
   </div>
 </div>
 
@@ -254,13 +255,9 @@
       <option value="">{{dict_translation['select_one']['title']}}</option>
       {% for each_measure_name_safe, each_measure in dict_measurements.items() %}
       <option value="{{each_measure_name_safe}}"
-        {%- if channel_options and each_measure_name_safe == custom_options_values[unique_id][channel][each_option['id']] -%}
-          {{' selected'}}
-        {%- elif custom_options_values and
-                (each_measure_name_safe == custom_options_values[unique_id][each_option['id']] or
-                 (force_default_value and
-                 'default_value' in each_option and
-                 each_measure_name_safe == each_option['default_value'])) %}
+        {%- if (channel_options and each_measure_name_safe == custom_options_values[unique_id][channel][each_option['id']]) or
+               (custom_options_values and each_measure_name_safe == custom_options_values[unique_id][each_option['id']]) or
+               (force_default_value and 'default_value' in each_option and each_measure_name_safe == each_option['default_value']) %}
           {{' selected'}}
         {%- endif -%}
       >{{each_measure_name_safe}}</option>
@@ -278,13 +275,9 @@
       <option value="">{{dict_translation['select_one']['title']}}</option>
       {% for each_unit_name_safe, each_unit in dict_units.items() %}
       <option value="{{each_unit_name_safe}}"
-        {%- if channel_options and each_unit_name_safe == custom_options_values[unique_id][channel][each_option['id']] -%}
-          {{' selected'}}
-        {%- elif custom_options_values and
-                (each_unit_name_safe == custom_options_values[unique_id][each_option['id']] or
-                 (force_default_value and
-                 'default_value' in each_option and
-                 each_unit_name_safe == each_option['default_value'])) %}
+        {%- if (channel_options and each_unit_name_safe == custom_options_values[unique_id][channel][each_option['id']]) or
+               (custom_options_values and each_unit_name_safe == custom_options_values[unique_id][each_option['id']]) or
+               (force_default_value and 'default_value' in each_option and each_unit_name_safe == each_option['default_value']) %}
           {{' selected'}}
         {%- endif -%}
       >{{each_unit_name_safe}}</option>
