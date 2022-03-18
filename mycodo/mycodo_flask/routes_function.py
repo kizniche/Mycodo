@@ -148,7 +148,7 @@ def page_function_submit():
                         form_mod_pid_volume_raise,
                         form_mod_pid_volume_lower)
                 elif controller_type == "Trigger":
-                    messages = utils_trigger.trigger_mod(form_trigger)
+                    messages, page_refresh = utils_trigger.trigger_mod(form_trigger)
                 elif controller_type == "Function":
                     messages = utils_function.function_mod(form_function_base)
                 elif controller_type == "Function_Custom":

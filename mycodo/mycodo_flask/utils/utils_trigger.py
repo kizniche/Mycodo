@@ -25,6 +25,7 @@ def trigger_mod(form):
         "error": [],
         "name": None
     }
+    page_refresh = False
 
     try:
         trigger = Trigger.query.filter(
@@ -84,6 +85,7 @@ def trigger_mod(form):
             trigger.trigger_actions_at_period = form.trigger_actions_at_period.data
 
         elif trigger.trigger_type == 'trigger_sunrise_sunset':
+            page_refresh = True
             if form.rise_or_set.data not in ['sunrise', 'sunset']:
                 messages["error"].append("{id} must be set to 'sunrise' or 'sunset'".format(
                     id=form.rise_or_set.label.text))
@@ -153,7 +155,7 @@ def trigger_mod(form):
     except Exception as except_msg:
         messages["error"].append(str(except_msg))
 
-    return messages
+    return messages, page_refresh
 
 
 def trigger_del(trigger_id):

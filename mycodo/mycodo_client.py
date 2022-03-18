@@ -66,9 +66,8 @@ class DaemonControl:
             else:
                 misc = db_retrieve_table_daemon(Misc, entry='first')
                 self.pyro_timeout = misc.rpyc_timeout  # TODO: Rename to pyro_timeout at next major revision
-        except Exception as e:
-            logger.exception(
-                "Could not access SQL table to determine Pyro Timeout. Using 30 seconds. Error: {}".format(e))
+        except Exception:
+            logger.exception("Could not access SQL table to determine Pyro Timeout. Using 30 seconds.")
 
         self.uri= pyro_uri
 
@@ -78,7 +77,7 @@ class DaemonControl:
             proxy._pyroTimeout = self.pyro_timeout
             return proxy
         except Exception as e:
-            logger.error("Pyro5 proxy error: {}".format(e))
+            logger.error(f"Pyro5 proxy error: {e}")
 
     #
     # Status functions
@@ -95,19 +94,19 @@ class DaemonControl:
             else:
                 return "GOOD"
         except Pyro5.errors.TimeoutError as err:
-            msg = "Pyro5 TimeoutError: {}".format(err)
+            msg = f"Pyro5 TimeoutError: {err}"
             logger.error(msg)
             return msg
         except Pyro5.errors.CommunicationError as err:
-            msg = "Pyro5 Communication error: {}".format(err)
+            msg = f"Pyro5 Communication error: {err}"
             logger.error(msg)
             return msg
         except Pyro5.errors.NamingError as err:
-            msg = "Failed to locate Pyro5 Nameserver: {}".format(err)
+            msg = f"Failed to locate Pyro5 Nameserver: {err}"
             logger.error(msg)
             return msg
         except Exception as err:
-            msg = "Pyro Exception: {}".format(err)
+            msg = f"Pyro Exception: {err}"
             logger.error(msg)
             return msg
         finally:
@@ -226,7 +225,7 @@ class DaemonControl:
         elif state in ['off', 0, False]:
             return self.output_off(output_id, output_channel=output_channel)
         else:
-            return 1, 'state not "on", 1, True, "off", 0, or False. Found: "{}"'.format(state)
+            return 1, f'state not "on", 1, True, "off", 0, or False. Found: "{state}"'
 
     def output_sec_currently_on(self, output_id, output_channel=None):
         """Return the amount of seconds an on/off output channel has been on."""
@@ -460,27 +459,24 @@ if __name__ == "__main__":
 
     if args.checkdaemon:
         return_msg = daemon.check_daemon()
-        logger.info("[Remote command] Check Daemon: {msg}".format(msg=return_msg))
+        logger.info(f"[Remote command] Check Daemon: {return_msg}")
 
     elif args.ramuse:
         return_msg = daemon.ram_use()
-        logger.info("[Remote command] Daemon Ram in Use: {msg} MB".format(msg=return_msg))
+        logger.info(f"[Remote command] Daemon Ram in Use: {return_msg} MB")
 
     elif args.input_force_measurements:
         return_msg = daemon.input_force_measurements(args.input_force_measurements)
         logger.info(
-            "[Remote command] Force acquiring measurements for Input with ID '{id}': Server returned: {msg}".format(
-                id=args.input_force_measurements, msg=return_msg[1]))
+            "[Remote command] Force acquiring measurements for Input with "
+            f"ID '{args.input_force_measurements}': Server returned: {return_msg[1]}")
 
     elif args.get_measurement:
         client = InfluxDBClient(INFLUXDB_HOST, INFLUXDB_PORT, INFLUXDB_USER,
                                 INFLUXDB_PASSWORD, INFLUXDB_DATABASE, timeout=5)
-        query = "SELECT LAST(value) FROM {unit} " \
-                "WHERE device_id='{id}' " \
-                "AND channel='{channel}'".format(
-                    unit=args.get_measurement[1],
-                    id=args.get_measurement[0],
-                    channel=args.get_measurement[2])
+        query = f"SELECT LAST(value) FROM {args.get_measurement[1]} " \
+                f"WHERE device_id='{args.get_measurement[0]}' " \
+                f"AND channel='{args.get_measurement[2]}'"
 
         try:
             last_measurement = client.query(query).raw
@@ -493,7 +489,6 @@ if __name__ == "__main__":
                 number = len(last_measurement['series'][0]['values'])
                 last_time = last_measurement['series'][0]['values'][number - 1][0]
                 last_measurement = last_measurement['series'][0]['values'][number - 1][1]
-                print("SUCCESS;{};{}".format(last_measurement,last_time))
             except Exception:
                 logger.info("ERROR;Could not retrieve measurement.")
         else:
@@ -501,18 +496,17 @@ if __name__ == "__main__":
 
     elif args.lcd_reset:
         return_msg = daemon.lcd_reset(args.lcd_reset)
-        logger.info("[Remote command] Reset LCD with ID '{id}': Server returned: {msg}".format(
-            id=args.lcd_reset, msg=return_msg))
+        logger.info(f"[Remote command] Reset LCD with ID '{args.lcd_reset}': Server returned: {return_msg}")
 
     elif args.backlight_off:
         return_msg = daemon.lcd_backlight(args.backlight_off, 0)
-        logger.info("[Remote command] Turn off LCD backlight with ID '{id}': Server returned: {msg}".format(
-            id=args.backlight_off, msg=return_msg))
+        logger.info("[Remote command] Turn off LCD backlight with "
+                    f"ID '{args.backlight_off}': Server returned: {return_msg}")
 
     elif args.backlight_on:
         return_msg = daemon.lcd_backlight(args.backlight_on, 1)
-        logger.info("[Remote command] Turn on LCD backlight with ID '{id}': Server returned: {msg}".format(
-            id=args.backlight_on, msg=return_msg))
+        logger.info("[Remote command] Turn on LCD backlight with "
+                    f"ID '{args.backlight_on}': Server returned: {return_msg}")
 
     elif args.output_currently_on and args.output_channel is None:
         parser.error("--output_currently_on requires --output_channel")
@@ -520,24 +514,26 @@ if __name__ == "__main__":
     elif args.output_currently_on:
         return_msg = daemon.output_sec_currently_on(
             args.output_currently_on, output_channel=args.output_channel)
-        logger.info("[Remote command] How many seconds output has been on. ID '{id}' CH{ch}: Server returned: {msg}".format(
-            id=args.output_currently_on, ch=args.output_channel, msg=return_msg))
+        logger.info("[Remote command] How many seconds output has been on. "
+                    f"ID '{args.output_currently_on}' CH{args.output_channel}: "
+                    f"Server returned: {return_msg}")
 
     elif args.output_state and args.output_channel is None:
         parser.error("--output_state requires --output_channel")
 
     elif args.output_state:
         return_msg = daemon.output_state(args.output_state, args.output_channel)
-        logger.info("[Remote command] State of output with ID '{id}' CH{ch}: Server returned: {msg}".format(
-            id=args.output_state, ch=args.output_channel, msg=return_msg))
+        logger.info("[Remote command] State of output with "
+                    f"ID '{args.output_state}' CH{args.output_channel}: "
+                    f"Server returned: {return_msg}")
 
     elif args.outputoff and args.output_channel is None:
         parser.error("--outputoff requires --output_channel")
 
     elif args.outputoff:
         return_msg = daemon.output_off(args.outputoff, args.output_channel)
-        logger.info("[Remote command] Turn off output with ID '{id}': Server returned: {msg}".format(
-            id=args.outputoff, msg=return_msg))
+        logger.info("[Remote command] Turn off output with "
+                    f"ID '{args.outputoff}': Server returned: {return_msg}")
 
     elif args.duration and args.outputon is None:
         parser.error("--duration requires --outputon")
@@ -562,20 +558,19 @@ if __name__ == "__main__":
             return_msg = daemon.output_on(
                 args.outputon,
                 output_channel=args.output_channel)
-        logger.info("[Remote command] Turn on output with ID '{id}': Server returned: {msg}".format(
-            id=args.outputon, msg=return_msg))
+        logger.info(f"[Remote command] Turn on output with ID '{args.outputon}': Server returned: {return_msg}")
 
     elif args.activatecontroller:
         return_msg = daemon.controller_activate(
             args.activatecontroller[0])
-        logger.info("[Remote command] Activate controller with ID '{id}': Server returned: {msg}".format(
-            id=args.activatecontroller[0], msg=return_msg))
+        logger.info("[Remote command] Activate controller with "
+                    f"ID '{args.activatecontroller[0]}': Server returned: {return_msg}")
 
     elif args.deactivatecontroller:
         return_msg = daemon.controller_deactivate(
             args.deactivatecontroller[0])
-        logger.info("[Remote command] Deactivate controller with ID '{id}': Server returned: {msg}".format(
-            id=args.deactivatecontroller[0], msg=return_msg))
+        logger.info("[Remote command] Deactivate controller with "
+                    f"ID '{args.deactivatecontroller[0]}': Server returned: {return_msg}")
 
     elif args.pid_pause:
         daemon.pid_pause(args.pid_pause[0])

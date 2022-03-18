@@ -1,27 +1,33 @@
-<div class="col-auto">
-  <label class="control-label">Next Sunrise & Sunset at Geolocation</label>
-  <div>
-    {% if sunrise_set_calc[each_function.unique_id]['sunrise'] and sunrise_set_calc[each_function.unique_id]['sunset'] %}
-      Sunrise: {{sunrise_set_calc[each_function.unique_id]['sunrise']}}<br/>
-      Sunset: {{sunrise_set_calc[each_function.unique_id]['sunset']}}
-    {% else %}
-      Could not calculate sunrise/sunset times
-    {% endif %}
+  <div class="col-auto">
+    <table>
+      <tr>
+        <td style="padding: 0 0.5em">
+          <label class="control-label">Next Sunrise/Sunset at Geolocation</label>
+          <div>
+            {% if sunrise_set_calc[each_function.unique_id]['sunrise'] and sunrise_set_calc[each_function.unique_id]['sunset'] %}
+              Rise: {{sunrise_set_calc[each_function.unique_id]['sunrise']}}<br/>
+              Set: {{sunrise_set_calc[each_function.unique_id]['sunset']}}
+            {% else %}
+              Could not calculate sunrise/sunset times
+            {% endif %}
+          </div>
+        </td>
+        <td style="padding: 0 0.5em">
+          <label class="control-label">Next Sunrise/Sunset with Offsets</label>
+          <div>
+            {% if sunrise_set_calc[each_function.unique_id]['offset_sunrise'] and sunrise_set_calc[each_function.unique_id]['offset_sunset'] %}
+              Rise: {{sunrise_set_calc[each_function.unique_id]['offset_sunrise']}}<br/>
+              Set: {{sunrise_set_calc[each_function.unique_id]['offset_sunset']}}
+            {% else %}
+              Could not calculate sunrise/sunset times
+            {% endif %}
+          </div>
+        </td>
+      </tr>
+    </table>
   </div>
 </div>
-<div class="col-1"></div>
-<div class="col-auto">
-  <label class="control-label">Next Sunrise & Sunset with Offsets</label>
-  <div>
-    {% if sunrise_set_calc[each_function.unique_id]['offset_sunrise'] and sunrise_set_calc[each_function.unique_id]['offset_sunset'] %}
-      Sunrise: {{sunrise_set_calc[each_function.unique_id]['offset_sunrise']}}<br/>
-      Sunset: {{sunrise_set_calc[each_function.unique_id]['offset_sunset']}}
-    {% else %}
-      Could not calculate sunrise/sunset times
-    {% endif %}
-  </div>
-</div>
-</div>
+
 <div class="row small-gutters" style="border-bottom: 2px solid #ddd; padding-bottom: 0.2em">
 <div class="col-10 col-sm-3 col-md-2">
   {{form_trigger.rise_or_set.label(class_='control-label')}}
