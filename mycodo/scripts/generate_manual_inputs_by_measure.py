@@ -1,43 +1,46 @@
 # -*- coding: utf-8 -*-
 """Generate markdown file of Input information to be inserted into the manual."""
-import os
 import sys
+from collections import OrderedDict
+
+import os
 
 sys.path.append(os.path.abspath(os.path.join(__file__, "../../..")))
 
-from collections import OrderedDict
-from mycodo.utils.system_pi import add_custom_measurements
-from mycodo.utils.system_pi import add_custom_units
 from mycodo.config import INSTALL_DIRECTORY
 from mycodo.utils.inputs import parse_input_information
-from mycodo.databases.models import Measurement
-from mycodo.databases.models import Unit
-from mycodo.config import SQL_DATABASE_MYCODO
-from mycodo.databases.utils import session_scope
-
-MYCODO_DB_PATH = 'sqlite:///' + SQL_DATABASE_MYCODO
-
-save_path = os.path.join(INSTALL_DIRECTORY, "docs/Supported-Inputs-By-Measurement.md")
-
-inputs_info = OrderedDict()
-mycodo_info = OrderedDict()
+from mycodo.utils.system_pi import add_custom_measurements
+from mycodo.utils.system_pi import add_custom_units
 
 
 def repeat_to_length(s, wanted):
     return (s * (wanted//len(s) + 1))[:wanted]
 
 
+def safe_link(link):
+    link = link.lower()
+    for rep in [" ", "(", ")", ":", ",", "/", "--", ]:
+        link = link.replace(rep, "-")
+    link = link.strip("-")
+    return link
+
+
 if __name__ == "__main__":
+    inputs_info = OrderedDict()
+    mycodo_info = OrderedDict()
+
+    save_path = os.path.join(INSTALL_DIRECTORY, "docs/Supported-Inputs-By-Measurement.md")
+
     for input_id, input_data in parse_input_information(exclude_custom=True).items():
         name_str = ""
         if 'input_manufacturer' in input_data and input_data['input_manufacturer']:
-            name_str += "{}".format(input_data['input_manufacturer'])
+            name_str += f"{input_data['input_manufacturer']}"
         if 'input_name' in input_data and input_data['input_name']:
-            name_str += ": {}".format(input_data['input_name'])
+            name_str += f": {input_data['input_name']}"
         if 'measurements_name' in input_data and input_data['measurements_name']:
-            name_str += ": {}".format(input_data['measurements_name'])
+            name_str += f": {input_data['measurements_name']}"
         if 'input_library' in input_data and input_data['input_library']:
-            name_str += ": {}".format(input_data['input_library'])
+            name_str += f": {input_data['input_library']}"
 
         if name_str in inputs_info and 'dependencies_module' in inputs_info[name_str]:
             # Multiple sets of dependencies, append library
@@ -70,16 +73,11 @@ if __name__ == "__main__":
         # Table of contents
         out_file.write("Measurements\n\n")
         for measure, data in dict_inputs.items():
-            out_file.write(" - [{}](#{})\n".format(
-                dict_measurements[measure]["name"],
-                dict_measurements[measure]["name"]
-                    .replace(" ", "-")
-                    .replace("(", "")
-                    .replace(")", "").lower()))
+            out_file.write(f" - [{dict_measurements[measure]['name']}](#{safe_link(dict_measurements[measure]['name'])})\n")
         out_file.write("\n")
 
         for measure, data in dict_inputs.items():
-            out_file.write("## {}\n\n".format(dict_measurements[measure]["name"]))
+            out_file.write(f"## {dict_measurements[measure]['name']}\n\n")
 
             for each_name, each_data in data.items():
                 name_str = ""
@@ -88,10 +86,6 @@ if __name__ == "__main__":
                 if 'input_name' in each_data and each_data['input_name']:
                     name_str += ": {}".format(each_data['input_name'])
 
-                link_str = name_str.lower()
-                link_str = link_str.replace(" ", "-").replace("(", "-").replace(")", "-").replace(":", "-").replace(",", "-").replace("/", "-")
-                link_str = link_str.replace("--", "-").replace("--", "-").strip("-")
-
-                out_file.write("### [{}](/Mycodo/Supported-Inputs/#{})\n".format(name_str, link_str))
+                out_file.write(f"### [{name_str}](/Mycodo/Supported-Inputs/#{safe_link(name_str)})\n")
 
                 out_file.write("\n")
