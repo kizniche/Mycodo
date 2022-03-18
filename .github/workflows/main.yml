@@ -38,15 +38,15 @@ jobs:
           sudo bash mycodo/scripts/upgrade_commands.sh compile-translations
           sudo bash mycodo/scripts/upgrade_commands.sh generate-widget-html
           sudo bash mycodo/scripts/generate_translations_pybabel.sh
+          sudo env/bin/python mycodo/start_flask_ui.py &
+          sleep 3
+          wget --debug --no-check-certificate -p https://127.0.0.1 -O /dev/null
           env/bin/python mycodo/scripts/generate_manual_actions.py
           env/bin/python mycodo/scripts/generate_manual_functions.py
           env/bin/python mycodo/scripts/generate_manual_inputs_by_measure.py
           env/bin/python mycodo/scripts/generate_manual_inputs.py
           env/bin/python mycodo/scripts/generate_manual_outputs.py
           env/bin/python mycodo/scripts/generate_manual_widgets.py
-          sudo env/bin/python mycodo/start_flask_ui.py &
-          sleep 3
-          wget --debug --no-check-certificate -p https://127.0.0.1 -O /dev/null
           sudo bash mycodo/scripts/generate_manual_api.sh
       - name: Test with pytest
         run: |
