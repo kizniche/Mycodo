@@ -114,7 +114,6 @@ FUNCTION_INFORMATION = {
             'default_value': '',
             'options_select': [
                 'Input',
-                'Math',
                 'Function',
                 'PID'
             ],
@@ -149,7 +148,6 @@ FUNCTION_INFORMATION = {
             'options_select': [
                 'Input',
                 'Output',
-                'Math',
                 'Function',
                 'PID',
                 'Trigger'

@@ -112,35 +112,6 @@ input_channel_fields = api.model('Function Channel Fields', {
     'custom_options': fields.String,
 })
 
-math_fields = api.model('Math Settings Fields', {
-    'id': fields.Integer,
-    'unique_id': fields.String,
-    'name': fields.String,
-    'math_type': fields.String,
-    'is_activated': fields.Boolean,
-    'log_level_debug': fields.Boolean,
-    'period': fields.Float,
-    'start_offset': fields.Float,
-    'max_measure_age': fields.Integer,
-    'order_of_use': fields.String,
-    'difference_reverse_order': fields.Boolean,
-    'difference_absolute': fields.Boolean,
-    'equation_input': fields.String,
-    'equation': fields.String,
-    'max_difference': fields.Float,
-    'inputs': fields.String,
-    'dry_bulb_t_id': fields.String,
-    'dry_bulb_t_measure_id': fields.String,
-    'wet_bulb_t_id': fields.String,
-    'wet_bulb_t_measure_id': fields.String,
-    'pressure_pa_id': fields.String,
-    'pressure_pa_measure_id': fields.String,
-    'unique_id_1': fields.String,
-    'unique_measurement_id_1': fields.String,
-    'unique_id_2': fields.String,
-    'unique_measurement_id_2': fields.String,
-})
-
 measurement_fields = api.model('Measurement Settings Fields', {
     'id': fields.Integer,
     'unique_id': fields.String,

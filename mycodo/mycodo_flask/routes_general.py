@@ -32,7 +32,6 @@ from mycodo.databases.models import Camera
 from mycodo.databases.models import Conversion
 from mycodo.databases.models import DeviceMeasurements
 from mycodo.databases.models import Input
-from mycodo.databases.models import Math
 from mycodo.databases.models import NoteTags
 from mycodo.databases.models import Notes
 from mycodo.databases.models import Output
@@ -266,63 +265,62 @@ def last_data(unique_id, measure_type, measurement_id, period):
     if not str_is_float(period):
         return '', 204
 
-    if measure_type in ['input', 'math', 'function', 'output', 'pid']:
-        if measure_type in ['input', 'math', 'function', 'output', 'pid']:
-            measure = DeviceMeasurements.query.filter(
-                DeviceMeasurements.unique_id == measurement_id).first()
+    if measure_type not in ['input', 'function', 'output', 'pid']:
+        return '', 204
+
+    measure = DeviceMeasurements.query.filter(
+        DeviceMeasurements.unique_id == measurement_id).first()
+
+    if measure:
+        conversion = Conversion.query.filter(
+            Conversion.unique_id == measure.conversion_id).first()
+    else:
+        conversion = None
+
+    channel, unit, measurement = return_measurement_info(
+        measure, conversion)
+
+    if hasattr(measure, 'measurement_type') and measure.measurement_type == 'setpoint':
+        setpoint_pid = PID.query.filter(PID.unique_id == measure.device_id).first()
+        if setpoint_pid and ',' in setpoint_pid.measurement:
+            pid_measurement = setpoint_pid.measurement.split(',')[1]
+            setpoint_measurement = DeviceMeasurements.query.filter(
+                DeviceMeasurements.unique_id == pid_measurement).first()
+            if setpoint_measurement:
+                conversion = Conversion.query.filter(
+                    Conversion.unique_id == setpoint_measurement.conversion_id).first()
+                _, unit, measurement = return_measurement_info(setpoint_measurement, conversion)
+    try:
+        if period != '0':
+            data = query_string(
+                unit, unique_id,
+                measure=measurement, channel=channel,
+                value='LAST', past_sec=period)
         else:
-            return '', 204
+            data = query_string(
+                unit, unique_id,
+                measure=measurement, channel=channel, value='LAST')
 
-        if measure:
-            conversion = Conversion.query.filter(
-                Conversion.unique_id == measure.conversion_id).first()
-        else:
-            conversion = None
+        number = len(data)
+        time_raw = data[number - 1][0]
+        value = data[number - 1][1]
+        value = float(value)
+        # Convert date-time to epoch (potential bottleneck for data)
+        dt = date_parse(time_raw)
+        timestamp = calendar.timegm(dt.timetuple()) * 1000
+        live_data = '[{},{}]'.format(timestamp, value)
 
-        channel, unit, measurement = return_measurement_info(
-            measure, conversion)
-
-        if hasattr(measure, 'measurement_type') and measure.measurement_type == 'setpoint':
-            setpoint_pid = PID.query.filter(PID.unique_id == measure.device_id).first()
-            if setpoint_pid and ',' in setpoint_pid.measurement:
-                pid_measurement = setpoint_pid.measurement.split(',')[1]
-                setpoint_measurement = DeviceMeasurements.query.filter(
-                    DeviceMeasurements.unique_id == pid_measurement).first()
-                if setpoint_measurement:
-                    conversion = Conversion.query.filter(
-                        Conversion.unique_id == setpoint_measurement.conversion_id).first()
-                    _, unit, measurement = return_measurement_info(setpoint_measurement, conversion)
-        try:
-            if period != '0':
-                data = query_string(
-                    unit, unique_id,
-                    measure=measurement, channel=channel,
-                    value='LAST', past_sec=period)
-            else:
-                data = query_string(
-                    unit, unique_id,
-                    measure=measurement, channel=channel, value='LAST')
-
-            number = len(data)
-            time_raw = data[number - 1][0]
-            value = data[number - 1][1]
-            value = float(value)
-            # Convert date-time to epoch (potential bottleneck for data)
-            dt = date_parse(time_raw)
-            timestamp = calendar.timegm(dt.timetuple()) * 1000
-            live_data = '[{},{}]'.format(timestamp, value)
-
-            return Response(live_data, mimetype='text/json')
-        except KeyError:
-            logger.debug("No Data returned form influxdb")
-            return '', 204
-        except IndexError:
-            logger.debug("No Data returned form influxdb")
-            return '', 204
-        except Exception as e:
-            logger.exception("URL for 'last_data' raised and error: "
-                             "{err}".format(err=e))
-            return '', 204
+        return Response(live_data, mimetype='text/json')
+    except KeyError:
+        logger.debug("No Data returned form influxdb")
+        return '', 204
+    except IndexError:
+        logger.debug("No Data returned form influxdb")
+        return '', 204
+    except Exception as e:
+        logger.exception("URL for 'last_data' raised and error: "
+                         "{err}".format(err=e))
+        return '', 204
 
 
 @blueprint.route('/past/<unique_id>/<measure_type>/<measurement_id>/<past_seconds>')
@@ -349,8 +347,8 @@ def past_data(unique_id, measure_type, measurement_id, past_seconds):
         else:
             return '', 204
 
-    elif measure_type in ['input', 'math', 'function', 'output', 'pid']:
-        if measure_type in ['input', 'math', 'function', 'output', 'pid']:
+    elif measure_type in ['input', 'function', 'output', 'pid']:
+        if measure_type in ['input', 'function', 'output', 'pid']:
             measure = DeviceMeasurements.query.filter(
                 DeviceMeasurements.unique_id == measurement_id).first()
         else:
@@ -451,14 +449,11 @@ def export_data(unique_id, measurement_id, start_seconds, end_seconds):
     """
     output = Output.query.filter(Output.unique_id == unique_id).first()
     input_dev = Input.query.filter(Input.unique_id == unique_id).first()
-    math = Math.query.filter(Math.unique_id == unique_id).first()
 
     if output:
         name = output.name
     elif input_dev:
         name = input_dev.name
-    elif math:
-        name = math.name
     else:
         name = None
 
@@ -548,7 +543,7 @@ def async_data(device_id, device_type, measurement_id, start_seconds, end_second
         else:
             return '', 204
 
-    if device_type in ['input', 'math', 'function', 'output', 'pid']:
+    if device_type in ['input', 'function', 'output', 'pid']:
         measure = DeviceMeasurements.query.filter(
             DeviceMeasurements.unique_id == measurement_id).first()
     else:

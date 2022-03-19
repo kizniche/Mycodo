@@ -40,7 +40,6 @@ FUNCTION_INFORMATION = {
             'required': True,
             'options_select': [
                 'Input',
-                'Math',
                 'Function'
             ],
             'name': lazy_gettext('Measurement'),

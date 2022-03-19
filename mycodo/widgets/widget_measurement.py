@@ -48,7 +48,6 @@ WIDGET_INFORMATION = {
             'default_value': '',
             'options_select': [
                 'Input',
-                'Math',
                 'Function',
                 'Output_Channels_Measurements',
                 'PID'

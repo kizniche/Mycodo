@@ -113,7 +113,7 @@ Activates a controller.
 
 Parameters:
 
--  **controller_type** - the type of controller being activated. Options are: "Function", "LCD", "Input", "Math", "Output", "PID", "Trigger", or "Function".
+-  **controller_type** - the type of controller being activated. Options are: "Function", "Input", "Output", "PID", "Trigger", or "Function".
 -  **controller_id** - the unique ID of the controller to activate.
 
 ### controller_deactivate()
@@ -124,7 +124,7 @@ Deactivates a controller.
 
 Parameters:
 
--  **controller_type** - the type of controller being deactivated. Options are: "Conditional", "LCD", "Input", "Math", "Output", "PID", "Trigger", or "Function".
+-  **controller_type** - the type of controller being deactivated. Options are: "Conditional", "Input", "Output", "PID", "Trigger", or "Function".
 -  **controller_id** - the unique ID of the controller to deactivate.
 
 ### get_condition_measurement()
@@ -183,7 +183,7 @@ Parameters:
 
 **lcd_reset**\ (*lcd_id*)
 
-Reset an LCD to it's default startup state. This can be used to clear the screen, fix display issues, or turn off flashing.
+Reset an LCD to its default startup state. This can be used to clear the screen, fix display issues, or turn off flashing.
 
 Parameters:
 

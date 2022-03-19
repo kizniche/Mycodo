@@ -13,7 +13,6 @@ from mycodo.config import DEPENDENCIES_GENERAL
 from mycodo.config import FUNCTION_INFO
 from mycodo.config import INSTALL_DIRECTORY
 from mycodo.config import DEPENDENCY_LOG_FILE
-from mycodo.config import LCD_INFO
 from mycodo.config import METHOD_INFO
 from mycodo.databases.models import Actions
 from mycodo.databases.models import Widget
@@ -22,8 +21,6 @@ from mycodo.databases.models import CustomController
 from mycodo.databases.models import EnergyUsage
 from mycodo.databases.models import Function
 from mycodo.databases.models import Input
-from mycodo.databases.models import LCD
-from mycodo.databases.models import Math
 from mycodo.databases.models import Method
 from mycodo.databases.models import Output
 from mycodo.mycodo_flask.utils.utils_general import return_dependencies
@@ -47,7 +44,6 @@ def get_installed_dependencies():
         parse_output_information(),
         CAMERA_INFO,
         FUNCTION_INFO,
-        LCD_INFO,
         METHOD_INFO,
         DEPENDENCIES_GENERAL
     ]
@@ -96,16 +92,6 @@ if __name__ == "__main__":
     for each_dev in camera:
         if each_dev.library not in devices:
             devices.append(each_dev.library)
-
-    lcd = db_retrieve_table_daemon(LCD)
-    for each_dev in lcd:
-        if each_dev.lcd_type not in devices:
-            devices.append(each_dev.lcd_type)
-
-    math = db_retrieve_table_daemon(Math)
-    for each_dev in math:
-        if each_dev.math_type not in devices:
-            devices.append(each_dev.math_type)
 
     method = db_retrieve_table_daemon(Method)
     for each_dev in method:

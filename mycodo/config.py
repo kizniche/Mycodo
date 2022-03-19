@@ -7,11 +7,11 @@ import sys
 from datetime import timedelta
 
 import os
-from flask_babel import lazy_gettext
+from flask_babel import lazy_gettext as lg
 
 # Append proper path for other software reading this config file
 sys.path.append(os.path.abspath(os.path.dirname(__file__)))
-from config_translations import TRANSLATIONS
+from config_translations import TRANSLATIONS as T
 
 MYCODO_VERSION = '8.12.9'
 ALEMBIC_VERSION = 'b354722c9b8b'
@@ -150,17 +150,17 @@ LANGUAGES = {
 }
 
 DASHBOARD_WIDGETS = [
-    ('', f"{lazy_gettext('Add')} {lazy_gettext('Dashboard')} {lazy_gettext('Widget')}"),
-    ('spacer', lazy_gettext('Spacer')),
-    ('graph', lazy_gettext('Graph')),
-    ('gauge', lazy_gettext('Gauge')),
-    ('indicator', TRANSLATIONS['indicator']['title']),
-    ('measurement', TRANSLATIONS['measurement']['title']),
-    ('output', TRANSLATIONS['output']['title']),
-    ('output_pwm_slider', f"{TRANSLATIONS['output']['title']}: {lazy_gettext('PWM Slider')}"),
-    ('pid_control', lazy_gettext('PID Control')),
-    ('python_code', lazy_gettext('Python Code')),
-    ('camera', TRANSLATIONS['camera']['title'])
+    ('', f"{lg('Add')} {lg('Dashboard')} {lg('Widget')}"),
+    ('spacer', lg('Spacer')),
+    ('graph', lg('Graph')),
+    ('gauge', lg('Gauge')),
+    ('indicator', T['indicator']['title']),
+    ('measurement', T['measurement']['title']),
+    ('output', T['output']['title']),
+    ('output_pwm_slider', f"{T['output']['title']}: {lg('PWM Slider')}"),
+    ('pid_control', lg('PID Control')),
+    ('python_code', lg('Python Code')),
+    ('camera', T['camera']['title'])
 ]
 
 # Camera info
@@ -224,215 +224,6 @@ CAMERA_INFO = {
     },
 }
 
-# LCD info
-LCD_INFO = {
-    '16x2_generic': {
-        'name': '16x2 LCD',
-        'dependencies_module': [],
-        'interfaces': ['I2C']
-    },
-    '20x4_generic': {
-        'name': '20x4 LCD',
-        'dependencies_module': [],
-        'interfaces': ['I2C']
-    },
-    '16x2_grove_lcd_rgb': {
-        'name': '16x2 Grove LCD RGB',
-        'dependencies_module': [],
-        'interfaces': ['I2C']
-    },
-    '128x32_pioled_circuit_python': {
-        'name': '128x32 OLED (SD1306, CircuitPython)',
-        'message': "This module uses the newer Adafruit CircuitPython library. The older Adafruit_SSD1306 library is deprecated and not recommended to be used.",
-        'dependencies_module': [
-            ('apt', 'libjpeg-dev', 'libjpeg-dev'),
-            ('pip-pypi', 'PIL', 'Pillow==8.1.2'),
-            ('pip-pypi', 'usb.core', 'pyusb==1.1.1'),
-            ('pip-pypi', 'adafruit_extended_bus', 'Adafruit-extended-bus==1.0.2'),
-            ('pip-pypi', 'adafruit_framebuf', 'adafruit-circuitpython-framebuf==1.4.9'),
-            ('pip-pypi', 'adafruit_ssd1306', 'adafruit-circuitpython-ssd1306==2.12.4')
-        ],
-        'interfaces': ['I2C', 'SPI']
-    },
-    '128x64_pioled_circuit_python': {
-        'name': '128x64 OLED (SD1306, CircuitPython)',
-        'message': "This module uses the newer Adafruit CircuitPython library. The older Adafruit_SSD1306 library is deprecated and not recommended to be used.",
-        'dependencies_module': [
-            ('apt', 'libjpeg-dev', 'libjpeg-dev'),
-            ('pip-pypi', 'PIL', 'Pillow==8.1.2'),
-            ('pip-pypi', 'usb.core', 'pyusb==1.1.1'),
-            ('pip-pypi', 'adafruit_extended_bus', 'Adafruit-extended-bus==1.0.2'),
-            ('pip-pypi', 'adafruit_framebuf', 'adafruit-circuitpython-framebuf==1.4.9'),
-            ('pip-pypi', 'adafruit_ssd1306', 'adafruit-circuitpython-ssd1306==2.12.4')
-        ],
-        'interfaces': ['I2C', 'SPI']
-    },
-    '128x32_pioled': {
-        'name': '128x32 OLED (SD1306, Adafruit_SSD1306)',
-        'message': "This module uses the older Adafruit_SSD1306 library that is deprecated and is not recommended to be used. It is recommended to use the other module that uses the newer Adafruit CircuitPython library.",
-        'dependencies_module': [
-            ('apt', 'libjpeg-dev', 'libjpeg-dev'),
-            ('pip-pypi', 'PIL', 'Pillow==8.1.2'),
-            ('pip-pypi', 'Adafruit_GPIO', 'Adafruit-GPIO==1.0.3'),
-            ('pip-pypi', 'Adafruit_PureIO', 'Adafruit-PureIO==1.1.8'),
-            ('pip-pypi', 'Adafruit_SSD1306', 'git+https://github.com/adafruit/Adafruit_Python_SSD1306.git')
-        ],
-        'interfaces': ['I2C', 'SPI']
-    },
-    '128x64_pioled': {
-        'name': '128x64 OLED (SD1306, Adafruit_SSD1306)',
-        'message': "This module uses the older Adafruit_SSD1306 library that is deprecated and is not recommended to be used. It is recommended to use the other module that uses the newer Adafruit CircuitPython library.",
-        'dependencies_module': [
-            ('apt', 'libjpeg-dev', 'libjpeg-dev'),
-            ('pip-pypi', 'PIL', 'Pillow==8.1.2'),
-            ('pip-pypi', 'Adafruit_GPIO', 'Adafruit-GPIO==1.0.3'),
-            ('pip-pypi', 'Adafruit_PureIO', 'Adafruit-PureIO==1.1.8'),
-            ('pip-pypi', 'Adafruit_SSD1306', 'git+https://github.com/adafruit/Adafruit_Python_SSD1306.git')
-        ],
-        'interfaces': ['I2C', 'SPI']
-    }
-}
-
-# Math form dropdown
-LCDS = [
-    ('16x2_generic', LCD_INFO['16x2_generic']['name']),
-    ('20x4_generic', LCD_INFO['20x4_generic']['name']),
-    ('16x2_grove_lcd_rgb', LCD_INFO['16x2_grove_lcd_rgb']['name']),
-    ('128x32_pioled', LCD_INFO['128x32_pioled']['name']),
-    ('128x64_pioled', LCD_INFO['128x64_pioled']['name']),
-    ('128x32_pioled_circuit_python', LCD_INFO['128x32_pioled_circuit_python']['name']),
-    ('128x64_pioled_circuit_python', LCD_INFO['128x64_pioled_circuit_python']['name'])
-]
-
-# Math info
-MATH_INFO = {
-    'average': {
-        'name': "{} ({}, {})".format(lazy_gettext('Average'), lazy_gettext('Last'), lazy_gettext('Multiple Channels')),
-        'dependencies_module': [],
-        'enable_measurements_select': True,
-        'measure': {}
-    },
-    'average_single': {
-        'name': "{} ({}, {})".format(lazy_gettext('Average'), lazy_gettext('Past'), lazy_gettext('Single Channel')),
-        'dependencies_module': [],
-        'enable_measurements_select': False,
-        'enable_measurements_convert': True,
-        'measure': {}
-    },
-    'sum': {
-        'name': "{} ({}, {})".format(lazy_gettext('Sum'), lazy_gettext('Last'), lazy_gettext('Multiple Channels')),
-        'dependencies_module': [],
-        'enable_measurements_select': True,
-        'measure': {}
-    },
-    'sum_single': {
-        'name': "{} ({}, {})".format(lazy_gettext('Sum'), lazy_gettext('Past'), lazy_gettext('Single Channel')),
-        'dependencies_module': [],
-        'enable_measurements_select': False,
-        'enable_measurements_convert': True,
-        'measure': {}
-    },
-    'difference': {
-        'name': lazy_gettext('Difference'),
-        'dependencies_module': [],
-        'enable_measurements_select': True,
-        'measure': {}
-    },
-    'equation': {
-        'name': lazy_gettext('Equation'),
-        'dependencies_module': [],
-        'enable_measurements_select': True,
-        'measure': {}
-    },
-    'humidity': {
-        'name': "{} ({})".format(lazy_gettext('Humidity'), lazy_gettext('Wet/Dry-Bulb')),
-        'dependencies_module': [],
-        'enable_measurements_convert': True,
-        'measure': {
-            0: {
-                'measurement': 'humidity',
-                'unit': 'percent'
-            },
-            1: {
-                'measurement': 'humidity_ratio',
-                'unit': 'kg_kg'
-            },
-            2: {
-                'measurement': 'specific_enthalpy',
-                'unit': 'kJ_kg'
-            },
-            3: {
-                'measurement': 'specific_volume',
-                'unit': 'm3_kg'
-            }
-        }
-    },
-    'redundancy': {
-        'name': lazy_gettext('Redundancy'),
-        'dependencies_module': [],
-        'enable_measurements_select': True,
-        'measure': {}
-    },
-    'statistics': {
-        'name': lazy_gettext('Statistics'),
-        'dependencies_module': [],
-        'enable_single_measurement_select': True,
-        'measure': {
-            0: {
-                'measurement': '',
-                'unit': '',
-                'name': 'Mean'
-            },
-            1: {
-                'measurement': '',
-                'unit': '',
-                'name': 'Median'
-            },
-            2: {
-                'measurement': '',
-                'unit': '',
-                'name': 'Minimum'
-            },
-            3: {
-                'measurement': '',
-                'unit': '',
-                'name': 'Maximum'
-            },
-            4: {
-                'measurement': '',
-                'unit': '',
-                'name': 'Standard Deviation'
-            },
-            5: {
-                'measurement': '',
-                'unit': '',
-                'name': 'St. Dev. of Mean (upper)'
-            },
-            6: {
-                'measurement': '',
-                'unit': '',
-                'name': 'St. Dev. of Mean (lower)'
-            }
-        }
-    },
-    'verification': {
-        'name': lazy_gettext('Verification'),
-        'dependencies_module': [],
-        'enable_measurements_select': True,
-        'measure': {}
-    },
-    'vapor_pressure_deficit': {
-        'name': lazy_gettext('Vapor Pressure Deficit'),
-        'dependencies_module': [],
-        'enable_measurements_select': False,
-        'measure': {
-            0: {
-                'measurement': 'vapor_pressure_deficit',
-                'unit': 'Pa'
-            }
-        }
-    }
-}
 
 METHOD_DEP_BASE = [
     ('apt', 'unzip', 'unzip'),
@@ -452,30 +243,30 @@ METHOD_DEP_BASE = [
 # Method info
 METHOD_INFO = {
     'Date': {
-        'name': lazy_gettext('Time/Date'),
+        'name': lg('Time/Date'),
         'dependencies_module': METHOD_DEP_BASE
     },
     'Duration': {
-        'name': lazy_gettext('Duration'),
+        'name': lg('Duration'),
         'dependencies_module': METHOD_DEP_BASE
     },
     'Daily': {
-        'name': "{} ({})".format(lazy_gettext('Daily'), lazy_gettext('Time-Based')),
+        'name': f"{lg('Daily')} ({lg('Time-Based')})",
         'dependencies_module': METHOD_DEP_BASE
     },
     'DailySine': {
-        'name': "{} ({})".format(lazy_gettext('Daily'), lazy_gettext('Sine Wave')),
+        'name': f"{lg('Daily')} ({lg('Sine Wave')})",
         'dependencies_module': METHOD_DEP_BASE
     },
     'DailyBezier': {
-        'name': "{} ({})".format(lazy_gettext('Daily'), lazy_gettext('Bezier Curve')),
+        'name': f"{lg('Daily')} ({lg('Bezier Curve')})",
         'dependencies_module': [
             ('apt', 'libatlas-base-dev', 'libatlas-base-dev'),
             ('pip-pypi', 'numpy', 'numpy==1.22.3')
         ] + METHOD_DEP_BASE
     },
     'Cascade': {
-        'name': lazy_gettext('Method Cascade'),
+        'name': lg('Method Cascade'),
         'dependencies_module': METHOD_DEP_BASE
     }
 }
@@ -495,21 +286,19 @@ PID_INFO = {
         0: {
             'measurement': '',
             'unit': '',
-            'name': '{}'.format(TRANSLATIONS['setpoint']['title']),
+            'name': f"{T['setpoint']['title']}",
             'measurement_type': 'setpoint'
         },
         1: {
             'measurement': '',
             'unit': '',
-            'name': '{} ({})'.format(
-                TRANSLATIONS['setpoint']['title'], lazy_gettext('Band Min')),
+            'name': f"{T['setpoint']['title']} ({lg('Band Min')})",
             'measurement_type': 'setpoint'
         },
         2: {
             'measurement': '',
             'unit': '',
-            'name': '{} ({})'.format(
-                TRANSLATIONS['setpoint']['title'], lazy_gettext('Band Max')),
+            'name': f"{T['setpoint']['title']} ({lg('Band Max')})",
             'measurement_type': 'setpoint'
         },
         3: {
@@ -530,26 +319,22 @@ PID_INFO = {
         6: {
             'measurement': 'duration_time',
             'unit': 's',
-            'name': '{} ({})'.format(
-                TRANSLATIONS['output']['title'], TRANSLATIONS['duration']['title'])
+            'name': f"{T['output']['title']} ({T['duration']['title']})"
         },
         7: {
             'measurement': 'duty_cycle',
             'unit': 'percent',
-            'name': '{} ({})'.format(
-                TRANSLATIONS['output']['title'], TRANSLATIONS['duty_cycle']['title'])
+            'name': f"{T['output']['title']} ({T['duty_cycle']['title']})"
         },
         8: {
             'measurement': 'volume',
             'unit': 'ml',
-            'name': '{} ({})'.format(
-                TRANSLATIONS['output']['title'], TRANSLATIONS['volume']['title'])
+            'name': f"{T['output']['title']} ({T['volume']['title']})"
         },
         9: {
             'measurement': 'unitless',
             'unit': 'none',
-            'name': '{} ({})'.format(
-                TRANSLATIONS['output']['title'], TRANSLATIONS['value']['title'])
+            'name': f"{T['output']['title']} ({T['value']['title']})"
         }
     }
 }
@@ -591,98 +376,65 @@ DEPENDENCIES_GENERAL = {
 
 # Conditional controllers
 CONDITIONAL_CONDITIONS = [
-    ('measurement', "{} ({}, {})".format(
-        TRANSLATIONS['measurement']['title'],
-        TRANSLATIONS['single']['title'],
-        TRANSLATIONS['last']['title'])),
-    ('measurement_past_average', "{} ({}, {}, {})".format(
-        TRANSLATIONS['measurement']['title'],
-        TRANSLATIONS['single']['title'],
-        TRANSLATIONS['past']['title'],
-        TRANSLATIONS['average']['title'])),
-    ('measurement_past_sum', "{} ({}, {}, {})".format(
-        TRANSLATIONS['measurement']['title'],
-        TRANSLATIONS['single']['title'],
-        TRANSLATIONS['past']['title'],
-        TRANSLATIONS['sum']['title'])),
-    ('measurement_dict', "{} ({}, {})".format(
-        TRANSLATIONS['measurement']['title'],
-        TRANSLATIONS['multiple']['title'],
-        TRANSLATIONS['past']['title'])),
-    ('gpio_state', lazy_gettext('GPIO State')),
-    ('output_state', lazy_gettext('Output State')),
-    ('output_duration_on', lazy_gettext('Output Duration On')),
-    ('controller_status', lazy_gettext("Controller Running")),
+    ('measurement',
+     f"{T['measurement']['title']} ({T['single']['title']}, {T['last']['title']})"),
+    ('measurement_past_average',
+     f"{T['measurement']['title']} ({T['single']['title']}, {T['past']['title']}, {T['average']['title']})"),
+    ('measurement_past_sum',
+     f"{T['measurement']['title']} ({T['single']['title']}, {T['past']['title']}, {T['sum']['title']})"),
+    ('measurement_dict',
+     f"{T['measurement']['title']} ({T['multiple']['title']}, {T['past']['title']})"),
+    ('gpio_state', lg('GPIO State')),
+    ('output_state', lg('Output State')),
+    ('output_duration_on', lg('Output Duration On')),
+    ('controller_status', lg("Controller Running")),
 ]
 
 FUNCTION_INFO = {
     'function_actions': {
-        'name': lazy_gettext('Execute Actions'),
+        'name': lg('Execute Actions'),
         'dependencies_module': []
     },
     'conditional_conditional': {
-        'name': '{} {}'.format(
-            TRANSLATIONS['conditional']['title'],
-            TRANSLATIONS['controller']['title']),
+        'name': f"{T['conditional']['title']} {T['controller']['title']}",
         'dependencies_module': [
             ('pip-pypi', 'pylint', 'pylint==2.12.2')
         ]
     },
     'pid_pid': {
-        'name': '{} {}'.format(
-            TRANSLATIONS['pid']['title'],
-            TRANSLATIONS['controller']['title']),
+        'name': f"{T['pid']['title']} {T['controller']['title']}",
         'dependencies_module': []
     },
     'trigger_edge': {
-        'name': '{}: {}'.format(
-            TRANSLATIONS['trigger']['title'],
-            TRANSLATIONS['edge']['title']),
+        'name': f"{T['trigger']['title']}: {T['edge']['title']}",
         'dependencies_module': []
     },
     'trigger_output': {
-        'name': '{}: {} ({}/{})'.format(
-            TRANSLATIONS['trigger']['title'],
-            TRANSLATIONS['output']['title'],
-            TRANSLATIONS['on']['title'],
-            TRANSLATIONS['off']['title']),
+        'name': f"{T['trigger']['title']}: {T['output']['title']} ({T['on']['title']}/{T['off']['title']})",
         'dependencies_module': []
     },
     'trigger_output_pwm': {
-        'name': '{}: {} ({})'.format(
-            TRANSLATIONS['trigger']['title'],
-            TRANSLATIONS['output']['title'],
-            TRANSLATIONS['pwm']['title']),
+        'name': f"{T['trigger']['title']}: {T['output']['title']} ({T['pwm']['title']})",
         'dependencies_module': []
     },
     'trigger_timer_daily_time_point': {
-        'name': lazy_gettext('Trigger: Timer (Daily Point)'),
+        'name': lg('Trigger: Timer (Daily Point)'),
         'dependencies_module': []
     },
     'trigger_timer_daily_time_span': {
-        'name': '{}: {} ({})'.format(
-            TRANSLATIONS['trigger']['title'],
-            TRANSLATIONS['timer']['title'],
-            lazy_gettext('Daily Span')),
+        'name': f"{T['trigger']['title']}: {T['timer']['title']} ({lg('Daily Span')})",
         'dependencies_module': []
     },
     'trigger_timer_duration': {
-        'name': '{}: {} ({})'.format(
-            TRANSLATIONS['trigger']['title'],
-            TRANSLATIONS['timer']['title'],
-            TRANSLATIONS['duration']['title']),
+        'name': f"{T['trigger']['title']}: {T['timer']['title']} ({T['duration']['title']})",
         'dependencies_module': []
     },
     'trigger_run_pwm_method': {
-        'name': '{}: {}'.format(
-            TRANSLATIONS['trigger']['title'],
-            lazy_gettext('Run PWM Method')),
+        'name': f"{T['trigger']['title']}: {lg('Run PWM Method')}",
         'dependencies_module': []
     },
     'trigger_sunrise_sunset': {
-        'name': '{}: {}'.format(
-            TRANSLATIONS['trigger']['title'],
-            lazy_gettext('Sunrise/Sunset')),
+        'name': f"{T['trigger']['title']}: {lg('Sunrise/Sunset')}",
         'dependencies_module': [
             ('pip-pypi', 'suntime', 'suntime==1.2.5')
         ]

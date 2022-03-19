@@ -17,8 +17,6 @@ from mycodo.databases.models import Camera
 from mycodo.databases.models import CustomController
 from mycodo.databases.models import DisplayOrder
 from mycodo.databases.models import Input
-from mycodo.databases.models import LCD
-from mycodo.databases.models import Math
 from mycodo.databases.models import Measurement
 from mycodo.databases.models import Method
 from mycodo.databases.models import Misc
@@ -155,8 +153,6 @@ def page_output():
     camera = Camera.query.all()
     function = CustomController.query.all()
     input_dev = Input.query.all()
-    lcd = LCD.query.all()
-    math = Math.query.all()
     method = Method.query.all()
     misc = Misc.query.first()
     output = Output.query.all()
@@ -178,8 +174,6 @@ def page_output():
     choices_input = utils_general.choices_inputs(
         input_dev, dict_units, dict_measurements)
     choices_input_devices = utils_general.choices_input_devices(input_dev)
-    choices_math = utils_general.choices_maths(
-        math, dict_units, dict_measurements)
     choices_method = utils_general.choices_methods(method)
     choices_output = utils_general.choices_outputs(
         output, dict_units, dict_measurements)
@@ -240,7 +234,6 @@ def page_output():
                                choices_function=choices_function,
                                choices_input=choices_input,
                                choices_input_devices=choices_input_devices,
-                               choices_math=choices_math,
                                choices_method=choices_method,
                                choices_output=choices_output,
                                choices_output_channels=choices_output_channels,
@@ -253,7 +246,6 @@ def page_output():
                                form_add_output=form_add_output,
                                form_mod_output=form_mod_output,
                                ftdi_devices=ftdi_devices,
-                               lcd=lcd,
                                misc=misc,
                                names_output=names_output,
                                output=output,
@@ -268,7 +260,6 @@ def page_output():
                                choices_function=choices_function,
                                choices_input=choices_input,
                                choices_input_devices=choices_input_devices,
-                               choices_math=choices_math,
                                choices_method=choices_method,
                                choices_output=choices_output,
                                choices_output_channels=choices_output_channels,
@@ -282,7 +273,6 @@ def page_output():
                                form_add_output=form_add_output,
                                form_mod_output=form_mod_output,
                                ftdi_devices=ftdi_devices,
-                               lcd=lcd,
                                misc=misc,
                                names_output=names_output,
                                output=output,
@@ -297,7 +287,6 @@ def page_output():
                                choices_function=choices_function,
                                choices_input=choices_input,
                                choices_input_devices=choices_input_devices,
-                               choices_math=choices_math,
                                choices_method=choices_method,
                                choices_output=choices_output,
                                choices_output_channels=choices_output_channels,
@@ -311,7 +300,6 @@ def page_output():
                                form_add_output=form_add_output,
                                form_mod_output=form_mod_output,
                                ftdi_devices=ftdi_devices,
-                               lcd=lcd,
                                misc=misc,
                                names_output=names_output,
                                output=output,

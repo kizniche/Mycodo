@@ -9,7 +9,6 @@ from flask_restx import abort
 from flask_restx import fields
 
 from mycodo.databases.models import Input
-from mycodo.databases.models import Math
 from mycodo.databases.models import Measurement
 from mycodo.databases.models import Output
 from mycodo.databases.models import PID
@@ -40,13 +39,6 @@ choices_controllers_list_fields = ns_choices.model(
 choices_inputs_measurements_list_fields = ns_choices.model(
     'Choices Inputs Measurements Fields List', {
         'choices inputs measurements': fields.List(
-            fields.Nested(choices_item_value_fields)),
-    }
-)
-
-choices_maths_measurements_list_fields = ns_choices.model(
-    'Choices Maths Measurements Fields List', {
-        'choices maths measurements': fields.List(
             fields.Nested(choices_item_value_fields)),
     }
 )
@@ -116,34 +108,6 @@ class ChoicesInputMeasurements(Resource):
 
             if input_choices:
                 return {'choices inputs measurements': input_choices}, 200
-        except Exception:
-            abort(500,
-                  message='An exception occurred',
-                  error=traceback.format_exc())
-
-
-@ns_choices.route('/maths/measurements')
-@ns_choices.doc(security='apikey', responses=default_responses)
-class ChoicesMaths(Resource):
-    """Form choices for math measurements."""
-
-    @accept('application/vnd.mycodo.v1+json')
-    @ns_choices.marshal_with(choices_maths_measurements_list_fields)
-    @flask_login.login_required
-    def get(self):
-        """Show form choices for all math measurements."""
-        if not utils_general.user_has_permission('view_settings'):
-            abort(403)
-        try:
-            math = Math.query.all()
-            dict_measurements = add_custom_measurements(
-                Measurement.query.all())
-            dict_units = add_custom_units(Unit.query.all())
-            math_choices = utils_general.choices_maths(
-                math, dict_units, dict_measurements)
-
-            if math_choices:
-                return {'choices maths measurements': math_choices}, 200
         except Exception:
             abort(500,
                   message='An exception occurred',

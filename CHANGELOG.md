@@ -2,6 +2,8 @@
 
 Following the upgrade, you will need to reboot to complete the upgrade.
 
+LCD and Math Controllers have been completely removed from Mycodo and replaced with Functions. If you were previously using an LCD or Math controller, you will need to add the corresponding Function and change any other parts of the system that referenced those devices.
+
 ### Bugfixes
 
  - Fix installation on 64-bit OSs
@@ -37,6 +39,7 @@ Following the upgrade, you will need to reboot to complete the upgrade.
 
 ### Miscellaneous
 
+ - Remove LCD and Math Controllers (both replaced with Functions)
  - Update influxdb from 1.8.0 to 1.8.10
  - Update python library versions in requirements.txt
  - Add button to install all dependencies on Diagnostics page

@@ -7,8 +7,8 @@ usage: mycodo-client [-h] [-c] [--activatecontroller CONTROLLER ID]
                      [--trigger_action ACTIONID]
                      [--trigger_all_actions FUNCTIONID]
                      [--input_force_measurements INPUTID]
-                     [--backlight_on LCDID] [--backlight_off LCDID]
-                     [--lcd_reset LCDID] [--get_measurement ID UNIT CHANNEL]
+                     [--backlight_on DEVID] [--backlight_off DEVID]
+                     [--lcd_reset DEVID] [--get_measurement ID UNIT CHANNEL]
                      [--output_state OUTPUTID]
                      [--output_currently_on OUTPUTID] [--outputoff OUTPUTID]
                      [--outputon OUTPUTID] [--duration SECONDS]
@@ -28,11 +28,11 @@ optional arguments:
   -h, --help            show this help message and exit
   -c, --checkdaemon     Check if all active daemon controllers are running
   --activatecontroller CONTROLLER ID
-                        Activate controller. Options: Conditional, LCD, Math,
+                        Activate controller. Options: Conditional,
                         PID, Input
   --deactivatecontroller CONTROLLER ID
-                        Deactivate controller. Options: Conditional, LCD,
-                        Math, PID, Input
+                        Deactivate controller. Options: Conditional,
+                        PID, Input
   --ramuse              Return the amount of ram used by the Mycodo daemon
   -t, --terminate       Terminate the daemon
   --trigger_action ACTIONID
@@ -41,11 +41,11 @@ optional arguments:
                         Trigger all actions belonging to Function with ID
   --input_force_measurements INPUTID
                         Force acquiring measurements for Input ID
-  --backlight_on LCDID
-                        Turn on LCD backlight with LCD ID
-  --backlight_off LCDID
-                        Turn off LCD backlight with LCD ID
-  --lcd_reset LCDID     Reset LCD with LCD ID
+  --backlight_on DEVID
+                        Turn on display backlight with device ID
+  --backlight_off DEVID
+                        Turn off display backlight with device ID
+  --lcd_reset DEVID     Reset display with device ID
   --get_measurement ID UNIT CHANNEL
                         Get the last measurement
   --output_state OUTPUTID

@@ -104,7 +104,7 @@ class PIDModBase(FlaskForm):
     lower_output_type = StringField(lazy_gettext('Action (Lower)'))
     setpoint_tracking_type = StringField(TRANSLATIONS['setpoint_tracking_type']['title'])
     setpoint_tracking_method_id = StringField('Setpoint Tracking Method')
-    setpoint_tracking_input_math_id = StringField('Setpoint Tracking Input/Math')
+    setpoint_tracking_input_math_id = StringField('Setpoint Tracking Input')
     setpoint_tracking_max_age = DecimalField('Max Age (seconds)',
         validators=[Optional()],
         widget=NumberInput(step='any'))

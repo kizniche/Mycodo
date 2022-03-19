@@ -27,8 +27,6 @@ from mycodo.config import STATS_USER
 from mycodo.databases.models import AlembicVersion
 from mycodo.databases.models import Conditional
 from mycodo.databases.models import Input
-from mycodo.databases.models import LCD
-from mycodo.databases.models import Math
 from mycodo.databases.models import Method
 from mycodo.databases.models import Output
 from mycodo.databases.models import PID
@@ -211,10 +209,6 @@ def recreate_stat_file():
         ['country', 'None'],
         ['daemon_startup_seconds', 0.0],
         ['ram_use_mb', 0.0],
-        ['num_lcds', 0],
-        ['num_lcds_active', 0],
-        ['num_maths', 0],
-        ['num_maths_active', 0],
         ['num_methods', 0],
         ['num_methods_in_pid', 0],
         ['num_setpoint_meas_in_pid', 0],
@@ -283,16 +277,6 @@ def send_anonymous_stats(start_time, debug=False):
         add_update_csv(STATS_CSV, 'num_triggers', get_count(triggers))
         add_update_csv(STATS_CSV, 'num_triggers_active',
                        get_count(triggers.filter(Trigger.is_activated.is_(True))))
-
-        lcds = db_retrieve_table_daemon(LCD)
-        add_update_csv(STATS_CSV, 'num_lcds', get_count(lcds))
-        add_update_csv(STATS_CSV, 'num_lcds_active',
-                       get_count(lcds.filter(LCD.is_activated.is_(True))))
-
-        math = db_retrieve_table_daemon(Math)
-        add_update_csv(STATS_CSV, 'num_maths', get_count(math))
-        add_update_csv(STATS_CSV, 'num_maths_active',
-                       get_count(math.filter(Math.is_activated.is_(True))))
 
         methods = db_retrieve_table_daemon(Method)
         add_update_csv(STATS_CSV, 'num_methods',

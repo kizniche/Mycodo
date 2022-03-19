@@ -17,8 +17,6 @@ from sqlalchemy import and_
 from mycodo.config import CAMERA_INFO
 from mycodo.config import DEPENDENCIES_GENERAL
 from mycodo.config import FUNCTION_INFO
-from mycodo.config import LCD_INFO
-from mycodo.config import MATH_INFO
 from mycodo.config import METHOD_INFO
 from mycodo.config import PATH_CAMERAS
 from mycodo.config_devices_units import MEASUREMENTS
@@ -31,8 +29,6 @@ from mycodo.databases.models import CustomController
 from mycodo.databases.models import Dashboard
 from mycodo.databases.models import DeviceMeasurements
 from mycodo.databases.models import Input
-from mycodo.databases.models import LCD
-from mycodo.databases.models import Math
 from mycodo.databases.models import Output
 from mycodo.databases.models import OutputChannel
 from mycodo.databases.models import PID
@@ -520,7 +516,7 @@ def controller_activate_deactivate(messages,
     :type messages: dict of list of strings
     :param controller_action: Activate or deactivate
     :type controller_action: str
-    :param controller_type: The controller type (Conditional, Input, LCD, Math, PID, Trigger, Function)
+    :param controller_type: The controller type (Conditional, Input, PID, Trigger, Function)
     :type controller_type: str
     :param controller_id: Controller with ID to activate or deactivate
     :type controller_id: str
@@ -539,15 +535,6 @@ def controller_activate_deactivate(messages,
     elif controller_type == 'Input':
         mod_controller = Input.query.filter(
             Input.unique_id == controller_id).first()
-        if activated:
-            messages["error"] = check_for_valid_unit_and_conversion(
-                controller_id, messages["error"])
-    elif controller_type == 'LCD':
-        mod_controller = LCD.query.filter(
-            LCD.unique_id == controller_id).first()
-    elif controller_type == 'Math':
-        mod_controller = Math.query.filter(
-            Math.unique_id == controller_id).first()
         if activated:
             messages["error"] = check_for_valid_unit_and_conversion(
                 controller_id, messages["error"])
@@ -612,11 +599,6 @@ def choices_controller_ids():
             id=each_input.id,
             name=each_input.name)
         choices.append({'value': each_input.unique_id, 'item': display})
-    for each_math in Math.query.all():
-        display = '[Math {id:02d}] {name}'.format(
-            id=each_math.id,
-            name=each_math.name)
-        choices.append({'value': each_math.unique_id, 'item': display})
     for each_pid in PID.query.all():
         display = '[PID {id:02d}] {name}'.format(
             id=each_pid.id,
@@ -637,11 +619,6 @@ def choices_controller_ids():
             id=each_custom.id,
             name=each_custom.name)
         choices.append({'value': each_custom.unique_id, 'item': display})
-    for each_lcd in LCD.query.all():
-        display = '[LCD {id:02d}] {name}'.format(
-            id=each_lcd.id,
-            name=each_lcd.name)
-        choices.append({'value': each_lcd.unique_id, 'item': display})
     return choices
 
 
@@ -675,71 +652,8 @@ def choices_input_devices(input_dev):
     return choices
 
 
-def choices_lcd(inputs, maths, pids, outputs, dict_units, dict_measurements):
-    choices = [
-        {'value': '0000,BLANK', 'item': 'Blank Line'},
-        {'value': '0000,IP', 'item': 'IP Address of Raspberry Pi'},
-        {'value': '0000,TEXT', 'item': 'Custom Text'}
-    ]
-
-    # Inputs
-    for each_input in inputs:
-        value = '{id},input_time'.format(
-            id=each_input.unique_id)
-        display = '[Input {id:02d}] {name} (Timestamp)'.format(
-            id=each_input.id,
-            name=each_input.name)
-        choices.append({'value': value, 'item': display})
-        choices = form_input_choices(
-            choices, each_input, dict_units, dict_measurements)
-
-    # Maths
-    for each_math in maths:
-        value = '{id},math_time'.format(
-            id=each_math.unique_id)
-        display = '[Math {id:02d}] {name} (Timestamp)'.format(
-            id=each_math.id,
-            name=each_math.name)
-        choices.append({'value': value, 'item': display})
-        choices = form_math_choices(
-            choices, each_math, dict_units, dict_measurements)
-
-    # PIDs
-    for each_pid in pids:
-        value = '{id},pid_time'.format(
-            id=each_pid.unique_id)
-        display = '[PID {id:02d}] {name} (Timestamp)'.format(
-            id=each_pid.id,
-            name=each_pid.name)
-        choices.append({'value': value, 'item': display})
-        choices = form_pid_choices(
-            choices, each_pid, dict_units, dict_measurements)
-
-    # Outputs
-    for each_output in outputs:
-        value = '{id},output_time'.format(
-            id=each_output.unique_id)
-        display = '[Output {id:02d}] {name} (Timestamp)'.format(
-            id=each_output.id,
-            name=each_output.name)
-        choices.append({'value': value, 'item': display})
-        choices = form_output_choices(
-            choices, each_output, dict_units, dict_measurements)
-
-    return choices
-
-
-def choices_maths(maths, dict_units, dict_measurements):
-    """populate form multi-select choices from Math entries."""
-    choices = []
-    for each_math in maths:
-        choices = form_math_choices(
-            choices, each_math, dict_units, dict_measurements)
-    return choices
-
-
 def choices_actions(actions, dict_units, dict_measurements):
-    """populate form multi-select choices from Math entries."""
+    """populate form multi-select choices from Action entries."""
     choices = []
     for each_function in actions:
         choices = form_function_choices(
@@ -748,7 +662,7 @@ def choices_actions(actions, dict_units, dict_measurements):
 
 
 def choices_functions(functions, dict_units, dict_measurements):
-    """populate form multi-select choices from Math entries."""
+    """populate form multi-select choices from Function entries."""
     choices = []
     for each_function in functions:
         choices = form_function_choices(
@@ -976,51 +890,6 @@ def form_input_choices_devices(choices, each_input):
         id=each_input.id,
         name=each_input.name)
     choices.append({'value': value, 'item': display})
-    return choices
-
-
-def form_math_choices(choices, each_math, dict_units, dict_measurements):
-    device_measurements = DeviceMeasurements.query.filter(
-        DeviceMeasurements.device_id == each_math.unique_id).all()
-
-    for each_measure in device_measurements:
-        conversion = Conversion.query.filter(
-            Conversion.unique_id == each_measure.conversion_id).first()
-        channel, unit, measurement = return_measurement_info(
-            each_measure, conversion)
-
-        if unit:
-            value = '{input_id},{meas_id}'.format(
-                input_id=each_math.unique_id,
-                meas_id=each_measure.unique_id)
-
-            display_unit = find_name_unit(
-                dict_units, unit)
-            display_measurement = find_name_measurement(
-                dict_measurements, measurement)
-
-            if each_measure.name:
-                channel_info = 'CH{cnum} ({cname})'.format(
-                    cnum=channel, cname=each_measure.name)
-            else:
-                channel_info = 'CH{cnum}'.format(cnum=channel)
-
-            if display_measurement and display_unit:
-                measurement_unit = '{meas} ({unit})'.format(
-                    meas=display_measurement, unit=display_unit)
-            elif display_measurement:
-                measurement_unit = '{meas}'.format(
-                    meas=display_measurement)
-            else:
-                measurement_unit = '({unit})'.format(unit=display_unit)
-
-            display = '[Math {id:02d}] {i_name} {chan} {meas}'.format(
-                id=each_math.id,
-                i_name=each_math.name,
-                chan=channel_info,
-                meas=measurement_unit)
-            choices.append({'value': value, 'item': display})
-
     return choices
 
 
@@ -1688,8 +1557,6 @@ def return_dependencies(device_type):
         parse_widget_information(),
         CAMERA_INFO,
         FUNCTION_INFO,
-        LCD_INFO,
-        MATH_INFO,
         METHOD_INFO,
         DEPENDENCIES_GENERAL
     ]
@@ -1770,13 +1637,13 @@ def return_dependencies(device_type):
     return unmet_deps, met_deps, dep_message
 
 
-def use_unit_generate(device_measurements, input_dev, output, math, function):
+def use_unit_generate(device_measurements, input_dev, output, function):
     """Generate dictionary of units to convert to."""
     use_unit = {}
 
-    # Input and Math controllers have measurement tables with the same schema
+    # Controllers have measurement tables with the same schema
     list_devices_with_measurements = [
-        input_dev, math, function
+        input_dev, function
     ]
 
     for devices in list_devices_with_measurements:

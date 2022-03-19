@@ -12,8 +12,6 @@ from mycodo.databases.models import CustomController
 from mycodo.databases.models import EnergyUsage
 from mycodo.databases.models import Function
 from mycodo.databases.models import Input
-from mycodo.databases.models import LCD
-from mycodo.databases.models import Math
 from mycodo.databases.models import PID
 from mycodo.databases.models import Trigger
 from mycodo.mycodo_flask.extensions import db
@@ -22,9 +20,6 @@ from mycodo.mycodo_flask.utils.utils_general import flash_success_errors
 
 logger = logging.getLogger(__name__)
 
-#
-# Math manipulation
-#
 
 def energy_usage_add(form_add_energy_usage):
     action = '{action} {controller}'.format(
@@ -93,8 +88,6 @@ def determine_controller_type(unique_id):
     db_tables = {
         'Conditional': Conditional.query.filter(Conditional.unique_id == unique_id).count(),
         'Input': Input.query.filter(Input.unique_id == unique_id).count(),
-        'LCD': LCD.query.filter(LCD.unique_id == unique_id).count(),
-        'Math': Math.query.filter(Math.unique_id == unique_id).count(),
         'PID': PID.query.filter(PID.unique_id == unique_id).count(),
         'Trigger': Trigger.query.filter(Trigger.unique_id == unique_id).count(),
         'Function': Function.query.filter(Function.unique_id == unique_id).count(),

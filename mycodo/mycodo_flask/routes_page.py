@@ -36,7 +36,6 @@ from mycodo.config import FRONTEND_PID_FILE
 from mycodo.config import HTTP_ACCESS_LOG_FILE
 from mycodo.config import HTTP_ERROR_LOG_FILE
 from mycodo.config import KEEPUP_LOG_FILE
-from mycodo.config import LCD_INFO
 from mycodo.config import LOGIN_LOG_FILE
 from mycodo.config import MYCODO_VERSION
 from mycodo.config import RESTORE_LOG_FILE
@@ -52,9 +51,6 @@ from mycodo.databases.models import DeviceMeasurements
 from mycodo.databases.models import DisplayOrder
 from mycodo.databases.models import EnergyUsage
 from mycodo.databases.models import Input
-from mycodo.databases.models import LCD
-from mycodo.databases.models import LCDData
-from mycodo.databases.models import Math
 from mycodo.databases.models import Measurement
 from mycodo.databases.models import Misc
 from mycodo.databases.models import NoteTags
@@ -69,7 +65,6 @@ from mycodo.mycodo_client import DaemonControl
 from mycodo.mycodo_client import daemon_active
 from mycodo.mycodo_flask.extensions import db
 from mycodo.mycodo_flask.forms import forms_camera
-from mycodo.mycodo_flask.forms import forms_lcd
 from mycodo.mycodo_flask.forms import forms_misc
 from mycodo.mycodo_flask.forms import forms_notes
 from mycodo.mycodo_flask.routes_static import inject_variables
@@ -77,13 +72,11 @@ from mycodo.mycodo_flask.utils import utils_camera
 from mycodo.mycodo_flask.utils import utils_dashboard
 from mycodo.mycodo_flask.utils import utils_export
 from mycodo.mycodo_flask.utils import utils_general
-from mycodo.mycodo_flask.utils import utils_lcd
 from mycodo.mycodo_flask.utils import utils_misc
 from mycodo.mycodo_flask.utils import utils_notes
 from mycodo.mycodo_flask.utils.utils_general import return_dependencies
 from mycodo.utils.functions import parse_function_information
 from mycodo.utils.inputs import list_analog_to_digital_converters
-from mycodo.utils.inputs import parse_input_information
 from mycodo.utils.outputs import output_types
 from mycodo.utils.outputs import parse_output_information
 from mycodo.utils.system_pi import add_custom_measurements
@@ -459,7 +452,6 @@ def page_export():
 
     function = CustomController.query.all()
     input_dev = Input.query.all()
-    math = Math.query.all()
     output = Output.query.all()
 
     # Generate all measurement and units used
@@ -470,8 +462,6 @@ def page_export():
         function, dict_units, dict_measurements)
     choices_input = utils_general.choices_inputs(
         input_dev, dict_units, dict_measurements)
-    choices_math = utils_general.choices_maths(
-        math, dict_units, dict_measurements)
     choices_output = utils_general.choices_outputs(
         output, dict_units, dict_measurements)
 
@@ -538,7 +528,6 @@ def page_export():
                            form_import_settings=form_import_settings,
                            choices_function=choices_function,
                            choices_input=choices_input,
-                           choices_math=choices_math,
                            choices_output=choices_output)
 
 
@@ -555,7 +544,6 @@ def page_graph_async():
     function = CustomController.query.all()
     input_dev = Input.query.all()
     device_measurements = DeviceMeasurements.query.all()
-    math = Math.query.all()
     output = Output.query.all()
     pid = PID.query.all()
     tag = NoteTags.query.all()
@@ -566,14 +554,12 @@ def page_graph_async():
 
     # Get what each measurement uses for a unit
     use_unit = utils_general.use_unit_generate(
-        device_measurements, input_dev, output, math, function)
+        device_measurements, input_dev, output, function)
 
     choices_function = utils_general.choices_functions(
         function, dict_units, dict_measurements)
     choices_input = utils_general.choices_inputs(
         input_dev, dict_units, dict_measurements)
-    choices_math = utils_general.choices_maths(
-        math, dict_units, dict_measurements)
     choices_output = utils_general.choices_outputs(
         output, dict_units, dict_measurements)
     choices_pid = utils_general.choices_pids(
@@ -634,13 +620,11 @@ def page_graph_async():
                            dict_units=dict_units,
                            use_unit=use_unit,
                            input=input_dev,
-                           math=math,
                            function=function,
                            output=output,
                            pid=pid,
                            tag=tag,
                            choices_input=choices_input,
-                           choices_math=choices_math,
                            choices_function=choices_function,
                            choices_output=choices_output,
                            choices_pid=choices_pid,
@@ -819,81 +803,6 @@ def output_pstree_top(pid):
     return pstree_output, top_output
 
 
-@blueprint.route('/lcd', methods=('GET', 'POST'))
-@flask_login.login_required
-def page_lcd():
-    """Display LCD output settings."""
-    lcd = LCD.query.all()
-    lcd_data = LCDData.query.all()
-    math = Math.query.all()
-    pid = PID.query.all()
-    output = Output.query.all()
-    input_dev = Input.query.all()
-
-    display_order = csv_to_list_of_str(DisplayOrder.query.first().lcd)
-
-    dict_units = add_custom_units(Unit.query.all())
-    dict_measurements = add_custom_measurements(Measurement.query.all())
-
-    choices_lcd = utils_general.choices_lcd(
-        input_dev, math, pid, output, dict_units, dict_measurements)
-
-    form_lcd_add = forms_lcd.LCDAdd()
-    form_lcd_mod = forms_lcd.LCDMod()
-    form_lcd_display = forms_lcd.LCDModDisplay()
-
-    if request.method == 'POST':
-        unmet_dependencies = None
-        if not utils_general.user_has_permission('edit_controllers'):
-            return redirect(url_for('routes_general.home'))
-
-        if form_lcd_add.add.data:
-            unmet_dependencies = utils_lcd.lcd_add(form_lcd_add)
-        elif form_lcd_mod.save.data:
-            utils_lcd.lcd_mod(form_lcd_mod)
-        elif form_lcd_mod.delete.data:
-            utils_lcd.lcd_del(form_lcd_mod.lcd_id.data)
-        elif form_lcd_mod.reorder_up.data:
-            utils_lcd.lcd_reorder(form_lcd_mod.lcd_id.data,
-                                  display_order, 'up')
-        elif form_lcd_mod.reorder_down.data:
-            utils_lcd.lcd_reorder(form_lcd_mod.lcd_id.data,
-                                  display_order, 'down')
-        elif form_lcd_mod.activate.data:
-            utils_lcd.lcd_activate(form_lcd_mod.lcd_id.data)
-        elif form_lcd_mod.deactivate.data:
-            utils_lcd.lcd_deactivate(form_lcd_mod.lcd_id.data)
-        elif form_lcd_mod.reset_flashing.data:
-            utils_lcd.lcd_reset_flashing(form_lcd_mod.lcd_id.data)
-        elif form_lcd_mod.add_display.data:
-            utils_lcd.lcd_display_add(form_lcd_mod)
-        elif form_lcd_display.save_display.data:
-            utils_lcd.lcd_display_mod(form_lcd_display)
-        elif form_lcd_display.delete_display.data:
-            utils_lcd.lcd_display_del(form_lcd_display.lcd_data_id.data)
-
-        if unmet_dependencies:
-            return redirect(url_for('routes_admin.admin_dependencies',
-                                    device=form_lcd_add.lcd_type.data.split(",")[0]))
-        else:
-            return redirect(url_for('routes_page.page_lcd'))
-
-    return render_template('pages/lcd.html',
-                           choices_lcd=choices_lcd,
-                           lcd=lcd,
-                           lcd_data=lcd_data,
-                           lcd_info=LCD_INFO,
-                           math=math,
-                           measurements=parse_input_information(),
-                           pid=pid,
-                           output=output,
-                           sensor=input_dev,
-                           display_order=display_order,
-                           form_lcd_add=form_lcd_add,
-                           form_lcd_mod=form_lcd_mod,
-                           form_lcd_display=form_lcd_display)
-
-
 @blueprint.route('/live', methods=('GET', 'POST'))
 @flask_login.login_required
 def page_live():
@@ -903,13 +812,12 @@ def page_live():
     device_measurements = DeviceMeasurements.query.all()
     input_dev = Input.query.all()
     output = Output.query.all()
-    math = Math.query.all()
 
     activated_inputs = Input.query.filter(Input.is_activated).count()
     activated_functions = CustomController.query.filter(CustomController.is_activated).count()
 
     use_unit = utils_general.use_unit_generate(
-        device_measurements, input_dev, output, math, function)
+        device_measurements, input_dev, output, function)
 
     # Display orders
     display_order_input = csv_to_list_of_str(DisplayOrder.query.first().inputs)
@@ -1074,7 +982,6 @@ def page_usage():
     energy_usage = EnergyUsage.query.all()
     input_dev = Input.query.all()
     function = CustomController.query.all()
-    math = Math.query.all()
     misc = Misc.query.first()
     output = Output.query.all()
     output_channel = OutputChannel.query.all()
@@ -1087,8 +994,6 @@ def page_usage():
         function, dict_units, dict_measurements)
     choices_input = utils_general.choices_inputs(
         input_dev, dict_units, dict_measurements)
-    choices_math = utils_general.choices_maths(
-        math, dict_units, dict_measurements)
 
     dict_outputs = parse_output_information()
 
@@ -1136,7 +1041,6 @@ def page_usage():
                            calculate_usage=calculate_usage,
                            choices_function=choices_function,
                            choices_input=choices_input,
-                           choices_math=choices_math,
                            custom_options_values_output_channels=custom_options_values_output_channels,
                            date_suffix=date_suffix,
                            dict_outputs=dict_outputs,
@@ -1254,54 +1158,6 @@ def dict_custom_colors():
                             'measure_id': input_measure_id,
                             'type': 'Input',
                             'name': input_dev.name,
-                            'channel': channel,
-                            'unit': unit,
-                            'measure': measurement,
-                            'measure_name': measurement_name,
-                            'color': color,
-                            'disable_data_grouping': disable_data_grouping})
-                        index += 1
-                index_sum += index
-
-            if each_graph.math_ids:
-                index = 0
-                for each_set in each_graph.math_ids.split(';'):
-                    math_unique_id = each_set.split(',')[0]
-                    math_measure_id = each_set.split(',')[1]
-
-                    device_measurement = DeviceMeasurements.query.filter(
-                        DeviceMeasurements.unique_id == math_measure_id).first()
-                    if device_measurement:
-                        measurement_name = device_measurement.name
-                        conversion = Conversion.query.filter(
-                            Conversion.unique_id == device_measurement.conversion_id).first()
-                    else:
-                        measurement_name = None
-                        conversion = None
-                    channel, unit, measurement = return_measurement_info(
-                        device_measurement, conversion)
-
-                    math = Math.query.filter_by(
-                        unique_id=math_unique_id).first()
-
-                    # Custom colors
-                    if (index < len(each_graph.math_ids.split(';')) and
-                            len(colors) > index_sum + index):
-                        color = colors[index_sum + index]
-                    else:
-                        color = '#FF00AA'
-
-                    # Data grouping
-                    disable_data_grouping = False
-                    if math_measure_id in each_graph.disable_data_grouping:
-                        disable_data_grouping = True
-
-                    if math is not None:
-                        total.append({
-                            'unique_id': math_unique_id,
-                            'measure_id': math_measure_id,
-                            'type': 'Math',
-                            'name': math.name,
                             'channel': channel,
                             'unit': unit,
                             'measure': measurement,

@@ -16,8 +16,6 @@ from mycodo.databases.models import CustomController
 from mycodo.databases.models import DeviceMeasurements
 from mycodo.databases.models import Function
 from mycodo.databases.models import Input
-from mycodo.databases.models import LCD
-from mycodo.databases.models import Math
 from mycodo.databases.models import OutputChannel
 from mycodo.databases.models import PID
 from mycodo.databases.models import SMTP
@@ -413,16 +411,6 @@ def which_controller(unique_id):
         controller_object = Input
         controller_entry = db_retrieve_table_daemon(
             Input, unique_id=unique_id)
-    elif db_retrieve_table_daemon(LCD, unique_id=unique_id):
-        controller_type = 'LCD'
-        controller_object = LCD
-        controller_entry = db_retrieve_table_daemon(
-            LCD, unique_id=unique_id)
-    elif db_retrieve_table_daemon(Math, unique_id=unique_id):
-        controller_type = 'Math'
-        controller_object = Math
-        controller_entry = db_retrieve_table_daemon(
-            Math, unique_id=unique_id)
     elif db_retrieve_table_daemon(PID, unique_id=unique_id):
         controller_type = 'PID'
         controller_object = PID

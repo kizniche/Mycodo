@@ -279,7 +279,7 @@ class PIDController(AbstractController, threading.Thread):
                         self.PID_Controller.setpoint = self.setpoint
 
                 if self.setpoint_tracking_type == 'input-math' and self.setpoint_tracking_id != '':
-                    # Update setpoint using an Input or Math
+                    # Update setpoint using an Input
                     device_id = self.setpoint_tracking_id.split(',')[0]
                     measurement_id = self.setpoint_tracking_id.split(',')[1]
 

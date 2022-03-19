@@ -8,7 +8,6 @@ import subprocess
 
 import flask_login
 from flask import current_app
-from flask import flash
 from flask import jsonify
 from flask import redirect
 from flask import render_template
@@ -18,7 +17,6 @@ from flask.blueprints import Blueprint
 from sqlalchemy import and_
 
 from mycodo.config import INSTALL_DIRECTORY
-from mycodo.config import MATH_INFO
 from mycodo.config import PATH_1WIRE
 from mycodo.databases.models import Actions
 from mycodo.databases.models import Conversion
@@ -27,7 +25,6 @@ from mycodo.databases.models import DeviceMeasurements
 from mycodo.databases.models import DisplayOrder
 from mycodo.databases.models import Input
 from mycodo.databases.models import InputChannel
-from mycodo.databases.models import Math
 from mycodo.databases.models import Measurement
 from mycodo.databases.models import Method
 from mycodo.databases.models import Output
@@ -38,12 +35,10 @@ from mycodo.databases.models import User
 from mycodo.mycodo_flask.extensions import db
 from mycodo.mycodo_flask.forms import forms_action
 from mycodo.mycodo_flask.forms import forms_input
-from mycodo.mycodo_flask.forms import forms_math
 from mycodo.mycodo_flask.routes_static import inject_variables
 from mycodo.mycodo_flask.utils import utils_action
 from mycodo.mycodo_flask.utils import utils_general
 from mycodo.mycodo_flask.utils import utils_input
-from mycodo.mycodo_flask.utils import utils_math
 from mycodo.mycodo_flask.utils.utils_general import generate_form_action_list
 from mycodo.utils.actions import parse_action_information
 from mycodo.utils.inputs import parse_input_information
@@ -51,10 +46,8 @@ from mycodo.utils.outputs import output_types
 from mycodo.utils.outputs import parse_output_information
 from mycodo.utils.system_pi import add_custom_measurements
 from mycodo.utils.system_pi import add_custom_units
-from mycodo.utils.system_pi import check_missing_ids
 from mycodo.utils.system_pi import csv_to_list_of_str
 from mycodo.utils.system_pi import dpkg_package_exists
-from mycodo.utils.system_pi import list_to_csv
 from mycodo.utils.system_pi import parse_custom_option_values
 from mycodo.utils.system_pi import parse_custom_option_values_input_channels_json
 
@@ -215,7 +208,6 @@ def page_input():
     function = CustomController.query.all()
     input_dev = Input.query.all()
     input_channel = InputChannel.query.all()
-    math = Math.query.all()
     method = Method.query.all()
     measurement = Measurement.query.all()
     output = Output.query.all()
@@ -225,76 +217,10 @@ def page_input():
     unit = Unit.query.all()
 
     display_order_input = csv_to_list_of_str(DisplayOrder.query.first().inputs)
-    display_order_math = csv_to_list_of_str(DisplayOrder.query.first().math)
 
     form_add_input = forms_input.InputAdd()
     form_mod_input = forms_input.InputMod()
     form_actions = forms_action.Actions()
-
-    form_base = forms_math.DataBase()
-    form_mod_math = forms_math.MathMod()
-    form_mod_math_measurement = forms_math.MathMeasurementMod()
-    form_mod_average_single = forms_math.MathModAverageSingle()
-    form_mod_sum_single = forms_math.MathModSumSingle()
-    form_mod_redundancy = forms_math.MathModRedundancy()
-    form_mod_difference = forms_math.MathModDifference()
-    form_mod_equation = forms_math.MathModEquation()
-    form_mod_humidity = forms_math.MathModHumidity()
-    form_mod_verification = forms_math.MathModVerification()
-    form_mod_misc = forms_math.MathModMisc()
-
-    if request.method == 'POST':  # TODO: Remove entire POST section and remove Math controllers
-        if not utils_general.user_has_permission('edit_controllers'):
-            return redirect(url_for('routes_input.page_input'))
-
-        # Reorder Math controllers
-        if form_base.reorder.data:
-            mod_order = DisplayOrder.query.first()
-            mod_order.math = list_to_csv(form_base.list_visible_elements.data)
-            mod_order.function = check_missing_ids(mod_order.function, [math])
-            db.session.commit()
-            flash("Reorder Complete", "success")
-
-        # Mod Math Measurement
-        elif form_mod_math_measurement.math_measurement_mod.data:
-            utils_math.math_measurement_mod(form_mod_math_measurement)
-
-        # Mod other Math settings
-        elif form_mod_math.math_mod.data:
-            math_type = Math.query.filter(
-                Math.unique_id == form_mod_math.math_id.data).first().math_type
-            if math_type == 'humidity':
-                utils_math.math_mod(form_mod_math, form_mod_humidity)
-            elif math_type == 'average_single':
-                utils_math.math_mod(form_mod_math, form_mod_average_single)
-            elif math_type == 'sum_single':
-                utils_math.math_mod(form_mod_math, form_mod_sum_single)
-            elif math_type == 'redundancy':
-                utils_math.math_mod(form_mod_math, form_mod_redundancy)
-            elif math_type == 'difference':
-                utils_math.math_mod(form_mod_math, form_mod_difference)
-            elif math_type == 'equation':
-                utils_math.math_mod(form_mod_math, form_mod_equation)
-            elif math_type == 'verification':
-                utils_math.math_mod(form_mod_math, form_mod_verification)
-            elif math_type == 'vapor_pressure_deficit':
-                utils_math.math_mod(form_mod_math, form_mod_misc)
-            else:
-                utils_math.math_mod(form_mod_math)
-        elif form_mod_math.math_delete.data:
-            utils_math.math_del(form_mod_math)
-        elif form_mod_math.math_order_up.data:
-            utils_math.math_reorder(form_mod_math.math_id.data,
-                                    display_order_math, 'up')
-        elif form_mod_math.math_order_down.data:
-            utils_math.math_reorder(form_mod_math.math_id.data,
-                                    display_order_math, 'down')
-        elif form_mod_math.math_activate.data:
-            utils_math.math_activate(form_mod_math)
-        elif form_mod_math.math_deactivate.data:
-            utils_math.math_deactivate(form_mod_math)
-
-        return redirect(url_for('routes_input.page_input'))
 
     dict_inputs = parse_input_information()
     dict_actions = parse_action_information()
@@ -332,8 +258,6 @@ def page_input():
         function, dict_units, dict_measurements)
     choices_input = utils_general.choices_inputs(
         input_dev, dict_units, dict_measurements)
-    choices_math = utils_general.choices_maths(
-        math, dict_units, dict_measurements)
     choices_method = utils_general.choices_methods(method)
     choices_output = utils_general.choices_outputs(
         output, dict_units, dict_measurements)
@@ -356,25 +280,6 @@ def page_input():
             id=each_element.id,
             uid=each_element.unique_id.split('-')[0],
             name=each_element.name)
-
-    # Create dict of Math names
-    names_math = {}
-    all_elements = math
-    for each_element in all_elements:
-        names_math[each_element.unique_id] = '[{id:02d}] ({uid}) {name}'.format(
-            id=each_element.id,
-            uid=each_element.unique_id.split('-')[0],
-            name=each_element.name)
-
-    # Create list of file names from the math_options directory
-    # Used in generating the correct options for each math controller
-    math_templates = []
-    math_path = os.path.join(
-        INSTALL_DIRECTORY,
-        'mycodo/mycodo_flask/templates/pages/data_options/math_options')
-    for (_, _, file_names) in os.walk(math_path):
-        math_templates.extend(file_names)
-        break
 
     # Create list of file names from the input_options directory
     # Used in generating the correct options for each input controller
@@ -428,7 +333,6 @@ def page_input():
                                choices_actions=choices_actions,
                                choices_function=choices_function,
                                choices_input=choices_input,
-                               choices_math=choices_math,
                                choices_output=choices_output,
                                choices_measurement=choices_measurement,
                                choices_measurements_units=choices_measurements_units,
@@ -447,35 +351,19 @@ def page_input():
                                dict_measurements=dict_measurements,
                                dict_units=dict_units,
                                display_order_input=display_order_input,
-                               display_order_math=display_order_math,
                                form_actions=form_actions,
-                               form_base=form_base,
                                form_add_input=form_add_input,
                                form_mod_input=form_mod_input,
-                               form_mod_average_single=form_mod_average_single,
-                               form_mod_sum_single=form_mod_sum_single,
-                               form_mod_redundancy=form_mod_redundancy,
-                               form_mod_difference=form_mod_difference,
-                               form_mod_equation=form_mod_equation,
-                               form_mod_humidity=form_mod_humidity,
-                               form_mod_math=form_mod_math,
-                               form_mod_math_measurement=form_mod_math_measurement,
-                               form_mod_verification=form_mod_verification,
-                               form_mod_misc=form_mod_misc,
                                ftdi_devices=ftdi_devices,
                                input_channel=input_channel,
                                input_templates=input_templates,
-                               math_info=MATH_INFO,
-                               math_templates=math_templates,
                                names_input=names_input,
-                               names_math=names_math,
                                output=output,
                                output_types=output_types(),
                                pid=pid,
                                table_conversion=Conversion,
                                table_device_measurements=DeviceMeasurements,
                                table_input=Input,
-                               table_math=Math,
                                user=user,
                                devices_1wire_ow_shell=devices_1wire_ow_shell,
                                devices_1wire_w1thermsensor=devices_1wire_w1thermsensor)
@@ -486,7 +374,6 @@ def page_input():
                                choices_actions=choices_actions,
                                choices_function=choices_function,
                                choices_input=choices_input,
-                               choices_math=choices_math,
                                choices_output=choices_output,
                                choices_measurement=choices_measurement,
                                choices_measurements_units=choices_measurements_units,
@@ -505,35 +392,20 @@ def page_input():
                                dict_measurements=dict_measurements,
                                dict_units=dict_units,
                                display_order_input=display_order_input,
-                               display_order_math=display_order_math,
                                each_input=each_input,
                                form_actions=form_actions,
                                form_add_input=form_add_input,
                                form_mod_input=form_mod_input,
-                               form_mod_average_single=form_mod_average_single,
-                               form_mod_sum_single=form_mod_sum_single,
-                               form_mod_redundancy=form_mod_redundancy,
-                               form_mod_difference=form_mod_difference,
-                               form_mod_equation=form_mod_equation,
-                               form_mod_humidity=form_mod_humidity,
-                               form_mod_math=form_mod_math,
-                               form_mod_math_measurement=form_mod_math_measurement,
-                               form_mod_verification=form_mod_verification,
-                               form_mod_misc=form_mod_misc,
                                ftdi_devices=ftdi_devices,
                                input_channel=input_channel,
                                input_templates=input_templates,
-                               math_info=MATH_INFO,
-                               math_templates=math_templates,
                                names_input=names_input,
-                               names_math=names_math,
                                output=output,
                                output_types=output_types(),
                                pid=pid,
                                table_conversion=Conversion,
                                table_device_measurements=DeviceMeasurements,
                                table_input=Input,
-                               table_math=Math,
                                user=user,
                                devices_1wire_ow_shell=devices_1wire_ow_shell,
                                devices_1wire_w1thermsensor=devices_1wire_w1thermsensor)
@@ -544,7 +416,6 @@ def page_input():
                                choices_actions=choices_actions,
                                choices_function=choices_function,
                                choices_input=choices_input,
-                               choices_math=choices_math,
                                choices_output=choices_output,
                                choices_measurement=choices_measurement,
                                choices_measurements_units=choices_measurements_units,
@@ -563,35 +434,20 @@ def page_input():
                                dict_measurements=dict_measurements,
                                dict_units=dict_units,
                                display_order_input=display_order_input,
-                               display_order_math=display_order_math,
                                each_input=each_input,
                                form_actions=form_actions,
                                form_add_input=form_add_input,
                                form_mod_input=form_mod_input,
-                               form_mod_average_single=form_mod_average_single,
-                               form_mod_sum_single=form_mod_sum_single,
-                               form_mod_redundancy=form_mod_redundancy,
-                               form_mod_difference=form_mod_difference,
-                               form_mod_equation=form_mod_equation,
-                               form_mod_humidity=form_mod_humidity,
-                               form_mod_math=form_mod_math,
-                               form_mod_math_measurement=form_mod_math_measurement,
-                               form_mod_verification=form_mod_verification,
-                               form_mod_misc=form_mod_misc,
                                ftdi_devices=ftdi_devices,
                                input_channel=input_channel,
                                input_templates=input_templates,
-                               math_info=MATH_INFO,
-                               math_templates=math_templates,
                                names_input=names_input,
-                               names_math=names_math,
                                output=output,
                                output_types=output_types(),
                                pid=pid,
                                table_conversion=Conversion,
                                table_device_measurements=DeviceMeasurements,
                                table_input=Input,
-                               table_math=Math,
                                user=user,
                                devices_1wire_ow_shell=devices_1wire_ow_shell,
                                devices_1wire_w1thermsensor=devices_1wire_w1thermsensor)
@@ -602,7 +458,6 @@ def page_input():
                                choices_actions=choices_actions,
                                choices_function=choices_function,
                                choices_input=choices_input,
-                               choices_math=choices_math,
                                choices_output=choices_output,
                                choices_measurement=choices_measurement,
                                choices_measurements_units=choices_measurements_units,
@@ -621,36 +476,21 @@ def page_input():
                                dict_measurements=dict_measurements,
                                dict_units=dict_units,
                                display_order_input=display_order_input,
-                               display_order_math=display_order_math,
                                each_action=each_action,
                                each_input=each_input,
                                form_actions=form_actions,
                                form_add_input=form_add_input,
                                form_mod_input=form_mod_input,
-                               form_mod_average_single=form_mod_average_single,
-                               form_mod_sum_single=form_mod_sum_single,
-                               form_mod_redundancy=form_mod_redundancy,
-                               form_mod_difference=form_mod_difference,
-                               form_mod_equation=form_mod_equation,
-                               form_mod_humidity=form_mod_humidity,
-                               form_mod_math=form_mod_math,
-                               form_mod_math_measurement=form_mod_math_measurement,
-                               form_mod_verification=form_mod_verification,
-                               form_mod_misc=form_mod_misc,
                                ftdi_devices=ftdi_devices,
                                input_channel=input_channel,
                                input_templates=input_templates,
-                               math_info=MATH_INFO,
-                               math_templates=math_templates,
                                names_input=names_input,
-                               names_math=names_math,
                                output=output,
                                output_types=output_types(),
                                pid=pid,
                                table_conversion=Conversion,
                                table_device_measurements=DeviceMeasurements,
                                table_input=Input,
-                               table_math=Math,
                                user=user,
                                devices_1wire_ow_shell=devices_1wire_ow_shell,
                                devices_1wire_w1thermsensor=devices_1wire_w1thermsensor)

@@ -6,9 +6,9 @@ The detection of a changing signal, for instance a simple switch completing a ci
 
 Examples of devices that can be used with edge detection: simple switches and buttons, PIR motion sensors, reed switches, hall effect sensors, float switches, and more.
 
-## LCD Displays
+## Displays
 
-There are only a few number fo LCDs that are supported. 16x2 and 20x4 character LCD displays with I2C backpacks and the [128x32](https://www.adafruit.com/product/931) / [128x64](https://www.adafruit.com/product/931) OLED displays are supported. The below image is the type of device with the I2C backpack that should be compatible.
+There are only a few number fo displays that are supported. 16x2 and 20x4 character LCD displays with I2C backpacks and the [128x32](https://www.adafruit.com/product/931) / [128x64](https://www.adafruit.com/product/931) OLED displays are supported. The below image is the type of device with the I2C backpack that should be compatible. See [Supported Functions](Supported-Functions.md) for more information.
 
 ![image4](images/LCD-front-back.jpg)
 

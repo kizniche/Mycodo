@@ -173,7 +173,7 @@ class DaemonControl:
             return 0, traceback.format_exc()
 
     #
-    # LCD Controller
+    # Display
     #
 
     def lcd_backlight(self, lcd_id, state):
@@ -314,11 +314,11 @@ def parseargs(parser):
                         help="Check if all active daemon controllers are running")
     parser.add_argument('--activatecontroller', nargs=2,
                         metavar=('CONTROLLER', 'ID'), type=str,
-                        help='Activate controller. Options: Conditional, LCD, Math, PID, Input',
+                        help='Activate controller. Options: Conditional, PID, Input',
                         required=False)
     parser.add_argument('--deactivatecontroller', nargs=2,
                         metavar=('CONTROLLER', 'ID'), type=str,
-                        help='Deactivate controller. Options: Conditional, LCD, Math, PID, Input',
+                        help='Deactivate controller. Options: Conditional, PID, Input',
                         required=False)
     parser.add_argument('--ramuse', action='store_true',
                         help="Return the amount of ram used by the Mycodo daemon")

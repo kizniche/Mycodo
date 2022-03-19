@@ -37,7 +37,6 @@ from mycodo.databases.models import Dashboard
 from mycodo.databases.models import DeviceMeasurements
 from mycodo.databases.models import DisplayOrder
 from mycodo.databases.models import Input
-from mycodo.databases.models import Math
 from mycodo.databases.models import Measurement
 from mycodo.databases.models import Misc
 from mycodo.databases.models import NoteTags
@@ -1488,11 +1487,7 @@ def check_conversion_being_used(conv, error, state=None):
     try:
         device_measurements = DeviceMeasurements.query.all()
 
-        list_measurements = [
-            Input,
-            Math,
-            PID,
-        ]
+        list_measurements = [Input, PID,]
 
         for each_device_type in list_measurements:
             for each_device in each_device_type.query.all():
@@ -1546,7 +1541,6 @@ def settings_pi_mod(form):
         mod_misc.sample_rate_controller_conditional = form.sample_rate_controller_conditional.data
         mod_misc.sample_rate_controller_function = form.sample_rate_controller_function.data
         mod_misc.sample_rate_controller_input = form.sample_rate_controller_input.data
-        mod_misc.sample_rate_controller_math = form.sample_rate_controller_math.data
         mod_misc.sample_rate_controller_output = form.sample_rate_controller_output.data
         mod_misc.sample_rate_controller_pid = form.sample_rate_controller_pid.data
         mod_misc.sample_rate_controller_widget = form.sample_rate_controller_widget.data
@@ -1758,45 +1752,6 @@ def settings_diagnostic_delete_inputs():
             db.session.commit()
         except Exception as except_msg:
             messages["error"].append(str(except_msg))
-
-    flash_success_errors(
-        messages["error"],
-        action,
-        url_for('routes_settings.settings_diagnostic'))
-
-
-def settings_diagnostic_delete_maths():
-    action = '{action} {controller}'.format(
-        action=TRANSLATIONS['delete']['title'],
-        controller=TRANSLATIONS['math']['title'])
-    messages = {
-        "success": [],
-        "info": [],
-        "warning": [],
-        "error": []
-    }
-
-    maths = db_retrieve_table(Math)
-    device_measurements = db_retrieve_table(DeviceMeasurements)
-    display_order = db_retrieve_table(DisplayOrder, entry='first')
-
-    if not messages["error"]:
-        try:
-            for each_math in maths:
-                # Deactivate any active controllers using the input
-                if each_math.is_activated:
-                    messages = controller_activate_deactivate(
-                        messages, 'deactivate', 'Math', each_math.unique_id)
-
-                # Delete all measurements associated
-                for each_measurement in device_measurements:
-                    if each_measurement.device_id == each_math.unique_id:
-                        db.session.delete(each_measurement)
-                db.session.delete(each_math)
-            display_order.math = ''
-            db.session.commit()
-        except Exception as except_msg:
-            messages["error"].append(except_msg)
 
     flash_success_errors(
         messages["error"],

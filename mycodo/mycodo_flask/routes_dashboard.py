@@ -19,7 +19,6 @@ from mycodo.databases.models import CustomController
 from mycodo.databases.models import Dashboard
 from mycodo.databases.models import DeviceMeasurements
 from mycodo.databases.models import Input
-from mycodo.databases.models import Math
 from mycodo.databases.models import Measurement
 from mycodo.databases.models import Method
 from mycodo.databases.models import Misc
@@ -110,7 +109,6 @@ def page_dashboard(dashboard_id):
         Dashboard.unique_id == dashboard_id).first()
     input_dev = Input.query.all()
     device_measurements = DeviceMeasurements.query.all()
-    math = Math.query.all()
     method = Method.query.all()
     misc = Misc.query.first()
     output = Output.query.all()
@@ -258,8 +256,6 @@ def page_dashboard(dashboard_id):
         function, dict_units, dict_measurements)
     choices_input = utils_general.choices_inputs(
         input_dev, dict_units, dict_measurements)
-    choices_math = utils_general.choices_maths(
-        math, dict_units, dict_measurements)
     choices_method = utils_general.choices_methods(method)
     choices_output = utils_general.choices_outputs(
         output, dict_units, dict_measurements)
@@ -280,7 +276,7 @@ def page_dashboard(dashboard_id):
 
     # Get what each measurement uses for a unit
     use_unit = utils_general.use_unit_generate(
-        device_measurements, input_dev, output, math, function)
+        device_measurements, input_dev, output, function)
 
     return render_template('pages/dashboard.html',
                            and_=and_,
@@ -292,7 +288,6 @@ def page_dashboard(dashboard_id):
                            table_function=CustomController,
                            table_widget=Widget,
                            table_input=Input,
-                           table_math=Math,
                            table_output=Output,
                            table_output_channel=OutputChannel,
                            table_pid=PID,
@@ -300,7 +295,6 @@ def page_dashboard(dashboard_id):
                            choices_camera=choices_camera,
                            choices_function=choices_function,
                            choices_input=choices_input,
-                           choices_math=choices_math,
                            choices_method=choices_method,
                            choices_output=choices_output,
                            choices_output_channels=choices_output_channels,
@@ -326,7 +320,6 @@ def page_dashboard(dashboard_id):
                            list_html_files_js_ready_end=list_html_files_js_ready_end,
                            camera=camera,
                            function=function,
-                           math=math,
                            misc=misc,
                            pid=pid,
                            output=output,

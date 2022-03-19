@@ -16,7 +16,6 @@ from mycodo.databases.models import CustomController
 from mycodo.databases.models import Dashboard
 from mycodo.databases.models import DeviceMeasurements
 from mycodo.databases.models import Input
-from mycodo.databases.models import Math
 from mycodo.databases.models import Output
 from mycodo.databases.models import PID
 from mycodo.databases.models import Widget
@@ -352,11 +351,10 @@ def graph_y_axes_async(dict_measurements, ids_measures):
     function = CustomController.query.all()
     device_measurements = DeviceMeasurements.query.all()
     input_dev = Input.query.all()
-    math = Math.query.all()
     output = Output.query.all()
     pid = PID.query.all()
 
-    devices_list = [input_dev, math, output, pid]
+    devices_list = [input_dev, output, pid]
 
     # Iterate through device tables
     for each_device in devices_list:
@@ -418,7 +416,6 @@ def graph_y_axes_async(dict_measurements, ids_measures):
                                                 device_measurements,
                                                 input_dev,
                                                 output,
-                                                math,
                                                 function)
 
                 elif len(each_id_measure.split(',')) == 3:
@@ -439,7 +436,6 @@ def graph_y_axes_async(dict_measurements, ids_measures):
                                                 device_measurements,
                                                 input_dev,
                                                 output,
-                                                math,
                                                 function,
                                                 unit=unit)
 
@@ -454,12 +450,11 @@ def check_func(all_devices,
                device_measurements,
                input_dev,
                output,
-               math,
                function,
                unit=None):
     """
     Generate a list of y-axes
-    :param all_devices: Input, Math, Output, and PID SQL entries of a table
+    :param all_devices: Input, Output, and PID SQL entries of a table
     :param unique_id: The ID of the measurement
     :param y_axes: empty list to populate
     :param measurement:
@@ -467,7 +462,6 @@ def check_func(all_devices,
     :param device_measurements:
     :param input_dev:
     :param output:
-    :param math:
     :param function
     :param unit:
     :return: None
@@ -479,7 +473,7 @@ def check_func(all_devices,
         if each_device.unique_id == unique_id:
 
             use_unit = use_unit_generate(
-                device_measurements, input_dev, output, math, function)
+                device_measurements, input_dev, output, function)
 
             # Add duration
             if measurement == 'duration_time':

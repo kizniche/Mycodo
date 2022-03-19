@@ -26,8 +26,6 @@ from mycodo.databases.models import DisplayOrder
 from mycodo.databases.models import Function
 from mycodo.databases.models import FunctionChannel
 from mycodo.databases.models import Input
-from mycodo.databases.models import LCD
-from mycodo.databases.models import Math
 from mycodo.databases.models import Measurement
 from mycodo.databases.models import Method
 from mycodo.databases.models import NoteTags
@@ -370,8 +368,6 @@ def page_function():
     function_channel = FunctionChannel.query.all()
     function_dev = Function.query.all()
     input_dev = Input.query.all()
-    lcd = LCD.query.all()
-    math = Math.query.all()
     measurement = Measurement.query.all()
     method = Method.query.all()
     tags = NoteTags.query.all()
@@ -450,8 +446,6 @@ def page_function():
     choices_input = utils_general.choices_inputs(
         input_dev, dict_units, dict_measurements)
     choices_input_devices = utils_general.choices_input_devices(input_dev)
-    choices_math = utils_general.choices_maths(
-        math, dict_units, dict_measurements)
     choices_method = utils_general.choices_methods(method)
     choices_output = utils_general.choices_outputs(
         output, dict_units, dict_measurements)
@@ -488,8 +482,6 @@ def page_function():
     controllers_all = [('Input', input_dev),
                        ('Conditional', conditional),
                        ('Function', function),
-                       ('LCD', lcd),
-                       ('Math', math),
                        ('PID', pid),
                        ('Trigger', trigger)]
     for each_controller in controllers_all:
@@ -555,7 +547,6 @@ def page_function():
                                choices_functions_add=choices_functions_add,
                                choices_input=choices_input,
                                choices_input_devices=choices_input_devices,
-                               choices_math=choices_math,
                                choices_measurements_units=choices_measurements_units,
                                choices_method=choices_method,
                                choices_output=choices_output,
@@ -599,8 +590,6 @@ def page_function():
                                function_dev=function_dev,
                                function_types=FUNCTIONS,
                                input=input_dev,
-                               lcd=lcd,
-                               math=math,
                                method=method,
                                names_function=names_function,
                                output=output,
@@ -629,7 +618,6 @@ def page_function():
                                choices_functions_add=choices_functions_add,
                                choices_input=choices_input,
                                choices_input_devices=choices_input_devices,
-                               choices_math=choices_math,
                                choices_measurements_units=choices_measurements_units,
                                choices_method=choices_method,
                                choices_output=choices_output,
@@ -674,8 +662,6 @@ def page_function():
                                function_dev=function_dev,
                                function_types=FUNCTIONS,
                                input=input_dev,
-                               lcd=lcd,
-                               math=math,
                                method=method,
                                names_function=names_function,
                                output=output,
@@ -704,7 +690,6 @@ def page_function():
                                choices_functions_add=choices_functions_add,
                                choices_input=choices_input,
                                choices_input_devices=choices_input_devices,
-                               choices_math=choices_math,
                                choices_measurements_units=choices_measurements_units,
                                choices_method=choices_method,
                                choices_output=choices_output,
@@ -749,8 +734,6 @@ def page_function():
                                function_dev=function_dev,
                                function_types=FUNCTIONS,
                                input=input_dev,
-                               lcd=lcd,
-                               math=math,
                                method=method,
                                names_function=names_function,
                                output=output,
@@ -779,7 +762,6 @@ def page_function():
                                choices_functions_add=choices_functions_add,
                                choices_input=choices_input,
                                choices_input_devices=choices_input_devices,
-                               choices_math=choices_math,
                                choices_measurements_units=choices_measurements_units,
                                choices_method=choices_method,
                                choices_output=choices_output,
@@ -825,8 +807,6 @@ def page_function():
                                function_dev=function_dev,
                                function_types=FUNCTIONS,
                                input=input_dev,
-                               lcd=lcd,
-                               math=math,
                                method=method,
                                names_function=names_function,
                                output=output,
@@ -854,7 +834,6 @@ def page_function():
                                choices_functions_add=choices_functions_add,
                                choices_input=choices_input,
                                choices_input_devices=choices_input_devices,
-                               choices_math=choices_math,
                                choices_measurements_units=choices_measurements_units,
                                choices_method=choices_method,
                                choices_output=choices_output,
@@ -900,8 +879,6 @@ def page_function():
                                function_dev=function_dev,
                                function_types=FUNCTIONS,
                                input=input_dev,
-                               lcd=lcd,
-                               math=math,
                                method=method,
                                names_function=names_function,
                                output=output,

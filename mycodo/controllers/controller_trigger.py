@@ -28,8 +28,8 @@ import time
 
 from mycodo.config import SQL_DATABASE_MYCODO
 from mycodo.controllers.base_controller import AbstractController
+from mycodo.databases.models import CustomController
 from mycodo.databases.models import Input
-from mycodo.databases.models import Math
 from mycodo.databases.models import Misc
 from mycodo.databases.models import Output
 from mycodo.databases.models import OutputChannel
@@ -339,11 +339,6 @@ class TriggerController(AbstractController, threading.Thread):
 
         device_id = trigger.measurement.split(',')[0]
 
-        # if len(trigger.measurement.split(',')) > 1:
-        #     device_measurement = trigger.measurement.split(',')[1]
-        # else:
-        #     device_measurement = None
-
         device = None
 
         input_dev = db_retrieve_table_daemon(
@@ -351,10 +346,10 @@ class TriggerController(AbstractController, threading.Thread):
         if input_dev:
             device = input_dev
 
-        math = db_retrieve_table_daemon(
-            Math, unique_id=device_id, entry='first')
-        if math:
-            device = math
+        function = db_retrieve_table_daemon(
+            CustomController, unique_id=device_id, entry='first')
+        if function:
+            device = CustomController
 
         output = db_retrieve_table_daemon(
             Output, unique_id=device_id, entry='first')
@@ -367,7 +362,7 @@ class TriggerController(AbstractController, threading.Thread):
             device = pid
 
         if not device:
-            message += " Error: Controller not Input, Math, Output, or PID"
+            message += " Error: Controller not Input, Function, Output, or PID"
             self.logger.error(message)
             return
 

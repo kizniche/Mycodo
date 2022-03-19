@@ -622,8 +622,6 @@ def settings_diagnostic():
             utils_settings.settings_diagnostic_delete_dashboard_elements()
         elif form_settings_diagnostic.delete_inputs.data:
             utils_settings.settings_diagnostic_delete_inputs()
-        elif form_settings_diagnostic.delete_maths.data:
-            utils_settings.settings_diagnostic_delete_maths()
         elif form_settings_diagnostic.delete_notes_tags.data:
             utils_settings.settings_diagnostic_delete_notes_tags()
         elif form_settings_diagnostic.delete_outputs.data:

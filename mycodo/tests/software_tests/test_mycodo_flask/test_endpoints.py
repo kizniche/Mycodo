@@ -84,7 +84,6 @@ def test_routes_when_not_logged_in(testapp):
         'info',
         'input',
         'last/0/0/0/0',
-        'lcd',
         'live',
         'logout',
         'logview',

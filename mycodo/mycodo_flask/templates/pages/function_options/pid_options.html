@@ -56,9 +56,6 @@
           {% for each_input_form in choices_input -%}
             <option value="{{each_input_form['value']}}"{% if each_function.measurement == each_input_form['value'] %} selected{% endif %}>{{each_input_form['item']}}</option>
           {% endfor -%}
-          {% for each_math_form in choices_math -%}
-            <option value="{{each_math_form['value']}}"{% if each_function.measurement == each_math_form['value'] %} selected{% endif %}>{{each_math_form['item']}}</option>
-          {% endfor -%}
           {% for each_function_form in choices_function -%}
             <option value="{{each_function_form['value']}}"{% if each_function.measurement == each_function_form['value'] %} selected{% endif %}>{{each_function_form['item']}}</option>
           {% endfor -%}
@@ -273,7 +270,7 @@
         <select class="form-control form-tooltip form-dropdown" id="setpoint_tracking_type_{{each_function.unique_id}}" name="setpoint_tracking_type" title="" data-original-title="{{dict_translation['setpoint_tracking_type']['phrase']}}">
           <option value="">{{_('Disabled')}}</option>
           <option value="method"{% if each_function.setpoint_tracking_type == 'method' %} selected{% endif %}>{{_('Method')}}</option>
-          <option value="input-math"{% if each_function.setpoint_tracking_type == 'input-math' %} selected{% endif %}>{{_('Input/Math')}}</option>
+          <option value="input-math"{% if each_function.setpoint_tracking_type == 'input-math' %} selected{% endif %}>{{_('Input')}}</option>
         </select>
       </div>
 
@@ -308,9 +305,6 @@
           <option value="">{{_('Select One')}}</option>
           {% for each_input_form in choices_input -%}
             <option value="{{each_input_form['value']}}"{% if each_function.setpoint_tracking_id == each_input_form['value'] %} selected{% endif %}>{{each_input_form['item']}}</option>
-          {% endfor -%}
-          {% for each_math_form in choices_math -%}
-            <option value="{{each_math_form['value']}}"{% if each_function.setpoint_tracking_id == each_math_form['value'] %} selected{% endif %}>{{each_math_form['item']}}</option>
           {% endfor -%}
           {% for each_function_form in choices_function -%}
             <option value="{{each_function_form['value']}}"{% if each_function.setpoint_tracking_id == each_function_form['value'] %} selected{% endif %}>{{each_function_form['item']}}</option>

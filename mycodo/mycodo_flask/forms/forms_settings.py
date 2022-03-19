@@ -398,9 +398,6 @@ class SettingsPi(FlaskForm):
     sample_rate_controller_input = DecimalField(
         lazy_gettext('Input Sample Rate (seconds)'),
         widget=NumberInput(step='any'))
-    sample_rate_controller_math = DecimalField(
-        lazy_gettext('Math Sample Rate (seconds)'),
-        widget=NumberInput(step='any'))
     sample_rate_controller_output = DecimalField(
         lazy_gettext('Output Sample Rate (seconds)'),
         widget=NumberInput(step='any'))
@@ -420,7 +417,6 @@ class SettingsPi(FlaskForm):
 class SettingsDiagnostic(FlaskForm):
     delete_dashboard_elements = SubmitField(lazy_gettext('Delete All Dashboards'))
     delete_inputs = SubmitField(lazy_gettext('Delete All Inputs'))
-    delete_maths = SubmitField(lazy_gettext('Delete All Maths'))
     delete_notes_tags = SubmitField(lazy_gettext('Delete All Notes and Note Tags'))
     delete_outputs = SubmitField(lazy_gettext('Delete All Outputs'))
     delete_settings_database = SubmitField(lazy_gettext('Delete Settings Database'))

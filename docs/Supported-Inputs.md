@@ -55,6 +55,7 @@ This Input will execute a command in the shell and store the output as a float v
 - Manufacturer: Linux
 - Measurements: Store Value(s)
 - Interfaces: Mycodo
+- Dependencies: [pylint](https://pypi.org/project/pylint)
 
 All channels require a Measurement Unit to be selected and saved in order to store values to the database.
 
@@ -93,7 +94,7 @@ All channels require a Measurement Unit to be selected and saved in order to sto
 - Libraries: paho-mqtt, jmespath
 - Dependencies: [paho-mqtt](https://pypi.org/project/paho-mqtt), [jmespath](https://pypi.org/project/jmespath)
 
-A single topic is subscribed to and the returned JSON payload contains one or more key/value pairs. The given JSON Key is used as a JMESPATH expression to find the corresponding value that will be stored for that channel. Be sure you select and save the Measurement Unit for each channel. Once the unit has been saved, you can convert to other units in the Convert Measurement section. Example expressions for jmespath (https://jmespath.org) include <i>temperature</i>, <i>sensors[0].temperature</i>, and <i>bathroom.temperature</i> which refer to the temperature as a direct key within the first entry of sensors or as a subkey of bathroom, respectively. Jmespath elements and keys that contain special characters have to be enclosed in double quotes, e.g. <i>"sensor-1".temperature</i>.
+A single topic is subscribed to and the returned JSON payload contains one or more key/value pairs. The given JSON Key is used as a JMESPATH expression to find the corresponding value that will be stored for that channel. Be sure you select and save the Measurement Unit for each channel. Once the unit has been saved, you can convert to other units in the Convert Measurement section. Example expressions for jmespath (https://jmespath.org) include <i>temperature</i>, <i>sensors[0].temperature</i>, and <i>bathroom.temperature</i> which refer to the temperature as a direct key within the first entry of sensors or as a subkey of bathroom, respectively. Jmespath elements and keys that contain special characters have to be enclosed in double quotes, e.g. <i>"sensor-1".temperature</i>. Warning: If using multiple MQTT Inputs or Functions, ensure the Client IDs are unique.
 
 #### Options
 
@@ -129,7 +130,7 @@ A single topic is subscribed to and the returned JSON payload contains one or mo
 ##### Client ID
 
 - Type: Text
-- Default Value: mycodo_mqtt_client
+- Default Value: client_mdoX3Acp
 - Description: Unique client ID for connecting to the server
 
 ##### Use Login
@@ -173,7 +174,7 @@ A single topic is subscribed to and the returned JSON payload contains one or mo
 - Libraries: paho-mqtt
 - Dependencies: [paho-mqtt](https://pypi.org/project/paho-mqtt)
 
-A topic is subscribed to for each channel Subscription Topic and the returned payload value will be stored for that channel. Be sure you select and save the Measurement Unit for each of the channels. Once the unit has been saved, you can convert to other units in the Convert Measurement section.
+A topic is subscribed to for each channel Subscription Topic and the returned payload value will be stored for that channel. Be sure you select and save the Measurement Unit for each of the channels. Once the unit has been saved, you can convert to other units in the Convert Measurement section. Warning: If using multiple MQTT Inputs or Functions, ensure the Client IDs are unique.
 
 #### Options
 
@@ -203,7 +204,7 @@ A topic is subscribed to for each channel Subscription Topic and the returned pa
 ##### Client ID
 
 - Type: Text
-- Default Value: mycodo_mqtt_client
+- Default Value: client_YsVuUYaK
 - Description: Unique client ID for connecting to the server
 
 ##### Use Login
@@ -355,7 +356,7 @@ This Input receives and stores measurements from the Data Storage Integration on
 - Type: Text
 - Description: The TTN variable name
 
-### Mycodo: TTN Integration: Data Storage (TTN v3)
+### Mycodo: TTN Integration: Data Storage (TTN v3, Payload Key)
 
 - Manufacturer: Mycodo
 - Measurements: Variable measurements
@@ -363,7 +364,7 @@ This Input receives and stores measurements from the Data Storage Integration on
 - Libraries: requests
 - Dependencies: [requests](https://pypi.org/project/requests)
 
-This Input receives and stores measurements from the Data Storage Integration on The Things Network.
+This Input receives and stores measurements from the Data Storage Integration on The Things Network. If you have key/value pairs as your payload, enter the key name in Variable Name and the corresponding value for that key will be stored in the measurement database.
 
 #### Options
 
@@ -424,6 +425,75 @@ This Input receives and stores measurements from the Data Storage Integration on
 - Type: Text
 - Description: The TTN variable name
 
+### Mycodo: TTN Integration: Data Storage (TTN v3, Payload jmespath Expression)
+
+- Manufacturer: Mycodo
+- Measurements: Variable measurements
+- Interfaces: Mycodo
+- Libraries: requests, jmespath
+- Dependencies: [requests](https://pypi.org/project/requests), [jmespath](https://pypi.org/project/jmespath)
+
+This Input receives and stores measurements from the Data Storage Integration on The Things Network. The given Payload jmespath Expression is used as a JMESPATH expression to find the corresponding value that will be stored for that channel. Be sure you select and save the Measurement Unit for each channel. Once the unit has been saved, you can convert to other units in the Convert Measurement section. Example expressions for jmespath (https://jmespath.org) include <i>temperature</i>, <i>sensors[0].temperature</i>, and <i>bathroom.temperature</i> which refer to the temperature as a direct key within the first entry of sensors or as a subkey of bathroom, respectively. Jmespath elements and keys that contain special characters have to be enclosed in double quotes, e.g. <i>"sensor-1".temperature</i>.
+
+#### Options
+
+##### Measurements Enabled
+
+- Type: Multi-Select
+- Description: The measurements to record
+
+##### Period (seconds)
+
+- Type: Decimal
+- Description: The duration (seconds) between measurements or actions
+
+##### Start Offset (seconds)
+
+- Type: Integer
+- Description: The duration (seconds) to wait before the first operation
+
+##### Pre Output
+
+- Type: Select
+- Description: Turn the selected output on before taking every measurement
+
+##### Pre Out Duration
+
+- Type: Decimal
+- Description: If a Pre Output is selected, set the duration (seconds) to turn the Pre Output on for before every measurement is acquired.
+
+##### Pre During Measure
+
+- Type: Boolean
+- Description: Check to turn the output off after (opposed to before) the measurement is complete
+
+##### Application ID
+
+- Type: Text
+- Description: The Things Network Application ID
+
+##### App API Key
+
+- Type: Text
+- Description: The Things Network Application API Key
+
+##### Device ID
+
+- Type: Text
+- Description: The Things Network Device ID
+
+#### Channel Options
+
+##### Name
+
+- Type: Text
+- Description: A name to distinguish this from others
+
+##### Payload jmespath Expression
+
+- Type: Text
+- Description: The TTN jmespath expression to return the value to store
+
 ### Raspberry Pi: CPU/GPU Temperature
 
 - Manufacturer: Raspberry Pi
@@ -443,6 +513,18 @@ The internal CPU and GPU temperature of the Raspberry Pi.
 
 - Type: Decimal
 - Description: The duration (seconds) between measurements or actions
+
+##### Path for CPU Temperature
+
+- Type: Text
+- Default Value: /sys/class/thermal/thermal_zone0/temp
+- Description: Reads the CPU temperature from this file
+
+##### Path to vcgencmd
+
+- Type: Text
+- Default Value: /usr/bin/vcgencmd
+- Description: Reads the GPU from vcgencmd
 
 ### Raspberry Pi: Edge Detection
 
@@ -482,6 +564,8 @@ The internal CPU and GPU temperature of the Raspberry Pi.
 - Interfaces: GPIO
 - Libraries: RPi.GPIO
 - Dependencies: [RPi.GPIO](https://pypi.org/project/RPi.GPIO)
+
+Measures the state of a GPIO pin, returning either 0 (low) or 1 (high).
 
 #### Options
 
@@ -1241,7 +1325,7 @@ This Input executes the bash command "nc -zv [host] [port]" to determine if the 
 - Measurements: Electrical Conductivity
 - Interfaces: UART
 - Libraries: anyleaf
-- Dependencies: [libjpeg-dev](https://packages.debian.org/buster/libjpeg-dev), [zlib1g-dev](https://packages.debian.org/buster/zlib1g-dev), [Pillow](https://pypi.org/project/Pillow), [python3-scipy](https://packages.debian.org/buster/python3-scipy), [pyusb](https://pypi.org/project/pyusb), [Adafruit-extended-bus](https://pypi.org/project/Adafruit-extended-bus), [anyleaf](https://pypi.org/project/anyleaf)
+- Dependencies: [libjpeg-dev](https://packages.debian.org/buster/libjpeg-dev), [zlib1g-dev](https://packages.debian.org/buster/zlib1g-dev), [Pillow](https://pypi.org/project/Pillow), [scipy](https://pypi.org/project/scipy), [pyusb](https://pypi.org/project/pyusb), [Adafruit-extended-bus](https://pypi.org/project/Adafruit-extended-bus), [anyleaf](https://pypi.org/project/anyleaf)
 - Manufacturer URL: [Link](https://www.anyleaf.org/ec-module)
 - Datasheet URL: [Link](https://www.anyleaf.org/static/ec-module-datasheet.pdf)
 
@@ -1269,7 +1353,7 @@ This Input executes the bash command "nc -zv [host] [port]" to determine if the 
 - Measurements: Oxidation Reduction Potential
 - Interfaces: I<sup>2</sup>C
 - Libraries: anyleaf
-- Dependencies: [libjpeg-dev](https://packages.debian.org/buster/libjpeg-dev), [zlib1g-dev](https://packages.debian.org/buster/zlib1g-dev), [Pillow](https://pypi.org/project/Pillow), [python3-scipy](https://packages.debian.org/buster/python3-scipy), [pyusb](https://pypi.org/project/pyusb), [Adafruit-extended-bus](https://pypi.org/project/Adafruit-extended-bus), [anyleaf](https://pypi.org/project/anyleaf)
+- Dependencies: [libjpeg-dev](https://packages.debian.org/buster/libjpeg-dev), [zlib1g-dev](https://packages.debian.org/buster/zlib1g-dev), [Pillow](https://pypi.org/project/Pillow), [scipy](https://pypi.org/project/scipy), [pyusb](https://pypi.org/project/pyusb), [Adafruit-extended-bus](https://pypi.org/project/Adafruit-extended-bus), [anyleaf](https://pypi.org/project/anyleaf)
 - Manufacturer URL: [Link](https://anyleaf.org/ph-module)
 - Datasheet URL: [Link](https://anyleaf.org/static/ph-module-datasheet.pdf)
 
@@ -1302,7 +1386,7 @@ This Input executes the bash command "nc -zv [host] [port]" to determine if the 
 - Default Value: 400.0
 - Description: Calibration data: internal ORP
 
-#### Actions
+#### Commands
 
 ##### Calibrate: Buffer ORP (mV)
 
@@ -1322,7 +1406,7 @@ This Input executes the bash command "nc -zv [host] [port]" to determine if the 
 - Measurements: Ion concentration
 - Interfaces: I<sup>2</sup>C
 - Libraries: anyleaf
-- Dependencies: [libjpeg-dev](https://packages.debian.org/buster/libjpeg-dev), [zlib1g-dev](https://packages.debian.org/buster/zlib1g-dev), [Pillow](https://pypi.org/project/Pillow), [python3-scipy](https://packages.debian.org/buster/python3-scipy), [pyusb](https://pypi.org/project/pyusb), [Adafruit-extended-bus](https://pypi.org/project/Adafruit-extended-bus), [anyleaf](https://pypi.org/project/anyleaf)
+- Dependencies: [libjpeg-dev](https://packages.debian.org/buster/libjpeg-dev), [zlib1g-dev](https://packages.debian.org/buster/zlib1g-dev), [Pillow](https://pypi.org/project/Pillow), [scipy](https://pypi.org/project/scipy), [pyusb](https://pypi.org/project/pyusb), [Adafruit-extended-bus](https://pypi.org/project/Adafruit-extended-bus), [anyleaf](https://pypi.org/project/anyleaf)
 - Manufacturer URL: [Link](https://anyleaf.org/ph-module)
 - Datasheet URL: [Link](https://anyleaf.org/static/ph-module-datasheet.pdf)
 
@@ -1346,7 +1430,7 @@ This Input executes the bash command "nc -zv [host] [port]" to determine if the 
 ##### Temperature Compensation: Measurement
 
 - Type: Select Measurement
-- Selections: Input, Function, Math, 
+- Selections: Input, Function
 - Description: Select a measurement for temperature compensation
 
 ##### Temperature Compensation: Max Age
@@ -1405,7 +1489,7 @@ This Input executes the bash command "nc -zv [host] [port]" to determine if the 
 - Type: Decimal
 - Description: Calibration data: Temperature
 
-#### Actions
+#### Commands
 
 ##### Calibration buffer pH
 
@@ -1477,7 +1561,26 @@ This Input executes the bash command "nc -zv [host] [port]" to determine if the 
 - Type: Boolean
 - Description: Check to turn the output off after (opposed to before) the measurement is complete
 
-#### Actions
+#### Commands
+
+##### A one- or two-point calibration can be performed. After exposing the probe to a concentration of CO2 between 3,000 and 5,000 ppmv until readings stabilize, press Calibrate (High). You can place the probe in a 0 CO2 environment until readings stabilize, then press Calibrate (Zero). You can also clear the currently-saved calibration by pressing Clear Calibration, returning to the factory-set calibration. Status messages will be set to the Daemon Log, accessible from Config -> Mycodo Logs -> Daemon Log.
+
+##### High Point CO2
+
+- Type: Integer
+- Default Value: 3000
+- Description: The high CO2 calibration point (3000 - 5000 ppmv)
+
+##### Calibrate (High)
+
+- Type: Button
+##### Calibrate (Zero)
+
+- Type: Button
+##### Clear Calibration
+
+- Type: Button
+##### The I2C address can be changed. Enter a new address in the 0xYY format (e.g. 0x22, 0x50), then press Set I2C Address. Remember to deactivate and change the I2C address option after setting the new address.
 
 ##### New I2C Address
 
@@ -1563,7 +1666,7 @@ This Input executes the bash command "nc -zv [host] [port]" to determine if the 
 - Default Value: 1.0
 - Description: Gamma correction between 0.01 and 4.99 (default is 1.0)
 
-#### Actions
+#### Commands
 
 ##### The EZO-RGB color sensor is designed to be calibrated to a white object at the maximum brightness the object will be viewed under. In order to get the best results, Atlas Scientific strongly recommends that the sensor is mounted into a fixed location. Holding the sensor in your hand during calibration will decrease performance.<br>1. Embed the EZO-RGB color sensor into its intended use location.<br>2. Set LED brightness to the desired level.<br>3. Place a white object in front of the target object and press the Calibration button.<br>4. A single color reading will be taken and the device will be fully calibrated.
 
@@ -1636,7 +1739,7 @@ This Input executes the bash command "nc -zv [host] [port]" to determine if the 
 ##### Temperature Compensation: Measurement
 
 - Type: Select Measurement
-- Selections: Input, Function, Math, 
+- Selections: Input, Function
 - Description: Select a measurement for temperature compensation
 
 ##### Temperature Compensation: Max Age
@@ -1645,9 +1748,9 @@ This Input executes the bash command "nc -zv [host] [port]" to determine if the 
 - Default Value: 120
 - Description: The maximum age (seconds) of the measurement to use
 
-#### Actions
+#### Commands
 
-##### A one- or two-point calibration can be performed. After exposing the probe to air for 30 seconds until readings stabilize, press Calibrate (Air). If you require accuracy below 1.0 mg/L, you can place the probe in a 0 mg/L solution for 30 to 90 seconds until readings stabilize, then press Calibrate (0 mg/L). You can also clear the currently-saved calibration by pressing Clear Calibration.
+##### A one- or two-point calibration can be performed. After exposing the probe to air for 30 seconds until readings stabilize, press Calibrate (Air). If you require accuracy below 1.0 mg/L, you can place the probe in a 0 mg/L solution for 30 to 90 seconds until readings stabilize, then press Calibrate (0 mg/L). You can also clear the currently-saved calibration by pressing Clear Calibration. Status messages will be set to the Daemon Log, accessible from Config -> Mycodo Logs -> Daemon Log.
 
 ##### Calibrate (Air)
 
@@ -1729,7 +1832,7 @@ This Input executes the bash command "nc -zv [host] [port]" to determine if the 
 ##### Temperature Compensation: Measurement
 
 - Type: Select Measurement
-- Selections: Input, Function, Math, 
+- Selections: Input, Function
 - Description: Select a measurement for temperature compensation
 
 ##### Temperature Compensation: Max Age
@@ -1738,9 +1841,9 @@ This Input executes the bash command "nc -zv [host] [port]" to determine if the 
 - Default Value: 120
 - Description: The maximum age (seconds) of the measurement to use
 
-#### Actions
+#### Commands
 
-##### Calibration: a one- or two-point calibration can be performed. It's a good idea to clear the calibration before calibrating. Always perform a dry calibration with the probe in the air (not in any fluid). Then perform either a one- or two-point calibration with calibrated solutions. If performing a one-point calibration, use the Single Point Calibration field and button. If performing a two-point calibration, use the Low and High Point Calibration fields and buttons. Allow a minute or two after submerging your probe in a calibration solution for the measurements to equilibrate before calibrating to that solution. The EZO EC circuit default temperature compensation is set to 25 °C. If the temperature of the calibration solution is +/- 2 °C from 25 °C, consider setting the temperature compensation first. Note that at no point should you change the temperature compensation value during calibration. Therefore, if you have previously enabled temperature compensation, allow at least one measurement to occur (to set the compensation value), then disable the temperature compensation measurement while you calibrate.
+##### Calibration: a one- or two-point calibration can be performed. It's a good idea to clear the calibration before calibrating. Always perform a dry calibration with the probe in the air (not in any fluid). Then perform either a one- or two-point calibration with calibrated solutions. If performing a one-point calibration, use the Single Point Calibration field and button. If performing a two-point calibration, use the Low and High Point Calibration fields and buttons. Allow a minute or two after submerging your probe in a calibration solution for the measurements to equilibrate before calibrating to that solution. The EZO EC circuit default temperature compensation is set to 25 °C. If the temperature of the calibration solution is +/- 2 °C from 25 °C, consider setting the temperature compensation first. Note that at no point should you change the temperature compensation value during calibration. Therefore, if you have previously enabled temperature compensation, allow at least one measurement to occur (to set the compensation value), then disable the temperature compensation measurement while you calibrate. Status messages will be set to the Daemon Log, accessible from Config -> Mycodo Logs -> Daemon Log.
 
 ##### Clear Calibration
 
@@ -1874,9 +1977,9 @@ Set the Measurement Time Base to a value most appropriate for your anticipated f
 - Options: \[**Use Atlas Scientific Flow Meter** | Liters per Second | Liters per Minute | Liters per Hour\] (Default in **bold**)
 - Description: If using a non-Atlas Scientific flow meter, set the flow rate/time base for the custom K values entered.
 
-#### Actions
+#### Commands
 
-##### The total volume can be cleared with the following button or with a Function Action.
+##### The total volume can be cleared with the following button or with the Clear Total Volume Function Action.
 
 ##### Clear Total Volume
 
@@ -1955,7 +2058,7 @@ Set the Measurement Time Base to a value most appropriate for your anticipated f
 - Options: \[**Always On** | Always Off | Only On During Measure\] (Default in **bold**)
 - Description: When to turn the LED on
 
-#### Actions
+#### Commands
 
 ##### New I2C Address
 
@@ -2021,7 +2124,7 @@ Set the Measurement Time Base to a value most appropriate for your anticipated f
 ##### Temperature Compensation: Measurement
 
 - Type: Select Measurement
-- Selections: Input, Function, Math, 
+- Selections: Input, Function
 - Description: Select a measurement for temperature compensation
 
 ##### Temperature Compensation: Max Age
@@ -2030,9 +2133,9 @@ Set the Measurement Time Base to a value most appropriate for your anticipated f
 - Default Value: 120
 - Description: The maximum age (seconds) of the measurement to use
 
-#### Actions
+#### Commands
 
-##### A one-point calibration can be performed. Enter the solution's mV, set the probe in the solution, then press Calibrate. You can also clear the currently-saved calibration by pressing Clear Calibration.
+##### A one-point calibration can be performed. Enter the solution's mV, set the probe in the solution, then press Calibrate. You can also clear the currently-saved calibration by pressing Clear Calibration. Status messages will be set to the Daemon Log, accessible from Config -> Mycodo Logs -> Daemon Log.
 
 ##### Calibration Solution mV
 
@@ -2109,7 +2212,7 @@ Set the Measurement Time Base to a value most appropriate for your anticipated f
 - Type: Boolean
 - Description: Check to turn the output off after (opposed to before) the measurement is complete
 
-#### Actions
+#### Commands
 
 ##### New I2C Address
 
@@ -2178,7 +2281,7 @@ Set the Measurement Time Base to a value most appropriate for your anticipated f
 - Options: \[**Always On** | Always Off | Only On During Measure\] (Default in **bold**)
 - Description: When to turn the LED on
 
-#### Actions
+#### Commands
 
 ##### New I2C Address
 
@@ -2246,7 +2349,7 @@ Calibration Measurement is an optional setting that provides a temperature measu
 ##### Temperature Compensation: Measurement
 
 - Type: Select Measurement
-- Selections: Input, Function, Math, 
+- Selections: Input, Function
 - Description: Select a measurement for temperature compensation
 
 ##### Temperature Compensation: Max Age
@@ -2255,9 +2358,9 @@ Calibration Measurement is an optional setting that provides a temperature measu
 - Default Value: 120
 - Description: The maximum age (seconds) of the measurement to use
 
-#### Actions
+#### Commands
 
-##### Calibration: a one-, two- or three-point calibration can be performed. It's a good idea to clear the calibration before calibrating. The first calibration must be the Mid point. The second must be the Low point. And the third must be the High point. You can perform a one-, two- or three-point calibration, but they must be performed in this order. Allow a minute or two after submerging your probe in a calibration solution for the measurements to equilibrate before calibrating to that solution. The EZO pH circuit default temperature compensation is set to 25 °C. If the temperature of the calibration solution is +/- 2 °C from 25 °C, consider setting the temperature compensation first. Note that if you have a Temperature Compensation Measurement selected from the Options, this will overwrite the manual Temperature Compensation set here, so be sure to disable this option if you would like to specify the temperature to compensate with.
+##### Calibration: a one-, two- or three-point calibration can be performed. It's a good idea to clear the calibration before calibrating. The first calibration must be the Mid point. The second must be the Low point. And the third must be the High point. You can perform a one-, two- or three-point calibration, but they must be performed in this order. Allow a minute or two after submerging your probe in a calibration solution for the measurements to equilibrate before calibrating to that solution. The EZO pH circuit default temperature compensation is set to 25 °C. If the temperature of the calibration solution is +/- 2 °C from 25 °C, consider setting the temperature compensation first. Note that if you have a Temperature Compensation Measurement selected from the Options, this will overwrite the manual Temperature Compensation set here, so be sure to disable this option if you would like to specify the temperature to compensate with. Status messages will be set to the Daemon Log, accessible from Config -> Mycodo Logs -> Daemon Log.
 
 ##### Compensation Temperature (°C)
 
@@ -2296,6 +2399,19 @@ Calibration Measurement is an optional setting that provides a temperature measu
 - Description: The pH of the high point calibration solution
 
 ##### Calibrate High
+
+- Type: Button
+##### Calibration Export/Import: Export calibration to a series of strings. These can later be imported to restore the calibration. Watch the Daemon Log for the output.
+
+##### Export Calibration
+
+- Type: Button
+##### Calibration String
+
+- Type: Text
+- Description: The calibration string to import
+
+##### Import Calibration
 
 - Type: Button
 ##### The I2C address can be changed. Enter a new address in the 0xYY format (e.g. 0x22, 0x50), then press Set I2C Address. Remember to deactivate and change the I2C address option after setting the new address.
@@ -2930,7 +3046,7 @@ This is similar to the other BMP280 Input, except it uses a different library, w
 - Default Value: 1.0
 - Description: Enter the conversion factor for this meter (pulses to Liter).
 
-#### Actions
+#### Commands
 
 ##### Clear Total Volume
 
@@ -2941,7 +3057,7 @@ This is similar to the other BMP280 Input, except it uses a different library, w
 - Measurements: Pressure/Temperature
 - Interfaces: I<sup>2</sup>C
 - Libraries: Adafruit-CircuitPython-DPS310
-- Dependencies: [adafruit-extended-bus](https://pypi.org/project/adafruit-extended-bus), [adafruit-circuitpython-dps310](https://pypi.org/project/adafruit-circuitpython-dps310)
+- Dependencies: [Adafruit-extended-bus](https://pypi.org/project/Adafruit-extended-bus), [adafruit-circuitpython-dps310](https://pypi.org/project/adafruit-circuitpython-dps310)
 - Manufacturer URL: [Link](https://www.infineon.com/cms/en/product/sensor/pressure-sensors/pressure-sensors-for-iot/dps310/)
 - Datasheet URL: [Link](https://www.infineon.com/dgdl/Infineon-DPS310-DataSheet-v01_02-EN.pdf?fileId=5546d462576f34750157750826c42242)
 - Product URLs: [Link 1](https://www.adafruit.com/product/4494), [Link 2](https://shop.pimoroni.com/products/adafruit-dps310-precision-barometric-pressure-altitude-sensor-stemma-qt-qwiic), [Link 3](https://www.berrybase.de/sensoren-module/luftdruck-wasserdruck/adafruit-dps310-pr-228-zisions-barometrischer-druck-und-h-246-hen-sensor)
@@ -3010,7 +3126,7 @@ This is similar to the other BMP280 Input, except it uses a different library, w
 - Type: Boolean
 - Description: Check to turn the output off after (opposed to before) the measurement is complete
 
-#### Actions
+#### Commands
 
 ##### Set the resolution, precision, and response time for the sensor. This setting will be written to the EEPROM to allow persistence after power loss. The EEPROM has a limited amount of writes (>50k).
 
@@ -3054,7 +3170,7 @@ This is similar to the other BMP280 Input, except it uses a different library, w
 - Type: Boolean
 - Description: Check to turn the output off after (opposed to before) the measurement is complete
 
-#### Actions
+#### Commands
 
 ##### Set the resolution, precision, and response time for the sensor. This setting will be written to the EEPROM to allow persistence after power loss. The EEPROM has a limited amount of writes (>50k).
 
@@ -3138,7 +3254,7 @@ Warning: Counterfeit DS18B20 sensors are common and can cause a host of issues. 
 - Type: Boolean
 - Description: Check to turn the output off after (opposed to before) the measurement is complete
 
-#### Actions
+#### Commands
 
 ##### Set the resolution, precision, and response time for the sensor. This setting will be written to the EEPROM to allow persistence after power loss. The EEPROM has a limited amount of writes (>50k).
 
@@ -3182,7 +3298,7 @@ Warning: Counterfeit DS18B20 sensors are common and can cause a host of issues. 
 - Type: Boolean
 - Description: Check to turn the output off after (opposed to before) the measurement is complete
 
-#### Actions
+#### Commands
 
 ##### Set the resolution, precision, and response time for the sensor. This setting will be written to the EEPROM to allow persistence after power loss. The EEPROM has a limited amount of writes (>50k).
 
@@ -3226,7 +3342,7 @@ Warning: Counterfeit DS18B20 sensors are common and can cause a host of issues. 
 - Type: Boolean
 - Description: Check to turn the output off after (opposed to before) the measurement is complete
 
-#### Actions
+#### Commands
 
 ##### Set the resolution, precision, and response time for the sensor. This setting will be written to the EEPROM to allow persistence after power loss. The EEPROM has a limited amount of writes (>50k).
 
@@ -3271,7 +3387,7 @@ Warning: Counterfeit DS18B20 sensors are common and can cause a host of issues. 
 - Type: Boolean
 - Description: Check to turn the output off after (opposed to before) the measurement is complete
 
-#### Actions
+#### Commands
 
 ##### Set the resolution, precision, and response time for the sensor. This setting will be written to the EEPROM to allow persistence after power loss. The EEPROM has a limited amount of writes (>50k).
 
@@ -3462,7 +3578,7 @@ Note: This module does not allow for multiple sensors to be connected at the sam
 - Measurements: Magnetic Flux
 - Interfaces: I<sup>2</sup>C
 - Libraries: Adafruit-CircuitPython-MLX90393
-- Dependencies: [adafruit-extended-bus](https://pypi.org/project/adafruit-extended-bus), [adafruit-circuitpython-mlx90393](https://pypi.org/project/adafruit-circuitpython-mlx90393)
+- Dependencies: [Adafruit-extended-bus](https://pypi.org/project/Adafruit-extended-bus), [adafruit-circuitpython-mlx90393](https://pypi.org/project/adafruit-circuitpython-mlx90393)
 - Manufacturer URL: [Link](https://www.melexis.com/en/product/MLX90393/Triaxis-Micropower-Magnetometer)
 - Datasheet URL: [Link](https://cdn-learn.adafruit.com/assets/assets/000/069/600/original/MLX90393-Datasheet-Melexis.pdf)
 - Product URLs: [Link 1](https://www.adafruit.com/product/4022), [Link 2](https://shop.pimoroni.com/products/adafruit-wide-range-triple-axis-magnetometer-mlx90393), [Link 3](https://www.berrybase.de/sensoren-module/bewegung-distanz/adafruit-wide-range-drei-achsen-magnetometer-mlx90393)
@@ -3861,7 +3977,7 @@ This module acquires measurements from the Raspberry Pi Sense HAT sensors, which
 - Measurements: Acceleration/Humidity/Pressure/Temperature
 - Interfaces: BT
 - Libraries: ruuvitag_sensor
-- Dependencies: [python3-dev](https://packages.debian.org/buster/python3-dev), [python3-psutil](https://packages.debian.org/buster/python3-psutil), [bluez](https://packages.debian.org/buster/bluez), [bluez-hcidump](https://packages.debian.org/buster/bluez-hcidump), [ruuvitag-sensor](https://pypi.org/project/ruuvitag-sensor)
+- Dependencies: [psutil](https://pypi.org/project/psutil), [bluez](https://packages.debian.org/buster/bluez), [bluez-hcidump](https://packages.debian.org/buster/bluez-hcidump), [ruuvitag-sensor](https://pypi.org/project/ruuvitag-sensor)
 - Manufacturer URL: [Link](https://ruuvi.com/)
 - Datasheet URL: [Link](https://ruuvi.com/files/ruuvitag-tech-spec-2019-7.pdf)
 
@@ -3956,7 +4072,7 @@ This module acquires measurements from the Raspberry Pi Sense HAT sensors, which
 - Options: \[**Good Accuracy (33 ms, 1.2 m range)** | Better Accuracy (66 ms, 1.2 m range) | Best Accuracy (200 ms, 1.2 m range) | Long Range (33 ms, 2 m) | High Speed, Low Accuracy (20 ms, 1.2 m)\] (Default in **bold**)
 - Description: Set the accuracy. A longer measurement duration yields a more accurate measurement
 
-#### Actions
+#### Commands
 
 ##### New I2C Address
 
@@ -4085,6 +4201,11 @@ Enter the Grove Pi+ GPIO pin connected to the sensor and select the sensor type.
 - Type: Integer
 - Description: The I2C bus the device is connected to
 
+##### Measurements Enabled
+
+- Type: Multi-Select
+- Description: The measurements to record
+
 ##### Period (seconds)
 
 - Type: Decimal
@@ -4105,6 +4226,41 @@ Enter the Grove Pi+ GPIO pin connected to the sensor and select the sensor type.
 - Type: Boolean
 - Description: Check to turn the output off after (opposed to before) the measurement is complete
 
+##### Temperature Offset
+
+- Type: Decimal
+- Default Value: 4.0
+- Description: Set the sensor temperature offset
+
+##### Altitude (m)
+
+- Type: Integer
+- Description: Set the sensor altitude (meters)
+
+##### Automatic Self-Calibration
+
+- Type: Boolean
+- Description: Set the sensor automatic self-calibration
+
+##### Persist Settings
+
+- Type: Boolean
+- Default Value: True
+- Description: Settings will persist after powering off
+
+#### Commands
+
+##### You can force the CO2 calibration for a specific CO2 concentration value (in ppmv).
+
+##### CO2 Concentration (ppmv)
+
+- Type: Decimal
+- Default Value: 400.0
+- Description: Calibrate to this CO2 concentration that the sensor is being exposed to (in ppmv)
+
+##### Calibrate CO2
+
+- Type: Button
 ### Sensirion: SCD30
 
 - Manufacturer: Sensirion
@@ -4128,6 +4284,11 @@ Enter the Grove Pi+ GPIO pin connected to the sensor and select the sensor type.
 - Type: Integer
 - Description: The I2C bus the device is connected to
 
+##### Measurements Enabled
+
+- Type: Multi-Select
+- Description: The measurements to record
+
 ##### Period (seconds)
 
 - Type: Decimal
@@ -4148,6 +4309,52 @@ Enter the Grove Pi+ GPIO pin connected to the sensor and select the sensor type.
 - Type: Boolean
 - Description: Check to turn the output off after (opposed to before) the measurement is complete
 
+##### I2C Frequency: The SCD-30 has temperamental I2C with clock stretching. The datasheet recommends starting at 50,000 Hz.
+
+##### I2C Frequency (Hz)
+
+- Type: Integer
+- Default Value: 50000
+##### Automatic Self Ccalibration (ASC): To work correctly, the sensor must be on and active for 7 days after enabling ASC, and exposed to fresh air for at least 1 hour per day. Consult the manufacturer’s documentation for more information.
+
+##### Enable Automatic Self Calibration
+
+- Type: Boolean
+##### Temperature Offset: Specifies the offset to be added to the reported measurements to account for a bias in the measured signal. Value is in degrees Celsius with a resolution of 0.01 degrees and a maximum value of 655.35 C.
+
+##### Temperature Offset
+
+- Type: Decimal
+##### Ambient Air Pressure (mBar): Specify the ambient air pressure at the measurement location in mBar. Setting this value adjusts the CO2 measurement calculations to account for the air pressure’s effect on readings. Values must be in mBar, from 700 to 1200 mBar.
+
+##### Ambient Air Pressure (mBar)
+
+- Type: Integer
+- Default Value: 1200
+##### Altitude: Specifies the altitude at the measurement location in meters above sea level. Setting this value adjusts the CO2 measurement calculations to account for the air pressure’s effect on readings.
+
+##### Altitude (m)
+
+- Type: Integer
+- Default Value: 100
+#### Commands
+
+##### A soft reset restores factory default values.
+
+##### Soft Reset
+
+- Type: Button
+##### Forced Re-Calibration: The SCD-30 is placed in an environment with a known CO2 concentration, this concentration value is entered in the CO2 Concentration (ppmv) field, then the Foce Calibration button is pressed. But how do you come up with that known value? That is a caveat of this approach and Sensirion suggests three approaches: 1. Using a separate secondary calibrated CO2 sensor to provide the value. 2. Exposing the SCD-30 to a controlled environment with a known value. 3. Exposing the SCD-30 to fresh outside air and using a value of 400 ppm.
+
+##### CO2 Concentration (ppmv)
+
+- Type: Integer
+- Default Value: 800
+- Description: The CO2 concentration of the sensor environment when forcing calibration
+
+##### Force Recalibration
+
+- Type: Button
 ### Sensirion: SCD30
 
 - Manufacturer: Sensirion
@@ -4171,6 +4378,11 @@ Enter the Grove Pi+ GPIO pin connected to the sensor and select the sensor type.
 - Type: Integer
 - Description: The I2C bus the device is connected to
 
+##### Measurements Enabled
+
+- Type: Multi-Select
+- Description: The measurements to record
+
 ##### Period (seconds)
 
 - Type: Decimal
@@ -4191,6 +4403,18 @@ Enter the Grove Pi+ GPIO pin connected to the sensor and select the sensor type.
 - Type: Boolean
 - Description: Check to turn the output off after (opposed to before) the measurement is complete
 
+##### Automatic Self Ccalibration (ASC): To work correctly, the sensor must be on and active for 7 days after enabling ASC, and exposed to fresh air for at least 1 hour per day. Consult the manufacturer’s documentation for more information.
+
+##### Enable Automatic Self Calibration
+
+- Type: Boolean
+#### Commands
+
+##### A soft reset restores factory default values.
+
+##### Soft Reset
+
+- Type: Button
 ### Sensirion: SHT1x/7x
 
 - Manufacturer: Sensirion
@@ -4653,6 +4877,55 @@ Enter the Grove Pi+ GPIO pin connected to the sensor and select the sensor type.
 - Type: Boolean
 - Description: Check to turn the output off after (opposed to before) the measurement is complete
 
+### Sonoff: TH16/10 (Tasmota firmware) with AM2301/Si7021
+
+- Manufacturer: Sonoff
+- Measurements: Humidity/Temperature
+- Libraries: requests
+- Dependencies: [requests](https://pypi.org/project/requests)
+- Manufacturer URL: [Link](https://sonoff.tech/product/wifi-diy-smart-switches/th10-th16)
+
+This Input module allows the use of any temperature/huidity sensor with the TH10/TH16. Changing the Sensor Name option changes the key that's queried from the returned dictionary of measurements. If you would like to use this module with a version of this device that uses the AM2301, change Sensor Name to AM2301.
+
+#### Options
+
+##### Measurements Enabled
+
+- Type: Multi-Select
+- Description: The measurements to record
+
+##### Period (seconds)
+
+- Type: Decimal
+- Description: The duration (seconds) between measurements or actions
+
+##### Pre Output
+
+- Type: Select
+- Description: Turn the selected output on before taking every measurement
+
+##### Pre Out Duration
+
+- Type: Decimal
+- Description: If a Pre Output is selected, set the duration (seconds) to turn the Pre Output on for before every measurement is acquired.
+
+##### Pre During Measure
+
+- Type: Boolean
+- Description: Check to turn the output off after (opposed to before) the measurement is complete
+
+##### IP Address
+
+- Type: Text
+- Default Value: 192.168.0.100
+- Description: The IP address of the device
+
+##### Sensor Name
+
+- Type: Text
+- Default Value: SI7021
+- Description: The name of the sensor connected to the device (specific key name in the returned dictionary)
+
 ### Sonoff: TH16/10 (Tasmota firmware) with AM2301
 
 - Manufacturer: Sonoff
@@ -4741,7 +5014,7 @@ Enter the Grove Pi+ GPIO pin connected to the sensor and select the sensor type.
 - Measurements: Humidity/Temperature
 - Interfaces: I<sup>2</sup>C
 - Libraries: Adafruit-CircuitPython-HTU21D
-- Dependencies: [adafruit-extended-bus](https://pypi.org/project/adafruit-extended-bus), [adafruit-circuitpython-HTU21D](https://pypi.org/project/adafruit-circuitpython-HTU21D)
+- Dependencies: [Adafruit-extended-bus](https://pypi.org/project/Adafruit-extended-bus), [adafruit-circuitpython-HTU21D](https://pypi.org/project/adafruit-circuitpython-HTU21D)
 - Manufacturer URL: [Link](https://www.te.com/usa-en/product-CAT-HSC0004.html)
 - Datasheet URL: [Link](https://www.te.com/commerce/DocumentDelivery/DDEController?Action=showdoc&DocId=Data+Sheet%7FHPC199_6%7FA6%7Fpdf%7FEnglish%7FENG_DS_HPC199_6_A6.pdf%7FCAT-HSC0004)
 - Product URL: [Link](https://www.adafruit.com/product/1899)
@@ -4881,7 +5154,7 @@ This input queries the energy usage information from a WiFi outlet that is runni
 - Measurements: Voltage (Analog-to-Digital Converter)
 - Interfaces: I<sup>2</sup>C
 - Libraries: Adafruit_CircuitPython
-- Dependencies: [pyusb](https://pypi.org/project/pyusb), [Adafruit-extended-bus](https://pypi.org/project/Adafruit-extended-bus), [Adafruit_CircuitPython_ADS1x15](https://pypi.org/project/Adafruit_CircuitPython_ADS1x15)
+- Dependencies: [pyusb](https://pypi.org/project/pyusb), [Adafruit-extended-bus](https://pypi.org/project/Adafruit-extended-bus), [adafruit-circuitpython-ads1x15](https://pypi.org/project/adafruit-circuitpython-ads1x15)
 
 #### Options
 
@@ -4932,7 +5205,7 @@ This input queries the energy usage information from a WiFi outlet that is runni
 - Measurements: Ion Concentration/Electrical Conductivity
 - Interfaces: I<sup>2</sup>C
 - Libraries: Adafruit_CircuitPython_ADS1x15
-- Dependencies: [pyusb](https://pypi.org/project/pyusb), [Adafruit-extended-bus](https://pypi.org/project/Adafruit-extended-bus), [Adafruit_CircuitPython_ADS1x15](https://pypi.org/project/Adafruit_CircuitPython_ADS1x15)
+- Dependencies: [pyusb](https://pypi.org/project/pyusb), [Adafruit-extended-bus](https://pypi.org/project/Adafruit-extended-bus), [adafruit-circuitpython-ads1x15](https://pypi.org/project/adafruit-circuitpython-ads1x15)
 
 This input relies on an ADS1115 analog-to-digital converter (ADC) to measure pH and/or electrical conductivity (EC) from analog sensors. You can enable or disable either measurement if you want to only connect a pH sensor or an EC sensor by selecting which measurements you want to under Measurements Enabled. Select which channel each sensor is connected to on the ADC. There are default calibration values initially set for the Input. There are also functions to allow you to easily calibrate your sensors with calibration solutions. If you use the Calibrate Slot actions, these values will be calculated and will replace the currently-set values. You can use the Clear Calibration action to delete the database values and return to using the default values. If you delete the Input or create a new Input to use your ADC/sensors with, you will need to recalibrate in order to store new calibration data.
 
@@ -4990,7 +5263,7 @@ This input relies on an ADS1115 analog-to-digital converter (ADC) to measure pH 
 ##### Temperature Compensation: Measurement
 
 - Type: Select Measurement
-- Selections: Input, Function, Math, 
+- Selections: Input, Function
 - Description: Select a measurement for temperature compensation
 
 ##### Temperature Compensation: Max Age
@@ -5075,7 +5348,7 @@ This input relies on an ADS1115 analog-to-digital converter (ADC) to measure pH 
 - Default Value: 25.0
 - Description: EC calibration data: EC
 
-#### Actions
+#### Commands
 
 ##### pH Calibration Actions: Place your probe in a solution of known pH.
             Set the known pH value in the "Calibration buffer pH" field, and press "Calibrate pH, slot 1".
@@ -5114,7 +5387,7 @@ This input relies on an ADS1115 analog-to-digital converter (ADC) to measure pH 
 ##### Calibrate EC, slot 2
 
 - Type: Button
-##### Clear pH Calibration Slots
+##### Clear EC Calibration Slots
 
 - Type: Button
 ### Texas Instruments: ADS1115
@@ -5123,7 +5396,7 @@ This input relies on an ADS1115 analog-to-digital converter (ADC) to measure pH 
 - Measurements: Voltage (Analog-to-Digital Converter)
 - Interfaces: I<sup>2</sup>C
 - Libraries: Adafruit_CircuitPython_ADS1x15
-- Dependencies: [pyusb](https://pypi.org/project/pyusb), [Adafruit-extended-bus](https://pypi.org/project/Adafruit-extended-bus), [Adafruit_CircuitPython_ADS1x15](https://pypi.org/project/Adafruit_CircuitPython_ADS1x15)
+- Dependencies: [pyusb](https://pypi.org/project/pyusb), [Adafruit-extended-bus](https://pypi.org/project/Adafruit-extended-bus), [adafruit-circuitpython-ads1x15](https://pypi.org/project/adafruit-circuitpython-ads1x15)
 
 #### Options
 
@@ -5222,7 +5495,7 @@ This input relies on an ADS1256 analog-to-digital converter (ADC) to measure pH 
 ##### Temperature Compensation: Measurement
 
 - Type: Select Measurement
-- Selections: Input, Function, Math, 
+- Selections: Input, Function
 - Description: Select a measurement for temperature compensation
 
 ##### Temperature Compensation: Max Age
@@ -5312,7 +5585,7 @@ This input relies on an ADS1256 analog-to-digital converter (ADC) to measure pH 
 - Type: Select
 - Description: Set the calibration method to perform during Input activation
 
-#### Actions
+#### Commands
 
 ##### pH Calibration Actions: Place your probe in a solution of known pH.
             Set the known pH value in the `Calibration buffer pH` field, and press `Calibrate pH, slot 1`.
@@ -5812,7 +6085,7 @@ This is the version of the sensor that does not include the ability to conduct a
 - Options: \[0 - 1000 ppmv | 0 - 2000 ppmv | 0 - 3000 ppmv | **0 - 5000 ppmv**\] (Default in **bold**)
 - Description: Set the measuring range of the sensor
 
-#### Actions
+#### Commands
 
 ##### Calibrate Zero Point
 
@@ -5820,7 +6093,7 @@ This is the version of the sensor that does not include the ability to conduct a
 ##### Span Point (ppmv)
 
 - Type: Integer
-- Default Value: 1500
+- Default Value: 2000
 - Description: The ppmv concentration for a span point calibration
 
 ##### Calibrate Span Point
@@ -5875,7 +6148,7 @@ This is the B version of the sensor that includes the ability to conduct automat
 - Options: \[0 - 1000 ppmv | 0 - 2000 ppmv | 0 - 3000 ppmv | **0 - 5000 ppmv** | 0 - 10000 ppmv\] (Default in **bold**)
 - Description: Set the measuring range of the sensor
 
-#### Actions
+#### Commands
 
 ##### Calibrate Zero Point
 
@@ -5883,7 +6156,7 @@ This is the B version of the sensor that includes the ability to conduct automat
 ##### Span Point (ppmv)
 
 - Type: Integer
-- Default Value: 1500
+- Default Value: 2000
 - Description: The ppmv concentration for a span point calibration
 
 ##### Calibrate Span Point

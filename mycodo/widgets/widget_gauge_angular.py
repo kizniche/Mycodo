@@ -147,7 +147,6 @@ WIDGET_INFORMATION = {
             'default_value': '',
             'options_select': [
                 'Input',
-                'Math',
                 'Function',
                 'PID'
             ],

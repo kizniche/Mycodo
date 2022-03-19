@@ -218,7 +218,7 @@ The Autotune function is a standalone controller that is useful for determining 
 <tbody>
 <tr>
 <td>Measurement</td>
-<td>This is the Input or Math measurement that is measuring the specific condition that the Output will affect. For instance, this could be a temperature measurement and the output could be a heater.</td>
+<td>This is the Input or Function measurement that is measuring the specific condition that the Output will affect. For instance, this could be a temperature measurement and the output could be a heater.</td>
 </tr>
 <tr>
 <td>Output</td>

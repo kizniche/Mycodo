@@ -90,7 +90,6 @@
 
       {% set form_choices = [
         ("Input", choices_input),
-        ("Math", choices_math),
         ("Function", choices_function),
         ("Output", choices_output),
         ("Output_Channels_Measurements", choices_output_channels_measurements),
@@ -171,9 +170,6 @@
       {% if 'Input' in each_option['options_select'] %}
         {% set multiselect_size = multiselect_size + choices_input|length %}
       {% endif %}
-      {% if 'Math' in each_option['options_select'] %}
-        {% set multiselect_size = multiselect_size + choices_math|length %}
-      {% endif %}
       {% if 'Function' in each_option['options_select'] %}
         {% set multiselect_size = multiselect_size + choices_function|length %}
       {% endif %}
@@ -189,7 +185,6 @@
 
       {% set form_choices = [
         ("Input", choices_input),
-        ("Math", choices_math),
         ("Function", choices_function),
         ("Output", choices_output),
         ("PID", choices_pid),
@@ -216,7 +211,6 @@
       {% set form_choices = [
         ("Input", input),
         ("Output", output),
-        ("Math", math),
         ("PID", pid),
         ("Trigger", trigger),
         ("Camera", camera),

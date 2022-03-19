@@ -52,8 +52,6 @@ from mycodo.config import UPGRADE_CHECK_INTERVAL
 from mycodo.controllers.controller_conditional import ConditionalController
 from mycodo.controllers.controller_function import FunctionController
 from mycodo.controllers.controller_input import InputController
-from mycodo.controllers.controller_lcd import LCDController
-from mycodo.controllers.controller_math import MathController
 from mycodo.controllers.controller_output import OutputController
 from mycodo.controllers.controller_pid import PIDController
 from mycodo.controllers.controller_trigger import TriggerController
@@ -62,8 +60,6 @@ from mycodo.databases.models import Camera
 from mycodo.databases.models import Conditional
 from mycodo.databases.models import CustomController
 from mycodo.databases.models import Input
-from mycodo.databases.models import LCD
-from mycodo.databases.models import Math
 from mycodo.databases.models import Misc
 from mycodo.databases.models import PID
 from mycodo.databases.models import Trigger
@@ -111,8 +107,6 @@ class DaemonController:
             'Output': None,  # May only launch a single thread for this controller
             'Widget': None,  # May only launch a single thread for this controller
             'Input': {},
-            'LCD': {},
-            'Math': {},
             'PID': {},
             'Trigger': {},
             'Function': {}
@@ -124,9 +118,7 @@ class DaemonController:
             'Conditional',
             'Trigger',
             'Input',
-            'Math',
             'PID',
-            'LCD',
             'Function'
         ]
 
@@ -230,8 +222,6 @@ class DaemonController:
         db_tables = {
             'Conditional': db_retrieve_table_daemon(Conditional, unique_id=unique_id),
             'Input': db_retrieve_table_daemon(Input, unique_id=unique_id),
-            'LCD': db_retrieve_table_daemon(LCD, unique_id=unique_id),
-            'Math': db_retrieve_table_daemon(Math, unique_id=unique_id),
             'PID': db_retrieve_table_daemon(PID, unique_id=unique_id),
             'Trigger': db_retrieve_table_daemon(Trigger, unique_id=unique_id),
             'Function': db_retrieve_table_daemon(CustomController, unique_id=unique_id)
@@ -265,15 +255,9 @@ class DaemonController:
             if cont_type == 'Conditional':
                 controller_manage['type'] = Conditional
                 controller_manage['function'] = ConditionalController
-            elif cont_type == 'LCD':
-                controller_manage['type'] = LCD
-                controller_manage['function'] = LCDController
             elif cont_type == 'Input':
                 controller_manage['type'] = Input
                 controller_manage['function'] = InputController
-            elif cont_type == 'Math':
-                controller_manage['type'] = Math
-                controller_manage['function'] = MathController
             elif cont_type == 'PID':
                 controller_manage['type'] = PID
                 controller_manage['function'] = PIDController
@@ -329,12 +313,8 @@ class DaemonController:
                     try:
                         if cont_type == 'Conditional':
                             controller_table = Conditional
-                        elif cont_type == 'LCD':
-                            controller_table = LCD
                         elif cont_type == 'Input':
                             controller_table = Input
-                        elif cont_type == 'Math':
-                            controller_table = Math
                         elif cont_type == 'PID':
                             controller_table = PID
                         elif cont_type == 'Trigger':
@@ -427,12 +407,6 @@ class DaemonController:
             for input_id in self.controller['Input']:
                 if not self.controller['Input'][input_id].is_running():
                     return f"Error: Input ID {input_id}"
-            for lcd_id in self.controller['LCD']:
-                if not self.controller['LCD'][lcd_id].is_running():
-                    return f"Error: LCD ID {lcd_id}"
-            for math_id in self.controller['Math']:
-                if not self.controller['Math'][math_id].is_running():
-                    return f"Error: Math ID {math_id}"
             for pid_id in self.controller['PID']:
                 if not self.controller['PID'][pid_id].is_running():
                     return f"Error: PID ID {pid_id}"
@@ -538,7 +512,8 @@ class DaemonController:
 
         """
         try:
-            return self.controller['LCD'][lcd_id].lcd_init()
+            if lcd_id in self.controller['Function']:
+                return self.controller['Function'][lcd_id].lcd_init()
         except KeyError:
             message = "Cannot reset LCD, LCD not running"
             self.logger.exception(message)
@@ -561,9 +536,7 @@ class DaemonController:
 
         """
         try:
-            if lcd_id in self.controller['LCD']:
-                return self.controller['LCD'][lcd_id].lcd_backlight(state)
-            elif lcd_id in self.controller['Function']:
+            if lcd_id in self.controller['Function']:
                 if state:
                     return self.controller['Function'][lcd_id].function_action("backlight_on")
                 else:
@@ -590,7 +563,8 @@ class DaemonController:
 
         """
         try:
-            return self.controller['LCD'][lcd_id].display_backlight_color(color)
+            if lcd_id in self.controller['Function']:
+                return self.controller['Function'][lcd_id].display_backlight_color(color)
         except KeyError:
             message = "Cannot change LCD color: LCD not running"
             self.logger.exception(message)
@@ -613,7 +587,8 @@ class DaemonController:
 
         """
         try:
-            return self.controller['LCD'][lcd_id].lcd_flash(state)
+            if lcd_id in self.controller['Function']:
+                return self.controller['Function'][lcd_id].lcd_flash(state)
         except KeyError:
             message = "Cannot flash display: Display not running"
             self.logger.error(message)
@@ -886,8 +861,6 @@ class DaemonController:
             db_tables = {
                 'Conditional': db_retrieve_table_daemon(Conditional, entry='all'),
                 'Input': db_retrieve_table_daemon(Input, entry='all'),
-                'LCD': db_retrieve_table_daemon(LCD, entry='all'),
-                'Math': db_retrieve_table_daemon(Math, entry='all'),
                 'PID': db_retrieve_table_daemon(PID, entry='all'),
                 'Trigger': db_retrieve_table_daemon(Trigger, entry='all'),
                 'Function': db_retrieve_table_daemon(CustomController, entry='all')

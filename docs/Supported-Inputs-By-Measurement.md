@@ -241,6 +241,8 @@ Measurements
 
 ### [Silicon Labs: Si7021](/Mycodo/Supported-Inputs/#silicon-labs-si7021)
 
+### [Sonoff: TH16/10 (Tasmota firmware) with AM2301/Si7021](/Mycodo/Supported-Inputs/#sonoff-th16-10-tasmota-firmware-with-am2301-si7021)
+
 ### [Sonoff: TH16/10 (Tasmota firmware) with AM2301](/Mycodo/Supported-Inputs/#sonoff-th16-10-tasmota-firmware-with-am2301)
 
 ### [TE Connectivity: HTU21D](/Mycodo/Supported-Inputs/#te-connectivity-htu21d)
@@ -386,6 +388,8 @@ Measurements
 ### [Sensorion: SHT31 Smart Gadget](/Mycodo/Supported-Inputs/#sensorion-sht31-smart-gadget)
 
 ### [Silicon Labs: Si7021](/Mycodo/Supported-Inputs/#silicon-labs-si7021)
+
+### [Sonoff: TH16/10 (Tasmota firmware) with AM2301/Si7021](/Mycodo/Supported-Inputs/#sonoff-th16-10-tasmota-firmware-with-am2301-si7021)
 
 ### [Sonoff: TH16/10 (Tasmota firmware) with AM2301](/Mycodo/Supported-Inputs/#sonoff-th16-10-tasmota-firmware-with-am2301)
 
@@ -653,6 +657,8 @@ Measurements
 
 ### [Silicon Labs: Si7021](/Mycodo/Supported-Inputs/#silicon-labs-si7021)
 
+### [Sonoff: TH16/10 (Tasmota firmware) with AM2301/Si7021](/Mycodo/Supported-Inputs/#sonoff-th16-10-tasmota-firmware-with-am2301-si7021)
+
 ### [Sonoff: TH16/10 (Tasmota firmware) with AM2301](/Mycodo/Supported-Inputs/#sonoff-th16-10-tasmota-firmware-with-am2301)
 
 ### [Sonoff: TH16/10 (Tasmota firmware) with DS18B20](/Mycodo/Supported-Inputs/#sonoff-th16-10-tasmota-firmware-with-ds18b20)
@@ -722,6 +728,8 @@ Measurements
 ### [Sensorion: SHT31 Smart Gadget](/Mycodo/Supported-Inputs/#sensorion-sht31-smart-gadget)
 
 ### [Silicon Labs: Si7021](/Mycodo/Supported-Inputs/#silicon-labs-si7021)
+
+### [Sonoff: TH16/10 (Tasmota firmware) with AM2301/Si7021](/Mycodo/Supported-Inputs/#sonoff-th16-10-tasmota-firmware-with-am2301-si7021)
 
 ### [Sonoff: TH16/10 (Tasmota firmware) with AM2301](/Mycodo/Supported-Inputs/#sonoff-th16-10-tasmota-firmware-with-am2301)
 

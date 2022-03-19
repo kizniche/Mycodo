@@ -5,15 +5,12 @@
   <div>
     <select class="form-control btn-sm" id="calibrate_sensor_measure" name="calibrate_sensor_measure">
       <option value="">{{_('Disabled')}}</option>
-    {% if choices_input or choices_math %}
+    {% if choices_input or choices_function %}
       {% for each_input_form in choices_input -%}
       <option value="{{each_input_form['value']}}"{%- if each_device.calibrate_sensor_measure and each_input_form['value'] in each_device.calibrate_sensor_measure %} selected{%- endif -%}>{{each_input_form['item']}}</option>
       {% endfor -%}
       {% for each_function_form in choices_function -%}
       <option value="{{each_function_form['value']}}"{%- if each_device.calibrate_sensor_measure and each_function_form['value'] in each_device.calibrate_sensor_measure %} selected{%- endif -%}>{{each_function_form['item']}}</option>
-      {% endfor -%}
-      {% for each_math_form in choices_math -%}
-      <option value="{{each_math_form['value']}}"{%- if each_device.calibrate_sensor_measure and each_math_form['value'] in each_device.calibrate_sensor_measure %} selected{%- endif -%}>{{each_math_form['item']}}</option>
       {% endfor -%}
     {% else %}
       <option value="">{{dict_translation['none_available']['title']}}</option>
