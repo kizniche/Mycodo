@@ -185,7 +185,7 @@ def next_schedule(time_span='daily', set_day=None, set_hour=None):
 
 
 def return_energy_usage(energy_usage, device_measurements_all, conversion_all):
-    """Calculate energy usage from Inputs/Maths measuring amps."""
+    """Calculate energy usage from Inputs measuring amps."""
     energy_usage_stats = {}
     graph_info = {}
     for each_energy in energy_usage:
