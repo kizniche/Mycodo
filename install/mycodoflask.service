@@ -1,5 +1,5 @@
 [Unit]
-Description=gunicorn daemon for Mycodo flask web user interface
+Description=Mycodo web user interface
 After=network.target
 
 [Service]

@@ -65,7 +65,6 @@ Options:
   update-alembic                Use alembic to upgrade the mycodo.db settings database
   update-alembic-post           Execute script following all alembic upgrades
   update-apt                    Update apt sources
-  update-cron                   Update cron entries
   update-dependencies           Check for updates to dependencies and update
   install-bcm2835               Install bcm2835
   install-wiringpi              Install wiringpi
@@ -264,10 +263,6 @@ case "${1:-''}" in
     'update-apt')
         printf "\n#### Updating apt repositories\n"
         apt update -y
-    ;;
-    'update-cron')  # TODO: Remove at next major revision
-        printf "\n#### Remove Mycodo restart monitor crontab entry (if it exists)\n"
-        /bin/bash "${MYCODO_PATH}"/install/crontab.sh restart_daemon --remove
     ;;
     'update-dependencies')
         printf "\n#### Checking for updates to dependencies\n"

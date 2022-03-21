@@ -82,10 +82,6 @@ TIMER_START_generate_widget_html=$SECONDS
 ${INSTALL_CMD} generate-widget-html
 TIMER_TOTAL_generate_widget_html=$((SECONDS - TIMER_START_generate_widget_html))
 
-TIMER_START_update_cron=$SECONDS
-${INSTALL_CMD} update-cron
-TIMER_TOTAL_update_cron=$((SECONDS - TIMER_START_update_cron))
-
 TIMER_START_update_permissions=$SECONDS
 ${INSTALL_CMD} update-permissions
 TIMER_TOTAL_update_permissions=$((SECONDS - TIMER_START_update_permissions))
@@ -119,7 +115,6 @@ printf "\nupdate-alembic-post:          %s s" "${TIMER_TOTAL_update_alembic_post
 printf "\nupdate-mycodo-startup-script: %s s" "${TIMER_TOTAL_update_mycodo_startup_script}"
 printf "\ncompile-translations:         %s s" "${TIMER_TOTAL_compile_translations}"
 printf "\ngenerate-widget-html:         %s s" "${TIMER_TOTAL_generate_widget_html}"
-printf "\nupdate-cron:                  %s s" "${TIMER_TOTAL_update_cron}"
 printf "\nupdate-permissions:           %s s" "${TIMER_TOTAL_update_permissions}"
 printf "\nrestart-daemon:               %s s" "${TIMER_TOTAL_restart_daemon}"
 printf "\nweb-server_reload:            %s s" "${TIMER_TOTAL_web_server_reload}"
