@@ -89,7 +89,7 @@ INPUT_INFORMATION = {
 class InputModule(AbstractInput):
     """Read ADC
 
-        Choose a gain of 1 for reading measurements from 0 to 4.09V.
+        Choose a gain of 1 for reading measurements from 0 to 4.096 V.
         Or pick a different gain to change the range of measurements that are read:
          - 2/3 = ±6.144 V
          -   1 = ±4.096 V
@@ -104,15 +104,6 @@ class InputModule(AbstractInput):
 
         self.adc = None
         self.adc_gain = None
-
-        self.dict_gains = {
-            2/3: 0.1875,
-            1: 0.125,
-            2: 0.0625,
-            4: 0.03125,
-            8: 0.015625,
-            16: 0.0078125,
-        }
 
         self.measurements_for_average = None
 
@@ -131,8 +122,10 @@ class InputModule(AbstractInput):
 
         if self.input_dev.adc_gain == 0:
             self.adc_gain = 2/3
+            self.logger.debug("Gain set to 2/3")
         else:
             self.adc_gain = self.input_dev.adc_gain
+            self.logger.debug(f"Gain set to {self.adc_gain}")
 
         self.adc = ADS.ADS1115(
             ExtendedI2C(self.input_dev.i2c_bus),
@@ -159,12 +152,11 @@ class InputModule(AbstractInput):
                         measurement_totals[channel] = 0
                     chan = self.analog_in(self.adc, channel)
                     self.adc.gain = self.adc_gain
-                    self.logger.debug("Channel {}: Gain {}, {} raw, {} volts".format(
-                        channel, self.adc_gain, chan.value, chan.voltage))
+                    self.logger.debug(
+                        f"Channel {channel}: Gain {self.adc_gain}, {chan.value} raw, {chan.voltage} volts")
                     measurement_totals[channel] += chan.voltage
 
-        self.logger.debug("All measurements completed in {:.3f} seconds".format(
-            timeit.default_timer() - time_start))
+        self.logger.debug(f"All measurements completed in {timeit.default_timer() - time_start:.3f} seconds")
 
         # Store average measurement for each channel
         for channel in self.channels_measurement:
@@ -172,5 +164,10 @@ class InputModule(AbstractInput):
                 self.value_set(
                     channel,
                     measurement_totals[channel] / measurement_range)
+
+        self.logger.debug(f"Average CH0: {self.value_get(0)} volts")
+        self.logger.debug(f"Average CH1: {self.value_get(1)} volts")
+        self.logger.debug(f"Average CH2: {self.value_get(2)} volts")
+        self.logger.debug(f"Average CH3: {self.value_get(3)} volts")
 
         return self.return_dict
