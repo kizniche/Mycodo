@@ -291,18 +291,20 @@ def page_input():
         input_templates.extend(file_names)
         break
 
-    # If DS18B20 inputs added, compile a list of detected inputs
-    devices_1wire_w1thermsensor = []
+    # Compile a list of 1-wire devices
+    devices_1wire = []
     if os.path.isdir(PATH_1WIRE):
         for each_name in os.listdir(PATH_1WIRE):
             if 'bus' not in each_name and '-' in each_name:
-                devices_1wire_w1thermsensor.append(
+                devices_1wire.append(
                     {'name': each_name, 'value': each_name.split('-')[1]}
                 )
 
-    # Add 1-wire devices from ow-shell (if installed)
+    # Compile a list of 1-wire devices (using ow-shell)
     devices_1wire_ow_shell = []
-    if current_app.config['TESTING']:
+    if not Input.query.filter(Input.device == "DS18B20_OWS").count():
+        pass
+    elif current_app.config['TESTING']:
         logger.debug("Testing: Skipping testing for 'ow-shell'")
     elif not dpkg_package_exists('ow-shell'):
         logger.debug("Package 'ow-shell' not found")
@@ -366,7 +368,7 @@ def page_input():
                                table_input=Input,
                                user=user,
                                devices_1wire_ow_shell=devices_1wire_ow_shell,
-                               devices_1wire_w1thermsensor=devices_1wire_w1thermsensor)
+                               devices_1wire=devices_1wire)
     elif input_type == 'entry':
         return render_template('pages/data_options/input_entry.html',
                                and_=and_,
@@ -408,7 +410,7 @@ def page_input():
                                table_input=Input,
                                user=user,
                                devices_1wire_ow_shell=devices_1wire_ow_shell,
-                               devices_1wire_w1thermsensor=devices_1wire_w1thermsensor)
+                               devices_1wire=devices_1wire)
     elif input_type == 'options':
         return render_template('pages/data_options/input_options.html',
                                and_=and_,
@@ -450,7 +452,7 @@ def page_input():
                                table_input=Input,
                                user=user,
                                devices_1wire_ow_shell=devices_1wire_ow_shell,
-                               devices_1wire_w1thermsensor=devices_1wire_w1thermsensor)
+                               devices_1wire=devices_1wire)
     elif input_type == 'actions':
         return render_template('pages/actions.html',
                                and_=and_,
@@ -493,4 +495,4 @@ def page_input():
                                table_input=Input,
                                user=user,
                                devices_1wire_ow_shell=devices_1wire_ow_shell,
-                               devices_1wire_w1thermsensor=devices_1wire_w1thermsensor)
+                               devices_1wire=devices_1wire)

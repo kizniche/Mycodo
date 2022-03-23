@@ -12,15 +12,15 @@
   <div>
     <select class="form-control form-tooltip form-dropdown" data-placement="top" id="location" name="location" title="{{dict_translation['1wire_id']['phrase']}}">
       {% if dict_options['input_library'] == 'w1thermsensor' %}
-        {% if devices_1wire_w1thermsensor != [] %}
+        {% if devices_1wire != [] %}
         <option value=""></option>
-          {% for each_1wire_dev in devices_1wire_w1thermsensor %}
+          {% for each_1wire_dev in devices_1wire %}
           <option value="{{each_1wire_dev['value']}}"{% if each_device.location == each_1wire_dev['value'] %} selected{% endif %}>{{each_1wire_dev['name']}}</option>
           {% endfor %}
         {% else %}
         <option value="">{{_('None Found')}}</option>
         {% endif %}
-      {% elif dict_options['input_library'] == 'ow_shell' %}
+      {% elif dict_options['input_library'] == 'ow-shell' %}
         {% if devices_1wire_ow_shell %}
         <option value=""></option>
           {% for each_1wire_dev in devices_1wire_ow_shell %}

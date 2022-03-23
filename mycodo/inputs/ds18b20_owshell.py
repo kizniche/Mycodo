@@ -43,7 +43,8 @@ INPUT_INFORMATION = {
     'options_disabled': ['interface'],
 
     'dependencies_module': [
-        ('apt', 'ow-shell', 'ow-shell')
+        ('apt', 'ow-shell', 'ow-shell'),
+        ('apt', 'owfs', 'owfs')
     ],
 
     'interfaces': ['1WIRE'],
@@ -92,12 +93,14 @@ class InputModule(AbstractInput):
                     str_temperature = 'temperature12'
                 try:
                     command = 'owread /{id}/{temp}; echo'.format(id=self.location, temp=str_temperature)
+                    self.logger.debug(f"Command: {command}")
                     owread = subprocess.Popen(command, stdout=subprocess.PIPE, shell=True)
                     (owread_output, _) = owread.communicate()
                     owread.wait()
                     if owread_output:
                         self.logger.debug("Output: '{}'".format(owread_output))
                         temperature = float(owread_output.decode("latin1"))
+                        break
                 except Exception:
                     self.logger.exception("Obtaining measurement")
             except Exception as e:
