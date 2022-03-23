@@ -2,7 +2,7 @@
 
 Page\: `[Gear Icon] -> Upgrade`
 
-If you already have Mycodo installed, you can perform an upgrade to the latest [Mycodo Release](https://github.com/kizniche/Mycodo/releases>) by either using the Upgrade option in the web interface (recommended) or by issuing the following command in a terminal. A log of the upgrade process is created at ``/var/log/mycodo/mycodoupgrade.log`` and is also available from the `[Gear Icon] -> Mycodo Logs` page.
+If you already have Mycodo installed, you can perform an upgrade to the latest [Mycodo Release](https://github.com/kizniche/Mycodo/releases) by either using the Upgrade option in the web interface (recommended) or by issuing the following command in a terminal. A log of the upgrade process is created at ``/var/log/mycodo/mycodoupgrade.log`` and is also available from the `[Gear Icon] -> Mycodo Logs` page.
 
 ```bash
 sudo mycodo-commands upgrade-mycodo
