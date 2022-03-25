@@ -56,7 +56,7 @@ class ActionModule(AbstractFunctionAction):
             ACTION_INFORMATION['custom_options'], action)
 
         if not testing:
-            self.initialize()
+            self.try_initialize()
 
     def initialize(self):
         self.action_setup = True

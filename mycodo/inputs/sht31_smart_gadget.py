@@ -393,7 +393,7 @@ class InputModule(AbstractInput):
 
     def get_device_information(self):
         if not self.initialized:
-            self.initialize()
+            self.try_initialize()
 
         if 'info_timestamp' in self.device_information:
             return self.device_information
@@ -407,7 +407,7 @@ class InputModule(AbstractInput):
             self.logger.debug("Starting measurement")
             try:
                 if not self.initialized:
-                    self.initialize()
+                    self.try_initialize()
 
                 if not self.initialized:
                     self.logger.error("Count not initialize sensor.")
