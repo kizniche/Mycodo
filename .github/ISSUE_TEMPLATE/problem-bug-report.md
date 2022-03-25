@@ -14,7 +14,7 @@ Please DO NOT OPEN AN ISSUE:
 
  - If your issue has been addressed before. If you have any new information that may aid in solving the issue, post it in the issue that already exists.
 
-If you are going to post a new issue, next read How to Write a Good Bug Report at https://forum.kylegabriel.com/t/how-to-write-a-good-bug-report/71
+If you are going to post a new issue, next read How to Write a Good Bug Report at https://forum.radicaldiy.com/t/how-to-write-a-good-bug-report/71
 
 Please complete as many of the sections below, if applicable, to provide the most information that may help with investigating your issue. Replace the text in brackets with your own text describing the issue. The details requested potentially affect which options to pursue. The small amount of time you spend completing the template will also help those providing assistance by reducing the time required to help you.
 

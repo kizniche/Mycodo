@@ -30,7 +30,7 @@ Discussion
 
 `Mycodo Issues (Bug Reports/Feature Requests) <https://github.com/kizniche/Mycodo/issues>`__
 
-`Mycodo Forum <https://forum.kylegabriel.com>`__
+`Mycodo Forum <https://forum.radicaldiy.com>`__
 
 `Mycodo Discord <https://discord.gg/kmDNky4ZHZ>`__
 

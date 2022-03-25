@@ -1,1 +1,1 @@
-Frequently asked questions can be found [here](https://forum.kylegabriel.com/docs?category=23&tags=mycodo)
+Frequently asked questions can be found [here](https://forum.radicaldiy.com/docs?category=23&tags=mycodo)

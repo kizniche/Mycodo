@@ -1022,9 +1022,10 @@ class DaemonController:
 
     def check_all_timelapses(self, now):
         try:
-            if self.camera:
-                for each_camera in self.camera:
-                    self.timelapse_check(each_camera, now)
+            if not self.camera:
+                return
+            for each_camera in self.camera:
+                self.timelapse_check(each_camera, now)
         except Exception:
             self.logger.exception("Timelapse ERROR")
 
@@ -1050,15 +1051,13 @@ class DaemonController:
                     now > camera.timelapse_next_capture):
                 # Ensure next capture is greater than now (in case of power failure/reboot)
                 next_capture = camera.timelapse_next_capture
-                capture_number = camera.timelapse_capture_number
                 while now > next_capture:
                     # Update last capture and image number to latest before capture
                     next_capture += camera.timelapse_interval
-                    capture_number += 1
                 with session_scope(MYCODO_DB_PATH) as new_session:
                     mod_camera = new_session.query(Camera).filter(Camera.unique_id == camera.unique_id).first()
                     mod_camera.timelapse_next_capture = next_capture
-                    mod_camera.timelapse_capture_number = capture_number
+                    mod_camera.timelapse_capture_number += 1
                     new_session.commit()
                 self.refresh_daemon_camera_settings()
                 self.logger.debug(f"Camera {camera.id}: Capturing time-lapse image")

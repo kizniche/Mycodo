@@ -19,7 +19,6 @@ measurements_dict = {
     }
 }
 
-
 # Input information
 INPUT_INFORMATION = {
     'input_name_unique': 'TSL2561',

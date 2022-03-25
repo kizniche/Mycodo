@@ -461,7 +461,7 @@ As always, a backup of the current system files and settings is performed during
  - Add Function: SSD1309 Display
  - Add Function: Bang-Bang PWM
  - Add Function Action: MQTT Publish
- - Add Function Action: webhook to emit HTTP requests ([discussion](https://kylegabriel.com/forum/general-discussion/webhook-action/))
+ - Add Function Action: webhook to emit HTTP requests
  - Partial conversion of Display/LCD controllers to Display Functions
  - Add external temperature compensation for Anyleaf pH Input
  - Add ability to set camera stream frames per second
