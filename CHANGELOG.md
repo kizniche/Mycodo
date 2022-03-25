@@ -22,6 +22,7 @@ LCD and Math Controllers have been completely removed from Mycodo and replaced w
  - Fix BME680 Input dependency
  - Fix Gauge Widget stop selection ([#1130](https://github.com/kizniche/mycodo/issues/1130))
  - Fix DS18B20 (ow-shell) Input ([#910](https://github.com/kizniche/mycodo/issues/910)) (measurements are erroneous, though)
+ - Fix PIDs using Functions as measurement ([#1165](https://github.com/kizniche/mycodo/issues/1165))
 
 ### Features
 
