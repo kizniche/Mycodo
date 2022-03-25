@@ -45,9 +45,9 @@ class InputModule(AbstractInput):
         self.path = None
 
         if not testing:
-            self.initialize_input()
+            self.try_initialize()
 
-    def initialize_input(self):
+    def initialize(self):
         self.path = self.input_dev.location
 
     def get_measurement(self):

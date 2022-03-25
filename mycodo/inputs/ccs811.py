@@ -65,9 +65,9 @@ class InputModule(AbstractInput):
         self.sensor = None
 
         if not testing:
-            self.initialize_input()
+            self.try_initialize()
 
-    def initialize_input(self):
+    def initialize(self):
         from Adafruit_CCS811 import Adafruit_CCS811
 
         self.sensor = Adafruit_CCS811(

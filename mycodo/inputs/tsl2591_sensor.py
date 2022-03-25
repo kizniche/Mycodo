@@ -57,9 +57,9 @@ class InputModule(AbstractInput):
         self.sensor = None
 
         if not testing:
-            self.initialize_input()
+            self.try_initialize()
 
-    def initialize_input(self):
+    def initialize(self):
         import tsl2591
 
         self.sensor = tsl2591.Tsl2591(

@@ -121,9 +121,9 @@ class InputModule(AbstractInput):
             self.setup_custom_options(
                 INPUT_INFORMATION['custom_options'], input_dev)
 
-            self.initialize_input()
+            self.try_initialize()
 
-    def initialize_input(self):
+    def initialize(self):
         import Adafruit_ADS1x15
 
         if self.input_dev.adc_gain == 0:

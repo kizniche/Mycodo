@@ -102,9 +102,9 @@ class InputModule(AbstractInput):
         self.powered = False
 
         if not testing:
-            self.initialize_input()
+            self.try_initialize()
 
-    def initialize_input(self):
+    def initialize(self):
         import pigpio
         from mycodo.mycodo_client import DaemonControl
 

@@ -220,9 +220,9 @@ class InputModule(AbstractInput):
         if not testing:
             self.setup_custom_options(
                 INPUT_INFORMATION['custom_options'], input_dev)
-            self.initialize_input()
+            self.try_initialize()
 
-    def initialize_input(self):
+    def initialize(self):
         """
         Initialize INA219x sensor
         """

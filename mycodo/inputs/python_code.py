@@ -192,9 +192,9 @@ class InputModule(AbstractInput):
         self.python_code = None
 
         if not testing:
-            self.initialize_input()
+            self.try_initialize()
 
-    def initialize_input(self):
+    def initialize(self):
         self.unique_id = self.input_dev.unique_id
 
         self.measure_info = {}

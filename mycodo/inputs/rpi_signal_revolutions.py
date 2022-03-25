@@ -57,9 +57,9 @@ class InputModule(AbstractInput):
         self.sample_time = None
 
         if not testing:
-            self.initialize_input()
+            self.try_initialize()
 
-    def initialize_input(self):
+    def initialize(self):
         import pigpio
 
         self.pigpio = pigpio

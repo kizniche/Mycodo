@@ -171,9 +171,9 @@ class CustomModule(AbstractFunction):
         self.output_channel = self.get_output_channel_from_channel_id(self.output_channel_id)
 
         if not testing:
-            self.initialize_variables()
+            self.try_initialize()
 
-    def initialize_variables(self):
+    def initialize(self):
         self.timestamp = time.time()
         self.autotune = PIDAutotune(
             self.setpoint,

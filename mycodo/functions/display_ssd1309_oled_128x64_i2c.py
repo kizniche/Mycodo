@@ -337,9 +337,9 @@ class CustomModule(AbstractFunction):
             FUNCTION_INFORMATION['custom_options'], custom_function)
 
         if not testing:
-            self.initialize_variables()
+            self.try_initialize()
 
-    def initialize_variables(self):
+    def initialize(self):
         from luma.core.interface.serial import i2c
         from luma.core.render import canvas
         from luma.oled.device import ssd1309

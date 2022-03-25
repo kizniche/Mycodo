@@ -67,9 +67,9 @@ class AbstractFunctionAction(AbstractBaseController):
             "this method")
         raise NotImplementedError
 
-    def setup_action(self):
+    def initialize(self):
         self.logger.error(
-            f"{type(self).__name__} did not overwrite the setup_output() method. All "
+            f"{type(self).__name__} did not overwrite the initialize() method. All "
             "subclasses of the AbstractFunctionAction class are required to overwrite "
             "this method")
         raise NotImplementedError

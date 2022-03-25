@@ -57,9 +57,9 @@ class InputModule(AbstractInput):
         self.deadline = None
 
         if not testing:
-            self.initialize_input()
+            self.try_initialize()
 
-    def initialize_input(self):
+    def initialize(self):
         self.location = self.input_dev.location
         self.times_check = self.input_dev.times_check
         self.deadline = self.input_dev.deadline

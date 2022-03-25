@@ -44,6 +44,24 @@ class AbstractBaseController(object):
         self.channels_measurement = {}
         self.device_measurements = None
 
+    def initialize(self):
+        pass
+
+    def try_initialize(self, tries=3, wait_sec=5):
+        """Try to run initialize() for the controller several times with a pause between tries"""
+        for i in range(tries):
+            try:
+                self.initialize()
+                break
+            except Exception as err:
+                if i + 1 < tries:
+                    self.logger.error(f"Error initializing, trying again in {wait_sec} seconds: {err}")
+                    time.sleep(wait_sec)
+                else:  # Last try
+                    self.logger.exception(
+                        f"Initialization errored {tries} times; giving up. Maybe the following traceback "
+                        f"can help diagnose the issue.")
+
     def setup_custom_options(self, custom_options, custom_controller):
         if not hasattr(custom_controller, 'custom_options'):
             self.logger.error("custom_controller missing attribute custom_options")

@@ -62,6 +62,13 @@ class AbstractFunction(AbstractBaseController):
             else:
                 self.logger.setLevel(logging.INFO)
 
+    def initialize(self):
+        self.logger.error(
+            "{cls} did not overwrite the initialize() method. All "
+            "subclasses of the AbstractFunction class are required to overwrite "
+            "this method".format(cls=type(self).__name__))
+        raise NotImplementedError
+
     def start_function(self):
         """Not used yet."""
         self.running = True

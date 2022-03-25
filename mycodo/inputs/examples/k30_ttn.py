@@ -90,7 +90,7 @@ class InputModule(AbstractInput):
             self.setup_custom_options(
                 INPUT_INFORMATION['custom_options'], input_dev)
 
-    def initialize_input(self):
+    def initialize(self):
         import serial
 
         # Check if device is valid

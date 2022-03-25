@@ -100,9 +100,9 @@ class InputModule(AbstractInput):
             self.setup_custom_options(
                 INPUT_INFORMATION['custom_options'], input_dev)
             self.setup_logger(testing=testing, name=__name__, input_dev=input_dev)
-            self.initialize_input()
+            self.try_initialize()
 
-    def initialize_input(self):
+    def initialize(self):
         self.lock_file = '/var/lock/bluetooth_dev_hci{}'.format(self.input_dev.bt_adapter)
         try:
             self.sensor = LYWSD03MMC(

@@ -162,7 +162,7 @@ class OutputModule(AbstractOutput):
         self.options_channels = self.setup_custom_channel_options_json(
             OUTPUT_INFORMATION['custom_channel_options'], output_channels)
 
-    def setup_output(self):
+    def initialize(self):
         self.setup_output_variables(OUTPUT_INFORMATION)
 
         if not self.plug_address:
@@ -184,7 +184,7 @@ class OutputModule(AbstractOutput):
                         self.output_switch("off", output_channel=channel)
                     self.logger.debug('Strip children: {}'.format(self.strip.children[channel]))
         except Exception as e:
-            self.logger.error("setup_output() Error: {err}".format(err=e))
+            self.logger.error("initialize() Error: {err}".format(err=e))
 
     def try_connect(self):
         try:

@@ -102,9 +102,9 @@ class InputModule(AbstractInput):
         self._tfine = 0
 
         if not testing:
-            self.initialize_input()
+            self.try_initialize()
 
-    def initialize_input(self):
+    def initialize(self):
         import Adafruit_GPIO.I2C
 
         if self._mode not in [

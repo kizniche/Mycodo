@@ -185,9 +185,9 @@ class InputModule(AbstractInput):
         if not testing:
             self.setup_custom_options(
                 INPUT_INFORMATION['custom_options'], input_dev)
-            self.initialize_input()
+            self.try_initialize()
 
-    def initialize_input(self):
+    def initialize(self):
         if self.api_key and self.latitude and self.longitude and self.weather_time:
             base_url = "https://api.openweathermap.org/data/2.5/onecall?lat={lat}&lon={lon}&units=metric&appid={key}".format(
                 lat=self.latitude, lon=self.longitude, key=self.api_key)

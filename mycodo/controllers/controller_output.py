@@ -137,7 +137,7 @@ class OutputController(AbstractController, threading.Thread):
 
                     if output_loaded:
                         self.output[each_output.unique_id] = output_loaded.OutputModule(each_output)
-                        self.output[each_output.unique_id].setup_output()
+                        self.output[each_output.unique_id].try_initialize()
                         self.output[each_output.unique_id].init_post()
 
                 self.logger.debug("{id} ({name}) Initialized".format(
@@ -191,7 +191,7 @@ class OutputController(AbstractController, threading.Thread):
                         'outputs')
                     if output_loaded:
                         self.output[output_id] = output_loaded.OutputModule(output)
-                        self.output[output_id].setup_output()
+                        self.output[output_id].try_initialize()
                         self.output[output_id].init_post()
 
             return 0, "add_mod_output() Success"

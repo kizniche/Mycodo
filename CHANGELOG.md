@@ -38,6 +38,7 @@ LCD and Math Controllers have been completely removed from Mycodo and replaced w
  - Add randomly-generated Client IDs for MQTT Inputs/Functions
  - Add calibration, offset, and reset options for SCD-30 Input
  - Add Measurement Label as an LCD option
+ - Add multiple tries to initialize Input/Output/Function/Action before failing
 
 ### Miscellaneous
 

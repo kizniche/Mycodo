@@ -104,9 +104,9 @@ class InputModule(AbstractInput):
         self.last_downloaded_timestamp = None
 
         if not testing:
-            self.initialize_input()
+            self.try_initialize()
 
-    def initialize_input(self):
+    def initialize(self):
         from ruuvitag_sensor.ruuvitag import RuuviTag
 
         self.ruuvitag = RuuviTag

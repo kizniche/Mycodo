@@ -163,7 +163,7 @@ class OutputModule(AbstractOutput):
         self.options_channels = self.setup_custom_channel_options_json(
             OUTPUT_INFORMATION['custom_channel_options'], output_channels)
 
-    def setup_output(self):
+    def initialize(self):
         from mycodo.devices.wireless_rpi_rf import Transmit433MHz
 
         self.Transmit433MHz = Transmit433MHz

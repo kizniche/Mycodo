@@ -72,9 +72,9 @@ class InputModule(AbstractInput):
         self.i2c = None
 
         if not testing:
-            self.initialize_input()
+            self.try_initialize()
 
-    def initialize_input(self):
+    def initialize(self):
         if self.input_dev.interface == 'UART':
             import serial
 

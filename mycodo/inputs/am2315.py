@@ -96,9 +96,9 @@ class InputModule(AbstractInput):
         self.control = None
 
         if not testing:
-            self.initialize_input()
+            self.try_initialize()
 
-    def initialize_input(self):
+    def initialize(self):
         from mycodo.mycodo_client import DaemonControl
 
         self.control = DaemonControl()

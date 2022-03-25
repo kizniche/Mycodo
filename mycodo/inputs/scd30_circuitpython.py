@@ -29,10 +29,6 @@ measurements_dict = {
     }
 }
 
-# Input information
-# See the inputs directory for examples of working modules.
-# The following link provides the full list of options with descriptions:
-# https://github.com/kizniche/Mycodo/blob/single_file_input_modules/mycodo/inputs/examples/example_all_options_temperature.py
 INPUT_INFORMATION = {
     'input_name_unique': 'SCD30_CIRCUITPYTHON',
     'input_manufacturer': 'Sensirion',
@@ -98,7 +94,7 @@ INPUT_INFORMATION = {
     'custom_options': [
         {
             'type': 'message',
-            'default_value': """I2C Frequency: The SCD-30 has temperamental I2C with clock stretching. The datasheet recommends starting at 50,000 Hz."""
+            'default_value': 'I2C Frequency: The SCD-30 has temperamental I2C with clock stretching. The datasheet recommends starting at 50,000 Hz.'
         },
         {
             'id': 'i2c_frequency',
@@ -128,7 +124,7 @@ INPUT_INFORMATION = {
         },
         {
             'type': 'message',
-            'default_value': """Ambient Air Pressure (mBar): Specify the ambient air pressure at the measurement location in mBar. Setting this value adjusts the CO2 measurement calculations to account for the air pressure’s effect on readings. Values must be in mBar, from 700 to 1200 mBar."""
+            'default_value': 'Ambient Air Pressure (mBar): Specify the ambient air pressure at the measurement location in mBar. Setting this value adjusts the CO2 measurement calculations to account for the air pressure’s effect on readings. Values must be in mBar, from 700 to 1200 mBar.'
         },
         {
             'id': 'ambient_pressure',
@@ -138,7 +134,7 @@ INPUT_INFORMATION = {
         },
         {
             'type': 'message',
-            'default_value': """Altitude: Specifies the altitude at the measurement location in meters above sea level. Setting this value adjusts the CO2 measurement calculations to account for the air pressure’s effect on readings."""
+            'default_value': 'Altitude: Specifies the altitude at the measurement location in meters above sea level. Setting this value adjusts the CO2 measurement calculations to account for the air pressure’s effect on readings.'
         },
         {
             'id': 'altitude',
@@ -165,9 +161,9 @@ class InputModule(AbstractInput):
         if not testing:
             self.setup_custom_options(
                 INPUT_INFORMATION['custom_options'], input_dev)
-            self.initialize_input()
+            self.try_initialize()
 
-    def initialize_input(self):
+    def initialize(self):
         from adafruit_extended_bus import ExtendedI2C
         import adafruit_scd30
 

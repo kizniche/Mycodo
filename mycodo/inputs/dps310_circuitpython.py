@@ -44,9 +44,9 @@ class InputModule(AbstractInput):
         self.sensor = None
 
         if not testing:
-            self.initialize_input()
+            self.try_initialize()
 
-    def initialize_input(self):
+    def initialize(self):
         import adafruit_dps310
         from adafruit_extended_bus import ExtendedI2C
 

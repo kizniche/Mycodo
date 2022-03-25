@@ -94,9 +94,9 @@ class InputModule(AbstractInput):
         self.sensor = None
 
         if not testing:
-            self.initialize_input()
+            self.try_initialize()
 
-    def initialize_input(self):
+    def initialize(self):
         self.sensor = MAX31856(
             self.logger,
             self.input_dev.pin_cs,

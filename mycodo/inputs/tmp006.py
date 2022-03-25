@@ -54,9 +54,9 @@ class InputModule(AbstractInput):
         self.sensor = None
 
         if not testing:
-            self.initialize_input()
+            self.try_initialize()
 
-    def initialize_input(self):
+    def initialize(self):
         from Adafruit_TMP import TMP006
 
         self.sensor = TMP006.TMP006(

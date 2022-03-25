@@ -142,7 +142,7 @@ class OutputModule(AbstractOutput):
         self.setup_custom_options(
             OUTPUT_INFORMATION['custom_options'], output)
 
-    def setup_output(self):
+    def initialize(self):
         """Code executed when Mycodo starts up to initialize the output."""
         # Variables set by the user interface
         self.gpio_pin = self.output.pin

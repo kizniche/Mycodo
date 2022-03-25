@@ -65,9 +65,9 @@ class InputModule(AbstractInput):
         self.sensor = None
 
         if not testing:
-            self.initialize_input()
+            self.try_initialize()
 
-    def initialize_input(self):
+    def initialize(self):
         from Adafruit_BMP import BMP085
 
         self.sensor = BMP085.BMP085(busnum=self.input_dev.i2c_bus)

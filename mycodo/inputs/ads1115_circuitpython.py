@@ -110,9 +110,9 @@ class InputModule(AbstractInput):
         if not testing:
             self.setup_custom_options(
                 INPUT_INFORMATION['custom_options'], input_dev)
-            self.initialize_input()
+            self.try_initialize()
 
-    def initialize_input(self):
+    def initialize(self):
         import adafruit_ads1x15.ads1115 as ADS
         from adafruit_ads1x15.analog_in import AnalogIn
         from adafruit_extended_bus import ExtendedI2C

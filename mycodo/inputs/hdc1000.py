@@ -112,9 +112,9 @@ class InputModule(AbstractInput):
         self.HDC1000_fw = None
 
         if not testing:
-            self.initialize_input()
+            self.try_initialize()
 
-    def initialize_input(self):
+    def initialize(self):
         i2c_address = 0x40  # HDC1000-F Address
 
         self.HDC1000_fr = io.open("/dev/i2c-" + str(self.input_dev.i2c_bus), "rb", buffering=0)

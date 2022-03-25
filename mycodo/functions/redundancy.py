@@ -154,9 +154,9 @@ class CustomModule(AbstractFunction):
             FUNCTION_INFORMATION['custom_options'], custom_function)
 
         if not testing:
-            self.initialize_variables()
+            self.try_initialize()
 
-    def initialize_variables(self):
+    def initialize(self):
         self.logger.debug(
             "Custom controller started with options: "
             "{}, {}, {}, {}, {}, {}".format(

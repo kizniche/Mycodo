@@ -133,7 +133,7 @@ class OutputModule(AbstractOutput):
         self.options_channels = self.setup_custom_channel_options_json(
             OUTPUT_INFORMATION['custom_channel_options'], output_channels)
 
-    def setup_output(self):
+    def initialize(self):
         from adafruit_mcp230xx.mcp23017 import MCP23017
         from adafruit_extended_bus import ExtendedI2C
 

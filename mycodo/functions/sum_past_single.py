@@ -124,9 +124,9 @@ class CustomModule(AbstractFunction):
             FUNCTION_INFORMATION['custom_options'], custom_function)
 
         if not testing:
-            self.initialize_variables()
+            self.try_initialize()
 
-    def initialize_variables(self):
+    def initialize(self):
         self.timer_loop = time.time() + self.start_offset
 
     def loop(self):

@@ -144,7 +144,7 @@ class OutputModule(AbstractOutput):
         self.options_channels = self.setup_custom_channel_options_json(
             OUTPUT_INFORMATION['custom_channel_options'], output_channels)
 
-    def setup_output(self):
+    def initialize(self):
         from RpiMotorLib import RpiMotorLib
 
         self.setup_output_variables(OUTPUT_INFORMATION)

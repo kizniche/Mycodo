@@ -152,9 +152,9 @@ class ActionModule(AbstractFunctionAction):
             ACTION_INFORMATION['custom_options'], action)
 
         if not testing:
-            self.setup_action()
+            self.initialize()
 
-    def setup_action(self):
+    def initialize(self):
         # Place imports here, if applicable
         # Often derived from dependencies_module, above
         self.action_setup = True

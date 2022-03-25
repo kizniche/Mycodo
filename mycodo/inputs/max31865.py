@@ -91,9 +91,9 @@ class InputModule(AbstractInput):
         self.ref_ohm = None
 
         if not testing:
-            self.initialize_input()
+            self.try_initialize()
 
-    def initialize_input(self):
+    def initialize(self):
         self.thermocouple_type = self.input_dev.thermocouple_type
         self.ref_ohm = self.input_dev.ref_ohm
 

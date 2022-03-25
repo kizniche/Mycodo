@@ -327,8 +327,7 @@ class InputController(AbstractController, threading.Thread):
 
         if self.device in self.dict_inputs:
             input_loaded = load_module_from_file(
-                self.dict_inputs[self.device]['file_path'],
-                'inputs')
+                self.dict_inputs[self.device]['file_path'], 'inputs')
 
             if input_loaded:
                 self.measure_input = input_loaded.InputModule(self.input_dev)

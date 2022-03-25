@@ -69,9 +69,9 @@ class InputModule(AbstractInput):
         self.ny = 8
 
         if not testing:
-            self.initialize_input()
+            self.try_initialize()
 
-    def initialize_input(self):
+    def initialize(self):
         from Adafruit_AMG88xx import Adafruit_AMG88xx
 
         self.sensor = Adafruit_AMG88xx(

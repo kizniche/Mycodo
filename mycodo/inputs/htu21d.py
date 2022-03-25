@@ -93,9 +93,9 @@ class InputModule(AbstractInput):
         self.i2c_address = 0x40  # HTU21D-F Address
 
         if not testing:
-            self.initialize_input()
+            self.try_initialize()
 
-    def initialize_input(self):
+    def initialize(self):
         import pigpio
 
         self.i2c_bus = self.input_dev.i2c_bus

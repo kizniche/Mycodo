@@ -84,9 +84,9 @@ class InputModule(AbstractInput):
         self.adc_resolution = None
 
         if not testing:
-            self.initialize_input()
+            self.try_initialize()
 
-    def initialize_input(self):
+    def initialize(self):
         from smbus2 import SMBus
         from MCP342x import MCP342x
 

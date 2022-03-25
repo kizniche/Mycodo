@@ -94,9 +94,9 @@ class InputModule(AbstractInput):
         if not testing:
             self.setup_custom_options(
                 INPUT_INFORMATION['custom_options'], input_dev)
-            self.initialize_input()
+            self.try_initialize()
 
-    def initialize_input(self):
+    def initialize(self):
         if self.api_key and self.city:
             self.api_url = "http://api.openweathermap.org/data/2.5/weather?appid={key}&units=metric&q={city}".format(
                 key=self.api_key, city=self.city)

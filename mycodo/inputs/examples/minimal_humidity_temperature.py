@@ -129,7 +129,7 @@ class InputModule(AbstractInput):
             self.setup_custom_options(
                 INPUT_INFORMATION['custom_options'], input_dev)
 
-    def initialize_input(self):
+    def initialize(self):
         # Load dependent modules
         import random
         self.random = random

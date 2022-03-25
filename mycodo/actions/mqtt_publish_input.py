@@ -128,9 +128,9 @@ class ActionModule(AbstractFunctionAction):
             ACTION_INFORMATION['custom_options'], action)
 
         if not testing:
-            self.setup_action()
+            self.initialize()
 
-    def setup_action(self):
+    def initialize(self):
         import paho.mqtt.publish as publish
         self.publish = publish
         self.action_setup = True

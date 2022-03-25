@@ -99,9 +99,9 @@ class AbstractOutput(AbstractBaseController):
             "this method".format(cls=type(self).__name__))
         raise NotImplementedError
 
-    def setup_output(self):
+    def initialize(self):
         self.logger.error(
-            "{cls} did not overwrite the setup_output() method. All "
+            "{cls} did not overwrite the initialize() method. All "
             "subclasses of the AbstractOutput class are required to overwrite "
             "this method".format(cls=type(self).__name__))
         raise NotImplementedError

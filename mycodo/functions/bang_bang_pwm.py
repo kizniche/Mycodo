@@ -163,9 +163,9 @@ class CustomModule(AbstractFunction):
             FUNCTION_INFORMATION['custom_options'], custom_function)
 
         if not testing:
-            self.initialize_variables()
+            self.try_initialize()
 
-    def initialize_variables(self):
+    def initialize(self):
         self.timestamp = time.time()
 
         self.output_channel = self.get_output_channel_from_channel_id(

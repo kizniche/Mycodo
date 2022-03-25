@@ -247,9 +247,9 @@ class CustomModule(AbstractFunction):
             self.output_1_channel_id)
 
         if not testing:
-            self.initialize_variables()
+            self.try_initialize()
 
-    def initialize_variables(self):
+    def initialize(self):
         # import controller-specific modules here
         # You may import something you defined in dependencies_module
         pass

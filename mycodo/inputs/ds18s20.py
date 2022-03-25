@@ -89,9 +89,9 @@ class InputModule(AbstractInput):
         self.sensor = None
 
         if not testing:
-            self.initialize_input()
+            self.try_initialize()
 
-    def initialize_input(self):
+    def initialize(self):
         from w1thermsensor import W1ThermSensor
         from w1thermsensor import Sensor
 

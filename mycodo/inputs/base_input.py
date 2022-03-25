@@ -98,6 +98,13 @@ class AbstractInput(AbstractBaseController):
             self.read()
         return self._measurements
 
+    def initialize(self):
+        self.logger.error(
+            "{cls} did not overwrite the initialize() method. All "
+            "subclasses of the AbstractInput class are required to overwrite "
+            "this method".format(cls=type(self).__name__))
+        raise NotImplementedError
+
     def get_measurement(self):
         self.logger.error(
             "{cls} did not overwrite the get_measurement() method. All "

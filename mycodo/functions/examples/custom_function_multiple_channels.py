@@ -111,9 +111,9 @@ class CustomModule(AbstractFunction):
             FUNCTION_INFORMATION['custom_options'], custom_function)
 
         if not testing:
-            self.initialize_variables()
+            self.try_initialize()
 
-    def initialize_variables(self):
+    def initialize(self):
         function_channels = db_retrieve_table_daemon(
             FunctionChannel).filter(FunctionChannel.function_id == self.unique_id).all()
         self.options_channels = self.setup_custom_channel_options_json(

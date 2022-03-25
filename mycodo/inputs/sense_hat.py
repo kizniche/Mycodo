@@ -113,9 +113,9 @@ class InputModule(AbstractInput):
         self.sensor = None
 
         if not testing:
-            self.initialize_input()
+            self.try_initialize()
 
-    def initialize_input(self):
+    def initialize(self):
         """Initialize the Sense HAT sensor class."""
         from sense_hat import SenseHat
 

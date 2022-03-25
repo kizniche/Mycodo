@@ -61,9 +61,9 @@ class InputModule(AbstractInput):
         self.sensor = None
 
         if not testing:
-            self.initialize_input()
+            self.try_initialize()
 
-    def initialize_input(self):
+    def initialize(self):
         import SI1145.SI1145 as SI1145
 
         self.sensor = SI1145.SI1145(

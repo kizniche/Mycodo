@@ -49,9 +49,9 @@ class InputModule(AbstractInput):
         self.sensor = None
 
         if not testing:
-            self.initialize_input()
+            self.try_initialize()
 
-    def initialize_input(self):
+    def initialize(self):
         """Initialize the MCP9808 sensor class."""
         from Adafruit_MCP9808 import MCP9808
 

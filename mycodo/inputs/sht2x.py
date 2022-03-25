@@ -67,9 +67,9 @@ class InputModule(AbstractInput):
         super().__init__(input_dev, testing=testing, name=__name__)
 
         if not testing:
-            self.initialize_input()
+            self.try_initialize()
 
-    def initialize_input(self):
+    def initialize(self):
         from smbus2 import SMBus
 
         self.i2c_address = int(str(self.input_dev.i2c_location), 16)

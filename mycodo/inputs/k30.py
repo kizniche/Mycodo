@@ -47,9 +47,9 @@ class InputModule(AbstractInput):
         self.ser = None
 
         if not testing:
-            self.initialize_input()
+            self.try_initialize()
 
-    def initialize_input(self):
+    def initialize(self):
         import serial
 
         # Check if device is valid

@@ -80,7 +80,7 @@ class OutputModule(AbstractOutput):
         self.channel_value = None
         self.round = None
 
-    def setup_output(self):
+    def initialize(self):
         import adafruit_ds3502
         from adafruit_extended_bus import ExtendedI2C
 

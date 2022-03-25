@@ -81,9 +81,9 @@ class InputModule(AbstractInput):
         self.sensor = None
 
         if not testing:
-            self.initialize_input()
+            self.try_initialize()
 
-    def initialize_input(self):
+    def initialize(self):
         from Adafruit_BME280 import BME280
 
         self.sensor = BME280(

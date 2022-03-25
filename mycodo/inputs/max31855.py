@@ -59,9 +59,9 @@ class InputModule(AbstractInput):
         self.sensor = None
 
         if not testing:
-            self.initialize_input()
+            self.try_initialize()
 
-    def initialize_input(self):
+    def initialize(self):
         import Adafruit_MAX31855.MAX31855 as MAX31855
 
         self.sensor = MAX31855.MAX31855(
