@@ -14,8 +14,6 @@ OUTPUT_INFORMATION = {
     'options_enabled': [],
     'options_disabled': [],
 
-    'interfaces': ['MYCODO'],
-
     'custom_options': [
         {
             'id': 'color',

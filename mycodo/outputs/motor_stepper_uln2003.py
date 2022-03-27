@@ -30,9 +30,7 @@ channels_dict = {
 # Output information
 OUTPUT_INFORMATION = {
     'output_name_unique': 'stepper_uln2003',
-    'output_name': "{}: {}, ULN2003".format(
-        lazy_gettext('Stepper Motor'),
-        lazy_gettext('Unipolar')),
+    'output_name': f"{lazy_gettext('Motor')}: ULN2003 {lazy_gettext('Stepper Motor')}, {lazy_gettext('Unipolar')}",
     'output_manufacturer': 'STMicroelectronics',
     'measurements_dict': measurements_dict,
     'channels_dict': channels_dict,

@@ -65,7 +65,7 @@ channels_dict = {
 # Output information
 OUTPUT_INFORMATION = {
     'output_name_unique': 'grove_i2c_motor_driver_v1_0',
-    'output_name': "Grove I2C Motor Driver (TB6612FNG, Board v1.0)",
+    'output_name': f"{lazy_gettext('Motor')}: Grove I2C Motor Driver (TB6612FNG, Board v1.0)",
     'output_manufacturer': 'Grove',
     'output_library': 'smbus2',
     'measurements_dict': measurements_dict,
@@ -82,16 +82,13 @@ OUTPUT_INFORMATION = {
         'button_send_volume',
         'button_send_duration'
     ],
-    'options_disabled': [
-        'interface'
-    ],
+    'options_disabled': ['interface'],
 
     'dependencies_module': [
         ('pip-pypi', 'smbus2', 'smbus2==0.4.1')
     ],
 
     'interfaces': ['I2C'],
-
     'i2c_address_editable': True,
     'i2c_address_default': '0x14',
 

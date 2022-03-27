@@ -28,7 +28,7 @@
         <input id="output_name_{{each_output.unique_id}}" class="form-control" disabled="" value="{{each_output.name}}" type="text">
       </div>
       <div class="col-6">
-        <input class="form-control" disabled="" value="[{{each_output.interface}}] {{dict_outputs[each_output.output_type]['output_name']}}{% if dict_outputs[each_output.output_type]['output_library'] %} ({{dict_outputs[each_output.output_type]['output_library']}}){% endif %}" type="text">
+        <input class="form-control" disabled="" value="{% if each_output.interface %}[{{each_output.interface}}] {% endif %}{{dict_outputs[each_output.output_type]['output_name']}}{% if dict_outputs[each_output.output_type]['output_library'] %} ({{dict_outputs[each_output.output_type]['output_library']}}){% endif %}" type="text">
       </div>
     </div>
 

@@ -44,7 +44,7 @@ class InputAdd(FlaskForm):
                 dict_inputs[each_input]['input_library']):
             name += ' ({lib})'.format(lib=dict_inputs[each_input]['input_library'])
 
-        if 'interfaces' in dict_inputs[each_input]:
+        if 'interfaces' in dict_inputs[each_input] and dict_inputs[each_input]['interfaces']:
             for each_interface in dict_inputs[each_input]['interfaces']:
                 tmp_value = '{val}{int}'.format(val=value, int=each_interface)
                 tmp_name = '{name} [{int}]'.format(name=name, int=each_interface)

@@ -23,7 +23,7 @@ channels_dict = {
 
 OUTPUT_INFORMATION = {
     'output_name_unique': 'MQTT_PAHO',
-    'output_name': "MQTT Publish: {}".format(lazy_gettext('On/Off')),
+    'output_name': f"{lazy_gettext('On/Off')}: MQTT Publish",
     'output_manufacturer': 'Mycodo',
     'output_library': 'paho-mqtt',
     'measurements_dict': measurements_dict,
@@ -31,8 +31,6 @@ OUTPUT_INFORMATION = {
     'output_types': ['on_off'],
 
     'url_additional': 'http://www.eclipse.org/paho/',
-
-    'interfaces': ['MYCODO'],
 
     'message': 'Publish "on" or "off" (or any other strings of your choosing) to an MQTT server.',
 
@@ -45,6 +43,8 @@ OUTPUT_INFORMATION = {
         'button_send_duration'
     ],
     'options_disabled': ['interface'],
+
+    'interfaces': ['IP'],
 
     'custom_channel_options': [
         {

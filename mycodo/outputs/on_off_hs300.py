@@ -35,7 +35,7 @@ channels_dict = {
 # Output information
 OUTPUT_INFORMATION = {
     'output_name_unique': 'hs300',
-    'output_name': "HS300 Kasa Smart WiFi Power Strip",
+    'output_name': f"{lazy_gettext('On/Off')}: HS300 Kasa Smart WiFi Power Strip",
     'output_manufacturer': 'TP-Link',
     'input_library': 'python-kasa',
     'measurements_dict': measurements_dict,
@@ -52,12 +52,12 @@ OUTPUT_INFORMATION = {
     ],
     'options_disabled': ['interface'],
 
-    'interfaces': ['MYCODO'],
-
     'dependencies_module': [
         # Do not update past 0.4.0.dev4, 0.4.0.dev5 and above breaks this module's functionality
         ('pip-pypi', 'kasa', 'python-kasa==0.4.0.dev4')
     ],
+
+    'interfaces': ['IP'],
 
     'custom_options': [
         {

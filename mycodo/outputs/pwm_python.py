@@ -156,7 +156,7 @@ channels_dict = {
 # Output information
 OUTPUT_INFORMATION = {
     'output_name_unique': 'python_pwm',
-    'output_name': "Python 3 Code: {}".format(lazy_gettext('PWM')),
+    'output_name': f"{lazy_gettext('PWM')}: Python 3 Code",
     'measurements_dict': measurements_dict,
     'channels_dict': channels_dict,
     'execute_at_modification': execute_at_modification,

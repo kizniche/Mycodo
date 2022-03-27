@@ -28,8 +28,7 @@ for each_channel in range(16):
 # Output information
 OUTPUT_INFORMATION = {
     'output_name_unique': 'MCP23017',
-    'output_name': "{}: MCP23017 (16 Channels): {}".format(
-        lazy_gettext("I/O Expander"), lazy_gettext('On/Off')),
+    'output_name': f"{lazy_gettext('On/Off')}: MCP23017 16-Channel {lazy_gettext('I/O Expander')}",
     'output_manufacturer': 'MICROCHIP',
     'measurements_dict': measurements_dict,
     'channels_dict': channels_dict,

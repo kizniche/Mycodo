@@ -70,7 +70,7 @@ OUTPUT_INFORMATION = {
 
     # The interface or interfaces that can be used with this module
     # A custom interface can be used.
-    # Options: SHELL, PYTHON, GPIO, I2C, FTDI, UART
+    # Options: SHELL, PYTHON, GPIO, I2C, FTDI, UART, IP
     'interfaces': ['GPIO'],
 
     # Custom actions that will appear at the top of the options in the user interface.

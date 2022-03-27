@@ -51,8 +51,9 @@ def input_add(form_add):
 
     # only one comma should be in the input_type string
     if form_add.input_type.data.count(',') > 1:
-        messages["error"].append("Invalid input module formatting. It appears there is "
-                     "a comma in either 'input_name_unique' or 'interfaces'.")
+        messages["error"].append(
+            "Invalid input module formatting. It appears there is "
+            "a comma in either 'input_name_unique' or 'interfaces'.")
 
     if form_add.input_type.data.count(',') == 1:
         input_name = form_add.input_type.data.split(',')[0]

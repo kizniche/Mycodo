@@ -1,7 +1,9 @@
 # coding=utf-8
 #
-# grove_multichannel_relay.py - Output for the Grove Multichannel Relay
+# pcf8574.py - Output for PCF8574
 #
+from collections import OrderedDict
+
 from flask_babel import lazy_gettext
 
 from mycodo.config_translations import TRANSLATIONS
@@ -10,103 +12,39 @@ from mycodo.outputs.base_output import AbstractOutput
 from mycodo.utils.database import db_retrieve_table_daemon
 
 # Measurements
-measurements_dict = {
-    0: {
+measurements_dict = OrderedDict()
+channels_dict = OrderedDict()
+for each_channel in range(8):
+    measurements_dict[each_channel] = {
         'measurement': 'duration_time',
-        'unit': 's',
-    },
-    1: {
-        'measurement': 'duration_time',
-        'unit': 's',
-    },
-    2: {
-        'measurement': 'duration_time',
-        'unit': 's',
-    },
-    3: {
-        'measurement': 'duration_time',
-        'unit': 's',
-    },
-    4: {
-        'measurement': 'duration_time',
-        'unit': 's',
-    },
-    5: {
-        'measurement': 'duration_time',
-        'unit': 's',
-    },
-    6: {
-        'measurement': 'duration_time',
-        'unit': 's',
-    },
-    7: {
-        'measurement': 'duration_time',
-        'unit': 's',
+        'unit': 's'
     }
-}
-
-channels_dict = {
-    0: {
-        'name': 'Relay 1',
+    channels_dict[each_channel] = {
+        'name': f'Channel {each_channel + 1}',
         'types': ['on_off'],
-        'measurements': [0]
-    },
-    1: {
-        'name': 'Relay 2',
-        'types': ['on_off'],
-        'measurements': [1]
-    },
-    2: {
-        'name': 'Relay 3',
-        'types': ['on_off'],
-        'measurements': [2]
-    },
-    3: {
-        'name': 'Relay 4',
-        'types': ['on_off'],
-        'measurements': [3]
-    },
-    4: {
-        'name': 'Relay 5',
-        'types': ['on_off'],
-        'measurements': [4]
-    },
-    5: {
-        'name': 'Relay 6',
-        'types': ['on_off'],
-        'measurements': [5]
-    },
-    6: {
-        'name': 'Relay 7',
-        'types': ['on_off'],
-        'measurements': [6]
-    },
-    7: {
-        'name': 'Relay 8',
-        'types': ['on_off'],
-        'measurements': [7]
+        'measurements': [each_channel]
     }
-}
 
 # Output information
 OUTPUT_INFORMATION = {
-    'output_name_unique': 'Grove_Multichannel_Relay',
-    'output_name': "Grove Multichannel Relay (4- or 8-Channel board)",
-    'output_manufacturer': 'Grove',
+    'output_name_unique': 'PCF8574',
+    'output_name': f"{lazy_gettext('On/Off')}: PCF8574 8-Channel {{lazy_gettext('I/O Expander')}}",
+    'output_manufacturer': 'Texas Instruments',
     'output_library': 'smbus2',
     'measurements_dict': measurements_dict,
     'channels_dict': channels_dict,
     'output_types': ['on_off'],
 
-    'url_manufacturer': 'https://www.seeedstudio.com/Grove-4-Channel-SPDT-Relay-p-3119.html',
-    'url_datasheet': 'http://wiki.seeedstudio.com/Grove-4-Channel_SPDT_Relay/',
-    'url_product_purchase': 'https://www.seeedstudio.com/Grove-4-Channel-SPDT-Relay-p-3119.html',
+    'url_manufacturer': 'https://www.ti.com/product/PCF8574',
+    'url_datasheet': 'https://www.ti.com/lit/ds/symlink/pcf8574.pdf',
+    'url_product_purchase': 'https://www.amazon.com/gp/product/B07JGSNWFF',
 
-    'message': 'Controls the 4 or 8 channel Grove multichannel relay board.',
+    'message': 'Controls the 8 channels of the PCF8574.',
 
     'options_enabled': [
         'i2c_location',
         'button_on',
+        'button_send_duration'
     ],
     'options_disabled': ['interface'],
 
@@ -116,10 +54,11 @@ OUTPUT_INFORMATION = {
 
     'interfaces': ['I2C'],
     'i2c_location': [
-        '0x11'
+        '0x20', '0x21', '0x22', '0x23', '0x24', '0x25', '0x26', '0x27',
+        '0x38', '0x39', '0x3a', '0x3b', '0x3c', '0x3d', '0x3e', '0x3f'
     ],
-    'i2c_address_editable': True,
-    'i2c_address_default': '0x11',
+    'i2c_address_editable': False,
+    'i2c_address_default': '0x20',
 
     'custom_channel_options': [
         {
@@ -139,7 +78,7 @@ OUTPUT_INFORMATION = {
                 (1, 'On')
             ],
             'name': lazy_gettext('Startup State'),
-            'phrase': 'Set the state of the relay when Mycodo starts'
+            'phrase': 'Set the state of the GPIO when Mycodo starts'
         },
         {
             'id': 'state_shutdown',
@@ -150,7 +89,7 @@ OUTPUT_INFORMATION = {
                 (1, 'On')
             ],
             'name': lazy_gettext('Shutdown State'),
-            'phrase': 'Set the state of the relay when Mycodo shuts down'
+            'phrase': 'Set the state of the GPIO when Mycodo shuts down'
         },
         {
             'id': 'on_state',
@@ -175,7 +114,7 @@ OUTPUT_INFORMATION = {
             'type': 'float',
             'default_value': 0.0,
             'required': True,
-            'name': '{} ({})'.format(lazy_gettext('Current'), lazy_gettext('Amps')),
+            'name': f"{lazy_gettext('Current')} ({lazy_gettext('Amps')})",
             'phrase': 'The current draw of the device being controlled'
         }
     ]
@@ -200,9 +139,9 @@ class OutputModule(AbstractOutput):
         self.setup_output_variables(OUTPUT_INFORMATION)
 
         try:
-            self.logger.debug("I2C: Address: {}, Bus: {}".format(self.output.i2c_location, self.output.i2c_bus))
+            self.logger.debug(f"I2C: Address: {self.output.i2c_location}, Bus: {self.output.i2c_bus}")
             if self.output.i2c_location:
-                self.sensor = GroveMultiRelay(smbus2, self.output.i2c_bus, int(str(self.output.i2c_location), 16))
+                self.sensor = PCF8574(smbus2, self.output.i2c_bus, int(str(self.output.i2c_location), 16))
                 self.output_setup = True
         except:
             self.logger.exception("Could not set up output")
@@ -218,13 +157,14 @@ class OutputModule(AbstractOutput):
                 # Default state: Off
                 dict_states[channel] = bool(not self.options_channels['on_state'][channel])
 
-        self.logger.debug("List sent to device: {}".format(self.dict_to_list_states(dict_states)))
         try:
             self.sensor.port(self.dict_to_list_states(dict_states))
+            self.logger.debug(f"List sent to device: {dict_states}")
         except OSError as err:
             self.logger.error(
-                "OSError: {}. Check that the device is connected properly, the correct "
-                "address is selected, and you can communicate with the device.".format(err))
+                f"OSError: {err}. Check that the device is connected properly, the correct "
+                "address is selected, and you can communicate with the device.")
+
         self.output_states = dict_states
 
         for channel in channels_dict:
@@ -232,9 +172,7 @@ class OutputModule(AbstractOutput):
                 try:
                     self.check_triggers(self.unique_id, output_channel=channel)
                 except Exception as err:
-                    self.logger.error(
-                        "Could not check Trigger for channel {} of output {}: {}".format(
-                            channel, self.unique_id, err))
+                    self.logger.error(f"Could not check Trigger for channel {channel}: {err}")
 
     def output_switch(self,
                       state,
@@ -242,13 +180,13 @@ class OutputModule(AbstractOutput):
                       amount=None,
                       duty_cycle=None,
                       output_channel=None):
-        if not self.is_setup():
-            msg = "Error 101: Device not set up. See https://kizniche.github.io/Mycodo/Error-Codes#error-101 for more info."
+        if output_channel is None:
+            msg = "Output channel needs to be specified"
             self.logger.error(msg)
             return msg
 
-        if output_channel is None:
-            msg = "Output channel needs to be specified"
+        if not self.is_setup():
+            msg = "Error 101: Device not set up. See https://kizniche.github.io/Mycodo/Error-Codes#error-101 for more info."
             self.logger.error(msg)
             return msg
 
@@ -263,12 +201,12 @@ class OutputModule(AbstractOutput):
                 else:
                     dict_states[channel] = self.output_states[channel]
 
-            self.logger.debug("List sent to device: {}".format(self.dict_to_list_states(dict_states)))
             self.sensor.port(self.dict_to_list_states(dict_states))
+            self.logger.debug(f"List sent to device: {dict_states}")
             self.output_states[output_channel] = dict_states[output_channel]
             msg = "success"
-        except Exception as e:
-            msg = "CH{} state change error: {}".format(output_channel, e)
+        except Exception as err:
+            msg = f"CH{output_channel} state change error: {err}"
             self.logger.error(msg)
         return msg
 
@@ -296,20 +234,20 @@ class OutputModule(AbstractOutput):
                     dict_states[channel] = bool(self.options_channels['on_state'][channel])
                 elif self.options_channels['state_shutdown'][channel] == 0:
                     dict_states[channel] = bool(not self.options_channels['on_state'][channel])
-            self.logger.debug("List sent to device: {}".format(self.dict_to_list_states(dict_states)))
             self.sensor.port(self.dict_to_list_states(dict_states))
+            self.logger.debug(f"List sent to device: {dict_states}")
         self.running = False
 
 
-class GroveMultiRelay(object):
-    """A software representation of a single GroveMultiRelay IO expander chip."""
+class PCF8574(object):
+    """A software representation of a single PCF8574 IO expander chip."""
     def __init__(self, smbus, i2c_bus, i2c_address):
         self.bus_no = i2c_bus
         self.bus = smbus.SMBus(i2c_bus)
         self.address = i2c_address
 
     def __repr__(self):
-        return "GroveMultiRelay(i2c_bus_no=%r, address=0x%02x)" % (self.bus_no, self.address)
+        return f"PCF8574(i2c_bus_no={self.bus_no}, address={self.address})"
 
     def port(self, value):
         """Set the whole port using a list"""
@@ -321,4 +259,4 @@ class GroveMultiRelay(object):
         for i, val in enumerate(value):
             if val:
                 new_state |= 1 << i
-        self.bus.write_byte_data(self.address, 0x10, new_state)
+        self.bus.write_byte(self.address, new_state)
