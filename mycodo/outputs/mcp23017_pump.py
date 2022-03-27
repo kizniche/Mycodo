@@ -1,6 +1,6 @@
 # coding=utf-8
 #
-# pcf8574_pump.py - Pump Output for PCF8574
+# mcp23017_pump.py - Pump Output for MCP23017
 #
 import copy
 import datetime
@@ -21,7 +21,7 @@ from mycodo.utils.lockfile import LockFile
 measurements_dict = OrderedDict()
 channels_dict = OrderedDict()
 measure = 0
-for each_channel in range(8):
+for each_channel in range(16):
     measurements_dict = {
         measure: {
             'measurement': 'duration_time',
@@ -49,20 +49,19 @@ for each_channel in range(8):
 
 # Output information
 OUTPUT_INFORMATION = {
-    'output_name_unique': 'PCF8574_PUMP',
-    'output_name': f"{lazy_gettext('I/O Expander')}: PCF8574 (8 Channels): "
+    'output_name_unique': 'MCP23017_PUMP',
+    'output_name': f"{lazy_gettext('I/O Expander')}: MCP23017 (16 Channels): "
                    f"{lazy_gettext('Peristaltic Pump')} ({lazy_gettext('Generic')})",
-    'output_manufacturer': 'Texas Instruments',
-    'output_library': 'smbus2',
+    'output_manufacturer': 'MICROCHIP',
     'measurements_dict': measurements_dict,
     'channels_dict': channels_dict,
     'output_types': ['volume', 'on_off'],
 
-    'url_manufacturer': 'https://www.ti.com/product/PCF8574',
-    'url_datasheet': 'https://www.ti.com/lit/ds/symlink/pcf8574.pdf',
-    'url_product_purchase': 'https://www.amazon.com/gp/product/B07JGSNWFF',
+    'url_manufacturer': 'https://www.microchip.com/wwwproducts/en/MCP23017',
+    'url_datasheet': 'https://ww1.microchip.com/downloads/en/devicedoc/20001952c.pdf',
+    'url_product_purchase': 'https://www.amazon.com/Waveshare-MCP23017-Expansion-Interface-Expands/dp/B07P2H1NZG',
 
-    'message': 'Controls the 8 channels of the PCF8574 with a relay and peristaltic pump connected to each channel.',
+    'message': 'Controls the 16 channels of the MCP23017 with a relay and peristaltic pump connected to each channel.',
 
     'options_enabled': [
         'i2c_location',
@@ -72,14 +71,13 @@ OUTPUT_INFORMATION = {
     'options_disabled': ['interface'],
 
     'dependencies_module': [
-        ('pip-pypi', 'smbus2', 'smbus2==0.4.1')
+        ('pip-pypi', 'usb.core', 'pyusb==1.1.1'),
+        ('pip-pypi', 'adafruit_extended_bus', 'Adafruit-extended-bus==1.0.2'),
+        ('pip-pypi', 'adafruit_mcp230xx', 'adafruit-circuitpython-mcp230xx==2.4.6')
     ],
 
     'interfaces': ['I2C'],
-    'i2c_location': [
-        '0x20', '0x21', '0x22', '0x23', '0x24', '0x25', '0x26', '0x27',
-        '0x38', '0x39', '0x3a', '0x3b', '0x3c', '0x3d', '0x3e', '0x3f'
-    ],
+    'i2c_location': ['0x20', '0x21', '0x22', '0x23', '0x24', '0x25', '0x26', '0x27', ],
     'i2c_address_editable': False,
     'i2c_address_default': '0x20',
 
@@ -154,6 +152,7 @@ class OutputModule(AbstractOutput):
         super().__init__(output, testing=testing, name=__name__)
 
         self.sensor = None
+        self.pins = []
         self.lock_file = None
         self.output_states = {}
         self.currently_dispensing = {}
@@ -164,38 +163,34 @@ class OutputModule(AbstractOutput):
             OUTPUT_INFORMATION['custom_channel_options'], output_channels)
 
     def initialize(self):
-        import smbus2
+        from adafruit_mcp230xx.mcp23017 import MCP23017
+        from adafruit_extended_bus import ExtendedI2C
 
         self.setup_output_variables(OUTPUT_INFORMATION)
 
         try:
             self.logger.debug(f"I2C: Address: {self.output.i2c_location}, Bus: {self.output.i2c_bus}")
             if self.output.i2c_location:
-                self.sensor = PCF8574(smbus2, self.output.i2c_bus, int(str(self.output.i2c_location), 16))
+                self.sensor = MCP23017(
+                    ExtendedI2C(self.output.i2c_bus),
+                    address=int(str(self.output.i2c_location), 16))
                 self.lock_file = f'/var/lock/pcf8574_{self.output.i2c_bus}_{self.output.i2c_location}'
                 self.output_setup = True
         except:
             self.logger.exception("Could not set up output")
             return
 
-        dict_states = {}
-        for channel in channels_dict:
-            dict_states[channel] = bool(not self.options_channels['on_state'][channel])
-            state = 'LOW' if self.options_channels['on_state'][0] else 'HIGH'
-            self.currently_dispensing[channel] = False
-            self.logger.info(f"Output setup on channel {channel} and turned OFF (OFF={state})")
-
-        try:
-            self.sensor.port(self.dict_to_list_states(dict_states))
-            self.logger.debug(f"List sent to device: {dict_states}")
-        except OSError as err:
-            self.logger.error(
-                f"OSError: {err}. Check that the device is connected properly, the correct "
-                "address is selected, and you can communicate with the device.")
-
-        self.output_states = dict_states
+        for pin in range(0, 16):
+            self.pins.append(self.sensor.get_pin(pin))
 
         for channel in channels_dict:
+            if self.options_channels['state_startup'][channel] == 1:
+                self.turn_on_off(channel, "on")
+            elif self.options_channels['state_startup'][channel] == 0:
+                self.turn_on_off(channel, "off")
+            else:  # Default state: Off
+                self.turn_on_off(channel, "off")
+
             if self.options_channels['trigger_functions_startup'][channel]:
                 try:
                     self.check_triggers(self.unique_id, output_channel=channel)
@@ -207,21 +202,18 @@ class OutputModule(AbstractOutput):
         lf = LockFile()
         if lf.lock_acquire(self.lock_file, timeout=10):
             try:
-                dict_states = {}
                 for channel in channels_dict:
                     if switch_channel == channel:
                         if state == 'on':
-                            dict_states[channel] = bool(self.options_channels['on_state'][channel])
+                            self.pins[channel].switch_to_output(
+                                value=bool(self.options_channels['on_state'][channel]))
+                            self.output_states[switch_channel] = True
                             self.logger.debug("Output turned on")
                         elif state == 'off':
-                            dict_states[channel] = bool(not self.options_channels['on_state'][channel])
+                            self.pins[channel].switch_to_output(
+                                value=bool(not self.options_channels['on_state'][channel]))
+                            self.output_states[switch_channel] = False
                             self.logger.debug("Output turned off")
-                    else:
-                        dict_states[channel] = self.output_states[channel]
-
-                self.sensor.port(self.dict_to_list_states(dict_states))
-                self.logger.debug(f"List sent to device: {dict_states}")
-                self.output_states[switch_channel] = dict_states[switch_channel]
                 msg = "success"
             except Exception as err:
                 msg = f"CH{switch_channel} state change error: {err}"
@@ -323,7 +315,8 @@ class OutputModule(AbstractOutput):
                                   "Overriding current dispense with new instruction.")
 
             if self.options_channels['flow_mode'][output_channel] == 'fastest_flow_rate':
-                total_dispense_seconds = amount / self.options_channels['fastest_dispense_rate_ml_min'][output_channel] * 60
+                total_dispense_seconds = amount / self.options_channels['fastest_dispense_rate_ml_min'][
+                    output_channel] * 60
                 msg = f"Turning pump on for {total_dispense_seconds:.1f} seconds to dispense {amount:.1f} ml " \
                       f"(at {self.options_channels['fastest_dispense_rate_ml_min'][output_channel]:.1f} ml/min, " \
                       f"the fastest flow rate)."
@@ -343,7 +336,8 @@ class OutputModule(AbstractOutput):
                         f"Instructed to dispense {self.options_channels['flow_rate'][output_channel]:.1f} ml/min, "
                         f"however the slowest rate is set to {slowest_rate_ml_min:.1f} ml/min.")
                     dispense_rate = slowest_rate_ml_min
-                elif self.options_channels['flow_rate'][output_channel] > self.options_channels['fastest_dispense_rate_ml_min'][output_channel]:
+                elif self.options_channels['flow_rate'][output_channel] > \
+                        self.options_channels['fastest_dispense_rate_ml_min'][output_channel]:
                     self.logger.debug(
                         f"Instructed to dispense {self.options_channels['flow_rate'][output_channel]:.1f} ml/min, "
                         f"however the fastest rate is set to {self.options_channels['fastest_dispense_rate_ml_min'][output_channel]:.1f} ml/min.")
@@ -384,45 +378,9 @@ class OutputModule(AbstractOutput):
         if self.is_setup():
             return self.output_states[output_channel]
 
-    def is_setup(self):
-        return self.output_setup
-
-    @staticmethod
-    def dict_to_list_states(dict_states):
-        list_states = []
-        for i, _ in enumerate(dict_states):
-            list_states.append(dict_states[i])
-        return list_states
-
     def stop_output(self):
         """Called when Output is stopped."""
-        dict_states = {}
         if self.is_setup():
             for channel in channels_dict:
-                dict_states[channel] = bool(not self.options_channels['on_state'][channel])
-            self.sensor.port(self.dict_to_list_states(dict_states))
-            self.logger.debug(f"List sent to device: {dict_states}")
+                self.pins[channel].value = bool(not self.options_channels['on_state'][channel])
         self.running = False
-
-
-class PCF8574(object):
-    """A software representation of a single PCF8574 IO expander chip."""
-    def __init__(self, smbus, i2c_bus, i2c_address):
-        self.bus_no = i2c_bus
-        self.bus = smbus.SMBus(i2c_bus)
-        self.address = i2c_address
-
-    def __repr__(self):
-        return f"PCF8574(i2c_bus_no={self.bus_no}, address={self.address})"
-
-    def port(self, value):
-        """Set the whole port using a list"""
-        if not isinstance(value, list):
-            raise AssertionError
-        if len(value) != 8:
-            raise AssertionError
-        new_state = 0
-        for i, val in enumerate(value):
-            if val:
-                new_state |= 1 << i
-        self.bus.write_byte(self.address, new_state)
