@@ -22,7 +22,7 @@ LCD and Math Controllers have been completely removed from Mycodo and replaced w
  - Fix BME680 Input dependency
  - Fix Gauge Widget stop selection ([#1130](https://github.com/kizniche/mycodo/issues/1130))
  - Fix DS18B20 (ow-shell) Input ([#910](https://github.com/kizniche/mycodo/issues/910)) (measurements are erroneous, though)
- - Fix PIDs using Functions as measurement ([#1165](https://github.com/kizniche/mycodo/issues/1165))
+ - Fix PIDs using Function measurements ([#1165](https://github.com/kizniche/mycodo/issues/1165))
 
 ### Features
 
@@ -32,6 +32,7 @@ LCD and Math Controllers have been completely removed from Mycodo and replaced w
  - Add camera library: libcamera ([#1117](https://github.com/kizniche/mycodo/issues/1117))
  - Add Input: TTN Integration: Data Storage (TTN v3, Payload jmespath Expression)
  - Add Output: Kasa HS300 Smart WiFi Power Strip
+ - Add Output: I/O Expander: PCF8574 (8 Channels): Peristaltic Pump (Generic)
  - Add size of file for last still and timelapse images
  - Add ability to duplicate Inputs
  - Add ability to invert the saved duty cycle for PWM Outputs
