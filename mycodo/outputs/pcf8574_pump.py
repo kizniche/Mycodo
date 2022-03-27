@@ -49,7 +49,7 @@ for each_channel in range(8):
 
 # Output information
 OUTPUT_INFORMATION = {
-    'output_name_unique': 'PCF8574',
+    'output_name_unique': 'PCF8574_PUMP',
     'output_name': f"{lazy_gettext('I/O Expander')}: PCF8574 (8 Channels): "
                    f"{lazy_gettext('Peristaltic Pump')} ({lazy_gettext('Generic')})",
     'output_manufacturer': 'Texas Instruments',
