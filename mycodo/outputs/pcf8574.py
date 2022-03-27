@@ -20,7 +20,7 @@ for each_channel in range(8):
         'unit': 's'
     }
     channels_dict[each_channel] = {
-        'name': 'Channel {}'.format(each_channel + 1),
+        'name': f'Channel {each_channel + 1}',
         'types': ['on_off'],
         'measurements': [each_channel]
     }
@@ -28,8 +28,7 @@ for each_channel in range(8):
 # Output information
 OUTPUT_INFORMATION = {
     'output_name_unique': 'PCF8574',
-    'output_name': "{}: PCF8574 (8 Channels): {}".format(
-        lazy_gettext("I/O Expander"), lazy_gettext('On/Off')),
+    'output_name': f"{lazy_gettext('I/O Expander')}: PCF8574 (8 Channels): {lazy_gettext('On/Off')}",
     'output_manufacturer': 'Texas Instruments',
     'output_library': 'smbus2',
     'measurements_dict': measurements_dict,
@@ -115,7 +114,7 @@ OUTPUT_INFORMATION = {
             'type': 'float',
             'default_value': 0.0,
             'required': True,
-            'name': '{} ({})'.format(lazy_gettext('Current'), lazy_gettext('Amps')),
+            'name': f"{lazy_gettext('Current')} ({lazy_gettext('Amps')})",
             'phrase': 'The current draw of the device being controlled'
         }
     ]
@@ -140,7 +139,7 @@ class OutputModule(AbstractOutput):
         self.setup_output_variables(OUTPUT_INFORMATION)
 
         try:
-            self.logger.debug("I2C: Address: {}, Bus: {}".format(self.output.i2c_location, self.output.i2c_bus))
+            self.logger.debug(f"I2C: Address: {self.output.i2c_location}, Bus: {self.output.i2c_bus}")
             if self.output.i2c_location:
                 self.sensor = PCF8574(smbus2, self.output.i2c_bus, int(str(self.output.i2c_location), 16))
                 self.output_setup = True
@@ -158,13 +157,13 @@ class OutputModule(AbstractOutput):
                 # Default state: Off
                 dict_states[channel] = bool(not self.options_channels['on_state'][channel])
 
-        self.logger.debug("List sent to device: {}".format(self.dict_to_list_states(dict_states)))
         try:
             self.sensor.port(self.dict_to_list_states(dict_states))
+            self.logger.debug(f"List sent to device: {dict_states}")
         except OSError as err:
             self.logger.error(
-                "OSError: {}. Check that the device is connected properly, the correct "
-                "address is selected, and you can communicate with the device.".format(err))
+                f"OSError: {err}. Check that the device is connected properly, the correct "
+                "address is selected, and you can communicate with the device.")
 
         self.output_states = dict_states
 
@@ -173,9 +172,7 @@ class OutputModule(AbstractOutput):
                 try:
                     self.check_triggers(self.unique_id, output_channel=channel)
                 except Exception as err:
-                    self.logger.error(
-                        "Could not check Trigger for channel {} of output {}: {}".format(
-                            channel, self.unique_id, err))
+                    self.logger.error(f"Could not check Trigger for channel {channel}: {err}")
 
     def output_switch(self,
                       state,
@@ -204,12 +201,12 @@ class OutputModule(AbstractOutput):
                 else:
                     dict_states[channel] = self.output_states[channel]
 
-            self.logger.debug("List sent to device: {}".format(self.dict_to_list_states(dict_states)))
             self.sensor.port(self.dict_to_list_states(dict_states))
+            self.logger.debug(f"List sent to device: {dict_states}")
             self.output_states[output_channel] = dict_states[output_channel]
             msg = "success"
-        except Exception as e:
-            msg = "CH{} state change error: {}".format(output_channel, e)
+        except Exception as err:
+            msg = f"CH{output_channel} state change error: {err}"
             self.logger.error(msg)
         return msg
 
@@ -237,8 +234,8 @@ class OutputModule(AbstractOutput):
                     dict_states[channel] = bool(self.options_channels['on_state'][channel])
                 elif self.options_channels['state_shutdown'][channel] == 0:
                     dict_states[channel] = bool(not self.options_channels['on_state'][channel])
-            self.logger.debug("List sent to device: {}".format(self.dict_to_list_states(dict_states)))
             self.sensor.port(self.dict_to_list_states(dict_states))
+            self.logger.debug(f"List sent to device: {dict_states}")
         self.running = False
 
 
@@ -250,7 +247,7 @@ class PCF8574(object):
         self.address = i2c_address
 
     def __repr__(self):
-        return "PCF8574(i2c_bus_no=%r, address=0x%02x)" % (self.bus_no, self.address)
+        return f"PCF8574(i2c_bus_no={self.bus_no}, address={self.address})"
 
     def port(self, value):
         """Set the whole port using a list"""

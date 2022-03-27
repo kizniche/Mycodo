@@ -92,7 +92,6 @@ class InputModule(AbstractInput):
 
         self.atlas_device = None
         self.interface = None
-        self.lock_timeout = 10
 
         self.led = None
 

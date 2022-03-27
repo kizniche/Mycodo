@@ -129,7 +129,6 @@ class InputModule(AbstractInput):
         self.atlas_device = None
         self.interface = None
         self.atlas_command = None
-        self.lock_timeout = 10
 
         self.temperature_comp_meas_device_id = None
         self.temperature_comp_meas_measurement_id = None

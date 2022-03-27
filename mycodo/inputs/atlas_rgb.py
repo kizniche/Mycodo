@@ -168,7 +168,6 @@ class InputModule(AbstractInput):
         self.atlas_device = None
         self.interface = None
         self.enabled_rgb = False
-        self.lock_timeout = 10
 
         self.led_only_while_reading = None
         self.led_percentage = None

@@ -329,7 +329,6 @@ def pid_del(pid_id):
     return messages
 
 
-# TODO: Add more settings-checks before allowing controller to be activated
 def has_required_pid_values(pid_id, messages):
     pid = PID.query.filter(
         PID.unique_id == pid_id).first()
@@ -343,7 +342,7 @@ def has_required_pid_values(pid_id, messages):
         function = CustomController.query.filter(
             CustomController.unique_id == device_unique_id).first()
         if not input_dev and not function:
-            messages["error"].append("A valid controller is required")
+            messages["error"].append("A valid controller/measurement is required")
 
     if not pid.raise_output_id and not pid.lower_output_id:
         messages["error"].append("A Raise Output and/or a Lower Output is required")

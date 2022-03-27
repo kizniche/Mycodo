@@ -231,7 +231,6 @@ class InputModule(AbstractInput):
 
         self.atlas_device = None
         self.interface = None
-        self.lock_timeout = 10
 
         self.flow_meter_type = None
         self.flow_rate_unit = None

@@ -111,7 +111,6 @@ class InputModule(AbstractInput):
 
         self.atlas_device = None
         self.interface = None
-        self.lock_timeout = 10
 
         if not testing:
             self.try_initialize()
