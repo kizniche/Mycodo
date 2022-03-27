@@ -12,7 +12,7 @@ If you develop a working Output module, please consider [creating a new GitHub i
 
 Open any of the built-in modules located in the directory [Mycodo/mycodo/outputs](https://github.com/kizniche/Mycodo/tree/master/mycodo/outputs/) for examples of the proper formatting.
 
-There are also example Custom Outputs in the directory [Mycodo/mycodo/outputs/examples](https://github.com/kizniche/Mycodo/tree/master/mycodo/functions/examples)
+There are also example Custom Outputs in the directory [Mycodo/mycodo/outputs/examples](https://github.com/kizniche/Mycodo/tree/master/mycodo/outputs/examples)
 
 Additionally, I have another github repository devoted to Custom Modules that are not included in the built-in set, at [kizniche/Mycodo-custom](https://github.com/kizniche/Mycodo-custom).
 
