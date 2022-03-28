@@ -58,18 +58,6 @@ runSelfUpgrade() {
 
   printf "\n#### Beginning pre-upgrade checks ####\n\n"
 
-  # Maintenance mode
-  # This is a temporary state so the developer can test a version release before users can upgrade.
-  # Creating the file ~/Mycodo/.maintenance will override maintenece mode.
-  if python "${CURRENT_MYCODO_DIRECTORY}"/mycodo/scripts/upgrade_check.py --maintenance_mode; then
-    if [[ ! -e $CURRENT_MYCODO_DIRECTORY/.maintenance ]]; then
-      printf "The Mycodo upgrade system is currently in maintenance mode so the developer can test the latest upgrade.\n"
-      printf "Please wait and attempt the upgrade later.\n"
-      echo '0' > "${CURRENT_MYCODO_DIRECTORY}"/.upgrade
-      exit 1
-    fi
-  fi
-
   # Upgrade requires Python >= 3.6
   printf "Checking Python version...\n"
   if hash python3 2>/dev/null; then
