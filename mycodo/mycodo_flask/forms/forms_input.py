@@ -26,15 +26,22 @@ logger = logging.getLogger("mycodo.forms_input")
 
 
 class InputAdd(FlaskForm):
+    choices_builtin = []
     choices_inputs = []
     dict_inputs = parse_input_information()
     list_inputs_sorted = generate_form_input_list(dict_inputs)
 
     for each_input in list_inputs_sorted:
+        is_mycodo = False
         value = '{inp},'.format(inp=each_input)
-        name = '{manuf}: {name}'.format(
-            manuf=dict_inputs[each_input]['input_manufacturer'],
-            name=dict_inputs[each_input]['input_name'])
+        if 'input_manufacturer' in dict_inputs[each_input] and dict_inputs[each_input]['input_manufacturer']:
+            name = '{manuf}: {name}'.format(
+                manuf=dict_inputs[each_input]['input_manufacturer'],
+                name=dict_inputs[each_input]['input_name'])
+            if dict_inputs[each_input]['input_manufacturer'] == "Mycodo":
+                is_mycodo = True
+        else:
+            name = dict_inputs[each_input]['input_name']
 
         if ('measurements_name' in dict_inputs[each_input] and
                 dict_inputs[each_input]['measurements_name']):
@@ -48,12 +55,18 @@ class InputAdd(FlaskForm):
             for each_interface in dict_inputs[each_input]['interfaces']:
                 tmp_value = '{val}{int}'.format(val=value, int=each_interface)
                 tmp_name = '{name} [{int}]'.format(name=name, int=each_interface)
-                choices_inputs.append((tmp_value, tmp_name))
+                if is_mycodo:
+                    choices_builtin.append((tmp_value, tmp_name))
+                else:
+                    choices_inputs.append((tmp_value, tmp_name))
         else:
-            choices_inputs.append((value, name))
+            if is_mycodo:
+                choices_builtin.append((value, name))
+            else:
+                choices_inputs.append((value, name))
 
     input_type = SelectField(
-        choices=choices_inputs,
+        choices=choices_builtin + choices_inputs,
         validators=[DataRequired()]
     )
     input_add = SubmitField(TRANSLATIONS['add']['title'])

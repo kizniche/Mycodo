@@ -56,10 +56,6 @@ INPUT_INFORMATION = {
         'period',
         'pre_output'
     ],
-    'options_disabled': ['interface'],
-
-    'dependencies_module': [],
-    'interfaces': ['MYCODO'],
 
     'custom_options': [
         {

@@ -16,7 +16,7 @@ measurements_dict = {
 # Input information
 INPUT_INFORMATION = {
     'input_name_unique': 'SERVER_PING',
-    'input_manufacturer': 'System',
+    'input_manufacturer': 'Mycodo',
     'input_name': 'Server Ping',
     'input_library': 'ping',
     'measurements_name': 'Boolean',
@@ -31,9 +31,7 @@ INPUT_INFORMATION = {
         'period',
         'pre_output'
     ],
-    'options_disabled': ['interface'],
 
-    'interfaces': ['MYCODO'],
     'location': {
         'name': TRANSLATIONS["host"]["title"],
         'phrase': TRANSLATIONS["host"]["phrase"],

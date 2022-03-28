@@ -23,7 +23,7 @@ measurements_dict = {
 # Input information
 INPUT_INFORMATION = {
     'input_name_unique': 'RPiCPULoad',
-    'input_manufacturer': 'System',
+    'input_manufacturer': 'Mycodo',
     'input_name': 'CPU Load',
     'input_library': 'os.getloadavg()',
     'measurements_name': 'CPULoad',
@@ -33,9 +33,7 @@ INPUT_INFORMATION = {
         'measurements_select',
         'period'
     ],
-    'options_disabled': ['interface'],
 
-    'interfaces': ['Mycodo'],
     'location': {
         'title': 'Directory',
         'phrase': 'Directory to report the free space of',

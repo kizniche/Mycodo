@@ -9,11 +9,6 @@ INPUT_INFORMATION = {
 
     'message': 'A spacer to organize Inputs.',
 
-    'options_enabled': [],
-    'options_disabled': [],
-
-    'interfaces': ['MYCODO'],
-
     'custom_options': [
         {
             'id': 'color',

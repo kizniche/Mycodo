@@ -48,7 +48,7 @@ channels_dict = {
 # Input information
 INPUT_INFORMATION = {
     'input_name_unique': 'TTN_DATA_STORAGE_TTN_V3_JMESPATH',
-    'input_manufacturer': 'Mycodo',
+    'input_manufacturer': 'The Things Network',
     'input_name': 'TTN Integration: Data Storage (TTN v3, Payload jmespath Expression)',
     'input_library': 'requests, jmespath',
     'measurements_name': 'Variable measurements',
@@ -76,14 +76,11 @@ INPUT_INFORMATION = {
         'start_offset',
         'pre_output'
     ],
-    'options_disabled': ['interface'],
 
     'dependencies_module': [
         ('pip-pypi', 'requests', 'requests==2.25.1'),
         ('pip-pypi', 'jmespath', 'jmespath==0.10.0')
     ],
-
-    'interfaces': ['MYCODO'],
 
     'custom_options': [
         {

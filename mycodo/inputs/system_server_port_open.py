@@ -16,7 +16,7 @@ measurements_dict = {
 # Input information
 INPUT_INFORMATION = {
     'input_name_unique': 'SERVER_PORT_OPEN',
-    'input_manufacturer': 'System',
+    'input_manufacturer': 'Mycodo',
     'input_name': 'Server Port Open',
     'input_library': 'nc',
     'measurements_name': 'Boolean',
@@ -30,9 +30,7 @@ INPUT_INFORMATION = {
         'period',
         'pre_output'
     ],
-    'options_disabled': ['interface'],
 
-    'interfaces': ['Mycodo'],
     'location': {
         'name': TRANSLATIONS["host"]["title"],
         'phrase': TRANSLATIONS["host"]["phrase"],

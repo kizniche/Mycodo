@@ -24,7 +24,7 @@ channels_dict = {
 # Input information
 INPUT_INFORMATION = {
     'input_name_unique': 'MQTT_PAHO',
-    'input_manufacturer': 'Mycodo',
+    'input_manufacturer': 'MQTT',
     'input_name': 'MQTT Subscribe (Value payload)',
     'input_library': 'paho-mqtt',
     'measurements_name': 'Variable measurements',

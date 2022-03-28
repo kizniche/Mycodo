@@ -19,15 +19,10 @@ INPUT_INFORMATION = {
     'input_name_unique': 'MYCODO_RAM',
     'input_manufacturer': 'Mycodo',
     'input_library': 'resource.getrusage()',
-    'measurements_name': 'Size RAM in Use',
+    'measurements_name': 'Daemon RAM Allocation',
     'measurements_dict': measurements_dict,
 
-    'options_enabled': [
-        'period'
-    ],
-    'options_disabled': ['interface'],
-
-    'interfaces': ['Mycodo']
+    'options_enabled': ['period'],
 }
 
 

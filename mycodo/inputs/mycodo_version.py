@@ -35,10 +35,7 @@ INPUT_INFORMATION = {
     'options_enabled': [
         'period',
         'measurements_select'
-    ],
-    'options_disabled': ['interface'],
-
-    'interfaces': ['Mycodo']
+    ]
 }
 
 
