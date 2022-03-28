@@ -41,7 +41,7 @@ Measurements
  - [Oxidation Reduction Potential](#oxidation-reduction-potential)
  - [PM10](#pm10)
  - [PM1](#pm1)
- - [PM2.5](#pm2.5)
+ - [PM2.5](#pm25)
  - [Power](#power)
  - [Apparent Power](#apparent-power)
  - [Power Factor](#power-factor)
@@ -127,9 +127,9 @@ Measurements
 
 ## Boolean
 
-### [System: Server Ping](/Mycodo/Supported-Inputs/#system-server-ping)
+### [Mycodo: Server Ping](/Mycodo/Supported-Inputs/#mycodo-server-ping)
 
-### [System: Server Port Open](/Mycodo/Supported-Inputs/#system-server-port-open)
+### [Mycodo: Server Port Open](/Mycodo/Supported-Inputs/#mycodo-server-port-open)
 
 ## CO2
 
@@ -181,15 +181,15 @@ Measurements
 
 ## CPU Load (15 min)
 
-### [System: CPU Load](/Mycodo/Supported-Inputs/#system-cpu-load)
+### [Mycodo: CPU Load](/Mycodo/Supported-Inputs/#mycodo-cpu-load)
 
 ## CPU Load (1 min)
 
-### [System: CPU Load](/Mycodo/Supported-Inputs/#system-cpu-load)
+### [Mycodo: CPU Load](/Mycodo/Supported-Inputs/#mycodo-cpu-load)
 
 ## CPU Load (5 min)
 
-### [System: CPU Load](/Mycodo/Supported-Inputs/#system-cpu-load)
+### [Mycodo: CPU Load](/Mycodo/Supported-Inputs/#mycodo-cpu-load)
 
 ## Dewpoint
 
@@ -265,9 +265,9 @@ Measurements
 
 ## Disk
 
-### [Mycodo: Mycodo RAM](/Mycodo/Supported-Inputs/#mycodo-mycodo-ram)
+### [Mycodo: Free Space](/Mycodo/Supported-Inputs/#mycodo-free-space)
 
-### [System: Free Space](/Mycodo/Supported-Inputs/#system-free-space)
+### [Mycodo: Mycodo RAM](/Mycodo/Supported-Inputs/#mycodo-mycodo-ram)
 
 ## Dissolved Oxygen
 

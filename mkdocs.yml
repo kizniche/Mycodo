@@ -5,7 +5,7 @@ site_description: Documentation for Mycodo
 repo_name: 'kizniche/Mycodo'
 repo_url: 'https://github.com/kizniche/Mycodo'
 extra:
-    version: 8.12.9
+    version: 8.13.0
 
 plugins:
   - search:
@@ -18,7 +18,7 @@ plugins:
       cover_title: Mycodo
       cover_subtitle: Environmental monitoring and regulation system
       cover_logo: images/logo.png
-      copyright: Copyright © 2021
+      copyright: Copyright © 2022
       output_path: ../docs/mycodo-manual.pdf
 
 theme:

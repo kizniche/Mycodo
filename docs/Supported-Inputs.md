@@ -86,15 +86,11 @@ All channels require a Measurement Unit to be selected and saved in order to sto
 - Type: Boolean
 - Description: Check to turn the output off after (opposed to before) the measurement is complete
 
-### Mycodo: MQTT Subscribe (JSON payload)
+### Mycodo: CPU Load
 
 - Manufacturer: Mycodo
-- Measurements: Variable measurements
-- Interfaces: Mycodo
-- Libraries: paho-mqtt, jmespath
-- Dependencies: [paho-mqtt](https://pypi.org/project/paho-mqtt), [jmespath](https://pypi.org/project/jmespath)
-
-A single topic is subscribed to and the returned JSON payload contains one or more key/value pairs. The given JSON Key is used as a JMESPATH expression to find the corresponding value that will be stored for that channel. Be sure you select and save the Measurement Unit for each channel. Once the unit has been saved, you can convert to other units in the Convert Measurement section. Example expressions for jmespath (https://jmespath.org) include <i>temperature</i>, <i>sensors[0].temperature</i>, and <i>bathroom.temperature</i> which refer to the temperature as a direct key within the first entry of sensors or as a subkey of bathroom, respectively. Jmespath elements and keys that contain special characters have to be enclosed in double quotes, e.g. <i>"sensor-1".temperature</i>. Warning: If using multiple MQTT Inputs or Functions, ensure the Client IDs are unique.
+- Measurements: CPULoad
+- Libraries: os.getloadavg()
 
 #### Options
 
@@ -103,148 +99,28 @@ A single topic is subscribed to and the returned JSON payload contains one or mo
 - Type: Multi-Select
 - Description: The measurements to record
 
-##### Host
+##### Period (seconds)
 
-- Type: Text
-- Default Value: localhost
-- Description: Host address or IP
+- Type: Decimal
+- Description: The duration (seconds) between measurements or actions
 
-##### Port
-
-- Type: Integer
-- Default Value: 1883
-- Description: Host port number
-
-##### Topic
-
-- Type: Text
-- Default Value: mqtt/test/input
-- Description: The topic to subscribe to
-
-##### Keep Alive
-
-- Type: Integer
-- Default Value: 60
-- Description: Maximum amount of time between received signals. Set to 0 to disable.
-
-##### Client ID
-
-- Type: Text
-- Default Value: client_mdoX3Acp
-- Description: Unique client ID for connecting to the server
-
-##### Use Login
-
-- Type: Boolean
-- Description: Send login credentials
-
-##### Use TLS
-
-- Type: Boolean
-- Description: Send login credentials using TLS
-
-##### Username
-
-- Type: Text
-- Default Value: user
-- Description: Username for connecting to the server
-
-##### Password
-
-- Type: Text
-- Description: Password for connecting to the server. Leave blank to disable.
-
-#### Channel Options
-
-##### Name
-
-- Type: Text
-- Description: A name to distinguish this from others
-
-##### JSON Key
-
-- Type: Text
-- Description: JMES Path expression to find value in JSON response
-
-### Mycodo: MQTT Subscribe (Value payload)
+### Mycodo: Free Space
 
 - Manufacturer: Mycodo
-- Measurements: Variable measurements
-- Interfaces: Mycodo
-- Libraries: paho-mqtt
-- Dependencies: [paho-mqtt](https://pypi.org/project/paho-mqtt)
-
-A topic is subscribed to for each channel Subscription Topic and the returned payload value will be stored for that channel. Be sure you select and save the Measurement Unit for each of the channels. Once the unit has been saved, you can convert to other units in the Convert Measurement section. Warning: If using multiple MQTT Inputs or Functions, ensure the Client IDs are unique.
+- Measurements: Unallocated Disk Space
+- Libraries: os.statvfs()
 
 #### Options
 
-##### Measurements Enabled
+##### Period (seconds)
 
-- Type: Multi-Select
-- Description: The measurements to record
-
-##### Host
-
-- Type: Text
-- Default Value: localhost
-- Description: Host address or IP
-
-##### Port
-
-- Type: Integer
-- Default Value: 1883
-- Description: Host port number
-
-##### Keep Alive
-
-- Type: Integer
-- Default Value: 60
-- Description: Maximum amount of time between received signals. Set to 0 to disable.
-
-##### Client ID
-
-- Type: Text
-- Default Value: client_YsVuUYaK
-- Description: Unique client ID for connecting to the server
-
-##### Use Login
-
-- Type: Boolean
-- Description: Send login credentials
-
-##### Use TLS
-
-- Type: Boolean
-- Description: Send login credentials using TLS
-
-##### Username
-
-- Type: Text
-- Default Value: user
-- Description: Username for connecting to the server
-
-##### Password
-
-- Type: Text
-- Description: Password for connecting to the server. Leave blank to disable.
-
-#### Channel Options
-
-##### Name
-
-- Type: Text
-- Description: A name to distinguish this from others
-
-##### Subscription Topic
-
-- Type: Text
-- Description: The MQTT topic to subscribe to
+- Type: Decimal
+- Description: The duration (seconds) between measurements or actions
 
 ### Mycodo: Mycodo RAM
 
 - Manufacturer: Mycodo
-- Measurements: Size RAM in Use
-- Interfaces: Mycodo
+- Measurements: Daemon RAM Allocation
 - Libraries: resource.getrusage()
 
 #### Options
@@ -258,7 +134,6 @@ A topic is subscribed to for each channel Subscription Topic and the returned pa
 
 - Manufacturer: Mycodo
 - Measurements: Version as Major.Minor.Revision
-- Interfaces: Mycodo
 
 #### Options
 
@@ -272,10 +147,69 @@ A topic is subscribed to for each channel Subscription Topic and the returned pa
 - Type: Decimal
 - Description: The duration (seconds) between measurements or actions
 
+### Mycodo: Server Ping
+
+- Manufacturer: Mycodo
+- Measurements: Boolean
+- Libraries: ping
+
+This Input executes the bash command "ping -c [times] -w [deadline] [host]" to determine if the host can be pinged.
+
+#### Options
+
+##### Period (seconds)
+
+- Type: Decimal
+- Description: The duration (seconds) between measurements or actions
+
+##### Pre Output
+
+- Type: Select
+- Description: Turn the selected output on before taking every measurement
+
+##### Pre Out Duration
+
+- Type: Decimal
+- Description: If a Pre Output is selected, set the duration (seconds) to turn the Pre Output on for before every measurement is acquired.
+
+##### Pre During Measure
+
+- Type: Boolean
+- Description: Check to turn the output off after (opposed to before) the measurement is complete
+
+### Mycodo: Server Port Open
+
+- Manufacturer: Mycodo
+- Measurements: Boolean
+- Libraries: nc
+
+This Input executes the bash command "nc -zv [host] [port]" to determine if the host at a particular port is accessible.
+
+#### Options
+
+##### Period (seconds)
+
+- Type: Decimal
+- Description: The duration (seconds) between measurements or actions
+
+##### Pre Output
+
+- Type: Select
+- Description: Turn the selected output on before taking every measurement
+
+##### Pre Out Duration
+
+- Type: Decimal
+- Description: If a Pre Output is selected, set the duration (seconds) to turn the Pre Output on for before every measurement is acquired.
+
+##### Pre During Measure
+
+- Type: Boolean
+- Description: Check to turn the output off after (opposed to before) the measurement is complete
+
 ### Mycodo: Spacer
 
 - Manufacturer: Mycodo
-- Interfaces: Mycodo
 
 A spacer to organize Inputs.
 
@@ -286,213 +220,6 @@ A spacer to organize Inputs.
 - Type: Text
 - Default Value: #000000
 - Description: The color of the name text
-
-### Mycodo: TTN Integration: Data Storage (TTN v2)
-
-- Manufacturer: Mycodo
-- Measurements: Variable measurements
-- Interfaces: Mycodo
-- Libraries: requests
-- Dependencies: [requests](https://pypi.org/project/requests)
-
-This Input receives and stores measurements from the Data Storage Integration on The Things Network.
-
-#### Options
-
-##### Measurements Enabled
-
-- Type: Multi-Select
-- Description: The measurements to record
-
-##### Period (seconds)
-
-- Type: Decimal
-- Description: The duration (seconds) between measurements or actions
-
-##### Start Offset (seconds)
-
-- Type: Integer
-- Description: The duration (seconds) to wait before the first operation
-
-##### Pre Output
-
-- Type: Select
-- Description: Turn the selected output on before taking every measurement
-
-##### Pre Out Duration
-
-- Type: Decimal
-- Description: If a Pre Output is selected, set the duration (seconds) to turn the Pre Output on for before every measurement is acquired.
-
-##### Pre During Measure
-
-- Type: Boolean
-- Description: Check to turn the output off after (opposed to before) the measurement is complete
-
-##### Application ID
-
-- Type: Text
-- Description: The Things Network Application ID
-
-##### App API Key
-
-- Type: Text
-- Description: The Things Network Application API Key
-
-##### Device ID
-
-- Type: Text
-- Description: The Things Network Device ID
-
-#### Channel Options
-
-##### Name
-
-- Type: Text
-- Description: A name to distinguish this from others
-
-##### Variable Name
-
-- Type: Text
-- Description: The TTN variable name
-
-### Mycodo: TTN Integration: Data Storage (TTN v3, Payload Key)
-
-- Manufacturer: Mycodo
-- Measurements: Variable measurements
-- Interfaces: Mycodo
-- Libraries: requests
-- Dependencies: [requests](https://pypi.org/project/requests)
-
-This Input receives and stores measurements from the Data Storage Integration on The Things Network. If you have key/value pairs as your payload, enter the key name in Variable Name and the corresponding value for that key will be stored in the measurement database.
-
-#### Options
-
-##### Measurements Enabled
-
-- Type: Multi-Select
-- Description: The measurements to record
-
-##### Period (seconds)
-
-- Type: Decimal
-- Description: The duration (seconds) between measurements or actions
-
-##### Start Offset (seconds)
-
-- Type: Integer
-- Description: The duration (seconds) to wait before the first operation
-
-##### Pre Output
-
-- Type: Select
-- Description: Turn the selected output on before taking every measurement
-
-##### Pre Out Duration
-
-- Type: Decimal
-- Description: If a Pre Output is selected, set the duration (seconds) to turn the Pre Output on for before every measurement is acquired.
-
-##### Pre During Measure
-
-- Type: Boolean
-- Description: Check to turn the output off after (opposed to before) the measurement is complete
-
-##### Application ID
-
-- Type: Text
-- Description: The Things Network Application ID
-
-##### App API Key
-
-- Type: Text
-- Description: The Things Network Application API Key
-
-##### Device ID
-
-- Type: Text
-- Description: The Things Network Device ID
-
-#### Channel Options
-
-##### Name
-
-- Type: Text
-- Description: A name to distinguish this from others
-
-##### Variable Name
-
-- Type: Text
-- Description: The TTN variable name
-
-### Mycodo: TTN Integration: Data Storage (TTN v3, Payload jmespath Expression)
-
-- Manufacturer: Mycodo
-- Measurements: Variable measurements
-- Interfaces: Mycodo
-- Libraries: requests, jmespath
-- Dependencies: [requests](https://pypi.org/project/requests), [jmespath](https://pypi.org/project/jmespath)
-
-This Input receives and stores measurements from the Data Storage Integration on The Things Network. The given Payload jmespath Expression is used as a JMESPATH expression to find the corresponding value that will be stored for that channel. Be sure you select and save the Measurement Unit for each channel. Once the unit has been saved, you can convert to other units in the Convert Measurement section. Example expressions for jmespath (https://jmespath.org) include <i>temperature</i>, <i>sensors[0].temperature</i>, and <i>bathroom.temperature</i> which refer to the temperature as a direct key within the first entry of sensors or as a subkey of bathroom, respectively. Jmespath elements and keys that contain special characters have to be enclosed in double quotes, e.g. <i>"sensor-1".temperature</i>.
-
-#### Options
-
-##### Measurements Enabled
-
-- Type: Multi-Select
-- Description: The measurements to record
-
-##### Period (seconds)
-
-- Type: Decimal
-- Description: The duration (seconds) between measurements or actions
-
-##### Start Offset (seconds)
-
-- Type: Integer
-- Description: The duration (seconds) to wait before the first operation
-
-##### Pre Output
-
-- Type: Select
-- Description: Turn the selected output on before taking every measurement
-
-##### Pre Out Duration
-
-- Type: Decimal
-- Description: If a Pre Output is selected, set the duration (seconds) to turn the Pre Output on for before every measurement is acquired.
-
-##### Pre During Measure
-
-- Type: Boolean
-- Description: Check to turn the output off after (opposed to before) the measurement is complete
-
-##### Application ID
-
-- Type: Text
-- Description: The Things Network Application ID
-
-##### App API Key
-
-- Type: Text
-- Description: The Things Network Application API Key
-
-##### Device ID
-
-- Type: Text
-- Description: The Things Network Device ID
-
-#### Channel Options
-
-##### Name
-
-- Type: Text
-- Description: A name to distinguish this from others
-
-##### Payload jmespath Expression
-
-- Type: Text
-- Description: The TTN jmespath expression to return the value to store
 
 ### Raspberry Pi: CPU/GPU Temperature
 
@@ -601,7 +328,7 @@ Measures the state of a GPIO pin, returning either 0 (low) or 1 (high).
 - Measurements: Frequency/Pulse Width/Duty Cycle
 - Interfaces: GPIO
 - Libraries: pigpio
-- Dependencies: pigpio
+- Dependencies: pigpio, [pigpio](https://pypi.org/project/pigpio)
 
 #### Options
 
@@ -636,102 +363,7 @@ Measures the state of a GPIO pin, returning either 0 (low) or 1 (high).
 - Measurements: RPM
 - Interfaces: GPIO
 - Libraries: pigpio
-- Dependencies: pigpio
-
-#### Options
-
-##### Period (seconds)
-
-- Type: Decimal
-- Description: The duration (seconds) between measurements or actions
-
-##### Pre Output
-
-- Type: Select
-- Description: Turn the selected output on before taking every measurement
-
-##### Pre Out Duration
-
-- Type: Decimal
-- Description: If a Pre Output is selected, set the duration (seconds) to turn the Pre Output on for before every measurement is acquired.
-
-##### Pre During Measure
-
-- Type: Boolean
-- Description: Check to turn the output off after (opposed to before) the measurement is complete
-
-### System: CPU Load
-
-- Manufacturer: System
-- Measurements: CPULoad
-- Interfaces: Mycodo
-- Libraries: os.getloadavg()
-
-#### Options
-
-##### Measurements Enabled
-
-- Type: Multi-Select
-- Description: The measurements to record
-
-##### Period (seconds)
-
-- Type: Decimal
-- Description: The duration (seconds) between measurements or actions
-
-### System: Free Space
-
-- Manufacturer: System
-- Measurements: Unallocated Disk Space
-- Interfaces: Mycodo
-- Libraries: os.statvfs()
-
-#### Options
-
-##### Period (seconds)
-
-- Type: Decimal
-- Description: The duration (seconds) between measurements or actions
-
-### System: Server Ping
-
-- Manufacturer: System
-- Measurements: Boolean
-- Interfaces: Mycodo
-- Libraries: ping
-
-This Input executes the bash command "ping -c [times] -w [deadline] [host]" to determine if the host can be pinged.
-
-#### Options
-
-##### Period (seconds)
-
-- Type: Decimal
-- Description: The duration (seconds) between measurements or actions
-
-##### Pre Output
-
-- Type: Select
-- Description: Turn the selected output on before taking every measurement
-
-##### Pre Out Duration
-
-- Type: Decimal
-- Description: If a Pre Output is selected, set the duration (seconds) to turn the Pre Output on for before every measurement is acquired.
-
-##### Pre During Measure
-
-- Type: Boolean
-- Description: Check to turn the output off after (opposed to before) the measurement is complete
-
-### System: Server Port Open
-
-- Manufacturer: System
-- Measurements: Boolean
-- Interfaces: Mycodo
-- Libraries: nc
-
-This Input executes the bash command "nc -zv [host] [port]" to determine if the host at a particular port is accessible.
+- Dependencies: pigpio, [pigpio](https://pypi.org/project/pigpio)
 
 #### Options
 
@@ -1062,7 +694,7 @@ This Input executes the bash command "nc -zv [host] [port]" to determine if the 
 - Measurements: Humidity/Temperature
 - Interfaces: GPIO
 - Libraries: pigpio
-- Dependencies: pigpio
+- Dependencies: pigpio, [pigpio](https://pypi.org/project/pigpio)
 - Datasheet URL: [Link](http://www.adafruit.com/datasheets/DHT11-chinese.pdf)
 - Product URL: [Link](https://www.adafruit.com/product/386)
 
@@ -1099,7 +731,7 @@ This Input executes the bash command "nc -zv [host] [port]" to determine if the 
 - Measurements: Humidity/Temperature
 - Interfaces: GPIO
 - Libraries: pigpio
-- Dependencies: pigpio
+- Dependencies: pigpio, [pigpio](https://pypi.org/project/pigpio)
 - Datasheet URL: [Link](http://www.adafruit.com/datasheets/DHT22.pdf)
 - Product URL: [Link](https://www.adafruit.com/product/385)
 
@@ -3016,7 +2648,7 @@ This is similar to the other BMP280 Input, except it uses a different library, w
 - Measurements: Flow Rate, Total Volume
 - Interfaces: GPIO
 - Libraries: pigpio
-- Dependencies: pigpio
+- Dependencies: pigpio, [pigpio](https://pypi.org/project/pigpio)
 
 #### Options
 
@@ -3188,7 +2820,7 @@ This is similar to the other BMP280 Input, except it uses a different library, w
 - Measurements: Temperature
 - Interfaces: 1-Wire
 - Libraries: ow-shell
-- Dependencies: [ow-shell](https://packages.debian.org/buster/ow-shell)
+- Dependencies: [ow-shell](https://packages.debian.org/buster/ow-shell), [owfs](https://packages.debian.org/buster/owfs)
 - Manufacturer URL: [Link](https://www.maximintegrated.com/en/products/sensors/DS18B20.html)
 - Datasheet URL: [Link](https://datasheets.maximintegrated.com/en/ds/DS18B20.pdf)
 - Product URLs: [Link 1](https://www.adafruit.com/product/374), [Link 2](https://www.adafruit.com/product/381), [Link 3](https://www.sparkfun.com/products/245)
@@ -3571,6 +3203,160 @@ Note: This module does not allow for multiple sensors to be connected at the sam
 
 - Type: Boolean
 - Description: Check to turn the output off after (opposed to before) the measurement is complete
+
+### MQTT: MQTT Subscribe (JSON payload)
+
+- Manufacturer: MQTT
+- Measurements: Variable measurements
+- Interfaces: Mycodo
+- Libraries: paho-mqtt, jmespath
+- Dependencies: [paho-mqtt](https://pypi.org/project/paho-mqtt), [jmespath](https://pypi.org/project/jmespath)
+
+A single topic is subscribed to and the returned JSON payload contains one or more key/value pairs. The given JSON Key is used as a JMESPATH expression to find the corresponding value that will be stored for that channel. Be sure you select and save the Measurement Unit for each channel. Once the unit has been saved, you can convert to other units in the Convert Measurement section. Example expressions for jmespath (https://jmespath.org) include <i>temperature</i>, <i>sensors[0].temperature</i>, and <i>bathroom.temperature</i> which refer to the temperature as a direct key within the first entry of sensors or as a subkey of bathroom, respectively. Jmespath elements and keys that contain special characters have to be enclosed in double quotes, e.g. <i>"sensor-1".temperature</i>. Warning: If using multiple MQTT Inputs or Functions, ensure the Client IDs are unique.
+
+#### Options
+
+##### Measurements Enabled
+
+- Type: Multi-Select
+- Description: The measurements to record
+
+##### Host
+
+- Type: Text
+- Default Value: localhost
+- Description: Host address or IP
+
+##### Port
+
+- Type: Integer
+- Default Value: 1883
+- Description: Host port number
+
+##### Topic
+
+- Type: Text
+- Default Value: mqtt/test/input
+- Description: The topic to subscribe to
+
+##### Keep Alive
+
+- Type: Integer
+- Default Value: 60
+- Description: Maximum amount of time between received signals. Set to 0 to disable.
+
+##### Client ID
+
+- Type: Text
+- Default Value: client_bZCtOuMT
+- Description: Unique client ID for connecting to the server
+
+##### Use Login
+
+- Type: Boolean
+- Description: Send login credentials
+
+##### Use TLS
+
+- Type: Boolean
+- Description: Send login credentials using TLS
+
+##### Username
+
+- Type: Text
+- Default Value: user
+- Description: Username for connecting to the server
+
+##### Password
+
+- Type: Text
+- Description: Password for connecting to the server. Leave blank to disable.
+
+#### Channel Options
+
+##### Name
+
+- Type: Text
+- Description: A name to distinguish this from others
+
+##### JSON Key
+
+- Type: Text
+- Description: JMES Path expression to find value in JSON response
+
+### MQTT: MQTT Subscribe (Value payload)
+
+- Manufacturer: MQTT
+- Measurements: Variable measurements
+- Interfaces: Mycodo
+- Libraries: paho-mqtt
+- Dependencies: [paho-mqtt](https://pypi.org/project/paho-mqtt)
+
+A topic is subscribed to for each channel Subscription Topic and the returned payload value will be stored for that channel. Be sure you select and save the Measurement Unit for each of the channels. Once the unit has been saved, you can convert to other units in the Convert Measurement section. Warning: If using multiple MQTT Inputs or Functions, ensure the Client IDs are unique.
+
+#### Options
+
+##### Measurements Enabled
+
+- Type: Multi-Select
+- Description: The measurements to record
+
+##### Host
+
+- Type: Text
+- Default Value: localhost
+- Description: Host address or IP
+
+##### Port
+
+- Type: Integer
+- Default Value: 1883
+- Description: Host port number
+
+##### Keep Alive
+
+- Type: Integer
+- Default Value: 60
+- Description: Maximum amount of time between received signals. Set to 0 to disable.
+
+##### Client ID
+
+- Type: Text
+- Default Value: client_JBFze0AI
+- Description: Unique client ID for connecting to the server
+
+##### Use Login
+
+- Type: Boolean
+- Description: Send login credentials
+
+##### Use TLS
+
+- Type: Boolean
+- Description: Send login credentials using TLS
+
+##### Username
+
+- Type: Text
+- Default Value: user
+- Description: Username for connecting to the server
+
+##### Password
+
+- Type: Text
+- Description: Password for connecting to the server. Leave blank to disable.
+
+#### Channel Options
+
+##### Name
+
+- Type: Text
+- Description: A name to distinguish this from others
+
+##### Subscription Topic
+
+- Type: Text
+- Description: The MQTT topic to subscribe to
 
 ### Melexis: MLX90393
 
@@ -5062,7 +4848,7 @@ This Input module allows the use of any temperature/huidity sensor with the TH10
 - Measurements: Humidity/Temperature
 - Interfaces: I<sup>2</sup>C
 - Libraries: pigpio
-- Dependencies: pigpio
+- Dependencies: pigpio, [pigpio](https://pypi.org/project/pigpio)
 - Manufacturer URL: [Link](https://www.te.com/usa-en/product-CAT-HSC0004.html)
 - Datasheet URL: [Link](https://www.te.com/commerce/DocumentDelivery/DDEController?Action=showdoc&DocId=Data+Sheet%7FHPC199_6%7FA6%7Fpdf%7FEnglish%7FENG_DS_HPC199_6_A6.pdf%7FCAT-HSC0004)
 - Product URL: [Link](https://www.adafruit.com/product/1899)
@@ -5890,11 +5676,214 @@ The Adafruit_ADS1x15 is deprecated. It's advised to use The Circuit Python ADS1x
 - Type: Boolean
 - Description: Check to turn the output off after (opposed to before) the measurement is complete
 
+### The Things Network: TTN Integration: Data Storage (TTN v2)
+
+- Manufacturer: The Things Network
+- Measurements: Variable measurements
+- Libraries: requests
+- Dependencies: [requests](https://pypi.org/project/requests)
+
+This Input receives and stores measurements from the Data Storage Integration on The Things Network.
+
+#### Options
+
+##### Measurements Enabled
+
+- Type: Multi-Select
+- Description: The measurements to record
+
+##### Period (seconds)
+
+- Type: Decimal
+- Description: The duration (seconds) between measurements or actions
+
+##### Start Offset (seconds)
+
+- Type: Integer
+- Description: The duration (seconds) to wait before the first operation
+
+##### Pre Output
+
+- Type: Select
+- Description: Turn the selected output on before taking every measurement
+
+##### Pre Out Duration
+
+- Type: Decimal
+- Description: If a Pre Output is selected, set the duration (seconds) to turn the Pre Output on for before every measurement is acquired.
+
+##### Pre During Measure
+
+- Type: Boolean
+- Description: Check to turn the output off after (opposed to before) the measurement is complete
+
+##### Application ID
+
+- Type: Text
+- Description: The Things Network Application ID
+
+##### App API Key
+
+- Type: Text
+- Description: The Things Network Application API Key
+
+##### Device ID
+
+- Type: Text
+- Description: The Things Network Device ID
+
+#### Channel Options
+
+##### Name
+
+- Type: Text
+- Description: A name to distinguish this from others
+
+##### Variable Name
+
+- Type: Text
+- Description: The TTN variable name
+
+### The Things Network: TTN Integration: Data Storage (TTN v3, Payload Key)
+
+- Manufacturer: The Things Network
+- Measurements: Variable measurements
+- Libraries: requests
+- Dependencies: [requests](https://pypi.org/project/requests)
+
+This Input receives and stores measurements from the Data Storage Integration on The Things Network. If you have key/value pairs as your payload, enter the key name in Variable Name and the corresponding value for that key will be stored in the measurement database.
+
+#### Options
+
+##### Measurements Enabled
+
+- Type: Multi-Select
+- Description: The measurements to record
+
+##### Period (seconds)
+
+- Type: Decimal
+- Description: The duration (seconds) between measurements or actions
+
+##### Start Offset (seconds)
+
+- Type: Integer
+- Description: The duration (seconds) to wait before the first operation
+
+##### Pre Output
+
+- Type: Select
+- Description: Turn the selected output on before taking every measurement
+
+##### Pre Out Duration
+
+- Type: Decimal
+- Description: If a Pre Output is selected, set the duration (seconds) to turn the Pre Output on for before every measurement is acquired.
+
+##### Pre During Measure
+
+- Type: Boolean
+- Description: Check to turn the output off after (opposed to before) the measurement is complete
+
+##### Application ID
+
+- Type: Text
+- Description: The Things Network Application ID
+
+##### App API Key
+
+- Type: Text
+- Description: The Things Network Application API Key
+
+##### Device ID
+
+- Type: Text
+- Description: The Things Network Device ID
+
+#### Channel Options
+
+##### Name
+
+- Type: Text
+- Description: A name to distinguish this from others
+
+##### Variable Name
+
+- Type: Text
+- Description: The TTN variable name
+
+### The Things Network: TTN Integration: Data Storage (TTN v3, Payload jmespath Expression)
+
+- Manufacturer: The Things Network
+- Measurements: Variable measurements
+- Libraries: requests, jmespath
+- Dependencies: [requests](https://pypi.org/project/requests), [jmespath](https://pypi.org/project/jmespath)
+
+This Input receives and stores measurements from the Data Storage Integration on The Things Network. The given Payload jmespath Expression is used as a JMESPATH expression to find the corresponding value that will be stored for that channel. Be sure you select and save the Measurement Unit for each channel. Once the unit has been saved, you can convert to other units in the Convert Measurement section. Example expressions for jmespath (https://jmespath.org) include <i>temperature</i>, <i>sensors[0].temperature</i>, and <i>bathroom.temperature</i> which refer to the temperature as a direct key within the first entry of sensors or as a subkey of bathroom, respectively. Jmespath elements and keys that contain special characters have to be enclosed in double quotes, e.g. <i>"sensor-1".temperature</i>.
+
+#### Options
+
+##### Measurements Enabled
+
+- Type: Multi-Select
+- Description: The measurements to record
+
+##### Period (seconds)
+
+- Type: Decimal
+- Description: The duration (seconds) between measurements or actions
+
+##### Start Offset (seconds)
+
+- Type: Integer
+- Description: The duration (seconds) to wait before the first operation
+
+##### Pre Output
+
+- Type: Select
+- Description: Turn the selected output on before taking every measurement
+
+##### Pre Out Duration
+
+- Type: Decimal
+- Description: If a Pre Output is selected, set the duration (seconds) to turn the Pre Output on for before every measurement is acquired.
+
+##### Pre During Measure
+
+- Type: Boolean
+- Description: Check to turn the output off after (opposed to before) the measurement is complete
+
+##### Application ID
+
+- Type: Text
+- Description: The Things Network Application ID
+
+##### App API Key
+
+- Type: Text
+- Description: The Things Network Application API Key
+
+##### Device ID
+
+- Type: Text
+- Description: The Things Network Device ID
+
+#### Channel Options
+
+##### Name
+
+- Type: Text
+- Description: A name to distinguish this from others
+
+##### Payload jmespath Expression
+
+- Type: Text
+- Description: The TTN jmespath expression to return the value to store
+
 ### Weather: OpenWeatherMap (City, Current)
 
 - Manufacturer: Weather
 - Measurements: Humidity/Temperature/Pressure/Wind
-- Interfaces: Mycodo
 - Additional URL: [Link](https://openweathermap.org)
 
 Obtain a free API key at openweathermap.org. If the city you enter does not return measurements, try another city. Note: the free API subscription is limited to 60 calls per minute

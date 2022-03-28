@@ -322,48 +322,6 @@ A simple bang-bang control for controlling one PWM output from one input. Select
 - Type: Decimal
 - Description: The duty cycle to set when the function shuts down
 
-### Camera Image Processor
-
-
-This function will modify still/timelapse images by placing an overlay of data on top of them.
-
-#### Options
-
-##### Period (seconds)
-
-- Type: Decimal
-- Default Value: 3600
-- Description: The duration (seconds) between measurements or actions
-
-##### Camera
-
-- Type: Select Device
-- Description: Select the camera to display
-
-##### Modify Still Images
-
-- Type: Boolean
-- Default Value: True
-- Description: Enable the modification of still images
-
-##### Only Mod New Still Images
-
-- Type: Boolean
-- Default Value: True
-- Description: Enable the modification of only new still images. Disable to modify images acquired in the past
-
-##### Modify Timelapse Images
-
-- Type: Boolean
-- Default Value: True
-- Description: Enable the modification of timelapse images
-
-##### Only Mod New Timelapse Images
-
-- Type: Boolean
-- Default Value: True
-- Description: Enable the modification of only new timelapse images. Disable to modify images acquired in the past
-
 ### Difference
 
 

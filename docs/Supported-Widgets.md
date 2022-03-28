@@ -43,15 +43,15 @@ Displays a red or green circular image based on a measurement value. Useful for 
 
 Displays a measurement value and timestamp.
 
-### Output
-
-
-Displays and allows control of an output.
-
 ### Output (PWM Slider)
 
 
 Displays and allows control of a PWM output using a slider.
+
+### Output Control (Channel)
+
+
+Displays and allows control of an output channel. All output options and measurements for the selected channel will be displayed. E.g. pumps will have seconds on and volume as measurements, and can be turned on for a duration (seconds) or amount (volume). If NO DATA or TOO OLD is displayed, the Max Age is not sufficiently long enough to find a current measurement.
 
 ### PID Controller
 

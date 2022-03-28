@@ -84,7 +84,7 @@ In order to calculate accurate energy usage statistics, a few characteristics of
 </tr>
 <tr>
 <td>Generate Usage/Cost Report</td>
-<td>These options define when an Energy Usage Report will be generated. Currently these Only support the Output Duration calculation method. For more information about the methods, see <a href="#energy-usage">Energy Usage</a>.</td>
+<td>These options define when an Energy Usage Report will be generated. Currently, these Only support the Output Duration calculation method.</td>
 </tr>
 </tbody>
 </table>

@@ -98,7 +98,7 @@ For Outputs that require new measurements/units, they can be added on the `[Gear
 </tr>
 <tr>
 <td>Current Draw (amps)</td>
-<td>The is the amount of current the device powered by the output draws. Note: this value should be calculated based on the voltage set in the <a href="#energy-usage-settings">Energy Usage Settings</a>.</td>
+<td>The is the amount of current the device powered by the output draws. Note: this value should be calculated based on the voltage set in the Energy Usage Settings.</td>
 </tr>
 <tr>
 <td>Startup State</td>

@@ -1,4 +1,4 @@
-## 8.13.0 (Unreleased)
+## 8.13.0 (2022-03-28)
 
 Following the upgrade, you will need to reboot to complete the upgrade.
 

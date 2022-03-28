@@ -21,6 +21,7 @@ def safe_link(link):
     link = link.lower()
     for rep in [" ", "(", ")", ":", ",", "/", "--", ]:
         link = link.replace(rep, "-")
+    link = link.replace(".", "")
     link = link.strip("-")
     return link
 
