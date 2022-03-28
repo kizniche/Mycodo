@@ -2,167 +2,177 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
     <url>
          <loc>https://kizniche.github.io/Mycodo/</loc>
-         <lastmod>2021-12-13</lastmod>
+         <lastmod>2022-03-28</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://kizniche.github.io/Mycodo/API/</loc>
-         <lastmod>2021-12-13</lastmod>
+         <lastmod>2022-03-28</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://kizniche.github.io/Mycodo/About/</loc>
-         <lastmod>2021-12-13</lastmod>
+         <lastmod>2022-03-28</lastmod>
+         <changefreq>daily</changefreq>
+    </url>
+    <url>
+         <loc>https://kizniche.github.io/Mycodo/Actions/</loc>
+         <lastmod>2022-03-28</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://kizniche.github.io/Mycodo/Alerts/</loc>
-         <lastmod>2021-12-13</lastmod>
+         <lastmod>2022-03-28</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://kizniche.github.io/Mycodo/Analog-To-Digital-Converters/</loc>
-         <lastmod>2021-12-13</lastmod>
+         <lastmod>2022-03-28</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://kizniche.github.io/Mycodo/Calibration/</loc>
-         <lastmod>2021-12-13</lastmod>
+         <lastmod>2022-03-28</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://kizniche.github.io/Mycodo/Camera/</loc>
-         <lastmod>2021-12-13</lastmod>
+         <lastmod>2022-03-28</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://kizniche.github.io/Mycodo/Configuration-Settings/</loc>
-         <lastmod>2021-12-13</lastmod>
+         <lastmod>2022-03-28</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://kizniche.github.io/Mycodo/Data-Viewing/</loc>
-         <lastmod>2021-12-13</lastmod>
+         <lastmod>2022-03-28</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://kizniche.github.io/Mycodo/Dependencies/</loc>
-         <lastmod>2021-12-13</lastmod>
+         <lastmod>2022-03-28</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://kizniche.github.io/Mycodo/Device-Notes/</loc>
-         <lastmod>2021-12-13</lastmod>
+         <lastmod>2022-03-28</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://kizniche.github.io/Mycodo/Energy-Usage/</loc>
-         <lastmod>2021-12-13</lastmod>
+         <lastmod>2022-03-28</lastmod>
+         <changefreq>daily</changefreq>
+    </url>
+    <url>
+         <loc>https://kizniche.github.io/Mycodo/Error-Codes/</loc>
+         <lastmod>2022-03-28</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://kizniche.github.io/Mycodo/Export-Import/</loc>
-         <lastmod>2021-12-13</lastmod>
+         <lastmod>2022-03-28</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://kizniche.github.io/Mycodo/Frequently-Asked-Questions/</loc>
-         <lastmod>2021-12-13</lastmod>
+         <lastmod>2022-03-28</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://kizniche.github.io/Mycodo/Functions/</loc>
-         <lastmod>2021-12-13</lastmod>
+         <lastmod>2022-03-28</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://kizniche.github.io/Mycodo/I2C-Multiplexers/</loc>
-         <lastmod>2021-12-13</lastmod>
+         <lastmod>2022-03-28</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://kizniche.github.io/Mycodo/Inputs/</loc>
-         <lastmod>2021-12-13</lastmod>
+         <lastmod>2022-03-28</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://kizniche.github.io/Mycodo/Interfaces/</loc>
-         <lastmod>2021-12-13</lastmod>
-         <changefreq>daily</changefreq>
-    </url>
-    <url>
-         <loc>https://kizniche.github.io/Mycodo/LCDs/</loc>
-         <lastmod>2021-12-13</lastmod>
-         <changefreq>daily</changefreq>
-    </url>
-    <url>
-         <loc>https://kizniche.github.io/Mycodo/Maths/</loc>
-         <lastmod>2021-12-13</lastmod>
+         <lastmod>2022-03-28</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://kizniche.github.io/Mycodo/Methods/</loc>
-         <lastmod>2021-12-13</lastmod>
+         <lastmod>2022-03-28</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://kizniche.github.io/Mycodo/Mycodo-Client/</loc>
-         <lastmod>2021-12-13</lastmod>
+         <lastmod>2022-03-28</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://kizniche.github.io/Mycodo/Notes/</loc>
-         <lastmod>2021-12-13</lastmod>
+         <lastmod>2022-03-28</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://kizniche.github.io/Mycodo/Outputs/</loc>
-         <lastmod>2021-12-13</lastmod>
+         <lastmod>2022-03-28</lastmod>
+         <changefreq>daily</changefreq>
+    </url>
+    <url>
+         <loc>https://kizniche.github.io/Mycodo/Python-Code/</loc>
+         <lastmod>2022-03-28</lastmod>
+         <changefreq>daily</changefreq>
+    </url>
+    <url>
+         <loc>https://kizniche.github.io/Mycodo/Supported-Actions/</loc>
+         <lastmod>2022-03-28</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://kizniche.github.io/Mycodo/Supported-Functions/</loc>
-         <lastmod>2021-12-13</lastmod>
+         <lastmod>2022-03-28</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://kizniche.github.io/Mycodo/Supported-Inputs-By-Measurement/</loc>
-         <lastmod>2021-12-13</lastmod>
+         <lastmod>2022-03-28</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://kizniche.github.io/Mycodo/Supported-Inputs/</loc>
-         <lastmod>2021-12-13</lastmod>
+         <lastmod>2022-03-28</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://kizniche.github.io/Mycodo/Supported-Outputs/</loc>
-         <lastmod>2021-12-13</lastmod>
+         <lastmod>2022-03-28</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://kizniche.github.io/Mycodo/Supported-Widgets/</loc>
-         <lastmod>2021-12-13</lastmod>
+         <lastmod>2022-03-28</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://kizniche.github.io/Mycodo/System-Information/</loc>
-         <lastmod>2021-12-13</lastmod>
+         <lastmod>2022-03-28</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://kizniche.github.io/Mycodo/Translations/</loc>
-         <lastmod>2021-12-13</lastmod>
+         <lastmod>2022-03-28</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://kizniche.github.io/Mycodo/Troubleshooting/</loc>
-         <lastmod>2021-12-13</lastmod>
+         <lastmod>2022-03-28</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://kizniche.github.io/Mycodo/Upgrade-Backup-Restore/</loc>
-         <lastmod>2021-12-13</lastmod>
+         <lastmod>2022-03-28</lastmod>
          <changefreq>daily</changefreq>
     </url>
 </urlset>
