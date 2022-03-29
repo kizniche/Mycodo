@@ -176,7 +176,7 @@ def upgrade_revision(error, revision):
                         custom_options["output"] = action.do_unique_id
                         if action.action_type == "output":
                             action.action_type = "output_on_off"
-                            custom_options["output_state"] = action.do_output_state
+                            custom_options["state"] = action.do_output_state
                             custom_options["duration"] = action.do_output_duration
                         elif action.action_type == "output_pwm":
                             custom_options["duty_cycle"] = action.do_output_pwm

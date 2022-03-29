@@ -1,3 +1,10 @@
+## 8.13.2 (2022-03-29)
+
+### Bugfixes
+
+ - Fix State option upgrade for Output Action
+
+
 ## 8.13.1 (2022-03-28)
 
 ### Bugfixes
