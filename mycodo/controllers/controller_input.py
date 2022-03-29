@@ -183,8 +183,7 @@ class InputController(AbstractController, threading.Thread):
                             kwargs={'output_channel': self.pre_output_channel})
                         output_on.start()
                 else:
-                    self.logger.error("Could not acquire pre-output lock at {}".format(
-                        self.pre_output_lock_file))
+                    self.logger.error(f"Could not acquire pre-output lock at {self.pre_output_lock_file}")
 
             # If using a pre output, wait for it to complete before
             # querying the input for a measurement
@@ -214,8 +213,7 @@ class InputController(AbstractController, threading.Thread):
                             # always remove lock
                             self.lf.lock_release(self.pre_output_lock_file)
                     else:
-                        self.logger.error("Pre-output lock not found at {}".format(
-                            self.pre_output_lock_file))
+                        self.logger.error(f"Pre-output lock not found at {self.pre_output_lock_file}")
 
                 elif not self.pre_output_setup:
                     # Pre-output not enabled, just measure
@@ -295,8 +293,7 @@ class InputController(AbstractController, threading.Thread):
                 self.pre_output_during_measure = input_dev.pre_output_during_measure
                 self.pre_output_activated = False
                 self.pre_output_timer = time.time()
-                self.pre_output_lock_file = '/var/lock/input_pre_output_{id}_{ch}'.format(
-                    id=self.pre_output_id, ch=self.pre_output_channel_id)
+                self.pre_output_lock_file = f'/var/lock/input_pre_output_{self.pre_output_id}_{self.pre_output_channel_id}'
 
                 # Check if Pre Output and channel IDs exists
                 output = db_retrieve_table_daemon(Output, unique_id=self.pre_output_id)
@@ -362,8 +359,7 @@ class InputController(AbstractController, threading.Thread):
         measurements = None
 
         if not self.device_recognized:
-            self.logger.debug("Device not recognized: {device}".format(
-                device=self.device))
+            self.logger.debug(f"Device not recognized: {self.device}")
             self.measurement_success = False
             return 1
 
@@ -392,7 +388,7 @@ class InputController(AbstractController, threading.Thread):
                 self.logger.exception("This Input has already crashed. Look before this message "
                                       "for the relevant error that indicates what the issue was.")
             else:
-                self.logger.exception("Error while attempting to read input: {err}".format(err=except_msg))
+                self.logger.exception("Error while attempting to read input")
 
         if self.device_recognized and measurements is not None:
             self.measurement = Measurement(measurements)
@@ -420,8 +416,7 @@ class InputController(AbstractController, threading.Thread):
                     each_channel,
                     each_measurement)
         self.logger.debug(
-            "Adding measurements to InfluxDB with ID {}: {}".format(
-                self.unique_id, measurements_record))
+            f"Adding measurements to InfluxDB with ID {self.unique_id}: {measurements_record}")
         return measurements_record
 
     def force_measurements(self):
@@ -441,10 +436,9 @@ class InputController(AbstractController, threading.Thread):
                 return 0, "Command sent to Input Controller and is running in the background."
             else:
                 return_val = run_command(args_dict)
-                return 0, "Command sent to Input Controller. Returned: {}".format(return_val)
+                return 0, f"Command sent to Input Controller. Returned: {return_val}"
         except Exception as err:
-            msg = "Error executing button press function '{}': {}".format(
-                button_id, err)
+            msg = f"Error executing button press function '{button_id}': {err}"
             self.logger.exception(msg)
             return 1, msg
 

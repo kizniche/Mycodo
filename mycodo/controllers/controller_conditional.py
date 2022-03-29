@@ -110,8 +110,7 @@ class ConditionalController(AbstractController, threading.Thread):
         now = time.time()
         self.timer_period = now + self.start_offset
 
-        self.file_run = '{}/conditional_{}.py'.format(
-            PATH_PYTHON_CODE_USER, self.unique_id)
+        self.file_run = f'{PATH_PYTHON_CODE_USER}/conditional_{self.unique_id}.py'
 
         # If the file to execute doesn't exist, generate it
         if not os.path.exists(self.file_run):
@@ -124,8 +123,7 @@ class ConditionalController(AbstractController, threading.Thread):
                 db_retrieve_table_daemon(Actions, entry='all'),
                 timeout=self.pyro_timeout)
 
-        module_name = "mycodo.conditional.{}".format(
-            os.path.basename(self.file_run).split('.')[0])
+        module_name = f"mycodo.conditional.{os.path.basename(self.file_run).split('.')[0]}"
         spec = importlib.util.spec_from_file_location(
             module_name, self.file_run)
         conditional_run = importlib.util.module_from_spec(spec)
@@ -134,13 +132,11 @@ class ConditionalController(AbstractController, threading.Thread):
             self.logger, self.unique_id, '')
 
         self.logger.debug(
-            "Conditional Statement (pre-replacement):\n{}".format(
-                self.conditional_statement))
+            f"Conditional Statement (pre-replacement):\n{self.conditional_statement}")
 
         with open(self.file_run, 'r') as file:
             self.logger.debug(
-                "Conditional Statement (post-replacement):\n{}".format(
-                    file.read()))
+                f"Conditional Statement (post-replacement):\n{file.read()}")
 
         self.ready.set()
         self.running = True
@@ -167,18 +163,13 @@ class ConditionalController(AbstractController, threading.Thread):
 
         timestamp = datetime.datetime.fromtimestamp(
             self.time_conditional).strftime('%Y-%m-%d %H:%M:%S')
-        message = "{ts}\n[Conditional {id}]\n[Name: {name}]".format(
-            ts=timestamp,
-            name=cond.name,
-            id=self.unique_id)
+        message = f"{timestamp}\n[Conditional {self.unique_id}]\n[Name: {cond.name}]"
 
         if self.message_include_code:
             message += '\n[Conditional Statement Code Executed]:' \
                        '\n--------------------' \
-                       '\n{statement}' \
-                       '\n--------------------' \
-                       '\n'.format(
-                           statement=cond.conditional_statement)
+                       f'\n{cond.conditional_statement}' \
+                       '\n--------------------\n'
 
         message += '\n[Messages]:\n'
 

@@ -145,8 +145,7 @@ class TriggerController(AbstractController, threading.Thread):
                     'trigger_timer_daily_time_span',
                     'trigger_timer_duration']):
                 if self.trigger_type == 'trigger_timer_daily_time_point':
-                    self.timer_period = epoch_of_next_time(
-                        '{hm}:00'.format(hm=self.timer_start_time))
+                    self.timer_period = epoch_of_next_time(f'{self.timer_start_time}:00')
                 elif self.trigger_type in ['trigger_timer_duration',
                                            'trigger_timer_daily_time_span']:
                     while self.running and self.timer_period < time.time():
@@ -199,8 +198,7 @@ class TriggerController(AbstractController, threading.Thread):
         # Set up trigger timer (daily time point)
         if self.trigger_type == 'trigger_timer_daily_time_point':
             self.timer_start_time = self.trigger.timer_start_time
-            self.timer_period = epoch_of_next_time(
-                '{hm}:00'.format(hm=self.trigger.timer_start_time))
+            self.timer_period = epoch_of_next_time(f'{self.trigger.timer_start_time}:00')
 
         # Set up trigger timer (daily time span)
         elif self.trigger_type == 'trigger_timer_daily_time_span':
@@ -259,7 +257,7 @@ class TriggerController(AbstractController, threading.Thread):
                 self.method_start_time = datetime.datetime.now()
                 self.method_end_time = method.determine_end_time(self.method_start_time)
 
-                self.logger.info("Starting method {} {}".format(self.method_start_time, self.method_end_time))
+                self.logger.info(f"Starting method {self.method_start_time} {self.method_end_time}")
 
                 with session_scope(MYCODO_DB_PATH) as db_session:
                     this_controller = db_session.query(Trigger)
@@ -314,7 +312,7 @@ class TriggerController(AbstractController, threading.Thread):
         output_channel = db_retrieve_table_daemon(OutputChannel).filter(
             OutputChannel.unique_id == self.trigger.unique_id_3).first()
         output_channel = output_channel.channel if output_channel else 0
-        self.logger.debug("Set output duty cycle to {}".format(duty_cycle))
+        self.logger.debug(f"Set output duty cycle to {duty_cycle}")
         self.control.output_on(
             self.trigger.unique_id_2, output_type='pwm', amount=duty_cycle, output_channel=output_channel)
 
@@ -332,10 +330,7 @@ class TriggerController(AbstractController, threading.Thread):
         now = time.time()
         timestamp = datetime.datetime.fromtimestamp(now).strftime(
             '%Y-%m-%d %H:%M:%S')
-        message = "{ts}\n[Trigger {id} ({name})]".format(
-            ts=timestamp,
-            name=self.trigger_name,
-            id=self.unique_id)
+        message = f"{timestamp}\n[Trigger {self.unique_id} ({self.trigger_name})]"
 
         trigger = db_retrieve_table_daemon(
             Trigger, unique_id=self.unique_id, entry='first')
@@ -380,11 +375,10 @@ class TriggerController(AbstractController, threading.Thread):
                 gpio_state = GPIO.input(int(input_dev.pin))
             except Exception as e:
                 gpio_state = None
-                self.logger.error("Exception reading the GPIO pin: {}".format(e))
+                self.logger.error(f"Exception reading the GPIO pin: {e}")
             if (gpio_state is not None and
                     gpio_state == trigger.if_sensor_gpio_state):
-                message += " GPIO State Detected (state = {state}).".format(
-                    state=trigger.if_sensor_gpio_state)
+                message += f" GPIO State Detected (state = {trigger.if_sensor_gpio_state})."
             else:
                 self.logger.error("GPIO not configured correctly or GPIO state not verified")
                 return

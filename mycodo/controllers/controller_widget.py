@@ -64,15 +64,11 @@ class WidgetController(AbstractController, threading.Thread):
                 if each_widget.graph_type in self.dict_widgets:
                     self.widget_add_refresh(each_widget.unique_id)
                 else:
-                    self.logger.debug("Widget '{device}' not recognized".format(
-                        device=each_widget.graph_type))
-                    raise Exception("'{device}' is not a valid widget type.".format(
-                        device=each_widget.graph_type))
+                    self.logger.error(f"'{each_widget.graph_type}' is not a valid widget type")
 
             self.logger.debug("Widgets Initialized")
-        except Exception as except_msg:
-            self.logger.exception(
-                "Problem initializing widgets: {err}".format(err=except_msg))
+        except Exception:
+            self.logger.exception("Problem initializing widgets")
 
         self.ready.set()
         self.running = True
@@ -82,8 +78,8 @@ class WidgetController(AbstractController, threading.Thread):
             if self.widget_ready[each_unique_id] and each_unique_id in self.widget_loaded:
                 try:
                     self.widget_loaded[each_unique_id].loop()
-                except Exception as err:
-                    self.logger.exception(1)
+                except Exception:
+                    self.logger.exception("Error running widget loop()")
 
     def widget_add_refresh(self, unique_id):
         self.dict_widgets = parse_widget_information()
@@ -102,8 +98,8 @@ class WidgetController(AbstractController, threading.Thread):
                 self.widget_loaded[unique_id] = widget_loaded.WidgetModule(widget)
                 self.widget_loaded[unique_id].initialize_variables()
                 self.widget_ready[unique_id] = True
-                self.logger.info("Widget {id} created/refreshed in {time:.1f} ms".format(
-                    id=widget.unique_id.split('-')[0], time=(timeit.default_timer() - timer) * 1000))
+                diff = (timeit.default_timer() - timer) * 1000
+                self.logger.info(f"Widget {widget.unique_id.split('-')[0]} created/refreshed in {diff:.1f} ms")
         except Exception:
             self.logger.exception("Widget create/refresh")
 
@@ -115,8 +111,8 @@ class WidgetController(AbstractController, threading.Thread):
                 self.widget_ready.pop(unique_id, None)
                 self.widget_loaded.pop(unique_id, None)
 
-                self.logger.info("Widget object {id} removed in {time:.1f} ms".format(
-                    id=unique_id.split('-')[0], time=(timeit.default_timer() - timer) * 1000))
+                diff = (timeit.default_timer() - timer) * 1000
+                self.logger.info(f"Widget object {unique_id.split('-')[0]} removed in {diff:.1f} ms")
         except Exception:
             self.logger.exception("Widget remove")
 
@@ -130,7 +126,7 @@ class WidgetController(AbstractController, threading.Thread):
             else:
                 return_value = "Widget not initialized in Daemon"
         except Exception as err:
-            return_value = "Error: {}".format(err)
-            self.logger.exception(1)
+            return_value = f"Error: {err}"
+            self.logger.exception("widget_execute()")
 
         return return_value

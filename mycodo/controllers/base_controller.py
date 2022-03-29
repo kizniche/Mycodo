@@ -32,9 +32,9 @@ class AbstractController(AbstractBaseController):
         self.unique_id = unique_id
         self.ready = ready
 
-        logger_name = "{}".format(name)
+        logger_name = f"{name}"
         if self.unique_id:
-            logger_name += "_{}".format(unique_id.split('-')[0])
+            logger_name += f"_{unique_id.split('-')[0]}"
             self.setup_device_measurement(unique_id)
         self.logger = logging.getLogger(logger_name)
 
@@ -44,16 +44,14 @@ class AbstractController(AbstractBaseController):
 
     def initialize_variables(self):
         self.logger.error(
-            "{cls} did not overwrite the initialize_variables() method. All subclasses of the "
-            "AbstractController class are required to overwrite this "
-            "method".format(cls=type(self).__name__))
+            f"{type(self).__name__} did not overwrite the initialize_variables() method. "
+            f"All subclasses of the AbstractController class are required to overwrite this method")
         raise NotImplementedError
 
     def loop(self):
         self.logger.error(
-            "{cls} did not overwrite the loop() method. All subclasses of the "
-            "AbstractController class are required to overwrite this "
-            "method".format(cls=type(self).__name__))
+            f"{type(self).__name__} did not overwrite the loop() method. "
+            f"All subclasses of the AbstractController class are required to overwrite this method")
         raise NotImplementedError
 
     def run_finally(self):
@@ -73,10 +71,10 @@ class AbstractController(AbstractBaseController):
             try:
                 self.initialize_variables()
             except Exception as except_msg:
-                self.logger.exception("initialize_variables() Exception: {err}".format(err=except_msg))
+                self.logger.exception(f"initialize_variables() Exception: {except_msg}")
 
-            self.logger.info("Activated in {:.1f} ms".format(
-                (timeit.default_timer() - self.thread_startup_timer) * 1000))
+            dur = (timeit.default_timer() - self.thread_startup_timer) * 1000
+            self.logger.info(f"Activated in {dur:.1f} ms")
 
             while self.running:
                 try:
@@ -95,8 +93,8 @@ class AbstractController(AbstractBaseController):
             self.run_finally()
             self.running = False
             if self.thread_shutdown_timer:
-                self.logger.info("Deactivated in {:.1f} ms".format(
-                    (timeit.default_timer() - self.thread_shutdown_timer) * 1000))
+                dur = (timeit.default_timer() - self.thread_shutdown_timer) * 1000
+                self.logger.info(f"Deactivated in {dur:.1f} ms")
             else:
                 self.logger.error("Deactivated unexpectedly")
 
@@ -123,9 +121,9 @@ class AbstractController(AbstractBaseController):
             except Exception:
                 if i < times:
                     self.logger.exception(
-                        "Exception executing {}() on attempt {} of {}. Waiting {} seconds and trying again.".format(
-                            func.__name__, i, times, delay_sec))
+                        f"Exception executing {func.__name__}() on attempt {i} of {times}. "
+                        f"Waiting {delay_sec} seconds and trying again.")
                     time.sleep(delay_sec)
                 else:
                     self.logger.exception(
-                        "Exception executing {}() on attempt {} of {}.".format(func.__name__, i, times))
+                        f"Exception executing {func.__name__}() on attempt {i} of {times}.")

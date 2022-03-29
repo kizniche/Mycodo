@@ -74,8 +74,8 @@ class FunctionController(AbstractController, threading.Thread):
 
             try:
                 self.run_function.loop()
-            except Exception as err:
-                self.logger.exception("Exception while running loop(): {}".format(err))
+            except Exception:
+                self.logger.exception("Exception while running loop()")
 
     def run_finally(self):
         try:
@@ -134,11 +134,10 @@ class FunctionController(AbstractController, threading.Thread):
                 return 0, "Command sent to Function Controller and is running in the background."
             else:
                 return_val = run_command(args_dict)
-                return 0, "Command sent to Function Controller. Returned: {}".format(return_val)
+                return 0, f"Command sent to Function Controller. Returned: {return_val}"
         except:
             self.logger.exception(
-                "Error executing button press function '{}'".format(
-                    button_id))
+                f"Error executing button press function '{button_id}'")
 
     def function_action(self, action_string, args_dict=None, thread=True):
         """Execute function action."""
@@ -154,10 +153,9 @@ class FunctionController(AbstractController, threading.Thread):
                 return 0, "Command sent to Function Controller and is running in the background."
             else:
                 return_val = run_command(args_dict)
-                return 0, "Command sent to Function Controller. Returned: {}".format(return_val)
+                return 0, f"Command sent to Function Controller. Returned: {return_val}"
         except:
-            self.logger.exception(
-                "Error executing function action '{}'".format(action_string))
+            self.logger.exception(f"Error executing function action '{action_string}'")
 
     def function_status(self):
         return self.run_function.function_status()

@@ -227,7 +227,7 @@ class PIDController(AbstractController, threading.Thread):
         elif self.is_held:
             self.logger.info("Starting Held")
 
-        self.logger.info("PID Settings: {}".format(self.pid_parameters_str()))
+        self.logger.info(f"PID Settings: {self.pid_parameters_str()}")
 
         self.ready.set()
         self.running = True
@@ -252,8 +252,7 @@ class PIDController(AbstractController, threading.Thread):
 
                     method = load_method_handler(self.setpoint_tracking_id, self.logger)
                     new_setpoint, ended = method.calculate_setpoint(now, this_pid.method_start_time)
-                    self.logger.debug("Method {} {} {} {}".format(
-                        self.setpoint_tracking_id, method, now, this_pid.method_start_time))
+                    self.logger.debug(f"Method {self.setpoint_tracking_id} {method} {now} {this_pid.method_start_time}")
 
                     if ended:
                         # point in time is out of method range
@@ -275,10 +274,10 @@ class PIDController(AbstractController, threading.Thread):
                             db_session.commit()
 
                     if new_setpoint is not None:
-                        self.logger.debug("New setpoint = {} {}".format(new_setpoint, ended))
+                        self.logger.debug(f"New setpoint = {new_setpoint} {ended}")
                         self.PID_Controller.setpoint = new_setpoint
                     else:
-                        self.logger.debug("New setpoint = default {} {}".format(self.setpoint, ended))
+                        self.logger.debug(f"New setpoint = default {self.setpoint} {ended}")
                         self.PID_Controller.setpoint = self.setpoint
 
                 if self.setpoint_tracking_type == 'input-math' and self.setpoint_tracking_id != '':
@@ -308,11 +307,8 @@ class PIDController(AbstractController, threading.Thread):
                     else:
                         self.logger.debug(
                             "Could not find measurement for Setpoint "
-                            "Tracking. Max Age of {} exceeded for measuring "
-                            "device ID {} (measurement {})".format(
-                                self.setpoint_tracking_max_age,
-                                device_id,
-                                measurement_id))
+                            f"Tracking. Max Age of {self.setpoint_tracking_max_age} exceeded for measuring "
+                            f"device ID {device_id} (measurement {measurement_id})")
                         self.PID_Controller.setpoint = None
 
                 # Calculate new control variable (output) from PID Controller
@@ -339,7 +335,7 @@ class PIDController(AbstractController, threading.Thread):
             self.method_start_time = datetime.datetime.now()
             self.method_end_time = method.determine_end_time(self.method_start_time)
 
-            self.logger.info("Starting method {} {}".format(self.method_start_time, self.method_end_time))
+            self.logger.info(f"Starting method {self.method_start_time} {self.method_end_time}")
 
             with session_scope(MYCODO_DB_PATH) as db_session:
                 this_controller = db_session.query(PID)
@@ -353,7 +349,7 @@ class PIDController(AbstractController, threading.Thread):
             self.method_end_time = this_controller.method_end_time
 
         self.setpoint_tracking_id = method_id
-        self.logger.debug("Method enabled: {id}".format(id=self.setpoint_tracking_id))
+        self.logger.debug(f"Method enabled: {self.setpoint_tracking_id}")
 
     def stop_method(self):
         self.method_start_time = None
@@ -457,27 +453,20 @@ class PIDController(AbstractController, threading.Thread):
                 utc_dt = datetime.datetime.strptime(self.last_time.split(".")[0], '%Y-%m-%dT%H:%M:%S')
                 utc_timestamp = calendar.timegm(utc_dt.timetuple())
                 local_timestamp = str(datetime.datetime.fromtimestamp(utc_timestamp))
-                self.logger.debug("Latest (CH{ch}, Unit: {unit}): {last} @ {ts}".format(
-                    ch=channel,
-                    unit=unit,
-                    last=self.last_measurement,
-                    ts=local_timestamp))
+                self.logger.debug(f"Latest (CH{channel}, Unit: {unit}): {self.last_measurement} @ {local_timestamp}")
                 if calendar.timegm(time.gmtime()) - utc_timestamp > self.max_measure_age:
+                    sec = calendar.timegm(time.gmtime()) - utc_timestamp
                     self.logger.error(
-                        "Last measurement was {last_sec} seconds ago, however"
-                        " the maximum measurement age is set to {max_sec}"
-                        " seconds.".format(
-                            last_sec=calendar.timegm(time.gmtime()) - utc_timestamp,
-                            max_sec=self.max_measure_age
-                        ))
+                        f"Last measurement was {sec} seconds ago, however the maximum "
+                        f"measurement age is set to {self.max_measure_age} seconds.")
                 self.last_measurement_success = True
             else:
                 self.logger.warning("No data returned from influxdb")
         except requests.ConnectionError:
             self.logger.error("Failed to read measurement from the influxdb database: Could not connect.")
-        except Exception as except_msg:
+        except Exception:
             self.logger.exception(
-                "Exception while reading measurement from the influxdb database: {err}".format(err=except_msg))
+                "Exception while reading measurement from the influxdb database")
 
     def manipulate_output(self):
         """
@@ -509,12 +498,10 @@ class PIDController(AbstractController, threading.Thread):
                             raise_duty_cycle = self.raise_min_duration
 
                         self.logger.debug(
-                            "Setpoint: {sp}, Control Variable: {cv}, Output: PWM output {id} CH{ch} to {dc:.1f}%".format(
-                                sp=self.PID_Controller.setpoint,
-                                cv=self.PID_Controller.control_variable,
-                                id=self.raise_output_id,
-                                ch=self.raise_output_channel,
-                                dc=raise_duty_cycle))
+                            f"Setpoint: {self.PID_Controller.setpoint}, "
+                            f"Control Variable: {self.PID_Controller.control_variable}, "
+                            f"Output: PWM output {self.raise_output_id} "
+                            f"CH{self.raise_output_channel} to {raise_duty_cycle:.1f}%")
 
                         # Activate pwm with calculated duty cycle
                         self.control.output_on(
@@ -537,11 +524,10 @@ class PIDController(AbstractController, threading.Thread):
 
                         if raise_seconds_on >= self.raise_min_duration:
                             # Activate raise_output for a duration
-                            self.logger.debug("Setpoint: {sp} Output: {cv} sec to output {id} CH{ch}".format(
-                                sp=self.PID_Controller.setpoint,
-                                cv=self.PID_Controller.control_variable,
-                                id=self.raise_output_id,
-                                ch=self.raise_output_channel))
+                            self.logger.debug(
+                                f"Setpoint: {self.PID_Controller.setpoint} "
+                                f"Output: {self.PID_Controller.control_variable} sec to "
+                                f"output {self.raise_output_id} CH{self.raise_output_channel}")
 
                             self.control.output_on(
                                 self.raise_output_id,
@@ -563,11 +549,10 @@ class PIDController(AbstractController, threading.Thread):
 
                         if raise_value >= self.raise_min_duration:
                             # Activate raise_output for a value
-                            self.logger.debug("Setpoint: {sp} Output: {cv} to output {id} CH{ch}".format(
-                                sp=self.PID_Controller.setpoint,
-                                cv=self.PID_Controller.control_variable,
-                                id=self.raise_output_id,
-                                ch=self.raise_output_channel))
+                            self.logger.debug(
+                                f"Setpoint: {self.PID_Controller.setpoint} "
+                                f"Output: {self.PID_Controller.control_variable} to "
+                                f"output {self.raise_output_id} CH{self.raise_output_channel}")
 
                             self.control.output_on(
                                 self.raise_output_id,
@@ -589,11 +574,10 @@ class PIDController(AbstractController, threading.Thread):
 
                         if raise_volume >= self.raise_min_duration:
                             # Activate raise_output for a volume (ml)
-                            self.logger.debug("Setpoint: {sp} Output: {cv} ml to output {id} CH{ch}".format(
-                                sp=self.PID_Controller.setpoint,
-                                cv=self.PID_Controller.control_variable,
-                                id=self.raise_output_id,
-                                ch=self.raise_output_channel))
+                            self.logger.debug(
+                                f"Setpoint: {self.PID_Controller.setpoint} "
+                                f"Output: {self.PID_Controller.control_variable} ml to "
+                                f"output {self.raise_output_id} CH{self.raise_output_channel}")
 
                             self.control.output_on(
                                 self.raise_output_id,
@@ -634,12 +618,10 @@ class PIDController(AbstractController, threading.Thread):
                             lower_duty_cycle = self.lower_min_duration
 
                         self.logger.debug(
-                            "Setpoint: {sp}, Control Variable: {cv}, Output: PWM output {id} CH{ch} to {dc:.1f}%".format(
-                                sp=self.PID_Controller.setpoint,
-                                cv=self.PID_Controller.control_variable,
-                                id=self.lower_output_id,
-                                ch=self.lower_output_channel,
-                                dc=lower_duty_cycle))
+                            f"Setpoint: {self.PID_Controller.setpoint}, "
+                            f"Control Variable: {self.PID_Controller.control_variable}, "
+                            f"Output: PWM output {self.lower_output_id} "
+                            f"CH{self.lower_output_channel} to {lower_duty_cycle:.1f}%")
 
                         if self.store_lower_as_negative:
                             store_duty_cycle = -self.control_var_to_duty_cycle(
@@ -683,11 +665,10 @@ class PIDController(AbstractController, threading.Thread):
 
                         if lower_seconds_on >= self.lower_min_duration:
                             # Activate lower_output for a duration
-                            self.logger.debug("Setpoint: {sp} Output: {cv} sec to output {id} CH{ch}".format(
-                                sp=self.PID_Controller.setpoint,
-                                cv=self.PID_Controller.control_variable,
-                                id=self.lower_output_id,
-                                ch=self.lower_output_channel))
+                            self.logger.debug(
+                                f"Setpoint: {self.PID_Controller.setpoint} "
+                                f"Output: {self.PID_Controller.control_variable} sec to "
+                                f"output {self.lower_output_id} CH{self.lower_output_channel}")
 
                             self.control.output_on(
                                 self.lower_output_id,
@@ -719,11 +700,10 @@ class PIDController(AbstractController, threading.Thread):
 
                         if lower_value >= self.lower_min_duration:
                             # Activate lower_output for a value
-                            self.logger.debug("Setpoint: {sp} Output: {cv} to output {id} CH{ch}".format(
-                                sp=self.PID_Controller.setpoint,
-                                cv=self.PID_Controller.control_variable,
-                                id=self.lower_output_id,
-                                ch=self.lower_output_channel))
+                            self.logger.debug(
+                                f"Setpoint: {self.PID_Controller.setpoint} "
+                                f"Output: {self.PID_Controller.control_variable} to "
+                                f"output {self.lower_output_id} CH{self.lower_output_channel}")
 
                             self.control.output_on(
                                 self.lower_output_id,
@@ -755,11 +735,10 @@ class PIDController(AbstractController, threading.Thread):
 
                         if lower_volume >= self.lower_min_duration:
                             # Activate lower_output for a volume (ml)
-                            self.logger.debug("Setpoint: {sp} Output: {cv} ml to output {id} CH{ch}".format(
-                                sp=self.PID_Controller.setpoint,
-                                cv=self.PID_Controller.control_variable,
-                                id=self.lower_output_id,
-                                ch=self.lower_output_channel))
+                            self.logger.debug(
+                                f"Setpoint: {self.PID_Controller.setpoint} "
+                                f"Output: {self.PID_Controller.control_variable} ml to "
+                                f"output {self.lower_output_id} CH{self.lower_output_channel}")
 
                             self.control.output_on(
                                 self.lower_output_id,
@@ -789,60 +768,33 @@ class PIDController(AbstractController, threading.Thread):
                     self.lower_output_id, output_channel=self.lower_output_channel)
 
     def pid_parameters_str(self):
-        return "Device ID: {did}, " \
-               "Measurement ID: {mid}, " \
-               "Direction: {dir}, " \
-               "Period: {per}, " \
-               "Setpoint: {sp}, " \
-               "Band: {band}, " \
-               "Kp: {kp}, " \
-               "Ki: {ki}, " \
-               "Kd: {kd}, " \
-               "Integrator Min: {imn}, " \
-               "Integrator Max {imx}, " \
-               "Output Raise: {opr}, " \
-               "Output Raise Channel: {oprc}, " \
-               "Output Raise Type: {oprt}, " \
-               "Output Raise Min On: {oprmnon}, " \
-               "Output Raise Max On: {oprmxon}, " \
-               "Output Raise Min Off: {oprmnoff}, " \
-               "Output Raise Always Min: {opramn}, " \
-               "Output Lower: {opl}, " \
-               "Output Lower Channel: {oplc}, " \
-               "Output Lower Type: {oplt}, " \
-               "Output Lower Min On: {oplmnon}, " \
-               "Output Lower Max On: {oplmxon}, " \
-               "Output Lower Min Off: {oplmnoff}, " \
-               "Output Lower Always Min: {oplamn}, " \
-               "Setpoint Tracking Type: {sptt}, " \
-               "Setpoint Tracking ID: {spt}".format(
-                    did=self.device_id,
-                    mid=self.measurement_id,
-                    dir=self.PID_Controller.direction,
-                    per=self.period,
-                    sp=self.PID_Controller.setpoint,
-                    band=self.PID_Controller.band,
-                    kp=self.PID_Controller.Kp,
-                    ki=self.PID_Controller.Ki,
-                    kd=self.PID_Controller.Kd,
-                    imn=self.PID_Controller.integrator_min,
-                    imx=self.PID_Controller.integrator_max,
-                    opr=self.raise_output_id,
-                    oprc=self.raise_output_channel,
-                    oprt=self.raise_output_type,
-                    oprmnon=self.raise_min_duration,
-                    oprmxon=self.raise_max_duration,
-                    oprmnoff=self.raise_min_off_duration,
-                    opramn=self.raise_always_min_pwm,
-                    opl=self.lower_output_id,
-                    oplc=self.lower_output_channel,
-                    oplt=self.lower_output_type,
-                    oplmnon=self.lower_min_duration,
-                    oplmxon=self.lower_max_duration,
-                    oplmnoff=self.lower_min_off_duration,
-                    oplamn=self.lower_always_min_pwm,
-                    sptt=self.setpoint_tracking_type,
-                    spt=self.setpoint_tracking_id)
+        return f"Device ID: {self.device_id}, " \
+               f"Measurement ID: {self.measurement_id}, " \
+               f"Direction: {self.PID_Controller.direction}, " \
+               f"Period: {self.period}, " \
+               f"Setpoint: {self.PID_Controller.setpoint}, " \
+               f"Band: {self.PID_Controller.band}, " \
+               f"Kp: {self.PID_Controller.Kp}, " \
+               f"Ki: {self.PID_Controller.Ki}, " \
+               f"Kd: {self.PID_Controller.Kd}, " \
+               f"Integrator Min: {self.PID_Controller.integrator_min}, " \
+               f"Integrator Max {self.PID_Controller.integrator_max}, " \
+               f"Output Raise: {self.raise_output_id}, " \
+               f"Output Raise Channel: {self.raise_output_channel}, " \
+               f"Output Raise Type: {self.raise_output_type}, " \
+               f"Output Raise Min On: {self.raise_min_duration}, " \
+               f"Output Raise Max On: {self.raise_max_duration}, " \
+               f"Output Raise Min Off: {self.raise_min_off_duration}, " \
+               f"Output Raise Always Min: {self.raise_always_min_pwm}, " \
+               f"Output Lower: {self.lower_output_id}, " \
+               f"Output Lower Channel: {self.lower_output_channel}, " \
+               f"Output Lower Type: {self.lower_output_type}, " \
+               f"Output Lower Min On: {self.lower_min_duration}, " \
+               f"Output Lower Max On: {self.lower_max_duration}, " \
+               f"Output Lower Min Off: {self.lower_min_off_duration}, " \
+               f"Output Lower Always Min: {self.lower_always_min_pwm}, " \
+               f"Setpoint Tracking Type: {self.setpoint_tracking_type}, " \
+               f"Setpoint Tracking ID: {self.setpoint_tracking_id}"
 
     def control_var_to_duty_cycle(self, control_variable):
         # Convert control variable to duty cycle
@@ -915,7 +867,7 @@ class PIDController(AbstractController, threading.Thread):
             mod_pid = db_session.query(PID).filter(PID.unique_id == self.unique_id).first()
             mod_pid.setpoint = setpoint
             db_session.commit()
-        return "Setpoint set to {sp}".format(sp=setpoint)
+        return f"Setpoint set to {setpoint}"
 
     def set_method(self, method_id):
         """Set the method of PID."""
@@ -932,17 +884,17 @@ class PIDController(AbstractController, threading.Thread):
                 db_session.commit()
                 self.setup_method(method_id)
 
-        return "Method set to {me}".format(me=method_id)
+        return f"Method set to {method_id}"
 
     def set_integrator(self, integrator):
         """Set the integrator of the controller."""
         self.PID_Controller.integrator = float(integrator)
-        return "Integrator set to {i}".format(i=self.PID_Controller.integrator)
+        return f"Integrator set to {self.PID_Controller.integrator}"
 
     def set_derivator(self, derivator):
         """Set the derivator of the controller."""
         self.PID_Controller.derivator = float(derivator)
-        return "Derivator set to {d}".format(d=self.PID_Controller.derivator)
+        return f"Derivator set to {self.PID_Controller.derivator}"
 
     def set_kp(self, p):
         """Set Kp gain of the controller."""
@@ -951,7 +903,7 @@ class PIDController(AbstractController, threading.Thread):
             mod_pid = db_session.query(PID).filter(PID.unique_id == self.unique_id).first()
             mod_pid.p = p
             db_session.commit()
-        return "Kp set to {kp}".format(kp=self.PID_Controller.Kp)
+        return f"Kp set to {self.PID_Controller.Kp}"
 
     def set_ki(self, i):
         """Set Ki gain of the controller."""
@@ -960,7 +912,7 @@ class PIDController(AbstractController, threading.Thread):
             mod_pid = db_session.query(PID).filter(PID.unique_id == self.unique_id).first()
             mod_pid.i = i
             db_session.commit()
-        return "Ki set to {ki}".format(ki=self.PID_Controller.Ki)
+        return f"Ki set to {self.PID_Controller.Ki}"
 
     def set_kd(self, d):
         """Set Kd gain of the controller."""
@@ -969,7 +921,7 @@ class PIDController(AbstractController, threading.Thread):
             mod_pid = db_session.query(PID).filter(PID.unique_id == self.unique_id).first()
             mod_pid.d = d
             db_session.commit()
-        return "Kd set to {kd}".format(kd=self.PID_Controller.Kd)
+        return f"Kd set to {self.PID_Controller.Kd}"
 
     def get_setpoint(self):
         return self.PID_Controller.setpoint
@@ -996,14 +948,14 @@ class PIDController(AbstractController, threading.Thread):
         return self.PID_Controller.Kd
 
     def function_status(self):
+        total = self.PID_Controller.P_value + self.PID_Controller.I_value + self.PID_Controller.D_value
         return_dict = {
             'string_status': "This info is being returned from the PID Controller."
-                             "\nCurrent time: {}\nControl Variable: {:.4f} = {:.4f} (P), {:.4f} (I), {:.4f} (D)".format(
-                datetime.datetime.now(),
-                self.PID_Controller.P_value + self.PID_Controller.I_value + self.PID_Controller.D_value,
-                self.PID_Controller.P_value,
-                self.PID_Controller.I_value,
-                self.PID_Controller.D_value),
+                             f"\nCurrent time: {datetime.datetime.now()}"
+                             f"\nControl Variable: {total:.4f} = "
+                             f"{self.PID_Controller.P_value:.4f} (P), "
+                             f"{self.PID_Controller.I_value:.4f} (I), "
+                             f"{self.PID_Controller.D_value:.4f} (D)",
             'error': []
         }
         return return_dict
