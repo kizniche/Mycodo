@@ -78,9 +78,6 @@ class AbstractController(AbstractBaseController):
             self.logger.info("Activated in {:.1f} ms".format(
                 (timeit.default_timer() - self.thread_startup_timer) * 1000))
 
-            self.ready.set()
-            self.running = True
-
             while self.running:
                 try:
                     self.loop()

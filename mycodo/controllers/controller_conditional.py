@@ -142,6 +142,9 @@ class ConditionalController(AbstractController, threading.Thread):
                 "Conditional Statement (post-replacement):\n{}".format(
                     file.read()))
 
+        self.ready.set()
+        self.running = True
+
     def refresh_settings(self):
         """Signal to pause the main loop and wait for verification, the refresh settings."""
         self.pause_loop = True

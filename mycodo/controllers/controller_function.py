@@ -113,11 +113,14 @@ class FunctionController(AbstractController, threading.Thread):
 
             if function_loaded:
                 self.run_function = function_loaded.CustomModule(self.function)
+
+            self.ready.set()
+            self.running = True
         else:
-            self.logger.debug("Device '{device}' not recognized".format(
-                device=self.device))
-            raise Exception("'{device}' is not a valid device type.".format(
-                device=self.device))
+            self.ready.set()
+            self.running = False
+            self.logger.error(f"'{self.device}' is not a valid device type. Deactivating controller.")
+            return
 
     def custom_button_exec_function(self, button_id, args_dict, thread=True):
         """Execute function from custom action button press."""

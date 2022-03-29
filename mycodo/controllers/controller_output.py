@@ -78,6 +78,9 @@ class OutputController(AbstractController, threading.Thread):
             outputs = db_retrieve_table_daemon(Output, entry='all')
             self.all_outputs_initialize(outputs)
             self.logger.debug("Outputs Initialized")
+
+            self.ready.set()
+            self.running = True
         except Exception as except_msg:
             self.logger.exception(
                 "Problem initializing outputs: {err}".format(err=except_msg))
@@ -107,7 +110,7 @@ class OutputController(AbstractController, threading.Thread):
         # Turn all outputs to their shutdown state
         for each_output_id in self.output_unique_id:
             shutdown_timer = timeit.default_timer()
-            # instruct each output to shutdown
+            # instruct each output to shut down
             self.output[each_output_id].shutdown(shutdown_timer)
 
     def all_outputs_initialize(self, outputs):
@@ -116,6 +119,10 @@ class OutputController(AbstractController, threading.Thread):
         self.output_types = output_types()
 
         for each_output in outputs:
+            if each_output.output_type not in self.dict_outputs:
+                self.logger.error(f"'{each_output.output_type}' not found in Output dictionary. Not starting Output.")
+                continue
+
             try:
                 self.output_type[each_output.unique_id] = each_output.output_type
                 self.output_unique_id[each_output.unique_id] = {}

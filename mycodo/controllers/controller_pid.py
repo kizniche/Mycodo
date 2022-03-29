@@ -229,6 +229,9 @@ class PIDController(AbstractController, threading.Thread):
 
         self.logger.info("PID Settings: {}".format(self.pid_parameters_str()))
 
+        self.ready.set()
+        self.running = True
+
         return "success"
 
     def check_pid(self):

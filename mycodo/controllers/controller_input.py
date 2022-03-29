@@ -131,11 +131,6 @@ class InputController(AbstractController, threading.Thread):
         # Pause loop to modify conditional statements.
         # Prevents execution of conditional while variables are
         # being modified.
-        if self.device not in self.dict_inputs:
-            self.logger.error(f"Could not find {self.device} in Input dictionary. Shutting controller down.")
-            self.running = False
-            return
-
         if self.pause_loop:
             self.verify_pause_loop = True
             while self.pause_loop:
@@ -336,12 +331,14 @@ class InputController(AbstractController, threading.Thread):
 
             if input_loaded:
                 self.measure_input = input_loaded.InputModule(self.input_dev)
+            self.ready.set()
+            self.running = True
         else:
             self.device_recognized = False
-            self.logger.debug("Device '{device}' not recognized".format(
-                device=self.device))
-            raise Exception("'{device}' is not a valid device type.".format(
-                device=self.device))
+            self.ready.set()
+            self.running = False
+            self.logger.error(f"'{self.device}' is not a valid device type. Deactivating controller.")
+            return
 
         self.input_timer = time.time()
         self.lastUpdate = None

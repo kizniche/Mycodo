@@ -244,6 +244,9 @@ class TriggerController(AbstractController, threading.Thread):
                 self.trigger.latitude, self.trigger.longitude, self.trigger.date_offset_days,
                 self.trigger.time_offset_minutes, self.trigger.rise_or_set)
 
+        self.ready.set()
+        self.running = True
+
     def start_method(self, method_id):
         """Instruct a method to start running."""
         if method_id:

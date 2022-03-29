@@ -74,6 +74,9 @@ class WidgetController(AbstractController, threading.Thread):
             self.logger.exception(
                 "Problem initializing widgets: {err}".format(err=except_msg))
 
+        self.ready.set()
+        self.running = True
+
     def loop(self):
         for each_unique_id in self.widget_ready:
             if self.widget_ready[each_unique_id] and each_unique_id in self.widget_loaded:
