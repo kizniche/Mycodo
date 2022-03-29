@@ -2,10 +2,12 @@
 import logging
 import os
 import re
+import stat
 import subprocess
 import threading
 import time
 import traceback
+from tempfile import NamedTemporaryFile
 
 import bcrypt
 import flask_login
@@ -31,6 +33,7 @@ from mycodo.config_devices_units import MEASUREMENTS
 from mycodo.config_devices_units import UNITS
 from mycodo.config_translations import TRANSLATIONS
 from mycodo.databases import set_api_key
+from mycodo.databases.models import Actions
 from mycodo.databases.models import Conversion
 from mycodo.databases.models import CustomController
 from mycodo.databases.models import Dashboard
@@ -45,7 +48,6 @@ from mycodo.databases.models import Output
 from mycodo.databases.models import OutputChannel
 from mycodo.databases.models import PID
 from mycodo.databases.models import Role
-from mycodo.databases.models import Actions
 from mycodo.databases.models import SMTP
 from mycodo.databases.models import Unit
 from mycodo.databases.models import User
@@ -59,8 +61,8 @@ from mycodo.mycodo_flask.utils.utils_general import controller_activate_deactiva
 from mycodo.mycodo_flask.utils.utils_general import delete_entry_with_id
 from mycodo.mycodo_flask.utils.utils_general import flash_form_errors
 from mycodo.mycodo_flask.utils.utils_general import flash_success_errors
-from mycodo.utils.database import db_retrieve_table
 from mycodo.utils.actions import parse_action_information
+from mycodo.utils.database import db_retrieve_table
 from mycodo.utils.functions import parse_function_information
 from mycodo.utils.inputs import parse_input_information
 from mycodo.utils.modules import load_module_from_file
@@ -70,6 +72,7 @@ from mycodo.utils.system_pi import all_conversions
 from mycodo.utils.system_pi import assure_path_exists
 from mycodo.utils.system_pi import base64_encode_bytes
 from mycodo.utils.system_pi import cmd_output
+from mycodo.utils.system_pi import set_user_grp
 from mycodo.utils.utils import test_password
 from mycodo.utils.utils import test_username
 from mycodo.utils.widget_generate_html import generate_widget_html
@@ -1937,6 +1940,40 @@ def settings_diagnostic_install_dependencies():
     flash("Installation of dependencies has been initiated. "
           "This can take a while. You can view the progress in the Dependency Log. "
           "At completion, the frontend and backend will be restarted.", "success")
+    flash_success_errors(
+        error, action, url_for('routes_settings.settings_diagnostic'))
+
+
+def settings_diagnostic_upgrade_master():
+    action = gettext("Set to Upgrade to Master")
+    error = []
+
+    if not error:
+        try:
+            path_config = os.path.join(INSTALL_DIRECTORY, "mycodo/config.py")
+
+            if not os.path.exists(path_config):
+                logger.error(f"Path doesn't exist: {path_config}")
+                return
+
+            with open(path_config) as fin, NamedTemporaryFile(dir='.', delete=False) as fout:
+                for line in fin:
+                    if line.startswith("FORCE_UPGRADE_MASTER = False"):
+                        line = "FORCE_UPGRADE_MASTER = True\n"
+                    fout.write(line.encode('utf8'))
+                os.rename(fout.name, path_config)
+            os.chmod(path_config, stat.S_IRGRP | stat.S_IWGRP | stat.S_IROTH)
+            set_user_grp(path_config, 'mycodo', 'mycodo')
+
+            command = '/bin/bash {path}/mycodo/scripts/upgrade_commands.sh web-server-reload'.format(
+                path=INSTALL_DIRECTORY)
+            upgrade = subprocess.Popen(
+                command, stdout=subprocess.PIPE, shell=True)
+            (_, _) = upgrade.communicate()
+            upgrade.wait()
+        except Exception as except_msg:
+            error.append(except_msg)
+
     flash_success_errors(
         error, action, url_for('routes_settings.settings_diagnostic'))
 
