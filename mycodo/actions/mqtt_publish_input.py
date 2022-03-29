@@ -32,6 +32,7 @@ ACTION_INFORMATION = {
         {
             'id': 'measurement',
             'type': 'select_measurement_from_this_input',
+            'default_value': None,
             'name': lazy_gettext('Measurement'),
             'phrase': 'Select the measurement to send as the payload'
         },
@@ -136,17 +137,6 @@ class ActionModule(AbstractFunctionAction):
         self.action_setup = True
 
     def run_action(self, message, dict_vars):
-        try:
-            measurement_dict = dict_vars["value"]["topic"]
-        except:
-            measurement_dict = None
-
-        if not measurement_dict:
-            msg = f" Error: No measurements dictionary passed to Action."
-            self.logger.error(msg)
-            message += msg
-            return
-
         device_measurement = get_measurement(
             self.measurement_measurement_id)
         if not device_measurement:
@@ -155,11 +145,20 @@ class ActionModule(AbstractFunctionAction):
             message += msg
             return
 
-        self.logger.info(f"Measure: {measurement_dict}")
-
         channel = device_measurement.channel
 
-        payload = None
+        try:
+            payload = dict_vars["value"][channel]['value']
+        except:
+            payload = None
+
+        self.logger.debug(f"Input channel: {channel}, payload: {payload}")
+
+        if payload is None:
+            msg = f" Error: No measurement found in dictionary passed to Action for channel {channel}."
+            self.logger.error(msg)
+            message += msg
+            return
 
         try:
             auth_dict = None

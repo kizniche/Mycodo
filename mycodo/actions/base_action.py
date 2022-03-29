@@ -16,6 +16,7 @@ from mycodo.abstract_base_controller import AbstractBaseController
 from mycodo.config import SQL_DATABASE_MYCODO
 from mycodo.databases.models import Conditional
 from mycodo.databases.models import Function
+from mycodo.databases.models import Input
 from mycodo.databases.models import Trigger
 from mycodo.databases.utils import session_scope
 from mycodo.mycodo_client import DaemonControl
@@ -93,19 +94,22 @@ class AbstractFunctionAction(AbstractBaseController):
             with session_scope(MYCODO_DB_PATH) as new_session:
                 debug_level = logging.INFO
 
+                input_dev = new_session.query(Input).filter(
+                    Input.unique_id == action.function_id).first()
                 conditional = new_session.query(Conditional).filter(
                     Conditional.unique_id == action.function_id).first()
-                if conditional and conditional.log_level_debug:
-                    debug_level = logging.DEBUG
-
                 function = new_session.query(Function).filter(
                     Function.unique_id == action.function_id).first()
-                if function and function.log_level_debug:
-                    debug_level = logging.DEBUG
-
                 trigger = new_session.query(Trigger).filter(
                     Trigger.unique_id == action.function_id).first()
-                if trigger and trigger.log_level_debug:
+
+                if input_dev and input_dev.log_level_debug:
+                    debug_level = logging.DEBUG
+                elif conditional and conditional.log_level_debug:
+                    debug_level = logging.DEBUG
+                elif function and function.log_level_debug:
+                    debug_level = logging.DEBUG
+                elif trigger and trigger.log_level_debug:
                     debug_level = logging.DEBUG
 
                 self.logger.setLevel(debug_level)

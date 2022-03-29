@@ -3,6 +3,7 @@
 ### Bugfixes
 
  - Fix State option upgrade for Output Action
+ - Fix MQTT Publish Action for Inputs
 
 
 ## 8.13.1 (2022-03-28)
