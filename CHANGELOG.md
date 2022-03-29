@@ -1,3 +1,11 @@
+## 8.13.1 (Unreleased)
+
+### Features
+
+ - Improve error feedback when importing controller modules
+ - Improve error-handling of controllers
+
+
 ## 8.13.0 (2022-03-28)
 
 Following the upgrade, you will need to reboot to complete the upgrade.

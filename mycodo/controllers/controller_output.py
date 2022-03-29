@@ -131,7 +131,7 @@ class OutputController(AbstractController, threading.Thread):
                             self.dict_outputs[each_output.output_type]['no_run']):
                         continue
 
-                    output_loaded = load_module_from_file(
+                    output_loaded, status = load_module_from_file(
                         self.dict_outputs[each_output.output_type]['file_path'],
                         'outputs')
 
@@ -186,7 +186,7 @@ class OutputController(AbstractController, threading.Thread):
                         except Exception:
                             self.logger.exception("Stopping output")
 
-                    output_loaded = load_module_from_file(
+                    output_loaded, status = load_module_from_file(
                         self.dict_outputs[self.output_type[output_id]]['file_path'],
                         'outputs')
                     if output_loaded:

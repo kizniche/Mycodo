@@ -465,7 +465,7 @@ def settings_function_import(form):
             form.import_controller_file.data.save(full_path_tmp)
 
         try:
-            controller_info = load_module_from_file(full_path_tmp, 'functions')
+            controller_info, status = load_module_from_file(full_path_tmp, 'functions')
             if not controller_info or not hasattr(controller_info, 'FUNCTION_INFORMATION'):
                 error.append("Could not load FUNCTION_INFORMATION dictionary from "
                              "the uploaded controller module")
@@ -595,7 +595,7 @@ def settings_action_import(form):
             form.import_action_file.data.save(full_path_tmp)
 
         try:
-            action_info = load_module_from_file(full_path_tmp, 'actions')
+            action_info, status = load_module_from_file(full_path_tmp, 'actions')
             if not action_info or not hasattr(action_info, 'ACTION_INFORMATION'):
                 error.append("Could not load ACTION_INFORMATION dictionary from "
                              "the uploaded action module")
@@ -725,8 +725,10 @@ def settings_input_import(form):
             form.import_input_file.data.save(full_path_tmp)
 
         try:
-            input_info = load_module_from_file(full_path_tmp, 'inputs')
-            if not input_info or not hasattr(input_info, 'INPUT_INFORMATION'):
+            input_info, status = load_module_from_file(full_path_tmp, 'inputs')
+            if not input_info and status != "success":
+                error.append(status)
+            if input_info and not hasattr(input_info, 'INPUT_INFORMATION'):
                 error.append("Could not load INPUT_INFORMATION dictionary from "
                              "the uploaded input module")
         except Exception:
@@ -892,7 +894,7 @@ def settings_output_import(form):
             form.import_output_file.data.save(full_path_tmp)
 
         try:
-            output_info = load_module_from_file(full_path_tmp, 'outputs')
+            output_info, status = load_module_from_file(full_path_tmp, 'outputs')
             if not output_info or not hasattr(output_info, 'OUTPUT_INFORMATION'):
                 error.append("Could not load OUTPUT_INFORMATION dictionary from "
                              "the uploaded output module")
@@ -1042,7 +1044,7 @@ def settings_widget_import(form):
             form.import_widget_file.data.save(full_path_tmp)
 
         try:
-            widget_info = load_module_from_file(full_path_tmp, 'widgets')
+            widget_info, status = load_module_from_file(full_path_tmp, 'widgets')
             if not widget_info or not hasattr(widget_info, 'WIDGET_INFORMATION'):
                 error.append("Could not load WIDGET_INFORMATION dictionary from "
                              "the uploaded widget module")

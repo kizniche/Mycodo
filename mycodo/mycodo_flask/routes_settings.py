@@ -148,7 +148,7 @@ def settings_function():
         if each_file not in excluded_files:
             try:
                 full_path_file = os.path.join(PATH_FUNCTIONS_CUSTOM, each_file)
-                controller_info = load_module_from_file(full_path_file, 'functions')
+                controller_info, status = load_module_from_file(full_path_file, 'functions')
 
                 if controller_info:
                     func_info = controller_info.FUNCTION_INFORMATION
@@ -193,7 +193,7 @@ def settings_action():
         if each_file not in excluded_files:
             try:
                 full_path_file = os.path.join(PATH_ACTIONS_CUSTOM, each_file)
-                action_info = load_module_from_file(full_path_file, 'actions')
+                action_info, status = load_module_from_file(full_path_file, 'actions')
 
                 if action_info:
                     func_info = action_info.ACTION_INFORMATION
@@ -241,7 +241,7 @@ def settings_input():
         if each_file not in excluded_files:
             try:
                 full_path_file = os.path.join(PATH_INPUTS_CUSTOM, each_file)
-                input_info = load_module_from_file(full_path_file, 'inputs')
+                input_info, status = load_module_from_file(full_path_file, 'inputs')
 
                 if input_info:
                     dict_inputs[input_info.INPUT_INFORMATION['input_name_unique']] = {}
@@ -295,7 +295,7 @@ def settings_output():
         if each_file not in excluded_files:
             try:
                 full_path_file = os.path.join(PATH_OUTPUTS_CUSTOM, each_file)
-                output_info = load_module_from_file(full_path_file, 'outputs')
+                output_info, status = load_module_from_file(full_path_file, 'outputs')
 
                 if output_info:
                     dict_outputs[output_info.OUTPUT_INFORMATION['output_name_unique']] = {}
@@ -347,7 +347,7 @@ def settings_widget():
         if each_file not in excluded_files:
             try:
                 full_path_file = os.path.join(PATH_WIDGETS_CUSTOM, each_file)
-                widget_info = load_module_from_file(full_path_file, 'widgets')
+                widget_info, status = load_module_from_file(full_path_file, 'widgets')
 
                 if widget_info:
                     dict_widgets[widget_info.WIDGET_INFORMATION['widget_name_unique']] = {}

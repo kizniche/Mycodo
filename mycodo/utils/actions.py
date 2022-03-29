@@ -73,7 +73,7 @@ def parse_action_information(exclude_custom=False):
                 continue
 
             full_path = "{}/{}".format(real_path, each_file)
-            function_action = load_module_from_file(full_path, 'actions')
+            function_action, status = load_module_from_file(full_path, 'actions')
 
             if not function_action or not hasattr(function_action, 'ACTION_INFORMATION'):
                 continue
@@ -337,7 +337,7 @@ def trigger_action(
             name=dict_actions[action.action_type]['name'])
 
         try:
-            function_action_loaded = load_module_from_file(
+            function_action_loaded, status = load_module_from_file(
                 dict_actions[action.action_type]['file_path'], 'function_action')
             if function_action_loaded:
                 run_function_action = function_action_loaded.ActionModule(action)

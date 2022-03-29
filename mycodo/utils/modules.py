@@ -2,6 +2,7 @@
 import importlib.util
 import logging
 import os
+import traceback
 
 from mycodo.utils.logging_utils import set_log_level
 
@@ -16,6 +17,7 @@ def load_module_from_file(path_file, module_type):
         spec = importlib.util.spec_from_file_location(module_name, path_file)
         module_custom = importlib.util.module_from_spec(spec)
         spec.loader.exec_module(module_custom)
-        return module_custom
+        return module_custom, "success"
     except Exception as err:
         logger.error("Could not load module: {}".format(err))
+        return None, traceback.format_exc()

@@ -70,7 +70,7 @@ def parse_output_information(exclude_custom=False):
                 continue
 
             full_path = "{}/{}".format(real_path, each_file)
-            output_custom = load_module_from_file(full_path, 'outputs')
+            output_custom, status = load_module_from_file(full_path, 'outputs')
 
             if not output_custom or not hasattr(output_custom, 'OUTPUT_INFORMATION'):
                 continue

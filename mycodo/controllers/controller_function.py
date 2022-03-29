@@ -64,6 +64,11 @@ class FunctionController(AbstractController, threading.Thread):
 
     def loop(self):
         if self.timer_loop < time.time():
+            if not self.run_function:
+                self.logger.error("Function could not be initialized. Shutting controller down.")
+                self.running = False
+                return
+
             while self.timer_loop < time.time():
                 self.timer_loop += self.sample_rate
 
@@ -102,7 +107,7 @@ class FunctionController(AbstractController, threading.Thread):
         self.device = function.device
 
         if self.device in self.dict_function:
-            function_loaded = load_module_from_file(
+            function_loaded, status = load_module_from_file(
                 self.dict_function[self.device]['file_path'],
                 'function')
 

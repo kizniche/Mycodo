@@ -131,13 +131,18 @@ class InputController(AbstractController, threading.Thread):
         # Pause loop to modify conditional statements.
         # Prevents execution of conditional while variables are
         # being modified.
+        if self.device not in self.dict_inputs:
+            self.logger.error(f"Could not find {self.device} in Input dictionary. Shutting controller down.")
+            self.running = False
+            return
+
         if self.pause_loop:
             self.verify_pause_loop = True
             while self.pause_loop:
                 time.sleep(0.1)
 
         if ('listener' in self.dict_inputs[self.device] and
-              self.dict_inputs[self.device]['listener']):
+                self.dict_inputs[self.device]['listener']):
             pass
         else:
             now = time.time()
@@ -326,7 +331,7 @@ class InputController(AbstractController, threading.Thread):
         self.device_recognized = True
 
         if self.device in self.dict_inputs:
-            input_loaded = load_module_from_file(
+            input_loaded, status = load_module_from_file(
                 self.dict_inputs[self.device]['file_path'], 'inputs')
 
             if input_loaded:
@@ -407,7 +412,7 @@ class InputController(AbstractController, threading.Thread):
             measurement = self.device_measurements.filter(
                 DeviceMeasurements.channel == each_channel).first()
 
-            if 'value' in each_measurement:
+            if measurement and 'value' in each_measurement:
                 conversion = self.conversions.filter(
                     Conversion.unique_id == measurement.conversion_id).first()
 

@@ -91,7 +91,7 @@ class WidgetController(AbstractController, threading.Thread):
 
         try:
             timer = timeit.default_timer()
-            widget_loaded = load_module_from_file(
+            widget_loaded, status = load_module_from_file(
                 self.dict_widgets[widget.graph_type]['file_path'], 'widgets')
             widget = db_retrieve_table_daemon(Widget, unique_id=unique_id)
 

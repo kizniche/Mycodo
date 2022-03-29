@@ -201,7 +201,7 @@ def parse_input_information(exclude_custom=False):
                 continue
 
             full_path = "{}/{}".format(real_path, each_file)
-            input_custom = load_module_from_file(full_path, 'inputs')
+            input_custom, status = load_module_from_file(full_path, 'inputs')
 
             if not input_custom or not hasattr(input_custom, 'INPUT_INFORMATION'):
                 continue
