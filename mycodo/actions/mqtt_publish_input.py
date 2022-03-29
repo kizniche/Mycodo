@@ -139,11 +139,12 @@ class ActionModule(AbstractFunctionAction):
     def run_action(self, message, dict_vars):
         device_measurement = get_measurement(
             self.measurement_measurement_id)
+
         if not device_measurement:
             msg = f" Error: A measurement needs to be selected as the payload."
             self.logger.error(msg)
             message += msg
-            return
+            return message
 
         channel = device_measurement.channel
 
@@ -158,7 +159,7 @@ class ActionModule(AbstractFunctionAction):
             msg = f" Error: No measurement found in dictionary passed to Action for channel {channel}."
             self.logger.error(msg)
             message += msg
-            return
+            return message
 
         try:
             auth_dict = None

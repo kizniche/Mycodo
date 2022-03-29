@@ -9,17 +9,20 @@ from mycodo.utils.constraints_pass import constraints_pass_positive_value
 from mycodo.utils.database import db_retrieve_table_daemon
 
 ACTION_INFORMATION = {
-    'name_unique': 'custom_action_generic',
-    'name': 'Custom Action: Generic',
+    'name_unique': 'example_action_function',
+    'name': 'Example Action: For Function',
     'library': None,
     'manufacturer': 'Mycodo',
+
+    # Define which controller(s) the Action can be applied to.
+    'application': ['functions'],  # Options: functions, inputs
 
     'url_manufacturer': None,
     'url_datasheet': None,
     'url_product_purchase': None,
     'url_additional': None,
 
-    'message': 'A demo action that merely performs a calculation.',
+    'message': 'An example action ofr Functions that merely performs a calculation.',
 
     'usage': 'Executing <strong>self.run_action("{ACTION_ID}")</strong> will execute the calculation. '
              'Executing <strong>self.run_action("{ACTION_ID}", value={"integer_1": 24})</strong> will pass the integer value 24 to the action.',
