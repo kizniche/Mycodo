@@ -1,4 +1,8 @@
-## 8.13.1 (Unreleased)
+## 8.13.1 (2022-03-28)
+
+### Bugfixes
+
+ - Fix Trigger dependency install
 
 ### Features
 

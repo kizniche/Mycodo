@@ -17,6 +17,7 @@ from mycodo.config import METHOD_INFO
 from mycodo.databases.models import Actions
 from mycodo.databases.models import Widget
 from mycodo.databases.models import Camera
+from mycodo.databases.models import Trigger
 from mycodo.databases.models import CustomController
 from mycodo.databases.models import EnergyUsage
 from mycodo.databases.models import Function
@@ -103,6 +104,11 @@ if __name__ == "__main__":
         if each_dev.function_type not in devices:
             devices.append(each_dev.function_type)
 
+    trigger = db_retrieve_table_daemon(Trigger)
+    for each_dev in trigger:
+        if each_dev.trigger_type not in devices:
+            devices.append(each_dev.trigger_type)
+
     actions = db_retrieve_table_daemon(Actions)
     for each_dev in actions:
         if each_dev.action_type not in devices:
@@ -122,6 +128,8 @@ if __name__ == "__main__":
     for each_dev in energy_usage:
         if 'highstock' not in devices:
             devices.append('highstock')
+
+    print(devices)
 
     for each_device in devices:
         device_unmet_dependencies, _, _ = return_dependencies(each_device)

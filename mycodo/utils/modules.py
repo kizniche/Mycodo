@@ -18,6 +18,6 @@ def load_module_from_file(path_file, module_type):
         module_custom = importlib.util.module_from_spec(spec)
         spec.loader.exec_module(module_custom)
         return module_custom, "success"
-    except Exception as err:
-        logger.error("Could not load module: {}".format(err))
+    except Exception:
+        logger.error(f"Could not load module: {traceback.format_exc()}")
         return None, traceback.format_exc()
