@@ -1,3 +1,10 @@
+## 8.13.3 (Unreleased)
+
+### Bugfixes
+
+ - Fix acquiring images for camera libraries that use OpenCV
+
+
 ## 8.13.2 (2022-03-29)
 
 ### Bugfixes

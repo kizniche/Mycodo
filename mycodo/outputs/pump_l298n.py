@@ -53,7 +53,7 @@ channels_dict = {
 # Output information
 OUTPUT_INFORMATION = {
     'output_name_unique': 'DC_MOTOR_L298N',
-    'output_name': f"{lazy_gettext('Motor')}: L298N DC Motor Controller",
+    'output_name': f"{lazy_gettext('Peristaltic Pump')}: L298N DC Motor Controller",
     'output_manufacturer': 'STMicroelectronics',
     'output_library': 'RPi.GPIO',
     'measurements_dict': measurements_dict,
@@ -62,7 +62,7 @@ OUTPUT_INFORMATION = {
 
     'url_additional': 'https://www.electronicshub.org/raspberry-pi-l298n-interface-tutorial-control-dc-motor-l298n-raspberry-pi/',
 
-    'message': 'The L298N can control 2 DC motors. If these motors control peristaltic pumps, set the Flow Rate '
+    'message': 'The L298N can control 2 DC motors, both speed and direction. If these motors control peristaltic pumps, set the Flow Rate '
                'and the output can can be instructed to dispense volumes accurately in addition to being turned on for durations.',
 
     'options_enabled': [

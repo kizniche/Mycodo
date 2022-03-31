@@ -105,24 +105,26 @@ class ActionModule(AbstractFunctionAction):
             self.logger.error(msg)
             return message
 
-        attachment_path_file = camera_record('photo', this_camera.unique_id)
-        attachment_file = os.path.join(attachment_path_file[0], attachment_path_file[1])
-
-        # If the emails per hour limit has not been exceeded
-        smtp_wait_timer, allowed_to_send_notice = check_allowed_to_email()
-        if allowed_to_send_notice:
-            message += f" Email '{','.join(email_recipients)}' with photo attached."
-            if not message_send:
-                message_send = message
-            smtp = db_retrieve_table_daemon(SMTP, entry='first')
-            send_email(smtp.host, smtp.protocol, smtp.port,
-                       smtp.user, smtp.passw, smtp.email_from,
-                       email_recipients, message_send,
-                       attachment_file=attachment_file,
-                       attachment_type="still")
+        path, filename = camera_record('photo', this_camera.unique_id)
+        if path and filename:
+            attachment_file = os.path.join(path, filename)
+            # If the emails per hour limit has not been exceeded
+            smtp_wait_timer, allowed_to_send_notice = check_allowed_to_email()
+            if allowed_to_send_notice:
+                message += f" Email '{','.join(email_recipients)}' with photo attached."
+                if not message_send:
+                    message_send = message
+                smtp = db_retrieve_table_daemon(SMTP, entry='first')
+                send_email(smtp.host, smtp.protocol, smtp.port,
+                           smtp.user, smtp.passw, smtp.email_from,
+                           email_recipients, message_send,
+                           attachment_file=attachment_file,
+                           attachment_type="still")
+            else:
+                self.logger.error(
+                    f"Wait {smtp_wait_timer - time.time():.0f} seconds to email again.")
         else:
-            self.logger.error(
-                f"Wait {smtp_wait_timer - time.time():.0f} seconds to email again.")
+            message += " An image could not be acquired. Not sending email."
 
         self.logger.debug(f"Message: {message}")
 

@@ -75,7 +75,11 @@ class ActionModule(AbstractFunctionAction):
 
         message += f" Capturing photo with camera {controller_id} ({camera.name})."
 
-        camera_record('photo', controller_id)
+        path, filename = camera_record('photo', controller_id)
+        if not path and not filename:
+            msg = " Could not acquire image."
+            self.logger.error(msg)
+            message += msg
 
         self.logger.debug(f"Message: {message}")
 

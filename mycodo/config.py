@@ -184,6 +184,8 @@ CAMERA_INFO = {
     'opencv': {
         'name': 'OpenCV',
         'dependencies_module': [
+            ('apt', 'libatlas-base-dev', 'libatlas-base-dev'),  # opencv dependency
+            ('apt', 'libjasper-dev', 'libjasper-dev'),  # opencv dependency
             ('pip-pypi', 'imutils', 'imutils==0.5.4'),
             ('pip-pypi', 'cv2', 'opencv-python==4.5.5.64')
         ],
@@ -207,6 +209,8 @@ CAMERA_INFO = {
     'http_address': {
         'name': 'URL (urllib)',
         'dependencies_module': [
+            ('apt', 'libatlas-base-dev', 'libatlas-base-dev'),  # opencv dependency
+            ('apt', 'libjasper-dev', 'libjasper-dev'),  # opencv dependency
             ('pip-pypi', 'imutils', 'imutils==0.5.4'),
             ('pip-pypi', 'cv2', 'opencv-python==4.5.5.64')
         ],
@@ -216,6 +220,8 @@ CAMERA_INFO = {
     'http_address_requests': {
         'name': 'URL (requests)',
         'dependencies_module': [
+            ('apt', 'libatlas-base-dev', 'libatlas-base-dev'),  # opencv dependency
+            ('apt', 'libjasper-dev', 'libjasper-dev'),  # opencv dependency
             ('pip-pypi', 'imutils', 'imutils==0.5.4'),
             ('pip-pypi', 'cv2', 'opencv-python==4.5.5.64')
         ],

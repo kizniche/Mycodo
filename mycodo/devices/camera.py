@@ -78,7 +78,7 @@ def camera_record(record_type, unique_id, duration_sec=None, tmp_filename=None):
             ts=timestamp).replace(" ", "_")
 
     else:
-        return
+        return None, None
 
     assure_path_exists(save_path)
 
@@ -147,7 +147,7 @@ def camera_record(record_type, unique_id, duration_sec=None, tmp_filename=None):
                             camera.wait_recording(duration_sec)
                             camera.stop_recording()
                         else:
-                            return
+                            return None, None
                         break
                 except picamera.exc.PiCameraMMALError:
                     logger.error("The camera is already open by picamera. Retrying 4 times.")
@@ -158,7 +158,7 @@ def camera_record(record_type, unique_id, duration_sec=None, tmp_filename=None):
     elif settings.library == 'fswebcam':
         if not os.path.exists("/usr/bin/fswebcam"):
             logger.error("/usr/bin/fswebcam not found")
-            return
+            return None, None
 
         try:
             cmd = "/usr/bin/fswebcam --device {dev} --resolution {w}x{h} --set brightness={bt}% " \
@@ -191,7 +191,7 @@ def camera_record(record_type, unique_id, duration_sec=None, tmp_filename=None):
     elif settings.library == 'raspistill':
         if not os.path.exists("/usr/bin/raspistill"):
             logger.error("/usr/bin/raspistill not found")
-            return
+            return None, None
 
         try:
             cmd = "/usr/bin/raspistill -w {w} -h {h} --brightness {bt} " \
@@ -239,7 +239,7 @@ def camera_record(record_type, unique_id, duration_sec=None, tmp_filename=None):
     elif settings.library == 'libcamera':
         if not os.path.exists("/usr/bin/libcamera-still"):
             logger.error("/usr/bin/libcamera-still not found")
-            return
+            return None, None
 
         try:
             if settings.output_format:
@@ -317,7 +317,7 @@ def camera_record(record_type, unique_id, duration_sec=None, tmp_filename=None):
                 logger.error(
                     "Cannot detect USB camera with device '{dev}'".format(
                         dev=settings.opencv_device))
-                return
+                return None, None
 
             # Discard a few frames to allow camera to adjust to settings
             for _ in range(2):
@@ -330,7 +330,7 @@ def camera_record(record_type, unique_id, duration_sec=None, tmp_filename=None):
 
                 if not status:
                     logger.error("Could not acquire image")
-                    return
+                    return None, None
 
                 img_edited = img_orig.copy()
 
@@ -378,7 +378,7 @@ def camera_record(record_type, unique_id, duration_sec=None, tmp_filename=None):
                         "Exception raised while recording video: "
                         "{err}".format(err=e))
             else:
-                return
+                return None, None
         except:
             logger.exception("opencv")
 
@@ -524,13 +524,18 @@ def camera_record(record_type, unique_id, duration_sec=None, tmp_filename=None):
                 mod_camera.timelapse_last_ts = timestamp_date.timestamp()
             new_session.commit()
 
-    try:
-        set_user_grp(path_file, 'mycodo', 'mycodo')
-        return save_path, filename
-    except Exception as e:
-        logger.exception(
-            "Exception raised in 'camera_record' when setting user grp: "
-            "{err}".format(err=e))
+    if not os.path.exists(path_file):
+        logger.error("No image was created. Check your settings and hardware for any issues.")
+    else:
+        try:
+            set_user_grp(path_file, 'mycodo', 'mycodo')
+            return save_path, filename
+        except Exception as e:
+            logger.exception(
+                "Exception raised in 'camera_record' when setting user grp: "
+                "{err}".format(err=e))
+
+    return None, None
 
 
 def count_cameras_opencv():

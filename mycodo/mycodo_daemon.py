@@ -1062,7 +1062,9 @@ class DaemonController:
                 self.refresh_daemon_camera_settings()
                 self.logger.debug(f"Camera {camera.id}: Capturing time-lapse image")
                 # Capture image
-                camera_record('timelapse', camera.unique_id)
+                path, filename = camera_record('timelapse', camera.unique_id)
+                if not path or not filename:
+                    self.logger.error(f"{camera.id}: Could not acquire time-lapse image.")
         except Exception:
             self.logger.exception("Could not execute timelapse")
 

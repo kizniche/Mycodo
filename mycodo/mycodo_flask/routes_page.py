@@ -224,7 +224,11 @@ def page_camera():
                 if camera_stream(unique_id=mod_camera.unique_id).is_running(mod_camera.unique_id):
                     camera_stream(unique_id=mod_camera.unique_id).stop(mod_camera.unique_id)
                 time.sleep(2)
-            camera_record('photo', mod_camera.unique_id)
+            path, filename = camera_record('photo', mod_camera.unique_id)
+            if not path and not filename:
+                msg = "Could not acquire image."
+                flash(msg, "error")
+                logger.error(msg)
         elif form_camera.start_timelapse.data:
             if mod_camera.stream_started:
                 flash(gettext("Cannot start time-lapse if stream is active."), "error")

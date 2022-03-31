@@ -162,15 +162,20 @@ def camera_img_acquire(image_type, camera_unique_id, max_age):
     else:
         return
     path, filename = camera_record('photo', camera_unique_id, tmp_filename=tmp_filename)
-    image_path = os.path.join(path, filename)
-    time_max_age = datetime.datetime.now() - datetime.timedelta(seconds=int(max_age))
-    timestamp = os.path.getctime(image_path)
-    if datetime.datetime.fromtimestamp(timestamp) > time_max_age:
-        date_time = datetime.datetime.fromtimestamp(timestamp).strftime('%Y-%m-%d %H:%M:%S')
-        return_values = '["{}","{}"]'.format(filename, date_time)
+    if not path and not filename:
+        msg = "Could not acquire image."
+        logger.error(msg)
+        return msg
     else:
-        return_values = '["max_age_exceeded"]'
-    return Response(return_values, mimetype='text/json')
+        image_path = os.path.join(path, filename)
+        time_max_age = datetime.datetime.now() - datetime.timedelta(seconds=int(max_age))
+        timestamp = os.path.getctime(image_path)
+        if datetime.datetime.fromtimestamp(timestamp) > time_max_age:
+            date_time = datetime.datetime.fromtimestamp(timestamp).strftime('%Y-%m-%d %H:%M:%S')
+            return_values = '["{}","{}"]'.format(filename, date_time)
+        else:
+            return_values = '["max_age_exceeded"]'
+        return Response(return_values, mimetype='text/json')
 
 
 @blueprint.route('/camera_latest_timelapse/<camera_unique_id>/<max_age>')

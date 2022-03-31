@@ -286,11 +286,15 @@ def action_video(cond_action, message):
         name=this_camera.name)
     camera_stream = db_retrieve_table_daemon(
         Camera, unique_id=cond_action.do_unique_id)
-    attachment_path_file = camera_record(
+    path, filename = camera_record(
         'video', camera_stream.unique_id,
         duration_sec=cond_action.do_camera_duration)
-    attachment_file = os.path.join(attachment_path_file[0], attachment_path_file[1])
-    return message, attachment_file
+    if path and filename:
+        attachment_file = os.path.join(path, filename)
+        return message, attachment_file
+    else:
+        message += " A video could not be acquired."
+        return message, None
 
 
 def trigger_action(
