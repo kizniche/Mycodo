@@ -71,7 +71,7 @@
 
     <div class="grid-stack">
       {%- for each_function in conditional -%}
-        {%  set is_conditional = true %}
+        {% set controller_type = "Conditional" %}
       <div id="gridstack_function_{{each_function.unique_id}}"
         class="grid-stack-item"
         gs-id="{{each_function.unique_id}}"

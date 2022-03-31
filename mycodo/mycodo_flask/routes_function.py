@@ -321,6 +321,7 @@ def page_function():
     each_condition = None
     function_page_entry = None
     function_page_options = None
+    controller_type = None
 
     if function_type in ['entry', 'options', 'conditions', 'actions'] and function_id != '0':
         controller_type = determine_controller_type(function_id)
@@ -354,6 +355,7 @@ def page_function():
             if action_id:
                 each_action = Actions.query.filter(
                     Actions.unique_id == action_id).first()
+                controller_type = determine_controller_type(each_action.function_id)
 
         if function_type == 'conditions':
             if condition_id:
@@ -559,6 +561,7 @@ def page_function():
                                conditional_conditions=conditional_conditions,
                                conditions_dict=conditions_dict,
                                controllers=controllers,
+                               controller_type=controller_type,
                                function=function,
                                function_channel=function_channel,
                                custom_commands=custom_commands,
@@ -630,6 +633,7 @@ def page_function():
                                conditional_conditions=conditional_conditions,
                                conditions_dict=conditions_dict,
                                controllers=controllers,
+                               controller_type=controller_type,
                                function=function,
                                function_channel=function_channel,
                                custom_commands=custom_commands,
@@ -702,6 +706,7 @@ def page_function():
                                conditional_conditions=conditional_conditions,
                                conditions_dict=conditions_dict,
                                controllers=controllers,
+                               controller_type=controller_type,
                                each_function=each_function,
                                function=function,
                                function_channel=function_channel,
@@ -774,6 +779,7 @@ def page_function():
                                conditional_conditions=conditional_conditions,
                                conditions_dict=conditions_dict,
                                controllers=controllers,
+                               controller_type=controller_type,
                                each_action=each_action,
                                each_function=each_function,
                                function=function,
@@ -846,6 +852,7 @@ def page_function():
                                conditional_conditions=conditional_conditions,
                                conditions_dict=conditions_dict,
                                controllers=controllers,
+                               controller_type=controller_type,
                                each_condition=each_condition,
                                each_function=each_function,
                                function=function,

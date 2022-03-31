@@ -3,6 +3,7 @@
 ### Bugfixes
 
  - Fix acquiring images for camera libraries that use OpenCV
+ - Fix showing usage when Actions are added to Conditional Controllers
 
 
 ## 8.13.2 (2022-03-29)

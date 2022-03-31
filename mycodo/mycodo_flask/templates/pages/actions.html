@@ -19,7 +19,7 @@
       </div>
   {% endif %}
 
-  {% if 'usage' in dict_options and is_conditional %}
+  {% if 'usage' in dict_options and controller_type == "Conditional" %}
       <div class="col-12">
         <strong>Usage</strong>: {{dict_options['usage']|safe|replace("ACTION_ID", unique_id.split('-')[0])}}
       </div>
