@@ -93,7 +93,7 @@ class DaemonController:
 
         self.log_level_debug = debug
         self.startup_timer = timeit.default_timer()
-        self.daemon_startup_time = None
+        self.startup_time = None
         self.daemon_run = True
         self.terminated = False
         self.debug = debug
@@ -149,51 +149,63 @@ class DaemonController:
         state = 'disabled' if self.opt_out_statistics else 'enabled'
         self.logger.debug(f"Anonymous statistics {state}")
 
+
     def run(self):
         self.load_actions()
-        self.start_all_controllers(self.debug)
-        self.daemon_startup_time = timeit.default_timer() - self.startup_timer
-        self.logger.info(f"Mycodo daemon started in {self.daemon_startup_time:.3f} seconds")
-        self.startup_stats()
+
+        try:
+            self.start_all_controllers(self.debug)
+        except Exception:
+            self.logger.exception("Could not start all controllers")
+
+        self.startup_time = timeit.default_timer() - self.startup_timer
+        self.logger.info(
+            f"Mycodo daemon started in {self.startup_time:.3f} seconds")
+
+        try:
+            self.startup_stats()
+        except Exception:
+            self.logger.exception("Statistics initialization Error")
 
         # loop until daemon is instructed to shut down
         while self.daemon_run:
             now = time.time()
 
             try:
-                # Log ram usage every 5 days
-                if now > self.timer_ram_use:
-                    while now > self.timer_ram_use:
-                        self.timer_ram_use += 432000
-                    self.log_ram_usage()
-
                 # Capture time-lapse image (if enabled)
                 self.check_all_timelapses(now)
+
+                # Query daemon ram usage
+                if now > self.timer_ram_use:
+                    while now > self.timer_ram_use:
+                        self.timer_ram_use += 432000  # 5 days
+                    self.log_ram_usage()
 
                 # Generate output usage report (if enabled)
                 if (self.output_usage_report_gen and
                         self.output_usage_report_next_gen and
                         now > self.output_usage_report_next_gen):
-                    generate_output_usage_report()
-                    self.refresh_daemon_misc_settings()  # Update timer
+                    self.generate_usage_report()
+                    # Ensure timer has updated
+                    if now > self.output_usage_report_next_gen:
+                        while now > self.output_usage_report_next_gen:
+                            self.output_usage_report_next_gen += 86400  # 1 day
 
                 # Collect and send anonymous statistics (if enabled)
-                if (not self.opt_out_statistics and
-                        now > self.timer_stats):
+                if not self.opt_out_statistics and now > self.timer_stats:
                     while now > self.timer_stats:
                         self.timer_stats += STATS_INTERVAL
                     self.send_stats()
 
                 # Check if running the latest version (if enabled)
-                if now > self.timer_upgrade:
+                if self.enable_upgrade_check and now > self.timer_upgrade:
                     while now > self.timer_upgrade:
                         self.timer_upgrade += UPGRADE_CHECK_INTERVAL
-                    if self.enable_upgrade_check:
-                        self.check_mycodo_upgrade_exists(now)
+                    self.check_mycodo_upgrade_exists(now)
 
             except Exception:
                 self.logger.exception("Daemon Error")
-                raise
+                time.sleep(30)
 
             time.sleep(1)
 
@@ -208,14 +220,17 @@ class DaemonController:
         # Wait for the client to receive the response before it disconnects
         time.sleep(1)
 
+
     @staticmethod
     def get_condition_measurement(condition_id):
         condition_return = get_condition_value(condition_id)
         return condition_return
 
+
     @staticmethod
     def get_condition_measurement_dict(condition_id):
         return get_condition_value_dict(condition_id)
+
 
     @staticmethod
     def determine_controller_type(unique_id):
@@ -230,6 +245,7 @@ class DaemonController:
             if db_tables[each_type]:
                 return each_type
 
+
     def controller_activate(self, cont_id):
         """
         Activate currently-inactive controller
@@ -241,60 +257,57 @@ class DaemonController:
         :type cont_id: str
         """
         cont_type = self.determine_controller_type(cont_id)
-        try:
-            if cont_id in self.controller[cont_type]:
-                if self.controller[cont_type][cont_id].is_running():
-                    message = f"Cannot activate {cont_type} controller with ID {cont_id}: " \
-                              "It's already active."
-                    self.logger.warning(message)
-                    return 1, message
 
-            controller_manage = {}
-            ready = threading.Event()
-
-            if cont_type == 'Conditional':
-                controller_manage['type'] = Conditional
-                controller_manage['function'] = ConditionalController
-            elif cont_type == 'Input':
-                controller_manage['type'] = Input
-                controller_manage['function'] = InputController
-            elif cont_type == 'PID':
-                controller_manage['type'] = PID
-                controller_manage['function'] = PIDController
-            elif cont_type == 'Trigger':
-                controller_manage['type'] = Trigger
-                controller_manage['function'] = TriggerController
-            elif cont_type == 'Function':
-                controller_manage['type'] = CustomController
-                controller_manage['function'] = FunctionController
-            else:
-                message = f"'{cont_type}' not a valid controller type."
-                self.logger.error(message)
+        if cont_id in self.controller[cont_type]:
+            if self.controller[cont_type][cont_id].is_running():
+                message = f"Cannot activate {cont_type} controller with ID {cont_id}: " \
+                          "It's already active."
+                self.logger.warning(message)
                 return 1, message
 
-            with session_scope(MYCODO_DB_PATH) as new_session:
-                mod_cont = new_session.query(controller_manage['type']).filter(
-                    controller_manage['type'].unique_id == cont_id).first()
-                if not mod_cont:  # Check if the controller actually exists
-                    message = f"{cont_type} controller with ID {cont_id} not found."
-                    self.logger.error(message)
-                    return 1, message
-                else:  # set as active in SQL database
-                    mod_cont.is_activated = True
-                    new_session.commit()
+        controller_manage = {}
+        ready = threading.Event()
 
-            self.controller[cont_type][cont_id] = controller_manage['function'](ready, cont_id)
-            self.controller[cont_type][cont_id].daemon = True
-            self.controller[cont_type][cont_id].start()
-            ready.wait()  # wait for thread to return ready
-            message = f"{cont_type} controller with ID {cont_id} activated."
-            self.logger.debug(message)
-            return 0, message
-
-        except Exception as except_msg:
-            message = f"Could not activate {cont_type} controller with ID {cont_id}: {except_msg}"
-            self.logger.exception(message)
+        if cont_type == 'Conditional':
+            controller_manage['type'] = Conditional
+            controller_manage['function'] = ConditionalController
+        elif cont_type == 'Input':
+            controller_manage['type'] = Input
+            controller_manage['function'] = InputController
+        elif cont_type == 'PID':
+            controller_manage['type'] = PID
+            controller_manage['function'] = PIDController
+        elif cont_type == 'Trigger':
+            controller_manage['type'] = Trigger
+            controller_manage['function'] = TriggerController
+        elif cont_type == 'Function':
+            controller_manage['type'] = CustomController
+            controller_manage['function'] = FunctionController
+        else:
+            message = f"'{cont_type}' not a valid controller type."
+            self.logger.error(message)
             return 1, message
+
+        with session_scope(MYCODO_DB_PATH) as new_session:
+            mod_cont = new_session.query(controller_manage['type']).filter(
+                controller_manage['type'].unique_id == cont_id).first()
+            if not mod_cont:  # Check if the controller actually exists
+                message = f"{cont_type} controller with ID {cont_id} not found."
+                self.logger.error(message)
+                return 1, message
+            else:  # set as active in SQL database
+                mod_cont.is_activated = True
+                new_session.commit()
+
+        self.controller[cont_type][cont_id] = controller_manage['function'](ready, cont_id)
+        self.controller[cont_type][cont_id].daemon = True
+        self.controller[cont_type][cont_id].start()
+        ready.wait()  # wait for thread to return ready
+
+        message = f"{cont_type} controller with ID {cont_id} activated."
+        self.logger.debug(message)
+        return 0, message
+
 
     def controller_deactivate(self, cont_id):
         """
@@ -307,69 +320,64 @@ class DaemonController:
         :type cont_id: str
         """
         cont_type = self.determine_controller_type(cont_id)
-        try:
-            if cont_id in self.controller[cont_type]:
-                if self.controller[cont_type][cont_id].is_running():
-                    try:
-                        if cont_type == 'Conditional':
-                            controller_table = Conditional
-                        elif cont_type == 'Input':
-                            controller_table = Input
-                        elif cont_type == 'PID':
-                            controller_table = PID
-                        elif cont_type == 'Trigger':
-                            controller_table = Trigger
-                        elif cont_type == 'Function':
-                            controller_table = CustomController
-                        else:
-                            message = f"'{cont_type}' not a valid controller type."
-                            self.logger.error(message)
-                            return 1, message
+        if cont_id in self.controller[cont_type]:
+            if self.controller[cont_type][cont_id].is_running():
+                try:
+                    if cont_type == 'Conditional':
+                        controller_table = Conditional
+                    elif cont_type == 'Input':
+                        controller_table = Input
+                    elif cont_type == 'PID':
+                        controller_table = PID
+                    elif cont_type == 'Trigger':
+                        controller_table = Trigger
+                    elif cont_type == 'Function':
+                        controller_table = CustomController
+                    else:
+                        message = f"'{cont_type}' not a valid controller type."
+                        self.logger.error(message)
+                        return 1, message
 
-                        if controller_table:
-                            # set as active in SQL database
-                            with session_scope(MYCODO_DB_PATH) as new_session:
-                                mod_cont = new_session.query(controller_table).filter(
-                                    controller_table.unique_id == cont_id).first()
-                                if not mod_cont:  # Check if the controller actually exists
-                                    message = f"{cont_type} controller with ID {cont_id} not found."
-                                    self.logger.error(message)
-                                    return 1, message
-                                else:  # set as active in SQL database
-                                    mod_cont.is_activated = False
-                                    new_session.commit()
+                    if controller_table:
+                        # set as active in SQL database
+                        with session_scope(MYCODO_DB_PATH) as new_session:
+                            mod_cont = new_session.query(controller_table).filter(
+                                controller_table.unique_id == cont_id).first()
+                            if not mod_cont:  # Check if the controller actually exists
+                                message = f"{cont_type} controller with ID {cont_id} not found."
+                                self.logger.error(message)
+                                return 1, message
+                            else:  # set as active in SQL database
+                                mod_cont.is_activated = False
+                                new_session.commit()
 
-                        if cont_type == 'PID':
-                            self.controller[cont_type][cont_id].stop_controller(deactivate_pid=True)
-                        else:
-                            self.controller[cont_type][cont_id].stop_controller()
-                        self.controller[cont_type][cont_id].join()
+                    if cont_type == 'PID':
+                        self.controller[cont_type][cont_id].stop_controller(deactivate_pid=True)
+                    else:
+                        self.controller[cont_type][cont_id].stop_controller()
+                    self.controller[cont_type][cont_id].join()
 
-                        message = f"{cont_type} controller with ID {cont_id} deactivated."
-                        self.logger.debug(message)
-                        return 0, message
-                    except Exception as except_msg:
-                        message = f"Could not deactivate {cont_type} controller with " \
-                                  f"ID {cont_id}: {except_msg}"
-                        self.logger.exception(message)
-                        return 1,
-                    finally:
-                        self.controller[cont_type].pop(cont_id, None)
+                    message = f"{cont_type} controller with ID {cont_id} deactivated."
+                    self.logger.debug(message)
+                    return 0, message
+                except Exception as except_msg:
+                    message = f"Could not deactivate {cont_type} controller with " \
+                              f"ID {cont_id}: {except_msg}"
+                    self.logger.exception(message)
+                    return 1,
+                finally:
+                    self.controller[cont_type].pop(cont_id, None)
 
-                else:
-                    message = f"Could not deactivate {cont_type} controller with ID " \
-                              f"{cont_id}, it's not active."
-                    self.logger.error(message)
-                    return 1, message
             else:
-                message = f"{cont_type} controller with ID {cont_id} not found"
+                message = f"Could not deactivate {cont_type} controller with ID " \
+                          f"{cont_id}, it's not active."
                 self.logger.error(message)
                 return 1, message
-
-        except Exception as except_msg:
-            message = f"Could not deactivate {cont_type} controller with ID {cont_id}: {except_msg}"
-            self.logger.exception(message)
+        else:
+            message = f"{cont_type} controller with ID {cont_id} not found"
+            self.logger.error(message)
             return 1, message
+
 
     def controller_is_active(self, cont_id):
         """
@@ -399,6 +407,7 @@ class DaemonController:
             self.logger.exception(message)
             return False
 
+
     def check_daemon(self):
         try:
             for cond_id in self.controller['Conditional']:
@@ -424,6 +433,7 @@ class DaemonController:
             message = f"Could not check running threads: {except_msg}"
             self.logger.exception(message)
             return f"Exception: {except_msg}"
+
 
     def custom_button(self, controller_type, unique_id, button_id, args_dict, thread=True):
         """
@@ -463,6 +473,7 @@ class DaemonController:
             self.logger.exception(message)
             return 1, message
 
+
     def input_force_measurements(self, input_id):
         """
         Force Input measurements to be acquired
@@ -480,6 +491,7 @@ class DaemonController:
             message = f"Cannot force acquisition of Input measurements: {except_msg}"
             self.logger.exception(message)
             return 1, message
+
 
     def function_status(self, function_id):
         if function_id in self.controller["Function"]:
@@ -499,6 +511,7 @@ class DaemonController:
                 return {'error': [f"Error getting Function status: {err}"]}
         else:
             return {'error': [f"Function ID not found"]}
+
 
     def lcd_reset(self, lcd_id):
         """
@@ -521,6 +534,7 @@ class DaemonController:
         except Exception as except_msg:
             message = f"Could not reset display: {except_msg}"
             self.logger.exception(message)
+
 
     def lcd_backlight(self, lcd_id, state):
         """
@@ -549,6 +563,7 @@ class DaemonController:
             message = f"Cannot change display backlight: {except_msg}"
             self.logger.exception(message)
 
+
     def display_backlight_color(self, lcd_id, color):
         """
         Set the LCD backlight color
@@ -572,6 +587,7 @@ class DaemonController:
         except Exception as except_msg:
             message = f"Cannot change display color: {except_msg}"
             self.logger.exception(message)
+
 
     def lcd_flash(self, lcd_id, state):
         """
@@ -598,6 +614,7 @@ class DaemonController:
             self.logger.exception(message)
             return 0, message
 
+
     def pid_hold(self, pid_id):
         try:
             return self.controller['PID'][pid_id].pid_hold()
@@ -608,6 +625,7 @@ class DaemonController:
         except Exception as except_msg:
             message = f"Could not hold PID: {except_msg}"
             self.logger.exception(message)
+
 
     def pid_mod(self, pid_id):
         try:
@@ -620,6 +638,7 @@ class DaemonController:
             message = f"Could not modify PID: {except_msg}"
             self.logger.exception(message)
 
+
     def pid_pause(self, pid_id):
         try:
             return self.controller['PID'][pid_id].pid_pause()
@@ -631,6 +650,7 @@ class DaemonController:
             message = f"Could not pause PID: {except_msg}"
             self.logger.exception(message)
 
+
     def pid_resume(self, pid_id):
         try:
             return self.controller['PID'][pid_id].pid_resume()
@@ -641,6 +661,7 @@ class DaemonController:
         except Exception as except_msg:
             message = f"Could not resume PID: {except_msg}"
             self.logger.exception(message)
+
 
     def pid_get(self, pid_id, setting):
         try:
@@ -666,6 +687,7 @@ class DaemonController:
             message = f"Could not get PID {setting}: {except_msg}"
             self.logger.exception(message)
 
+
     def pid_set(self, pid_id, setting, value):
         try:
             if setting == 'setpoint':
@@ -686,6 +708,7 @@ class DaemonController:
             message = f"Could not set PID {setting}: {except_msg}"
             self.logger.exception(message)
 
+
     def refresh_daemon_camera_settings(self):
         try:
             self.logger.debug("Refreshing camera settings")
@@ -695,6 +718,7 @@ class DaemonController:
             message = f"Could not read camera table: {except_msg}"
             self.logger.exception(message)
 
+
     def refresh_daemon_conditional_settings(self, unique_id):
         try:
             return self.controller['Conditional'][unique_id].refresh_settings()
@@ -702,12 +726,8 @@ class DaemonController:
             message = f"Could not refresh conditional settings: {except_msg}"
             self.logger.exception(message)
 
+
     def refresh_daemon_misc_settings(self):
-        old_time = self.output_usage_report_next_gen
-        self.output_usage_report_next_gen = next_schedule(
-            self.output_usage_report_span,
-            self.output_usage_report_day,
-            self.output_usage_report_hour)
         try:
             self.logger.debug("Refreshing misc settings")
             misc = db_retrieve_table_daemon(Misc, entry='first')
@@ -717,19 +737,16 @@ class DaemonController:
             self.output_usage_report_span = misc.output_usage_report_span
             self.output_usage_report_day = misc.output_usage_report_day
             self.output_usage_report_hour = misc.output_usage_report_hour
-            if (self.output_usage_report_gen and
-                    old_time != self.output_usage_report_next_gen):
-                str_next_report = time.strftime(
-                    '%c', time.localtime(self.output_usage_report_next_gen))
-                self.logger.debug(f"Generating next output usage report {str_next_report}")
         except Exception:
             self.logger.exception("Could not refresh misc settings")
+
 
     def refresh_daemon_trigger_settings(self, unique_id):
         try:
             return self.controller['Trigger'][unique_id].refresh_settings()
         except Exception:
             self.logger.exception("Could not refresh trigger settings")
+
 
     def output_off(self, output_id, output_channel=None, trigger_conditionals=True):
         """
@@ -752,6 +769,7 @@ class DaemonController:
             message = f"Could not turn output off: {except_msg}"
             self.logger.exception(message)
             return 1, message
+
 
     def output_on(self,
                   output_id,
@@ -794,6 +812,7 @@ class DaemonController:
             self.logger.exception(message)
             return 1, message
 
+
     def output_setup(self, action, output_id):
         """
         Setup output in running output controller
@@ -812,6 +831,7 @@ class DaemonController:
             message = f"Could not set up output: {except_msg}"
             self.logger.exception(message)
 
+
     def output_state(self, output_id, output_channel):
         """
         Return the output state, whether "on" or "off"
@@ -826,6 +846,7 @@ class DaemonController:
         except Exception:
             self.logger.exception("Could not query output state")
 
+
     def output_states_all(self):
         """
         Return all output states, whether "on" or "off"
@@ -835,19 +856,19 @@ class DaemonController:
         except Exception:
             self.logger.exception(f"Could not query all output state")
 
+
     def startup_stats(self):
         """Ensure existence of statistics file and save daemon startup time."""
-        try:
-            # if statistics file doesn't exist, create it
-            if not os.path.isfile(STATS_CSV):
-                self.logger.debug(f"Statistics file doesn't exist, creating {STATS_CSV}")
-                recreate_stat_file()
-            add_update_csv(STATS_CSV, 'daemon_startup_seconds', self.daemon_startup_time)
-        except Exception:
-            self.logger.exception("Statistics initialization Error")
+        # if statistics file doesn't exist, create it
+        if not os.path.isfile(STATS_CSV):
+            self.logger.debug(f"Statistics file doesn't exist, creating {STATS_CSV}")
+            recreate_stat_file()
+        add_update_csv(STATS_CSV, 'daemon_startup_seconds', self.startup_time)
+
 
     def load_actions(self):
         self.actions = parse_action_information()
+
 
     def start_all_controllers(self, debug):
         """
@@ -856,61 +877,63 @@ class DaemonController:
         See the files named controller_[name].py for details of what each
         controller does.
         """
-        try:
-            # Obtain database configuration options
-            db_tables = {
-                'Conditional': db_retrieve_table_daemon(Conditional, entry='all'),
-                'Input': db_retrieve_table_daemon(Input, entry='all'),
-                'PID': db_retrieve_table_daemon(PID, entry='all'),
-                'Trigger': db_retrieve_table_daemon(Trigger, entry='all'),
-                'Function': db_retrieve_table_daemon(CustomController, entry='all')
-            }
+        # Obtain database configuration options
+        db_tables = {
+            'Conditional': db_retrieve_table_daemon(Conditional, entry='all'),
+            'Input': db_retrieve_table_daemon(Input, entry='all'),
+            'PID': db_retrieve_table_daemon(PID, entry='all'),
+            'Trigger': db_retrieve_table_daemon(Trigger, entry='all'),
+            'Function': db_retrieve_table_daemon(CustomController, entry='all')
+        }
 
-            self.logger.debug("Starting Output Controller")
-            ready = threading.Event()
-            self.controller['Output'] = OutputController(ready, debug)
-            self.controller['Output'].daemon = True
-            self.controller['Output'].start()
-            ready.wait()  # wait for thread to return ready
+        self.logger.debug("Starting Output Controller")
+        ready = threading.Event()
+        self.controller['Output'] = OutputController(ready, debug)
+        self.controller['Output'].daemon = True
+        self.controller['Output'].start()
+        ready.wait()  # wait for thread to return ready
 
-            # Ensure Output controller has started before continuing
-            time.sleep(0.5)
-            output_controller_timout = time.time() + 60
-            while not self.controller['Output'].is_running():
-                if time.time() > output_controller_timout:
-                    self.logger.error("Output Controller timed out")
-                    break
-                time.sleep(0.1)
-            self.logger.debug("Output Controller fully started")
+        # Ensure Output controller has started before continuing
+        time.sleep(0.5)
+        output_controller_timout = time.time() + 60
+        while not self.controller['Output'].is_running():
+            if time.time() > output_controller_timout:
+                self.logger.error("Output Controller timed out")
+                break
+            time.sleep(0.1)
+        self.logger.debug("Output Controller fully started")
 
-            for each_controller in self.cont_types:
-                self.logger.debug(f"Starting all activated {each_controller} controllers")
-                for each_entry in db_tables[each_controller]:
-                    if each_entry.is_activated:
+        for each_controller in self.cont_types:
+            self.logger.debug(f"Starting all activated {each_controller} controllers")
+            for each_entry in db_tables[each_controller]:
+                if each_entry.is_activated:
+                    try:
                         self.controller_activate(each_entry.unique_id)
-                self.logger.info(f"All activated {each_controller} controllers started")
+                    except Exception as except_msg:
+                        message = f"Could not activate controller with ID {each_entry.unique_id}: {except_msg}"
+                        self.logger.exception(message)
+                        return 1, message
+            self.logger.info(f"All activated {each_controller} controllers started")
 
-            self.logger.debug("Starting Widget Controller")
-            ready = threading.Event()
-            self.controller['Widget'] = WidgetController(ready, debug)
-            self.controller['Widget'].daemon = True
-            self.controller['Widget'].start()
-            ready.wait()  # wait for thread to return ready
+        self.logger.debug("Starting Widget Controller")
+        ready = threading.Event()
+        self.controller['Widget'] = WidgetController(ready, debug)
+        self.controller['Widget'].daemon = True
+        self.controller['Widget'].start()
+        ready.wait()  # wait for thread to return ready
 
-            # Ensure Widget controller has started before continuing
-            time.sleep(0.5)
-            widget_controller_timout = time.time() + 60
-            while not self.controller['Widget'].is_running():
-                if time.time() > widget_controller_timout:
-                    self.logger.error("Widget Controller timed out")
-                    break
-                time.sleep(0.1)
-            self.logger.debug("Widget Controller fully started")
+        # Ensure Widget controller has started before continuing
+        time.sleep(0.5)
+        widget_controller_timout = time.time() + 60
+        while not self.controller['Widget'].is_running():
+            if time.time() > widget_controller_timout:
+                self.logger.error("Widget Controller timed out")
+                break
+            time.sleep(0.1)
+        self.logger.debug("Widget Controller fully started")
 
-            time.sleep(0.5)
+        time.sleep(0.5)
 
-        except Exception:
-            self.logger.exception("Could not start all controllers")
 
     def stop_all_controllers(self):
         """Stop all running controllers."""
@@ -948,6 +971,7 @@ class DaemonController:
         except Exception as err:
             self.logger.info(f"Widget controller had an issue stopping: {err}")
 
+
     def trigger_action(self, action_id, value=None, message='', debug=False):
         try:
             return trigger_action(
@@ -960,6 +984,7 @@ class DaemonController:
             message = f"Could not trigger Conditional Actions: {err}"
             self.logger.exception(message)
 
+
     def trigger_all_actions(self, function_id, message='', debug=False):
         try:
             return trigger_controller_actions(
@@ -969,6 +994,7 @@ class DaemonController:
             self.logger.exception(message)
             return message
 
+
     def terminate_daemon(self):
         """Instruct the daemon to shut down."""
         self.thread_shutdown_timer = timeit.default_timer()
@@ -977,6 +1003,7 @@ class DaemonController:
         while not self.terminated:
             time.sleep(0.1)
         return 1
+
 
     #
     # Timed functions
@@ -988,6 +1015,7 @@ class DaemonController:
             self.logger.info(f"{ram_mb:.2f} MB RAM in use")
         except Exception:
             self.logger.exception("Free Ram ERROR")
+
 
     def check_mycodo_upgrade_exists(self, now):
         """Check for any new Mycodo releases on github."""
@@ -1020,53 +1048,77 @@ class DaemonController:
         except Exception:
             self.logger.exception("Mycodo Upgrade Check ERROR")
 
+
     def check_all_timelapses(self, now):
         try:
             if not self.camera:
                 return
             for each_camera in self.camera:
-                self.timelapse_check(each_camera, now)
+                try:
+                    self.timelapse_check(each_camera, now)
+                except Exception:
+                    self.logger.exception("Could not execute timelapse")
         except Exception:
             self.logger.exception("Timelapse ERROR")
 
+
     def timelapse_check(self, camera, now):
         """If time-lapses are active, take photo at predefined periods."""
+        if (camera.timelapse_started and
+                now > camera.timelapse_end_time):
+            with session_scope(MYCODO_DB_PATH) as new_session:
+                mod_camera = new_session.query(Camera).filter(
+                    Camera.unique_id == camera.unique_id).first()
+                mod_camera.timelapse_started = False
+                mod_camera.timelapse_paused = False
+                mod_camera.timelapse_start_time = None
+                mod_camera.timelapse_end_time = None
+                mod_camera.timelapse_interval = None
+                mod_camera.timelapse_next_capture = None
+                mod_camera.timelapse_capture_number = None
+                new_session.commit()
+            self.refresh_daemon_camera_settings()
+            self.logger.debug(f"Camera {camera.id}: End of time-lapse.")
+        elif ((camera.timelapse_started and not camera.timelapse_paused) and
+                now > camera.timelapse_next_capture):
+            # Ensure next capture is greater than now (in case of power failure/reboot)
+            next_capture = camera.timelapse_next_capture
+            while now > next_capture:
+                # Update last capture and image number to latest before capture
+                next_capture += camera.timelapse_interval
+            with session_scope(MYCODO_DB_PATH) as new_session:
+                mod_camera = new_session.query(Camera).filter(Camera.unique_id == camera.unique_id).first()
+                mod_camera.timelapse_next_capture = next_capture
+                mod_camera.timelapse_capture_number += 1
+                new_session.commit()
+            self.refresh_daemon_camera_settings()
+            self.logger.debug(f"Camera {camera.id}: Capturing time-lapse image")
+            # Capture image
+            path, filename = camera_record('timelapse', camera.unique_id)
+            if not path or not filename:
+                self.logger.error(f"{camera.id}: Could not acquire time-lapse image.")
+
+
+    def generate_usage_report(self):
+        """Generate an Output usage report."""
         try:
-            if (camera.timelapse_started and
-                    now > camera.timelapse_end_time):
-                with session_scope(MYCODO_DB_PATH) as new_session:
-                    mod_camera = new_session.query(Camera).filter(
-                        Camera.unique_id == camera.unique_id).first()
-                    mod_camera.timelapse_started = False
-                    mod_camera.timelapse_paused = False
-                    mod_camera.timelapse_start_time = None
-                    mod_camera.timelapse_end_time = None
-                    mod_camera.timelapse_interval = None
-                    mod_camera.timelapse_next_capture = None
-                    mod_camera.timelapse_capture_number = None
-                    new_session.commit()
-                self.refresh_daemon_camera_settings()
-                self.logger.debug(f"Camera {camera.id}: End of time-lapse.")
-            elif ((camera.timelapse_started and not camera.timelapse_paused) and
-                    now > camera.timelapse_next_capture):
-                # Ensure next capture is greater than now (in case of power failure/reboot)
-                next_capture = camera.timelapse_next_capture
-                while now > next_capture:
-                    # Update last capture and image number to latest before capture
-                    next_capture += camera.timelapse_interval
-                with session_scope(MYCODO_DB_PATH) as new_session:
-                    mod_camera = new_session.query(Camera).filter(Camera.unique_id == camera.unique_id).first()
-                    mod_camera.timelapse_next_capture = next_capture
-                    mod_camera.timelapse_capture_number += 1
-                    new_session.commit()
-                self.refresh_daemon_camera_settings()
-                self.logger.debug(f"Camera {camera.id}: Capturing time-lapse image")
-                # Capture image
-                path, filename = camera_record('timelapse', camera.unique_id)
-                if not path or not filename:
-                    self.logger.error(f"{camera.id}: Could not acquire time-lapse image.")
-        except Exception:
-            self.logger.exception("Could not execute timelapse")
+            generate_output_usage_report()
+            self.refresh_daemon_misc_settings()
+
+            # Update timer
+            old_time = self.output_usage_report_next_gen
+            self.output_usage_report_next_gen = next_schedule(
+                self.output_usage_report_span,
+                self.output_usage_report_day,
+                self.output_usage_report_hour)
+            if (self.output_usage_report_gen and
+                    old_time != self.output_usage_report_next_gen):
+                str_next_report = time.strftime(
+                    '%c', time.localtime(self.output_usage_report_next_gen))
+                self.logger.debug(f"Generating next output usage report {str_next_report}")
+        except:
+            self.logger.exception("Calculating next report time")
+
 
     def send_stats(self):
         """Collect and send statistics."""
@@ -1074,18 +1126,21 @@ class DaemonController:
         try:
             return_stat_file_dict(STATS_CSV)
         except Exception:
-            self.logger.exception("Error reading stats file")
+            self.logger.exception("Reading stats file")
             try:
                 os.remove(STATS_CSV)
             except OSError:
                 pass
-            recreate_stat_file()
+            try:
+                recreate_stat_file()
+            except:
+                self.logger.exception("Recreating stats file")
 
         # Send stats
         try:
             send_anonymous_stats(self.start_time, self.log_level_debug)
         except Exception:
-            self.logger.exception("Could not send statistics")
+            self.logger.exception("Sending statistics")
 
 
 @expose
@@ -1125,11 +1180,21 @@ class PyroServer(object):
 
     def controller_activate(self, cont_id):
         """Activates a controller."""
-        return self.mycodo.controller_activate(cont_id)
+        try:
+            return self.mycodo.controller_activate(cont_id)
+        except Exception as except_msg:
+            message = f"Could not activate controller with ID {cont_id}: {except_msg}"
+            self.logger.exception(message)
+            return 1, message
 
     def controller_deactivate(self, cont_id):
         """Deactivates a controller."""
-        return self.mycodo.controller_deactivate(cont_id)
+        try:
+            return self.mycodo.controller_deactivate(cont_id)
+        except Exception as except_msg:
+            message = f"Could not deactivate controller with ID {cont_id}: {except_msg}"
+            self.logger.exception(message)
+            return 1, message
 
     def controller_is_active(self, cont_id):
         """Checks if a controller is active."""

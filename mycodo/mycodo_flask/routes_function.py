@@ -351,16 +351,15 @@ def page_function():
             function_page_entry = 'pages/function_options/custom_function_entry.html'
             function_page_options = 'pages/function_options/custom_function_options.html'
 
-        if function_type == 'actions':
-            if action_id:
-                each_action = Actions.query.filter(
-                    Actions.unique_id == action_id).first()
+        if function_type == 'actions' and action_id:
+            each_action = Actions.query.filter(
+                Actions.unique_id == action_id).first()
+            if each_action:
                 controller_type = determine_controller_type(each_action.function_id)
 
-        if function_type == 'conditions':
-            if condition_id:
-                each_condition = ConditionalConditions.query.filter(
-                    ConditionalConditions.unique_id == condition_id).first()
+        if function_type == 'conditions'and  condition_id:
+            each_condition = ConditionalConditions.query.filter(
+                ConditionalConditions.unique_id == condition_id).first()
 
     action = Actions.query.all()
     camera = Camera.query.all()

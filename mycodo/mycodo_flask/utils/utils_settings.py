@@ -1964,18 +1964,18 @@ def settings_diagnostic_upgrade_master():
                 os.rename(fout.name, path_config)
             os.chmod(path_config, stat.S_IRGRP | stat.S_IWGRP | stat.S_IROTH)
             set_user_grp(path_config, 'mycodo', 'mycodo')
-
-            command = '/bin/bash {path}/mycodo/scripts/upgrade_commands.sh web-server-reload'.format(
-                path=INSTALL_DIRECTORY)
-            upgrade = subprocess.Popen(
-                command, stdout=subprocess.PIPE, shell=True)
-            (_, _) = upgrade.communicate()
-            upgrade.wait()
+            flash_success_errors(
+                error, action, url_for('routes_settings.settings_diagnostic'))
+            return
         except Exception as except_msg:
             error.append(except_msg)
-
-    flash_success_errors(
-        error, action, url_for('routes_settings.settings_diagnostic'))
+            flash_success_errors(
+                error, action, url_for('routes_settings.settings_diagnostic'))
+            return
+        finally:
+            command = '/bin/bash {path}/mycodo/scripts/upgrade_commands.sh web-server-reload'.format(
+                path=INSTALL_DIRECTORY)
+            subprocess.Popen(command, shell=True)
 
 
 def is_valid_hostname(hostname):
