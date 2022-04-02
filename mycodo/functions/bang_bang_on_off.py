@@ -193,7 +193,7 @@ class CustomModule(AbstractFunction):
         output_raise_state = self.control.output_state(
             self.output_raise_device_id, self.output_raise_channel)
         output_lower_state = self.control.output_state(
-            self.output_lower_device_id, self.output_raise_channel)
+            self.output_lower_device_id, self.output_lower_channel)
 
         self.logger.info(
             "Input: {}, output_raise: {}, output_lower: {}, target: {}, hyst: {}".format(

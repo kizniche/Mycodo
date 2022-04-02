@@ -346,7 +346,8 @@ class OutputController(AbstractController, threading.Thread):
         Return an output state
         :rtype: dict
         """
-        return self.output[output_id].output_state(output_channel)
+        if output_id and output_channel is not None and output_id in self.output:
+            return self.output[output_id].output_state(output_channel)
 
     def output_states_all(self):
         """
