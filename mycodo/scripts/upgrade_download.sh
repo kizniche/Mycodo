@@ -31,6 +31,7 @@ runDownloadMycodo() {
   RELEASE_WIPE=false
 
   if [ "$UPGRADE_TYPE" == "upgrade-release-major" ] || [ "$UPGRADE_TYPE" == "upgrade-release-wipe" ] ; then
+
     if [ -n "$UPGRADE_MAJ_VERSION" ]; then
 
       UPDATE_VERSION=$("${INSTALL_DIRECTORY}"/Mycodo/env/bin/python3 "${INSTALL_DIRECTORY}"/Mycodo/mycodo/utils/github_release_info.py -m "$UPGRADE_MAJ_VERSION" -v 2>&1)
@@ -102,6 +103,10 @@ runDownloadMycodo() {
   if ! tar xzf "${INSTALL_DIRECTORY}"/"${TARBALL_FILE}".tar.gz -C "${MYCODO_NEW_TMP_DIR}" --strip-components=1 ; then
     printf "Failed: Error while trying to extract files from %s/%s.tar.gz to %s.\n" "${INSTALL_DIRECTORY}" "${TARBALL_FILE}" "${MYCODO_NEW_TMP_DIR}"
     error_found
+  else
+    if [ "$UPGRADE_TYPE" == "force-upgrade-master" ]; then
+      touch "${MYCODO_NEW_TMP_DIR}"/.master
+    fi
   fi
   printf "Done.\n"
 

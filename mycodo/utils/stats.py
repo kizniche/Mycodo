@@ -1,21 +1,21 @@
 # coding=utf-8
 import csv
+import hashlib
 import logging
+import os
 import pwd
+import resource
 import time
 from collections import OrderedDict
 
 import distro
 import geocoder
-import hashlib
-import os
 import requests
-import resource
 from influxdb import InfluxDBClient
 from influxdb.exceptions import InfluxDBServerError
-from sqlalchemy import func
 
 from mycodo.config import ID_FILE
+from mycodo.config import INSTALL_DIRECTORY
 from mycodo.config import MYCODO_VERSION
 from mycodo.config import SQL_DATABASE_MYCODO
 from mycodo.config import STATS_CSV
@@ -24,8 +24,10 @@ from mycodo.config import STATS_HOST
 from mycodo.config import STATS_PASSWORD
 from mycodo.config import STATS_PORT
 from mycodo.config import STATS_USER
+from mycodo.databases.models import Actions
 from mycodo.databases.models import AlembicVersion
 from mycodo.databases.models import Conditional
+from mycodo.databases.models import CustomController
 from mycodo.databases.models import Input
 from mycodo.databases.models import Method
 from mycodo.databases.models import Output
@@ -108,13 +110,6 @@ def add_update_csv(csv_file, key, value):
         except OSError:
             logger.debug("Could not delete file")
         recreate_stat_file()
-
-
-def get_count(q):
-    """Count the number of rows from an SQL query."""
-    count_q = q.statement.with_only_columns([func.count()]).order_by(None)
-    count = q.session.execute(count_q).scalar()
-    return count
 
 
 def get_pi_revision():
@@ -205,6 +200,7 @@ def recreate_stat_file():
         ['os_version', float(distro.linux_distribution()[1])],
         ['RPi_revision', get_pi_revision()],
         ['Mycodo_revision', MYCODO_VERSION],
+        ['master_branch', int(os.path.exists(os.path.join(INSTALL_DIRECTORY, '.master')))],
         ['alembic_version', 0],
         ['country', 'None'],
         ['daemon_startup_seconds', 0.0],
@@ -220,7 +216,10 @@ def recreate_stat_file():
         ['num_conditionals', 0],
         ['num_conditionals_active', 0],
         ['num_triggers', 0],
-        ['num_triggers_active', 0]
+        ['num_triggers_active', 0],
+        ['num_functions', 0],
+        ['num_functions_active', 0],
+        ['num_actions', 0],
     ]
 
     with open(STATS_CSV, 'w') as csv_stat_file:
@@ -256,35 +255,42 @@ def send_anonymous_stats(start_time, debug=False):
         add_update_csv(STATS_CSV, 'alembic_version', version_send)
 
         outputs = db_retrieve_table_daemon(Output)
-        add_update_csv(STATS_CSV, 'num_relays', get_count(outputs))
+        add_update_csv(STATS_CSV, 'num_relays', outputs.count())
 
         inputs = db_retrieve_table_daemon(Input)
-        add_update_csv(STATS_CSV, 'num_sensors', get_count(inputs))
+        add_update_csv(STATS_CSV, 'num_sensors', inputs.count())
         add_update_csv(STATS_CSV, 'num_sensors_active',
-                       get_count(inputs.filter(Input.is_activated.is_(True))))
+                       inputs.filter(Input.is_activated.is_(True)).count())
 
         conditionals = db_retrieve_table_daemon(Conditional)
-        add_update_csv(STATS_CSV, 'num_conditionals', get_count(conditionals))
+        add_update_csv(STATS_CSV, 'num_conditionals', conditionals.count())
         add_update_csv(STATS_CSV, 'num_conditionals_active',
-                       get_count(conditionals.filter(Conditional.is_activated.is_(True))))
+                       conditionals.filter(Conditional.is_activated.is_(True)).count())
 
         pids = db_retrieve_table_daemon(PID)
-        add_update_csv(STATS_CSV, 'num_pids', get_count(pids))
+        add_update_csv(STATS_CSV, 'num_pids', pids.count())
         add_update_csv(STATS_CSV, 'num_pids_active',
-                       get_count(pids.filter(PID.is_activated.is_(True))))
+                       pids.filter(PID.is_activated.is_(True)).count())
 
         triggers = db_retrieve_table_daemon(Trigger)
-        add_update_csv(STATS_CSV, 'num_triggers', get_count(triggers))
+        add_update_csv(STATS_CSV, 'num_triggers', triggers.count())
         add_update_csv(STATS_CSV, 'num_triggers_active',
-                       get_count(triggers.filter(Trigger.is_activated.is_(True))))
+                       triggers.filter(Trigger.is_activated.is_(True)).count())
+
+        functions = db_retrieve_table_daemon(CustomController)
+        add_update_csv(STATS_CSV, 'num_functions', functions.count())
+        add_update_csv(STATS_CSV, 'num_functions_active',
+                       functions.filter(CustomController.is_activated.is_(True)).count())
+
+        actions = db_retrieve_table_daemon(Actions)
+        add_update_csv(STATS_CSV, 'num_actions', actions.count())
 
         methods = db_retrieve_table_daemon(Method)
-        add_update_csv(STATS_CSV, 'num_methods',
-                       get_count(methods))
+        add_update_csv(STATS_CSV, 'num_methods', methods.count())
         add_update_csv(STATS_CSV, 'num_methods_in_pid',
-                       get_count(pids.filter(PID.setpoint_tracking_type == 'method')))
+                       pids.filter(PID.setpoint_tracking_type == 'method').count())
         add_update_csv(STATS_CSV, 'num_setpoint_meas_in_pid',
-                       get_count(pids.filter(PID.setpoint_tracking_type == 'input-math')))
+                       pids.filter(PID.setpoint_tracking_type == 'input-math').count())
 
         country = geocoder.ip('me').country
         if not country:
@@ -295,6 +301,7 @@ def send_anonymous_stats(start_time, debug=False):
                            resource.RUSAGE_SELF).ru_maxrss / float(1000))
 
         add_update_csv(STATS_CSV, 'Mycodo_revision', MYCODO_VERSION)
+        add_update_csv(STATS_CSV, 'master_branch', int(os.path.exists(os.path.join(INSTALL_DIRECTORY, '.master'))))
 
         # Combine stats into list of dictionaries
         new_stats_dict = return_stat_file_dict(STATS_CSV)

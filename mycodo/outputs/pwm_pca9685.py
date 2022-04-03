@@ -3,6 +3,7 @@
 # pwm_pca9685.py - Output for PCA9685
 #
 import copy
+from collections import OrderedDict
 
 from flask_babel import lazy_gettext
 from sqlalchemy import and_
@@ -34,155 +35,18 @@ def constraints_pass_hertz(mod_dev, value):
 
 
 # Measurements
-measurements_dict = {
-    0: {
-        'measurement': 'duty_cycle',
-        'unit': 'percent'
-    },
-    1: {
-        'measurement': 'duty_cycle',
-        'unit': 'percent'
-    },
-    2: {
-        'measurement': 'duty_cycle',
-        'unit': 'percent'
-    },
-    3: {
-        'measurement': 'duty_cycle',
-        'unit': 'percent'
-    },
-    4: {
-        'measurement': 'duty_cycle',
-        'unit': 'percent'
-    },
-    5: {
-        'measurement': 'duty_cycle',
-        'unit': 'percent'
-    },
-    6: {
-        'measurement': 'duty_cycle',
-        'unit': 'percent'
-    },
-    7: {
-        'measurement': 'duty_cycle',
-        'unit': 'percent'
-    },
-    8: {
-        'measurement': 'duty_cycle',
-        'unit': 'percent'
-    },
-    9: {
-        'measurement': 'duty_cycle',
-        'unit': 'percent'
-    },
-    10: {
-        'measurement': 'duty_cycle',
-        'unit': 'percent'
-    },
-    11: {
-        'measurement': 'duty_cycle',
-        'unit': 'percent'
-    },
-    12: {
-        'measurement': 'duty_cycle',
-        'unit': 'percent'
-    },
-    13: {
-        'measurement': 'duty_cycle',
-        'unit': 'percent'
-    },
-    14: {
-        'measurement': 'duty_cycle',
-        'unit': 'percent'
-    },
-    15: {
+measurements_dict = OrderedDict()
+channels_dict = OrderedDict()
+for each_channel in range(16):
+    measurements_dict[each_channel] = {
         'measurement': 'duty_cycle',
         'unit': 'percent'
     }
-}
-
-channels_dict = {
-    0: {
-        'name': 'Channel 0',
+    channels_dict[each_channel] = {
+        'name': f'Channel {each_channel + 1}',
         'types': ['pwm'],
-        'measurements': [0]
-    },
-    1: {
-        'name': 'Channel 1',
-        'types': ['pwm'],
-        'measurements': [1]
-    },
-    2: {
-        'name': 'Channel 2',
-        'types': ['pwm'],
-        'measurements': [2]
-    },
-    3: {
-        'name': 'Channel 3',
-        'types': ['pwm'],
-        'measurements': [3]
-    },
-    4: {
-        'name': 'Channel 4',
-        'types': ['pwm'],
-        'measurements': [4]
-    },
-    5: {
-        'name': 'Channel 5',
-        'types': ['pwm'],
-        'measurements': [5]
-    },
-    6: {
-        'name': 'Channel 6',
-        'types': ['pwm'],
-        'measurements': [6]
-    },
-    7: {
-        'name': 'Channel 7',
-        'types': ['pwm'],
-        'measurements': [7]
-    },
-    8: {
-        'name': 'Channel 8',
-        'types': ['pwm'],
-        'measurements': [8]
-    },
-    9: {
-        'name': 'Channel 9',
-        'types': ['pwm'],
-        'measurements': [9]
-    },
-    10: {
-        'name': 'Channel 10',
-        'types': ['pwm'],
-        'measurements': [10]
-    },
-    11: {
-        'name': 'Channel 11',
-        'types': ['pwm'],
-        'measurements': [11]
-    },
-    12: {
-        'name': 'Channel 12',
-        'types': ['pwm'],
-        'measurements': [12]
-    },
-    13: {
-        'name': 'Channel 13',
-        'types': ['pwm'],
-        'measurements': [13]
-    },
-    14: {
-        'name': 'Channel 14',
-        'types': ['pwm'],
-        'measurements': [14]
-    },
-    15: {
-        'name': 'Channel 15',
-        'types': ['pwm'],
-        'measurements': [15]
+        'measurements': [each_channel]
     }
-}
 
 # Output information
 OUTPUT_INFORMATION = {
@@ -213,7 +77,13 @@ OUTPUT_INFORMATION = {
     'interfaces': ['I2C'],
     'i2c_location': [
         '0x40', '0x41', '0x42', '0x43', '0x44', '0x45', '0x46', '0x47',
-        '0x48', '0x49', '0x4a', '0x4b', '0x4c', '0x4d', '0x4e', '0x4f'
+        '0x48', '0x49', '0x4a', '0x4b', '0x4c', '0x4d', '0x4e', '0x4f',
+        '0x50', '0x51', '0x52', '0x53', '0x54', '0x55', '0x56', '0x57',
+        '0x58', '0x59', '0x5a', '0x5b', '0x5c', '0x5d', '0x5e', '0x5f',
+        '0x60', '0x61', '0x62', '0x63', '0x64', '0x65', '0x66', '0x67',
+        '0x68', '0x69', '0x6a', '0x6b', '0x6c', '0x6d', '0x6e', '0x6f',
+        '0x70', '0x71', '0x72', '0x73', '0x74', '0x75', '0x76', '0x77',
+        '0x78', '0x79', '0x7a', '0x7b', '0x7c', '0x7d', '0x7e', '0x7f'
     ],
     'i2c_address_editable': False,
     'i2c_address_default': '0x40',

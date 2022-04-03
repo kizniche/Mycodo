@@ -317,7 +317,6 @@ def function_del(function_id):
     }
 
     try:
-        # Delete Actions
         actions = Actions.query.filter(
             Actions.function_id == function_id).all()
         for each_action in actions:

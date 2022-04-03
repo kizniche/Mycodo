@@ -39,7 +39,7 @@ OUTPUT_INFORMATION = {
     'url_datasheet': 'https://www.ti.com/lit/ds/symlink/pcf8575.pdf',
     'url_product_purchase': 'https://www.amazon.com/gp/product/B07JGSNWFF',
 
-    'message': 'Controls the 8 channels of the PCF8575.',
+    'message': 'Controls the 16 channels of the PCF8575.',
 
     'options_enabled': [
         'i2c_location',
@@ -53,9 +53,7 @@ OUTPUT_INFORMATION = {
     ],
 
     'interfaces': ['I2C'],
-    'i2c_location': [
-        '0x20', '0x21', '0x22', '0x23', '0x24', '0x25', '0x26', '0x27'
-    ],
+    'i2c_location': ['0x20', '0x21', '0x22', '0x23', '0x24', '0x25', '0x26', '0x27'],
     'i2c_address_editable': False,
     'i2c_address_default': '0x20',
 
@@ -125,7 +123,7 @@ class OutputModule(AbstractOutput):
     def __init__(self, output, testing=False):
         super().__init__(output, testing=testing, name=__name__)
 
-        self.sensor = None
+        self.device = None
         self.output_states = {}
 
         output_channels = db_retrieve_table_daemon(
@@ -141,7 +139,7 @@ class OutputModule(AbstractOutput):
         try:
             self.logger.debug(f"I2C: Address: {self.output.i2c_location}, Bus: {self.output.i2c_bus}")
             if self.output.i2c_location:
-                self.sensor = PCF8575(smbus2, self.output.i2c_bus, int(str(self.output.i2c_location), 16))
+                self.device = PCF8575(smbus2, self.output.i2c_bus, int(str(self.output.i2c_location), 16))
                 self.output_setup = True
         except:
             self.logger.exception("Could not set up output")
@@ -152,10 +150,9 @@ class OutputModule(AbstractOutput):
                 self.output_switch("on", output_channel=channel)
             elif self.options_channels['state_startup'][channel] == 0:
                 self.output_switch("off", output_channel=channel)
-            else:
-                # Default state: Off
+            else:  # Default state: Off
                 self.output_switch("off", output_channel=channel)
-            self.logger.debug(f"Pin state for CH{channel}: {self.sensor.get_pin_state(channel)}")
+            self.logger.debug(f"Pin state for CH{channel}: {self.device.get_pin_state(channel)}")
 
         for channel in channels_dict:
             if self.options_channels['trigger_functions_startup'][channel]:
@@ -181,17 +178,12 @@ class OutputModule(AbstractOutput):
             return msg
 
         try:
-            dict_states = {}
-            for channel in channels_dict:
-                if output_channel == channel:
-                    if state == 'on':
-                        self.sensor.set_output(channel, bool(self.options_channels['on_state'][channel]))
-                        self.output_states[output_channel] = True
-                    elif state == 'off':
-                        self.sensor.set_output(channel, not bool(self.options_channels['on_state'][channel]))
-                        self.output_states[output_channel] = False
-                else:
-                    dict_states[channel] = self.output_states[channel]
+            if state == 'on':
+                self.device.set_output(output_channel, bool(self.options_channels['on_state'][output_channel]))
+                self.output_states[output_channel] = True
+            elif state == 'off':
+                self.device.set_output(output_channel, not bool(self.options_channels['on_state'][output_channel]))
+                self.output_states[output_channel] = False
 
             msg = "success"
         except Exception as err:
@@ -202,17 +194,10 @@ class OutputModule(AbstractOutput):
     def is_on(self, output_channel=None):
         if self.is_setup():
             if output_channel is not None and output_channel in self.output_states:
-                return self.output_states[output_channel] == self.options_channels['on_state'][output_channel]
+                return self.output_states[output_channel]
 
     def is_setup(self):
         return self.output_setup
-
-    @staticmethod
-    def dict_to_list_states(dict_states):
-        list_states = []
-        for i, _ in enumerate(dict_states):
-            list_states.append(dict_states[i])
-        return list_states
 
     def stop_output(self):
         """Called when Output is stopped."""

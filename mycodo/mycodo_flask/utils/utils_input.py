@@ -638,17 +638,19 @@ def input_del(input_id):
             messages = controller_activate_deactivate(
                 messages, 'deactivate', 'Input', input_id)
 
+        actions = Actions.query.filter(
+            Actions.function_id == input_id).all()
+        for each_action in actions:
+            delete_entry_with_id(
+                Actions, each_action.unique_id, flash_message=False)
+
         device_measurements = DeviceMeasurements.query.filter(
             DeviceMeasurements.device_id == input_id).all()
-
         for each_measurement in device_measurements:
             delete_entry_with_id(
                 DeviceMeasurements,
                 each_measurement.unique_id,
                 flash_message=False)
-
-        delete_entry_with_id(
-            Input, input_id, flash_message=False)
 
         channels = InputChannel.query.filter(
             InputChannel.input_id == input_id).all()
@@ -657,6 +659,8 @@ def input_del(input_id):
                 InputChannel,
                 each_channel.unique_id,
                 flash_message=False)
+
+        delete_entry_with_id(Input, input_id, flash_message=False)
 
         try:
             file_path = os.path.join(

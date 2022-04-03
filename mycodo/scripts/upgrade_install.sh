@@ -31,7 +31,7 @@ runSelfUpgrade() {
   NOW=$(date +"%Y-%m-%d_%H-%M-%S")
 
   if [ "$CURRENT_MYCODO_DIRECTORY" == "$THIS_MYCODO_DIRECTORY" ] ; then
-    printf "Cannot perform upgrade to the Mycodo instance already intalled. Halting upgrade.\n"
+    printf "Cannot perform upgrade to the Mycodo instance already installed. Halting upgrade.\n"
     exit 1
   fi
 
