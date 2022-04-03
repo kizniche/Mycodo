@@ -3,7 +3,7 @@
 ### Bugfixes
 
  - Fix Bang-Bang (On/Off) Function
- 
+
 ### Features
 
  - Add Output: PCF8575 16-Channel I/O Expander

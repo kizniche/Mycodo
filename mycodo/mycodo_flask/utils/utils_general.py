@@ -1588,7 +1588,10 @@ def return_dependencies(device_type):
                                     try:
                                         pypi_name = install_id.split("==")[0]
                                         required_version = install_id.split("==")[1]
-                                        installed_version = version(pypi_name)
+                                        try:
+                                            installed_version = version(pypi_name)
+                                        except:
+                                            installed_version = "ERROR"
 
                                         logger.info(f"Pypi Package: {pypi_name}, "
                                                     f"Required: v{required_version}, "
