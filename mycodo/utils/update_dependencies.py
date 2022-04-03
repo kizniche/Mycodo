@@ -31,11 +31,12 @@ from mycodo.utils.database import db_retrieve_table_daemon
 from mycodo.utils.outputs import parse_output_information
 from mycodo.utils.inputs import parse_input_information
 from mycodo.utils.system_pi import cmd_output
+from mycodo.utils.widgets import parse_widget_information
 
 logger = logging.getLogger("mycodo.update_dependencies")
 
 
-def get_installed_dependencies():
+def get_installed_apt_dependencies():
     met_deps = []
 
     list_dependencies = [
@@ -43,6 +44,7 @@ def get_installed_dependencies():
         parse_action_information(),
         parse_input_information(),
         parse_output_information(),
+        parse_widget_information(),
         CAMERA_INFO,
         FUNCTION_INFO,
         METHOD_INFO,
@@ -54,23 +56,13 @@ def get_installed_dependencies():
             if 'dependencies_module' in each_section[device_type]:
                 dep_mod = each_section[device_type]['dependencies_module']
                 for (install_type, package, install_id) in dep_mod:
-                    entry = '{0} {1}'.format(install_type, install_id)
-                    if install_type == 'pip-pypi':
-                        try:
-                            module = importlib.util.find_spec(package)
-                            if module is not None and entry not in met_deps:
-                                met_deps.append(entry)
-                        except Exception:
-                            logger.error(
-                                'Exception checking python dependency: '
-                                '{dep}'.format(dep=package))
-                    elif install_type == 'apt':
+                    if install_type == 'apt':
                         start = "dpkg-query -W -f='${Status}'"
                         end = '2>/dev/null | grep -c "ok installed"'
                         cmd = "{} {} {}".format(start, package, end)
                         _, _, status = cmd_output(cmd, user='root')
-                        if not status and entry not in met_deps:
-                            met_deps.append(entry)
+                        if not status and install_id not in met_deps:
+                            met_deps.append(install_id)
 
     return met_deps
 
@@ -129,7 +121,7 @@ if __name__ == "__main__":
         if 'highstock' not in devices:
             devices.append('highstock')
 
-    print(devices)
+    logger.info(f"Checking dependencies for installed devices: {devices}")
 
     for each_device in devices:
         device_unmet_dependencies, _, _ = return_dependencies(each_device)
@@ -138,9 +130,8 @@ if __name__ == "__main__":
                 dependencies.append(each_dep)
 
     if dependencies:
-        print("Unmet dependencies found: {}".format(dependencies))
-
         for each_dep in dependencies:
+            logger.info(f"Installing: {each_dep[1]}")
             if each_dep[1] == 'bash-commands':
                 for each_command in each_dep[2]:
                     command = "{cmd} | ts '[%Y-%m-%d %H:%M:%S]' >> {log} 2>&1".format(
@@ -163,30 +154,18 @@ if __name__ == "__main__":
                     dep=each_dep[1])
                 output, err, stat = cmd_output(install_cmd, user='root')
                 formatted_output = output.decode("utf-8").replace('\\n', '\n')
+                logger.info(formatted_output)
+    else:
+        logger.info("Not Unmet dependencies for devices found")
+
+    logger.info("Checking for updates to apt dependencies...")
 
     # Update installed dependencies
-    installed_deps = get_installed_dependencies()
-    apt_deps = ''
-    for each_dep in installed_deps:
-        if each_dep.split(' ')[0] == 'apt':
-            apt_deps += ' {}'.format(each_dep.split(' ')[1])
+    installed_apt_deps = get_installed_apt_dependencies()
+    apt_deps = " ".join(installed_apt_deps)
 
     if apt_deps:
-        update_cmd = 'apt-get install -y {dep}'.format(
-            home=INSTALL_DIRECTORY, dep=apt_deps)
+        update_cmd = f'apt-get install -y {apt_deps}'
         output, err, stat = cmd_output(update_cmd, user='root')
         formatted_output = output.decode("utf-8").replace('\\n', '\n')
-        print("{}".format(formatted_output))
-
-    tmp_req_file = '{home}/install/requirements-generated.txt'.format(home=INSTALL_DIRECTORY)
-    with open(tmp_req_file, "w") as f:
-        for each_dep in installed_deps:
-            if each_dep.split(' ')[0] == 'pip-pypi':
-                f.write('{dep}\n'.format(dep=each_dep.split(' ')[1]))
-
-    pip_req_update = '{home}/env/bin/python -m pip install --upgrade -r {home}/install/requirements-generated.txt'.format(
-        home=INSTALL_DIRECTORY)
-    output, err, stat = cmd_output(pip_req_update, user='root')
-    formatted_output = output.decode("utf-8").replace('\\n', '\n')
-    print("{}".format(formatted_output))
-    os.remove(tmp_req_file)
+        logger.info(formatted_output)
