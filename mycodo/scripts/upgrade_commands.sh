@@ -462,7 +462,6 @@ case "${1:-''}" in
         else
             "${MYCODO_PATH}"/env/bin/python -m pip install --upgrade pip setuptools=="${SETUPTOOLS_VERSION}"
             "${MYCODO_PATH}"/env/bin/python -m pip install --upgrade -r "${MYCODO_PATH}"/install/requirements.txt
-            "${MYCODO_PATH}"/env/bin/python -m pip install --upgrade -r "${MYCODO_PATH}"/install/requirements-rpi.txt
             "${MYCODO_PATH}"/env/bin/python -m pip install --upgrade -r "${MYCODO_PATH}"/install/requirements-testing.txt
         fi
     ;;
