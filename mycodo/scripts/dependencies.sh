@@ -28,14 +28,6 @@ case "${1}" in
             "${INSTALL_DIRECTORY}"/env/bin/python -m pip install --upgrade "${2}"
         fi
     ;;
-    'pip-git')  # TODO: Remove in next major revision (no longer works properly?)
-        if [ ! -e "${INSTALL_DIRECTORY}"/env/bin/python3 ]; then
-            printf "\n## Error: Virtualenv doesn't exist. Creating...\n"
-            /bin/bash "${INSTALL_DIRECTORY}"/mycodo/scripts/upgrade_commands.sh setup-virtualenv
-        else
-            "${INSTALL_DIRECTORY}"/env/bin/python -m pip install --upgrade -e "${2}"
-        fi
-    ;;
     'internal')
         case "${2}" in
             'pigpio')

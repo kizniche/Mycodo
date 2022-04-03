@@ -33,7 +33,7 @@ def action_add(form):
         dep_unmet, _, dep_message = return_dependencies(form.action_type.data)
         if dep_unmet:
             for each_dep in dep_unmet:
-                list_unmet_deps.append(each_dep[0])
+                list_unmet_deps.append(each_dep[3])
             messages["error"].append(
                 f"{form.action_type.data} has unmet dependencies. "
                  "They must be installed before the Action can be added.")

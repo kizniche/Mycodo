@@ -27,9 +27,6 @@ def generate_controller_doc(out_file, each_data):
                         out_file.write("[{0}](https://pypi.org/project/{0})".format(each_dep[2].split("==")[0]))
                     else:
                         out_file.write("[{0}](https://pypi.org/project/{0})".format(each_dep[2]))
-                elif each_dep[0] == "pip-git":
-                    url = re.search('git://(.*).git', each_dep[2])
-                    out_file.write("[{name}](https://{url})".format(name=each_dep[1], url=url.group(1)))
                 else:
                     out_file.write(each_dep[2])
 

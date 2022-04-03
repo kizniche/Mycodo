@@ -54,7 +54,7 @@ def output_add(form_add, request_form):
         dep_unmet, _, dep_message = return_dependencies(form_add.output_type.data.split(',')[0])
         if dep_unmet:
             for each_dep in dep_unmet:
-                list_unmet_deps.append(each_dep[0])
+                list_unmet_deps.append(each_dep[3])
             messages["error"].append(
                 "{dev} has unmet dependencies. They must be installed before the Output can be added.".format(
                     dev=output_type))

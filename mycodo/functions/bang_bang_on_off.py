@@ -157,9 +157,9 @@ class CustomModule(AbstractFunction):
 
         self.logger.info(
             "Bang-Bang controller started with options: "
-            "Measurement Device: {}, Measurement: {},"
-            "Output Raise: {}, Output_Raise_Channel: {},"
-            "Output Lower: {}, Output_Lower_Channel: {},"
+            "Measurement Device: {}, Measurement: {}, "
+            "Output Raise: {}, Output_Raise_Channel: {}, "
+            "Output Lower: {}, Output_Lower_Channel: {}, "
             "Setpoint: {}, Hysteresis: {}, "
             "Direction: {}, Period: {}".format(
                 self.measurement_device_id,

@@ -55,7 +55,7 @@ def function_add(form_add_func):
         dep_unmet, _, dep_message = return_dependencies(function_name)
         if dep_unmet:
             for each_dep in dep_unmet:
-                list_unmet_deps.append(each_dep[0])
+                list_unmet_deps.append(each_dep[3])
             messages["error"].append(
                 f"{function_name} has unmet dependencies. "
                  "They must be installed before the Function can be added.")

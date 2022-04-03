@@ -99,16 +99,6 @@ int main(int argc, char *argv[]) {
       sprintf(cmd, "/dependencies.sh pip-pypi %s", argv[3]);
       strncat(restoreScript, cmd, sizeof(restoreScript) - 1);
       system(restoreScript);
-    } else if (strcmp(argv[1], "install_dependency") == 0 && strcmp(argv[2], "pip-git") == 0 && (argc == 4)) {
-      char path[256];
-      strncpy(path, argv[0], sizeof(path) - 1);
-      dirname(path);
-      char restoreScript[1024];
-      strncpy(restoreScript, "/bin/bash ", sizeof(restoreScript) - 1);
-      strncat(restoreScript, path, sizeof(restoreScript) - 1);
-      sprintf(cmd, "/dependencies.sh pip-git %s", argv[3]);
-      strncat(restoreScript, cmd, sizeof(restoreScript) - 1);
-      system(restoreScript);
     } else if (strcmp(argv[1], "install_dependency") == 0 && strcmp(argv[2], "apt") == 0 && (argc == 4)) {
       char path[256];
       strncpy(path, argv[0], sizeof(path) - 1);

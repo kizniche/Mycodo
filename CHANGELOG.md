@@ -4,6 +4,15 @@
 
  - Fix Bang-Bang (On/Off) Function
  
+### Features
+
+ - Add Output: PCF8575 16-Channel I/O Expander
+
+### Miscellaneous
+
+ - Remove pip-git as module dependency option
+ - Improve dependency version-checking
+
 
 ## 8.13.3 (2022-04-01)
 

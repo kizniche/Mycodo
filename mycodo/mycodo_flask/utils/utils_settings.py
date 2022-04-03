@@ -512,10 +512,10 @@ def settings_function_import(form):
                             error.append(
                                 "'dependencies_module': tuples in list must "
                                 "not be empty")
-                        elif each_dep[0] not in ['internal', 'pip-pypi', 'pip-git', 'apt']:
+                        elif each_dep[0] not in ['internal', 'pip-pypi', 'apt']:
                             error.append(
                                 "'dependencies_module': first in tuple "
-                                "must be 'internal', 'pip-pypi', 'pip-git', "
+                                "must be 'internal', 'pip-pypi', "
                                 "or 'apt'")
 
         if not error:
@@ -642,10 +642,10 @@ def settings_action_import(form):
                             error.append(
                                 "'dependencies_module': tuples in list must "
                                 "not be empty")
-                        elif each_dep[0] not in ['internal', 'pip-pypi', 'pip-git', 'apt']:
+                        elif each_dep[0] not in ['internal', 'pip-pypi', 'apt']:
                             error.append(
                                 "'dependencies_module': first in tuple "
-                                "must be 'internal', 'pip-pypi', 'pip-git', "
+                                "must be 'internal', 'pip-pypi', "
                                 "or 'apt'")
 
         if not error:
@@ -812,10 +812,10 @@ def settings_input_import(form):
                             error.append("'dependencies_module': tuples in list must have 3 items")
                         elif not each_dep[0] or not each_dep[1] or not each_dep[2]:
                             error.append("'dependencies_module': tuples in list must not be empty")
-                        elif each_dep[0] not in ['internal', 'pip-pypi', 'pip-git', 'apt']:
+                        elif each_dep[0] not in ['internal', 'pip-pypi', 'apt']:
                             error.append(
                                 "'dependencies_module': first in tuple "
-                                "must be 'internal', 'pip-pypi', 'pip-git', "
+                                "must be 'internal', 'pip-pypi', "
                                 "or 'apt'")
 
         if not error:
@@ -963,10 +963,10 @@ def settings_output_import(form):
                             error.append("'dependencies_module': tuples in list must have 3 items")
                         elif not each_dep[0] or not each_dep[1] or not each_dep[2]:
                             error.append("'dependencies_module': tuples in list must not be empty")
-                        elif each_dep[0] not in ['internal', 'pip-pypi', 'pip-git', 'apt']:
+                        elif each_dep[0] not in ['internal', 'pip-pypi', 'apt']:
                             error.append(
                                 "'dependencies_module': first in tuple "
-                                "must be 'internal', 'pip-pypi', 'pip-git', "
+                                "must be 'internal', 'pip-pypi', "
                                 "or 'apt'")
 
         if not error:
@@ -1087,10 +1087,10 @@ def settings_widget_import(form):
                             error.append("'dependencies_module': tuples in list must have 3 items")
                         elif not each_dep[0] or not each_dep[1] or not each_dep[2]:
                             error.append("'dependencies_module': tuples in list must not be empty")
-                        elif each_dep[0] not in ['internal', 'pip-pypi', 'pip-git', 'apt']:
+                        elif each_dep[0] not in ['internal', 'pip-pypi', 'apt']:
                             error.append(
                                 "'dependencies_module': first in tuple "
-                                "must be 'internal', 'pip-pypi', 'pip-git', "
+                                "must be 'internal', 'pip-pypi', "
                                 "or 'apt'")
 
         if not error:

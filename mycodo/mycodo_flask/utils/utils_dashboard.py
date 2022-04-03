@@ -181,7 +181,7 @@ def widget_add(form_base, request_form):
         if dep_unmet:
             list_unmet_deps = []
             for each_dep in dep_unmet:
-                list_unmet_deps.append(each_dep[0])
+                list_unmet_deps.append(each_dep[3])
             error.append("The {dev} device you're trying to add has unmet dependencies: {dep}".format(
                 dev=widget_name, dep=', '.join(list_unmet_deps)))
 

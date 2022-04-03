@@ -107,7 +107,7 @@
           }
           else {
             {% for each_output in output %}
-              {% for each_output_channel in dict_outputs[each_output.output_type]['channels_dict']  %}
+              {% for each_output_channel in dict_outputs[each_output.output_type]['channels_dict'] %}
             document.getElementById("{{each_output.unique_id}}-{{each_output_channel}}-output-state").className = "item_channel row small-gutters pause-background";
             document.getElementById("{{each_output.unique_id}}-{{each_output_channel}}-input-output-state").value = '{{_('No Connection')}}';
               {% endfor %}

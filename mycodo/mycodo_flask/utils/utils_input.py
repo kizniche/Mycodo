@@ -67,7 +67,7 @@ def input_add(form_add):
         dep_unmet, _, dep_message = return_dependencies(input_name)
         if dep_unmet:
             for each_dep in dep_unmet:
-                list_unmet_deps.append(each_dep[0])
+                list_unmet_deps.append(each_dep[3])
             messages["error"].append(
                 "{dev} has unmet dependencies. They must be installed before the Input can be added.".format(
                     dev=input_name))

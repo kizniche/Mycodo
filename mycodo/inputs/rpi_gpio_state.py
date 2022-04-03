@@ -30,7 +30,7 @@ INPUT_INFORMATION = {
     'options_disabled': ['interface'],
 
     'dependencies_module': [
-        ('pip-pypi', 'RPi.GPIO', 'RPi.GPIO==0.7.0')
+        ('pip-pypi', 'RPi.GPIO', 'RPi.GPIO==0.7.1')
     ],
 
     'interfaces': ['GPIO'],

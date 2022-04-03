@@ -12,6 +12,7 @@ from flask import flash
 from flask import redirect
 from flask import request
 from flask_babel import gettext
+from importlib_metadata import version
 from sqlalchemy import and_
 
 from mycodo.config import CAMERA_INFO
@@ -1572,14 +1573,33 @@ def return_dependencies(device_type):
                 elif each_device == 'dependencies_module':
                     for (install_type, package, install_id) in each_dict:
                         entry = (
-                            package, '{0} {1}'.format(install_type, install_id),
+                            package,
+                            f'{install_type} {install_id}',
                             install_type,
                             install_id
                         )
-                        if install_type in ['pip-pypi', 'pip-git']:
+                        if install_type == 'pip-pypi':
                             try:
                                 module = importlib.util.find_spec(package)
-                                if module is None:
+
+                                # Get version
+                                version_mismatch = False
+                                if "==" in install_id:
+                                    try:
+                                        pypi_name = install_id.split("==")[0]
+                                        required_version = install_id.split("==")[1]
+                                        installed_version = version(pypi_name)
+
+                                        logger.info(f"Pypi Package: {pypi_name}, "
+                                                    f"Required: v{required_version}, "
+                                                    f"Installed: v{installed_version}, "
+                                                    f"Same: {required_version == installed_version}")
+                                        if required_version != installed_version:
+                                            version_mismatch = True
+                                    except:
+                                        logger.exception(1)
+
+                                if module is None or version_mismatch:
                                     if entry not in unmet_deps:
                                         unmet_deps.append(entry)
                                 else:

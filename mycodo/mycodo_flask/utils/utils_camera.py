@@ -32,7 +32,7 @@ def camera_add(form_camera):
     if dep_unmet:
         list_unmet_deps = []
         for each_dep in dep_unmet:
-            list_unmet_deps.append(each_dep[0])
+            list_unmet_deps.append(each_dep[3])
         error.append(
             "The {dev} device you're trying to add has unmet dependencies: "
             "{dep}".format(dev=form_camera.library.data,

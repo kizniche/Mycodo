@@ -52,7 +52,7 @@ OUTPUT_INFORMATION = {
     'options_disabled': ['interface'],
 
     'dependencies_module': [
-        ('pip-pypi', 'RPi.GPIO', 'RPi.GPIO==0.7.0'),
+        ('pip-pypi', 'RPi.GPIO', 'RPi.GPIO==0.7.1'),
         ('pip-pypi', 'RpiMotorLib', 'rpimotorlib==2.7')
     ],
 

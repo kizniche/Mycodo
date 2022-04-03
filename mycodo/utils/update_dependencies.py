@@ -55,7 +55,7 @@ def get_installed_dependencies():
                 dep_mod = each_section[device_type]['dependencies_module']
                 for (install_type, package, install_id) in dep_mod:
                     entry = '{0} {1}'.format(install_type, install_id)
-                    if install_type in ['pip-pypi', 'pip-git']:
+                    if install_type == 'pip-pypi':
                         try:
                             module = importlib.util.find_spec(package)
                             if module is not None and entry not in met_deps:
@@ -183,8 +183,6 @@ if __name__ == "__main__":
         for each_dep in installed_deps:
             if each_dep.split(' ')[0] == 'pip-pypi':
                 f.write('{dep}\n'.format(dep=each_dep.split(' ')[1]))
-            elif each_dep.split(' ')[0] == 'pip-git':
-                f.write('-e {dep}\n'.format(dep=each_dep.split(' ')[1]))
 
     pip_req_update = '{home}/env/bin/python -m pip install --upgrade -r {home}/install/requirements-generated.txt'.format(
         home=INSTALL_DIRECTORY)
