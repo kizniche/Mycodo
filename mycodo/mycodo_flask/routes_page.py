@@ -677,14 +677,13 @@ def page_info():
     else:
         gpio_output = ''
 
-        # Search for /dev/i2c- devices and compile a sorted dictionary of each
+    # Search for /dev/i2c- devices and compile a sorted dictionary of each
     # device's integer device number and the corresponding 'i2cdetect -y ID'
     # output for display on the info page
-    i2c_devices_sorted = {}
+    i2c_devices_sorted = OrderedDict()
     if not current_app.config['TESTING']:
         try:
             i2c_devices = glob.glob("/dev/i2c-*")
-            i2c_devices_sorted = OrderedDict()
             for each_dev in i2c_devices:
                 device_int = int(each_dev.replace("/dev/i2c-", ""))
                 if device_int in [20, 21]:
