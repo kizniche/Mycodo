@@ -36,7 +36,7 @@ channels_dict = {
 # Output information
 OUTPUT_INFORMATION = {
     'output_name_unique': 'kp303_0_4_2',
-    'output_name': f"{lazy_gettext('On/Off')}: KP303 Kasa Smart WiFi Power Strip (python-kasa 0.4.2)",
+    'output_name': f"{lazy_gettext('On/Off')}: KP303 Kasa Smart WiFi 3-Outlet Power Strip (python-kasa 0.4.2)",
     'output_manufacturer': 'TP-Link',
     'input_library': 'python-kasa==0.4.2',
     'measurements_dict': measurements_dict,
