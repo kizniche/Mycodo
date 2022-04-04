@@ -687,6 +687,8 @@ def page_info():
             i2c_devices_sorted = OrderedDict()
             for each_dev in i2c_devices:
                 device_int = int(each_dev.replace("/dev/i2c-", ""))
+                if device_int in [20, 21]:
+                    continue
                 i2cdetect = subprocess.Popen(
                     "i2cdetect -y {dev}".format(dev=device_int),
                     stdout=subprocess.PIPE,
