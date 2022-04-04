@@ -35,18 +35,22 @@ def constraints_pass_hertz(mod_dev, value):
 
 
 # Measurements
-measurements_dict = OrderedDict()
-channels_dict = OrderedDict()
-for each_channel in range(16):
-    measurements_dict[each_channel] = {
+measurements_dict = {
+    key: {
         'measurement': 'duty_cycle',
         'unit': 'percent'
     }
-    channels_dict[each_channel] = {
-        'name': f'Channel {each_channel + 1}',
+    for key in range(16)
+}
+
+channels_dict = {
+    key: {
+        'name': f'Channel {key + 1}',
         'types': ['pwm'],
-        'measurements': [each_channel]
+        'measurements': [key]
     }
+    for key in range(16)
+}
 
 # Output information
 OUTPUT_INFORMATION = {

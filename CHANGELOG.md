@@ -1,4 +1,13 @@
-## 8.13.5 (Unreleased)
+## 8.13.5 (2022-04-04)
+
+### Bugfixes
+
+ - Fix missing module importlib_metadata
+ - Fix PCF8574 and MCP23017 Pump Output Measurements
+
+### Features
+
+ - Add ability to select Output measurements for Measurement Condition of Conditional Controllers
 
 ### Miscellaneous
 

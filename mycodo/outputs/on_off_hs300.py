@@ -26,7 +26,7 @@ measurements_dict = {
 channels_dict = {
     key: {
         'types': ['on_off'],
-        'name': 'Outlet {}'.format(key + 1),
+        'name': f'Outlet {key + 1}',
         'measurements': [key]
     }
     for key in range(6)

@@ -22,28 +22,25 @@ measurements_dict = OrderedDict()
 channels_dict = OrderedDict()
 measure = 0
 for each_channel in range(8):
-    measurements_dict = {
-        measure: {
-            'measurement': 'duration_time',
-            'unit': 's',
-            'name': 'Pump On',
-        },
-        measure + 1: {
-            'measurement': 'volume',
-            'unit': 'ml',
-            'name': 'Dispense Volume',
-        },
-        measure + 2: {
-            'measurement': 'duration_time',
-            'unit': 's',
-            'name': 'Dispense Duration',
-        }
+    measurements_dict[measure] = {
+        'measurement': 'duration_time',
+        'unit': 's',
+        'name': 'Pump On',
     }
-    channels_dict = {
-        each_channel: {
-            'types': ['volume', 'on_off'],
-            'measurements': [measure, measure + 1, measure + 2]
-        }
+    measurements_dict[measure + 1] = {
+        'measurement': 'volume',
+        'unit': 'ml',
+        'name': 'Dispense Volume',
+    }
+    measurements_dict[measure + 2] = {
+        'measurement': 'duration_time',
+        'unit': 's',
+        'name': 'Dispense Duration',
+    }
+
+    channels_dict[each_channel] = {
+        'types': ['volume', 'on_off'],
+        'measurements': [measure, measure + 1, measure + 2]
     }
     measure += 3
 
