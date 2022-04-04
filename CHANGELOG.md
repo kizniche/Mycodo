@@ -7,6 +7,7 @@
 
 ### Features
 
+ - Add Input variants for Kasa KP303 and HS300 that use the latest python-kasa library (0.4.2)
  - Add ability to select Output measurements for Measurement Condition of Conditional Controllers
 
 ### Miscellaneous

@@ -1,6 +1,6 @@
 # coding=utf-8
 #
-# kp303.py - Output for KP303
+# on_off_kp303.py - Output for KP303
 #
 import asyncio
 import threading
@@ -16,36 +16,20 @@ from mycodo.utils.database import db_retrieve_table_daemon
 
 # Measurements
 measurements_dict = {
-    0: {
-        'measurement': 'duration_time',
-        'unit': 's'
-    },
-    1: {
-        'measurement': 'duration_time',
-        'unit': 's'
-    },
-    2: {
+    key: {
         'measurement': 'duration_time',
         'unit': 's'
     }
+    for key in range(3)
 }
 
 channels_dict = {
-    0: {
+    key: {
         'types': ['on_off'],
-        'name': 'Outlet 1',
-        'measurements': [0]
-    },
-    1: {
-        'types': ['on_off'],
-        'name': 'Outlet 2',
-        'measurements': [1]
-    },
-    2: {
-        'types': ['on_off'],
-        'name': 'Outlet 3',
-        'measurements': [2]
+        'name': f'Outlet {key + 1}',
+        'measurements': [key]
     }
+    for key in range(3)
 }
 
 # Output information
@@ -60,7 +44,7 @@ OUTPUT_INFORMATION = {
 
     'url_manufacturer': 'https://www.tp-link.com/au/home-networking/smart-plug/kp303/',
 
-    'message': 'This output controls the 3 outlets of the Kasa KP303 Smart WiFi Power Strip.',
+    'message': 'This output controls the 3 outlets of the Kasa KP303 Smart WiFi Power Strip. This is a variant that uses an outdated python library.',
 
     'options_enabled': [
         'button_on',
