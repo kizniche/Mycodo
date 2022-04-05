@@ -1,6 +1,6 @@
 # coding=utf-8
 #
-# stepper_uln2003.py - Output for ULN2003 stepper motor driver
+# motor_stepper_uln2003.py - Output for ULN2003 stepper motor driver
 #
 import copy
 

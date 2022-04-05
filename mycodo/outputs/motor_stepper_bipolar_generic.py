@@ -1,6 +1,6 @@
 # coding=utf-8
 #
-# stepper_bipolar_generaic.py - Output for stepper motor
+# motor_stepper_bipolar_generaic.py - Output for stepper motor
 #
 import copy
 import time

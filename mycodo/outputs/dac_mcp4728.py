@@ -1,6 +1,6 @@
 # coding=utf-8
 #
-# mcp4728.py - Output for MCP4728
+# dac_mcp4728.py - Output for MCP4728 digital-to-analog converter
 #
 from flask_babel import lazy_gettext
 

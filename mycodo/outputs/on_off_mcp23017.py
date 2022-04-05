@@ -1,6 +1,6 @@
 # coding=utf-8
 #
-# mcp23017.py - Output for MCP23017
+# on_off_mcp23017.py - Output for MCP23017
 #
 from collections import OrderedDict
 

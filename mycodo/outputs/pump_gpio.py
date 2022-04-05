@@ -1,6 +1,6 @@
 # coding=utf-8
 #
-# pump_generic.py - Output for Atlas Scientific EZO Pump
+# pump_gpio.py - Output for a generic pump controlled by a GPIO
 #
 import copy
 import datetime

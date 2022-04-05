@@ -176,7 +176,7 @@ def page_output():
     choices_input_devices = utils_general.choices_input_devices(input_dev)
     choices_method = utils_general.choices_methods(method)
     choices_output = utils_general.choices_outputs(
-        output, dict_units, dict_measurements)
+        output, OutputChannel, dict_outputs, dict_units, dict_measurements)
     choices_output_channels = utils_general.choices_outputs_channels(
         output, output_channel.query.all(), dict_outputs)
     choices_pid = utils_general.choices_pids(

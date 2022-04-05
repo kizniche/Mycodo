@@ -1,4 +1,7 @@
 # coding=utf-8
+#
+# value_mqtt.py - Output for publishing a value via MQTT
+#
 import copy
 
 from flask_babel import lazy_gettext

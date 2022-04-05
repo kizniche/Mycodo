@@ -11,11 +11,13 @@ from flask_restx import fields
 from mycodo.databases.models import Input
 from mycodo.databases.models import Measurement
 from mycodo.databases.models import Output
+from mycodo.databases.models import OutputChannel
 from mycodo.databases.models import PID
 from mycodo.databases.models import Unit
 from mycodo.mycodo_flask.api import api
 from mycodo.mycodo_flask.api import default_responses
 from mycodo.mycodo_flask.utils import utils_general
+from mycodo.utils.outputs import parse_output_information
 from mycodo.utils.system_pi import add_custom_measurements
 from mycodo.utils.system_pi import add_custom_units
 
@@ -150,11 +152,12 @@ class ChoicesOutputMeasurements(Resource):
             abort(403)
         try:
             output = Output.query.all()
+            dict_outputs = parse_output_information()
             dict_measurements = add_custom_measurements(
                 Measurement.query.all())
             dict_units = add_custom_units(Unit.query.all())
             output_choices = utils_general.choices_outputs(
-                output, dict_units, dict_measurements)
+                output, OutputChannel, dict_outputs, dict_units, dict_measurements)
 
             if output_choices:
                 return {'choices outputs measurements': output_choices}, 200

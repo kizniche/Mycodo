@@ -1,6 +1,6 @@
 # coding=utf-8
 #
-# pcf8574.py - Output for PCF8574
+# on_off_pcf8574.py - Output for PCF8574
 #
 from collections import OrderedDict
 

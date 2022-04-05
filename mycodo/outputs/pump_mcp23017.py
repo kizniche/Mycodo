@@ -1,6 +1,6 @@
 # coding=utf-8
 #
-# mcp23017_pump.py - Pump Output for MCP23017
+# pump_mcp23017.py - Pump Output for MCP23017
 #
 import copy
 import datetime

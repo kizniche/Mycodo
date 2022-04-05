@@ -3,7 +3,6 @@
 # pwm_pca9685.py - Output for PCA9685
 #
 import copy
-from collections import OrderedDict
 
 from flask_babel import lazy_gettext
 from sqlalchemy import and_

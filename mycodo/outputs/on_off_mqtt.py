@@ -1,4 +1,7 @@
 # coding=utf-8
+#
+# on_off_mqtt.py - Output for publishing on or off via MQTT
+#
 from flask_babel import lazy_gettext
 
 from mycodo.databases.models import OutputChannel

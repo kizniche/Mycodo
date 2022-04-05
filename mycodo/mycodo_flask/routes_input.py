@@ -260,7 +260,7 @@ def page_input():
         input_dev, dict_units, dict_measurements)
     choices_method = utils_general.choices_methods(method)
     choices_output = utils_general.choices_outputs(
-        output, dict_units, dict_measurements)
+        output, OutputChannel, dict_outputs, dict_units, dict_measurements)
     choices_output_channels = utils_general.choices_outputs_channels(
         output, output_channel, dict_outputs)
     choices_output_channels_measurements = utils_general.choices_outputs_channels_measurements(

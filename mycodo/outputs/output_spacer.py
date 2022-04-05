@@ -1,4 +1,7 @@
 # coding=utf-8
+#
+# output_spacer.py - A simple spacer to organize the output page
+#
 from flask_babel import lazy_gettext
 
 OUTPUT_INFORMATION = {

@@ -1,6 +1,6 @@
 # coding=utf-8
 #
-# ds3502.py - Output for DS3502
+# potentiometer_ds3502.py - Output for DS3502 digital potentiometer
 #
 import math
 

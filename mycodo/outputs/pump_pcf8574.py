@@ -1,6 +1,6 @@
 # coding=utf-8
 #
-# pcf8574_pump.py - Pump Output for PCF8574
+# pump_pcf8574.py - Pump Output for PCF8574
 #
 import copy
 import datetime

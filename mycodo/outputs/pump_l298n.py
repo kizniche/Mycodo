@@ -1,6 +1,6 @@
 # coding=utf-8
 #
-# dc_motor_l298n.py - Output for L298N DC motor controller
+# pump_l298n.py - Output for L298N DC motor controller
 #
 import threading
 import time

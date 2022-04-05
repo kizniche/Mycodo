@@ -4,6 +4,8 @@
 
  - Fix missing module importlib_metadata
  - Fix PCF8574 and MCP23017 Pump Output Measurements
+ - Fix selecting an Output Measurements for Conditional Controller Conditions
+ - Fix display of channel names in Graph Widget
 
 ### Features
 
@@ -13,6 +15,7 @@
 ### Miscellaneous
 
  - Improve dependency install script
+ - Improve Output display names on UI Output selections
 
 
 ## 8.13.4 (2022-04-03)

@@ -381,7 +381,7 @@ WIDGET_INFORMATION = {
         <div class="form-row">
           <div class="col-12">
             {{widget_variables['colors_graph'][n]['type']}}
-            {%- if 'channel' in widget_variables['colors_graph'][n] and widget_variables['colors_graph'][n]['channel'] -%}
+            {%- if 'channel' in widget_variables['colors_graph'][n] and widget_variables['colors_graph'][n]['channel'] is not none -%}
               {{', CH' + widget_variables['colors_graph'][n]['channel']|string}}
             {%- endif -%}
             {%- if widget_variables['colors_graph'][n]['name'] -%}
@@ -974,41 +974,40 @@ WIDGET_INFORMATION = {
     series: [
   {%- for output_and_measurement_ids in graph_output_ids -%}
     {%- set output_id = output_and_measurement_ids.split(',')[0] -%}
-    {%- set all_output = table_output.query.filter(table_output.unique_id == output_id).all() -%}
-    {%- if all_output -%}
-      {%- for each_output in all_output -%}
-        {%- set measurement_id = output_and_measurement_ids.split(',')[1] -%}
+    {%- set this_output = table_output.query.filter(table_output.unique_id == output_id).first() -%}
+    {%- if this_output -%}
+      {%- set measurement_id = output_and_measurement_ids.split(',')[1] -%}
 
-        {% set disable_data_grouping = [] -%}
-        {% for each_series in widget_variables['colors_graph'] if each_series['measure_id'] == measurement_id and each_series['disable_data_grouping'] %}
-          {%- do disable_data_grouping.append(1) %}
-        {% endfor %}
+      {% set disable_data_grouping = [] -%}
+      {% for each_series in widget_variables['colors_graph'] if each_series['measure_id'] == measurement_id and each_series['disable_data_grouping'] %}
+        {%- do disable_data_grouping.append(1) %}
+      {% endfor %}
 
-        {%- if measurement_id in device_measurements_dict -%}
+      {%- if measurement_id in device_measurements_dict -%}
       {
-        name: "{{each_output.name}}
+        name: "{{this_output.name}}
 
-          {%- if device_measurements_dict[measurement_id].name -%}
-            {{' (' + device_measurements_dict[measurement_id].name}})
+        {%- if device_measurements_dict[measurement_id].name -%}
+          {{' (' + device_measurements_dict[measurement_id].name}})
+        {%- endif -%}
+
+        {{' (CH' + (device_measurements_dict[measurement_id].channel)|string}}
+
+        {%- for channel_num in dict_outputs[this_output.output_type]['channels_dict'] -%}
+          {%- if device_measurements_dict[measurement_id].channel in dict_outputs[this_output.output_type]['channels_dict'][channel_num]['measurements'] -%}
+            {{', ' + custom_options_values_output_channels[output_id][channel_num]['name']}}
           {%- endif -%}
+        {%- endfor -%}
 
-          {{' (CH' + (device_measurements_dict[measurement_id].channel)|string}}
+        {%- if dict_measure_measurements[measurement_id] in dict_measurements and
+               dict_measurements[dict_measure_measurements[measurement_id]]['name'] -%}
+          {{', ' + dict_measurements[dict_measure_measurements[measurement_id]]['name']}}
+        {%- endif -%}
 
-          {%- if output_id in custom_options_values_output_channels and 
-                 device_measurements_dict[measurement_id].channel in custom_options_values_output_channels[output_id] and
-                 'name' in custom_options_values_output_channels[output_id][device_measurements_dict[measurement_id].channel] -%}
-            {{', ' + custom_options_values_output_channels[output_id][device_measurements_dict[measurement_id].channel]['name']}}
-          {%- endif -%}
-
-          {%- if dict_measure_measurements[measurement_id] in dict_measurements and
-                 dict_measurements[dict_measure_measurements[measurement_id]]['name'] -%}
-            {{', ' + dict_measurements[dict_measure_measurements[measurement_id]]['name']}}
-          {%- endif -%}
-
-          {%- if dict_measure_units[measurement_id] in dict_units and
-                 dict_units[dict_measure_units[measurement_id]]['unit'] -%}
-            {{', ' + dict_units[dict_measure_units[measurement_id]]['unit']}}
-          {%- endif -%}
+        {%- if dict_measure_units[measurement_id] in dict_units and
+               dict_units[dict_measure_units[measurement_id]]['unit'] -%}
+          {{', ' + dict_units[dict_measure_units[measurement_id]]['unit']}}
+        {%- endif -%}
 
           )",
         type: 'column',
@@ -1018,95 +1017,92 @@ WIDGET_INFORMATION = {
         },
         tooltip: {
           valueSuffix: '
-          {%- if device_measurements_dict[measurement_id].conversion_id -%}
-            {{' ' + dict_units[table_conversion.query.filter(table_conversion.unique_id == device_measurements_dict[measurement_id].conversion_id).first().convert_unit_to]['unit']}}
-          {%- elif device_measurements_dict[measurement_id].rescaled_unit -%}
-            {{' ' + dict_units[device_measurements_dict[measurement_id].rescaled_unit]['unit']}}
-          {%- else -%}
-            {{' ' + dict_units[device_measurements_dict[measurement_id].unit]['unit']}}
-          {%- endif -%}
+        {%- if device_measurements_dict[measurement_id].conversion_id -%}
+          {{' ' + dict_units[table_conversion.query.filter(table_conversion.unique_id == device_measurements_dict[measurement_id].conversion_id).first().convert_unit_to]['unit']}}
+        {%- elif device_measurements_dict[measurement_id].rescaled_unit -%}
+          {{' ' + dict_units[device_measurements_dict[measurement_id].rescaled_unit]['unit']}}
+        {%- else -%}
+          {{' ' + dict_units[device_measurements_dict[measurement_id].unit]['unit']}}
+        {%- endif -%}
           ',
           valueDecimals: 3
         },
         yAxis: '
-          {%- if measurement_id in dict_measure_units -%}
-            {{dict_measure_units[measurement_id]}}
-          {%- endif -%}
+        {%- if measurement_id in dict_measure_units -%}
+          {{dict_measure_units[measurement_id]}}
+        {%- endif -%}
             ',
         data: []
       },
 
-        {%- endif -%}
-      {%- endfor -%}
+      {%- endif -%}
     {%- endif -%}
   {%- endfor -%}
 
   {%- for input_and_measurement_ids in graph_input_ids -%}
     {%- set input_id = input_and_measurement_ids.split(',')[0] -%}
-    {%- set all_input = table_input.query.filter(table_input.unique_id == input_id).all() -%}
-    {%- if all_input -%}
-      {%- for each_input in all_input -%}
-        {%- set measurement_id = input_and_measurement_ids.split(',')[1] -%}
+    {%- set this_input = table_input.query.filter(table_input.unique_id == input_id).first() -%}
+    {%- if this_input -%}
+      {%- set measurement_id = input_and_measurement_ids.split(',')[1] -%}
 
-        {% set disable_data_grouping = [] -%}
-        {% for each_series in widget_variables['colors_graph'] if each_series['measure_id'] == measurement_id and each_series['disable_data_grouping'] %}
-          {%- do disable_data_grouping.append(1) %}
-        {% endfor %}
+      {% set disable_data_grouping = [] -%}
+      {% for each_series in widget_variables['colors_graph'] if each_series['measure_id'] == measurement_id and each_series['disable_data_grouping'] %}
+        {%- do disable_data_grouping.append(1) %}
+      {% endfor %}
 
-        {%- if measurement_id in device_measurements_dict -%}
+      {%- if measurement_id in device_measurements_dict -%}
       {
-        name: "{{each_input.name}}
+        name: "{{this_input.name}}
 
-          {%- if device_measurements_dict[measurement_id].name -%}
-            {{' (' + device_measurements_dict[measurement_id].name}})
-          {%- endif -%}
+        {%- if device_measurements_dict[measurement_id].name -%}
+          {{' (' + device_measurements_dict[measurement_id].name}})
+        {%- endif -%}
 
-          {{' (CH' + (device_measurements_dict[measurement_id].channel)|string}}
+        {{' (CH' + (device_measurements_dict[measurement_id].channel)|string}}
 
-          {%- if dict_measure_measurements[measurement_id] in dict_measurements and
-                 dict_measurements[dict_measure_measurements[measurement_id]]['name'] -%}
-            {{', ' + dict_measurements[dict_measure_measurements[measurement_id]]['name']}}
-          {%- endif -%}
+        {%- if dict_measure_measurements[measurement_id] in dict_measurements and
+               dict_measurements[dict_measure_measurements[measurement_id]]['name'] -%}
+          {{', ' + dict_measurements[dict_measure_measurements[measurement_id]]['name']}}
+        {%- endif -%}
 
-          {%- if dict_measure_units[measurement_id] in dict_units and
-                 dict_units[dict_measure_units[measurement_id]]['unit'] -%}
-            {{', ' + dict_units[dict_measure_units[measurement_id]]['unit']}}
-          {%- endif -%}
+        {%- if dict_measure_units[measurement_id] in dict_units and
+               dict_units[dict_measure_units[measurement_id]]['unit'] -%}
+          {{', ' + dict_units[dict_measure_units[measurement_id]]['unit']}}
+        {%- endif -%}
 
           )",
 
-        {% if dict_measure_measurements[measurement_id] in dict_measurements and
-              dict_measurements[dict_measure_measurements[measurement_id]]['meas'] == 'edge' %}
+      {% if dict_measure_measurements[measurement_id] in dict_measurements and
+            dict_measurements[dict_measure_measurements[measurement_id]]['meas'] == 'edge' %}
         type: 'column',
-        {% else -%}
+      {% else -%}
         type: 'line',
-        {%- endif -%}
+      {%- endif -%}
         dataGrouping: {
           enabled: {% if disable_data_grouping %}false{% else %}true{% endif %},
           groupPixelWidth: 2
         },
         tooltip: {
           valueSuffix: '
-          {%- if device_measurements_dict[measurement_id].conversion_id -%}
-            {{' ' + dict_units[table_conversion.query.filter(table_conversion.unique_id == device_measurements_dict[measurement_id].conversion_id).first().convert_unit_to]['unit']}}
-          {%- elif device_measurements_dict[measurement_id].rescaled_unit -%}
-            {{' ' + dict_units[device_measurements_dict[measurement_id].rescaled_unit]['unit']}}
-          {%- else -%}
-            {{' ' + dict_units[device_measurements_dict[measurement_id].unit]['unit']}}
-          {%- endif -%}
+        {%- if device_measurements_dict[measurement_id].conversion_id -%}
+          {{' ' + dict_units[table_conversion.query.filter(table_conversion.unique_id == device_measurements_dict[measurement_id].conversion_id).first().convert_unit_to]['unit']}}
+        {%- elif device_measurements_dict[measurement_id].rescaled_unit -%}
+          {{' ' + dict_units[device_measurements_dict[measurement_id].rescaled_unit]['unit']}}
+        {%- else -%}
+          {{' ' + dict_units[device_measurements_dict[measurement_id].unit]['unit']}}
+        {%- endif -%}
           ',
           valueDecimals: 3
         },
         yAxis: '
-          {%- if measurement_id in dict_measure_units -%}
-            {{dict_measure_units[measurement_id]}}
-          {%- endif -%}
+        {%- if measurement_id in dict_measure_units -%}
+          {{dict_measure_units[measurement_id]}}
+        {%- endif -%}
             ',
         data: []
       },
 
-        {%- endif -%}
-      {%- endfor -%}
+      {%- endif -%}
     {%- endif -%}
   {%- endfor -%}
 

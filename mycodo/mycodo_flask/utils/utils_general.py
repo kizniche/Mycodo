@@ -723,12 +723,14 @@ def choices_measurements_units(measurements, units):
     return choices
 
 
-def choices_outputs(output, dict_units, dict_measurements):
+def choices_outputs(output, table_output_channel, dict_outputs, dict_units, dict_measurements):
     """populate form multi-select choices from Output entries."""
     choices = []
     for each_output in output:
+        output_channels = table_output_channel.query.filter(
+            table_output_channel.output_id == each_output.unique_id).all()
         choices = form_output_choices(
-            choices, each_output, dict_units, dict_measurements)
+            choices, each_output, output_channels, dict_outputs, dict_units, dict_measurements)
     return choices
 
 
@@ -763,14 +765,14 @@ def choices_output_devices(output):
     return choices
 
 
-def choices_outputs_pwm(output, dict_units, dict_measurements, dict_outputs):
+def choices_outputs_pwm(output, output_channels, dict_outputs, dict_units, dict_measurements):
     """populate form multi-select choices from Output entries."""
     choices = []
     for each_output in output:
         if ('output_types' in dict_outputs[each_output.output_type] and
                 'pwm' in dict_outputs[each_output.output_type]['output_types']):
             choices = form_output_choices(
-                choices, each_output, dict_units, dict_measurements)
+                choices, each_output, output_channels, dict_outputs, dict_units, dict_measurements)
     return choices
 
 
@@ -939,70 +941,13 @@ def form_function_choices(choices, each_function, dict_units, dict_measurements)
     return choices
 
 
-def form_output_choices(choices, each_output, dict_units, dict_measurements):
-    device_measurements = DeviceMeasurements.query.filter(
-        DeviceMeasurements.device_id == each_output.unique_id).all()
-
-    for each_measure in device_measurements:
-        conversion = Conversion.query.filter(
-            Conversion.unique_id == each_measure.conversion_id).first()
-        channel, unit, measurement = return_measurement_info(
-            each_measure, conversion)
-
-        if unit:
-            value = '{output_id},{meas_id}'.format(
-                output_id=each_output.unique_id,
-                meas_id=each_measure.unique_id)
-
-            display_unit = find_name_unit(
-                dict_units, unit)
-            display_measurement = find_name_measurement(
-                dict_measurements, measurement)
-
-            if isinstance(channel, int):
-                channel_num = ', M{cnum}'.format(cnum=channel)
-            else:
-                channel_num = ''
-
-            channel_name = ''
-
-            output_channel = OutputChannel.query.filter(and_(
-                OutputChannel.output_id == each_output.unique_id,
-                OutputChannel.channel == channel)).first()
-            if output_channel:
-                try:
-                    custom_channel_options = json.loads(output_channel.custom_options)
-                    if "name" in custom_channel_options:
-                        channel_name += ', {name}'.format(name=custom_channel_options["name"])
-                except:
-                    pass
-
-            if each_measure.name:
-                channel_name += ', {name}'.format(name=each_measure.name)
-
-            if display_measurement and display_unit:
-                measurement_unit = ', {meas} ({unit})'.format(
-                    meas=display_measurement, unit=display_unit)
-            elif display_measurement:
-                measurement_unit = ', {meas}'.format(
-                    meas=display_measurement)
-            else:
-                measurement_unit = ', {unit}'.format(unit=display_unit)
-
-            display = '[Output {id:02d}] {i_name}{chan_num}{chan_name}{meas}'.format(
-                id=each_output.id,
-                i_name=each_output.name,
-                chan_num=channel_num,
-                chan_name=channel_name,
-                meas=measurement_unit)
-
-            choices.append({'value': value, 'item': display})
-
-    return choices
+def form_output_choices(choices, each_output, output_channels, dict_outputs, dict_units, dict_measurements):
+    return form_output_channel_measurement_choices(
+        choices, each_output, output_channels, dict_outputs, dict_units, dict_measurements, include_channel_id_in_value=False)
 
 
 def form_output_channel_measurement_choices(
-        choices, each_output, output_channels, dict_outputs, dict_units, dict_measurements):
+        choices, each_output, output_channels, dict_outputs, dict_units, dict_measurements, include_channel_id_in_value=True):
     from sqlalchemy import and_
 
     for each_channel in output_channels:
@@ -1018,23 +963,23 @@ def form_output_channel_measurement_choices(
                 device_measurement, conversion)
 
             if unit:
-                value = '{output_id},{meas_id},{chan_id}'.format(
-                    output_id=each_output.unique_id,
-                    meas_id=device_measurement.unique_id,
-                    chan_id=each_channel.unique_id)
+                if include_channel_id_in_value:
+                    value = f'{each_output.unique_id},{device_measurement.unique_id},{each_channel.unique_id}'
+                else:
+                    value = f'{each_output.unique_id},{device_measurement.unique_id}'
 
                 display_unit = find_name_unit(
                     dict_units, unit)
                 display_measurement = find_name_measurement(
                     dict_measurements, measurement)
 
-                if isinstance(channel, int):
-                    channel_num = ' M{cnum}'.format(cnum=channel)
-                else:
-                    channel_num = ''
-
                 if device_measurement.name:
-                    channel_name = ' ({name})'.format(name=device_measurement.name)
+                    meas_name = ' ({name})'.format(name=device_measurement.name)
+                else:
+                    meas_name = ''
+
+                if each_channel.name:
+                    channel_name = ' ({name})'.format(name=each_channel.name)
                 else:
                     channel_name = ''
 
@@ -1047,14 +992,7 @@ def form_output_channel_measurement_choices(
                 else:
                     measurement_unit = ' ({unit})'.format(unit=display_unit)
 
-                display = '[Output {id:02d} CH{ch} M{mid}] {i_name}{chan_num}{chan_name}{meas}'.format(
-                    id=each_output.id,
-                    ch=each_channel.channel,
-                    mid=device_measurement.channel,
-                    i_name=each_output.name,
-                    chan_num=channel_num,
-                    chan_name=channel_name,
-                    meas=measurement_unit)
+                display = f'[Output {each_output.id:02d} CH{each_channel.channel} M{device_measurement.channel}] {each_output.name}{channel_name}{meas_name}{measurement_unit}'
 
                 types = []
                 if 'types' in dict_outputs[each_output.output_type]['channels_dict'][each_channel.channel]:

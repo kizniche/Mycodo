@@ -462,12 +462,14 @@ def page_export():
     dict_measurements = add_custom_measurements(Measurement.query.all())
     dict_units = add_custom_units(Unit.query.all())
 
+    dict_outputs = parse_output_information()
+
     choices_function = utils_general.choices_functions(
         function, dict_units, dict_measurements)
     choices_input = utils_general.choices_inputs(
         input_dev, dict_units, dict_measurements)
     choices_output = utils_general.choices_outputs(
-        output, dict_units, dict_measurements)
+        output, OutputChannel, dict_outputs, dict_units, dict_measurements)
 
     if request.method == 'POST':
         if not utils_general.user_has_permission('edit_controllers'):
@@ -560,12 +562,14 @@ def page_graph_async():
     use_unit = utils_general.use_unit_generate(
         device_measurements, input_dev, output, function)
 
+    dict_outputs = parse_output_information()
+
     choices_function = utils_general.choices_functions(
         function, dict_units, dict_measurements)
     choices_input = utils_general.choices_inputs(
         input_dev, dict_units, dict_measurements)
     choices_output = utils_general.choices_outputs(
-        output, dict_units, dict_measurements)
+        output, OutputChannel, dict_outputs, dict_units, dict_measurements)
     choices_pid = utils_general.choices_pids(
         pid, dict_units, dict_measurements)
     choices_tag = utils_general.choices_tags(tag)

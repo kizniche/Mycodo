@@ -1,6 +1,6 @@
 # coding=utf-8
 #
-# grove_multichannel_relay.py - Output for the Grove Multichannel Relay
+# on_off_grove_multichannel_relay.py - Output for the Grove Multichannel Relay
 #
 from flask_babel import lazy_gettext
 

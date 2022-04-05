@@ -1,6 +1,6 @@
 # coding=utf-8
 #
-# grove_i2c_motor_driver_v1_3.py - Output for Grove I2C Motor Driver (v1.3)
+# pump_grove_motor_driver_v1_3.py - Output for Grove I2C Motor Driver (v1.3)
 #
 import threading
 import time
