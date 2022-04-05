@@ -31,7 +31,6 @@ from mycodo.databases.models import Dashboard
 from mycodo.databases.models import DeviceMeasurements
 from mycodo.databases.models import Input
 from mycodo.databases.models import Output
-from mycodo.databases.models import OutputChannel
 from mycodo.databases.models import PID
 from mycodo.databases.models import Role
 from mycodo.databases.models import Trigger
@@ -765,12 +764,14 @@ def choices_output_devices(output):
     return choices
 
 
-def choices_outputs_pwm(output, output_channels, dict_outputs, dict_units, dict_measurements):
+def choices_outputs_pwm(output, table_output_channel, dict_outputs, dict_units, dict_measurements):
     """populate form multi-select choices from Output entries."""
     choices = []
     for each_output in output:
         if ('output_types' in dict_outputs[each_output.output_type] and
                 'pwm' in dict_outputs[each_output.output_type]['output_types']):
+            output_channels = table_output_channel.query.filter(
+                table_output_channel.output_id == each_output.unique_id).all()
             choices = form_output_choices(
                 choices, each_output, output_channels, dict_outputs, dict_units, dict_measurements)
     return choices
@@ -948,8 +949,6 @@ def form_output_choices(choices, each_output, output_channels, dict_outputs, dic
 
 def form_output_channel_measurement_choices(
         choices, each_output, output_channels, dict_outputs, dict_units, dict_measurements, include_channel_id_in_value=True):
-    from sqlalchemy import and_
-
     for each_channel in output_channels:
         measurement_channels = dict_outputs[each_output.output_type]['channels_dict'][each_channel.channel]['measurements']
         for measurement_channel in measurement_channels:
