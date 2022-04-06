@@ -179,8 +179,9 @@ class OutputModule(AbstractOutput):
                     (self.options_channels['use_enable'][channel] and
                      not self.options_channels['pin_enable'][channel]) or
                     not self.options_channels['duty_cycle'][channel]):
-                self.logger.error("Cannot initialize Output channel {} until all options are set. "
-                                  "Check your configuration.".format(channel))
+                self.logger.error(
+                    f"Cannot initialize Output channel {channel} until all options are set. "
+                    "Check your configuration.")
                 self.channel_setup[channel] = False
             else:
                 self.gpio.setmode(self.gpio.BCM)
@@ -197,17 +198,19 @@ class OutputModule(AbstractOutput):
 
     def output_switch(self, state, output_type=None, amount=None, output_channel=None):
         if not self.is_setup():
-            msg = "Error 101: Device not set up. See https://kizniche.github.io/Mycodo/Error-Codes#error-101 for more info."
+            msg = "Error 101: Device not set up. " \
+                  "See https://kizniche.github.io/Mycodo/Error-Codes#error-101 for more info."
+            self.logger.error(msg)
+            return msg
+
+        if not self.is_setup(channel=output_channel):
+            msg = f"Error 101: Output channel {output_channel} not set up, cannot turn it on or off. " \
+                  "See https://kizniche.github.io/Mycodo/Error-Codes#error-101 for more info."
             self.logger.error(msg)
             return msg
 
         if not self.running:
             msg = "Output is not running, cannot turn it on or off."
-            self.logger.error(msg)
-            return msg
-
-        if not self.channel_setup[output_channel]:
-            msg = "Error 101: Output channel {} not set up, cannot turn it on or off. See https://kizniche.github.io/Mycodo/Error-Codes#error-101 for more info.".format(output_channel)
             self.logger.error(msg)
             return msg
 
@@ -217,25 +220,24 @@ class OutputModule(AbstractOutput):
 
         if state == 'on' and output_type == 'vol' and amount:
             if self.currently_dispensing:
-                self.logger.debug("DC motor instructed to dispense volume while it's already dispensing a volume. "
-                                  "Overriding current dispense with new instruction.")
+                self.logger.debug(
+                    "Pump instructed to dispense volume while it's already dispensing a volume. "
+                    "Overriding current dispense with new instruction.")
 
-            total_dispense_seconds = amount / self.options_channels['flow_rate_ml_min'][0] * 60
-            msg = "Turning pump on for {sec:.1f} seconds to dispense {ml:.1f} ml (at {rate:.1f} ml/min).".format(
-                sec=total_dispense_seconds,
-                ml=amount,
-                rate=self.options_channels['flow_rate_ml_min'][0])
+            total_dispense_seconds = amount / self.options_channels['flow_rate_ml_min'][output_channel] * 60
+            msg = f"Turning pump on for {total_dispense_seconds:.1f} seconds " \
+                  f"to dispense {amount:.1f} ml " \
+                  f"(at {self.options_channels['flow_rate_ml_min'][output_channel]:.1f} ml/min)."
             self.logger.debug(msg)
 
             write_db = threading.Thread(
                 target=self.dispense_volume,
                 args=(output_channel, amount, total_dispense_seconds,))
             write_db.start()
-            return
-        if state == 'on' and output_type == 'sec':
+        elif state == 'on' and output_type == 'sec':
             if self.currently_dispensing:
                 self.logger.debug(
-                    "DC motor instructed to turn on while it's already dispensing a volume. "
+                    "Pump instructed to turn on while it's already dispensing a volume. "
                     "Overriding current dispense with new instruction.")
             self.run(output_channel)
         elif state == 'off':
@@ -285,7 +287,7 @@ class OutputModule(AbstractOutput):
             return self.output_states[output_channel]
 
     def is_setup(self, channel=None):
-        if channel:
+        if channel is not None:
             return self.channel_setup[channel]
         return self.output_setup
 

@@ -901,9 +901,8 @@ def output_mod(output_id, channel, state, output_type, amount):
     daemon = DaemonControl()
     if (state in ['on', 'off'] and str_is_float(amount) and
             (
-                (output_type in ['sec', 'pwm'] and float(amount) >= 0) or
-                output_type == 'vol' or
-                output_type == 'value'
+                (output_type == 'pwm' and float(amount) >= 0) or
+                output_type in ['sec', 'vol', 'value']
             )):
         out_status = daemon.output_on_off(
             output_id,

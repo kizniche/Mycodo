@@ -24,9 +24,11 @@
 
     <div class="row small-gutters" style="padding: 0.5em">
 
+      {% if 'output_manufacturer' in dict_outputs[each_output.output_type] %}
       <div class="col-12">
-        {{_("Output")}}: {{dict_outputs[each_output.output_type]['output_name']}}
+        {{_("Manufacturer")}}: {{dict_outputs[each_output.output_type]['output_manufacturer']}}
       </div>
+      {% endif %}
 
   {% if 'dependencies_module' in dict_outputs[each_output.output_type] and dict_outputs[each_output.output_type]['dependencies_module'] %}
       <div class="col-12">

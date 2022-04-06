@@ -45,12 +45,6 @@
     </div>
     {% endif %}
 
-    {% if 'input_name' in dict_inputs[each_input.device] %}
-    <div class="col-12">
-      {{_("Name")}}: {{dict_inputs[each_input.device]['input_name']}}
-    </div>
-    {% endif %}
-
     {% if 'measurements_name' in dict_inputs[each_input.device] %}
     <div class="col-12">
       {{_("Measurements")}}: {{dict_inputs[each_input.device]['measurements_name']}}

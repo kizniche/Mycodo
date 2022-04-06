@@ -122,14 +122,16 @@ def method_create(form_create_method):
         new_method = Method()
         new_method.name = form_create_method.name.data
         new_method.method_type = form_create_method.method_type.data
-        db.session.add(new_method)
-        db.session.commit()
 
-        # Add new method line id to method display order
-        method_order = DisplayOrder.query.first()
-        display_order = csv_to_list_of_str(method_order.method)
-        method_order.method = add_display_order(display_order, new_method.unique_id)
-        db.session.commit()
+        if not error:
+            db.session.add(new_method)
+            db.session.commit()
+
+            # Add new method line id to method display order
+            method_order = DisplayOrder.query.first()
+            display_order = csv_to_list_of_str(method_order.method)
+            method_order.method = add_display_order(display_order, new_method.unique_id)
+            db.session.commit()
 
         # Add new method data line id to method_data display order
         if new_method.method_type in ['DailyBezier', 'DailySine']:
@@ -156,15 +158,16 @@ def method_create(form_create_method):
                 new_method_data.x3 = 0.0
                 new_method_data.y3 = 20.0
 
-            db.session.add(new_method_data)
-            db.session.commit()
+            if not error:
+                db.session.add(new_method_data)
+                db.session.commit()
 
-            display_order = csv_to_list_of_str(new_method.method_order)
-            method = Method.query.filter(
-                Method.unique_id == new_method.unique_id).first()
-            method.method_order = add_display_order(
-                display_order, new_method_data.unique_id)
-            db.session.commit()
+                display_order = csv_to_list_of_str(new_method.method_order)
+                method = Method.query.filter(
+                    Method.unique_id == new_method.unique_id).first()
+                method.method_order = add_display_order(
+                    display_order, new_method_data.unique_id)
+                db.session.commit()
     except Exception as except_msg:
         error.append(except_msg)
 

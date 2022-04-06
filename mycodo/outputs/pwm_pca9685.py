@@ -27,7 +27,7 @@ def constraints_pass_hertz(mod_dev, value):
     """
     errors = []
     all_passed = True
-    if 1600 < value < 40:
+    if value < 40 or value > 1600:
         all_passed = False
         errors.append("Must be a value between 40 and 1600")
     return all_passed, errors, mod_dev
@@ -210,14 +210,6 @@ class OutputModule(AbstractOutput):
         import Adafruit_PCA9685
 
         self.setup_output_variables(OUTPUT_INFORMATION)
-
-        error = []
-        if self.pwm_hertz < 40:
-            error.append("PWM Hertz must be a value between 40 and 1600")
-        if error:
-            for each_error in error:
-                self.logger.error(each_error)
-            return
 
         try:
             self.pwm_output = Adafruit_PCA9685.PCA9685(

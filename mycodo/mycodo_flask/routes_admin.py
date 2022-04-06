@@ -196,8 +196,8 @@ def install_dependencies(dependencies):
             time=now, deps=", ".join(dependency_list)))
 
     for each_dep in dependencies:
-        if each_dep[1] == 'bash-commands':
-            for each_command in each_dep[2]:
+        if each_dep[2] == 'bash-commands':
+            for each_command in each_dep[1]:
                 command = "{cmd} | ts '[%Y-%m-%d %H:%M:%S]' >> {log} 2>&1".format(
                     cmd=each_command,
                     log=DEPENDENCY_LOG_FILE)

@@ -1562,8 +1562,9 @@ def return_dependencies(device_type):
                                 if entry not in unmet_deps:
                                     unmet_deps.append((
                                         ", ".join(files_not_found),
+                                        install_id,
                                         install_type,
-                                        install_id
+                                        ", ".join(files_not_found)
                                     ))
                                 else:
                                     met_deps = True

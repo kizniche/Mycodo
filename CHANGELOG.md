@@ -1,3 +1,11 @@
+## 8.13.6 (2022-04-06)
+
+### Bugfixes
+
+ - Fix bash commands dependency installations ([#1170](https://github.com/kizniche/mycodo/issues/1170))
+ - Don't allow method creation until dependencies fulfilled
+
+
 ## 8.13.5 (2022-04-04)
 
 ### Bugfixes
@@ -67,6 +75,13 @@
 Following the upgrade, you will need to reboot to complete the upgrade.
 
 LCD and Math Controllers have been completely removed from Mycodo and replaced with Functions. If you were previously using an LCD or Math controller, you will need to add the corresponding Function and change any other parts of the system that referenced those devices.
+
+If you have any custom Output modules, you will need to rename setup_output(self) to initialize(self) within the modules. If you don't use setup_output(self) and initialize(self) doesn't exist, you will need to create it in the module at a minimum with just pass:
+
+```python
+def initialize(self):
+    pass
+```
 
 ### Bugfixes
 

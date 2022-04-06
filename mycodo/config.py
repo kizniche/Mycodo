@@ -13,7 +13,7 @@ from flask_babel import lazy_gettext as lg
 sys.path.append(os.path.abspath(os.path.dirname(__file__)))
 from config_translations import TRANSLATIONS as T
 
-MYCODO_VERSION = '8.13.5'
+MYCODO_VERSION = '8.13.6'
 ALEMBIC_VERSION = 'b354722c9b8b'
 
 #  FORCE_UPGRADE_MASTER
@@ -234,9 +234,7 @@ CAMERA_INFO = {
 METHOD_DEP_BASE = [
     ('apt', 'unzip', 'unzip'),
     ('bash-commands',
-     [
-         '/var/mycodo-root/mycodo/mycodo_flask/static/js/user_js/highcharts-9.1.2.js'
-     ],
+     ['/var/mycodo-root/mycodo/mycodo_flask/static/js/user_js/highcharts-9.1.2.js'],
      [
         'wget --no-clobber https://code.highcharts.com/zips/Highcharts-9.1.2.zip',
         'unzip Highcharts-9.1.2.zip -d Highcharts-9.1.2',

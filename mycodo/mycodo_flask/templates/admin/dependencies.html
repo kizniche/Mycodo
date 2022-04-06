@@ -68,7 +68,13 @@
     <p>Unmet dependencies:</p>
     <ul>
     {% for each_dep in device_unmet_dependencies %}
-      <li>{% if each_dep[2] == 'internal' %}{{each_dep[3]}}{% else %}{{each_dep[0]}}{% endif %}</li>
+      <li>
+        {%- if each_dep[2] == 'internal' -%}
+          {{each_dep[3]}}
+        {%- else -%}
+          {{each_dep[0]}}
+        {%- endif -%}
+      </li>
     {% endfor %}
     </ul>
 
@@ -116,7 +122,13 @@
       {% for each_dep, devices in unmet_list.items()|sort(case_sensitive=False) %}
         <tr>
           <th scope="row">{{loop.index}}</th>
-          <td>{% if each_dep[2] == 'internal' %}{{each_dep[3]}}{% else %}{{each_dep[0]}}{% endif %}</td>
+          <td>
+            {%- if each_dep[2] == 'internal'-%}
+              {{each_dep[3]}}
+            {%- else -%}
+              {{each_dep[0]}}
+            {%- endif -%}
+          </td>
           <td>
         {% for each_device in devices %}<a href="{{each_device}}">{{each_device}}</a>{% if not loop.last %}, {% endif %}{% endfor %}
           </td>
