@@ -96,7 +96,9 @@ def input_add(form_add):
             logger.error(
                 "RPi.GPIO and Raspberry Pi required for this action")
 
-        if 'input_name' in dict_inputs[input_name]:
+        if 'input_name_short' in dict_inputs[input_name]:
+            new_input.name = dict_inputs[input_name]['input_name_short']
+        elif 'input_name' in dict_inputs[input_name]:
             new_input.name = dict_inputs[input_name]['input_name']
         else:
             new_input.name = 'Name'

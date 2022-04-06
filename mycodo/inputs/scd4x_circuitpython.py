@@ -34,7 +34,8 @@ measurements_dict = {
 INPUT_INFORMATION = {
     'input_name_unique': 'SCD4x_CIRCUITPYTHON',
     'input_manufacturer': 'Sensirion',
-    'input_name': 'SCD-4x (SCD-40, SCD-41)',
+    'input_name': 'SCD-4x (40, 41)',
+    'input_name_short': 'SCD-4x',
     'input_library': 'Adafruit-CircuitPython-SCD4x',
     'measurements_name': 'CO2/Temperature/Humidity',
     'measurements_dict': measurements_dict,

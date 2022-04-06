@@ -18,6 +18,7 @@ INPUT_INFORMATION = {
     'input_name_unique': 'SERVER_PING',
     'input_manufacturer': 'Mycodo',
     'input_name': 'Server Ping',
+    'input_name_short': 'Ping',
     'input_library': 'ping',
     'measurements_name': 'Boolean',
     'measurements_dict': measurements_dict,

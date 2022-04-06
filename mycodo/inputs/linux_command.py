@@ -22,6 +22,7 @@ INPUT_INFORMATION = {
     'input_name_unique': 'LinuxCommand',
     'input_manufacturer': 'Linux',
     'input_name': 'Bash Command',
+    'input_name_short': 'Bash',
     'measurements_name': 'Return Value',
     'measurements_dict': measurements_dict,
 

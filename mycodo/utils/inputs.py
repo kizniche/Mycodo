@@ -217,6 +217,7 @@ def parse_input_information(exclude_custom=False):
 
             dict_inputs = dict_has_value(dict_inputs, input_custom, 'input_manufacturer')
             dict_inputs = dict_has_value(dict_inputs, input_custom, 'input_name')
+            dict_inputs = dict_has_value(dict_inputs, input_custom, 'input_name_short')
             dict_inputs = dict_has_value(dict_inputs, input_custom, 'input_library')
             dict_inputs = dict_has_value(dict_inputs, input_custom, 'measurements_name')
             dict_inputs = dict_has_value(dict_inputs, input_custom, 'measurements_dict')

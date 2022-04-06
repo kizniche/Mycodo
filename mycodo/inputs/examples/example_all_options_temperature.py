@@ -56,7 +56,8 @@ INPUT_INFORMATION = {
 
     # Descriptive information
     'input_manufacturer': 'Company YY',
-    'input_name': 'Temp Sen01',
+    'input_name': 'Example Temperature Sensor 01',
+    'input_name_short': 'Ex. Temp. Sensor 01',  # A shorter name for display purposes
     'input_library': 'Library Name',
 
     # Measurement information

@@ -47,6 +47,7 @@ INPUT_INFORMATION = {
     'input_name_unique': 'tasmota_outlet_energy_monitor',
     'input_manufacturer': 'Tasmota',
     'input_name': 'Tasmota Outlet Energy Monitor (HTTP)',
+    'input_name_short': 'Tasmota Energy Monitor',
     'input_library': 'requests',
     'measurements_name': 'Total Energy, Amps, Watts',
     'measurements_dict': measurements_dict,

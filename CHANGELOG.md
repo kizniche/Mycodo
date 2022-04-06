@@ -1,3 +1,14 @@
+## 8.13.8 (Unreleased)
+
+### Features
+
+ - Add Input: Signal (Revolutions) (Alternative pigpio method)
+
+### Miscellaneous
+
+ - Add short name for input display
+
+
 ## 8.13.7 (2022-04-06)
 
 ### Bugfixes

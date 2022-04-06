@@ -72,6 +72,7 @@ INPUT_INFORMATION = {
     'input_name_unique': 'SHT31_SMART_GADGET',
     'input_manufacturer': 'Sensorion',
     'input_name': 'SHT31 Smart Gadget',
+    'input_name_short': 'SHT31 SG',
     'input_library': 'bluepy',
     'measurements_name': 'Humidity/Temperature',
     'measurements_dict': measurements_dict,

@@ -64,8 +64,7 @@ class ConditionalConditions(FlaskForm):
 
     # GPIO State
     gpio_pin = IntegerField(
-        lazy_gettext('GPIO Pin (BCM)'),
-        widget=NumberInput())
+        lazy_gettext('GPIO Pin (BCM)'), widget=NumberInput())
 
     output_id = StringField(TRANSLATIONS['output']['title'])
     controller_id = StringField(TRANSLATIONS['controller']['title'])

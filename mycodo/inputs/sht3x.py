@@ -38,6 +38,7 @@ INPUT_INFORMATION = {
     'input_name_unique': 'SHT31',
     'input_manufacturer': 'Sensirion',
     'input_name': 'SHT3x (30, 31, 35)',
+    'input_name_short': 'SHT3x',
     'input_library': 'Adafruit_SHT31',
     'measurements_name': 'Humidity/Temperature',
     'measurements_dict': measurements_dict,

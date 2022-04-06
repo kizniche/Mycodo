@@ -52,6 +52,7 @@ INPUT_INFORMATION = {
     'input_name_unique': 'ANALOG_PH_EC',
     'input_manufacturer': 'Texas Instruments',
     'input_name': 'ADS1115: Generic Analog pH/EC',
+    'input_name_short': 'ADS1115 pH/EC',
     'input_library': 'Adafruit_CircuitPython_ADS1x15',
     'measurements_name': 'Ion Concentration/Electrical Conductivity',
     'measurements_dict': measurements_dict,

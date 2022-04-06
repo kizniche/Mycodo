@@ -18,6 +18,7 @@ INPUT_INFORMATION = {
     'input_name_unique': 'MCP342x',
     'input_manufacturer': 'Microchip',
     'input_name': 'MCP342x (x=2,3,4,6,7,8)',
+    'input_name_short': 'MCP342x',
     'input_library': 'MCP342x',
     'measurements_name': 'Voltage (Analog-to-Digital Converter)',
     'measurements_dict': measurements_dict,

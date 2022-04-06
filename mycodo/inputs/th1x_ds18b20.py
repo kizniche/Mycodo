@@ -25,6 +25,7 @@ INPUT_INFORMATION = {
     'input_name_unique': 'TH16_10_DS18B20',
     'input_manufacturer': 'Sonoff',
     'input_name': 'TH16/10 (Tasmota firmware) with DS18B20',
+    'input_name_short': 'TH16/10 + DS18B20',
     'input_library': 'requests',
     'measurements_name': 'Temperature',
     'measurements_dict': measurements_dict,

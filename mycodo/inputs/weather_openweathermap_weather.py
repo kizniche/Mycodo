@@ -42,6 +42,7 @@ INPUT_INFORMATION = {
     'input_name_unique': 'OPENWEATHERMAP_CALL_WEATHER',
     'input_manufacturer': 'Weather',
     'input_name': 'OpenWeatherMap (City, Current)',
+    'input_name_short': 'OpenWeather City',
     'measurements_name': 'Humidity/Temperature/Pressure/Wind',
     'measurements_dict': measurements_dict,
     'url_additional': 'https://openweathermap.org',

@@ -378,7 +378,7 @@ TRANSLATIONS = {
         'phrase': lazy_gettext('The number of pulses per revolution to calculate revolutions per minute (RPM)')},
     'sample_time': {
         'title': lazy_gettext('Sample Time'),
-        'phrase': lazy_gettext('The amount of time (seconds) to sample the input before caluclating the measurement')},
+        'phrase': lazy_gettext('The duration of time to sample')},
     'scale_from_min': {
         'title': lazy_gettext('Unscaled Unit Min'),
         'phrase': lazy_gettext('Unscaled minimum unit')},

@@ -39,6 +39,7 @@ INPUT_INFORMATION = {
     'input_name_unique': 'TH16_10',
     'input_manufacturer': 'Sonoff',
     'input_name': 'TH16/10 (Tasmota firmware) with AM2301',
+    'input_name_short': 'TH16/10 + AM2301',
     'input_library': 'requests',
     'measurements_name': 'Humidity/Temperature',
     'measurements_dict': measurements_dict,

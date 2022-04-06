@@ -18,6 +18,7 @@ INPUT_INFORMATION = {
     'input_name_unique': 'SERVER_PORT_OPEN',
     'input_manufacturer': 'Mycodo',
     'input_name': 'Server Port Open',
+    'input_name_short': 'Open Port',
     'input_library': 'nc',
     'measurements_name': 'Boolean',
     'measurements_dict': measurements_dict,

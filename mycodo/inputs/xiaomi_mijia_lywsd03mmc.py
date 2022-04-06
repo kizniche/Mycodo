@@ -46,6 +46,7 @@ INPUT_INFORMATION = {
     'input_name_unique': 'MIJIA_LYWSD03MMC',
     'input_manufacturer': 'Xiaomi',
     'input_name': 'Mijia LYWSD03MMC (ATC and non-ATC modes)',
+    'input_name_short': 'Mijia LYWSD03MMC',
     'input_library': 'bluepy/bluez',
     'measurements_name': 'Battery/Humidity/Temperature',
     'measurements_dict': measurements_dict,

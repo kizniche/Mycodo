@@ -20,6 +20,7 @@ INPUT_INFORMATION = {
     'input_name_unique': 'ADAFRUIT_I2C_SOIL',
     'input_manufacturer': 'Adafruit',
     'input_name': 'I2C Capacitive Moisture Sensor',
+    'input_name_short': 'Capacitive Moisture',
     'input_library': 'adafruit_seesaw',
     'measurements_name': 'Moisture/Temperature',
     'measurements_dict': measurements_dict,

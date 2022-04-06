@@ -25,6 +25,7 @@ INPUT_INFORMATION = {
     'input_name_unique': 'ADXL34x',
     'input_manufacturer': 'Analog Devices',
     'input_name': 'ADXL34x (343, 344, 345, 346)',
+    'input_name_short': 'ADXL34x',
     'input_library': 'Adafruit_CircuitPython',
     'measurements_name': 'Acceleration',
     'measurements_dict': measurements_dict,

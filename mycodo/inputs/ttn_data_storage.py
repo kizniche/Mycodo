@@ -48,7 +48,8 @@ channels_dict = {
 INPUT_INFORMATION = {
     'input_name_unique': 'TTN_DATA_STORAGE',
     'input_manufacturer': 'The Things Network',
-    'input_name': 'TTN Integration: Data Storage (TTN v2)',
+    'input_name': 'The Things Network: Data Storage (TTN v2)',
+    'input_name_short': 'TTN (v2) Data Storage',
     'input_library': 'requests',
     'measurements_name': 'Variable measurements',
     'measurements_dict': measurements_dict,

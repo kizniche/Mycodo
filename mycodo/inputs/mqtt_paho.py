@@ -26,6 +26,7 @@ INPUT_INFORMATION = {
     'input_name_unique': 'MQTT_PAHO',
     'input_manufacturer': 'MQTT',
     'input_name': 'MQTT Subscribe (Value payload)',
+    'input_name_short': 'MQTT Value',
     'input_library': 'paho-mqtt',
     'measurements_name': 'Variable measurements',
     'measurements_dict': measurements_dict,

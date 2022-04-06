@@ -23,6 +23,7 @@ INPUT_INFORMATION = {
     'input_name_unique': 'HALL_FLOW',
     'input_manufacturer': 'Generic',
     'input_name': 'Hall Flow Meter',
+    'input_name_short': 'Hall Flow',
     'input_library': 'pigpio',
     'measurements_name': 'Flow Rate, Total Volume',
     'measurements_dict': measurements_dict,

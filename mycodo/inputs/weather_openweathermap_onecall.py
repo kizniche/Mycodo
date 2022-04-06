@@ -57,6 +57,7 @@ INPUT_INFORMATION = {
     'input_name_unique': 'OPENWEATHERMAP_CALL_ONECALL',
     'input_manufacturer': 'Weather',
     'input_name': 'OpenWeatherMap (Lat/Lon, Current/Future)',
+    'input_name_short': 'OpenWeather Lat/Lon',
     'measurements_name': 'Humidity/Temperature/Pressure/Wind',
     'measurements_dict': measurements_dict,
     'url_additional': 'https://openweathermap.org',

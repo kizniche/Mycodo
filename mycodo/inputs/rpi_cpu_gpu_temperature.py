@@ -25,6 +25,7 @@ INPUT_INFORMATION = {
     'input_name_unique': 'RPi',
     'input_manufacturer': 'Raspberry Pi',
     'input_name': 'CPU/GPU Temperature',
+    'input_name_short': 'CPU/GPU Temp',
     'measurements_name': 'Temperature',
     'measurements_dict': measurements_dict,
     'measurements_use_same_timestamp': True,
