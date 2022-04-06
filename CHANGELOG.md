@@ -1,3 +1,10 @@
+## 8.13.7 (2022-04-06)
+
+### Bugfixes
+
+ - Fix showing graph widgets with Outputs that have no name custom option
+
+
 ## 8.13.6 (2022-04-06)
 
 ### Bugfixes

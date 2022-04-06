@@ -79,7 +79,6 @@ OUTPUT_INFORMATION = {
         }
     ],
 
-
     'custom_channel_options': [
         {
             'id': 'name',

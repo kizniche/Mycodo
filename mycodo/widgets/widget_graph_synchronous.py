@@ -993,11 +993,16 @@ WIDGET_INFORMATION = {
 
         {{' (CH' + (device_measurements_dict[measurement_id].channel)|string}}
 
-        {%- for channel_num in dict_outputs[this_output.output_type]['channels_dict'] -%}
-          {%- if device_measurements_dict[measurement_id].channel in dict_outputs[this_output.output_type]['channels_dict'][channel_num]['measurements'] -%}
-            {{', ' + custom_options_values_output_channels[output_id][channel_num]['name']}}
-          {%- endif -%}
-        {%- endfor -%}
+        {%- if 'channels_dict' in dict_outputs[this_output.output_type] -%}
+          {%- for channel_num in dict_outputs[this_output.output_type]['channels_dict'] -%}
+            {%- if device_measurements_dict[measurement_id].channel in dict_outputs[this_output.output_type]['channels_dict'][channel_num]['measurements'] and
+                   output_id in custom_options_values_output_channels and
+                   channel_num in custom_options_values_output_channels[output_id] and
+                   'name' in custom_options_values_output_channels[output_id][channel_num] -%}
+              {{', ' + custom_options_values_output_channels[output_id][channel_num]['name']}}
+            {%- endif -%}
+          {%- endfor -%}
+        {%- endif -%}
 
         {%- if dict_measure_measurements[measurement_id] in dict_measurements and
                dict_measurements[dict_measure_measurements[measurement_id]]['name'] -%}
