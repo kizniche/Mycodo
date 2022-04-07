@@ -125,8 +125,7 @@ class ActionModule(AbstractFunctionAction):
 
         output_on_off = threading.Thread(
             target=self.control.output_on_off,
-            args=(output_id,
-                  state,),
+            args=(output_id, state,),
             kwargs={'output_type': 'sec',
                     'amount': duration,
                     'output_channel': channel})

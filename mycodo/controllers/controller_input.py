@@ -240,6 +240,7 @@ class InputController(AbstractController, threading.Thread):
                     if ('measurements_use_same_timestamp' in self.dict_inputs[self.device] and
                             not self.dict_inputs[self.device]['measurements_use_same_timestamp']):
                         use_same_timestamp = False
+
                     add_measurements_influxdb(
                         self.unique_id,
                         measurements_dict,
@@ -409,12 +410,19 @@ class InputController(AbstractController, threading.Thread):
                 conversion = self.conversions.filter(
                     Conversion.unique_id == measurement.conversion_id).first()
 
+                # If a timestamp is passed from the module, use it
+                if 'timestamp_utc' in each_measurement:
+                    timestamp = each_measurement['timestamp_utc']
+                else:
+                    timestamp = None
+
                 measurements_record = parse_measurement(
                     conversion,
                     measurement,
                     measurements_record,
                     each_channel,
-                    each_measurement)
+                    each_measurement,
+                    timestamp=timestamp)
         self.logger.debug(
             f"Adding measurements to InfluxDB with ID {self.unique_id}: {measurements_record}")
         return measurements_record

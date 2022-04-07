@@ -1,5 +1,9 @@
 ## 8.13.8 (Unreleased)
 
+### Bugfixes
+
+ - Fix timestamp argument having no affect in value_set()
+
 ### Features
 
  - Add Input: Signal (Revolutions) (Alternative pigpio method)
