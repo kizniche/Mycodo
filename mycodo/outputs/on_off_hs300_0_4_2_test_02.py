@@ -187,14 +187,19 @@ class OutputModule(AbstractOutput):
             if self.output_setup:
                 for channel in range(len(channels_dict)):
                     if self.change_state[channel] is not None:
-                        self.logger.info(f"change_state, channel {channel}: {self.change_state[channel]}")
-                        if self.change_state[channel]:
-                            await self.strip.children[channel].turn_on()
-                        else:
-                            await self.strip.children[channel].turn_off()
-                        self.output_states[channel] = self.change_state[channel]
-                        await self.strip.update()
-                        self.change_state[channel] = None
+                        try:
+                            if self.change_state[channel]:
+                                await self.strip.children[channel].turn_on()
+                            else:
+                                await self.strip.children[channel].turn_off()
+                            self.logger.debug(f"change_state, channel {channel}: {self.change_state[channel]}")
+                            self.output_states[channel] = self.change_state[channel]
+                            await self.strip.update()
+                            self.change_state[channel] = None
+                        except Exception as err:
+                            self.output_setup = False
+                            self.logger.error(
+                                f"thread_kasa() raised an exception when switching an outlet: {err}")
 
                 if self.timer_status_check < now:
                     while self.timer_status_check < now:
@@ -207,8 +212,9 @@ class OutputModule(AbstractOutput):
                             else:
                                 self.output_states[channel] = False
                     except Exception as err:
+                        self.output_setup = False
                         self.logger.error(
-                            f"get_status() raised an exception when taking a reading: {err}")
+                            f"thread_kasa() raised an exception when checking status: {err}")
 
             await asyncio.sleep(0.1)
 
@@ -219,22 +225,27 @@ class OutputModule(AbstractOutput):
         try:
             self.strip = SmartStrip(self.plug_address)
             await self.strip.update()
-            self.logger.debug(f'Strip {self.strip.alias}: {self.strip.hw_info}')
+            self.logger.debug(f'Connected to {self.strip.alias}: {self.strip.hw_info}')
             self.output_setup = True
             self.failed_connect_count = 0
         except Exception as err:
             self.logger.error(f"Output was unable to be setup: {err}")
             self.failed_connect_count += 1
-            if self.failed_connect_count > 4:
+            if self.failed_connect_count > 19:
+                if self.failed_connect_count == 20:
+                    self.logger.error(
+                        "Failed to connect 20 times. Increasing reconnect attempt interval to 300 seconds.")
+                time.sleep(300)
+            elif self.failed_connect_count > 4:
                 if self.failed_connect_count == 5:
                     self.logger.error(
-                        "Failed to connect 5 times. Reducing reconnect attempt interval to 60 seconds.")
+                        "Failed to connect 5 times. Increasing reconnect attempt interval to 60 seconds.")
                 time.sleep(60)
             else:
+                self.logger.error("Failed to connect. Retrying in 5 seconds.")
                 time.sleep(5)
-            return
 
-        if self.first_connect:
+        if self.first_connect and self.output_setup:
             self.first_connect = False
             for channel in channels_dict:
                 if channel not in self.output_states:
