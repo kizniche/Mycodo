@@ -955,6 +955,8 @@ def form_output_channel_measurement_choices(
             device_measurement = DeviceMeasurements.query.filter(
                 and_(DeviceMeasurements.device_id == each_output.unique_id,
                      DeviceMeasurements.channel == measurement_channel)).first()
+            if not device_measurement:
+                continue
 
             conversion = Conversion.query.filter(
                 Conversion.unique_id == device_measurement.conversion_id).first()
@@ -1771,7 +1773,7 @@ def custom_command(controller_type, dict_device, unique_id, form):
                     'wait_for_return' in options[button_id] and
                     options[button_id]['wait_for_return']):
                 use_thread = False
-            status = control.custom_button(
+            status = control.module_function(
                 controller_type, unique_id, button_id, args_dict, use_thread)
             if status:
                 if status[0]:

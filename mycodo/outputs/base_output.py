@@ -169,7 +169,8 @@ class AbstractOutput(AbstractBaseController):
                       output_type=None,
                       amount=0.0,
                       min_off=0.0,
-                      trigger_conditionals=True):
+                      trigger_conditionals=True,
+                      additional_options=None):
         """
         Manipulate an output by passing on/off, a volume, or a PWM duty cycle
         to the output module.
@@ -186,6 +187,8 @@ class AbstractOutput(AbstractBaseController):
         :type min_off: float
         :param trigger_conditionals: Whether to allow trigger conditionals to act or not
         :type trigger_conditionals: bool
+        :param additional_options: dict
+        :type additional_options: Additional options passed to the output controller
         """
         msg = ''
 

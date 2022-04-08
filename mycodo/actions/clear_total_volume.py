@@ -75,7 +75,7 @@ class ActionModule(AbstractFunctionAction):
 
         message += f" Clear total volume of Input {controller_id} ({this_input.name})."
         clear_volume = threading.Thread(
-            target=self.control.custom_button,
+            target=self.control.module_function,
             args=("Input", this_input.unique_id, "clear_total_volume", {},))
         clear_volume.start()
 

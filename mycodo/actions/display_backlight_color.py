@@ -100,7 +100,7 @@ class ActionModule(AbstractFunctionAction):
         message += f" Set display {controller_id} ({display.name}) backlight color to {color}."
 
         start_flashing = threading.Thread(
-            target=self.control.custom_button,
+            target=self.control.module_function,
             args=("Function", controller_id, "display_backlight_color", {"color": color},))
         start_flashing.start()
 

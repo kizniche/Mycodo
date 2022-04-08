@@ -400,7 +400,7 @@ class OutputController(AbstractController, threading.Thread):
         except Exception:
             self.logger.exception("is_setup() exception")
 
-    def custom_button_exec_function(self, button_id, args_dict, unique_id=None, thread=True):
+    def call_module_function(self, button_id, args_dict, unique_id=None, thread=True):
         """Execute function from custom action button press."""
         try:
             run_command = getattr(self.output[unique_id], button_id)

@@ -85,7 +85,7 @@ class ActionModule(AbstractFunctionAction):
         message += f" Display {controller_id} ({display.name}) Flash On."
 
         start_flashing = threading.Thread(
-            target=self.control.custom_button,
+            target=self.control.module_function,
             args=("Function", controller_id, "backlight_flash_on", {},))
         start_flashing.start()
 

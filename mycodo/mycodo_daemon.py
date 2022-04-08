@@ -435,34 +435,34 @@ class DaemonController:
             return f"Exception: {except_msg}"
 
 
-    def custom_button(self, controller_type, unique_id, button_id, args_dict, thread=True):
+    def module_function(self, controller_type, unique_id, button_id, args_dict, thread=True):
         """
-        Force function to be executed from UI
+        Call a module function
 
         :return: success or error message
         :rtype: str
 
-        :param controller_type: Which controller is to be affected. Options: "Input", "Output"
+        :param controller_type: Which controller to call the function. Options: "Input", "Output", "Function".
         :type controller_type: str
-        :param unique_id: Which controller ID is to be affected?
+        :param unique_id: Controller unique_id
         :type unique_id: str
-        :param button_id: ID of button pressed
+        :param button_id: function name
         :type button_id: str
         :param args_dict: dict of arguments to pass to function
         :type args_dict: dict
-        :param thread: execute the function sa a thread or get return value
+        :param thread: execute the function as a thread or wait to get a return value
         :type thread: bool
         """
         try:
             if controller_type == "Input":
-                return self.controller["Input"][unique_id].custom_button_exec_function(
-                    button_id, args_dict, thread=thread)
-            if controller_type == "Function":
-                return self.controller["Function"][unique_id].custom_button_exec_function(
+                return self.controller["Input"][unique_id].call_module_function(
                     button_id, args_dict, thread=thread)
             elif controller_type == "Output":
-                return self.controller["Output"].custom_button_exec_function(
+                return self.controller["Output"].call_module_function(
                     button_id, args_dict, unique_id=unique_id, thread=thread)
+            elif controller_type == "Function":
+                return self.controller["Function"][unique_id].call_module_function(
+                    button_id, args_dict, thread=thread)
             else:
                 msg = f"Unknown controller: {controller_type}"
                 self.logger.error(msg)
@@ -1173,9 +1173,9 @@ class PyroServer(object):
     def get_condition_measurement_dict(self, condition_id):
         return self.mycodo.get_condition_measurement_dict(condition_id)
 
-    def custom_button(self, controller_type, unique_id, button_id, args_dict, thread=True):
+    def module_function(self, controller_type, unique_id, button_id, args_dict, thread=True):
         """execute custom button function."""
-        return self.mycodo.custom_button(
+        return self.mycodo.module_function(
             controller_type, unique_id, button_id, args_dict, thread)
 
     def controller_activate(self, cont_id):

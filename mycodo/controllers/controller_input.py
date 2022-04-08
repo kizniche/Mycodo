@@ -432,7 +432,7 @@ class InputController(AbstractController, threading.Thread):
         self.next_measurement = time.time()
         return 0, "Input instructed to begin acquiring measurements"
 
-    def custom_button_exec_function(self, button_id, args_dict, thread=True):
+    def call_module_function(self, button_id, args_dict, thread=True):
         """Execute function from custom action button press."""
         try:
             run_command = getattr(self.measure_input, button_id)
