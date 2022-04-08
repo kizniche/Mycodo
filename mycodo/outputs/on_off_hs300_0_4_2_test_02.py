@@ -71,7 +71,7 @@ OUTPUT_INFORMATION = {
         {
             'id': 'status_update_period',
             'type': 'integer',
-            'default_value': 60,
+            'default_value': 300,
             'constraints_pass': constraints_pass_positive_value,
             'required': True,
             'name': 'Status Update (seconds)',
@@ -149,7 +149,6 @@ class OutputModule(AbstractOutput):
         self.failed_connect_count = 0
         self.lock_file = {}
         self.lock_timeout = 10
-        self.switch_wait = 0.25
         self.timer_status_check = time.time()
         self.plug_address = None
         self.status_update_period = None
@@ -216,7 +215,7 @@ class OutputModule(AbstractOutput):
                         self.logger.error(
                             f"thread_kasa() raised an exception when checking status: {err}")
 
-            await asyncio.sleep(0.1)
+            time.sleep(0.1)
 
     async def connect(self):
         self.logger.debug("try_connect")
@@ -231,19 +230,23 @@ class OutputModule(AbstractOutput):
         except Exception as err:
             self.logger.error(f"Output was unable to be setup: {err}")
             self.failed_connect_count += 1
+            wait_timer = time.time()
             if self.failed_connect_count > 19:
                 if self.failed_connect_count == 20:
                     self.logger.error(
                         "Failed to connect 20 times. Increasing reconnect attempt interval to 300 seconds.")
-                time.sleep(300)
+                while wait_timer > time.time() - 300 and self.running:
+                    time.sleep(1)
             elif self.failed_connect_count > 4:
                 if self.failed_connect_count == 5:
                     self.logger.error(
                         "Failed to connect 5 times. Increasing reconnect attempt interval to 60 seconds.")
-                time.sleep(60)
+                while wait_timer > time.time() - 60 and self.running:
+                    time.sleep(1)
             else:
                 self.logger.error("Failed to connect. Retrying in 5 seconds.")
-                time.sleep(5)
+                while wait_timer > time.time() - 5 and self.running:
+                    time.sleep(1)
 
         if self.first_connect and self.output_setup:
             self.first_connect = False
