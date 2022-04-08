@@ -157,7 +157,10 @@ INPUT_INFORMATION = {
     'execute_at_modification': execute_at_modification,
 
     'message': 'All channels require a Measurement Unit to be selected and saved in order to store values to the '
-               'database.',
+               'database. Your code is executed from the same Python virtual environment that Mycodo runs from. '
+               'Therefore, you must install Python libraries to this environment if you want them to be available to '
+               'your code. This virtualenv is located at ~/Mycodo/env and if you wanted to install a library, for '
+               'example "my_library" using pip, you would execute "sudo ~/Mycodo/env/bin/pip install my_library".',
 
     'options_enabled': [
         'measurements_select',

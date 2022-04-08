@@ -18,12 +18,12 @@
         <input onclick="return $(this).processRequest(this, 'execute_all_actions');" name="execute_all_actions" value="{{_('Execute All Actions')}}" class="form-control btn btn-primary btn-sm btn-block" type="button"/>
       </div>
       <div class="col-auto my-auto">
-        <h5>{{_('Help')}} <a href="https://kizniche.github.io/Mycodo/Functions/#conditional" target="_blank"><span style="font-size: 16px" class="fas fa-question-circle"></span></a></h5>
+        <h5>{{_('Help')}} <a href="https://kizniche.github.io/Mycodo/Functions/#conditional-controller" target="_blank"><span style="font-size: 16px" class="fas fa-question-circle"></span></a></h5>
       </div>
     </div>
 
     <div class="col-12" style="padding-top: 0.3em">
-      Conditional Controllers allow the execution of Python 3 code as well as the use of Conditions and Actions that interact with Mycodo. Conditions typically acquire data from Mycodo, such as Input measurements, and Actions typically affect Mycodo, such as actuating an Output or pausing a PID controller. Each Condition and Action you add will have its own description and example code to demonstrate how to use it in your Conditional Statement code. Notes: 1) Timeout must be set longer than it takes your Conditional Statement to execute (if Timeout is set too low, only part of your Conditional Statement may execute), 2) Period must be set longer than the time it takes for your Conditional Statement to execute, otherwise it will execute again before the previous execution has finished. The Conditional Status allows you to provide a return value that can be used by other controllers or dashboard widgets.
+      Conditional Controllers allow the execution of Python 3 code as well as the use of Conditions and Actions within your code to interact with Mycodo. Conditions typically acquire data from Mycodo, such as Input measurements, and Actions typically affect Mycodo, such as actuating an Output or pausing a PID controller. Each Condition and Action you add will have its own description and example code to demonstrate how to use it in your Conditional Statement code. See the <a href="https://kizniche.github.io/Mycodo/Functions/#conditional-controller">Conditional Controller docs</a> for more information.
     </div>
 
     <div id="status_enable_{{each_function.unique_id}}" class="row small-gutters align-items-end" style="{% if not each_function.is_activated %}display: none; {% endif %}padding: 0.5em">

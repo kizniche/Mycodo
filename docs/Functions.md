@@ -349,9 +349,21 @@ And typical Daemon Log output will look like this:
 2018-08-04 23:47:55,904 - mycodo.pid_3b533dff - INFO - Kd: 4.101408080354794
 ```
 
-## Conditional
+## Conditional Controller
 
-Conditional controllers are used to perform certain [Actions](Actions.md) based a user-generated Conditional Statement.
+Conditional controllers are used to perform simple to complex actions based a user-generated Conditional Statement. Conditional Controllers allow the execution of Python 3 code as well as the use of Conditions and [Actions](Actions.md) within your code to interact with Mycodo. Conditions typically acquire data from Mycodo, such as Input measurements, and Actions typically affect Mycodo, such as actuating an Output or pausing a PID controller. Each Condition and Action you add will have its own description and example code to demonstrate how to use it in your Conditional Statement code.
+
+!!! note
+    `Timeout` must be set longer than it takes your `Conditional Statement` to execute (if `Timeout` is set too low, only part of your `Conditional Statement` may execute).
+
+!!! note
+    `Period` must be set longer than the time it takes for your `Conditional Statement` to execute, otherwise it will execute again before the previous execution has finished.
+
+!!! note
+    `Conditional Status` allows you to provide a return value that can be used by other controllers or dashboard widgets.
+
+!!! note
+    The code is executed within the same Python virtual environment that Mycodo runs from, therefore you must install Python libraries to this environment if you want them to be available to your code. This virtualenv is located at ~/Mycodo/env and if you wanted to install, for example, "my_library" using pip, you would execute "sudo ~/Mycodo/env/bin/pip install my_library".
 
 ### Conditional Options
 
