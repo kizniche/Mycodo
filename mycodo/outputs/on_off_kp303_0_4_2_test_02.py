@@ -1,6 +1,6 @@
 # coding=utf-8
 #
-# on_off_hs300_0_4_2.py - Output for HS300
+# on_off_kp303_0_4_2.py - Output for KP303
 #
 import asyncio
 import threading
@@ -21,7 +21,7 @@ measurements_dict = {
         'measurement': 'duration_time',
         'unit': 's'
     }
-    for key in range(6)
+    for key in range(3)
 }
 
 channels_dict = {
@@ -30,22 +30,22 @@ channels_dict = {
         'name': f'Outlet {key + 1}',
         'measurements': [key]
     }
-    for key in range(6)
+    for key in range(3)
 }
 
 # Output information
 OUTPUT_INFORMATION = {
-    'output_name_unique': 'hs300_0_4_2',
-    'output_name': f"{lazy_gettext('On/Off')}: HS300 Kasa 6-Outlet WiFi Power Strip (python-kasa 0.4.2)",
+    'output_name_unique': 'kp303_0_4_2_alt_01',
+    'output_name': f"{lazy_gettext('On/Off')}: KP303 Kasa 3-Outlet WiFi Power Strip (python-kasa 0.4.2, TEST #2)",
     'output_manufacturer': 'TP-Link',
     'input_library': 'python-kasa==0.4.2',
     'measurements_dict': measurements_dict,
     'channels_dict': channels_dict,
     'output_types': ['on_off'],
 
-    'url_manufacturer': 'https://www.kasasmart.com/us/products/smart-plugs/kasa-smart-wi-fi-power-strip-hs300',
+    'url_manufacturer': 'https://www.tp-link.com/au/home-networking/smart-plug/kp303/',
 
-    'message': 'This output controls the 6 outlets of the Kasa HS300 Smart WiFi Power Strip. This is a variant that uses the latest python-kasa library.',
+    'message': 'This output controls the 3 outlets of the Kasa KP303 Smart WiFi Power Strip. This is a variant that uses the latest python-kasa library.',
 
     'options_enabled': [
         'button_on',
@@ -144,14 +144,15 @@ class OutputModule(AbstractOutput):
         super().__init__(output, testing=testing, name=__name__)
 
         self.strip = None
-        self.lock_file = None
+        self.kasa_thread = None
+        self.first_connect = True
+        self.lock_file = {}
         self.lock_timeout = 10
         self.switch_wait = 0.25
-        self.status_thread = None
         self.timer_status_check = time.time()
-
         self.plug_address = None
         self.status_update_period = None
+        self.change_state = {key: None for key in range(len(channels_dict))}
 
         self.setup_custom_options(
             OUTPUT_INFORMATION['custom_options'], output)
@@ -168,77 +169,70 @@ class OutputModule(AbstractOutput):
             self.logger.error("Plug address must be set")
             return
 
-        self.lock_file = f'/var/lock/kasa_{self.plug_address.replace(".", "-")}'
+        for i in range(len(channels_dict)):
+            self.lock_file[i] = f'/var/lock/kasa_{self.plug_address.replace(".", "-")}_{i}'
+
+        self.kasa_thread = threading.Thread(target=asyncio.run, args=(self.thread_kasa(),))
+        self.kasa_thread.start()
+
+    async def thread_kasa(self):
+        self.logger.debug("thread_kasa")
+        while self.running:
+            now = time.time()
+
+            if not self.output_setup:
+                await self.connect()
+
+            for channel in range(len(channels_dict)):
+                if self.change_state[channel] is not None:
+                    self.logger.info(f"change_state, channel {channel}: {self.change_state[channel]}")
+                    if self.change_state[channel]:
+                        await self.strip.children[channel].turn_on()
+                    else:
+                        await self.strip.children[channel].turn_off()
+                    self.output_states[channel] = self.change_state[channel]
+                    await self.strip.update()
+                    self.change_state[channel] = None
+
+            if self.timer_status_check < now:
+                while self.timer_status_check < time.time():
+                    self.timer_status_check += self.status_update_period
+                try:
+                    await self.strip.update()
+                    for channel in channels_dict:
+                        if self.strip.children[channel].is_on:
+                            self.output_states[channel] = True
+                        else:
+                            self.output_states[channel] = False
+                except Exception as err:
+                    self.logger.error(
+                        f"get_status() raised an exception when taking a reading: {err}")
+
+            await asyncio.sleep(0.1)
+
+    async def connect(self):
+        self.logger.debug("try_connect")
+        from kasa import SmartStrip
 
         try:
-            asyncio.run(self.try_connect())
+            self.strip = SmartStrip(self.plug_address)
+            await self.strip.update()
+            self.logger.debug(f'Strip {self.strip.alias}: {self.strip.hw_info}')
+            self.output_setup = True
 
-            if self.status_update_period:
-                self.status_thread = threading.Thread(target=self.status_update)
-                self.status_thread.start()
-
-            if self.output_setup:
+            if self.first_connect:
+                self.first_connect = False
                 for channel in channels_dict:
                     if channel not in self.output_states:
                         self.output_states[channel] = None
                     if self.options_channels['state_startup'][channel] == 1:
-                        self.output_switch("on", output_channel=channel)
+                        await self.strip.children[channel].turn_on()
                     elif self.options_channels['state_startup'][channel] == 0:
-                        self.output_switch("off", output_channel=channel)
+                        await self.strip.children[channel].turn_off()
                     self.logger.debug(f'Strip children: {self.strip.children[channel]}')
         except Exception as err:
-            self.logger.error(f"initialize() Error: {err}")
-
-    async def try_connect(self):
-        from kasa import SmartStrip
-
-        lf = LockFile()
-        if lf.lock_acquire(self.lock_file, timeout=self.lock_timeout):
-            try:
-                self.strip = SmartStrip(self.plug_address)
-                await self.strip.update()
-                self.logger.debug(f'Strip {self.strip.alias}: {self.strip.hw_info}')
-                self.output_setup = True
-            except Exception as err:
-                self.logger.error(f"Output was unable to be setup: {err}")
-            finally:
-                time.sleep(self.switch_wait)
-                lf.lock_release(self.lock_file)
-
-    def change_outlet_state_try(self, channel, state):
-        lf = LockFile()
-        if lf.lock_acquire(self.lock_file, timeout=self.lock_timeout):
-            try:
-                loops = 4
-                msg = None
-                for i in range(loops):
-                    try:
-                        asyncio.run(self.change_outlet_state(channel, state))
-                        msg = "success"
-                        break
-                    except Exception as err:
-                        msg = "State change error: {}".format(err)
-                        if i + 1 < loops:
-                            time.sleep(1.5)
-                return msg
-            finally:
-                time.sleep(self.switch_wait)
-                lf.lock_release(self.lock_file)
-
-    async def change_outlet_state(self, channel, state):
-        from kasa import SmartStrip
-
-        self.strip = SmartStrip(self.plug_address)
-        await self.strip.update()
-        if state:
-            msg = await self.strip.children[channel].turn_on()
-            self.output_states[channel] = True
-        else:
-            msg =  await self.strip.children[channel].turn_off()
-            self.output_states[channel] = False
-        await self.strip.update()
-
-        return msg
+            self.logger.error(f"Output was unable to be setup: {err}")
+            time.sleep(10)
 
     def output_switch(self, state, output_type=None, amount=None, output_channel=None):
         if not self.is_setup():
@@ -246,18 +240,31 @@ class OutputModule(AbstractOutput):
             self.logger.error(msg)
             return msg
 
-        msg = None
         try:
             if state == 'on':
-                msg = self.change_outlet_state_try(output_channel, True)
+                lf = LockFile()
+                if lf.lock_acquire(self.lock_file[output_channel], timeout=self.lock_timeout):
+                    try:
+                        now = time.time()
+                        self.change_state[output_channel] = True
+                        while self.change_state[output_channel] is not None and time.time() < now + 10:
+                            time.sleep(0.1)
+                    finally:
+                        self.change_state[output_channel] = None
+                        lf.lock_release(self.lock_file[output_channel])
             elif state == 'off':
-                msg = self.change_outlet_state_try(output_channel, False)
+                lf = LockFile()
+                if lf.lock_acquire(self.lock_file[output_channel], timeout=self.lock_timeout):
+                    try:
+                        now = time.time()
+                        self.change_state[output_channel] = False
+                        while self.change_state[output_channel] is not None and time.time() < now + 10:
+                            time.sleep(0.1)
+                    finally:
+                        self.change_state[output_channel] = None
+                        lf.lock_release(self.lock_file[output_channel])
         except Exception as err:
-            self.logger.error(f"State change error: {err}")
-
-        self.logger.debug(f"State change: {msg}")
-
-        return msg
+            self.logger.exception(f"State change error: {err}")
 
     def is_on(self, output_channel=None):
         if self.is_setup():
@@ -278,39 +285,3 @@ class OutputModule(AbstractOutput):
                 elif self.options_channels['state_shutdown'][channel] == 0:
                     self.output_switch('off', output_channel=channel)
         self.running = False
-
-    async def get_status(self):
-        from kasa import SmartStrip
-
-        lf = LockFile()
-        if lf.lock_acquire(self.lock_file, timeout=self.lock_timeout):
-            try:
-                self.strip = SmartStrip(self.plug_address)
-                await self.strip.update()
-                for channel in channels_dict:
-                    if self.strip.children[channel].is_on:
-                        self.output_states[channel] = True
-                    else:
-                        self.output_states[channel] = False
-            except Exception as err:
-                self.logger.error(
-                    f"get_status() raised an exception when taking a reading: {err}")
-                return 'error', err
-            finally:
-                time.sleep(self.switch_wait)
-                lf.lock_release(self.lock_file)
-
-    def status_update(self):
-        while self.running:
-            if self.timer_status_check < time.time():
-                while self.timer_status_check < time.time():
-                    self.timer_status_check += self.status_update_period
-
-                self.logger.debug("Checking state of outlets")
-
-                try:
-                    asyncio.run(self.get_status())
-                except Exception as e:
-                    self.logger.error(f"Could not query power strip status: {e}")
-
-            time.sleep(1)
