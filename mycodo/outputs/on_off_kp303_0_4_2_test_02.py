@@ -146,6 +146,7 @@ class OutputModule(AbstractOutput):
         self.strip = None
         self.kasa_thread = None
         self.first_connect = True
+        self.failed_connect_count = 0
         self.lock_file = {}
         self.lock_timeout = 10
         self.switch_wait = 0.25
@@ -183,30 +184,31 @@ class OutputModule(AbstractOutput):
             if not self.output_setup:
                 await self.connect()
 
-            for channel in range(len(channels_dict)):
-                if self.change_state[channel] is not None:
-                    self.logger.info(f"change_state, channel {channel}: {self.change_state[channel]}")
-                    if self.change_state[channel]:
-                        await self.strip.children[channel].turn_on()
-                    else:
-                        await self.strip.children[channel].turn_off()
-                    self.output_states[channel] = self.change_state[channel]
-                    await self.strip.update()
-                    self.change_state[channel] = None
-
-            if self.timer_status_check < now:
-                while self.timer_status_check < time.time():
-                    self.timer_status_check += self.status_update_period
-                try:
-                    await self.strip.update()
-                    for channel in channels_dict:
-                        if self.strip.children[channel].is_on:
-                            self.output_states[channel] = True
+            if self.output_setup:
+                for channel in range(len(channels_dict)):
+                    if self.change_state[channel] is not None:
+                        self.logger.info(f"change_state, channel {channel}: {self.change_state[channel]}")
+                        if self.change_state[channel]:
+                            await self.strip.children[channel].turn_on()
                         else:
-                            self.output_states[channel] = False
-                except Exception as err:
-                    self.logger.error(
-                        f"get_status() raised an exception when taking a reading: {err}")
+                            await self.strip.children[channel].turn_off()
+                        self.output_states[channel] = self.change_state[channel]
+                        await self.strip.update()
+                        self.change_state[channel] = None
+
+                if self.timer_status_check < now:
+                    while self.timer_status_check < now:
+                        self.timer_status_check += self.status_update_period
+                    try:
+                        await self.strip.update()
+                        for channel in channels_dict:
+                            if self.strip.children[channel].is_on:
+                                self.output_states[channel] = True
+                            else:
+                                self.output_states[channel] = False
+                    except Exception as err:
+                        self.logger.error(
+                            f"get_status() raised an exception when taking a reading: {err}")
 
             await asyncio.sleep(0.1)
 
@@ -219,20 +221,30 @@ class OutputModule(AbstractOutput):
             await self.strip.update()
             self.logger.debug(f'Strip {self.strip.alias}: {self.strip.hw_info}')
             self.output_setup = True
-
-            if self.first_connect:
-                self.first_connect = False
-                for channel in channels_dict:
-                    if channel not in self.output_states:
-                        self.output_states[channel] = None
-                    if self.options_channels['state_startup'][channel] == 1:
-                        await self.strip.children[channel].turn_on()
-                    elif self.options_channels['state_startup'][channel] == 0:
-                        await self.strip.children[channel].turn_off()
-                    self.logger.debug(f'Strip children: {self.strip.children[channel]}')
+            self.failed_connect_count = 0
         except Exception as err:
             self.logger.error(f"Output was unable to be setup: {err}")
-            time.sleep(10)
+            self.failed_connect_count += 1
+            if self.failed_connect_count > 4:
+                if self.failed_connect_count == 5:
+                    self.logger.error(
+                        "Failed to connect 5 times. Reducing reconnect attempt interval to 60 seconds.")
+                time.sleep(60)
+            else:
+                time.sleep(5)
+            return
+
+        if self.first_connect:
+            self.first_connect = False
+            for channel in channels_dict:
+                if channel not in self.output_states:
+                    self.output_states[channel] = None
+                if self.options_channels['state_startup'][channel] == 1:
+                    await self.strip.children[channel].turn_on()
+                elif self.options_channels['state_startup'][channel] == 0:
+                    await self.strip.children[channel].turn_off()
+                self.logger.debug(f'Strip children: {self.strip.children[channel]}')
+
 
     def output_switch(self, state, output_type=None, amount=None, output_channel=None):
         if not self.is_setup():
@@ -250,7 +262,6 @@ class OutputModule(AbstractOutput):
                         while self.change_state[output_channel] is not None and time.time() < now + 10:
                             time.sleep(0.1)
                     finally:
-                        self.change_state[output_channel] = None
                         lf.lock_release(self.lock_file[output_channel])
             elif state == 'off':
                 lf = LockFile()
@@ -261,7 +272,6 @@ class OutputModule(AbstractOutput):
                         while self.change_state[output_channel] is not None and time.time() < now + 10:
                             time.sleep(0.1)
                     finally:
-                        self.change_state[output_channel] = None
                         lf.lock_release(self.lock_file[output_channel])
         except Exception as err:
             self.logger.exception(f"State change error: {err}")
