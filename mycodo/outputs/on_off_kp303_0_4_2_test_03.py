@@ -1,6 +1,6 @@
 # coding=utf-8
 #
-# on_off_kp303_0_4_2.py - Output for KP303
+# on_off_kp303_0_4_2_test_03.py - Output for KP303
 #
 import asyncio
 import random

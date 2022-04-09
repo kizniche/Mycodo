@@ -1,10 +1,12 @@
 # coding=utf-8
 #
-# on_off_hs300_0_4_2_alt_01.py - Output for HS300
+# on_off_hs300_0_4_2_test_03.py - Output for HS300
 #
 import asyncio
+import random
 import threading
 import time
+import traceback
 
 from flask_babel import lazy_gettext
 
@@ -13,7 +15,6 @@ from mycodo.databases.models import OutputChannel
 from mycodo.outputs.base_output import AbstractOutput
 from mycodo.utils.constraints_pass import constraints_pass_positive_value
 from mycodo.utils.database import db_retrieve_table_daemon
-from mycodo.utils.lockfile import LockFile
 
 # Measurements
 measurements_dict = {
