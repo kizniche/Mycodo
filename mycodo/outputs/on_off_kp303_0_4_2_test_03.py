@@ -6,7 +6,7 @@ import asyncio
 import random
 import threading
 import time
-
+import traceback
 from flask_babel import lazy_gettext
 
 from mycodo.config_translations import TRANSLATIONS
@@ -140,7 +140,7 @@ OUTPUT_INFORMATION = {
 
 
 class OutputModule(AbstractOutput):
-    """An output support class that operates an output."""
+    """An output support class that operates the Kasa KP303 and HS300 WiFi Power Strips."""
     def __init__(self, output, testing=False):
         super().__init__(output, testing=testing, name=__name__)
 
@@ -149,9 +149,9 @@ class OutputModule(AbstractOutput):
         self.port = None
         self.status_thread = None
         self.timer_status_check = time.time()
+
         self.plug_address = None
         self.status_update_period = None
-        self.change_state = {key: None for key in range(len(channels_dict))}
 
         self.setup_custom_options(
             OUTPUT_INFORMATION['custom_options'], output)
@@ -195,36 +195,52 @@ class OutputModule(AbstractOutput):
         import aio_msgpack_rpc
         from kasa import SmartStrip
 
-        class MyServicer:
-            def __init__(self, channels_):
+        class KasaServer:
+            """Communicates with the Kasa power strip"""
+            def __init__(self, address_, channels_):
                 self.strip = None
+                self.address = address_
                 self.channels = channels_
 
             async def connect(self):
-                self.strip = SmartStrip("192.168.0.35")
-                await self.strip.update()
-                return f'Strip {self.strip.alias}: {self.strip.hw_info}'
+                try:
+                    self.strip = SmartStrip(self.address)
+                    await self.strip.update()
+                    return 0, f'Strip {self.strip.alias}: {self.strip.hw_info}'
+                except Exception:
+                    return 1, str(traceback.print_exc())
 
             async def outlet_on(self, channel):
-                await self.strip.children[channel].turn_on()
+                try:
+                    await self.strip.children[channel].turn_on()
+                    return 0, "success"
+                except Exception:
+                    return 1, str(traceback.print_exc())
 
             async def outlet_off(self, channel):
-                await self.strip.children[channel].turn_off()
+                try:
+                    await self.strip.children[channel].turn_off()
+                    return 0, "success"
+                except Exception:
+                    return 1, str(traceback.print_exc())
 
             async def get_status(self):
-                await self.strip.update()
-                channel_stat = []
-                for channel in range(self.channels):
-                    if self.strip.children[channel].is_on:
-                        channel_stat.append(True)
-                    else:
-                        channel_stat.append(False)
-                return channel_stat
+                try:
+                    await self.strip.update()
+                    channel_stat = []
+                    for channel in range(self.channels):
+                        if self.strip.children[channel].is_on:
+                            channel_stat.append(True)
+                        else:
+                            channel_stat.append(False)
+                    return 0, channel_stat
+                except Exception:
+                    return 1, str(traceback.print_exc())
 
-        async def main(port, channels_):
+        async def main(address, port, channels_):
             try:
                 server = await asyncio.start_server(
-                    aio_msgpack_rpc.Server(MyServicer(channels_)),
+                    aio_msgpack_rpc.Server(KasaServer(address, channels_)),
                     host="127.0.0.1", port=port)
 
                 while True:
@@ -238,7 +254,7 @@ class OutputModule(AbstractOutput):
 
         try:
             asyncio.set_event_loop(loop)
-            loop.run_until_complete(main(self.port, channels))
+            loop.run_until_complete(main(self.plug_address, self.port, channels))
         except Exception:
             logger.exception("server")
         except KeyboardInterrupt:
@@ -253,8 +269,11 @@ class OutputModule(AbstractOutput):
 
         async def connect(port):
             client = aio_msgpack_rpc.Client(*await asyncio.open_connection("localhost", port))
-            status = await client.call("connect")
-            self.logger.info(status)
+            status, msg = await client.call("connect")
+            if status:
+                self.logger.error(f"Connecting: {msg}")
+            else:
+                self.logger.debug(f"Connecting: Error: {msg}")
 
         asyncio.set_event_loop(event_loop_a)
         asyncio.get_event_loop()
@@ -271,15 +290,19 @@ class OutputModule(AbstractOutput):
             client = aio_msgpack_rpc.Client(*await asyncio.open_connection("localhost", port))
 
             if state_:
-                await client.call("outlet_on", channel_)
+                status, msg = await client.call("outlet_on", channel_)
             else:
-                await client.call("outlet_off", channel_)
+                status, msg = await client.call("outlet_off", channel_)
+
+            if status:
+                self.logger.error(f"Switching CH{channel_} {'ON' if state_ else 'OFF'}: {msg}")
+                self.output_states[channel] = state
+            else:
+                self.logger.debug(f"Switching CH{channel_} {'ON' if state_ else 'OFF'}: Error: {msg}")
 
         asyncio.set_event_loop(event_loop_a)
         asyncio.get_event_loop()
         event_loop_a.run_until_complete(outlet_change(self.port, channel, state))
-
-        self.output_states[channel] = state
 
     def status_update(self):
         import aio_msgpack_rpc
@@ -297,11 +320,14 @@ class OutputModule(AbstractOutput):
                     async def get_status(port):
                         client = aio_msgpack_rpc.Client(*await asyncio.open_connection("localhost", port))
 
-                        return_val = await client.call("get_status")
-                        self.logger.info(f"Status: {return_val}")
-                        if return_val:
-                            for channel in return_val:
-                                self.output_states[channel] = return_val[channel]
+                        status, msg = await client.call("get_status")
+                        if status:
+                            self.logger.error(f"Status: {msg}")
+                        else:
+                            self.logger.debug(f"Status: Error: {msg}")
+                        if msg:
+                            for channel, state in enumerate(msg):
+                                self.output_states[channel] = state
 
                     asyncio.set_event_loop(event_loop_a)
                     asyncio.get_event_loop()
