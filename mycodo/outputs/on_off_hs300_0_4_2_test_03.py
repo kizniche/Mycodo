@@ -170,27 +170,30 @@ class OutputModule(AbstractOutput):
             self.logger.error("Plug address must be set")
             return
 
-        self.port = 18000 + random.randint(0, 300)
+        for _ in range(3):  # Attempt to connect 3 times
+            self.port = 18000 + random.randint(0, 900)
 
-        loop = asyncio.new_event_loop()
-        self.rpc_server_thread = threading.Thread(
-            target=self.aio_rpc_server, args=(loop, self.logger, len(channels_dict)))
-        self.rpc_server_thread.start()
+            loop = asyncio.new_event_loop()
+            self.rpc_server_thread = threading.Thread(
+                target=self.aio_rpc_server, args=(loop, self.logger, len(channels_dict)))
+            self.rpc_server_thread.start()
 
-        time.sleep(1)
+            time.sleep(1)
 
-        self.connect()
+            status, msg = self.connect()
+            if not status:
+                break
 
         if self.output_setup:
-            if self.status_update_period:
-                self.status_thread = threading.Thread(target=self.status_update)
-                self.status_thread.start()
-
             for channel in range(len(channels_dict)):
                 if self.options_channels['state_startup'][channel] == 1:
                     self.outlet_change(channel, True)
                 elif self.options_channels['state_startup'][channel] == 0:
                     self.outlet_change(channel, False)
+
+            if self.status_update_period:
+                self.status_thread = threading.Thread(target=self.status_update)
+                self.status_thread.start()
 
     def aio_rpc_server(self, loop, logger, channels):
         import aio_msgpack_rpc
@@ -267,26 +270,27 @@ class OutputModule(AbstractOutput):
     def connect(self):
         import aio_msgpack_rpc
 
-        event_loop_a = asyncio.new_event_loop()
+        status = None
+        msg = ""
 
         async def connect(port):
             client = aio_msgpack_rpc.Client(*await asyncio.open_connection("localhost", port))
             status, msg = await client.call("connect")
             if status:
-                self.logger.error(f"Connecting: {msg}")
+                self.logger.error(f"Connecting: Error: {msg}")
             else:
-                self.logger.debug(f"Connecting: Error: {msg}")
+                self.logger.debug(f"Connecting: {msg}")
+                self.output_setup = True
 
-        asyncio.set_event_loop(event_loop_a)
+        loop = asyncio.new_event_loop()
+        asyncio.set_event_loop(loop)
         asyncio.get_event_loop()
-        event_loop_a.run_until_complete(connect(self.port))
+        loop.run_until_complete(connect(self.port))
 
-        self.output_setup = True
+        return status, msg
 
     def outlet_change(self, channel, state):
         import aio_msgpack_rpc
-
-        event_loop_a = asyncio.new_event_loop()
 
         async def outlet_change(port, channel_, state_):
             client = aio_msgpack_rpc.Client(*await asyncio.open_connection("localhost", port))
@@ -297,14 +301,15 @@ class OutputModule(AbstractOutput):
                 status, msg = await client.call("outlet_off", channel_)
 
             if status:
-                self.logger.error(f"Switching CH{channel_} {'ON' if state_ else 'OFF'}: {msg}")
-                self.output_states[channel] = state
+                self.logger.error(f"Switching CH{channel_} {'ON' if state_ else 'OFF'}: Error: {msg}")
             else:
-                self.logger.debug(f"Switching CH{channel_} {'ON' if state_ else 'OFF'}: Error: {msg}")
+                self.output_states[channel] = state
+                self.logger.debug(f"Switching CH{channel_} {'ON' if state_ else 'OFF'}: {msg}")
 
-        asyncio.set_event_loop(event_loop_a)
+        loop = asyncio.new_event_loop()
+        asyncio.set_event_loop(loop)
         asyncio.get_event_loop()
-        event_loop_a.run_until_complete(outlet_change(self.port, channel, state))
+        loop.run_until_complete(outlet_change(self.port, channel, state))
 
     def status_update(self):
         import aio_msgpack_rpc
@@ -317,23 +322,22 @@ class OutputModule(AbstractOutput):
                 self.logger.debug("Checking state of outlets")
 
                 try:
-                    event_loop_a = asyncio.new_event_loop()
-
                     async def get_status(port):
                         client = aio_msgpack_rpc.Client(*await asyncio.open_connection("localhost", port))
 
                         status, msg = await client.call("get_status")
                         if status:
-                            self.logger.error(f"Status: {msg}")
+                            self.logger.error(f"Status: Error: {msg}")
                         else:
-                            self.logger.debug(f"Status: Error: {msg}")
-                        if msg:
-                            for channel, state in enumerate(msg):
-                                self.output_states[channel] = state
+                            self.logger.debug(f"Status: {msg}")
+                            if msg:
+                                for channel, state in enumerate(msg):
+                                    self.output_states[channel] = state
 
-                    asyncio.set_event_loop(event_loop_a)
+                    loop = asyncio.new_event_loop()
+                    asyncio.set_event_loop(loop)
                     asyncio.get_event_loop()
-                    event_loop_a.run_until_complete(get_status(self.port))
+                    loop.run_until_complete(get_status(self.port))
                 except Exception as e:
                     self.logger.error(f"Could not query power strip status: {e}")
 
