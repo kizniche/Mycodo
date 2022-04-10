@@ -180,7 +180,7 @@ OUTPUT_INFORMATION = {
             'type': 'float',
             'default_value': 0.0,
             'required': True,
-            'name': '{} ({})'.format(lazy_gettext('Current'), lazy_gettext('Amps')),
+            'name': f"{lazy_gettext('Current')} ({lazy_gettext('Amps')})",
             'phrase': 'The current draw of the device being controlled'
         }
     ]

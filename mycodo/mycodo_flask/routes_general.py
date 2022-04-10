@@ -124,7 +124,7 @@ def camera_img_return_path(camera_unique_id, img_type, filename):
     """Return an image from stills or time-lapses."""
     camera = Camera.query.filter(Camera.unique_id == camera_unique_id).first()
     camera_path = assure_path_exists(
-        os.path.join(PATH_CAMERAS, '{uid}'.format(uid=camera.unique_id)))
+        os.path.join(PATH_CAMERAS, camera.unique_id))
     if img_type == 'still':
         if camera.path_still:
             path = camera.path_still
@@ -158,7 +158,7 @@ def camera_img_acquire(image_type, camera_unique_id, max_age):
     if image_type == 'new':
         tmp_filename = None
     elif image_type == 'tmp':
-        tmp_filename = '{id}_tmp.jpg'.format(id=camera_unique_id)
+        tmp_filename = f'{camera_unique_id}_tmp.jpg'
     else:
         return
     path, filename = camera_record('photo', camera_unique_id, tmp_filename=tmp_filename)
@@ -172,7 +172,7 @@ def camera_img_acquire(image_type, camera_unique_id, max_age):
         timestamp = os.path.getctime(image_path)
         if datetime.datetime.fromtimestamp(timestamp) > time_max_age:
             date_time = datetime.datetime.fromtimestamp(timestamp).strftime('%Y-%m-%d %H:%M:%S')
-            return_values = '["{}","{}"]'.format(filename, date_time)
+            return_values = f'["{filename}","{date_time}"]'
         else:
             return_values = '["max_age_exceeded"]'
         return Response(return_values, mimetype='text/json')
@@ -193,7 +193,7 @@ def camera_img_latest_timelapse(camera_unique_id, max_age):
         time_max_age = datetime.datetime.now() - datetime.timedelta(seconds=int(max_age))
         if datetime.datetime.fromtimestamp(camera.timelapse_last_ts) > time_max_age:
             ts = datetime.datetime.fromtimestamp(camera.timelapse_last_ts).strftime("%Y-%m-%d %H:%M:%S")
-            return_values = '["{}","{}"]'.format(camera.timelapse_last_file, ts)
+            return_values = f'["{camera.timelapse_last_file}","{ts}"]'
         else:
             return_values = '["max_age_exceeded"]'
     else:
@@ -313,7 +313,7 @@ def last_data(unique_id, measure_type, measurement_id, period):
         # Convert date-time to epoch (potential bottleneck for data)
         dt = date_parse(time_raw)
         timestamp = calendar.timegm(dt.timetuple()) * 1000
-        live_data = '[{},{}]'.format(timestamp, value)
+        live_data = f'[{timestamp},{value}]'
 
         return Response(live_data, mimetype='text/json')
     except KeyError:
@@ -322,9 +322,8 @@ def last_data(unique_id, measure_type, measurement_id, period):
     except IndexError:
         logger.debug("No Data returned form influxdb")
         return '', 204
-    except Exception as e:
-        logger.exception("URL for 'last_data' raised and error: "
-                         "{err}".format(err=e))
+    except Exception as err:
+        logger.exception(f"URL for 'last_data' raised and error: {err}")
         return '', 204
 
 
@@ -393,9 +392,8 @@ def past_data(unique_id, measure_type, measurement_id, past_seconds):
                 return jsonify(data)
             else:
                 return '', 204
-        except Exception as e:
-            logger.debug("URL for 'past_data' raised and error: "
-                         "{err}".format(err=e))
+        except Exception as err:
+            logger.debug(f"URL for 'past_data' raised and error: {err}")
             return '', 204
 
 
@@ -405,10 +403,8 @@ def generate_thermal_image_from_timestamp(unique_id, timestamp):
     """Return a file from the note attachment directory."""
     ts_now = datetime.datetime.now().strftime('%Y-%m-%d_%H-%M-%S')
     camera_path = assure_path_exists(
-        os.path.join(PATH_CAMERAS, '{uid}'.format(uid=unique_id)))
-    filename = 'Still-{uid}-{ts}.jpg'.format(
-        uid=unique_id,
-        ts=ts_now).replace(" ", "_")
+        os.path.join(PATH_CAMERAS, unique_id))
+    filename = f'Still-{unique_id}-{ts_now}.jpg'.replace(" ", "_")
     save_path = assure_path_exists(os.path.join(camera_path, 'thermal'))
     assure_path_exists(save_path)
     path_file = os.path.join(save_path, filename)
@@ -424,8 +420,7 @@ def generate_thermal_image_from_timestamp(unique_id, timestamp):
     end_timestamp = time.strftime('%Y-%m-%dT%H:%M:%S.000000000Z', time.gmtime(end))
 
     for each_channel in range(input_dev.channels):
-        measurement = 'channel_{chan}'.format(
-            chan=each_channel)
+        measurement = f'channel_{each_channel}'
         data = query_string(measurement, unique_id,
                                  start_str=start_timestamp,
                                  end_str=end_timestamp)
@@ -435,8 +430,6 @@ def generate_thermal_image_from_timestamp(unique_id, timestamp):
             success = False
         else:
             pixels.append(data[0][1])
-
-    # logger.error("generate_thermal_image_from_timestamp: success: {}, pixels: {}".format(success, pixels))
 
     if success:
         generate_thermal_image_from_pixels(pixels, 8, 8, path_file)
@@ -491,10 +484,8 @@ def export_data(unique_id, measurement_id, start_seconds, end_seconds):
 
     # Generate column names
     col_1 = 'timestamp (UTC)'
-    col_2 = '{name} {meas} ({id})'.format(
-        name=name, meas=measurement, id=unique_id)
-    csv_filename = '{id}_{name}_{meas}.csv'.format(
-        id=unique_id, name=name, meas=measurement)
+    col_2 = f'{name} {measurement} ({unique_id})'
+    csv_filename = f'{unique_id}_{name}_{measurement}.csv'
 
     def iter_csv(_data):
         """Stream CSV file to user for download."""
@@ -512,7 +503,7 @@ def export_data(unique_id, measurement_id, start_seconds, end_seconds):
             line.seek(0)
 
     response = Response(iter_csv(data), mimetype='text/csv')
-    response.headers['Content-Disposition'] = 'attachment; filename="{}"'.format(csv_filename)
+    response.headers['Content-Disposition'] = f'attachment; filename="{csv_filename}"'
     return response
 
 
@@ -669,24 +660,24 @@ def async_data(device_id, device_type, measurement_id, start_seconds, end_second
         '%Y-%m-%dT%H:%M:%S.%f')
     start_str = start.strftime('%Y-%m-%dT%H:%M:%S.%fZ')
 
-    logger.debug('Count = {}'.format(count_points))
-    logger.debug('Start = {}'.format(start))
-    logger.debug('End   = {}'.format(end))
+    logger.debug(f'Count = {count_points}')
+    logger.debug(f'Start = {start}')
+    logger.debug(f'End   = {end}')
 
     # How many seconds between the start and end period
     time_difference_seconds = (end - start).total_seconds()
-    logger.debug('Difference seconds = {}'.format(time_difference_seconds))
+    logger.debug(f'Difference seconds = {time_difference_seconds}')
 
     # If there are more than 700 points in the time frame, we need to group
     # data points into 700 groups with points averaged in each group.
     if count_points > 700:
         # Average period between input reads
         seconds_per_point = time_difference_seconds / count_points
-        logger.debug('Seconds per point = {}'.format(seconds_per_point))
+        logger.debug(f'Seconds per point = {seconds_per_point}')
 
         # How many seconds to group data points in
         group_seconds = int(time_difference_seconds / 700)
-        logger.debug('Group seconds = {}'.format(group_seconds))
+        logger.debug(f'Group seconds = {group_seconds}')
 
         try:
             data = query_string(
@@ -702,9 +693,8 @@ def async_data(device_id, device_type, measurement_id, start_seconds, end_second
                 return '', 204
 
             return jsonify(data)
-        except Exception as e:
-            logger.error("URL for 'async_data' raised and error: "
-                         "{err}".format(err=e))
+        except Exception as err:
+            logger.error(f"URL for 'async_data' raised and error: {err}")
             return '', 204
     else:
         try:
@@ -719,9 +709,8 @@ def async_data(device_id, device_type, measurement_id, start_seconds, end_second
                 return '', 204
 
             return jsonify(data)
-        except Exception as e:
-            logger.error("URL for 'async_data' raised and error: "
-                         "{err}".format(err=e))
+        except Exception as err:
+            logger.error(f"URL for 'async_data' raised and error: {err}")
             return '', 204
 
 
@@ -825,24 +814,24 @@ def async_usage_data(device_id, unit, channel, start_seconds, end_seconds):
         '%Y-%m-%dT%H:%M:%S.%f')
     start_str = start.strftime('%Y-%m-%dT%H:%M:%S.%fZ')
 
-    logger.debug('Count = {}'.format(count_points))
-    logger.debug('Start = {}'.format(start))
-    logger.debug('End   = {}'.format(end))
+    logger.debug(f'Count = {count_points}')
+    logger.debug(f'Start = {start}')
+    logger.debug(f'End   = {end}')
 
     # How many seconds between the start and end period
     time_difference_seconds = (end - start).total_seconds()
-    logger.debug('Difference seconds = {}'.format(time_difference_seconds))
+    logger.debug(f'Difference seconds = {time_difference_seconds}')
 
     # If there are more than 700 points in the time frame, we need to group
     # data points into 700 groups with points averaged in each group.
     if count_points > 700:
         # Average period between input reads
         seconds_per_point = time_difference_seconds / count_points
-        logger.debug('Seconds per point = {}'.format(seconds_per_point))
+        logger.debug(f'Seconds per point = {seconds_per_point}')
 
         # How many seconds to group data points in
         group_seconds = int(time_difference_seconds / 700)
-        logger.debug('Group seconds = {}'.format(group_seconds))
+        logger.debug(f'Group seconds = {group_seconds}')
 
         try:
             data = query_string(
@@ -857,9 +846,8 @@ def async_usage_data(device_id, unit, channel, start_seconds, end_seconds):
                 return '', 204
 
             return jsonify(data)
-        except Exception as e:
-            logger.error("URL for 'async_data' raised and error: "
-                         "{err}".format(err=e))
+        except Exception as err:
+            logger.error(f"URL for 'async_data' raised and error: {err}")
             return '', 204
     else:
         try:
@@ -873,9 +861,8 @@ def async_usage_data(device_id, unit, channel, start_seconds, end_seconds):
                 return '', 204
 
             return jsonify(data)
-        except Exception as e:
-            logger.error("URL for 'async_usage' raised and error: "
-                         "{err}".format(err=e))
+        except Exception as err:
+            logger.error(f"URL for 'async_usage' raised and error: {err}")
             return '', 204
 
 
@@ -896,7 +883,7 @@ def output_mod(output_id, channel, state, output_type, amount):
         if channel_dev:
             output_channel = channel_dev.channel
         else:
-            return "Could not determine channel number from channel ID '{}'".format(channel)
+            return f"Could not determine channel number from channel ID '{channel}'"
 
     daemon = DaemonControl()
     if (state in ['on', 'off'] and str_is_float(amount) and
@@ -911,13 +898,13 @@ def output_mod(output_id, channel, state, output_type, amount):
             amount=float(amount),
             output_channel=output_channel)
         if out_status[0]:
-            return 'ERROR: {}'.format(out_status[1])
+            return f'ERROR: {out_status[1]}'
         else:
-            return 'SUCCESS: {}'.format(out_status[1])
+            return f'SUCCESS: {out_status[1]}'
     else:
         return 'ERROR: unknown parameters: ' \
-               'output_id: {}, channel: {}, state: {}, output_type: {}, amount: {}'.format(
-                output_id, channel, state, output_type, amount)
+               f'output_id: {output_id}, channel: {channel}, ' \
+               f'state: {state}, output_type: {output_type}, amount: {amount}'
 
 
 @blueprint.route('/daemonactive')
@@ -927,9 +914,8 @@ def daemon_active():
     try:
         control = DaemonControl()
         return control.daemon_status()
-    except Exception as e:
-        logger.error("URL for 'daemon_active' raised and error: "
-                     "{err}".format(err=e))
+    except Exception as err:
+        logger.error(f"URL for 'daemon_active' raised and error: {err}")
         return '0'
 
 
@@ -942,8 +928,7 @@ def computer_command(action):
 
     try:
         if action not in ['restart', 'shutdown', 'daemon_restart', 'frontend_reload']:
-            flash("Unrecognized command: {action}".format(
-                action=action), "success")
+            flash(f"Unrecognized command: {action}", "success")
             return redirect('/settings')
 
         if DOCKER_CONTAINER:
@@ -953,8 +938,7 @@ def computer_command(action):
             elif action == 'frontend_reload':
                 subprocess.Popen('docker restart mycodo_flask 2>&1', shell=True)
         else:
-            cmd = '{path}/mycodo/scripts/mycodo_wrapper {action} 2>&1'.format(
-                    path=INSTALL_DIRECTORY, action=action)
+            cmd = f'{INSTALL_DIRECTORY}/mycodo/scripts/mycodo_wrapper {action} 2>&1'
             subprocess.Popen(cmd, shell=True)
 
         if action == 'restart':
@@ -968,11 +952,9 @@ def computer_command(action):
 
         return redirect('/settings')
 
-    except Exception as e:
-        logger.error("System command '{cmd}' raised and error: "
-                     "{err}".format(cmd=action, err=e))
-        flash("System command '{cmd}' raised and error: "
-              "{err}".format(cmd=action, err=e), "error")
+    except Exception as err:
+        logger.error(f"System command '{action}' raised and error: {err}")
+        flash(f"System command '{action}' raised and error: {err}", "error")
         return redirect(url_for('routes_general.home'))
 
 
@@ -996,7 +978,7 @@ def return_point_timestamp(dev_id, unit, period, measurement=None, channel=None)
         number = len(data)
         time_raw = data[number - 1][0]
         value = data[number - 1][1]
-        value = '{:.3f}'.format(float(value))
+        value = f'{float(value):.3f}'
         # Convert date-time to epoch (potential bottleneck for data)
         dt = date_parse(time_raw)
         timestamp = calendar.timegm(dt.timetuple()) * 1000
@@ -1054,7 +1036,7 @@ def last_data_pid(pid_id, input_period):
         d_value = return_point_timestamp(
             pid_id, 'pid_value', input_period, measurement='pid_d_value')
         if None not in (p_value[1], i_value[1], d_value[1]):
-            pid_value = [p_value[0], '{:.3f}'.format(float(p_value[1]) + float(i_value[1]) + float(d_value[1]))]
+            pid_value = [p_value[0], f'{float(p_value[1]) + float(i_value[1]) + float(d_value[1]):.3f}']
         else:
             pid_value = None
 
@@ -1092,9 +1074,8 @@ def last_data_pid(pid_id, input_period):
     except KeyError:
         logger.debug("No Data returned form influxdb")
         return '', 204
-    except Exception as e:
-        logger.exception("URL for 'last_pid' raised and error: "
-                         "{err}".format(err=e))
+    except Exception as err:
+        logger.exception(f"URL for 'last_pid' raised and error: {err}")
         return '', 204
 
 

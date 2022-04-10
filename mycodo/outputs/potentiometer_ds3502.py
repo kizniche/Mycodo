@@ -92,7 +92,7 @@ class OutputModule(AbstractOutput):
                 address=int(str(self.output.i2c_location), 16))
             self.output_setup = True
         except Exception as err:
-            self.logger.error("Setting up Output: {}".format(err))
+            self.logger.error(f"Setting up Output: {err}")
 
     def output_switch(self, state, output_type=None, amount=None, output_channel=None):
         if not self.is_setup():
@@ -102,13 +102,13 @@ class OutputModule(AbstractOutput):
 
         if amount > 10000:
             self.logger.error(
-                "Amount cannot be greater than 10000. Value passed: {}. "
-                "Setting to 10000.".format(amount))
+                f"Amount cannot be greater than 10000. Value passed: {amount}. "
+                "Setting to 10000.")
             amount = 10000
         if amount < 0:
             self.logger.error(
-                "Amount cannot be less than 0. Value passed: {}. "
-                "Setting to 0.".format(amount))
+                f"Amount cannot be less than 0. Value passed: {amount}. "
+                "Setting to 0.")
             amount = 0
 
         if state == 'on' and None not in [amount, output_channel]:
@@ -126,10 +126,7 @@ class OutputModule(AbstractOutput):
             self.dpot.wiper = 0
         else:
             self.logger.error(
-                "Invalid parameters: State: {state}, Type: {ot}, Amount: {amt}".format(
-                    state=state,
-                    ot=output_type,
-                    amt=amount))
+                f"Invalid parameters: State: {state}, Type: {output_type}, Amount: {amount}")
             return
 
     def is_on(self, output_channel=None):

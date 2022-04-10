@@ -18,20 +18,20 @@ from mycodo.utils.database import db_retrieve_table_daemon
 
 # Measurements
 measurements_dict = {
-    key: {
+    measure: {
         'measurement': 'duration_time',
         'unit': 's'
     }
-    for key in range(6)
+    for measure in range(6)
 }
 
 channels_dict = {
-    key: {
+    channel: {
         'types': ['on_off'],
-        'name': f'Outlet {key + 1}',
-        'measurements': [key]
+        'name': f'Plug {channel + 1}',
+        'measurements': [channel]
     }
-    for key in range(6)
+    for channel in range(6)
 }
 
 # Output information
@@ -78,6 +78,15 @@ OUTPUT_INFORMATION = {
             'required': True,
             'name': 'Status Update (seconds)',
             'phrase': 'The period (seconds) between checking if connected and output states. 0 disables.'
+        },
+        {
+            'id': 'asyncio_rpc_port',
+            'type': 'integer',
+            'default_value': 18000 + random.randint(0, 900),
+            'constraints_pass': constraints_pass_positive_value,
+            'required': True,
+            'name': 'Asyncio RPC Port',
+            'phrase': 'The port to start the asyncio RPC server. Must be unique from other Kasa Outputs.'
         }
     ],
 
@@ -133,7 +142,7 @@ OUTPUT_INFORMATION = {
             'type': 'float',
             'default_value': 0.0,
             'required': True,
-            'name': '{} ({})'.format(lazy_gettext('Current'), lazy_gettext('Amps')),
+            'name': f"{lazy_gettext('Current')} ({lazy_gettext('Amps')})",
             'phrase': 'The current draw of the device being controlled'
         }
     ]
@@ -148,12 +157,12 @@ class OutputModule(AbstractOutput):
 
         self.strip = None
         self.rpc_server_thread = None
-        self.port = None
         self.status_thread = None
         self.timer_status_check = time.time()
 
         self.plug_address = None
         self.status_update_period = None
+        self.asyncio_rpc_port = None
 
         self.setup_custom_options(
             OUTPUT_INFORMATION['custom_options'], output)
@@ -170,16 +179,12 @@ class OutputModule(AbstractOutput):
             self.logger.error("Plug address must be set")
             return
 
+        loop = asyncio.new_event_loop()
+        self.rpc_server_thread = threading.Thread(
+            target=self.aio_rpc_server, args=(loop, self.logger, len(channels_dict)))
+        self.rpc_server_thread.start()
+
         for _ in range(3):  # Attempt to connect 3 times
-            self.port = 18000 + random.randint(0, 900)
-
-            loop = asyncio.new_event_loop()
-            self.rpc_server_thread = threading.Thread(
-                target=self.aio_rpc_server, args=(loop, self.logger, len(channels_dict)))
-            self.rpc_server_thread.start()
-
-            time.sleep(1)
-
             status, msg = self.connect()
             if not status:
                 break
@@ -259,7 +264,7 @@ class OutputModule(AbstractOutput):
 
         try:
             asyncio.set_event_loop(loop)
-            loop.run_until_complete(main(self.plug_address, self.port, channels))
+            loop.run_until_complete(main(self.plug_address, self.asyncio_rpc_port, channels))
         except Exception:
             logger.exception("server")
         except KeyboardInterrupt:
@@ -285,7 +290,7 @@ class OutputModule(AbstractOutput):
         loop = asyncio.new_event_loop()
         asyncio.set_event_loop(loop)
         asyncio.get_event_loop()
-        loop.run_until_complete(connect(self.port))
+        loop.run_until_complete(connect(self.asyncio_rpc_port))
 
         return status, msg
 
@@ -309,7 +314,7 @@ class OutputModule(AbstractOutput):
         loop = asyncio.new_event_loop()
         asyncio.set_event_loop(loop)
         asyncio.get_event_loop()
-        loop.run_until_complete(outlet_change(self.port, channel, state))
+        loop.run_until_complete(outlet_change(self.asyncio_rpc_port, channel, state))
 
     def status_update(self):
         import aio_msgpack_rpc
@@ -337,7 +342,7 @@ class OutputModule(AbstractOutput):
                     loop = asyncio.new_event_loop()
                     asyncio.set_event_loop(loop)
                     asyncio.get_event_loop()
-                    loop.run_until_complete(get_status(self.port))
+                    loop.run_until_complete(get_status(self.asyncio_rpc_port))
                 except Exception as e:
                     self.logger.error(f"Could not query power strip status: {e}")
 

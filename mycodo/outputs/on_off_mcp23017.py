@@ -20,7 +20,7 @@ for each_channel in range(16):
         'unit': 's'
     }
     channels_dict[each_channel] = {
-        'name': 'Channel {}'.format(each_channel + 1),
+        'name': f'Channel {each_channel}',
         'types': ['on_off'],
         'measurements': [each_channel]
     }
@@ -112,7 +112,7 @@ OUTPUT_INFORMATION = {
             'type': 'float',
             'default_value': 0.0,
             'required': True,
-            'name': '{} ({})'.format(lazy_gettext('Current'), lazy_gettext('Amps')),
+            'name': f"{lazy_gettext('Current')} ({lazy_gettext('Amps')})",
             'phrase': 'The current draw of the device being controlled'
         }
     ]
@@ -139,8 +139,8 @@ class OutputModule(AbstractOutput):
         self.setup_output_variables(OUTPUT_INFORMATION)
 
         try:
-            self.logger.debug("I2C: Address: {}, Bus: {}".format(
-                self.output.i2c_location, self.output.i2c_bus))
+            self.logger.debug(f"I2C: Address: {self.output.i2c_location}, "
+                              f"Bus: {self.output.i2c_bus}")
             if self.output.i2c_location:
                 self.sensor = MCP23017(
                     ExtendedI2C(self.output.i2c_bus),
@@ -170,8 +170,7 @@ class OutputModule(AbstractOutput):
                     self.check_triggers(self.unique_id, output_channel=channel)
                 except Exception as err:
                     self.logger.error(
-                        "Could not check Trigger for channel {} of output {}: {}".format(
-                            channel, self.unique_id, err))
+                        f"Could not check Trigger for channel {channel} of output {self.unique_id}: {err}")
 
     def output_switch(self,
                       state,
@@ -193,15 +192,15 @@ class OutputModule(AbstractOutput):
             if state == 'on':
                 self.pins[output_channel].value = bool(self.options_channels['on_state'][output_channel])
                 self.output_states[output_channel] = bool(self.options_channels['on_state'][output_channel])
-                self.logger.debug("Output channel {} turned ON".format(output_channel))
+                self.logger.debug(f"Output channel {output_channel} turned ON")
             elif state == 'off':
                 self.pins[output_channel].value = bool(not self.options_channels['on_state'][output_channel])
                 self.output_states[output_channel] = bool(not self.options_channels['on_state'][output_channel])
-                self.logger.debug("Output channel {} turned OFF".format(output_channel))
+                self.logger.debug(f"Output channel {output_channel} turned OFF")
 
             msg = "success"
-        except Exception as e:
-            msg = "CH{} state change error: {}".format(output_channel, e)
+        except Exception as err:
+            msg = f"CH{output_channel} state change error: {err}"
             self.logger.error(msg)
         return msg
 
