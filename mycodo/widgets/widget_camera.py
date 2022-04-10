@@ -21,17 +21,75 @@
 #
 #  Contact at kylegabriel.com
 #
+import datetime
 import json
 import logging
+import os
 
+from flask import Response
 from flask import flash
 from flask_babel import lazy_gettext
+from flask_login import current_user
 
 from mycodo.config import CAMERA_INFO
 from mycodo.databases.models import Camera
+from mycodo.devices.camera import camera_record
+from mycodo.mycodo_flask.utils import utils_general
 from mycodo.utils.constraints_pass import constraints_pass_positive_value
 
 logger = logging.getLogger(__name__)
+
+
+def camera_img_acquire(image_type, camera_unique_id, max_age):
+    """Capture an image and return the filename."""
+    if not current_user.is_authenticated:
+        return "You are not logged in and cannot access this endpoint"
+
+    if image_type == 'new':
+        tmp_filename = None
+    elif image_type == 'tmp':
+        tmp_filename = f'{camera_unique_id}_tmp.jpg'
+    else:
+        return
+    path, filename = camera_record('photo', camera_unique_id, tmp_filename=tmp_filename)
+    if not path and not filename:
+        msg = "Could not acquire image."
+        logger.error(msg)
+        return msg
+    else:
+        image_path = os.path.join(path, filename)
+        time_max_age = datetime.datetime.now() - datetime.timedelta(seconds=int(max_age))
+        timestamp = os.path.getctime(image_path)
+        if datetime.datetime.fromtimestamp(timestamp) > time_max_age:
+            date_time = datetime.datetime.fromtimestamp(timestamp).strftime('%Y-%m-%d %H:%M:%S')
+            return_values = f'["{filename}","{date_time}"]'
+        else:
+            return_values = '["max_age_exceeded"]'
+        return Response(return_values, mimetype='text/json')
+
+
+def camera_img_latest_timelapse(camera_unique_id, max_age):
+    """Capture an image and/or return a filename."""
+    if not current_user.is_authenticated:
+        return "You are not logged in and cannot access this endpoint"
+
+    camera = Camera.query.filter(
+            Camera.unique_id == camera_unique_id).first()
+
+    _, tl_path = utils_general.get_camera_paths(camera)
+
+    timelapse_file_path = os.path.join(tl_path, str(camera.timelapse_last_file))
+
+    if camera.timelapse_last_file is not None and os.path.exists(timelapse_file_path):
+        time_max_age = datetime.datetime.now() - datetime.timedelta(seconds=int(max_age))
+        if datetime.datetime.fromtimestamp(camera.timelapse_last_ts) > time_max_age:
+            ts = datetime.datetime.fromtimestamp(camera.timelapse_last_ts).strftime("%Y-%m-%d %H:%M:%S")
+            return_values = f'["{camera.timelapse_last_file}","{ts}"]'
+        else:
+            return_values = '["max_age_exceeded"]'
+    else:
+        return_values = '["file_not_found"]'
+    return Response(return_values, mimetype='text/json')
 
 
 def can_stream(custom_options_json):
@@ -89,6 +147,12 @@ WIDGET_INFORMATION = {
 
     'widget_width': 7,
     'widget_height': 8,
+
+    'endpoints': [
+        # Route URL, route endpoint name, view function, methods
+        ("/camera_acquire_image/<image_type>/<camera_unique_id>/<max_age>", "camera_acquire_image", camera_img_acquire, ["GET"]),
+        ("/camera_latest_timelapse/<camera_unique_id>/<max_age>", "camera_latest_timelapse", camera_img_latest_timelapse, ["GET"])
+    ],
 
     'custom_options': [
         {

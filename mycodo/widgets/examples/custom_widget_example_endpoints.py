@@ -1,6 +1,6 @@
 # coding=utf-8
 #
-#  custom_widget_example_endpoint.py - Simple example dashboard widget that creates a new endpoint
+#  custom_widget_example_endpoints.py - Simple example dashboard widget that creates 2 new endpoints
 #
 #  Copyright (C) 2015-2020 Kyle T. Gabriel <mycodo@kylegabriel.com>
 #
@@ -33,7 +33,7 @@ from mycodo.utils.constraints_pass import constraints_pass_positive_value
 logger = logging.getLogger(__name__)
 
 
-def test_123():
+def test_user():
     """
     This endpoint will display different messages for logged in and logged out users.
     Be very careful when creating endpoints so unauthorized users don't have access
@@ -65,9 +65,21 @@ def test_123():
     return return_message
 
 
+def test_parameter(some_text):
+    """
+    This endpoint will accept a parameter
+    """
+    if not current_user.is_authenticated:
+        return "You are not logged in and cannot access this endpoint"
+
+    return_message = f"User passed some text: {some_text}"
+
+    return return_message
+
+
 WIDGET_INFORMATION = {
-    'widget_name_unique': 'widget_example_endpoint',
-    'widget_name': 'Example Widget (Endpoint)',
+    'widget_name_unique': 'widget_example_endpoints',
+    'widget_name': 'Example Widget (Endpoints)',
     'widget_library': '',
     'no_class': True,
 
@@ -81,11 +93,13 @@ WIDGET_INFORMATION = {
 
     'endpoints': [
         # Route URL, route endpoint name, view function, methods
-        ("/test_123", "test_123", test_123, ["GET"])
+        ("/test_user", "test_user", test_user, ["GET"]),
+        ("/test_parameter/<some_text>", "test_parameter", test_parameter, ["GET"])
     ],
 
     'message': 'This widget is an example endpoint widget, which will create the new endpoint '
-               'at /test_123. Open <a href="/test_123">This Link</a> to see this new endpoint.',
+               'at /test_user and /test_parameter/<some_text>. Open <a href="/test_user">This Link</a> '
+               'and <a href="/test_parameter/thisissometext">This Link</a> to see this new endpoints.',
 
     # Any dependencies required by the output module. An empty list means no dependencies are required.
     'dependencies_module': [],
@@ -108,7 +122,7 @@ WIDGET_INFORMATION = {
         {
             'id': 'body_text',
             'type': 'text',
-            'default_value': "Open this Widget's configuration menu and read its description.",
+            'default_value': """Open this Widget's configuration menu and read its description. Click <a href="/test_user">here</a> and <a href="/test_parameter/thisissometext">here</a> to view the newly-created endpoints.""",
             'name': 'Body Text',
             'phrase': 'The body text of the widget'
         },
@@ -116,7 +130,7 @@ WIDGET_INFORMATION = {
 
     'widget_dashboard_head': """<!-- No head content -->""",
     'widget_dashboard_title_bar': """<span style="padding-right: 0.5em; font-size: {{each_widget.font_em_name}}em">{{each_widget.name}}</span>""",
-    'widget_dashboard_body': """<span style="font-size: {{widget_options['font_em_body']}}em">{{widget_options['body_text']}}</span>""",
+    'widget_dashboard_body': """<span style="font-size: {{widget_options['font_em_body']}}em">{{widget_options['body_text']|safe}}</span>""",
     'widget_dashboard_js': """<!-- No JS content -->""",
     'widget_dashboard_js_ready': """<!-- No JS ready content -->""",
     'widget_dashboard_js_ready_end': """<!-- No JS ready end content -->"""

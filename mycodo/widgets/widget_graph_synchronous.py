@@ -21,13 +21,16 @@
 #
 #  Contact at kylegabriel.com
 #
+import datetime
 import json
 import logging
 import re
 
 import flask_login
 from flask import flash
+from flask import jsonify
 from flask_babel import lazy_gettext
+from flask_login import current_user
 
 from mycodo.config import THEMES_DARK
 from mycodo.databases.models import Conversion
@@ -36,14 +39,87 @@ from mycodo.databases.models import DeviceMeasurements
 from mycodo.databases.models import Input
 from mycodo.databases.models import Measurement
 from mycodo.databases.models import NoteTags
+from mycodo.databases.models import Notes
 from mycodo.databases.models import Output
 from mycodo.databases.models import PID
 from mycodo.mycodo_flask.utils.utils_general import use_unit_generate
 from mycodo.utils.constraints_pass import constraints_pass_positive_value
+from mycodo.utils.influx import query_string
 from mycodo.utils.system_pi import add_custom_measurements
 from mycodo.utils.system_pi import return_measurement_info
+from mycodo.utils.system_pi import str_is_float
 
 logger = logging.getLogger(__name__)
+
+
+def past_data(unique_id, measure_type, measurement_id, past_seconds):
+    """Return data from past_seconds until present from influxdb."""
+    if not current_user.is_authenticated:
+        return "You are not logged in and cannot access this endpoint"
+    if not str_is_float(past_seconds):
+        return '', 204
+
+    if measure_type == 'tag':
+        notes_list = []
+
+        tag = NoteTags.query.filter(NoteTags.unique_id == unique_id).first()
+        notes = Notes.query.filter(
+            Notes.date_time >= (datetime.datetime.utcnow() - datetime.timedelta(seconds=int(past_seconds)))).all()
+
+        for each_note in notes:
+            if tag.unique_id in each_note.tags.split(','):
+                notes_list.append(
+                    [each_note.date_time.strftime("%Y-%m-%dT%H:%M:%S.000000000Z"), each_note.name, each_note.note])
+
+        if notes_list:
+            return jsonify(notes_list)
+        else:
+            return '', 204
+
+    elif measure_type in ['input', 'function', 'output', 'pid']:
+        if measure_type in ['input', 'function', 'output', 'pid']:
+            measure = DeviceMeasurements.query.filter(
+                DeviceMeasurements.unique_id == measurement_id).first()
+        else:
+            measure = None
+
+        if not measure:
+            return "Could not find measurement"
+
+        if measure:
+            conversion = Conversion.query.filter(
+                Conversion.unique_id == measure.conversion_id).first()
+        else:
+            conversion = None
+
+        channel, unit, measurement = return_measurement_info(
+            measure, conversion)
+
+        if hasattr(measure, 'measurement_type') and measure.measurement_type == 'setpoint':
+            setpoint_pid = PID.query.filter(PID.unique_id == measure.device_id).first()
+            if setpoint_pid and ',' in setpoint_pid.measurement:
+                pid_measurement = setpoint_pid.measurement.split(',')[1]
+                setpoint_measurement = DeviceMeasurements.query.filter(
+                    DeviceMeasurements.unique_id == pid_measurement).first()
+                if setpoint_measurement:
+                    conversion = Conversion.query.filter(
+                        Conversion.unique_id == setpoint_measurement.conversion_id).first()
+                    _, unit, measurement = return_measurement_info(setpoint_measurement, conversion)
+
+        try:
+            data = query_string(
+                unit, unique_id,
+                measure=measurement,
+                channel=channel,
+                past_sec=past_seconds)
+
+            if data:
+                return jsonify(data)
+            else:
+                return '', 204
+        except Exception as err:
+            logger.debug(f"URL for 'past_data' raised and error: {err}")
+            return '', 204
 
 
 def execute_at_creation(error, new_widget, dict_widget):
@@ -163,6 +239,11 @@ WIDGET_INFORMATION = {
     'execute_at_creation': execute_at_creation,
     'execute_at_modification': execute_at_modification,
     'generate_page_variables': generate_page_variables,
+
+    'endpoints': [
+        # Route URL, route endpoint name, view function, methods
+        ("/past/<unique_id>/<measure_type>/<measurement_id>/<past_seconds>", "past", past_data, ["GET"]),
+    ],
 
     'widget_width': 20,
     'widget_height': 15,

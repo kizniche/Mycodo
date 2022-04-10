@@ -5,7 +5,6 @@ import datetime
 import logging
 import os
 import subprocess
-import time
 from importlib import import_module
 from io import StringIO
 
@@ -37,18 +36,14 @@ from mycodo.databases.models import Notes
 from mycodo.databases.models import Output
 from mycodo.databases.models import OutputChannel
 from mycodo.databases.models import PID
-from mycodo.devices.camera import camera_record
 from mycodo.mycodo_client import DaemonControl
 from mycodo.mycodo_flask.routes_authentication import clear_cookie_auth
 from mycodo.mycodo_flask.utils import utils_general
 from mycodo.mycodo_flask.utils.utils_general import get_ip_address
 from mycodo.mycodo_flask.utils.utils_output import get_all_output_states
-from mycodo.utils.database import db_retrieve_table
-from mycodo.utils.image import generate_thermal_image_from_pixels
 from mycodo.utils.influx import influx_time_str_to_milliseconds
 from mycodo.utils.influx import query_string
 from mycodo.utils.system_pi import assure_path_exists
-from mycodo.utils.system_pi import is_int
 from mycodo.utils.system_pi import return_measurement_info
 from mycodo.utils.system_pi import str_is_float
 
@@ -149,56 +144,6 @@ def camera_img_return_path(camera_unique_id, img_type, filename):
             return send_file(path_file, mimetype='image/jpeg')
 
     return "Image not found"
-
-
-@blueprint.route('/camera_acquire_image/<image_type>/<camera_unique_id>/<max_age>')
-@flask_login.login_required
-def camera_img_acquire(image_type, camera_unique_id, max_age):
-    """Capture an image and return the filename."""
-    if image_type == 'new':
-        tmp_filename = None
-    elif image_type == 'tmp':
-        tmp_filename = f'{camera_unique_id}_tmp.jpg'
-    else:
-        return
-    path, filename = camera_record('photo', camera_unique_id, tmp_filename=tmp_filename)
-    if not path and not filename:
-        msg = "Could not acquire image."
-        logger.error(msg)
-        return msg
-    else:
-        image_path = os.path.join(path, filename)
-        time_max_age = datetime.datetime.now() - datetime.timedelta(seconds=int(max_age))
-        timestamp = os.path.getctime(image_path)
-        if datetime.datetime.fromtimestamp(timestamp) > time_max_age:
-            date_time = datetime.datetime.fromtimestamp(timestamp).strftime('%Y-%m-%d %H:%M:%S')
-            return_values = f'["{filename}","{date_time}"]'
-        else:
-            return_values = '["max_age_exceeded"]'
-        return Response(return_values, mimetype='text/json')
-
-
-@blueprint.route('/camera_latest_timelapse/<camera_unique_id>/<max_age>')
-@flask_login.login_required
-def camera_img_latest_timelapse(camera_unique_id, max_age):
-    """Capture an image and/or return a filename."""
-    camera = Camera.query.filter(
-            Camera.unique_id == camera_unique_id).first()
-
-    _, tl_path = utils_general.get_camera_paths(camera)
-
-    timelapse_file_path = os.path.join(tl_path, str(camera.timelapse_last_file))
-
-    if camera.timelapse_last_file is not None and os.path.exists(timelapse_file_path):
-        time_max_age = datetime.datetime.now() - datetime.timedelta(seconds=int(max_age))
-        if datetime.datetime.fromtimestamp(camera.timelapse_last_ts) > time_max_age:
-            ts = datetime.datetime.fromtimestamp(camera.timelapse_last_ts).strftime("%Y-%m-%d %H:%M:%S")
-            return_values = f'["{camera.timelapse_last_file}","{ts}"]'
-        else:
-            return_values = '["max_age_exceeded"]'
-    else:
-        return_values = '["file_not_found"]'
-    return Response(return_values, mimetype='text/json')
 
 
 def gen(camera):
@@ -325,117 +270,6 @@ def last_data(unique_id, measure_type, measurement_id, period):
     except Exception as err:
         logger.exception(f"URL for 'last_data' raised and error: {err}")
         return '', 204
-
-
-@blueprint.route('/past/<unique_id>/<measure_type>/<measurement_id>/<past_seconds>')
-@flask_login.login_required
-def past_data(unique_id, measure_type, measurement_id, past_seconds):
-    """Return data from past_seconds until present from influxdb."""
-    if not str_is_float(past_seconds):
-        return '', 204
-
-    if measure_type == 'tag':
-        notes_list = []
-
-        tag = NoteTags.query.filter(NoteTags.unique_id == unique_id).first()
-        notes = Notes.query.filter(
-            Notes.date_time >= (datetime.datetime.utcnow() - datetime.timedelta(seconds=int(past_seconds)))).all()
-
-        for each_note in notes:
-            if tag.unique_id in each_note.tags.split(','):
-                notes_list.append(
-                    [each_note.date_time.strftime("%Y-%m-%dT%H:%M:%S.000000000Z"), each_note.name, each_note.note])
-
-        if notes_list:
-            return jsonify(notes_list)
-        else:
-            return '', 204
-
-    elif measure_type in ['input', 'function', 'output', 'pid']:
-        if measure_type in ['input', 'function', 'output', 'pid']:
-            measure = DeviceMeasurements.query.filter(
-                DeviceMeasurements.unique_id == measurement_id).first()
-        else:
-            measure = None
-
-        if not measure:
-            return "Could not find measurement"
-
-        if measure:
-            conversion = Conversion.query.filter(
-                Conversion.unique_id == measure.conversion_id).first()
-        else:
-            conversion = None
-
-        channel, unit, measurement = return_measurement_info(
-            measure, conversion)
-
-        if hasattr(measure, 'measurement_type') and measure.measurement_type == 'setpoint':
-            setpoint_pid = PID.query.filter(PID.unique_id == measure.device_id).first()
-            if setpoint_pid and ',' in setpoint_pid.measurement:
-                pid_measurement = setpoint_pid.measurement.split(',')[1]
-                setpoint_measurement = DeviceMeasurements.query.filter(
-                    DeviceMeasurements.unique_id == pid_measurement).first()
-                if setpoint_measurement:
-                    conversion = Conversion.query.filter(
-                        Conversion.unique_id == setpoint_measurement.conversion_id).first()
-                    _, unit, measurement = return_measurement_info(setpoint_measurement, conversion)
-
-        try:
-            data = query_string(
-                unit, unique_id,
-                measure=measurement,
-                channel=channel,
-                past_sec=past_seconds)
-
-            if data:
-                return jsonify(data)
-            else:
-                return '', 204
-        except Exception as err:
-            logger.debug(f"URL for 'past_data' raised and error: {err}")
-            return '', 204
-
-
-@blueprint.route('/generate_thermal_image/<unique_id>/<timestamp>')
-@flask_login.login_required
-def generate_thermal_image_from_timestamp(unique_id, timestamp):
-    """Return a file from the note attachment directory."""
-    ts_now = datetime.datetime.now().strftime('%Y-%m-%d_%H-%M-%S')
-    camera_path = assure_path_exists(
-        os.path.join(PATH_CAMERAS, unique_id))
-    filename = f'Still-{unique_id}-{ts_now}.jpg'.replace(" ", "_")
-    save_path = assure_path_exists(os.path.join(camera_path, 'thermal'))
-    assure_path_exists(save_path)
-    path_file = os.path.join(save_path, filename)
-
-    input_dev = Input.query.filter(Input.unique_id == unique_id).first()
-    pixels = []
-    success = True
-
-    start = int(int(timestamp) / 1000.0)  # Round down
-    end = start + 1  # Round up
-
-    start_timestamp = time.strftime('%Y-%m-%dT%H:%M:%S.000000000Z', time.gmtime(start))
-    end_timestamp = time.strftime('%Y-%m-%dT%H:%M:%S.000000000Z', time.gmtime(end))
-
-    for each_channel in range(input_dev.channels):
-        measurement = f'channel_{each_channel}'
-        data = query_string(measurement, unique_id,
-                                 start_str=start_timestamp,
-                                 end_str=end_timestamp)
-
-        if not data:
-            logger.error('No measurements to export in this time period')
-            success = False
-        else:
-            pixels.append(data[0][1])
-
-    if success:
-        generate_thermal_image_from_pixels(pixels, 8, 8, path_file)
-        return send_file(path_file, mimetype='image/jpeg')
-    else:
-        return "Could not generate image"
 
 
 @blueprint.route('/export_data/<unique_id>/<measurement_id>/<start_seconds>/<end_seconds>')
@@ -866,47 +700,6 @@ def async_usage_data(device_id, unit, channel, start_seconds, end_seconds):
             return '', 204
 
 
-@blueprint.route('/output_mod/<output_id>/<channel>/<state>/<output_type>/<amount>')
-@flask_login.login_required
-def output_mod(output_id, channel, state, output_type, amount):
-    """Manipulate output (using non-unique ID)"""
-    if not utils_general.user_has_permission('edit_controllers'):
-        return 'Insufficient user permissions to manipulate outputs'
-
-    if is_int(channel):
-        # if an integer was returned
-        output_channel = int(channel)
-    else:
-        # if a channel ID was returned
-        channel_dev = db_retrieve_table(OutputChannel).filter(
-            OutputChannel.unique_id == channel).first()
-        if channel_dev:
-            output_channel = channel_dev.channel
-        else:
-            return f"Could not determine channel number from channel ID '{channel}'"
-
-    daemon = DaemonControl()
-    if (state in ['on', 'off'] and str_is_float(amount) and
-            (
-                (output_type == 'pwm' and float(amount) >= 0) or
-                output_type in ['sec', 'vol', 'value']
-            )):
-        out_status = daemon.output_on_off(
-            output_id,
-            state,
-            output_type=output_type,
-            amount=float(amount),
-            output_channel=output_channel)
-        if out_status[0]:
-            return f'ERROR: {out_status[1]}'
-        else:
-            return f'SUCCESS: {out_status[1]}'
-    else:
-        return 'ERROR: unknown parameters: ' \
-               f'output_id: {output_id}, channel: {channel}, ' \
-               f'state: {state}, output_type: {output_type}, amount: {amount}'
-
-
 @blueprint.route('/daemonactive')
 @flask_login.login_required
 def daemon_active():
@@ -958,194 +751,43 @@ def computer_command(action):
         return redirect(url_for('routes_general.home'))
 
 
-#
-# PID Dashboard object routes
-#
-
-def return_point_timestamp(dev_id, unit, period, measurement=None, channel=None):
-    data = query_string(
-        unit,
-        dev_id,
-        measure=measurement,
-        channel=channel,
-        value='LAST',
-        past_sec=period)
-
-    if not data:
-        return [None, None]
-
-    try:
-        number = len(data)
-        time_raw = data[number - 1][0]
-        value = data[number - 1][1]
-        value = f'{float(value):.3f}'
-        # Convert date-time to epoch (potential bottleneck for data)
-        dt = date_parse(time_raw)
-        timestamp = calendar.timegm(dt.timetuple()) * 1000
-        return [timestamp, value]
-    except KeyError:
-        return [None, None]
-    except Exception:
-        return [None, None]
-
-
-@blueprint.route('/last_pid/<pid_id>/<input_period>')
-@flask_login.login_required
-def last_data_pid(pid_id, input_period):
-    """Return the most recent time and value from influxdb."""
-    if not str_is_float(input_period):
-        return '', 204
-
-    try:
-        pid = PID.query.filter(PID.unique_id == pid_id).first()
-
-        if len(pid.measurement.split(',')) == 2:
-            device_id = pid.measurement.split(',')[0]
-            measurement_id = pid.measurement.split(',')[1]
-        else:
-            device_id = None
-            measurement_id = None
-
-        actual_measurement = DeviceMeasurements.query.filter(
-            DeviceMeasurements.unique_id == measurement_id).first()
-        if actual_measurement:
-            actual_conversion = Conversion.query.filter(
-                Conversion.unique_id == actual_measurement.conversion_id).first()
-        else:
-            actual_conversion = None
-
-        (actual_channel,
-         actual_unit,
-         actual_measurement) = return_measurement_info(
-            actual_measurement, actual_conversion)
-
-        setpoint_unit = None
-        if pid and ',' in pid.measurement:
-            pid_measurement = pid.measurement.split(',')[1]
-            setpoint_measurement = DeviceMeasurements.query.filter(
-                DeviceMeasurements.unique_id == pid_measurement).first()
-            if setpoint_measurement:
-                conversion = Conversion.query.filter(
-                    Conversion.unique_id == setpoint_measurement.conversion_id).first()
-                _, setpoint_unit, _ = return_measurement_info(setpoint_measurement, conversion)
-
-        p_value = return_point_timestamp(
-            pid_id, 'pid_value', input_period, measurement='pid_p_value')
-        i_value = return_point_timestamp(
-            pid_id, 'pid_value', input_period, measurement='pid_i_value')
-        d_value = return_point_timestamp(
-            pid_id, 'pid_value', input_period, measurement='pid_d_value')
-        if None not in (p_value[1], i_value[1], d_value[1]):
-            pid_value = [p_value[0], f'{float(p_value[1]) + float(i_value[1]) + float(d_value[1]):.3f}']
-        else:
-            pid_value = None
-
-        setpoint_band = None
-        if pid.band:
-            try:
-                daemon = DaemonControl()
-                setpoint_band = daemon.pid_get(pid.unique_id, 'setpoint_band')
-            except:
-                logger.debug("Couldn't get setpoint")
-
-        live_data = {
-            'activated': pid.is_activated,
-            'paused': pid.is_paused,
-            'held': pid.is_held,
-            'setpoint': return_point_timestamp(
-                pid_id, setpoint_unit, input_period, channel=0),
-            'setpoint_band': setpoint_band,
-            'pid_p_value': p_value,
-            'pid_i_value': i_value,
-            'pid_d_value': d_value,
-            'pid_pid_value': pid_value,
-            'duration_time': return_point_timestamp(
-                pid_id, 's', input_period, measurement='duration_time'),
-            'duty_cycle': return_point_timestamp(
-                pid_id, 'percent', input_period, measurement='duty_cycle'),
-            'actual': return_point_timestamp(
-                device_id,
-                actual_unit,
-                input_period,
-                measurement=actual_measurement,
-                channel=actual_channel)
-        }
-        return jsonify(live_data)
-    except KeyError:
-        logger.debug("No Data returned form influxdb")
-        return '', 204
-    except Exception as err:
-        logger.exception(f"URL for 'last_pid' raised and error: {err}")
-        return '', 204
-
-
-@blueprint.route('/pid_mod_unique_id/<unique_id>/<state>')
-@flask_login.login_required
-def pid_mod_unique_id(unique_id, state):
-    """Manipulate output (using unique ID)"""
-    if not utils_general.user_has_permission('edit_controllers'):
-        return 'Insufficient user permissions to manipulate PID'
-
-    pid = PID.query.filter(PID.unique_id == unique_id).first()
-
-    daemon = DaemonControl()
-    if state == 'activate_pid':
-        pid.is_activated = True
-        pid.save()
-        _, return_str = daemon.controller_activate(pid.unique_id)
-        return return_str
-    elif state == 'deactivate_pid':
-        pid.is_activated = False
-        pid.is_paused = False
-        pid.is_held = False
-        pid.save()
-        _, return_str = daemon.controller_deactivate(pid.unique_id)
-        return return_str
-    elif state == 'pause_pid':
-        pid.is_paused = True
-        pid.save()
-        if pid.is_activated:
-            return_str = daemon.pid_pause(pid.unique_id)
-        else:
-            return_str = "PID Paused (Note: PID is not currently active)"
-        return return_str
-    elif state == 'hold_pid':
-        pid.is_held = True
-        pid.save()
-        if pid.is_activated:
-            return_str = daemon.pid_hold(pid.unique_id)
-        else:
-            return_str = "PID Held (Note: PID is not currently active)"
-        return return_str
-    elif state == 'resume_pid':
-        pid.is_held = False
-        pid.is_paused = False
-        pid.save()
-        if pid.is_activated:
-            return_str = daemon.pid_resume(pid.unique_id)
-        else:
-            return_str = "PID Resumed (Note: PID is not currently active)"
-        return return_str
-    elif 'set_setpoint_pid' in state:
-        pid.setpoint = state.split('|')[1]
-        pid.save()
-        if pid.is_activated:
-            return_str = daemon.pid_set(pid.unique_id, 'setpoint', float(state.split('|')[1]))
-        else:
-            return_str = "PID Setpoint changed (Note: PID is not currently active)"
-        return return_str
-
-
-# import flask_login
-# from mycodo.mycodo_flask.api import api
-# @blueprint.route('/export_swagger')
+# @blueprint.route('/generate_thermal_image/<unique_id>/<timestamp>')
 # @flask_login.login_required
-# def export_swagger():
-#     """Export swagger JSON to swagger.json file."""
-#     from mycodo.mycodo_flask.utils import utils_general
-#     import json
-#     if not utils_general.user_has_permission('view_settings'):
-#         return 'You do not have permission to access this.', 401
-#     with open("/home/pi/swagger.json", "w") as text_file:
-#         text_file.write(json.dumps(api.__schema__, indent=2))
-#     return 'success'
+# def generate_thermal_image_from_timestamp(unique_id, timestamp):
+#     """Return a file from the note attachment directory."""
+#     ts_now = datetime.datetime.now().strftime('%Y-%m-%d_%H-%M-%S')
+#     camera_path = assure_path_exists(
+#         os.path.join(PATH_CAMERAS, unique_id))
+#     filename = f'Still-{unique_id}-{ts_now}.jpg'.replace(" ", "_")
+#     save_path = assure_path_exists(os.path.join(camera_path, 'thermal'))
+#     assure_path_exists(save_path)
+#     path_file = os.path.join(save_path, filename)
+#
+#     input_dev = Input.query.filter(Input.unique_id == unique_id).first()
+#     pixels = []
+#     success = True
+#
+#     start = int(int(timestamp) / 1000.0)  # Round down
+#     end = start + 1  # Round up
+#
+#     start_timestamp = time.strftime('%Y-%m-%dT%H:%M:%S.000000000Z', time.gmtime(start))
+#     end_timestamp = time.strftime('%Y-%m-%dT%H:%M:%S.000000000Z', time.gmtime(end))
+#
+#     for each_channel in range(input_dev.channels):
+#         measurement = f'channel_{each_channel}'
+#         data = query_string(measurement, unique_id,
+#                                  start_str=start_timestamp,
+#                                  end_str=end_timestamp)
+#
+#         if not data:
+#             logger.error('No measurements to export in this time period')
+#             success = False
+#         else:
+#             pixels.append(data[0][1])
+#
+#     if success:
+#         from mycodo.utils.image import generate_thermal_image_from_pixels
+#         generate_thermal_image_from_pixels(pixels, 8, 8, path_file)
+#         return send_file(path_file, mimetype='image/jpeg')
+#     else:
+#         return "Could not generate image"

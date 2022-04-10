@@ -21,13 +21,200 @@
 #
 #  Contact at kylegabriel.com
 #
+import calendar
 import logging
 
+from dateutil.parser import parse as date_parse
+from flask import jsonify
 from flask_babel import lazy_gettext
+from flask_login import current_user
 
+from mycodo.databases.models import Conversion
+from mycodo.databases.models import DeviceMeasurements
+from mycodo.databases.models import PID
+from mycodo.mycodo_client import DaemonControl
+from mycodo.mycodo_flask.utils.utils_general import user_has_permission
 from mycodo.utils.constraints_pass import constraints_pass_positive_value
+from mycodo.utils.influx import query_string
+from mycodo.utils.system_pi import return_measurement_info
+from mycodo.utils.system_pi import str_is_float
 
 logger = logging.getLogger(__name__)
+
+
+
+def return_point_timestamp(dev_id, unit, period, measurement=None, channel=None):
+    data = query_string(
+        unit,
+        dev_id,
+        measure=measurement,
+        channel=channel,
+        value='LAST',
+        past_sec=period)
+
+    if not data:
+        return [None, None]
+
+    try:
+        number = len(data)
+        time_raw = data[number - 1][0]
+        value = data[number - 1][1]
+        value = f'{float(value):.3f}'
+        # Convert date-time to epoch (potential bottleneck for data)
+        dt = date_parse(time_raw)
+        timestamp = calendar.timegm(dt.timetuple()) * 1000
+        return [timestamp, value]
+    except KeyError:
+        return [None, None]
+    except Exception:
+        return [None, None]
+
+
+def last_data_pid(pid_id, input_period):
+    """Return the most recent time and value from influxdb."""
+    if not current_user.is_authenticated:
+        return "You are not logged in and cannot access this endpoint"
+    if not str_is_float(input_period):
+        return '', 204
+
+    try:
+        pid = PID.query.filter(PID.unique_id == pid_id).first()
+
+        if len(pid.measurement.split(',')) == 2:
+            device_id = pid.measurement.split(',')[0]
+            measurement_id = pid.measurement.split(',')[1]
+        else:
+            device_id = None
+            measurement_id = None
+
+        actual_measurement = DeviceMeasurements.query.filter(
+            DeviceMeasurements.unique_id == measurement_id).first()
+        if actual_measurement:
+            actual_conversion = Conversion.query.filter(
+                Conversion.unique_id == actual_measurement.conversion_id).first()
+        else:
+            actual_conversion = None
+
+        (actual_channel,
+         actual_unit,
+         actual_measurement) = return_measurement_info(
+            actual_measurement, actual_conversion)
+
+        setpoint_unit = None
+        if pid and ',' in pid.measurement:
+            pid_measurement = pid.measurement.split(',')[1]
+            setpoint_measurement = DeviceMeasurements.query.filter(
+                DeviceMeasurements.unique_id == pid_measurement).first()
+            if setpoint_measurement:
+                conversion = Conversion.query.filter(
+                    Conversion.unique_id == setpoint_measurement.conversion_id).first()
+                _, setpoint_unit, _ = return_measurement_info(setpoint_measurement, conversion)
+
+        p_value = return_point_timestamp(
+            pid_id, 'pid_value', input_period, measurement='pid_p_value')
+        i_value = return_point_timestamp(
+            pid_id, 'pid_value', input_period, measurement='pid_i_value')
+        d_value = return_point_timestamp(
+            pid_id, 'pid_value', input_period, measurement='pid_d_value')
+        if None not in (p_value[1], i_value[1], d_value[1]):
+            pid_value = [p_value[0], f'{float(p_value[1]) + float(i_value[1]) + float(d_value[1]):.3f}']
+        else:
+            pid_value = None
+
+        setpoint_band = None
+        if pid.band:
+            try:
+                daemon = DaemonControl()
+                setpoint_band = daemon.pid_get(pid.unique_id, 'setpoint_band')
+            except:
+                logger.debug("Couldn't get setpoint")
+
+        live_data = {
+            'activated': pid.is_activated,
+            'paused': pid.is_paused,
+            'held': pid.is_held,
+            'setpoint': return_point_timestamp(
+                pid_id, setpoint_unit, input_period, channel=0),
+            'setpoint_band': setpoint_band,
+            'pid_p_value': p_value,
+            'pid_i_value': i_value,
+            'pid_d_value': d_value,
+            'pid_pid_value': pid_value,
+            'duration_time': return_point_timestamp(
+                pid_id, 's', input_period, measurement='duration_time'),
+            'duty_cycle': return_point_timestamp(
+                pid_id, 'percent', input_period, measurement='duty_cycle'),
+            'actual': return_point_timestamp(
+                device_id,
+                actual_unit,
+                input_period,
+                measurement=actual_measurement,
+                channel=actual_channel)
+        }
+        return jsonify(live_data)
+    except KeyError:
+        logger.debug("No Data returned form influxdb")
+        return '', 204
+    except Exception as err:
+        logger.exception(f"URL for 'last_pid' raised and error: {err}")
+        return '', 204
+
+
+def pid_mod_unique_id(unique_id, state):
+    """Manipulate output (using unique ID)"""
+    if not current_user.is_authenticated:
+        return "You are not logged in and cannot access this endpoint"
+    if not user_has_permission('edit_controllers'):
+        return 'Insufficient user permissions to manipulate PID'
+
+    pid = PID.query.filter(PID.unique_id == unique_id).first()
+
+    daemon = DaemonControl()
+    if state == 'activate_pid':
+        pid.is_activated = True
+        pid.save()
+        _, return_str = daemon.controller_activate(pid.unique_id)
+        return return_str
+    elif state == 'deactivate_pid':
+        pid.is_activated = False
+        pid.is_paused = False
+        pid.is_held = False
+        pid.save()
+        _, return_str = daemon.controller_deactivate(pid.unique_id)
+        return return_str
+    elif state == 'pause_pid':
+        pid.is_paused = True
+        pid.save()
+        if pid.is_activated:
+            return_str = daemon.pid_pause(pid.unique_id)
+        else:
+            return_str = "PID Paused (Note: PID is not currently active)"
+        return return_str
+    elif state == 'hold_pid':
+        pid.is_held = True
+        pid.save()
+        if pid.is_activated:
+            return_str = daemon.pid_hold(pid.unique_id)
+        else:
+            return_str = "PID Held (Note: PID is not currently active)"
+        return return_str
+    elif state == 'resume_pid':
+        pid.is_held = False
+        pid.is_paused = False
+        pid.save()
+        if pid.is_activated:
+            return_str = daemon.pid_resume(pid.unique_id)
+        else:
+            return_str = "PID Resumed (Note: PID is not currently active)"
+        return return_str
+    elif 'set_setpoint_pid' in state:
+        pid.setpoint = state.split('|')[1]
+        pid.save()
+        if pid.is_activated:
+            return_str = daemon.pid_set(pid.unique_id, 'setpoint', float(state.split('|')[1]))
+        else:
+            return_str = "PID Setpoint changed (Note: PID is not currently active)"
+        return return_str
 
 
 WIDGET_INFORMATION = {
@@ -40,6 +227,12 @@ WIDGET_INFORMATION = {
 
     'widget_width': 6,
     'widget_height': 6,
+
+    'endpoints': [
+        # Route URL, route endpoint name, view function, methods
+        ("/last_pid/<pid_id>/<input_period>", "last_pid", pid_mod_unique_id, ["GET"]),
+        ("/pid_mod_unique_id/<unique_id>/<state>", "pid_mod_unique_id", pid_mod_unique_id, ["GET"])
+    ],
 
     'custom_options': [
         {
