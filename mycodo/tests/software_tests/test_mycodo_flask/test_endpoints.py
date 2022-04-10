@@ -8,23 +8,27 @@ import time
 import mock
 
 from mycodo.config import FUNCTIONS
-from mycodo.databases.models import Conditional
 from mycodo.databases.models import Actions
+from mycodo.databases.models import Conditional
 from mycodo.databases.models import CustomController
+from mycodo.databases.models import Dashboard
 from mycodo.databases.models import Function
 from mycodo.databases.models import Input
 from mycodo.databases.models import Output
 from mycodo.databases.models import PID
 from mycodo.databases.models import Trigger
 from mycodo.databases.models import User
+from mycodo.databases.models import Widget
 from mycodo.mycodo_flask.utils.utils_general import choices_custom_functions
 from mycodo.mycodo_flask.utils.utils_general import generate_form_input_list
 from mycodo.mycodo_flask.utils.utils_general import generate_form_output_list
+from mycodo.mycodo_flask.utils.utils_general import generate_form_widget_list
 from mycodo.tests.software_tests.conftest import login_user
 from mycodo.tests.software_tests.factories import UserFactory
+from mycodo.utils.actions import parse_action_information
 from mycodo.utils.inputs import parse_input_information
 from mycodo.utils.outputs import parse_output_information
-from mycodo.utils.actions import parse_action_information
+from mycodo.utils.widgets import parse_widget_information
 
 
 # ----------------------
@@ -91,7 +95,6 @@ def test_routes_when_not_logged_in(testapp):
         'method-build/0',
         'method-data/0',
         'method-delete/0',
-        'past/0/0/0/0',
         'output',
         'remote/setup',
         'settings/alerts',
@@ -623,6 +626,50 @@ def test_add_all_function_actions_logged_in_as_admin(_, testapp):
     assert len(response.json['data']['messages']['success']) == 1
 
 
+
+@mock.patch('mycodo.mycodo_flask.routes_authentication.login_log')
+def test_add_all_widgets_logged_in_as_admin(_, testapp):
+    """Verifies adding all widgets as a logged in admin user."""
+    print("\nTest: test_add_all_widgets_logged_in_as_admin")
+    login_user(testapp, 'admin', '53CR3t_p4zZW0rD')
+
+    # Add All Widgets
+    widget_count = 0
+
+    dict_widgets = parse_widget_information()
+    list_widgets_sorted = generate_form_widget_list(dict_widgets)
+
+    choices_widget = []
+    for each_widget in list_widgets_sorted:
+        choices_widget.append(each_widget)
+
+    first_dashboard = Dashboard.query.first()
+    if not first_dashboard:
+        print("Error: Could not find a Dashboard, cannot test Widgets.")
+        return
+
+    for index, each_widget in enumerate(choices_widget):
+        choice_name = each_widget.split(',')[0]
+        print("test_add_all_widget_devices_logged_in_as_admin: Adding, saving, and deleting Widget ({}/{}): {}".format(
+            index + 1, len(choices_widget), each_widget))
+        add_widget(testapp, dashboard_id=first_dashboard.unique_id, widget_type=each_widget)
+
+        # Verify data was entered into the database
+        widget_count += 1
+        assert Widget.query.count() == widget_count, "Number of Widgets doesn't match: In DB {}, Should be: {}".format(
+            Widget.query.count(), widget_count)
+
+        widget_dev = Widget.query.filter(Widget.id == widget_count).first()
+        assert choice_name == widget_dev.graph_type, "Widget name doesn't match: {}".format(choice_name)
+
+        # Delete widget (speeds up further widget addition checking)
+        delete_data(testapp, 'widget', device_dev=widget_dev, dashboard_id=first_dashboard.unique_id)
+
+        widget_count -= 1
+        assert Widget.query.count() == widget_count, "Number of Widgets doesn't match: In DB {}, Should be: {}".format(
+            Widget.query.count(), widget_count)
+
+
 # ---------------------------
 #   Tests Logged in as Guest
 # ---------------------------
@@ -735,7 +782,22 @@ def add_action(testapp, function_id=None, action_type=''):
     return response
 
 
-def delete_data(testapp, data_type, device_dev=None):
+def add_widget(testapp, dashboard_id=None, widget_type=''):
+    """Go to the dashboard page and add widget."""
+    form = testapp.get('/dashboard').maybe_follow().forms['add_widget_form']
+    form_dict = {}
+    for each_field in form.fields.items():
+        if each_field[0]:
+            form_dict[each_field[0]] = form[each_field[0]].value
+    form_dict['dashboard_id'] = dashboard_id
+    form_dict['widget_type'] = widget_type
+    form_dict['widget_add'] = "Add"
+    response = testapp.post(f'/dashboard/{dashboard_id}', form_dict)
+    # response.showbrowser()
+    return response
+
+
+def delete_data(testapp, data_type, device_dev=None, dashboard_id=None):
     """Go to the data page and delete input/output/function/action."""
     response = None
     if data_type == 'input':
@@ -746,6 +808,12 @@ def delete_data(testapp, data_type, device_dev=None):
         response = testapp.post('/function_submit', {'function_delete': 'Delete', 'function_id': device_dev.unique_id})
     elif data_type == 'action':
         response = testapp.post('/function_submit', {'delete_action': 'Delete', 'action_id': device_dev.unique_id})
+    elif data_type == 'widget' and dashboard_id:
+        response = testapp.post(f'/dashboard/{dashboard_id}', {
+            'dashboard_id': dashboard_id,
+            'widget_id': device_dev.unique_id,
+            'widget_delete': 'Delete'
+        })
     # response.showbrowser()
     return response
 

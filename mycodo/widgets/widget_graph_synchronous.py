@@ -251,8 +251,8 @@ WIDGET_INFORMATION = {
     'custom_options': [
         {
             'id': 'refresh_seconds',
-            'type': 'integer',
-            'default_value': 90,
+            'type': 'float',
+            'default_value': 90.0,
             'constraints_pass': constraints_pass_positive_value,
             'name': 'Refresh (seconds)',
             'phrase': 'The period of time between refreshing the widget'

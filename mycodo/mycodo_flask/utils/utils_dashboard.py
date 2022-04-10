@@ -235,9 +235,10 @@ def widget_add(form_base, request_form):
 
             register_widget_endpoints()
 
-            # Refresh widget settings
-            control = DaemonControl()
-            control.widget_add_refresh(new_widget.unique_id)
+            if not current_app.config['TESTING']:
+                # Refresh widget settings
+                control = DaemonControl()
+                control.widget_add_refresh(new_widget.unique_id)
 
             flash(gettext(
                 "{dev} with ID %(id)s successfully added".format(
