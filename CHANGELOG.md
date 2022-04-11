@@ -3,6 +3,7 @@
 ### Bugfixes
 
  - Fix timestamp argument having no affect in value_set()
+ - Revert changes to PCF8574 Output ([#1175](https://github.com/kizniche/mycodo/issues/1175))
 
 ### Features
 

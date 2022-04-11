@@ -124,7 +124,6 @@ class OutputModule(AbstractOutput):
         super().__init__(output, testing=testing, name=__name__)
 
         self.device = None
-        self.output_states = {}
 
         output_channels = db_retrieve_table_daemon(
             OutputChannel).filter(OutputChannel.output_id == output.unique_id).all()
@@ -145,14 +144,25 @@ class OutputModule(AbstractOutput):
             self.logger.exception("Could not set up output")
             return
 
+        dict_states = {}
         for channel in channels_dict:
             if self.options_channels['state_startup'][channel] == 1:
-                self.output_switch("on", output_channel=channel)
+                dict_states[channel] = bool(self.options_channels['on_state'][channel])
             elif self.options_channels['state_startup'][channel] == 0:
-                self.output_switch("off", output_channel=channel)
-            else:  # Default state: Off
-                self.output_switch("off", output_channel=channel)
-            self.logger.debug(f"Pin state for CH{channel}: {self.device.get_pin_state(channel)}")
+                dict_states[channel] = bool(not self.options_channels['on_state'][channel])
+            else:
+                # Default state: Off
+                dict_states[channel] = bool(not self.options_channels['on_state'][channel])
+
+        try:
+            self.device.port(self.dict_to_list_states(dict_states))
+            self.logger.debug(f"List sent to device: {dict_states}")
+        except OSError as err:
+            self.logger.error(
+                f"OSError: {err}. Check that the device is connected properly, the correct "
+                "address is selected, and you can communicate with the device.")
+
+        self.output_states = dict_states
 
         for channel in channels_dict:
             if self.options_channels['trigger_functions_startup'][channel]:
@@ -178,13 +188,19 @@ class OutputModule(AbstractOutput):
             return msg
 
         try:
-            if state == 'on':
-                self.device.set_output(output_channel, bool(self.options_channels['on_state'][output_channel]))
-                self.output_states[output_channel] = True
-            elif state == 'off':
-                self.device.set_output(output_channel, bool(self.options_channels['on_state'][output_channel]))
-                self.output_states[output_channel] = False
+            dict_states = {}
+            for channel in channels_dict:
+                if output_channel == channel:
+                    if state == 'on':
+                        dict_states[channel] = bool(self.options_channels['on_state'][channel])
+                    elif state == 'off':
+                        dict_states[channel] = bool(not self.options_channels['on_state'][channel])
+                else:
+                    dict_states[channel] = self.output_states[channel]
 
+            self.device.port(self.dict_to_list_states(dict_states))
+            self.logger.debug(f"List sent to device: {dict_states}")
+            self.output_states[output_channel] = dict_states[output_channel]
             msg = "success"
         except Exception as err:
             msg = f"CH{output_channel} state change error: {err}"
@@ -194,19 +210,29 @@ class OutputModule(AbstractOutput):
     def is_on(self, output_channel=None):
         if self.is_setup():
             if output_channel is not None and output_channel in self.output_states:
-                return self.output_states[output_channel]
+                return self.output_states[output_channel] == self.options_channels['on_state'][output_channel]
 
     def is_setup(self):
         return self.output_setup
 
+    @staticmethod
+    def dict_to_list_states(dict_states):
+        list_states = []
+        for i, _ in enumerate(dict_states):
+            list_states.append(dict_states[i])
+        return list_states
+
     def stop_output(self):
         """Called when Output is stopped."""
+        dict_states = {}
         if self.is_setup():
             for channel in channels_dict:
                 if self.options_channels['state_shutdown'][channel] == 1:
-                    self.output_switch("on", output_channel=channel)
+                    dict_states[channel] = bool(self.options_channels['on_state'][channel])
                 elif self.options_channels['state_shutdown'][channel] == 0:
-                    self.output_switch("off", output_channel=channel)
+                    dict_states[channel] = bool(not self.options_channels['on_state'][channel])
+            self.device.port(self.dict_to_list_states(dict_states))
+            self.logger.debug(f"List sent to device: {dict_states}")
         self.running = False
 
 
@@ -220,20 +246,14 @@ class PCF8574(object):
     def __repr__(self):
         return f"PCF8574(i2c_bus_no={self.bus_no}, address={self.address})"
 
-    def set_output(self, output_number, value):
-        """
-        Set a specific output high (True) or low (False).
-        """
-        assert output_number in range(8), "Output number must be an integer between 0 and 7"
-        current_state = self.bus.read_byte(self.address)
-        bit = 1 << 7 - output_number
-        new_state = current_state | bit if value else current_state & (~bit & 0xFF)
+    def port(self, value):
+        """Set the whole port using a list"""
+        if not isinstance(value, list):
+            raise AssertionError
+        if len(value) != 8:
+            raise AssertionError
+        new_state = 0
+        for i, val in enumerate(value):
+            if val:
+                new_state |= 1 << i
         self.bus.write_byte(self.address, new_state)
-
-    def get_pin_state(self, pin_number):
-        """
-        Get the boolean state of an individual pin.
-        """
-        assert pin_number in range(8), "Pin number must be an integer between 0 and 7"
-        state = self.bus.read_byte(self.address)
-        return bool(state & 1 << 7 - pin_number)
