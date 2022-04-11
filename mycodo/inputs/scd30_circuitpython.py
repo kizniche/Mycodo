@@ -1,5 +1,6 @@
 # coding=utf-8
 import copy
+from flask_babel import lazy_gettext
 
 from mycodo.inputs.base_input import AbstractInput
 from mycodo.inputs.sensorutils import calculate_dewpoint
@@ -114,13 +115,13 @@ INPUT_INFORMATION = {
         },
         {
             'type': 'message',
-            'default_value': 'Temperature Offset: Specifies the offset to be added to the reported measurements to account for a bias in the measured signal. Value is in degrees Celsius with a resolution of 0.01 degrees and a maximum value of 655.35 C.',
+            'default_value': 'Temperature Offset: Specifies the offset to be added to the reported measurements to account for a bias in the measured signal. Must be a positive value, and will reduce the recorded temperature by that amount. Give the sensor adequate time to acclimate after setting this value. Value is in degrees Celsius with a resolution of 0.01 degrees and a maximum value of 655.35 C.',
         },
         {
             'id': 'temperature_offset',
             'type': 'float',
             'default_value': 0.0,
-            'name': 'Temperature Offset',
+            'name': lazy_gettext("Temperature Offset"),
         },
         {
             'type': 'message',
@@ -174,8 +175,12 @@ class InputModule(AbstractInput):
         if self.sensor.self_calibration_enabled != self.enable_self_calibration:
             self.sensor.self_calibration_enabled = self.enable_self_calibration
 
+        self.logger.info(f"{self.sensor.temperature_offset}, {self.temperature_offset}")
+
         if self.sensor.temperature_offset != self.temperature_offset:
             self.sensor.temperature_offset = self.temperature_offset
+
+        self.logger.info(f"New: {self.sensor.temperature_offset}")
 
         if self.sensor.ambient_pressure != self.ambient_pressure:
             self.sensor.ambient_pressure = self.ambient_pressure

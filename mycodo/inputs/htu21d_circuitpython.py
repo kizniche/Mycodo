@@ -1,5 +1,6 @@
 # coding=utf-8
 import copy
+from flask_babel import lazy_gettext
 
 from mycodo.inputs.base_input import AbstractInput
 from mycodo.inputs.sensorutils import calculate_dewpoint
@@ -52,7 +53,18 @@ INPUT_INFORMATION = {
 
     'interfaces': ['I2C'],
     'i2c_location': ['0x40'],
-    'i2c_address_editable': False
+    'i2c_address_editable': False,
+
+    'custom_options': [
+        {
+            'id': 'temperature_offset',
+            'type': 'float',
+            'default_value': 0.0,
+            'required': True,
+            'name': lazy_gettext("Temperature Offset"),
+            'phrase': "The temperature offset (degrees Celsius) to apply"
+        }
+    ]
 }
 
 
@@ -67,7 +79,11 @@ class InputModule(AbstractInput):
         self.sensor = None
         self.i2c_address = 0x40  # HTU21D-F Address
 
+        self.temperature_offset = None
+
         if not testing:
+            self.setup_custom_options(
+                INPUT_INFORMATION['custom_options'], input_dev)
             self.try_initialize()
 
     def initialize(self):
@@ -88,7 +104,7 @@ class InputModule(AbstractInput):
         self.return_dict = copy.deepcopy(measurements_dict)
 
         if self.is_enabled(0):
-            self.value_set(0, self.sensor.temperature)
+            self.value_set(0, self.sensor.temperature + self.temperature_offset)
 
         if self.is_enabled(1):
             self.value_set(1, self.sensor.relative_humidity)

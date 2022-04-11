@@ -2,6 +2,7 @@
 import time
 
 import copy
+from flask_babel import lazy_gettext
 
 from mycodo.inputs.base_input import AbstractInput
 
@@ -70,6 +71,17 @@ INPUT_INFORMATION = {
             'type': 'button',
             'name': 'Set Resolution'
         }
+    ],
+
+    'custom_options': [
+        {
+            'id': 'temperature_offset',
+            'type': 'float',
+            'default_value': 0.0,
+            'required': True,
+            'name': lazy_gettext("Temperature Offset"),
+            'phrase': "The temperature offset (degrees Celsius) to apply"
+        }
     ]
 }
 
@@ -82,7 +94,11 @@ class InputModule(AbstractInput):
 
         self.sensor = None
 
+        self.temperature_offset = None
+
         if not testing:
+            self.setup_custom_options(
+                INPUT_INFORMATION['custom_options'], input_dev)
             self.try_initialize()
 
     def initialize(self):
@@ -123,7 +139,7 @@ class InputModule(AbstractInput):
                 "Measurement outside the expected range of -55 C to 125 C: {temp} C".format(temp=temperature))
             return None
         elif temperature is not None:
-            self.value_set(0, temperature)
+            self.value_set(0, temperature + self.temperature_offset)
 
         return self.return_dict
 
