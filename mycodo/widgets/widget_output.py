@@ -37,48 +37,6 @@ from mycodo.utils.system_pi import str_is_float
 logger = logging.getLogger(__name__)
 
 
-# If modifying, also modify where it's found in other outputs: widget_output_pwm_slider.py
-def output_mod(output_id, channel, state, output_type, amount):
-    """Manipulate output (using non-unique ID)"""
-    if not current_user.is_authenticated:
-        return "You are not logged in and cannot access this endpoint"
-    if not user_has_permission('edit_controllers'):
-        return 'Insufficient user permissions to manipulate outputs'
-
-    if is_int(channel):
-        # if an integer was returned
-        output_channel = int(channel)
-    else:
-        # if a channel ID was returned
-        channel_dev = db_retrieve_table(OutputChannel).filter(
-            OutputChannel.unique_id == channel).first()
-        if channel_dev:
-            output_channel = channel_dev.channel
-        else:
-            return f"Could not determine channel number from channel ID '{channel}'"
-
-    daemon = DaemonControl()
-    if (state in ['on', 'off'] and str_is_float(amount) and
-            (
-                (output_type == 'pwm' and float(amount) >= 0) or
-                output_type in ['sec', 'vol', 'value']
-            )):
-        out_status = daemon.output_on_off(
-            output_id,
-            state,
-            output_type=output_type,
-            amount=float(amount),
-            output_channel=output_channel)
-        if out_status[0]:
-            return f'ERROR: {out_status[1]}'
-        else:
-            return f'SUCCESS: {out_status[1]}'
-    else:
-        return 'ERROR: unknown parameters: ' \
-               f'output_id: {output_id}, channel: {channel}, ' \
-               f'state: {state}, output_type: {output_type}, amount: {amount}'
-
-
 WIDGET_INFORMATION = {
     'widget_name_unique': 'widget_output',
     'widget_name': 'Output Control (Channel)',
@@ -89,11 +47,6 @@ WIDGET_INFORMATION = {
 
     'widget_width': 5,
     'widget_height': 4,
-
-    'endpoints': [
-        # Route URL, route endpoint name, view function, methods
-        ("/output_mod/<output_id>/<channel>/<state>/<output_type>/<amount>", "output_mod", output_mod, ["GET"])
-    ],
 
     'custom_options': [
         {

@@ -41,9 +41,11 @@ from mycodo.mycodo_flask.routes_authentication import clear_cookie_auth
 from mycodo.mycodo_flask.utils import utils_general
 from mycodo.mycodo_flask.utils.utils_general import get_ip_address
 from mycodo.mycodo_flask.utils.utils_output import get_all_output_states
+from mycodo.utils.database import db_retrieve_table
 from mycodo.utils.influx import influx_time_str_to_milliseconds
 from mycodo.utils.influx import query_string
 from mycodo.utils.system_pi import assure_path_exists
+from mycodo.utils.system_pi import is_int
 from mycodo.utils.system_pi import return_measurement_info
 from mycodo.utils.system_pi import str_is_float
 
@@ -73,6 +75,7 @@ def home():
         logger.error("User may not be logged in. Clearing cookie auth.")
     return clear_cookie_auth()
 
+
 @blueprint.route('/index_page')
 def index_page():
     """Load the index page."""
@@ -94,10 +97,52 @@ def index_page():
         logger.error("User may not be logged in. Clearing cookie auth.")
     return clear_cookie_auth()
 
+
 @blueprint.route('/settings', methods=('GET', 'POST'))
 @flask_login.login_required
 def page_settings():
     return redirect('settings/general')
+
+
+@blueprint.route('/output_mod/<output_id>/<channel>/<state>/<output_type>/<amount>')
+@flask_login.login_required
+def output_mod(output_id, channel, state, output_type, amount):
+    """Manipulate output (using non-unique ID)"""
+    if not utils_general.user_has_permission('edit_controllers'):
+        return 'Insufficient user permissions to manipulate outputs'
+
+    if is_int(channel):
+        # if an integer was returned
+        output_channel = int(channel)
+    else:
+        # if a channel ID was returned
+        channel_dev = db_retrieve_table(OutputChannel).filter(
+            OutputChannel.unique_id == channel).first()
+        if channel_dev:
+            output_channel = channel_dev.channel
+        else:
+            return f"Could not determine channel number from channel ID '{channel}'"
+
+    daemon = DaemonControl()
+    if (state in ['on', 'off'] and str_is_float(amount) and
+            (
+                (output_type == 'pwm' and float(amount) >= 0) or
+                output_type in ['sec', 'vol', 'value']
+            )):
+        out_status = daemon.output_on_off(
+            output_id,
+            state,
+            output_type=output_type,
+            amount=float(amount),
+            output_channel=output_channel)
+        if out_status[0]:
+            return f'ERROR: {out_status[1]}'
+        else:
+            return f'SUCCESS: {out_status[1]}'
+    else:
+        return 'ERROR: unknown parameters: ' \
+               f'output_id: {output_id}, channel: {channel}, ' \
+               f'state: {state}, output_type: {output_type}, amount: {amount}'
 
 
 @blueprint.route('/note_attachment/<filename>')
