@@ -24,15 +24,8 @@
 import logging
 
 from flask_babel import lazy_gettext
-from flask_login import current_user
 
-from mycodo.databases.models import OutputChannel
-from mycodo.mycodo_client import DaemonControl
-from mycodo.mycodo_flask.utils.utils_general import user_has_permission
 from mycodo.utils.constraints_pass import constraints_pass_positive_value
-from mycodo.utils.database import db_retrieve_table
-from mycodo.utils.system_pi import is_int
-from mycodo.utils.system_pi import str_is_float
 
 logger = logging.getLogger(__name__)
 
