@@ -22,7 +22,7 @@ ns_camera = api.namespace(
     'cameras', description='Camera operations')
 
 
-@ns_camera.route('/get_last_image/<string:unique_id>/<string:img_type>')
+@ns_camera.route('/last_image/<string:unique_id>/<string:img_type>')
 @ns_camera.doc(
     security='apikey',
     responses=default_responses,
