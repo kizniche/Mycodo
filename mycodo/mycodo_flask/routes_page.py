@@ -285,7 +285,7 @@ def page_camera():
         else:
             return redirect(url_for('routes_page.page_camera'))
 
-    # Get the full path and timestamps of latest still and time-lapse images
+    # Get the full path and timestamps of the latest still and time-lapse images
     (latest_img_still_ts,
      latest_img_still_size,
      latest_img_still,

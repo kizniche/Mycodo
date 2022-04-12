@@ -59,6 +59,7 @@ def api_v1(data, code, headers):
 
 
 def init_api(app):
+    import mycodo.mycodo_flask.api.camera
     import mycodo.mycodo_flask.api.choices
     import mycodo.mycodo_flask.api.controller
     import mycodo.mycodo_flask.api.daemon

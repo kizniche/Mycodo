@@ -7,6 +7,7 @@
 
 ### Features
 
+ - Add API endpoint: cameras/get_last_image
  - Add Input: Signal (Revolutions) (Alternative pigpio method)
 
 ### Miscellaneous
