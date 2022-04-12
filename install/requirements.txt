@@ -30,5 +30,5 @@ python-dateutil==2.8.2
 requests==2.27.1
 setuptools==62.1.0  # Also set version in upgrade_commands.sh
 SQLAlchemy==1.4.35
-Werkzeug==2.1.1
+Werkzeug==2.0.3
 WTForms==3.0.1

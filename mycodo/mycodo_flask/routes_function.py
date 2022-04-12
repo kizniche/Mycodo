@@ -4,6 +4,7 @@ import json
 import logging
 
 import flask_login
+from flask import current_app
 from flask import jsonify
 from flask import redirect
 from flask import render_template
@@ -502,37 +503,38 @@ def page_function():
 
     # Calculate sunrise/sunset times if conditional controller is set up properly
     sunrise_set_calc = {}
-    for each_trigger in trigger:
-        if each_trigger.trigger_type == 'trigger_sunrise_sunset':
-            sunrise_set_calc[each_trigger.unique_id] = {}
-            try:
-                sunrise = suntime_calculate_next_sunrise_sunset_epoch(
-                    each_trigger.latitude, each_trigger.longitude, 0, 0, "sunrise", return_dt=True)
-                sunset = suntime_calculate_next_sunrise_sunset_epoch(
-                    each_trigger.latitude, each_trigger.longitude, 0, 0, "sunset", return_dt=True)
+    if not current_app.config['TESTING']:
+        for each_trigger in trigger:
+            if each_trigger.trigger_type == 'trigger_sunrise_sunset':
+                sunrise_set_calc[each_trigger.unique_id] = {}
+                try:
+                    sunrise = suntime_calculate_next_sunrise_sunset_epoch(
+                        each_trigger.latitude, each_trigger.longitude, 0, 0, "sunrise", return_dt=True)
+                    sunset = suntime_calculate_next_sunrise_sunset_epoch(
+                        each_trigger.latitude, each_trigger.longitude, 0, 0, "sunset", return_dt=True)
 
-                # Adjust for date offset
-                offset_rise = suntime_calculate_next_sunrise_sunset_epoch(
-                    each_trigger.latitude, each_trigger.longitude, each_trigger.date_offset_days,
-                    each_trigger.time_offset_minutes, "sunrise", return_dt=True)
-                offset_set = suntime_calculate_next_sunrise_sunset_epoch(
-                    each_trigger.latitude, each_trigger.longitude, each_trigger.date_offset_days,
-                    each_trigger.time_offset_minutes, "sunset", return_dt=True)
+                    # Adjust for date offset
+                    offset_rise = suntime_calculate_next_sunrise_sunset_epoch(
+                        each_trigger.latitude, each_trigger.longitude, each_trigger.date_offset_days,
+                        each_trigger.time_offset_minutes, "sunrise", return_dt=True)
+                    offset_set = suntime_calculate_next_sunrise_sunset_epoch(
+                        each_trigger.latitude, each_trigger.longitude, each_trigger.date_offset_days,
+                        each_trigger.time_offset_minutes, "sunset", return_dt=True)
 
-                sunrise_set_calc[each_trigger.unique_id]['sunrise'] = (
-                    sunrise.strftime("%Y-%m-%d %H:%M"))
-                sunrise_set_calc[each_trigger.unique_id]['sunset'] = (
-                    sunset.strftime("%Y-%m-%d %H:%M"))
-                sunrise_set_calc[each_trigger.unique_id]['offset_sunrise'] = (
-                    offset_rise.strftime("%Y-%m-%d %H:%M"))
-                sunrise_set_calc[each_trigger.unique_id]['offset_sunset'] = (
-                    offset_set.strftime("%Y-%m-%d %H:%M"))
-            except:
-                logger.exception(1)
-                sunrise_set_calc[each_trigger.unique_id]['sunrise'] = "ERROR"
-                sunrise_set_calc[each_trigger.unique_id]['sunrise'] = "ERROR"
-                sunrise_set_calc[each_trigger.unique_id]['offset_sunrise'] = "ERROR"
-                sunrise_set_calc[each_trigger.unique_id]['offset_sunset'] = "ERROR"
+                    sunrise_set_calc[each_trigger.unique_id]['sunrise'] = (
+                        sunrise.strftime("%Y-%m-%d %H:%M"))
+                    sunrise_set_calc[each_trigger.unique_id]['sunset'] = (
+                        sunset.strftime("%Y-%m-%d %H:%M"))
+                    sunrise_set_calc[each_trigger.unique_id]['offset_sunrise'] = (
+                        offset_rise.strftime("%Y-%m-%d %H:%M"))
+                    sunrise_set_calc[each_trigger.unique_id]['offset_sunset'] = (
+                        offset_set.strftime("%Y-%m-%d %H:%M"))
+                except:
+                    logger.exception(1)
+                    sunrise_set_calc[each_trigger.unique_id]['sunrise'] = "ERROR"
+                    sunrise_set_calc[each_trigger.unique_id]['sunrise'] = "ERROR"
+                    sunrise_set_calc[each_trigger.unique_id]['offset_sunrise'] = "ERROR"
+                    sunrise_set_calc[each_trigger.unique_id]['offset_sunset'] = "ERROR"
 
     if not function_type:
         return render_template('pages/function.html',
