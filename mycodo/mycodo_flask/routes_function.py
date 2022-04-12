@@ -503,10 +503,10 @@ def page_function():
 
     # Calculate sunrise/sunset times if conditional controller is set up properly
     sunrise_set_calc = {}
-    if not current_app.config['TESTING']:
-        for each_trigger in trigger:
-            if each_trigger.trigger_type == 'trigger_sunrise_sunset':
-                sunrise_set_calc[each_trigger.unique_id] = {}
+    for each_trigger in trigger:
+        if each_trigger.trigger_type == 'trigger_sunrise_sunset':
+            sunrise_set_calc[each_trigger.unique_id] = {}
+            if not current_app.config['TESTING']:
                 try:
                     sunrise = suntime_calculate_next_sunrise_sunset_epoch(
                         each_trigger.latitude, each_trigger.longitude, 0, 0, "sunrise", return_dt=True)
