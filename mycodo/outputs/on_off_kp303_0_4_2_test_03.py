@@ -4,9 +4,11 @@
 #
 import asyncio
 import random
-import threading
 import time
 import traceback
+from threading import Event
+from threading import Thread
+
 from flask_babel import lazy_gettext
 
 from mycodo.config_translations import TRANSLATIONS
@@ -45,7 +47,7 @@ OUTPUT_INFORMATION = {
 
     'url_manufacturer': 'https://www.tp-link.com/au/home-networking/smart-plug/kp303/',
 
-    'message': 'This output controls the 3 outlets of the Kasa KP303 Smart WiFi Power Strip. This is a variant that uses the latest python-kasa library.',
+    'message': 'This output controls the 3 outlets of the Kasa KP303 Smart WiFi Power Strip. This is a variant that uses the latest python-kasa library. Note: if you see errors in the daemon log about the server starting, try changing the Asyncio RPC Port to another port.',
 
     'options_enabled': [
         'button_on',
@@ -178,10 +180,14 @@ class OutputModule(AbstractOutput):
             self.logger.error("Plug address must be set")
             return
 
+        started_evt = Event()
+
         loop = asyncio.new_event_loop()
-        self.rpc_server_thread = threading.Thread(
-            target=self.aio_rpc_server, args=(loop, self.logger, len(channels_dict)))
+        self.rpc_server_thread = Thread(
+            target=self.aio_rpc_server, args=(started_evt, loop, self.logger, len(channels_dict)))
         self.rpc_server_thread.start()
+
+        started_evt.wait()  # Wait for thread to either start running or error
 
         for _ in range(3):  # Attempt to connect 3 times
             status, msg = self.connect()
@@ -196,10 +202,10 @@ class OutputModule(AbstractOutput):
                     self.outlet_change(channel, False)
 
             if self.status_update_period:
-                self.status_thread = threading.Thread(target=self.status_update)
+                self.status_thread = Thread(target=self.status_update)
                 self.status_thread.start()
 
-    def aio_rpc_server(self, loop, logger, channels):
+    def aio_rpc_server(self, started_evt, loop, logger, channels):
         import aio_msgpack_rpc
         from kasa import SmartStrip
 
@@ -247,29 +253,35 @@ class OutputModule(AbstractOutput):
                     return 1, str(traceback.print_exc())
 
         async def main(address, port, channels_):
+            server = None
             try:
                 server = await asyncio.start_server(
                     aio_msgpack_rpc.Server(KasaServer(address, channels_)),
                     host="127.0.0.1", port=port)
+                started_evt.set()
 
                 while True:
                     await asyncio.sleep(0.1)
             except Exception:
-                logger.exception("server")
+                logger.exception("Error starting asyncio RPC server")
+                started_evt.set()
             finally:
-                server.close()
+                if server:
+                    server.close()
+                else:
+                    logger.error("Asyncio RPC server couldn't start")
 
-        logger.info("starting server")
+        logger.info("Starting asyncio RPC server...")
 
         try:
             asyncio.set_event_loop(loop)
             loop.run_until_complete(main(self.plug_address, self.asyncio_rpc_port, channels))
         except Exception:
-            logger.exception("server")
+            logger.exception("Asyncio RPC server")
         except KeyboardInterrupt:
             pass
 
-        logger.info("server ended")
+        logger.info("Asyncio RPC server ended")
 
     def connect(self):
         import aio_msgpack_rpc
@@ -278,12 +290,12 @@ class OutputModule(AbstractOutput):
         msg = ""
 
         async def connect(port):
-            client = aio_msgpack_rpc.Client(*await asyncio.open_connection("localhost", port))
+            client = aio_msgpack_rpc.Client(*await asyncio.open_connection("127.0.0.1", port))
             status, msg = await client.call("connect")
             if status:
-                self.logger.error(f"Connecting: Error: {msg}")
+                self.logger.error(f"Connecting to power strip: Error: {msg}")
             else:
-                self.logger.debug(f"Connecting: {msg}")
+                self.logger.debug(f"Connecting to power strip: {msg}")
                 self.output_setup = True
 
         loop = asyncio.new_event_loop()
@@ -297,7 +309,7 @@ class OutputModule(AbstractOutput):
         import aio_msgpack_rpc
 
         async def outlet_change(port, channel_, state_):
-            client = aio_msgpack_rpc.Client(*await asyncio.open_connection("localhost", port))
+            client = aio_msgpack_rpc.Client(*await asyncio.open_connection("127.0.0.1", port))
 
             if state_:
                 status, msg = await client.call("outlet_on", channel_)
@@ -327,7 +339,7 @@ class OutputModule(AbstractOutput):
 
                 try:
                     async def get_status(port):
-                        client = aio_msgpack_rpc.Client(*await asyncio.open_connection("localhost", port))
+                        client = aio_msgpack_rpc.Client(*await asyncio.open_connection("127.0.0.1", port))
 
                         status, msg = await client.call("get_status")
                         if status:

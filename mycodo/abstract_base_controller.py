@@ -55,7 +55,7 @@ class AbstractBaseController(object):
                 break
             except Exception as err:
                 if i + 1 < tries:
-                    self.logger.error(f"Error initializing, trying again in {wait_sec} seconds: {err}")
+                    self.logger.exception(f"Error initializing, trying again in {wait_sec} seconds: {err}")
                     time.sleep(wait_sec)
                 else:  # Last try
                     self.logger.exception(

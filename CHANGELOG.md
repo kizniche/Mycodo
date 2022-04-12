@@ -11,6 +11,7 @@
 
 ### Miscellaneous
 
+ - Update requirements.txt
  - Add short name for input display
 
 

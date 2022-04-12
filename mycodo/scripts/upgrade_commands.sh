@@ -19,7 +19,7 @@ MCB2835_URL="http://www.airspayce.com/mikem/bcm2835/bcm2835-1.50.tar.gz"
 WIRINGPI_URL="https://project-downloads.drogon.net/wiringpi-latest.deb"
 INFLUXDB_VERSION="1.8.10"
 VIRTUALENV_VERSION="20.7.0"
-SETUPTOOLS_VERSION="60.10.0"  # Also set version in install/requirements.txt
+SETUPTOOLS_VERSION="62.1.0"  # Also set version in install/requirements.txt
 
 # Required apt packages. This has been tested with Raspbian for the
 # Raspberry Pi and Ubuntu, it should work with most Debian-based systems.
