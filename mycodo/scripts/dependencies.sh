@@ -25,7 +25,7 @@ case "${1}" in
             printf "\n## Error: Virtualenv doesn't exist. Creating...\n"
             /bin/bash "${INSTALL_DIRECTORY}"/mycodo/scripts/upgrade_commands.sh setup-virtualenv
         else
-            "${INSTALL_DIRECTORY}"/env/bin/python -m pip install --upgrade "${2}"
+            "${INSTALL_DIRECTORY}"/env/bin/python3 -m pip install --upgrade "${2}"
         fi
     ;;
     'internal')
