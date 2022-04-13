@@ -453,7 +453,11 @@ case "${1:-''}" in
     ;;
     'update-pip3')
         printf "\n#### Updating pip\n"
-        "${MYCODO_PATH}"/env/bin/python3 -m pip install --upgrade pip
+        if [[ ! -d ${MYCODO_PATH}/env ]]; then
+            printf "\n## Error: Virtualenv doesn't exist. Create with %s setup-virtualenv\n" "${0}"
+        else
+            "${MYCODO_PATH}"/env/bin/python3 -m pip install --upgrade pip
+        fi
     ;;
     'update-pip3-packages')
         printf "\n#### Installing pip requirements\n"
