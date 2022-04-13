@@ -190,7 +190,7 @@ case "${1:-''}" in
     ;;
     'generate-widget-html')
         printf "\n#### Generating widget HTML files\n"
-        "${MYCODO_PATH}"/env/bin/python "${MYCODO_PATH}"/mycodo/utils/widget_generate_html.py
+        "${MYCODO_PATH}"/env/bin/python3 "${MYCODO_PATH}"/mycodo/utils/widget_generate_html.py
     ;;
     'initialize')
         printf "\n#### Running initialization\n"
@@ -209,9 +209,9 @@ case "${1:-''}" in
         printf "\n#### Checking python 3 virtualenv\n"
         if [[ ! -e ${MYCODO_PATH}/env/bin/python3 ]]; then
             printf "#### Virtualenv doesn't exist. Creating...\n"
-            python3 -m pip install virtualenv==${VIRTUALENV_VERSION}
+            #python3 -m pip install virtualenv==${VIRTUALENV_VERSION}
             rm -rf "${MYCODO_PATH}"/env
-            python3 -m virtualenv -p "${PYTHON_BINARY_SYS_LOC}" "${MYCODO_PATH}"/env
+            python3 -m venv --system-site-packages "${MYCODO_PATH}"/env
         else
             printf "#### Virtualenv already exists, skipping creation\n"
         fi
@@ -258,7 +258,7 @@ case "${1:-''}" in
     ;;
     'update-alembic-post')
         printf "\n#### Executing post-alembic script\n"
-        "${MYCODO_PATH}"/env/bin/python "${MYCODO_PATH}"/alembic_db/alembic_post.py
+        "${MYCODO_PATH}"/env/bin/python3 "${MYCODO_PATH}"/alembic_db/alembic_post.py
     ;;
     'update-apt')
         printf "\n#### Updating apt repositories\n"
@@ -266,7 +266,7 @@ case "${1:-''}" in
     ;;
     'update-dependencies')
         printf "\n#### Checking for updates to dependencies\n"
-        "${MYCODO_PATH}"/env/bin/python "${MYCODO_PATH}"/mycodo/utils/update_dependencies.py
+        "${MYCODO_PATH}"/env/bin/python3 "${MYCODO_PATH}"/mycodo/utils/update_dependencies.py
     ;;
     'install-bcm2835')
         printf "\n#### Installing bcm2835\n"
@@ -453,16 +453,16 @@ case "${1:-''}" in
     ;;
     'update-pip3')
         printf "\n#### Updating pip\n"
-        "${MYCODO_PATH}"/env/bin/python -m pip install --upgrade pip
+        "${MYCODO_PATH}"/env/bin/python3 -m pip install --upgrade pip
     ;;
     'update-pip3-packages')
         printf "\n#### Installing pip requirements\n"
         if [[ ! -d ${MYCODO_PATH}/env ]]; then
             printf "\n## Error: Virtualenv doesn't exist. Create with %s setup-virtualenv\n" "${0}"
         else
-            "${MYCODO_PATH}"/env/bin/python -m pip install --upgrade pip setuptools=="${SETUPTOOLS_VERSION}"
-            "${MYCODO_PATH}"/env/bin/python -m pip install --upgrade -r "${MYCODO_PATH}"/install/requirements.txt
-            "${MYCODO_PATH}"/env/bin/python -m pip install --upgrade -r "${MYCODO_PATH}"/install/requirements-testing.txt
+            "${MYCODO_PATH}"/env/bin/python3 -m pip install --upgrade pip setuptools=="${SETUPTOOLS_VERSION}"
+            "${MYCODO_PATH}"/env/bin/python3 -m pip install --upgrade -r "${MYCODO_PATH}"/install/requirements.txt
+            "${MYCODO_PATH}"/env/bin/python3 -m pip install --upgrade -r "${MYCODO_PATH}"/install/requirements-testing.txt
         fi
     ;;
     'update-swap-size')
@@ -583,12 +583,12 @@ case "${1:-''}" in
     ;;
     'docker-update-pip')
         printf "\n#### Updating pip\n"
-        "${MYCODO_PATH}"/env/bin/python -m pip install --upgrade pip
+        "${MYCODO_PATH}"/env/bin/python3 -m pip install --upgrade pip
     ;;
     'docker-update-pip-packages')
         printf "\n#### Installing pip requirements\n"
-        "${MYCODO_PATH}"/env/bin/python -m pip install --upgrade pip setuptools=="${SETUPTOOLS_VERSION}"
-        "${MYCODO_PATH}"/env/bin/python -m pip install --no-cache-dir -r /home/mycodo/install/requirements.txt
+        "${MYCODO_PATH}"/env/bin/python3 -m pip install --upgrade pip setuptools=="${SETUPTOOLS_VERSION}"
+        "${MYCODO_PATH}"/env/bin/python3 -m pip install --no-cache-dir -r /home/mycodo/install/requirements.txt
     ;;
     'install-docker-ce-cli')
         printf "\n#### Installing Docker Client\n"
