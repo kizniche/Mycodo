@@ -11,6 +11,7 @@
 
  - Add API endpoint: cameras/get_last_image
  - Add Input: Signal (Revolutions) (Alternative pigpio method)
+ - Add Input: Test Save Any Value as a Measurement
 
 ### Miscellaneous
 
