@@ -18,6 +18,7 @@ MYCODO_DB_PATH = 'sqlite:///' + SQL_DATABASE_MYCODO
 FUNCTION_INFORMATION = {
     'function_name_unique': 'bang_bang_on_off',
     'function_name': 'Bang-Bang Hysteretic (On/Off) (Raise/Lower/Both)',
+    'function_name_short': 'Bang-Bang (On/Off) (Raise/Lower/Both)',
 
     'message': 'A simple bang-bang control for controlling one or two outputs from one input.'
         ' Select an input, a raise and/or lower output, enter a setpoint and a hysteresis, and select a direction.'
@@ -190,64 +191,65 @@ class CustomModule(AbstractFunction):
             self.measurement_device_id,
             self.measurement_measurement_id)[1]
 
+        if self.direction == 'raise':
+            if last_measurement > (self.setpoint + self.hysteresis):
+                self.logger.debug("Raise: Off")
+                self.control.output_off(
+                    self.output_raise_device_id, output_channel=self.output_raise_channel)
+            elif last_measurement < (self.setpoint - self.hysteresis):
+                self.logger.debug("Raise: On")
+                self.control.output_on(
+                    self.output_raise_device_id, output_channel=self.output_raise_channel)
+
+        elif self.direction == 'lower':
+            if last_measurement < (self.setpoint - self.hysteresis):
+                self.logger.debug("Lower: Off")
+                self.control.output_off(
+                    self.output_lower_device_id, output_channel=self.output_lower_channel)
+            elif last_measurement > (self.setpoint + self.hysteresis):
+                self.logger.debug("Lower: On")
+                self.control.output_on(
+                    self.output_lower_device_id, output_channel=self.output_lower_channel)
+
+        elif self.direction == 'both':
+            if (self.setpoint - self.hysteresis) < last_measurement < (self.setpoint + self.hysteresis):
+                self.logger.debug("Lower: Off, Raise: Off")
+                self.control.output_off(
+                    self.output_raise_device_id, output_channel=self.output_raise_channel)
+                self.control.output_off(
+                    self.output_lower_device_id, output_channel=self.output_lower_channel)
+
+            elif last_measurement > (self.setpoint + self.hysteresis):
+                self.logger.debug("Lower: On, Raise: Off")
+                self.control.output_off(
+                    self.output_raise_device_id, output_channel=self.output_raise_channel)
+                self.control.output_on(
+                    self.output_lower_device_id, output_channel=self.output_lower_channel)
+
+            elif last_measurement < (self.setpoint - self.hysteresis):
+                self.logger.debug("Lower: Off, Raise: On")
+                self.control.output_off(
+                    self.output_lower_device_id, output_channel=self.output_lower_channel)
+                self.control.output_on(
+                    self.output_raise_device_id, output_channel=self.output_raise_channel)
+        else:
+            self.logger.info(
+                "Unknown controller direction: '{}'".format(self.direction))
+
         output_raise_state = self.control.output_state(
             self.output_raise_device_id, self.output_raise_channel)
         output_lower_state = self.control.output_state(
             self.output_lower_device_id, self.output_lower_channel)
 
-        self.logger.info(
-            "Input: {}, output_raise: {}, output_lower: {}, target: {}, hyst: {}".format(
-                last_measurement,
-                output_raise_state,
-                output_lower_state,
-                self.setpoint,
-                self.hysteresis))
-
-        if self.direction == 'raise':
-            if last_measurement > (self.setpoint + self.hysteresis):
-                if output_raise_state == 'on':
-                    self.control.output_off(
-                        self.output_raise_device_id,
-                        output_channel=self.output_raise_channel)
-            elif last_measurement < (self.setpoint - self.hysteresis):
-                self.control.output_on(
-                    self.output_raise_device_id,
-                    output_channel=self.output_raise_channel)
-        elif self.direction == 'lower':
-            if last_measurement < (self.setpoint - self.hysteresis):
-                if output_lower_state == 'on':
-                    self.control.output_off(
-                        self.output_lower_device_id,
-                        output_channel=self.output_lower_channel)
-            elif last_measurement > (self.setpoint + self.hysteresis):
-                self.control.output_on(
-                    self.output_lower_device_id,
-                    output_channel=self.output_lower_channel)
-        elif self.direction == 'both':
-            if (last_measurement > (self.setpoint - self.hysteresis) or
-                    last_measurement < (self.setpoint + self.hysteresis)):
-                if output_raise_state == 'on':
-                    self.control.output_off(
-                        self.output_raise_device_id,
-                        output_channel=self.output_raise_channel)
-                if output_lower_state == 'on':
-                    self.control.output_off(
-                        self.output_lower_device_id,
-                        output_channel=self.output_lower_channel)
-            elif last_measurement > (self.setpoint + self.hysteresis):
-                self.control.output_on(
-                    self.output_lower_device_id,
-                    output_channel=self.output_lower_channel)
-            elif last_measurement < (self.setpoint - self.hysteresis):
-                self.control.output_on(
-                    self.output_raise_device_id,
-                    output_channel=self.output_raise_channel)
-        else:
-            self.logger.info(
-                "Unknown controller direction: '{}'".format(self.direction))
+        self.logger.debug(
+            f"Before execution: Input: {last_measurement}, "
+            f"output_raise: {output_raise_state}, "
+            f"output_lower: {output_lower_state}, "
+            f"target: {self.setpoint}, "
+            f"hyst: {self.hysteresis}")
 
     def stop_function(self):
         self.control.output_off(
-            self.output_raise_device_id, self.output_raise_channel)
+            self.output_raise_device_id, output_channel=self.output_raise_channel)
         self.control.output_off(
-            self.output_lower_device_id, self.output_lower_channel)
+            self.output_lower_device_id, output_channel=self.output_lower_channel)

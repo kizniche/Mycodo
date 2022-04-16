@@ -5,6 +5,7 @@
  - Fix timestamp argument having no affect in value_set()
  - Revert changes to PCF8574 Output ([#1175](https://github.com/kizniche/mycodo/issues/1175))
  - Fix Edge Detection Input storing measurements ([#1171](https://github.com/kizniche/mycodo/issues/1171))
+ - Fix Bang-Bang Hysteretic (On/Off) (Lower/Raise/Both) Function when set to Both
 
 ### Features
 
