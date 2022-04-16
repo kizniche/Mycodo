@@ -296,6 +296,9 @@ def last_data(unique_id, measure_type, measurement_id, period):
                 unit, unique_id,
                 measure=measurement, channel=channel, value='LAST')
 
+        if not data:
+            return '', 204
+
         number = len(data)
         time_raw = data[number - 1][0]
         value = data[number - 1][1]

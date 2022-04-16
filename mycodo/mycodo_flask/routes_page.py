@@ -77,6 +77,7 @@ from mycodo.mycodo_flask.utils import utils_notes
 from mycodo.mycodo_flask.utils.utils_general import return_dependencies
 from mycodo.utils.functions import parse_function_information
 from mycodo.utils.inputs import list_analog_to_digital_converters
+from mycodo.utils.inputs import parse_input_information
 from mycodo.utils.outputs import output_types
 from mycodo.utils.outputs import parse_output_information
 from mycodo.utils.system_pi import add_custom_measurements
@@ -837,6 +838,7 @@ def page_live():
     dict_units = add_custom_units(Unit.query.all())
 
     dict_controllers = parse_function_information()
+    dict_inputs = parse_input_information()
 
     custom_options_values_controllers = parse_custom_option_values(
         function, dict_controller=dict_controllers)
@@ -859,6 +861,7 @@ def page_live():
                            table_device_measurements=DeviceMeasurements,
                            table_input=Input,
                            table_function=CustomController,
+                           dict_inputs=dict_inputs,
                            dict_measurements=dict_measurements,
                            dict_units=dict_units,
                            dict_measure_measurements=dict_measure_measurements,

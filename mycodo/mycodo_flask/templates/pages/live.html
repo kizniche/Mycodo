@@ -48,7 +48,14 @@
     $(function() {
       {%- for each_input in table_input.query.filter(table_input.is_activated).all() -%}
         {% for each_meas in table_device_measurements.query.filter(table_device_measurements.device_id == each_input.unique_id).all() if each_meas.is_enabled %}
-          liveTextData('{{each_input.unique_id}}', 'input', '{{each_meas.unique_id}}', {{each_input.period * 2}}, {{each_input.period}});
+          {%- if each_input.device in dict_inputs and 'listener' in dict_inputs[each_input.device] and dict_inputs[each_input.device]['listener'] %}
+            {%- set period = 0 %}
+            {%- set period_refresh = 30 %}
+          {%-  else %}
+            {%- set period = each_input.period * 2 %}
+            {%- set period_refresh = each_input.period %}
+          {%- endif %}
+          liveTextData('{{each_input.unique_id}}', 'input', '{{each_meas.unique_id}}', {{period}}, {{period_refresh}});
         {% endfor %}
       {%- endfor -%}
 

@@ -18,7 +18,7 @@ PIGPIO_URL="https://github.com/joan2937/pigpio/archive/v79.tar.gz"
 MCB2835_URL="http://www.airspayce.com/mikem/bcm2835/bcm2835-1.50.tar.gz"
 WIRINGPI_URL="https://project-downloads.drogon.net/wiringpi-latest.deb"
 INFLUXDB_VERSION="1.8.10"
-VIRTUALENV_VERSION="20.7.0"
+VIRTUALENV_VERSION="20.14.1"
 SETUPTOOLS_VERSION="62.1.0"  # Also set version in install/requirements.txt
 
 # Required apt packages. This has been tested with Raspbian for the
@@ -212,8 +212,6 @@ case "${1:-''}" in
             python3 -m pip install virtualenv==${VIRTUALENV_VERSION}
             rm -rf "${MYCODO_PATH}"/env
             python3 -m virtualenv -p "${PYTHON_BINARY_SYS_LOC}" "${MYCODO_PATH}"/env
-        else
-            printf "#### Virtualenv already exists, skipping creation\n"
         fi
     ;;
     'setup-virtualenv-full')
@@ -453,10 +451,16 @@ case "${1:-''}" in
     ;;
     'update-pip3')
         printf "\n#### Updating pip\n"
-        "${MYCODO_PATH}"/env/bin/python -m pip install --upgrade pip
+        /bin/bash "${MYCODO_PATH}"/mycodo/scripts/upgrade_commands.sh setup-virtualenv
+        if [[ ! -d ${MYCODO_PATH}/env ]]; then
+            printf "\n## Error: Virtualenv doesn't exist. Create with %s setup-virtualenv\n" "${0}"
+        else
+            "${MYCODO_PATH}"/env/bin/python -m pip install --upgrade pip
+        fi
     ;;
     'update-pip3-packages')
         printf "\n#### Installing pip requirements\n"
+        /bin/bash "${MYCODO_PATH}"/mycodo/scripts/upgrade_commands.sh setup-virtualenv
         if [[ ! -d ${MYCODO_PATH}/env ]]; then
             printf "\n## Error: Virtualenv doesn't exist. Create with %s setup-virtualenv\n" "${0}"
         else
@@ -583,12 +587,22 @@ case "${1:-''}" in
     ;;
     'docker-update-pip')
         printf "\n#### Updating pip\n"
-        "${MYCODO_PATH}"/env/bin/python -m pip install --upgrade pip
+        /bin/bash "${MYCODO_PATH}"/mycodo/scripts/upgrade_commands.sh setup-virtualenv
+        if [[ ! -d ${MYCODO_PATH}/env ]]; then
+            printf "\n## Error: Virtualenv doesn't exist. Create with %s setup-virtualenv\n" "${0}"
+        else
+            "${MYCODO_PATH}"/env/bin/python -m pip install --upgrade pip
+        fi
     ;;
     'docker-update-pip-packages')
         printf "\n#### Installing pip requirements\n"
-        "${MYCODO_PATH}"/env/bin/python -m pip install --upgrade pip setuptools=="${SETUPTOOLS_VERSION}"
-        "${MYCODO_PATH}"/env/bin/python -m pip install --no-cache-dir -r /home/mycodo/install/requirements.txt
+        /bin/bash "${MYCODO_PATH}"/mycodo/scripts/upgrade_commands.sh setup-virtualenv
+        if [[ ! -d ${MYCODO_PATH}/env ]]; then
+            printf "\n## Error: Virtualenv doesn't exist. Create with %s setup-virtualenv\n" "${0}"
+        else
+            "${MYCODO_PATH}"/env/bin/python -m pip install --upgrade pip setuptools=="${SETUPTOOLS_VERSION}"
+            "${MYCODO_PATH}"/env/bin/python -m pip install --no-cache-dir -r /home/mycodo/install/requirements.txt
+        fi
     ;;
     'install-docker-ce-cli')
         printf "\n#### Installing Docker Client\n"

@@ -11,13 +11,14 @@ class Input(CRUDMixin, db.Model):
 
     id = db.Column(db.Integer, unique=True, primary_key=True)
     unique_id = db.Column(db.String, nullable=False, unique=True, default=set_uuid)
+    device = db.Column(db.Text, default='')  # Device name, such as DHT11, DHT22, DS18B20
+    is_activated = db.Column(db.Boolean, default=False)
+
     name = db.Column(db.Text, default='Input Name')
     position_y = db.Column(db.Integer, default=0)
-    is_activated = db.Column(db.Boolean, default=False)
     log_level_debug = db.Column(db.Boolean, default=False)
     is_preset = db.Column(db.Boolean, default=False)  # Is config saved as a preset?
     preset_name = db.Column(db.Text, default=None)  # Name for preset
-    device = db.Column(db.Text, default='')  # Device name, such as DHT11, DHT22, DS18B20
     interface = db.Column(db.Text, default=None)  # Communication interface (I2C, UART, etc.)
     period = db.Column(db.Float, default=15.0)  # Duration between readings
     start_offset = db.Column(db.Float, default=0.0)
