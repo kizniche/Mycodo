@@ -364,25 +364,6 @@ class TriggerController(AbstractController, threading.Thread):
             self.logger.error(message)
             return
 
-        # If the edge detection variable is set, calling this function will
-        # trigger an edge detection event. This will merely produce the correct
-        # message based on the edge detection settings.
-        elif trigger.trigger_type == 'trigger_edge':
-            try:
-                import RPi.GPIO as GPIO
-                GPIO.setmode(GPIO.BCM)
-                GPIO.setup(int(input_dev.pin), GPIO.IN)
-                gpio_state = GPIO.input(int(input_dev.pin))
-            except Exception as e:
-                gpio_state = None
-                self.logger.error(f"Exception reading the GPIO pin: {e}")
-            if (gpio_state is not None and
-                    gpio_state == trigger.if_sensor_gpio_state):
-                message += f" GPIO State Detected (state = {trigger.if_sensor_gpio_state})."
-            else:
-                self.logger.error("GPIO not configured correctly or GPIO state not verified")
-                return
-
         # Calculate the sunrise/sunset times and find the next time this trigger should trigger
         elif trigger.trigger_type == 'trigger_sunrise_sunset':
             # Since the check time is the trigger time, we will only calculate and set the next trigger time

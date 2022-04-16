@@ -148,7 +148,10 @@ class InputModule(AbstractInput):
 
             write_db = threading.Thread(
                 target=write_influxdb_value,
-                args=(self.unique_id, 'edge', rising_or_falling,))
+                args=(self.unique_id, measurements_dict[0]['unit'], rising_or_falling,),
+                kwargs={'channel': 0,
+                        'measure': measurements_dict[0]['measurement'],
+                        'timestamp': datetime.datetime.utcnow()})
             write_db.start()
 
             trigger = db_retrieve_table_daemon(Trigger)
