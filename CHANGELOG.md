@@ -12,6 +12,7 @@
  - Add API endpoint: cameras/get_last_image
  - Add Input: Signal (Revolutions) (Alternative pigpio method)
  - Add Input: Test Save Any Value as a Measurement
+ - Add Outputs: Kasa KP303 and HS300 with latest python-kasa
 
 ### Miscellaneous
 
