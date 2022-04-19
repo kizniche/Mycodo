@@ -1,6 +1,6 @@
 # coding=utf-8
 #
-# on_off_hs300_0_4_2_test_03.py - Output for HS300
+# on_off_kp303_0_4_2_test_03.py - Output for KP303
 #
 import asyncio
 import random
@@ -14,6 +14,7 @@ from flask_babel import lazy_gettext
 from mycodo.config_translations import TRANSLATIONS
 from mycodo.databases.models import OutputChannel
 from mycodo.outputs.base_output import AbstractOutput
+from mycodo.utils.constraints_pass import constraints_pass_positive_or_zero_value
 from mycodo.utils.constraints_pass import constraints_pass_positive_value
 from mycodo.utils.database import db_retrieve_table_daemon
 
@@ -23,7 +24,7 @@ measurements_dict = {
         'measurement': 'duration_time',
         'unit': 's'
     }
-    for measure in range(6)
+    for measure in range(3)
 }
 
 channels_dict = {
@@ -32,22 +33,22 @@ channels_dict = {
         'name': f'Plug {channel + 1}',
         'measurements': [channel]
     }
-    for channel in range(6)
+    for channel in range(3)
 }
 
 # Output information
 OUTPUT_INFORMATION = {
-    'output_name_unique': 'hs300_0_4_2_alt_02',
-    'output_name': f"{lazy_gettext('On/Off')}: HS300 Kasa 6-Outlet WiFi Power Strip (python-kasa 0.4.2, TEST #3)",
+    'output_name_unique': 'kp303_0_4_2_alt_02',
+    'output_name': f"{lazy_gettext('On/Off')}: KP303 Kasa 3-Outlet WiFi Power Strip (python-kasa 0.4.2)",
     'output_manufacturer': 'TP-Link',
     'input_library': 'python-kasa==0.4.2',
     'measurements_dict': measurements_dict,
     'channels_dict': channels_dict,
     'output_types': ['on_off'],
 
-    'url_manufacturer': 'https://www.kasasmart.com/us/products/smart-plugs/kasa-smart-wi-fi-power-strip-hs300',
+    'url_manufacturer': 'https://www.tp-link.com/au/home-networking/smart-plug/kp303/',
 
-    'message': 'This output controls the 6 outlets of the Kasa HS300 Smart WiFi Power Strip. This is a variant that uses the latest python-kasa library. Note: if you see errors in the daemon log about the server starting, try changing the Asyncio RPC Port to another port.',
+    'message': 'This output controls the 3 outlets of the Kasa KP303 Smart WiFi Power Strip. This is a variant that uses the latest python-kasa library. Note: if you see errors in the daemon log about the server starting, try changing the Asyncio RPC Port to another port.',
 
     'options_enabled': [
         'button_on',
@@ -66,7 +67,7 @@ OUTPUT_INFORMATION = {
         {
             'id': 'plug_address',
             'type': 'text',
-            'default_value': '192.168.0.50',
+            'default_value': '0.0.0.0',
             'required': True,
             'name': TRANSLATIONS['host']['title'],
             'phrase': TRANSLATIONS['host']['phrase']
@@ -75,7 +76,7 @@ OUTPUT_INFORMATION = {
             'id': 'status_update_period',
             'type': 'integer',
             'default_value': 300,
-            'constraints_pass': constraints_pass_positive_value,
+            'constraints_pass': constraints_pass_positive_or_zero_value,
             'required': True,
             'name': 'Status Update (seconds)',
             'phrase': 'The period (seconds) between checking if connected and output states. 0 disables.'
@@ -176,7 +177,7 @@ class OutputModule(AbstractOutput):
     def initialize(self):
         self.setup_output_variables(OUTPUT_INFORMATION)
 
-        if not self.plug_address:
+        if not self.plug_address or self.plug_address == "0.0.0.0":
             self.logger.error("Plug address must be set")
             return
 

@@ -95,9 +95,11 @@ class PIDControl(object):
         pid_value = self.P_value + self.I_value + self.D_value
 
         self.logger.debug(
-            "PID: Input: {inp}, "
-            "Output: P: {p}, I: {i}, D: {d}, Out: {o}".format(
-                inp=current_value, p=self.P_value, i=self.I_value, d=self.D_value, o=pid_value))
+            f"PID: Input: {current_value}, Output: "
+            f"P: {self.P_value}, "
+            f"I: {self.I_value}, "
+            f"D: {self.D_value}, "
+            f"Out: {pid_value}")
 
         self.control_variable = pid_value
 
@@ -126,13 +128,13 @@ class PIDControl(object):
         # between  # measure  #      0         #
         #  > max   # min      #   < -2*band    #
 
-        if self.direction == 'raise' or self.direction == 'lower':
-            if (measure < band_min):
-                return band_max  # Apply the PID with new setpoint
-            elif (band_min <= measure <= band_max):
-                return measure  # Restrict the PID
-            elif (measure > band_max):
-                return band_min  # Apply the PID with new setpoint
+        if self.direction in ['raise', 'lower']:
+            if measure < band_min:
+                return band_max  # Apply the new setpoint
+            elif band_min <= measure <= band_max:
+                return measure  # Apply the new setpoint
+            elif measure > band_max:
+                return band_min  # Apply the new setpoint
 
         elif self.direction == 'both':
             if measure < band_min:
@@ -153,4 +155,4 @@ class PIDControl(object):
                     self.allow_lowering = True
             else:
                 return None  # Restrict the PID
-            return setpoint  # Apply the PID
+            return setpoint  # Apply the new setpoint

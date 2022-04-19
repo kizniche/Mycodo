@@ -170,7 +170,7 @@ case "${1:-''}" in
         ln -sfn "${MYCODO_PATH}"/mycodo/scripts/mycodo_backup_restore.sh /usr/bin/mycodo-restore
         ln -sfn "${MYCODO_PATH}"/mycodo/scripts/mycodo_wrapper /usr/bin/mycodo-wrapper
         ln -sfn "${MYCODO_PATH}"/env/bin/pip3 /usr/bin/mycodo-pip
-        ln -sfn "${MYCODO_PATH}"/env/bin/python3 /usr/bin/mycodo-python
+        ln -sfn "${MYCODO_PATH}"/env/bin/python /usr/bin/mycodo-python
     ;;
     'create-user')
         printf "\n#### Creating mycodo user\n"
@@ -207,7 +207,7 @@ case "${1:-''}" in
     ;;
     'setup-virtualenv')
         printf "\n#### Checking python 3 virtualenv\n"
-        if [[ ! -e ${MYCODO_PATH}/env/bin/python3 ]]; then
+        if [[ ! -e ${MYCODO_PATH}/env/bin/python ]]; then
             printf "#### Virtualenv doesn't exist. Creating...\n"
             python3 -m pip install virtualenv==${VIRTUALENV_VERSION}
             rm -rf "${MYCODO_PATH}"/env
