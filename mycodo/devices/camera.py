@@ -457,8 +457,6 @@ def camera_record(record_type, unique_id, duration_sec=None, tmp_filename=None):
             except:
                 headers = {}
 
-            logger.info(f"TEST00: {headers}")
-
             if record_type in ['photo', 'timelapse']:
                 path_tmp = "/tmp/tmpimg.jpg"
                 try:

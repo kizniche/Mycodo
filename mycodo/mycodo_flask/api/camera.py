@@ -43,8 +43,6 @@ class CameraGetLastImage(Resource):
 
         camera = Camera.query.filter(Camera.unique_id == unique_id).first()
 
-        logger.info("TEST01")
-
         if not camera:
             abort(422, custom='No camera with ID found')
 
