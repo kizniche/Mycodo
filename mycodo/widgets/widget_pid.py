@@ -230,7 +230,7 @@ WIDGET_INFORMATION = {
 
     'endpoints': [
         # Route URL, route endpoint name, view function, methods
-        ("/last_pid/<pid_id>/<input_period>", "last_pid", pid_mod_unique_id, ["GET"]),
+        ("/last_pid/<pid_id>/<input_period>", "last_pid", last_data_pid, ["GET"]),
         ("/pid_mod_unique_id/<unique_id>/<state>", "pid_mod_unique_id", pid_mod_unique_id, ["GET"])
     ],
 
