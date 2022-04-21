@@ -114,6 +114,7 @@ class Camera(FlaskForm):
     # HTTP Address
     url_still = StringField(lazy_gettext('Still HTTP Address'))
     url_stream = StringField(lazy_gettext('Stream HTTP Address'))
+    json_headers = StringField(lazy_gettext('Headers (JSON)'))
 
     # Timelapse video generation
     timelapse_image_set = StringField(lazy_gettext('Image Set'))

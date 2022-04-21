@@ -1,3 +1,15 @@
+## 8.13.10 (Unreleased)
+
+### Bugfixes
+
+ - Fix Test Value Input throwing constant but benign errors
+
+### Features
+
+ - Add API endpoint: cameras/capture_image
+ - Add Headers option to URL (requests) camera library
+
+
 ## 8.13.9 (2022-04-21)
 
 ### Bugfixes
@@ -16,7 +28,7 @@
 
 ### Features
 
- - Add API endpoint: cameras/get_last_image
+ - Add API endpoint: cameras/last_image
  - Add Input: Signal (Revolutions) (Alternative pigpio method)
  - Add Input: Test Save Any Value as a Measurement
  - Add Outputs: Kasa KP303 and HS300 with latest python-kasa

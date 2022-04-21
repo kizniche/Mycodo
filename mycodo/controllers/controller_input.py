@@ -136,8 +136,12 @@ class InputController(AbstractController, threading.Thread):
             while self.pause_loop:
                 time.sleep(0.1)
 
-        if ('listener' in self.dict_inputs[self.device] and
-                self.dict_inputs[self.device]['listener']):
+        if (    # Some Inputs require a function to be threaded and run continually
+                ('listener' in self.dict_inputs[self.device] and
+             self.dict_inputs[self.device]['listener']) or
+                # Some Inputs don't run periodically
+                ('do_not_run_periodically' in self.dict_inputs[self.device] and
+                 self.dict_inputs[self.device]['do_not_run_periodically'])):
             pass
         else:
             now = time.time()

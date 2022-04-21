@@ -34,6 +34,7 @@ class Camera(CRUDMixin, db.Model):
     hide_timelapse = db.Column(db.Boolean, default=False)
     url_still = db.Column(db.Text, default='')
     url_stream = db.Column(db.Text, default='')
+    json_headers = db.Column(db.Text, default='')
     show_preview = db.Column(db.Boolean, default=False)
     output_format = db.Column(db.Text, default=None)
 

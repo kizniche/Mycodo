@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 import datetime
+import json
 import logging
 import os
 import time
@@ -451,6 +452,13 @@ def camera_record(record_type, unique_id, duration_sec=None, tmp_filename=None):
             import imutils
             import requests
 
+            try:
+                headers = json.loads(settings.json_headers)
+            except:
+                headers = {}
+
+            logger.info(f"TEST00: {headers}")
+
             if record_type in ['photo', 'timelapse']:
                 path_tmp = "/tmp/tmpimg.jpg"
                 try:
@@ -459,42 +467,35 @@ def camera_record(record_type, unique_id, duration_sec=None, tmp_filename=None):
                     pass
 
                 try:
-                    r = requests.get(settings.url_still)
+                    r = requests.get(settings.url_still, headers=headers, verify=False)
                     if r.status_code == 200:
                         open(path_tmp, 'wb').write(r.content)
+
+                        img_orig = cv2.imread(path_tmp)
+
+                        if img_orig is not None and img_orig.shape is not None:
+                            if any((settings.hflip, settings.vflip, settings.rotation)):
+                                if settings.hflip and settings.vflip:
+                                    img_edited = cv2.flip(img_orig, -1)
+                                elif settings.hflip:
+                                    img_edited = cv2.flip(img_orig, 1)
+                                elif settings.vflip:
+                                    img_edited = cv2.flip(img_orig, 0)
+
+                                if settings.rotation:
+                                    img_edited = imutils.rotate_bound(img_orig, settings.rotation)
+
+                                cv2.imwrite(path_file, img_edited)
+                            else:
+                                cv2.imwrite(path_file, img_orig)
+
+                        os.rename(path_tmp, path_file)
                     else:
-                        logger.error("Could not download image. Status code: {}".format(r.status_code))
+                        logger.error(f"Could not download image. Status code: {r.status_code}, content: {r.content}")
                 except requests.HTTPError as err:
                     logger.error("HTTPError: {}".format(err))
                 except Exception as err:
                     logger.exception(err)
-
-                try:
-                    img_orig = cv2.imread(path_tmp)
-
-                    if img_orig is not None and img_orig.shape is not None:
-                        if any((settings.hflip, settings.vflip, settings.rotation)):
-                            if settings.hflip and settings.vflip:
-                                img_edited = cv2.flip(img_orig, -1)
-                            elif settings.hflip:
-                                img_edited = cv2.flip(img_orig, 1)
-                            elif settings.vflip:
-                                img_edited = cv2.flip(img_orig, 0)
-
-                            if settings.rotation:
-                                img_edited = imutils.rotate_bound(img_orig, settings.rotation)
-
-                            cv2.imwrite(path_file, img_edited)
-                        else:
-                            cv2.imwrite(path_file, img_orig)
-                    else:
-                        os.rename(path_tmp, path_file)
-                except Exception as err:
-                    logger.error("Could not convert, rotate, or invert image: {}".format(err))
-                    try:
-                        os.rename(path_tmp, path_file)
-                    except FileNotFoundError:
-                        logger.error("Camera image not found")
 
             elif record_type == 'video':
                 pass  # No video (yet)

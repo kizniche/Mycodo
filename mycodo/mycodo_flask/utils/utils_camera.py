@@ -84,6 +84,10 @@ def camera_add(form_camera):
     elif form_camera.library.data == 'http_address':
         new_camera.url_still = 'http://s.w-x.co/staticmaps/wu/wu/wxtype1200_cur/uscsg/current.png'
         new_camera.url_stream = ''
+    elif form_camera.library.data == 'http_address_requests':
+        new_camera.url_still = 'https://192.168.0.29/api/cameras/capture_image/149591a0-e9a8-4ae6-a8f8-bd3855840f4b'
+        new_camera.url_stream = ''
+        new_camera.json_headers = '{"Accept": "application/vnd.mycodo.v1+json", "X-API-KEY": "YOUR_API_KEY"}'
     if not error:
         try:
             new_camera.save()
@@ -199,6 +203,7 @@ def camera_mod(form_camera):
         elif mod_camera.library == 'http_address_requests':
             mod_camera.url_still = form_camera.url_still.data
             mod_camera.url_stream = form_camera.url_stream.data
+            mod_camera.json_headers = form_camera.json_headers.data
         else:
             messages["error"].append("Unknown camera library")
 

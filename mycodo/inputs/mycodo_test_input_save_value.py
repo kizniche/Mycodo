@@ -36,10 +36,10 @@ INPUT_INFORMATION = {
 
     'measurements_variable_amount': True,
     'channel_quantity_same_as_measurements': True,
+    'do_not_run_periodically': True,
 
     'options_enabled': [
-        'measurements_select',
-        'period',
+        'measurements_select'
     ],
 
     'custom_channel_options': [
