@@ -8,6 +8,8 @@
 # https://github.com/naskio/po-auto-translation
 #
 
+printf "\n#### Generating translations\n"
+
 INSTALL_DIRECTORY=$( cd "$( dirname "${BASH_SOURCE[0]}" )/../../" && pwd -P )
 CURRENT_VERSION=$("${INSTALL_DIRECTORY}"/env/bin/python3 "${INSTALL_DIRECTORY}"/mycodo/utils/github_release_info.py -c 2>&1)
 
