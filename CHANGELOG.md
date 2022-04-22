@@ -4,7 +4,7 @@
 
  - Fix Test Value Input throwing constant but benign errors
  - Fix pybluez dependency install ([#1178](https://github.com/kizniche/mycodo/issues/1178))
- - Fix jinja2.ext.autoescape error
+ - Remove deprecated jinja2 extensions
 
 ### Features
 
