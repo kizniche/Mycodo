@@ -46,20 +46,15 @@ class CameraGetLastImage(Resource):
         if not camera:
             abort(422, custom='No camera with ID found')
 
-        tmp_filename = None
-        # tmp_filename = f'{camera.unique_id}_tmp.jpg'
+        tmp_filename = f'{camera.unique_id}_tmp.jpg'
 
         path, filename = camera_record('photo', camera.unique_id, tmp_filename=tmp_filename)
         if not path and not filename:
             abort(422, custom="Could not acquire image.")
         else:
-            image_path = os.path.join(path, filename)
-
             try:
-                if os.path.abspath(image_path).startswith(PATH_CAMERAS):
-                    return send_file(image_path, mimetype='image/jpeg')
-
-                return abort(500)
+                image_path = os.path.join(path, filename)
+                return send_file(image_path, mimetype='image/jpeg')
             except Exception:
                 abort(500,
                       message='An exception occurred',
