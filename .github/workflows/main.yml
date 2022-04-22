@@ -51,7 +51,6 @@ jobs:
           wget --no-check-certificate -p https://127.0.0.1 -O /dev/null
           sudo apt install npm
           sudo npm install -g redoc-cli
-          sudo npm install -g npx
           sudo bash mycodo/scripts/generate_manual_api.sh
       - name: Test with pytest
         run: |
