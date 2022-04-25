@@ -422,15 +422,15 @@ FUNCTION_INFO = {
         'dependencies_module': []
     },
     'trigger_timer_daily_time_point': {
-        'name': lg('Trigger: Timer (Daily Point)'),
+        'name': f"{T['trigger']['title']}: {lg('Daily Time Point')}",
         'dependencies_module': []
     },
     'trigger_timer_daily_time_span': {
-        'name': f"{T['trigger']['title']}: {T['timer']['title']} ({lg('Daily Span')})",
+        'name': f"{T['trigger']['title']}: {lg('Daily Time Span')}",
         'dependencies_module': []
     },
     'trigger_timer_duration': {
-        'name': f"{T['trigger']['title']}: {T['timer']['title']} ({T['duration']['title']})",
+        'name': f"{T['trigger']['title']}: {T['duration']['title']}",
         'dependencies_module': []
     },
     'trigger_run_pwm_method': {
