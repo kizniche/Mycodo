@@ -169,6 +169,10 @@ FUNCTION_INFORMATION = {
 
     'message': 'This Function outputs to a generic 16x2 LCD display via I2C. Since this display can show 2 lines at a time, channels are added in sets of 2 when Number of Line Sets is modified. Every Period, the LCD will refresh and display the next set of lines. Therefore, the first 2 lines that are displayed are channels 0 and 1, then 2 and 3, and so on. After all channels have been displayed, it will cycle back to the beginning.',
 
+    'dependencies_module': [
+        ('pip-pypi', 'smbus2', 'smbus2==0.4.1')
+    ],
+
     'options_disabled': [
         'measurements_select',
         'measurements_configure'
