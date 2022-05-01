@@ -8,6 +8,8 @@ import traceback
 from threading import Event
 from threading import Thread
 
+from flask_babel import lazy_gettext
+
 from mycodo.config_translations import TRANSLATIONS
 from mycodo.inputs.base_input import AbstractInput
 from mycodo.utils.constraints_pass import constraints_pass_positive_value
@@ -63,6 +65,18 @@ INPUT_INFORMATION = {
     ],
 
     'interfaces': ['IP'],
+
+    'custom_commands': [
+        {
+            'type': 'message',
+            'default_value': """The total kWh can be cleared with the following button or with the Clear Total kWh Function Action. This will also clear all energy stats on the device, not just the total kWh."""
+        },
+        {
+            'id': 'clear_total_kwh',
+            'type': 'button',
+            'name': f"{lazy_gettext('Clear Total')}: kWh"
+        }
+    ],
 
     'custom_options': [
         {
@@ -216,6 +230,16 @@ class InputModule(AbstractInput):
                 except Exception:
                     return 1, str(traceback.format_exc())
 
+            async def clear_energy_stats(self):
+                try:
+                    return_dict = json.dumps(await self.plug.erase_emeter_stats())
+
+                    self.logger_.debug(f"Clear Stats: {return_dict}")
+
+                    return 0, return_dict
+                except Exception:
+                    return 1, str(traceback.format_exc())
+
         async def main(address, port):
             server = None
             try:
@@ -290,3 +314,25 @@ class InputModule(AbstractInput):
         loop.run_until_complete(energy_stats(self.asyncio_rpc_port))
 
         return return_dict
+
+    def clear_energy_stats(self):
+        import aio_msgpack_rpc
+
+        return_dict = {}
+
+        async def energy_stats(port):
+            client = aio_msgpack_rpc.Client(*await asyncio.open_connection("127.0.0.1", port))
+            status, msg = await client.call("clear_energy_stats")
+
+            return_dict['status'] = status
+            return_dict['msg'] = msg
+
+        loop = asyncio.new_event_loop()
+        asyncio.set_event_loop(loop)
+        asyncio.get_event_loop()
+        loop.run_until_complete(energy_stats(self.asyncio_rpc_port))
+
+        return return_dict
+
+    def clear_total_kwh(self, args_dict):
+        self.logger.info(f"Clear energy stats returned: {self.clear_energy_stats()}")

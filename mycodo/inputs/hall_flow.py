@@ -58,7 +58,7 @@ INPUT_INFORMATION = {
         {
             'id': 'clear_total_volume',
             'type': 'button',
-            'name': lazy_gettext('Clear Total Volume')
+            'name': f"{lazy_gettext('Clear Total')}: {lazy_gettext('Volume')}"
         }
     ]
 

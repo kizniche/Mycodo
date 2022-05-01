@@ -1530,7 +1530,7 @@ def return_dependencies(device_type):
                                         try:
                                             installed_version = version(pypi_name)
                                         except:
-                                            installed_version = "ERROR"
+                                            installed_version = "NONE"
 
                                         logger.info(f"Pypi Package: {pypi_name}, "
                                                     f"Required: v{required_version}, "

@@ -16,6 +16,11 @@
  - Add Outputs: Kasa Wifi RGB Light Bulbs
  - Add Outputs: Kasa Wifi Power Plugs
  - Add Input: Kasa Energy Meter (Strips/Plugs)
+ - Add Function Action: Clear Total kWh
+
+### Miscellaneous
+
+ - Increase dependency install timeout period
 
 
 ## 8.13.9 (2022-04-21)

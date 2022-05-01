@@ -1,5 +1,4 @@
 # -*- coding: utf-8 -*-
-import importlib
 import logging
 import os
 import sys
@@ -152,9 +151,10 @@ if __name__ == "__main__":
                 install_cmd = "{pth}/mycodo/scripts/dependencies.sh {dep}".format(
                     pth=INSTALL_DIRECTORY,
                     dep=each_dep[1])
-                output, err, stat = cmd_output(install_cmd, user='root')
-                formatted_output = output.decode("utf-8").replace('\\n', '\n')
-                logger.info(formatted_output)
+                output, err, stat = cmd_output(install_cmd, timeout=3600, user='root')
+                if output:
+                    formatted_output = output.decode("utf-8").replace('\\n', '\n')
+                    logger.info(formatted_output)
     else:
         logger.info("Not Unmet dependencies for devices found")
 

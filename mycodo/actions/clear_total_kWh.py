@@ -9,8 +9,8 @@ from mycodo.actions.base_action import AbstractFunctionAction
 from mycodo.utils.database import db_retrieve_table_daemon
 
 ACTION_INFORMATION = {
-    'name_unique': 'clear_total_volume',
-    'name': f"{lazy_gettext('Flow Meter')}: {lazy_gettext('Clear Total')}: {lazy_gettext('Volume')}",
+    'name_unique': 'clear_total_kwh',
+    'name': f"{lazy_gettext('Flow Meter')}: {lazy_gettext('Clear Total')}: kWh",
     'library': None,
     'manufacturer': 'Mycodo',
     'application': ['functions'],
@@ -20,10 +20,10 @@ ACTION_INFORMATION = {
     'url_product_purchase': None,
     'url_additional': None,
 
-    'message': 'Clear the total volume saved for a flow meter Input. The Input must have the Clear Total Volume option.',
+    'message': 'Clear the total kWh saved for an energy meter Input. The Input must have the Clear Total kWh option. This will also clear all energy stats on the device, not just the total kWh.',
 
-    'usage': 'Executing <strong>self.run_action("{ACTION_ID}")</strong> will clear the total volume for the selected flow meter Input. '
-             'Executing <strong>self.run_action("{ACTION_ID}", value={"input_id": "959019d1-c1fa-41fe-a554-7be3366a9c5b"})</strong> will clear the total volume for the flow meter Input with the specified ID.',
+    'usage': 'Executing <strong>self.run_action("{ACTION_ID}")</strong> will clear the total kWh for the selected energy meter Input. '
+             'Executing <strong>self.run_action("{ACTION_ID}", value={"input_id": "959019d1-c1fa-41fe-a554-7be3366a9c5b"})</strong> will clear the total kWh for the energy meter Input with the specified ID.',
 
     'custom_options': [
         {
@@ -34,14 +34,14 @@ ACTION_INFORMATION = {
                 'Input'
             ],
             'name': lazy_gettext('Controller'),
-            'phrase': 'Select the flow meter Input'
+            'phrase': 'Select the energy meter Input'
         }
     ]
 }
 
 
 class ActionModule(AbstractFunctionAction):
-    """Function Action: Clear Total Volume."""
+    """Function Action: Clear Total kWh."""
     def __init__(self, action_dev, testing=False):
         super().__init__(action_dev, testing=testing, name=__name__)
 
@@ -73,10 +73,10 @@ class ActionModule(AbstractFunctionAction):
             self.logger.error(msg)
             return message
 
-        message += f" Clear total volume of Input {controller_id} ({this_input.name})."
+        message += f" Clear total kWh of Input {controller_id} ({this_input.name})."
         clear_volume = threading.Thread(
             target=self.control.module_function,
-            args=("Input", this_input.unique_id, "clear_total_volume", {},))
+            args=("Input", this_input.unique_id, "clear_total_kwh", {},))
         clear_volume.start()
 
         self.logger.debug(f"Message: {message}")
