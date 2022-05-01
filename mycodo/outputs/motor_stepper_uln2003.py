@@ -32,6 +32,7 @@ OUTPUT_INFORMATION = {
     'output_name_unique': 'stepper_uln2003',
     'output_name': f"{lazy_gettext('Motor')}: ULN2003 {lazy_gettext('Stepper Motor')}, {lazy_gettext('Unipolar')}",
     'output_manufacturer': 'STMicroelectronics',
+    'output_library': 'RPi.GPIO, rpimotorlib',
     'measurements_dict': measurements_dict,
     'channels_dict': channels_dict,
     'output_types': ['value'],

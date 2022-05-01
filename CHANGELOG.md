@@ -7,11 +7,15 @@
  - Remove deprecated jinja2 extensions
  - Fix loading dependency page ([#1180](https://github.com/kizniche/mycodo/issues/1180))
  - Fix missing smbus2 dependency for several LCD Functions
+ - Fix Input/Output Custom Commands showing correct value
 
 ### Features
 
  - Add API endpoint: cameras/capture_image
  - Add Headers option to URL (requests) camera library
+ - Add Outputs: Kasa Wifi RGB Light Bulbs
+ - Add Outputs: Kasa Wifi Power Plugs
+ - Add Input: Kasa Energy Meter (Strips/Plugs)
 
 
 ## 8.13.9 (2022-04-21)

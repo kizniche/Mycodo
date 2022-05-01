@@ -7,7 +7,6 @@
   {% set dict_options = dict_inputs[each_input.device] %}
   {% set each_device = each_input %}
   {% set unique_id = each_input.unique_id %}
-  {% set custom_options_values = custom_options_values_inputs %}
 
   {% if each_input.device in ['RPiCPULoad', 'RPiFreeSpace'] -%}
     <input id="pre_output_id" name="pre_output_id" type="hidden" value="0">
@@ -118,6 +117,7 @@
     </div>
       {% if each_input.device in custom_commands and custom_commands[each_input.device] %}
         {% set force_default_value = true %}
+        {% set custom_options_values = none %}
         {% if 'custom_commands' in dict_options %}
           {% for each_option in dict_options['custom_commands'] %}
         {% include 'pages/form_options/Custom_Options.html' %}
@@ -186,6 +186,8 @@
 
     {% endif %}
   </div>
+
+    {% set custom_options_values = custom_options_values_inputs %}
 
     {% if ('custom_options' in dict_options and custom_options_values[unique_id]) or
           'custom_options_message' in dict_options %}

@@ -1,5 +1,4 @@
 {% set form = form_function %}
-{% set custom_options_values = custom_options_values_controllers %}
 {% set each_device = each_function %}
 {% set dict_options = dict_controllers[each_function.device] %}
 {% set unique_id = each_function.unique_id %}
@@ -99,16 +98,16 @@
 
     </div>
 
-    <div id="status_enable_{{each_function.unique_id}}" class="row small-gutters align-items-end" style="{% if not each_function.is_activated %}display: none; {% endif %}padding: 0.5em">
+    <div id="status_enable_{{unique_id}}" class="row small-gutters align-items-end" style="{% if not each_function.is_activated %}display: none; {% endif %}padding: 0.5em">
       <div class="col-12">
         <h5>{{_('Status')}}</h5>
       </div>
       <div class="col-12">
-        <span id="function_status_message_{{each_function.unique_id}}"></span>
+        <span id="function_status_message_{{unique_id}}"></span>
       </div>
     </div>
 
-    <div id="return_text_{{each_function.unique_id}}" class="col-12"></div>
+    <div id="return_text_{{unique_id}}" class="col-12"></div>
 
     {% if each_function.device in custom_commands %}
     <div class="row small-gutters align-items-end" style="padding: 0.5em">
@@ -119,6 +118,7 @@
       {% include 'pages/form_options/Custom_Actions_Message.html' %}
       {% if each_function.device in custom_commands and custom_commands[each_function.device] %}
         {% set force_default_value = true %}
+        {% set custom_options_values = none %}
         {% if 'custom_commands' in dict_options %}
           {% for each_option in dict_options['custom_commands'] %}
             {% include 'pages/form_options/Custom_Options.html' %}
@@ -150,7 +150,9 @@
     {% include 'pages/form_options/Num_channels.html' %}
     {% include 'pages/form_options/Measurements_Enabled.html' %}
 
-    {% if 'custom_options' in dict_options %}
+    {% set custom_options_values = custom_options_values_controllers %}
+
+    {% if 'custom_options' in dict_options and custom_options_values[unique_id] %}
       {% set force_default_value = false %}
       {% for each_option in dict_options['custom_options'] %}
         {% include 'pages/form_options/Custom_Options.html' %}
@@ -162,7 +164,7 @@
     {% endif %}
 
       {%- set function_channel_exists = [] -%}
-      {% for each_function_channel in function_channel if each_function_channel.function_id == each_function.unique_id %}
+      {% for each_function_channel in function_channel if each_function_channel.function_id == unique_id %}
         {%- do function_channel_exists.append(1) -%}
       {% endfor %}
 
@@ -180,7 +182,7 @@
       {% set force_default_value = true %}
       {% set channel_options = true %}
 
-      {% for each_function_channel in function_channel if each_function_channel.function_id == each_function.unique_id %}
+      {% for each_function_channel in function_channel if each_function_channel.function_id == unique_id %}
 
         {% set channel = each_function_channel.channel %}
         {% set name_prefix = each_device.unique_id + "_" + channel|string + "_" %}
@@ -190,9 +192,9 @@
       <div class="col-auto">
         Channel {{each_function_channel.channel}}
 
-        {%- if 'name' in custom_options_values[each_function.unique_id][each_function_channel.channel] and
-             custom_options_values[each_function.unique_id][each_function_channel.channel]['name'] -%}
-          {{': ' + custom_options_values[each_function.unique_id][each_function_channel.channel]['name']}}
+        {%- if 'name' in custom_options_values[unique_id][each_function_channel.channel] and
+             custom_options_values[unique_id][each_function_channel.channel]['name'] -%}
+          {{': ' + custom_options_values[unique_id][each_function_channel.channel]['name']}}
         {%- elif 'channels_dict' in dict_controllers[each_function.device] and
                  'name' in dict_controllers[each_function.device]['channels_dict'][each_function_channel.channel] -%}
           {{': ' + dict_controllers[each_function.device]['channels_dict'][each_function_channel.channel]['name']}}

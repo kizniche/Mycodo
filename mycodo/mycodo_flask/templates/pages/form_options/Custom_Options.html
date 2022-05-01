@@ -33,18 +33,6 @@
   </div>
 </div>
 
-    {% elif each_option['type'] == 'bool' %}
-
-<div class="col-auto">
-  <label class="control-label" for="{{name_prefix}}{{each_option['id']}}">{{each_option['name']}}</label>
-  <div class="input-group-text">
-    <input id="{{name_prefix}}{{each_option['id']}}" name="{{name_prefix}}{{each_option['id']}}" title="{{each_option['phrase']}}" type="checkbox" value="y"
-      {%- if (channel_options and custom_options_values[unique_id][channel][each_option['id']]) or
-             (custom_options_values and custom_options_values[unique_id][each_option['id']]) or
-             (force_default_value and 'default_value' in each_option and each_option['default_value'])%} checked{% endif %}>
-  </div>
-</div>
-
     {% elif each_option['type'] == 'multiline_text' %}
 
 <div class="col-12">
@@ -59,6 +47,18 @@
       {{each_option['default_value']}}
     {%- endif -%}
     </textarea>
+  </div>
+</div>
+
+    {% elif each_option['type'] == 'bool' %}
+
+<div class="col-auto">
+  <label class="control-label" for="{{name_prefix}}{{each_option['id']}}">{{each_option['name']}}</label>
+  <div class="input-group-text">
+    <input id="{{name_prefix}}{{each_option['id']}}" name="{{name_prefix}}{{each_option['id']}}" title="{{each_option['phrase']}}" type="checkbox" value="y"
+      {%- if (channel_options and custom_options_values[unique_id][channel][each_option['id']]) or
+             (custom_options_values and custom_options_values[unique_id][each_option['id']]) or
+             (force_default_value and 'default_value' in each_option and each_option['default_value'])%} checked{% endif %}>
   </div>
 </div>
 
@@ -226,7 +226,7 @@
       {% for name, devices in form_choices %}
         {% if name in each_option['options_select'] %}
           {%- for each_dev in devices -%}
-      <option value="{{each_dev.unique_id}}"{% if (channel_options and each_dev.unique_id == custom_options_values[unique_id][channel][each_option['id']]) or (custom_options_values and each_dev.unique_id == custom_options_values[unique_id][each_option['id']]) %} selected{% endif %}>[Input {{'%02d' % each_dev.id}}] {{each_dev.name}}</option>
+      <option value="{{each_dev.unique_id}}"{% if (channel_options and each_dev.unique_id == custom_options_values[unique_id][channel][each_option['id']]) or (custom_options_values and each_dev.unique_id == custom_options_values[unique_id][each_option['id']]) %} selected{% endif %}>[{{name}} {{'%02d' % each_dev.id}}] {{each_dev.name}}</option>
           {%- endfor -%}
         {% endif %}
       {% endfor %}

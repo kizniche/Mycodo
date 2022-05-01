@@ -1,6 +1,6 @@
 # coding=utf-8
 #
-# on_off_hs300_0_4_2_test_03.py - Output for HS300
+# on_off_kp115.py - Output for KP115
 #
 import asyncio
 import random
@@ -20,35 +20,32 @@ from mycodo.utils.database import db_retrieve_table_daemon
 
 # Measurements
 measurements_dict = {
-    measure: {
+    0: {
         'measurement': 'duration_time',
         'unit': 's'
     }
-    for measure in range(6)
 }
 
 channels_dict = {
-    channel: {
+    0: {
         'types': ['on_off'],
-        'name': f'Plug {channel + 1}',
-        'measurements': [channel]
+        'measurements': [0]
     }
-    for channel in range(6)
 }
 
 # Output information
 OUTPUT_INFORMATION = {
-    'output_name_unique': 'hs300_0_4_2_alt_02',
-    'output_name': f"{lazy_gettext('On/Off')}: HS300 Kasa 6-Outlet WiFi Power Strip (python-kasa 0.4.2)",
+    'output_name_unique': 'output_kasa_plugs',
+    'output_name': f"{lazy_gettext('On/Off')}: Kasa WiFi Power Plug",
     'output_manufacturer': 'TP-Link',
     'input_library': 'python-kasa==0.4.2',
     'measurements_dict': measurements_dict,
     'channels_dict': channels_dict,
     'output_types': ['on_off'],
 
-    'url_manufacturer': 'https://www.kasasmart.com/us/products/smart-plugs/kasa-smart-wi-fi-power-strip-hs300',
+    'url_manufacturer': 'https://www.kasasmart.com/us/products/smart-plugs/kasa-smart-plug-slim-energy-monitoring-kp115',
 
-    'message': 'This output controls the 6 outlets of the Kasa HS300 Smart WiFi Power Strip. This is a variant that uses the latest python-kasa library. Note: if you see errors in the daemon log about the server starting, try changing the Asyncio RPC Port to another port.',
+    'message': 'This output controls Kasa WiFi Power Plugs, including the KP105, KP115, KP125, KP401, HS100, HS103, HS105, HS107, and HS110. Note: if you see errors in the daemon log about the server starting, try changing the Asyncio RPC Port to another port.',
 
     'options_enabled': [
         'button_on',
@@ -93,14 +90,6 @@ OUTPUT_INFORMATION = {
     ],
 
     'custom_channel_options': [
-        {
-            'id': 'name',
-            'type': 'text',
-            'default_value': 'Outlet Name',
-            'required': True,
-            'name': TRANSLATIONS['name']['title'],
-            'phrase': TRANSLATIONS['name']['phrase']
-        },
         {
             'id': 'state_startup',
             'type': 'select',
@@ -152,7 +141,7 @@ OUTPUT_INFORMATION = {
 
 
 class OutputModule(AbstractOutput):
-    """An output support class that operates the Kasa KP303 and HS300 WiFi Power Strips."""
+    """An output support class that operates the Kasa KP115/KP125 WiFi Power Plugs."""
 
     def __init__(self, output, testing=False):
         super().__init__(output, testing=testing, name=__name__)
@@ -191,51 +180,50 @@ class OutputModule(AbstractOutput):
         started_evt.wait()  # Wait for thread to either start running or error
 
         for _ in range(3):  # Attempt to connect 3 times
-            status, msg = self.connect()
-            if not status:
+            self.connect()
+            if self.output_setup:
                 break
+            time.sleep(2)
 
         if self.output_setup:
-            for channel in range(len(channels_dict)):
-                if self.options_channels['state_startup'][channel] == 1:
-                    self.outlet_change(channel, True)
-                elif self.options_channels['state_startup'][channel] == 0:
-                    self.outlet_change(channel, False)
+            if self.options_channels['state_startup'][0] == 1:
+                self.outlet_change(True)
+            elif self.options_channels['state_startup'][0] == 0:
+                self.outlet_change(False)
 
             if self.status_update_period:
                 self.status_thread = Thread(target=self.status_update)
                 self.status_thread.start()
 
-    def aio_rpc_server(self, started_evt, loop, logger, channels):
+    def aio_rpc_server(self, started_evt, loop, logger):
         import aio_msgpack_rpc
-        from kasa import SmartStrip
+        from kasa import SmartPlug
 
         class KasaServer:
             """Communicates with the Kasa power strip"""
 
-            def __init__(self, address_, channels_):
+            def __init__(self, address_):
                 self.strip = None
                 self.address = address_
-                self.channels = channels_
 
             async def connect(self):
                 try:
-                    self.strip = SmartStrip(self.address)
+                    self.strip = SmartPlug(self.address)
                     await self.strip.update()
                     return 0, f'Strip {self.strip.alias}: {self.strip.hw_info}'
                 except Exception:
                     return 1, str(traceback.print_exc())
 
-            async def outlet_on(self, channel):
+            async def outlet_on(self):
                 try:
-                    await self.strip.children[channel].turn_on()
+                    await self.strip.turn_on()
                     return 0, "success"
                 except Exception:
                     return 1, str(traceback.print_exc())
 
-            async def outlet_off(self, channel):
+            async def outlet_off(self):
                 try:
-                    await self.strip.children[channel].turn_off()
+                    await self.strip.turn_off()
                     return 0, "success"
                 except Exception:
                     return 1, str(traceback.print_exc())
@@ -243,25 +231,23 @@ class OutputModule(AbstractOutput):
             async def get_status(self):
                 try:
                     await self.strip.update()
-                    channel_stat = []
-                    for channel in range(self.channels):
-                        if self.strip.children[channel].is_on:
-                            channel_stat.append(True)
-                        else:
-                            channel_stat.append(False)
+                    if self.strip.is_on:
+                        channel_stat = True
+                    else:
+                        channel_stat = False
                     return 0, channel_stat
                 except Exception:
                     return 1, str(traceback.print_exc())
 
-        async def main(address, port, channels_):
+        async def main(address, port):
             server = None
             try:
                 server = await asyncio.start_server(
-                    aio_msgpack_rpc.Server(KasaServer(address, channels_)),
+                    aio_msgpack_rpc.Server(KasaServer(address)),
                     host="127.0.0.1", port=port)
                 started_evt.set()
 
-                while True:
+                while self.running:
                     await asyncio.sleep(0.1)
             except Exception:
                 logger.exception("Error starting asyncio RPC server")
@@ -276,7 +262,7 @@ class OutputModule(AbstractOutput):
 
         try:
             asyncio.set_event_loop(loop)
-            loop.run_until_complete(main(self.plug_address, self.asyncio_rpc_port, channels))
+            loop.run_until_complete(main(self.plug_address, self.asyncio_rpc_port))
         except Exception:
             logger.exception("Asyncio RPC server")
         except KeyboardInterrupt:
@@ -286,9 +272,6 @@ class OutputModule(AbstractOutput):
 
     def connect(self):
         import aio_msgpack_rpc
-
-        status = None
-        msg = ""
 
         async def connect(port):
             client = aio_msgpack_rpc.Client(*await asyncio.open_connection("127.0.0.1", port))
@@ -304,29 +287,27 @@ class OutputModule(AbstractOutput):
         asyncio.get_event_loop()
         loop.run_until_complete(connect(self.asyncio_rpc_port))
 
-        return status, msg
-
-    def outlet_change(self, channel, state):
+    def outlet_change(self, state):
         import aio_msgpack_rpc
 
-        async def outlet_change(port, channel_, state_):
+        async def outlet_change(port, state_):
             client = aio_msgpack_rpc.Client(*await asyncio.open_connection("127.0.0.1", port))
 
             if state_:
-                status, msg = await client.call("outlet_on", channel_)
+                status, msg = await client.call("outlet_on")
             else:
-                status, msg = await client.call("outlet_off", channel_)
+                status, msg = await client.call("outlet_off")
 
             if status:
-                self.logger.error(f"Switching CH{channel_} {'ON' if state_ else 'OFF'}: Error: {msg}")
+                self.logger.error(f"Switching {'ON' if state_ else 'OFF'}: Error: {msg}")
             else:
-                self.output_states[channel] = state
-                self.logger.debug(f"Switching CH{channel_} {'ON' if state_ else 'OFF'}: {msg}")
+                self.output_states[0] = state
+                self.logger.debug(f"Switching {'ON' if state_ else 'OFF'}: {msg}")
 
         loop = asyncio.new_event_loop()
         asyncio.set_event_loop(loop)
         asyncio.get_event_loop()
-        loop.run_until_complete(outlet_change(self.asyncio_rpc_port, channel, state))
+        loop.run_until_complete(outlet_change(self.asyncio_rpc_port, state))
 
     def status_update(self):
         import aio_msgpack_rpc
@@ -348,8 +329,7 @@ class OutputModule(AbstractOutput):
                         else:
                             self.logger.debug(f"Status: {msg}")
                             if msg:
-                                for channel, state in enumerate(msg):
-                                    self.output_states[channel] = state
+                                self.output_states[0] = msg
 
                     loop = asyncio.new_event_loop()
                     asyncio.set_event_loop(loop)
@@ -368,18 +348,15 @@ class OutputModule(AbstractOutput):
 
         try:
             if state == 'on':
-                self.outlet_change(output_channel, True)
+                self.outlet_change(True)
             elif state == 'off':
-                self.outlet_change(output_channel, False)
+                self.outlet_change(False)
         except Exception as err:
             self.logger.exception(f"State change error: {err}")
 
     def is_on(self, output_channel=None):
         if self.is_setup():
-            if output_channel is not None and output_channel in self.output_states:
-                return self.output_states[output_channel]
-            else:
-                return self.output_states
+            return self.output_states[0]
 
     def is_setup(self):
         return self.output_setup
@@ -387,9 +364,8 @@ class OutputModule(AbstractOutput):
     def stop_output(self):
         """Called when Output is stopped."""
         if self.is_setup():
-            for channel in channels_dict:
-                if self.options_channels['state_shutdown'][channel] == 1:
-                    self.output_switch('on', output_channel=channel)
-                elif self.options_channels['state_shutdown'][channel] == 0:
-                    self.output_switch('off', output_channel=channel)
+            if self.options_channels['state_shutdown'][0] == 1:
+                self.output_switch('on')
+            elif self.options_channels['state_shutdown'][0] == 0:
+                self.output_switch('off')
         self.running = False

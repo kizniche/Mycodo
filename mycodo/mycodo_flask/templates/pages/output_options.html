@@ -8,7 +8,6 @@
   {% set dict_options = dict_outputs[each_output.output_type] %}
   {% set each_device = each_output %}
   {% set unique_id = each_output.unique_id %}
-  {% set custom_options_values = custom_options_values_outputs %}
 
     <div class="row small-gutters">
       <div class="col-auto">
@@ -86,6 +85,7 @@
 
   {% if each_output.output_type in custom_commands and custom_commands[each_output.output_type] %}
     {% set force_default_value = true %}
+    {% set custom_options_values = none %}
     <div class="row small-gutters align-items-end" style="padding: 0.5em">
       <div class="col-12">
         <h5>{{_('Commands')}}</h5>
@@ -133,6 +133,8 @@
 
   {% endif %}
     </div>
+
+  {% set custom_options_values = custom_options_values_outputs %}
 
   {% if ('custom_options' in dict_options and custom_options_values[unique_id]) or
         'custom_options_message' in dict_options %}

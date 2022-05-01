@@ -175,12 +175,8 @@ class InputModule(AbstractInput):
         if self.sensor.self_calibration_enabled != self.enable_self_calibration:
             self.sensor.self_calibration_enabled = self.enable_self_calibration
 
-        self.logger.info(f"{self.sensor.temperature_offset}, {self.temperature_offset}")
-
         if self.sensor.temperature_offset != self.temperature_offset:
             self.sensor.temperature_offset = self.temperature_offset
-
-        self.logger.info(f"New: {self.sensor.temperature_offset}")
 
         if self.sensor.ambient_pressure != self.ambient_pressure:
             self.sensor.ambient_pressure = self.ambient_pressure

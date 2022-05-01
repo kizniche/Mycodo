@@ -84,57 +84,57 @@ class AtlasScientificCommand:
 
         # Atlas EC
         if command == 'ec_dry':
-            if self.board_version == 2:
+            if self.board_version >= 2:
                 err, msg = self.send_command('cal,dry')
         elif command == 'ec_low':
-            if self.board_version == 2:
-                err, msg = self.send_command('cal,low,{uS}'.format(uS=set_amount))
+            if self.board_version >= 2:
+                err, msg = self.send_command(f'cal,low,{set_amount}')
         elif command == 'ec_high':
-            if self.board_version == 2:
-                err, msg = self.send_command('cal,high,{uS}'.format(uS=set_amount))
+            if self.board_version >= 2:
+                err, msg = self.send_command(f'cal,high,{set_amount}')
 
         # Atlas pH
         elif command == 'temperature' and set_amount is not None:
             if self.board_version == 1:
                 err, msg = self.send_command(set_amount)
-            elif self.board_version == 2:
-                err, msg = self.send_command('T,{:.2f}'.format(set_amount))
+            elif self.board_version >= 2:
+                err, msg = self.send_command(f'T,{set_amount:.2f}')
         elif command == 'clear_calibration':
             if self.board_version == 1:
                 err, msg = self.send_command('X')
                 self.send_command('L0')
-            elif self.board_version == 2:
+            elif self.board_version >= 2:
                 err, msg = self.send_command('Cal,clear')
         elif command == 'continuous':
             if self.board_version == 1:
                 err, msg = self.send_command('C')
-            elif self.board_version == 2:
+            elif self.board_version >= 2:
                 err, msg = self.send_command('C,1')
         elif command == 'low':
             if self.board_version == 1:
                 err, msg = self.send_command('F')
-            elif self.board_version == 2:
+            elif self.board_version >= 2:
                 err, msg = self.send_command('Cal,low,4.00')
         elif command == 'mid':
             if self.board_version == 1:
                 err, msg = self.send_command('S')
-            elif self.board_version == 2:
+            elif self.board_version >= 2:
                 err, msg = self.send_command('Cal,mid,7.00')
         elif command == 'high':
             if self.board_version == 1:
                 err, msg = self.send_command('T')
-            elif self.board_version == 2:
+            elif self.board_version >= 2:
                 err, msg = self.send_command('Cal,high,10.00')
         elif command == 'calibrated':  # Not implemented. This queries whether there is a stored calibration
             if self.board_version == 1:
                 err = 'success'
                 msg = 'Calibrated query not implemented on board version 1 (assume it was successfully calibrated)'
-            elif self.board_version == 2:
+            elif self.board_version >= 2:
                 err, msg = self.send_command('Cal,?')
         elif command == 'end':
             if self.board_version == 1:
                 err, msg = self.send_command('E')
-            elif self.board_version == 2:
+            elif self.board_version >= 2:
                 err, msg = self.send_command('C,0')
         elif custom_cmd:
             err, msg = self.send_command(custom_cmd)
@@ -154,13 +154,12 @@ class AtlasScientificCommand:
             elif self.interface == 'I2C':
                 return_status, return_value = self.atlas_device.query(cmd_send)
             else:
-                return 1, "Interface not recognized: {}".format(self.interface)
+                return 1, f"Interface not recognized: {self.interface}"
 
             if return_status == 'success':
                 return 0, return_value
             else:
                 return 1, return_value
         except Exception as err:
-            logger.error("{cls} raised an exception while communicating with the board: {err}".format(
-                cls=type(self).__name__, err=err))
+            logger.error(f"{type(self).__name__} raised an exception while communicating with the board: {err}")
             return 1, err

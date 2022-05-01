@@ -1,6 +1,6 @@
 # coding=utf-8
 #
-# on_off_kp303.py - Output for KP303
+# on_off_hs300.py - Output for HS300
 #
 import asyncio
 import threading
@@ -20,7 +20,7 @@ measurements_dict = {
         'measurement': 'duration_time',
         'unit': 's'
     }
-    for key in range(3)
+    for key in range(6)
 }
 
 channels_dict = {
@@ -29,22 +29,22 @@ channels_dict = {
         'name': f'Outlet {key + 1}',
         'measurements': [key]
     }
-    for key in range(3)
+    for key in range(6)
 }
 
 # Output information
 OUTPUT_INFORMATION = {
-    'output_name_unique': 'kp303',
-    'output_name': f"{lazy_gettext('On/Off')}: KP303 Kasa 3-Outlet WiFi Power Strip (python-kasa 0.4.0.dev4)",
+    'output_name_unique': 'hs300',
+    'output_name': f"{lazy_gettext('On/Off')}: Kasa HS300 6-Outlet WiFi Power Strip (python-kasa 0.4.0.dev4)",
     'output_manufacturer': 'TP-Link',
     'input_library': 'python-kasa',
     'measurements_dict': measurements_dict,
     'channels_dict': channels_dict,
     'output_types': ['on_off'],
 
-    'url_manufacturer': 'https://www.tp-link.com/au/home-networking/smart-plug/kp303/',
+    'url_manufacturer': 'https://www.kasasmart.com/us/products/smart-plugs/kasa-smart-wi-fi-power-strip-hs300',
 
-    'message': 'This output controls the 3 outlets of the Kasa KP303 Smart WiFi Power Strip. This is a variant that uses an outdated python library.',
+    'message': 'This output controls the 6 outlets of the Kasa HS300 Smart WiFi Power Strip. This is a variant that uses an outdated python library.',
 
     'options_enabled': [
         'button_on',

@@ -33,6 +33,7 @@ channels_dict = {
 OUTPUT_INFORMATION = {
     'output_name_unique': 'stepper_bipolar_generic',
     'output_name': f"{lazy_gettext('Motor')}: {lazy_gettext('Stepper Motor')}, {lazy_gettext('Bipolar')} ({lazy_gettext('Generic')})",
+    'output_library': 'RPi.GPIO',
     'measurements_dict': measurements_dict,
     'channels_dict': channels_dict,
     'output_types': ['value'],

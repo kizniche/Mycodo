@@ -45,6 +45,10 @@ MEASUREMENTS = {
         'name': lazy_gettext('Boolean'),
         'meas': 'boolean',
         'units': ['bool']},
+    'brightness': {
+        'name': lazy_gettext('Brightness'),
+        'meas': 'brightness',
+        'units': ['percent']},
     'co2': {
         'name': lazy_gettext('CO2'),
         'meas': 'co2',
@@ -61,6 +65,10 @@ MEASUREMENTS = {
         'name': f"{lazy_gettext('Color')} ({lazy_gettext('Blue')})",
         'meas': 'color_blue',
         'units': ['eight_bit_color']},
+    'color_temperature': {
+        'name': f"{lazy_gettext('Color Temperature')}",
+        'meas': 'color_temperature',
+        'units': ['K']},
     'color_x': {
         'name': f"{lazy_gettext('Color')} (x)",
         'meas': 'color_x',
@@ -137,6 +145,10 @@ MEASUREMENTS = {
         'name': lazy_gettext('GPIO State'),
         'meas': 'gpio_state',
         'units': ['bool']},
+    'hue': {
+        'name': lazy_gettext('Hue'),
+        'meas': 'hue',
+        'units': ['degree']},
     'humidity': {
         'name': lazy_gettext('Humidity'),
         'meas': 'humidity',
@@ -241,6 +253,10 @@ MEASUREMENTS = {
         'name': lazy_gettext('Salinity'),
         'meas': 'salinity',
         'units': ['ppt']},
+    'saturation': {
+        'name': lazy_gettext('Saturation'),
+        'meas': 'saturation',
+        'units': ['percent']},
     'setpoint': {
         'name': lazy_gettext('Setpoint'),
         'meas': 'setpoint',
