@@ -8,6 +8,7 @@
  - Fix loading dependency page ([#1180](https://github.com/kizniche/mycodo/issues/1180))
  - Fix missing smbus2 dependency for several LCD Functions
  - Fix Input/Output Custom Commands showing correct value
+ - Fix fswebcam Camera custom options not being applied
 
 ### Features
 

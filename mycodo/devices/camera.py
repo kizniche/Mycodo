@@ -42,7 +42,7 @@ def camera_record(record_type, unique_id, duration_sec=None, tmp_filename=None):
     timestamp = timestamp_date.strftime('%Y-%m-%d_%H-%M-%S')
     assure_path_exists(PATH_CAMERAS)
     camera_path = assure_path_exists(
-        os.path.join(PATH_CAMERAS, '{uid}'.format(uid=settings.unique_id)))
+        os.path.join(PATH_CAMERAS, settings.unique_id))
 
     if record_type == 'photo':
         if tmp_filename:
@@ -52,10 +52,7 @@ def camera_record(record_type, unique_id, duration_sec=None, tmp_filename=None):
         else:
             save_path = assure_path_exists(os.path.join(camera_path, 'still'))
         # TODO: next major version, remove cam id (unique_id is already in path)
-        filename = 'Still-{cam_id}-{cam}-{ts}.jpg'.format(
-            cam_id=settings.id,
-            cam=settings.name,
-            ts=timestamp).replace(" ", "_")
+        filename = f'Still-{settings.id}-{settings.name}-{timestamp}.jpg'.replace(" ", "_")
 
     elif record_type == 'timelapse':
         if tmp_filename:
@@ -67,11 +64,7 @@ def camera_record(record_type, unique_id, duration_sec=None, tmp_filename=None):
         start = datetime.datetime.fromtimestamp(
             settings.timelapse_start_time).strftime("%Y-%m-%d_%H-%M-%S")
         # TODO: next major version, remove cam id (unique_id is already in path)
-        filename = 'Timelapse-{cam_id}-{cam}-{st}-img-{cn:05d}.jpg'.format(
-            cam_id=settings.id,
-            cam=settings.name,
-            st=start,
-            cn=settings.timelapse_capture_number).replace(" ", "_")
+        filename = f'Timelapse-{settings.id}-{settings.name}-{start}-img-{settings.timelapse_capture_number:05d}.jpg'.replace(" ", "_")
 
     elif record_type == 'video':
         if tmp_filename:
@@ -80,9 +73,7 @@ def camera_record(record_type, unique_id, duration_sec=None, tmp_filename=None):
             save_path = settings.path_video
         else:
             save_path = assure_path_exists(os.path.join(camera_path, 'video'))
-        filename = 'Video-{cam}-{ts}.h264'.format(
-            cam=settings.name,
-            ts=timestamp).replace(" ", "_")
+        filename = f'Video-{settings.name}-{timestamp}.h264'.replace(" ", "_")
 
     else:
         return None, None
@@ -168,12 +159,14 @@ def camera_record(record_type, unique_id, duration_sec=None, tmp_filename=None):
             return None, None
 
         try:
-            cmd = "/usr/bin/fswebcam --device {dev} --resolution {w}x{h} --set brightness={bt}% " \
-                  "--no-banner --save {file}".format(dev=settings.device,
-                                                     w=settings.width,
-                                                     h=settings.height,
-                                                     bt=settings.brightness,
-                                                     file=path_file)
+            cmd = f"/usr/bin/fswebcam " \
+                  f"--device {settings.device} " \
+                  f"--resolution {settings.width}x{settings.height} " \
+                  f"--set brightness={settings.brightness}% " \
+                  f"--no-banner"
+
+            if settings.custom_options:
+                cmd += f" {settings.custom_options}"
 
             if settings.hflip and settings.vflip:
                 cmd += " --flip h,v"
@@ -183,15 +176,14 @@ def camera_record(record_type, unique_id, duration_sec=None, tmp_filename=None):
                 cmd += " --flip v"
 
             if settings.rotation:
-                cmd += " --rotate {angle}".format(angle=settings.rotation)
-            if settings.custom_options:
-                cmd += " {}".format(settings.custom_options)
+                cmd += f" --rotate {settings.rotation}"
+
+            cmd += f" --save {path_file}"
 
             out, err, status = cmd_output(cmd, stdout_pipe=False, user='root')
             logger.debug(
                 "Camera debug message: "
-                "cmd: {}; out: {}; error: {}; status: {}".format(
-                    cmd, out, err, status))
+                f"cmd: {cmd}; out: {out}; error: {err}; status: {status}")
         except:
             logger.exception("fswebcam")
 
@@ -201,45 +193,42 @@ def camera_record(record_type, unique_id, duration_sec=None, tmp_filename=None):
             return None, None
 
         try:
-            cmd = "/usr/bin/raspistill -w {w} -h {h} --brightness {bt} " \
-                  "-o {file}".format(w=settings.width,
-                                     h=settings.height,
-                                     bt=settings.brightness,
-                                     file=path_file)
+            cmd = f"/usr/bin/raspistill " \
+                  f"-w {settings.width} " \
+                  f"-h {settings.height} " \
+                  f"--brightness {settings.brightness} " \
+                  f"-o {path_file}"
 
             if settings.contrast is not None:
-                cmd += " --contrast {}".format(int(settings.contrast))
+                cmd += f" --contrast {int(settings.contrast)}"
             if settings.saturation is not None:
-                cmd += " --saturation {}".format(int(settings.saturation))
+                cmd += f" --saturation {int(settings.saturation)}"
             if settings.picamera_sharpness is not None:
-                cmd += " --sharpness {}".format(int(settings.picamera_sharpness))
+                cmd += f" --sharpness {int(settings.picamera_sharpness)}"
             if settings.picamera_iso not in [0, None]:
-                cmd += " --ISO {}".format(int(settings.picamera_iso))
+                cmd += f" --ISO {int(settings.picamera_iso)}"
             if settings.picamera_shutter_speed is not None:
-                cmd += " --shutter {}".format(int(settings.picamera_shutter_speed))
+                cmd += f" --shutter {int(settings.picamera_shutter_speed)}"
             if settings.picamera_awb not in ["off", None]:
-                cmd += " --awb {}".format(settings.picamera_awb)
+                cmd += f" --awb {settings.picamera_awb}"
             elif (settings.picamera_awb == "off" and
                   settings.picamera_awb_gain_blue is not None and
                   settings.picamera_awb_gain_red is not None):
-                cmd += " --awb {}".format(settings.picamera_awb)
-                cmd += " --awbgains {red:.1f},{blue:.1f}".format(
-                    red=settings.picamera_awb_gain_red,
-                    blue=settings.picamera_awb_gain_blue)
+                cmd += f" --awb {settings.picamera_awb}"
+                cmd += f" --awbgains {settings.picamera_awb_gain_red:.1f},{settings.picamera_awb_gain_blue:.1f}"
             if settings.hflip:
                 cmd += " --hflip"
             if settings.vflip:
                 cmd += " --vflip"
             if settings.rotation:
-                cmd += " --rotation {angle}".format(angle=settings.rotation)
+                cmd += f" --rotation {settings.rotation}"
             if settings.custom_options:
-                cmd += " {}".format(settings.custom_options)
+                cmd += f" {settings.custom_options}"
 
             out, err, status = cmd_output(cmd, stdout_pipe=False, user='root')
             logger.debug(
                 "Camera debug message: "
-                "cmd: {}; out: {}; error: {}; status: {}".format(
-                    cmd, out, err, status))
+                f"cmd: {cmd}; out: {out}; error: {err}; status: {status}")
         except:
             logger.exception("raspistill")
 
@@ -250,56 +239,49 @@ def camera_record(record_type, unique_id, duration_sec=None, tmp_filename=None):
 
         try:
             if settings.output_format:
-                filename = 'Still-{cam_id}-{cam}-{ts}.{ext}'.format(
-                    cam_id=settings.id,
-                    cam=settings.name,
-                    ts=timestamp,
-                    ext=settings.output_format.lower()).replace(" ", "_")
+                filename = f'Still-{settings.id}-{settings.name}-{timestamp}.{settings.output_format.lower()}'.replace(" ", "_")
                 path_file = os.path.join(save_path, filename)
 
-            cmd = "/usr/bin/libcamera-still --width {w} --height {h} --brightness {bt} " \
-                  "-o {file}".format(w=settings.width,
-                                     h=settings.height,
-                                     bt=settings.brightness,
-                                     file=path_file)
+            cmd = f"/usr/bin/libcamera-still " \
+                  f"--width {settings.width} " \
+                  f"--height { settings.height} " \
+                  f"--brightness {settings.brightness} " \
+                  f"-o {path_file}"
 
             if settings.output_format:
-                cmd += " --encoding {}".format(settings.output_format)
+                cmd += f" --encoding {settings.output_format}"
             if not settings.show_preview:
                 cmd += " --nopreview"
             if settings.contrast is not None:
-                cmd += " --contrast {}".format(int(settings.contrast))
+                cmd += f" --contrast {int(settings.contrast)}"
             if settings.saturation is not None:
-                cmd += " --saturation {}".format(int(settings.saturation))
+                cmd += f" --saturation {int(settings.saturation)}"
             if settings.picamera_sharpness is not None:
-                cmd += " --sharpness {}".format(int(settings.picamera_sharpness))
+                cmd += f" --sharpness {int(settings.picamera_sharpness)}"
             if settings.picamera_shutter_speed is not None:
-                cmd += " --shutter {}".format(int(settings.picamera_shutter_speed))
+                cmd += f" --shutter {int(settings.picamera_shutter_speed)}"
             if settings.gain is not None:
-                cmd += " --gain {}".format(settings.gain)
+                cmd += f" --gain {settings.gain}"
             if settings.picamera_awb not in ["off", None]:
-                cmd += " --awb {}".format(settings.picamera_awb)
+                cmd += f" --awb {settings.picamera_awb}"
             elif (settings.picamera_awb == "off" and
                   settings.picamera_awb_gain_blue is not None and
                   settings.picamera_awb_gain_red is not None):
-                cmd += " --awb {}".format(settings.picamera_awb)
-                cmd += " --awbgains {red:.1f},{blue:.1f}".format(
-                    red=settings.picamera_awb_gain_red,
-                    blue=settings.picamera_awb_gain_blue)
+                cmd += f" --awb {settings.picamera_awb}"
+                cmd += f" --awbgains {settings.picamera_awb_gain_red:.1f},{settings.picamera_awb_gain_blue:.1f}"
             if settings.hflip:
                 cmd += " --hflip"
             if settings.vflip:
                 cmd += " --vflip"
             if settings.rotation:
-                cmd += " --rotation {angle}".format(angle=settings.rotation)
+                cmd += f" --rotation {settings.rotation}"
             if settings.custom_options:
-                cmd += " {}".format(settings.custom_options)
+                cmd += f" {settings.custom_options}"
 
             out, err, status = cmd_output(cmd, stdout_pipe=False, user='root')
             logger.debug(
                 "Camera debug message: "
-                "cmd: {}; out: {}; error: {}; status: {}".format(
-                    cmd, out, err, status))
+                f"cmd: {cmd}; out: {out}; error: {err}; status: {status}")
         except:
             logger.exception("libcamera")
 
@@ -322,8 +304,7 @@ def camera_record(record_type, unique_id, duration_sec=None, tmp_filename=None):
             status, _ = cap.read()
             if not status:
                 logger.error(
-                    "Cannot detect USB camera with device '{dev}'".format(
-                        dev=settings.opencv_device))
+                    f"Cannot detect USB camera with device '{settings.custom_options}'")
                 return None, None
 
             # Discard a few frames to allow camera to adjust to settings
@@ -380,10 +361,9 @@ def camera_record(record_type, unique_id, duration_sec=None, tmp_filename=None):
                     cap.release()
                     out.release()
                     cv2.destroyAllWindows()
-                except Exception as e:
+                except Exception as err:
                     logger.exception(
-                        "Exception raised while recording video: "
-                        "{err}".format(err=e))
+                        f"Exception raised while recording video: {err}")
             else:
                 return None, None
         except:
@@ -404,7 +384,7 @@ def camera_record(record_type, unique_id, duration_sec=None, tmp_filename=None):
                 a = urlparse(settings.url_still)
                 filename = os.path.basename(a.path)
                 if filename:
-                    path_tmp = "/tmp/{}".format(filename)
+                    path_tmp = f"/tmp/{filename}"
 
                 try:
                     os.remove(path_tmp)
@@ -441,7 +421,7 @@ def camera_record(record_type, unique_id, duration_sec=None, tmp_filename=None):
                     else:
                         os.rename(path_tmp, path_file)
                 except Exception as err:
-                    logger.error("Could not convert, rotate, or invert image: {}".format(err))
+                    logger.error(f"Could not convert, rotate, or invert image: {err}")
                     try:
                         os.rename(path_tmp, path_file)
                     except FileNotFoundError:
@@ -497,7 +477,7 @@ def camera_record(record_type, unique_id, duration_sec=None, tmp_filename=None):
                     else:
                         logger.error(f"Could not download image. Status code: {r.status_code}, content: {r.content}")
                 except requests.HTTPError as err:
-                    logger.error("HTTPError: {}".format(err))
+                    logger.error(f"HTTPError: {err}")
                 except Exception as err:
                     logger.exception(err)
 
@@ -508,10 +488,9 @@ def camera_record(record_type, unique_id, duration_sec=None, tmp_filename=None):
 
     try:
         set_user_grp(path_file, 'mycodo', 'mycodo')
-    except Exception as e:
+    except Exception as err:
         logger.exception(
-            "Exception raised in 'camera_record' when setting user grp: "
-            "{err}".format(err=e))
+            f"Exception raised in 'camera_record' when setting user grp: {err}")
 
     # Turn off output, if configured
     if output_id and output_channel and daemon_control and not output_already_on:
@@ -535,10 +514,9 @@ def camera_record(record_type, unique_id, duration_sec=None, tmp_filename=None):
         try:
             set_user_grp(path_file, 'mycodo', 'mycodo')
             return save_path, filename
-        except Exception as e:
+        except Exception as err:
             logger.exception(
-                "Exception raised in 'camera_record' when setting user grp: "
-                "{err}".format(err=e))
+                f"Exception raised in 'camera_record' when setting user grp: {err}")
 
     return None, None
 
