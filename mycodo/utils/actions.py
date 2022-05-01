@@ -29,7 +29,7 @@ from mycodo.utils.influx import get_past_measurements
 from mycodo.utils.modules import load_module_from_file
 from mycodo.utils.system_pi import return_measurement_info
 
-MYCODO_DB_PATH = 'sqlite:///' + SQL_DATABASE_MYCODO
+MYCODO_DB_PATH = f'sqlite:///{SQL_DATABASE_MYCODO}'
 
 logger = logging.getLogger("mycodo.actions")
 

@@ -79,7 +79,7 @@ from mycodo.utils.stats import send_anonymous_stats
 from mycodo.utils.tools import generate_output_usage_report
 from mycodo.utils.tools import next_schedule
 
-MYCODO_DB_PATH = 'sqlite:///' + SQL_DATABASE_MYCODO
+MYCODO_DB_PATH = f'sqlite:///{SQL_DATABASE_MYCODO}'
 
 
 class DaemonController:

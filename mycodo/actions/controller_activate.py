@@ -11,7 +11,7 @@ from mycodo.actions.base_action import AbstractFunctionAction
 from mycodo.utils.database import db_retrieve_table_daemon
 from mycodo.utils.actions import which_controller
 
-MYCODO_DB_PATH = 'sqlite:///' + SQL_DATABASE_MYCODO
+MYCODO_DB_PATH = f'sqlite:///{SQL_DATABASE_MYCODO}'
 
 ACTION_INFORMATION = {
     'name_unique': 'activate_controller',

@@ -74,7 +74,7 @@ from mycodo.utils.pid_controller_default import PIDControl
 from mycodo.utils.system_pi import get_measurement
 from mycodo.utils.system_pi import return_measurement_info
 
-MYCODO_DB_PATH = 'sqlite:///' + SQL_DATABASE_MYCODO
+MYCODO_DB_PATH = f'sqlite:///{SQL_DATABASE_MYCODO}'
 
 
 class PIDController(AbstractController, threading.Thread):

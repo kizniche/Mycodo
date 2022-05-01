@@ -15,7 +15,7 @@ from mycodo.utils.database import db_retrieve_table_daemon
 from mycodo.utils.influx import add_measurements_influxdb
 from mycodo.utils.inputs import parse_measurement
 
-MYCODO_DB_PATH = 'sqlite:///' + SQL_DATABASE_MYCODO
+MYCODO_DB_PATH = f'sqlite:///{SQL_DATABASE_MYCODO}'
 
 
 def constraints_pass_positive_value(mod_input, value):

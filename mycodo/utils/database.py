@@ -8,7 +8,7 @@ import sqlalchemy
 from mycodo.config import SQL_DATABASE_MYCODO
 from mycodo.databases.utils import session_scope
 
-MYCODO_DB_PATH = 'sqlite:///' + SQL_DATABASE_MYCODO
+MYCODO_DB_PATH = f'sqlite:///{SQL_DATABASE_MYCODO}'
 
 logger = logging.getLogger("mycodo.database")
 

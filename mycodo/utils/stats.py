@@ -35,7 +35,7 @@ from mycodo.databases.models import PID
 from mycodo.databases.models import Trigger
 from mycodo.utils.database import db_retrieve_table_daemon
 
-MYCODO_DB_PATH = 'sqlite:///' + SQL_DATABASE_MYCODO
+MYCODO_DB_PATH = f'sqlite:///{SQL_DATABASE_MYCODO}'
 
 logger = logging.getLogger("mycodo.stats")
 

@@ -24,7 +24,7 @@ down_revision = '65271370a3a9'
 branch_labels = None
 depends_on = None
 
-MYCODO_DB_PATH = 'sqlite:///' + SQL_DATABASE_MYCODO
+MYCODO_DB_PATH = f'sqlite:///{SQL_DATABASE_MYCODO}'
 
 
 def upgrade():

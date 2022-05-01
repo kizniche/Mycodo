@@ -46,7 +46,7 @@ from mycodo.utils.sunriseset import suntime_calculate_next_sunrise_sunset_epoch
 from mycodo.utils.system_pi import epoch_of_next_time
 from mycodo.utils.system_pi import time_between_range
 
-MYCODO_DB_PATH = 'sqlite:///' + SQL_DATABASE_MYCODO
+MYCODO_DB_PATH = f'sqlite:///{SQL_DATABASE_MYCODO}'
 
 
 class TriggerController(AbstractController, threading.Thread):

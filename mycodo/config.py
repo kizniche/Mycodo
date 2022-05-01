@@ -41,7 +41,7 @@ ALEMBIC_PATH = os.path.join(INSTALL_DIRECTORY, 'alembic_db')
 DATABASE_PATH = os.path.join(INSTALL_DIRECTORY, 'databases')
 ALEMBIC_UPGRADE_POST = os.path.join(ALEMBIC_PATH, 'alembic_post_upgrade_versions')
 SQL_DATABASE_MYCODO = os.path.join(DATABASE_PATH, DATABASE_NAME)
-MYCODO_DB_PATH = 'sqlite:///' + SQL_DATABASE_MYCODO
+MYCODO_DB_PATH = f'sqlite:///{SQL_DATABASE_MYCODO}'
 
 # Misc paths
 PATH_1WIRE = '/sys/bus/w1/devices/'

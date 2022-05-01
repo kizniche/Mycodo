@@ -21,7 +21,7 @@ from mycodo.databases.models import Trigger
 from mycodo.databases.utils import session_scope
 from mycodo.mycodo_client import DaemonControl
 
-MYCODO_DB_PATH = 'sqlite:///' + SQL_DATABASE_MYCODO
+MYCODO_DB_PATH = f'sqlite:///{SQL_DATABASE_MYCODO}'
 
 class AbstractFunctionAction(AbstractBaseController):
     """

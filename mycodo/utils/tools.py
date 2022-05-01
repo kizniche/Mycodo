@@ -55,8 +55,7 @@ def create_measurements_export(save_path=None):
         # Create new directory (make sure it's empty)
         assure_path_exists(influx_backup_dir)
 
-        cmd = "/usr/bin/influxd backup -database {db} -portable {path}".format(
-            db=INFLUXDB_DATABASE, path=influx_backup_dir)
+        cmd = f"/usr/bin/influxd backup -database {INFLUXDB_DATABASE} -portable {influx_backup_dir}"
         _, _, status = cmd_output(cmd)
 
         if not status:
@@ -80,7 +79,7 @@ def create_measurements_export(save_path=None):
             else:
                 return 0, data
     except Exception as err:
-        logger.error("Error: {}".format(err))
+        logger.error(f"Error: {err}")
         return 1, err
 
 
@@ -106,7 +105,7 @@ def create_settings_export(save_path=None):
                         if filename == "__init__.py" or filename.endswith("pyc"):
                             continue
                         file_path = os.path.join(folder_name, filename)
-                        z.write(file_path, "{}/{}".format(each_backup[1], os.path.basename(file_path)))
+                        z.write(file_path, f"{each_backup[1]}/{os.path.basename(file_path)}")
         data.seek(0)
         if save_path:
             with open(save_path, "wb") as f:
@@ -116,7 +115,7 @@ def create_settings_export(save_path=None):
         else:
             return 0, data
     except Exception as err:
-        logger.error("Error: {}".format(err))
+        logger.error(f"Error: {err}")
         return 1, err
 
 
@@ -446,7 +445,7 @@ def generate_output_usage_report():
             dict_outputs, misc, output.all(), output_channel, custom_options_values_output_channels)
 
         timestamp = time.strftime("%Y-%m-%d_%H-%M")
-        file_name = 'output_usage_report_{ts}.csv'.format(ts=timestamp)
+        file_name = f'output_usage_report_{timestamp}.csv'
         report_path_file = os.path.join(USAGE_REPORTS_PATH, file_name)
 
         with open(report_path_file, 'wb') as f:
@@ -460,7 +459,7 @@ def generate_output_usage_report():
                  'Past Day',
                  'Past Week',
                  'Past Month',
-                 'Past Month (from {})'.format(misc.output_usage_dayofmonth),
+                 f'Past Month (from {misc.output_usage_dayofmonth})',
                  'Past Year'
             ])
             for key, value in output_usage.items():

@@ -317,7 +317,7 @@ class CustomModule(AbstractFunction):
                 "Deactivating (SQL) Custom controller select_device_2 with ID {}".format(self.select_device_2_id))
             from mycodo.databases.utils import session_scope
             from mycodo.config import SQL_DATABASE_MYCODO
-            MYCODO_DB_PATH = 'sqlite:///' + SQL_DATABASE_MYCODO
+            MYCODO_DB_PATH = f'sqlite:///{SQL_DATABASE_MYCODO}'
             with session_scope(MYCODO_DB_PATH) as new_session:
                 mod_cont = new_session.query(CustomController).filter(
                     CustomController.unique_id == self.select_device_2_id).first()

@@ -36,7 +36,7 @@ from mycodo.utils.modules import load_module_from_file
 from mycodo.utils.outputs import output_types
 from mycodo.utils.outputs import parse_output_information
 
-MYCODO_DB_PATH = 'sqlite:///' + SQL_DATABASE_MYCODO
+MYCODO_DB_PATH = f'sqlite:///{SQL_DATABASE_MYCODO}'
 
 
 class OutputController(AbstractController, threading.Thread):

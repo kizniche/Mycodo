@@ -69,7 +69,7 @@ def parse_widget_information(exclude_custom=False):
             if each_file in excluded_files:
                 continue
 
-            full_path = "{}/{}".format(real_path, each_file)
+            full_path = f"{real_path}/{each_file}"
             widget_custom, status = load_module_from_file(full_path, 'widgets')
 
             if not widget_custom or not hasattr(widget_custom, 'WIDGET_INFORMATION'):
@@ -77,8 +77,8 @@ def parse_widget_information(exclude_custom=False):
 
             # Populate dictionary of widget information
             if widget_custom.WIDGET_INFORMATION['widget_name_unique'] in dict_widgets:
-                logger.error("Error: Cannot add widget modules because it does not have a unique name: {name}".format(
-                    name=widget_custom.WIDGET_INFORMATION['widget_name_unique']))
+                logger.error(f"Error: Cannot add widget modules because it does not have "
+                             f"a unique name: {widget_custom.WIDGET_INFORMATION['widget_name_unique']}")
             else:
                 dict_widgets[widget_custom.WIDGET_INFORMATION['widget_name_unique']] = {}
 

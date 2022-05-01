@@ -11,7 +11,7 @@ from mycodo.databases.utils import session_scope
 from mycodo.actions.base_action import AbstractFunctionAction
 from mycodo.utils.database import db_retrieve_table_daemon
 
-MYCODO_DB_PATH = 'sqlite:///' + SQL_DATABASE_MYCODO
+MYCODO_DB_PATH = f'sqlite:///{SQL_DATABASE_MYCODO}'
 
 ACTION_INFORMATION = {
     'name_unique': 'setpoint_pid_raise',

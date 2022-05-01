@@ -22,6 +22,7 @@
 ### Miscellaneous
 
  - Increase dependency install timeout period
+ - Update python-kasa to 0.5.0
 
 
 ## 8.13.9 (2022-04-21)

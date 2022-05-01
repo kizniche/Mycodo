@@ -15,7 +15,7 @@ from mycodo.config import SQL_DATABASE_MYCODO
 from mycodo.databases import set_uuid
 from mycodo.utils.utils import test_username
 
-MYCODO_DB_PATH = 'sqlite:///' + SQL_DATABASE_MYCODO
+MYCODO_DB_PATH = f'sqlite:///{SQL_DATABASE_MYCODO}'
 
 passwords_match = False
 password_valid = False

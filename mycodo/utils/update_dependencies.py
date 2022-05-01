@@ -58,7 +58,7 @@ def get_installed_apt_dependencies():
                     if install_type == 'apt':
                         start = "dpkg-query -W -f='${Status}'"
                         end = '2>/dev/null | grep -c "ok installed"'
-                        cmd = "{} {} {}".format(start, package, end)
+                        cmd = f"{start} {package} {end}"
                         _, _, status = cmd_output(cmd, user='root')
                         if not status and install_id not in met_deps:
                             met_deps.append(install_id)
@@ -133,24 +133,20 @@ if __name__ == "__main__":
             logger.info(f"Installing: {each_dep[1]}")
             if each_dep[1] == 'bash-commands':
                 for each_command in each_dep[2]:
-                    command = "{cmd} | ts '[%Y-%m-%d %H:%M:%S]' >> {log} 2>&1".format(
-                        cmd=each_command,
-                        log=DEPENDENCY_LOG_FILE)
+                    command = f"{each_command} | ts '[%Y-%m-%d %H:%M:%S]' >> {DEPENDENCY_LOG_FILE} 2>&1"
                     cmd_out, cmd_err, cmd_status = cmd_output(
                         command, timeout=600, cwd="/tmp")
                     ret_list = []
                     if cmd_out != b"":
-                        ret_list.append("out: {}".format(cmd_out))
+                        ret_list.append(f"out: {cmd_out}")
                     if cmd_err != b"":
-                        ret_list.append("error: {}".format(cmd_err))
+                        ret_list.append(f"error: {cmd_err}")
                     if cmd_status is not None:
-                        ret_list.append("status: {}".format(cmd_status))
+                        ret_list.append(f"status: {cmd_status}")
                     if ret_list:
-                        logger.info("Command returned: {}".format(", ".join(ret_list)))
+                        logger.info(f"Command returned: {', '.join(ret_list)}")
             else:
-                install_cmd = "{pth}/mycodo/scripts/dependencies.sh {dep}".format(
-                    pth=INSTALL_DIRECTORY,
-                    dep=each_dep[1])
+                install_cmd = f"{INSTALL_DIRECTORY}/mycodo/scripts/dependencies.sh {each_dep[1]}"
                 output, err, stat = cmd_output(install_cmd, timeout=3600, user='root')
                 if output:
                     formatted_output = output.decode("utf-8").replace('\\n', '\n')

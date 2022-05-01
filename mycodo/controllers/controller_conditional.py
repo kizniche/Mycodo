@@ -38,7 +38,7 @@ from mycodo.databases.models import Misc
 from mycodo.utils.conditional import save_conditional_code
 from mycodo.utils.database import db_retrieve_table_daemon
 
-MYCODO_DB_PATH = 'sqlite:///' + SQL_DATABASE_MYCODO
+MYCODO_DB_PATH = f'sqlite:///{SQL_DATABASE_MYCODO}'
 
 
 class ConditionalController(AbstractController, threading.Thread):

@@ -32,7 +32,7 @@ from mycodo.utils.database import db_retrieve_table_daemon
 from mycodo.utils.modules import load_module_from_file
 from mycodo.utils.widgets import parse_widget_information
 
-MYCODO_DB_PATH = 'sqlite:///' + SQL_DATABASE_MYCODO
+MYCODO_DB_PATH = f'sqlite:///{SQL_DATABASE_MYCODO}'
 
 
 class WidgetController(AbstractController, threading.Thread):

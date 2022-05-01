@@ -149,7 +149,7 @@ def get_key_func():
     else:
         str_return = '0.0.0.0'
     if current_user and hasattr(current_user, 'name'):
-        str_return += '/{}'.format(current_user.name)
+        str_return += f'/{current_user.name}'
     return str_return
 
 

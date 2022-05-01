@@ -26,7 +26,7 @@ from mycodo.utils.database import db_retrieve_table_daemon
 from mycodo.utils.influx import get_last_measurement
 from mycodo.utils.influx import get_past_measurements
 
-MYCODO_DB_PATH = 'sqlite:///' + SQL_DATABASE_MYCODO
+MYCODO_DB_PATH = f'sqlite:///{SQL_DATABASE_MYCODO}'
 
 
 class AbstractBaseController(object):

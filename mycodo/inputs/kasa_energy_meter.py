@@ -44,7 +44,7 @@ INPUT_INFORMATION = {
     'input_manufacturer': 'TP-Link',
     'input_name': 'Kasa WiFi Power Plug/Strip Energy Statistics',
     'input_name_short': 'Kasa Energy Meter',
-    'input_library': 'python-kasa==0.4.2',
+    'input_library': 'python-kasa',
     'measurements_name': 'kilowatt hours',
     'measurements_dict': measurements_dict,
     'url_manufacturer': 'https://www.kasasmart.com/us/products/smart-plugs/kasa-smart-plug-slim-energy-monitoring-kp115',
@@ -60,7 +60,7 @@ INPUT_INFORMATION = {
     'options_disabled': ['interface'],
 
     'dependencies_module': [
-        ('pip-pypi', 'kasa', 'python-kasa==0.4.2'),
+        ('pip-pypi', 'kasa', 'python-kasa==0.5.0'),
         ('pip-pypi', 'aio_msgpack_rpc', 'aio_msgpack_rpc==0.2.0')
     ],
 

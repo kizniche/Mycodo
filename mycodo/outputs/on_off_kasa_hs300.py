@@ -35,7 +35,7 @@ channels_dict = {
 # Output information
 OUTPUT_INFORMATION = {
     'output_name_unique': 'hs300',
-    'output_name': f"{lazy_gettext('On/Off')}: Kasa HS300 6-Outlet WiFi Power Strip (python-kasa 0.4.0.dev4)",
+    'output_name': f"{lazy_gettext('On/Off')}: Kasa HS300 6-Outlet WiFi Power Strip (old library, deprecated)",
     'output_manufacturer': 'TP-Link',
     'input_library': 'python-kasa',
     'measurements_dict': measurements_dict,
@@ -44,7 +44,7 @@ OUTPUT_INFORMATION = {
 
     'url_manufacturer': 'https://www.kasasmart.com/us/products/smart-plugs/kasa-smart-wi-fi-power-strip-hs300',
 
-    'message': 'This output controls the 6 outlets of the Kasa HS300 Smart WiFi Power Strip. This is a variant that uses an outdated python library.',
+    'message': 'This output controls the 6 outlets of the Kasa HS300 Smart WiFi Power Strip. This module uses an outdated python library and is deprecated. Do not use it. You will break the current Kasa modules if you do not delete this deprecated Output.',
 
     'options_enabled': [
         'button_on',

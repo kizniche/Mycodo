@@ -57,7 +57,7 @@ OUTPUT_INFORMATION = {
     'output_name_unique': 'output_kasa_rgb_bulbs',
     'output_name': f"{lazy_gettext('On/Off')}: Kasa WiFi RGB Light Bulb",
     'output_manufacturer': 'TP-Link',
-    'input_library': 'python-kasa==0.4.2',
+    'input_library': 'python-kasa',
     'measurements_dict': measurements_dict,
     'channels_dict': channels_dict,
     'output_types': ['on_off'],
@@ -73,7 +73,7 @@ OUTPUT_INFORMATION = {
     'options_disabled': ['interface'],
 
     'dependencies_module': [
-        ('pip-pypi', 'kasa', 'python-kasa==0.4.2'),
+        ('pip-pypi', 'kasa', 'python-kasa==0.5.0'),
         ('pip-pypi', 'aio_msgpack_rpc', 'aio_msgpack_rpc==0.2.0')
     ],
 
