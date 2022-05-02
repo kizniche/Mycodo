@@ -324,10 +324,6 @@ class OutputModule(AbstractOutput):
         self.status_update_period = None
         self.asyncio_rpc_port = None
 
-        self.brightness = None
-        self.hue = None
-        self.saturation = None
-
         self.setup_custom_options(
             OUTPUT_INFORMATION['custom_options'], output)
 
@@ -379,6 +375,10 @@ class OutputModule(AbstractOutput):
                 self.bulb = None
                 self.address = address_
 
+                self.hue = None
+                self.saturation = None
+                self.brightness = None
+
             async def connect(self):
                 try:
                     self.bulb = SmartBulb(self.address)
@@ -401,16 +401,44 @@ class OutputModule(AbstractOutput):
                 except Exception:
                     return 1, str(traceback.print_exc())
 
+            async def bulb_hue(self, hue, transition_ms):
+                try:
+                    await self.bulb.update()
+                    hsv = self.bulb.hsv
+                    self.hue = hue
+                    self.saturation = hsv[1]
+                    self.brightness = hsv[2]
+                    await self.bulb.set_hsv(hue, self.saturation, self.brightness, transition=transition_ms)
+                    return 0, "success"
+                except Exception:
+                    return 1, str(traceback.print_exc())
+
+            async def bulb_saturation(self, saturation, transition_ms):
+                try:
+                    await self.bulb.update()
+                    hsv = self.bulb.hsv
+                    self.hue = hsv[0]
+                    self.saturation = saturation
+                    self.brightness = hsv[2]
+                    await self.bulb.set_hsv(hsv[0], saturation, hsv[2], transition=transition_ms)
+                    return 0, "success"
+                except Exception:
+                    return 1, str(traceback.print_exc())
+
             async def bulb_brightness(self, brightness, transition_ms):
                 try:
+                    self.brightness = brightness
                     await self.bulb.set_brightness(brightness, transition=transition_ms)
                     return 0, "success"
                 except Exception:
                     return 1, str(traceback.print_exc())
 
-            async def bulb_hsv(self, hue, transition_ms):
+            async def bulb_hsv(self, hsv, transition_ms):
                 try:
-                    await self.bulb.set_hsv(hue[0], hue[1], hue[2], transition=transition_ms)
+                    self.hue = hsv[0]
+                    self.saturation = hsv[1]
+                    self.brightness = hsv[2]
+                    await self.bulb.set_hsv(hsv[0], hsv[1], hsv[2], transition=transition_ms)
                     return 0, "success"
                 except Exception:
                     return 1, str(traceback.print_exc())
@@ -430,7 +458,10 @@ class OutputModule(AbstractOutput):
                         stats["state"] = True
                     else:
                         stats["state"] = False
-                    stats["hsv"] = self.bulb.hsv
+                    hsv = self.bulb.hsv
+                    self.hue = hsv[0]
+                    self.saturation = hsv[1]
+                    self.brightness = hsv[2]
                     return 0, stats
                 except Exception:
                     return 1, str(traceback.print_exc())
@@ -505,6 +536,52 @@ class OutputModule(AbstractOutput):
         asyncio.get_event_loop()
         loop.run_until_complete(bulb_change(self.asyncio_rpc_port, state, transition))
 
+
+    def bulb_hue(self, hue, transition_ms):
+        import aio_msgpack_rpc
+
+        async def bulb_hue(port, hue_, transition_ms_):
+            client = aio_msgpack_rpc.Client(*await asyncio.open_connection("127.0.0.1", port))
+
+            status, msg = await client.call("bulb_hue", hue_, transition_ms_)
+
+            self.logger.debug(f"hue {hue_}: {msg}")
+
+        loop = asyncio.new_event_loop()
+        asyncio.set_event_loop(loop)
+        asyncio.get_event_loop()
+        loop.run_until_complete(bulb_hue(self.asyncio_rpc_port, hue, transition_ms))
+
+    def bulb_saturation(self, saturation, transition_ms):
+        import aio_msgpack_rpc
+
+        async def bulb_saturation(port, saturation_, transition_ms_):
+            client = aio_msgpack_rpc.Client(*await asyncio.open_connection("127.0.0.1", port))
+
+            status, msg = await client.call("bulb_saturation", saturation_, transition_ms_)
+
+            self.logger.debug(f"saturation {saturation_}: {msg}")
+
+        loop = asyncio.new_event_loop()
+        asyncio.set_event_loop(loop)
+        asyncio.get_event_loop()
+        loop.run_until_complete(bulb_saturation(self.asyncio_rpc_port, saturation, transition_ms))
+
+    def bulb_brightness(self, brightness, transition_ms):
+        import aio_msgpack_rpc
+
+        async def bulb_brightness(port, brightness_, transition_ms_):
+            client = aio_msgpack_rpc.Client(*await asyncio.open_connection("127.0.0.1", port))
+
+            status, msg = await client.call("bulb_brightness", brightness_, transition_ms_)
+
+            self.logger.debug(f"brightness {brightness_}: {msg}")
+
+        loop = asyncio.new_event_loop()
+        asyncio.set_event_loop(loop)
+        asyncio.get_event_loop()
+        loop.run_until_complete(bulb_brightness(self.asyncio_rpc_port, brightness, transition_ms))
+
     def bulb_hsv(self, hsv, transition_ms):
         import aio_msgpack_rpc
 
@@ -512,9 +589,6 @@ class OutputModule(AbstractOutput):
             client = aio_msgpack_rpc.Client(*await asyncio.open_connection("127.0.0.1", port))
 
             status, msg = await client.call("bulb_hsv", hsv_, transition_ms_)
-            self.hue = hsv_[0]
-            self.saturation = hsv_[1]
-            self.brightness = hsv_[2]
 
             self.logger.debug(f"hsv {hsv_}: {msg}")
 
@@ -558,9 +632,6 @@ class OutputModule(AbstractOutput):
                         else:
                             self.logger.debug(f"Status: {msg}")
                             self.output_states[0] = msg["state"]
-                            self.hue = msg["hsv"][0]
-                            self.saturation = msg["hsv"][1]
-                            self.brightness = msg["hsv"][2]
 
                     loop = asyncio.new_event_loop()
                     asyncio.set_event_loop(loop)
@@ -601,31 +672,6 @@ class OutputModule(AbstractOutput):
                 self.output_switch('off')
         self.running = False
 
-    def set_brightness(self, args_dict):
-        if 'brightness' not in args_dict:
-            self.logger.error("Cannot set without brightness")
-            return
-        if not (0 <= args_dict['brightness'] <= 100):
-            self.logger.error("Brightness must be 0 - 100")
-            return
-
-        transition_ms = 0
-        if 'brightness_transition_ms' in args_dict:
-            try:
-                ms = int(args_dict['brightness_transition_ms'])
-                if ms > 0:
-                    transition_ms = ms
-            except:
-                self.logger.error("Could not parse transition period")
-
-        measure_dict = copy.deepcopy(measurements_dict)
-        measure_dict[1]['value'] = args_dict['brightness']
-        add_measurements_influxdb(self.unique_id, measure_dict)
-
-        hsv = [self.hue, self.saturation, args_dict['brightness']]
-        self.bulb_hsv(hsv, transition_ms)
-        return f"Set Brightness: {args_dict['brightness']} %, Transition: {transition_ms} ms"
-
     def set_hue(self, args_dict):
         if 'hue' not in args_dict:
             self.logger.error("Cannot set without hue")
@@ -647,8 +693,7 @@ class OutputModule(AbstractOutput):
         measure_dict[3]['value'] = args_dict['hue']
         add_measurements_influxdb(self.unique_id, measure_dict)
 
-        hsv = [args_dict['hue'], self.saturation, self.brightness]
-        self.bulb_hsv(hsv, transition_ms)
+        self.bulb_hue(args_dict['hue'], transition_ms)
         return f"Set Hue: {args_dict['hue']}, Transition: {transition_ms} ms"
 
     def set_saturation(self, args_dict):
@@ -672,9 +717,32 @@ class OutputModule(AbstractOutput):
         measure_dict[4]['value'] = args_dict['saturation']
         add_measurements_influxdb(self.unique_id, measure_dict)
 
-        hsv = [self.hue, args_dict['saturation'], self.brightness]
-        self.bulb_hsv(hsv, transition_ms)
+        self.bulb_saturation(args_dict['saturation'], transition_ms)
         return f"Set Saturation: {args_dict['saturation']} %, Transition: {transition_ms} ms"
+
+    def set_brightness(self, args_dict):
+        if 'brightness' not in args_dict:
+            self.logger.error("Cannot set without brightness")
+            return
+        if not (0 <= args_dict['brightness'] <= 100):
+            self.logger.error("Brightness must be 0 - 100")
+            return
+
+        transition_ms = 0
+        if 'brightness_transition_ms' in args_dict:
+            try:
+                ms = int(args_dict['brightness_transition_ms'])
+                if ms > 0:
+                    transition_ms = ms
+            except:
+                self.logger.error("Could not parse transition period")
+
+        measure_dict = copy.deepcopy(measurements_dict)
+        measure_dict[1]['value'] = args_dict['brightness']
+        add_measurements_influxdb(self.unique_id, measure_dict)
+
+        self.bulb_brightness(args_dict['brightness'], transition_ms)
+        return f"Set Brightness: {args_dict['brightness']} %, Transition: {transition_ms} ms"
 
     def set_hsv(self, args_dict):
         if 'hsv' not in args_dict:
