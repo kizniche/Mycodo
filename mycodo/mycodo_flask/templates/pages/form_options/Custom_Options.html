@@ -29,7 +29,9 @@
       {{custom_options_values[unique_id][each_option['id']]}}
     {%- elif force_default_value and 'default_value' in each_option -%}
       {{each_option['default_value']}}
-    {%- endif -%}">
+    {%- endif -%}"
+    {%- if each_option['type'] == 'float' %} step="any"{% endif -%}
+    >
   </div>
 </div>
 

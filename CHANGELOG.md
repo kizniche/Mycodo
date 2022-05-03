@@ -10,6 +10,7 @@
  - Fix Input/Output Custom Commands showing correct value
  - Fix fswebcam Camera custom options not being applied
  - Fix consistency of Time Span Trigger Function execution times
+ - Fix inability to use decimal values in float input fields for some browsers
 
 ### Features
 
