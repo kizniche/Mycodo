@@ -59,8 +59,12 @@ def function_add(form_add_func):
             messages["error"].append(
                 f"{function_name} has unmet dependencies. "
                  "They must be installed before the Function can be added.")
+
+            # Get Function name
             if function_name in dict_controllers:
                 dep_name = dict_controllers[function_name]['function_name']
+            elif function_name in FUNCTION_INFO and 'name' in FUNCTION_INFO[function_name]:
+                dep_name = FUNCTION_INFO[function_name]['name']
             else:
                 messages["error"].append(f"Function not found: {function_name}")
 

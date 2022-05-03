@@ -423,14 +423,17 @@ FUNCTION_INFO = {
     },
     'trigger_timer_daily_time_point': {
         'name': f"{T['trigger']['title']}: {lg('Daily Time Point')}",
+        'message': 'Time Point Trigger Functions will execute Actions every day at the specified Time.',
         'dependencies_module': []
     },
     'trigger_timer_daily_time_span': {
         'name': f"{T['trigger']['title']}: {lg('Daily Time Span')}",
+        'message': 'Time Span Trigger Functions will execute Actions every day within the set Start and End times, every Period. The first execution will be the Start Time.',
         'dependencies_module': []
     },
     'trigger_timer_duration': {
         'name': f"{T['trigger']['title']}: {T['duration']['title']}",
+        'message': 'Duration Trigger Functions will execute Actions every Period from when it is activated. A start offset can be added to delay the first execution.',
         'dependencies_module': []
     },
     'trigger_run_pwm_method': {

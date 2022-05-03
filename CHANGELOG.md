@@ -9,6 +9,7 @@
  - Fix missing smbus2 dependency for several LCD Functions
  - Fix Input/Output Custom Commands showing correct value
  - Fix fswebcam Camera custom options not being applied
+ - Fix consistency of Time Span Trigger Function execution times
 
 ### Features
 
@@ -18,6 +19,7 @@
  - Add Outputs: Kasa Wifi Power Plugs
  - Add Input: Kasa Energy Meter (Strips/Plugs)
  - Add Function Action: Clear Total kWh
+ - Add Function Action: Add Line to Daemon Log
 
 ### Miscellaneous
 

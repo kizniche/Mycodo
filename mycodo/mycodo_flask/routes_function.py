@@ -15,6 +15,7 @@ from sqlalchemy import and_
 
 from mycodo.config import CONDITIONAL_CONDITIONS
 from mycodo.config import FUNCTIONS
+from mycodo.config import FUNCTION_INFO
 from mycodo.config_devices_units import MEASUREMENTS
 from mycodo.databases.models import Actions
 from mycodo.databases.models import Camera
@@ -592,6 +593,7 @@ def page_function():
                                form_mod_pid_volume_lower=form_mod_pid_volume_lower,
                                form_trigger=form_trigger,
                                function_dev=function_dev,
+                               function_info=FUNCTION_INFO,
                                function_types=FUNCTIONS,
                                input=input_dev,
                                method=method,
@@ -665,6 +667,7 @@ def page_function():
                                form_mod_pid_volume_lower=form_mod_pid_volume_lower,
                                form_trigger=form_trigger,
                                function_dev=function_dev,
+                               function_info=FUNCTION_INFO,
                                function_types=FUNCTIONS,
                                input=input_dev,
                                method=method,
@@ -738,6 +741,7 @@ def page_function():
                                form_mod_pid_volume_lower=form_mod_pid_volume_lower,
                                form_trigger=form_trigger,
                                function_dev=function_dev,
+                               function_info=FUNCTION_INFO,
                                function_types=FUNCTIONS,
                                input=input_dev,
                                method=method,
@@ -812,6 +816,7 @@ def page_function():
                                form_mod_pid_volume_lower=form_mod_pid_volume_lower,
                                form_trigger=form_trigger,
                                function_dev=function_dev,
+                               function_info=FUNCTION_INFO,
                                function_types=FUNCTIONS,
                                input=input_dev,
                                method=method,

@@ -19,6 +19,14 @@
       </div>
     </div>
 
+    {% if each_function.trigger_type in function_info and 'message' in function_info[each_function.trigger_type] %}
+    <div class="row small-gutters" style="padding: 0.3em 0.2em 0.3em 0.3em;">
+      <div class="col-12">
+        {{function_info[each_function.trigger_type]['message']}}
+      </div>
+    </div>
+    {% endif %}
+
     <div id="return_text_{{each_function.unique_id}}" class="col-12"></div>
 
     <div class="row small-gutters" style="padding: 0.3em 0.2em 0.3em 0.3em;">

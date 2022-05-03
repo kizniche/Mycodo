@@ -140,17 +140,21 @@ class TriggerController(AbstractController, threading.Thread):
                 if ended:
                     self.stop_method()
 
-            elif (self.trigger_type in [
+            elif self.trigger_type in [
                     'trigger_timer_daily_time_point',
-                    'trigger_timer_daily_time_span',
-                    'trigger_timer_duration']):
+                    'trigger_timer_duration']:
                 if self.trigger_type == 'trigger_timer_daily_time_point':
                     self.timer_period = epoch_of_next_time(f'{self.timer_start_time}:00')
-                elif self.trigger_type in ['trigger_timer_duration',
-                                           'trigger_timer_daily_time_span']:
+                elif self.trigger_type == 'trigger_timer_duration':
                     while self.running and self.timer_period < time.time():
                         self.timer_period += self.period
                 check_approved = True
+
+            elif self.trigger_type == 'trigger_timer_daily_time_span':
+                if time_between_range(self.timer_start_time,
+                                      self.timer_end_time):
+                    check_approved = True
+                self.set_next_daily_time_span_run(time.time())
 
             if check_approved:
                 self.attempt_execute(self.check_triggers)
@@ -205,7 +209,7 @@ class TriggerController(AbstractController, threading.Thread):
             self.timer_start_time = self.trigger.timer_start_time
             self.timer_end_time = self.trigger.timer_end_time
             self.period = self.trigger.period
-            self.timer_period = now
+            self.set_next_daily_time_span_run(now)
 
         # Set up trigger timer (duration)
         elif self.trigger_type == 'trigger_timer_duration':
@@ -244,6 +248,17 @@ class TriggerController(AbstractController, threading.Thread):
 
         self.ready.set()
         self.running = True
+
+    def set_next_daily_time_span_run(self, now):
+        if not time_between_range(self.timer_start_time, self.timer_end_time):
+            # Set next execution at start time
+            self.timer_period = epoch_of_next_time(f'{self.trigger.timer_start_time}:00')
+        else:
+            # Find the next execution within the run period
+            test_time = epoch_of_next_time(f'{self.trigger.timer_start_time}:00') - 86400
+            while test_time < now:
+                test_time += self.period
+            self.timer_period = test_time
 
     def start_method(self, method_id):
         """Instruct a method to start running."""
@@ -370,12 +385,6 @@ class TriggerController(AbstractController, threading.Thread):
             self.timer_period = suntime_calculate_next_sunrise_sunset_epoch(
                 trigger.latitude, trigger.longitude, trigger.date_offset_days,
                 trigger.time_offset_minutes, trigger.rise_or_set)
-
-        # Check if the current time is between the start and end time
-        elif trigger.trigger_type == 'trigger_timer_daily_time_span':
-            if not time_between_range(self.timer_start_time,
-                                      self.timer_end_time):
-                return
 
         # If the code hasn't returned by now, action should be executed
         actions = parse_action_information()
