@@ -18,15 +18,17 @@
         <input onclick="return $(this).processRequest(this, 'execute_all_actions');" name="execute_all_actions" value="{{_('Execute All Actions')}}" class="form-control btn btn-primary btn-sm btn-block" type="button"/>
       </div>
       <div class="col-auto my-auto">
-        <h5>{{_('Help')}} <a href="https://kizniche.github.io/Mycodo/Functions/#conditional-controller" target="_blank"><span style="font-size: 16px" class="fas fa-question-circle"></span></a></h5>
+        <h5>{{_('Help')}} <a href="https://kizniche.github.io/Mycodo/Functions/#conditional" target="_blank"><span style="font-size: 16px" class="fas fa-question-circle"></span></a></h5>
       </div>
     </div>
 
-    <div class="col-12" style="padding-top: 0.3em">
-      Conditional Controllers allow the execution of Python 3 code as well as the use of Conditions and Actions within your code to interact with Mycodo. Conditions typically acquire data from Mycodo, such as Input measurements, and Actions typically affect Mycodo, such as actuating an Output or pausing a PID controller. Each Condition and Action you add will have its own description and example code to demonstrate how to use it in your Conditional Statement code. See the <a href="https://kizniche.github.io/Mycodo/Functions/#conditional-controller">Conditional Controller docs</a> for more information.
+    <div class="row small-gutters" style="padding: 0.3em 0.2em 0.3em 0.3em">
+      <div class="col-12" style="padding-top: 0.3em">
+        Conditional Controllers allow the execution of Python 3 code as well as the use of Conditions and Actions within your code to interact with Mycodo. Conditions typically acquire data from Mycodo, such as Input measurements, and Actions typically affect Mycodo, such as actuating an Output or pausing a PID controller. Each Condition and Action you add will have its own description and example code to demonstrate how to use it in your Conditional Statement code. See the <a href="https://kizniche.github.io/Mycodo/Functions/#conditional-controller">Conditional Controller docs</a> for more information.
+      </div>
     </div>
 
-    <div id="status_enable_{{each_function.unique_id}}" class="row small-gutters align-items-end" style="{% if not each_function.is_activated %}display: none; {% endif %}padding: 0.5em">
+    <div id="status_enable_{{each_function.unique_id}}" class="row small-gutters align-items-end" style="{% if not each_function.is_activated %}display: none; {% endif %}padding: 0.5em 0.2em 0.5em 0.3em">
       <div class="col-12">
         <h5>{{_('Status')}}</h5>
       </div>
@@ -37,7 +39,7 @@
 
     <div id="return_text_{{each_function.unique_id}}" class="col-12"></div>
 
-    <div class="row small-gutters" style="padding: 1.5em 0 0.2em 0.1em">
+    <div class="row small-gutters" style="padding: 0.3em 0.2em 0.3em 0.3em">
       <div class="col-12">
         {{form_conditional.conditional_statement.label(class_='control-label')}}
         <div>
@@ -99,7 +101,7 @@
     {{form_conditional.function_id(value=each_function.unique_id)}}
     {{form_conditional.function_type(value='conditional')}}
 
-    <div class="row align-items-end small-gutters" style="padding: 0.5em 0 0.2em 1em">
+    <div class="row align-items-end small-gutters" style="padding: 0.3em 0.2em 0.3em 0.3em">
       <div class="col-auto">
         <select class="selectpicker" data-live-search="true" title="{{_('Condition')}}: {{dict_translation['select_one']['title']}}" id="condition_type_{{each_function.unique_id}}" name="condition_type">
         {% for value, name in conditional_conditions_list %}
@@ -128,7 +130,7 @@
     {{form_actions.device_id(class_='form-control', value=each_function.unique_id)}}
     {{form_actions.function_type(class_='form-control', value='conditional')}}
 
-    <div class="row align-items-end small-gutters" style="padding: 0.5em 0 0.2em 1em">
+    <div class="row align-items-end small-gutters" style="padding: 0.3em 0.2em 0.3em 0.3em">
       <div class="col-auto">
         <select class="selectpicker" data-live-search="true" title="{{_('Action')}}: {{dict_translation['select_one']['title']}}" id="action_type_{{each_function.unique_id}}" name="action_type">
         {% for value, name in choices_actions %}

@@ -22,16 +22,16 @@
     {%- if each_option['type'] == 'text' -%}text
     {%- elif each_option['type'] in ['float', 'integer'] -%}number
     {%- endif -%}
-    " value="
+    "
+    {%- if each_option['type'] == 'float' %} step="any"{%- else %} {% endif -%}
+    value="
     {%- if channel_options and custom_options_values[unique_id][channel][each_option['id']] is not none -%}
       {{custom_options_values[unique_id][channel][each_option['id']]}}
     {%- elif custom_options_values and custom_options_values[unique_id][each_option['id']] is not none -%}
       {{custom_options_values[unique_id][each_option['id']]}}
     {%- elif force_default_value and 'default_value' in each_option -%}
       {{each_option['default_value']}}
-    {%- endif -%}"
-    {%- if each_option['type'] == 'float' %} step="any"{% endif -%}
-    >
+    {%- endif -%}">
   </div>
 </div>
 
