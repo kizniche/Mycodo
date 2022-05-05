@@ -47,7 +47,7 @@ jobs:
           env/bin/python mycodo/scripts/generate_manual_widgets.py
           printf "\n#### Generating API Manual\n"
           sudo env/bin/python mycodo/start_flask_ui.py &
-          sleep 3
+          sleep 10
           wget --no-check-certificate -p https://127.0.0.1 -O /dev/null
           sudo apt install npm
           sudo npm install -g redoc-cli
