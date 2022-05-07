@@ -13,7 +13,7 @@ ACTION_INFORMATION = {
     'name_unique': 'display_backlight_off',
     'name': f"{TRANSLATIONS['display']['title']}: {lazy_gettext('Backlight')}: {lazy_gettext('Off')}",
     'library': None,
-    'manufacturer': 'Display',
+    'manufacturer': 'Mycodo',
     'application': ['functions'],
 
     'url_manufacturer': None,

@@ -95,7 +95,7 @@ OUTPUT_INFORMATION = {
             'type': 'integer',
             'default_value': '',
             'name': f"{lazy_gettext('Brightness')} ({lazy_gettext('percent')})",
-            'phrase': 'The brightness to set, in percent'
+            'phrase': 'The brightness to set, in percent (0 - 100)'
         },
         {
             'id': 'set_brightness',
@@ -118,7 +118,7 @@ OUTPUT_INFORMATION = {
             'type': 'integer',
             'default_value': '',
             'name': f"{lazy_gettext('Hue')} ({lazy_gettext('degree')})",
-            'phrase': 'The hue to set, in degrees'
+            'phrase': 'The hue to set, in degrees (0 - 360)'
         },
         {
             'id': 'set_hue',
@@ -141,7 +141,7 @@ OUTPUT_INFORMATION = {
             'type': 'integer',
             'default_value': '',
             'name': f"{lazy_gettext('Saturation')} ({lazy_gettext('percent')})",
-            'phrase': 'The saturation to set, in percent'
+            'phrase': 'The saturation to set, in percent (0 - 100)'
         },
         {
             'id': 'set_saturation',

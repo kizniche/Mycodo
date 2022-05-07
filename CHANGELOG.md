@@ -16,9 +16,12 @@
 
  - Add API endpoint: cameras/capture_image
  - Add Headers option to URL (requests) camera library
+ - Add Input: Kasa Energy Meter (Strips/Plugs)
  - Add Outputs: Kasa Wifi RGB Light Bulbs
  - Add Outputs: Kasa Wifi Power Plugs
- - Add Input: Kasa Energy Meter (Strips/Plugs)
+ - Add Output: Neopixel RGB LED Strip
+ - Add Function Action: Change Neopixel LED Strip Color
+ - Add Function Action: Change Kasa RGB Bulb Color
  - Add Function Action: Clear Total kWh
  - Add Function Action: Add Line to Daemon Log
 
