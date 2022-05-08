@@ -149,6 +149,8 @@ Measurements
 
 ### [Sensirion: SCD30](/Mycodo/Supported-Inputs/#sensirion-scd30)
 
+### [Winsen: MH-Z14A](/Mycodo/Supported-Inputs/#winsen-mh-z14a)
+
 ### [Winsen: MH-Z16](/Mycodo/Supported-Inputs/#winsen-mh-z16)
 
 ### [Winsen: MH-Z19](/Mycodo/Supported-Inputs/#winsen-mh-z19)
