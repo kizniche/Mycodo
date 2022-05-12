@@ -17,6 +17,7 @@
 
  - Add API endpoint: cameras/capture_image
  - Add Headers option to URL (requests) camera library
+ - Add Input: MAX30155 PT100 I2C Temperature Sensor (by DFRobot)
  - Add Input: Kasa Energy Meter (Strips/Plugs)
  - Add Outputs: Kasa Wifi RGB Light Bulbs
  - Add Outputs: Kasa Wifi Power Plugs
