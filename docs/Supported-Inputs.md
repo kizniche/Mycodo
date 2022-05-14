@@ -6041,7 +6041,7 @@ Obtain a free API key at openweathermap.org. Notes: The free API subscription is
 - Manufacturer URL: [Link](https://www.winsen-sensor.com/sensors/co2-sensor/mh-z14a.html)
 - Datasheet URL: [Link](https://www.winsen-sensor.com/d/files/mh-z14a-co2-manual-v1_4.pdf)
 
-This sensor does automatic self-calibration on a 24-hour cycle. The lowest sensor reading observed during this period becomes the new zero point (400 ppmv).
+This sensor can do automatic self-calibration on a 24-hour cycle. When this feature is enabled, the lowest sensor reading observed during this period becomes the new zero point (400 ppmv).
 
 #### Options
 
