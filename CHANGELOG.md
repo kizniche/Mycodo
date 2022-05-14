@@ -24,6 +24,7 @@
  - Add Function Action: Change Kasa RGB Bulb Color
  - Add Function Action: Clear Total kWh
  - Add Function Action: Add Line to Daemon Log
+ - Add Input: MH-Z14A CO2 sensor.
 
 ### Miscellaneous
 
