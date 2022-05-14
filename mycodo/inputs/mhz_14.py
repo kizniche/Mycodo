@@ -392,42 +392,53 @@ class InputModule(AbstractInput):
         return None
 
     def _read_co2_gpio(self):
-        # from datasheet
+        # From datasheet:
         # cycle length = 1004ms ± 5%
         # CO2 ppm = 2000 * (Th - 2ms) / (Th + Tl - 4ms)
         try:
-            # Wait for any high signals to pass
-            self._get_signal_change_ts(1)
-            # Detect start of next high signal
-            th_start = self._get_signal_change_ts(0)
-            # Detect start of low signal
-            tl_start = self._get_signal_change_ts(1)
-            tl = self._get_signal_change_ts(0) - tl_start
+            # Wait for edge changes to calculate CO2 values. According to the
+            # data sheet the theoretical cycle length is 1004ms ± 5% = 1054ms,
+            # so twice that duration (i.e. 2108ms) should be safe to use as a
+            # timeout threshold. NOTE: the code below is intentionally
+            # duplicated inline to reduce method calls and ensure the most
+            # accurate readings can be made.
+            if (
+                self.gpio.wait_for_edge(
+                    self.gpio_location, self.gpio.RISING, timeout=2_2108
+                )
+                is None
+            ):
+                raise RuntimeError(f"Timeout waiting for rising edge!")
+            else:
+                th_start = time.time_ns() / 1_000
+
+            if (
+                self.gpio.wait_for_edge(
+                    self.gpio_location, self.gpio.FALLING, timeout=2_2108
+                )
+                is None
+            ):
+                raise RuntimeError(f"Timeout waiting for falling edge!")
+            else:
+                th_end = time.time_ns() / 1_000
+
+            if (
+                self.gpio.wait_for_edge(
+                    self.gpio_location, self.gpio.RISING, timeout=2_2108
+                )
+                is None
+            ):
+                raise RuntimeError(f"Timeout waiting for rising edge!")
+            else:
+                tl_end = time.time_ns() / 1_000
+
         except RuntimeError as e:
             self.logger.error(f"No response: {e}")
             return None
 
-        th = tl_start - th_start
+        th = th_end - th_start
+        tl = tl_end - th_end
 
         co2 = 2_000 * (th - 2) / (th + tl - 4)
         self.logger.debug(f"Read measurement via GPIO: {co2}")
         return co2
-
-    def _get_signal_change_ts(self, switch_from):
-        assert switch_from in [0, 1]
-        check_start_ts = None
-
-        while self.gpio.input(self.gpio_location) == switch_from:
-            check_start_ts = check_start_ts or time.time_ns() / 1_000
-            # Wait for signal to change from 'switch_from' state, and time out if no
-            # change is detected. According to the data sheet the theoretical cycle
-            # length is 1004ms ± 5% = 1054ms, so twice that duration (i.e. 2108ms)
-            # should be safe to use as a timeout threshold.
-            elapsed_ms = time.time_ns() / 1_000 - check_start_ts
-            if elapsed_ms > 2_108:
-                # Time out if cycle length threshold is exceeded
-                raise RuntimeError(
-                    f"Timed out after {elapsed_ms}ms without a signal change detected from state '{switch_from}'!"
-                )
-
-        return time.time_ns() / 1_000
