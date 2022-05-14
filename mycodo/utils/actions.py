@@ -323,6 +323,9 @@ def trigger_action(
         message += 'Error: Action with ID {} not found!'.format(action_id)
         return message
 
+    if message is None:
+        message = ''
+
     logger_actions = logging.getLogger("mycodo.trigger_action_{id}".format(
         id=action.unique_id.split('-')[0]))
 
@@ -341,10 +344,10 @@ def trigger_action(
             name=dict_actions[action.action_type]['name'])
 
         try:
-            function_action_loaded, status = load_module_from_file(
-                dict_actions[action.action_type]['file_path'], 'function_action')
-            if function_action_loaded:
-                run_function_action = function_action_loaded.ActionModule(action)
+            action_loaded, status = load_module_from_file(
+                dict_actions[action.action_type]['file_path'], 'action')
+            if action_loaded:
+                run_function_action = action_loaded.ActionModule(action)
 
             message = run_function_action.run_action(message, dict_vars)
         except:

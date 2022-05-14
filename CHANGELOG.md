@@ -11,11 +11,13 @@
  - Fix fswebcam Camera custom options not being applied
  - Fix consistency of Time Span Trigger Function execution times
  - Fix inability to use decimal values in float input fields for some browsers
+ - Fix executing actions when no message passed to function
 
 ### Features
 
  - Add API endpoint: cameras/capture_image
  - Add Headers option to URL (requests) camera library
+ - Add Input: MAX30155 PT100 I2C Temperature Sensor (by DFRobot)
  - Add Input: Kasa Energy Meter (Strips/Plugs)
  - Add Outputs: Kasa Wifi RGB Light Bulbs
  - Add Outputs: Kasa Wifi Power Plugs

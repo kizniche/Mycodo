@@ -45,7 +45,7 @@ channels_dict = {
 # Output information
 OUTPUT_INFORMATION = {
     'output_name_unique': 'output_neopixel_rgb_spi',
-    'output_name': f"{lazy_gettext('On/Off')}: Neopixel (WS2812) RGB Strip with Raspberry Pi (SPI)",
+    'output_name': f"{lazy_gettext('On/Off')}: Neopixel (WS2812) RGB Strip with Raspberry Pi",
     'output_manufacturer': 'Worldsemi',
     'input_library': 'adafruit-circuitpython-neopixel-spi',
     'measurements_dict': measurements_dict,
@@ -64,7 +64,7 @@ OUTPUT_INFORMATION = {
         ('pip-pypi', 'neopixel_spi', 'adafruit-circuitpython-neopixel-spi==1.0.0')
     ],
 
-    'interfaces': ['GPIO'],
+    'interfaces': ['SPI'],
 
     'custom_commands_message':
         'Control each LED of an RGB strip. Color is represented by RGB comma-separated values (red, green, blue). RGB color values can be between 0 (off) and 255 (brightest), e.g. 0, 0, 0 is completely off, 255, 255, 255 is the brightest white, and 125, 0, 0 is a mid-brightness red.',
@@ -99,6 +99,13 @@ OUTPUT_INFORMATION = {
             'default_value': 1,
             'name': f"Number of LEDs",
             'phrase': 'How many LEDs in the string?'
+        },
+        {
+            'id': 'on_color',
+            'type': 'text',
+            'default_value': "30, 30, 30",
+            'name': f"On Color",
+            'phrase': 'The Color when turning on, in RGB format (red, green, blue), 0 - 255 each.'
         },
     ],
 
@@ -154,6 +161,7 @@ class OutputModule(AbstractOutput):
         self.rgb = None
 
         self.number_leds = None
+        self.on_color = None
 
         self.setup_custom_options(
             OUTPUT_INFORMATION['custom_options'], output)
@@ -170,26 +178,42 @@ class OutputModule(AbstractOutput):
         self.setup_output_variables(OUTPUT_INFORMATION)
 
         try:
+            red = int(self.on_color.split(",")[0])
+            green = int(self.on_color.split(",")[1])
+            blue = int(self.on_color.split(",")[2])
+            self.on_color = (red, green, blue)
+        except:
+            self.on_color = (30, 30, 30)
+            self.logger.error(f"Could not parse On Color: {self.on_color}")
+
+        try:
             self.rgb = neopixel_spi.NeoPixel_SPI(board.SPI(), 7, auto_write=False, bit0=0b10000000)
             self.output_setup = True
 
-            for i in range(self.number_leds):
-                self.rgb[i] = (10, 0, 0)
-                self.rgb.show()
+            if self.options_channels['state_startup'][0] == 1:
+                for i in range(self.number_leds):
+                    self.rgb[i] = (10, 0, 0)
+                    self.rgb.show()
+                    time.sleep(0.01)
+                for i in range(self.number_leds):
+                    self.rgb[i] = (0, 10, 0)
+                    self.rgb.show()
+                    time.sleep(0.01)
+                for i in range(self.number_leds):
+                    self.rgb[i] = (0, 0, 10)
+                    self.rgb.show()
+                    time.sleep(0.01)
+                for i in range(self.number_leds):
+                    self.rgb[i] = self.on_color
+                    self.rgb.show()
+                    time.sleep(0.01)
                 self.output_states[0] = True
-                time.sleep(0.01)
-            for i in range(self.number_leds):
-                self.rgb[i] = (0, 10, 0)
-                self.rgb.show()
-                time.sleep(0.01)
-            for i in range(self.number_leds):
-                self.rgb[i] = (0, 0, 10)
-                self.rgb.show()
-                time.sleep(0.01)
-            for i in range(self.number_leds):
-                self.rgb[i] = (10, 10, 10)
-                self.rgb.show()
-                time.sleep(0.01)
+            if self.options_channels['state_startup'][0] == 0:
+                for i in range(self.number_leds):
+                    self.rgb[i] = 0
+                    self.rgb.show()
+                    time.sleep(0.01)
+                self.output_states[0] = False
         except Exception as err:
             self.logger.error(f"Setting up Output: {err}")
 
@@ -202,7 +226,7 @@ class OutputModule(AbstractOutput):
         try:
             if state == 'on':
                 for i in range(self.number_leds):
-                    self.rgb[i] = (10, 10, 10)
+                    self.rgb[i] = self.on_color
                 self.rgb.show()
                 self.output_states[0] = True
             elif state == 'off':
