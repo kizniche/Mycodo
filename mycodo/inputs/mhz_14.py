@@ -415,9 +415,10 @@ class InputModule(AbstractInput):
 
     def _get_signal_change_ts(self, switch_from):
         assert switch_from in [0, 1]
+        check_start_ts = None
 
-        check_start_ts = time.time_ns() / 1_000
         while self.gpio.input(self.gpio_location) == switch_from:
+            check_start_ts = check_start_ts or time.time_ns() / 1_000
             # Wait for signal to change from 'switch_from' state, and time out if no
             # change is detected. According to the data sheet the theoretical cycle
             # length is 1004ms ± 5% = 1054ms, so twice that duration (i.e. 2108ms)
