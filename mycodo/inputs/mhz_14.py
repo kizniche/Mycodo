@@ -2,6 +2,7 @@
 import time
 
 import copy
+import serial
 
 from mycodo.inputs.base_input import AbstractInput
 from mycodo.inputs.sensorutils import is_device
@@ -11,7 +12,7 @@ def constraints_pass_measure_range(mod_input, value):
     """
     Check if the user input is acceptable
     :param mod_input: SQL object with user-saved Input options
-    :param value: float
+    :param value: int
     :return: tuple: (bool, list of strings)
     """
     errors = []
@@ -19,7 +20,28 @@ def constraints_pass_measure_range(mod_input, value):
     # Ensure valid range is selected
     if value not in ["2000", "5000", "10000"]:
         all_passed = False
-        errors.append("Invalid range")
+        errors.append(f"Invalid measurement range '{value}'")
+
+    return all_passed, errors, mod_input
+
+
+def constraints_pass_gpio(mod_input, value):
+    """
+    Check if the user input is acceptable
+    :param mod_input: SQL object with user-saved Input options
+    :param value: string
+    :return: tuple: (bool, list of strings)
+    """
+    errors = []
+    all_passed = True
+    # Ensure valid range is selected
+    if value:
+        try:
+            int(value)
+        except:
+            all_passed = False
+            errors.append(f"Invalid GPIO pin number '{value}'")
+
     return all_passed, errors, mod_input
 
 
@@ -39,7 +61,6 @@ INPUT_INFORMATION = {
     "options_enabled": ["interface", "uart_location", "period", "pre_output"],
     "dependencies_module": [("pip-pypi", "RPi.GPIO", "RPi.GPIO")],
     "interfaces": ["UART"],
-    "gpio_location": "27",
     "uart_location": "/dev/ttyAMA0",
     "custom_options": [
         {
@@ -64,11 +85,16 @@ INPUT_INFORMATION = {
             "phrase": "Set the measuring range of the sensor",
         },
         {
-            "id": "gpio_fallback",
-            "type": "integer",
-            "default_value": 27,
-            "name": "GPIO Fallback",
-            "phrase": "Fall back to obtaining readings using PWM on this pin",
+            "type": "message",
+            "default_value": """The CO2 measurement can also be obtained using PWM via a GPIO pin. Enter the pin number below or leave blank to disable this option. This also makes it possible to obtain measurements even if the UART interface is not available (note that the sensor can't be configured / calibrated without a working UART interface).""",
+        },
+        {
+            "id": "gpio_location",
+            "type": "text",
+            "default_value": None,
+            "constraints_pass": constraints_pass_gpio,
+            "name": "GPIO Override",
+            "phrase": "Obtain readings using PWM on this GPIO pin instead of via UART",
         },
     ],
     "custom_commands_message": "Self-calibration: The module can gauge the zero point "
@@ -94,7 +120,7 @@ INPUT_INFORMATION = {
         {
             "id": "span_point_value_ppmv",
             "type": "integer",
-            "default_value": 2000,
+            "default_value": 2_000,
             "name": "Span Point (ppmv)",
             "phrase": "The ppmv concentration for a span point calibration",
         },
@@ -111,182 +137,226 @@ class InputModule(AbstractInput):
     """A sensor support class that monitors the MH-Z14's CO2 concentration"""
 
     def __init__(self, input_dev, testing=False):
-        super(InputModule, self).__init__(input_dev, testing=testing, name=__name__)
+        super().__init__(input_dev, testing=testing, name=__name__)
+
+        self._gpio_location = ""
 
         self.ser = None
         self.gpio = None
-        self.self_calibration_enable = True
 
-        self.measuring = None
-        self.calibrating = None
-
-        self.measure_range = 2000
-        self.gpio_fallback = None
+        self.is_measuring = False
+        self.is_calibrating = False
 
         if not testing:
             self.setup_custom_options(INPUT_INFORMATION["custom_options"], input_dev)
-            self.initialize_input()
+            self.try_initialize()
 
-    def initialize_input(self):
+    def initialize(self):
+        # Check if device is valid
+        if is_device(self.input_dev.uart_location):
+            self.ser = serial.Serial(
+                port=self.input_dev.uart_location,
+                baudrate=9_600,
+                # dsrdtr=True,
+                timeout=1,
+                writeTimeout=5,
+            )
 
-        if self.input_dev.interface == "UART":
-            import serial
+            self.set_measure_range()
+            self.set_self_calibration()
+        else:
+            self.logger.error(
+                f"Could not open '{self.input_dev.uart_location}'. Check the device location is correct."
+            )
 
-            # Use serial interface
-            if is_device(self.input_dev.uart_location):
-                try:
-                    self.ser = serial.Serial(
-                        port=self.input_dev.uart_location,
-                        baudrate=9600,
-                        # dsrdtr=True,
-                        timeout=1,
-                        writeTimeout=5,
-                    )
-                except serial.SerialException:
-                    self.logger.exception("Opening serial")
-            else:
-                self.logger.error(
-                    'Could not open "{dev}". Check the device location is correct.'.format(
-                        dev=self.input_dev.uart_location
-                    )
-                )
-        if self.gpio_fallback:
-            # Fall back to reading measurements on PWM interface
+        if self.gpio_location:
+            # Prefer reading measurements using PWM via GPIO
             import RPi.GPIO as GPIO
 
             self.gpio = GPIO
 
-            self.location = int(self.input_dev.gpio_location)
             self.gpio.setmode(self.gpio.BCM)
-            self.gpio.setup(self.location, self.gpio.IN)
+            self.gpio.setup(self.gpio_location, self.gpio.IN)
 
-        self.set_self_calibration()
+    @property
+    def gpio_location(self):
+        if self._gpio_location != "":
+            return self._gpio_location
+        else:
+            # GPIO location not initialized, do so now
+            gpio_location = self.get_custom_option("gpio_location")
 
-        if self.measure_range:
-            self.set_measure_range(self.measure_range)
-
-        time.sleep(0.1)
-
-    def get_measurement(self):
-        """Gets the MH-Z14's CO2 concentration in ppmv"""
-        while self.calibrating:
-            time.sleep(0.1)
-        self.measuring = True
-
-        self.return_dict = copy.deepcopy(measurements_dict)
-
-        try:
-            if not self.ser:
-                self.logger.error("Input not set up")
-                return
-
-            self._get_co2_uart()
-        except:
-            if self.gpio_fallback:
-                self.logger.warn(
-                    "Could not obtain sensor reading via UART! Falling back to using GPIO..."
-                )
-                if not self.gpio:
-                    self.logger.error("Fallback input not set up")
-                    return
-
-                self._get_co2_gpio()
+            if gpio_location:
+                try:
+                    # Convert to integer
+                    self._gpio_location = int(gpio_location)
+                except (TypeError, ValueError) as e:
+                    self.logger.error(f"Invalid GPIO pin number '{gpio_location}': {e}")
+                    self._gpio_location = None
             else:
-                self.logger.exception("get_measurement()")
-        finally:
-            self.measuring = False
+                # No override specified, continue...
+                self._gpio_location = None
 
-        return self.return_dict
+        return self._gpio_location
+
+    def stop_input(self):
+        if self.gpio:
+            self.logger.debug(f"Cleaning up GPIO channel '{self.gpio_location}'...")
+            self.gpio.cleanup(self.gpio_location)
+
+    def set_measure_range(self):
+        """
+        Sets the measurement range. Options are: '2000', '5000' or '10000' (ppmv)
+        :return: None
+        """
+        if not self.ser:
+            self.logger.error("Input not set up - cannot set measurement range")
+            return
+
+        measure_range = self.get_custom_option("measure_range")
+
+        if measure_range == "2000":
+            cmd = bytearray([0xFF, 0x01, 0x99, 0x00, 0x00, 0x00, 0x07, 0xD0, 0x8F])
+        elif measure_range == "5000":
+            cmd = bytearray([0xFF, 0x01, 0x99, 0x00, 0x00, 0x00, 0x13, 0x88, 0xCB])
+        elif measure_range == "10000":
+            cmd = bytearray([0xFF, 0x01, 0x99, 0x00, 0x00, 0x00, 0x27, 0x10, 0x2F])
+        else:
+            self.logger.error(f"Invalid measurement range '{measure_range}'")
+            return
+
+        self.logger.info(f"Setting measurement range to '{measure_range}'...")
+        self.ser.write(cmd)
+        time.sleep(0.1)
+        self.logger.info("Measurement range set!")
 
     def set_self_calibration(self):
-        if self.self_calibration_enable:
+        if not self.ser:
+            self.logger.error("Input not set up - cannot be calibrated")
+            return
+
+        if self.get_custom_option("self_calibration_enable"):
+            self.logger.info("Enabling self-calibration...")
             self.ser.write(
                 bytearray([0xFF, 0x01, 0x79, 0xA0, 0x00, 0x00, 0x00, 0x00, 0xE6])
             )
         else:
+            self.logger.info("Disabling self-calibration...")
             self.ser.write(
                 bytearray([0xFF, 0x01, 0x79, 0x00, 0x00, 0x00, 0x00, 0x00, 0x86])
             )
+        time.sleep(0.1)
+        self.logger.info("Self-calibration settings updated!")
 
-    def set_measure_range(self, measure_range):
-        """
-        Sets the measurement range. Options are: '2000', '5000' or '10000' (ppmv)
-        :param measure_range: string
-        :return: None
-        """
-        if measure_range == "2000":
-            self.ser.write(
-                bytearray([0xFF, 0x01, 0x99, 0x00, 0x00, 0x00, 0x07, 0xD0, 0x8F])
+    def get_measurement(self):
+        """Gets the measurement in units by reading the MH-Z14A."""
+        if not self.ser and not self.gpio:
+            self.logger.error(
+                "Error 101: Device not set up. See https://kizniche.github.io/Mycodo/Error-Codes#error-101 for more info."
             )
-        elif measure_range == "5000":
-            self.ser.write(
-                bytearray([0xFF, 0x01, 0x99, 0x00, 0x00, 0x00, 0x13, 0x88, 0xCB])
-            )
-        elif measure_range == "10000":
-            self.ser.write(
-                bytearray([0xFF, 0x01, 0x99, 0x00, 0x00, 0x00, 0x27, 0x10, 0x2F])
-            )
-        else:
-            return "out of range"
+            return
+
+        self.return_dict = copy.deepcopy(measurements_dict)
+
+        co2 = self.read_CO2()
+        if co2 is not None:
+            self.value_set(0, co2)
+
+        return self.return_dict
+
+    def read_CO2(self):
+        """Gets the MH-Z14's CO2 concentration in ppmv"""
+        while self.is_calibrating:
+            time.sleep(0.1)
+
+        self.is_measuring = True
+
+        try:
+            if self.gpio:
+                # Obtain reading via GPIO
+                self.logger.debug(
+                    f"Obtaining reading via GPIO channel {self.gpio_location}..."
+                )
+                return self._read_co2_gpio()
+
+            elif self.ser:
+                # Obtain reading via UART
+                self.logger.debug("Obtaining reading via UART...")
+                return self._read_co2_uart()
+            else:
+                self.logger.error(
+                    "Error 101: Device not set up. See https://kizniche.github.io/Mycodo/Error-Codes#error-101 for more info."
+                )
+                return None
+        except:
+            self.logger.exception("read_CO2()")
+        finally:
+            self.is_measuring = False
 
     def calibrate_span_point(self, args_dict):
         """
         Span Point Calibration
         from https://github.com/UedaTakeyuki/mh-z19
         """
-        if "span_point_value_ppmv" not in args_dict:
-            self.logger.error(
-                "Cannot conduct span point calibration without a ppmv value"
-            )
+        if not self.ser:
+            self.logger.error("Input not set up - cannot calibrate span point")
             return
-        if not isinstance(args_dict["span_point_value_ppmv"], int):
+
+        span_point_value_ppmv = None
+
+        try:
+            span_point_value_ppmv = int(args_dict["span_point_value_ppmv"])
+        except KeyError:
             self.logger.error(
-                "ppmv value does not represent an integer: '{}', type: {}".format(
-                    args_dict["span_point_value_ppmv"],
-                    type(args_dict["span_point_value_ppmv"]),
-                )
+                "Cannot conduct span point calibration without a valid integer ppmv value"
             )
             return
 
-        while self.measuring:
+        while self.is_measuring:
             time.sleep(0.1)
-        self.calibrating = True
+
+        self.is_calibrating = True
 
         try:
             self.logger.info(
-                "Conducting span point calibration with a value of {} ppmv".format(
-                    args_dict["span_point_value_ppmv"]
-                )
+                f"Conducting span point calibration with a value of {span_point_value_ppmv} ppmv..."
             )
-            b3 = args_dict["span_point_value_ppmv"] // 256
-            b4 = args_dict["span_point_value_ppmv"] % 256
+            b3 = span_point_value_ppmv // 256
+            b4 = span_point_value_ppmv % 256
             c = self.checksum([0x01, 0x88, b3, b4])
             self.ser.write(bytearray([0xFF, 0x01, 0x88, b3, b4, 0x00, 0x0B, 0xB8, c]))
             time.sleep(0.1)
+            self.logger.info("Span point calibration completed!")
         except:
-            self.logger.exception()
+            self.logger.exception("calibrate_span_point()")
         finally:
-            self.calibrating = False
+            self.is_calibrating = False
 
     def calibrate_zero_point(self, args_dict):
         """
         Zero Point Calibration
         from https://github.com/UedaTakeyuki/mh-z19
         """
-        while self.measuring:
+        if not self.ser:
+            self.logger.error("Input not set up - cannot calibrate zero point")
+            return
+
+        while self.is_measuring:
             time.sleep(0.1)
-        self.calibrating = True
+
+        self.is_calibrating = True
 
         try:
-            self.logger.info("Conducting zero point calibration")
+            self.logger.info("Conducting zero point calibration...")
             self.ser.write(
                 bytearray([0xFF, 0x01, 0x87, 0x00, 0x00, 0x00, 0x00, 0x00, 0x78])
             )
             time.sleep(0.1)
+            self.logger.info("Zero point calibrated!")
         except:
-            self.logger.exception()
+            self.logger.exception("calibrate_zero_point()")
         finally:
-            self.calibrating = False
+            self.is_calibrating = False
 
     @staticmethod
     def checksum(array):
@@ -294,42 +364,69 @@ class InputModule(AbstractInput):
             0xFF - (sum(array[i] for i in range(1, 7)) & 0xFF) + 1
         )  # formula from datasheet
 
-    def _get_co2_uart(self):
+    def _read_co2_uart(self):
+        if not self.ser:
+            self.logger.error("Input not set up - cannot read CO2 measurement")
+            return
+
         self.ser.flushInput()
         self.ser.write(
             bytearray([0xFF, 0x01, 0x86, 0x00, 0x00, 0x00, 0x00, 0x00, 0x79])
         )
-        time.sleep(0.01)
+        time.sleep(0.1)
         resp = self.ser.read(9)
 
         if not resp:
-            self.logger.debug("No response")
+            self.logger.error("No response")
         elif len(resp) != 9:
-            self.logger.debug("Response has incorrect length '{}'".format(resp))
+            self.logger.error(f"Response has incorrect length '{resp}'")
         elif self.checksum(resp) != resp[8]:
             self.logger.error("Bad checksum")
         else:
             high = resp[2]
             low = resp[3]
             co2 = (high * 256) + low
-            self.value_set(0, co2)
+            self.logger.debug(f"Read measurement via UART: {co2}")
+            return co2
 
-    def _get_co2_gpio(self):
-        start_ts = 0
-        duration = 0
+        return None
 
-        while self.gpio.input(self.location) == 0:
-            # Wait for next cycle
-            start_ts = time.time_ns()
-
-        while self.gpio.input(self.location) == 1:
-            duration = time.time_ns() - start_ts
+    def _read_co2_gpio(self):
         # from datasheet
-        # CO2 ppm = 5000 * (Th - 2ms) / (Th + Tl - 4ms)
-        #   given Tl + Th = 1004
-        #   Tl = 1004 - Th
-        #   = 5000 * (Th - 2ms) / (Th + 1004 - Th - 4ms)
-        #   = 5000 * (Th - 2ms) / 1000 = 2 * (Th - 2ms)
-        if duration:
-            co2 = 5 * ((duration / 1_000_000) - 2)
-            self.value_set(0, co2)
+        # cycle length = 1004ms ± 5%
+        # CO2 ppm = 2000 * (Th - 2ms) / (Th + Tl - 4ms)
+        try:
+            # Wait for any high signals to pass
+            self._get_signal_change_ts(1)
+            # Detect start of next high signal
+            th_start = self._get_signal_change_ts(0)
+            # Detect start of low signal
+            tl_start = self._get_signal_change_ts(1)
+            tl = self._get_signal_change_ts(0) - tl_start
+        except RuntimeError as e:
+            self.logger.error(f"No response: {e}")
+            return None
+
+        th = tl_start - th_start
+
+        co2 = 2_000 * (th - 2) / (th + tl - 4)
+        self.logger.debug(f"Read measurement via GPIO: {co2}")
+        return co2
+
+    def _get_signal_change_ts(self, switch_from):
+        assert switch_from in [0, 1]
+
+        check_start_ts = time.time_ns() / 1_000
+        while self.gpio.input(self.gpio_location) == switch_from:
+            # Wait for signal to change from 'switch_from' state, and time out if no
+            # change is detected. According to the data sheet the theoretical cycle
+            # length is 1004ms ± 5% = 1054ms, so twice that duration (i.e. 2108ms)
+            # should be safe to use as a timeout threshold.
+            elapsed_ms = time.time_ns() / 1_000 - check_start_ts
+            if elapsed_ms > 2_108:
+                # Time out if cycle length threshold is exceeded
+                raise RuntimeError(
+                    f"Timed out after {elapsed_ms}ms without a signal change detected from state '{switch_from}'!"
+                )
+
+        return time.time_ns() / 1_000
