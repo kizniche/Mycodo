@@ -6081,11 +6081,11 @@ This sensor can do automatic self-calibration on a 24-hour cycle. When this feat
 - Options: \[**400 - 2000 ppmv** | 400 - 5000 ppmv | 400 - 10000 ppmv \] (Default in **bold**)
 - Description: Set the measuring range of the sensor
 
-##### GPIO Fallback
+##### GPIO Override
 
 - Type: Integer
-- Default Value: 27
-- Description: Fall back to obtaining the sensor reading on this GPIO pin using the PWM interface if the UART interface is not available.
+- Default Value: None
+- Description: Obtain readings using PWM on this pin instead of via UART.
 
 #### Commands
 
