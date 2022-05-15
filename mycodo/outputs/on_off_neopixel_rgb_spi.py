@@ -162,6 +162,7 @@ class OutputModule(AbstractOutput):
         super().__init__(output, testing=testing, name=__name__)
 
         self.rgb = None
+        self.color_value = None
         self.rainbow_thread = None
 
         self.number_leds = None
@@ -208,11 +209,13 @@ class OutputModule(AbstractOutput):
                     self.rgb[i] = (0, 0, 10)
                     self.rgb.show()
                     time.sleep(0.01)
+                self.color_value = [0, 0, 10]
                 if self.on_mode == 'single_color':
                     for i in range(self.number_leds):
                         self.rgb[i] = self.on_color
                         self.rgb.show()
                         time.sleep(0.01)
+                    self.color_value = list(self.on_color)
                 elif self.on_mode == 'rainbow':
                     self.start_stop_rainbow(True)
                 self.output_states[0] = True
@@ -236,6 +239,7 @@ class OutputModule(AbstractOutput):
                 if self.on_mode == 'single_color':
                     for i in range(self.number_leds):
                         self.rgb[i] = self.on_color
+                    self.color_value = list(self.on_color)
                     self.rgb.show()
                 elif self.on_mode == 'rainbow':
                     self.start_stop_rainbow(True)
@@ -246,6 +250,7 @@ class OutputModule(AbstractOutput):
                     self.start_stop_rainbow(False)
                 for i in range(self.number_leds):
                     self.rgb[i] = (0, 0, 0)
+                self.color_value = [0, 0, 0]
                 self.rgb.show()
                 self.output_states[0] = False
         except Exception as err:
@@ -302,37 +307,45 @@ class OutputModule(AbstractOutput):
 
         return f"Set Pixel {args_dict['led_number']} to color {args_dict['led_color']}"
 
-    def color_change(self, color_value, color, direction, maximum):
-        while ((direction == "up" and color_value[color] < maximum) or
-               (direction == "down" and color_value[color] > 0)):
-            if direction == "up":
-                color_value[color] += 1
-            else:
-                color_value[color] -= 1
+    def go_to_color(self, current_color, new_color):
+        try:
+            current_color = list(current_color)
+            new_color = list(new_color)
+        except:
+            self.logger.error("current and new colors don't represent lists")
+            return
+
+        while current_color != new_color:
+            for i in range(3):
+                if current_color[i] < new_color[i]:
+                    current_color[i] += 1
+                elif current_color[i] > new_color[i]:
+                    current_color[i] -= 1
             for i in range(self.number_leds):
-                self.rgb[i] = tuple(color_value)
+                self.rgb[i] = tuple(current_color)
                 self.rgb.show()
                 time.sleep(0.01)
-        return color_value
+
+        return current_color
 
     def rainbow(self):
         t = currentThread()
-        color_value = [0, 0, 0]
-        first = True
+        delay = 0.25
         maximum = 20
         cycle = [
-            (1, "up"),
-            (0, "down"),
-            (2, "up"),
-            (1, "down"),
-            (0, "up"),
-            (2, "down")
+            (maximum, 0, 0),  # Red
+            (maximum, maximum, 0),  # Yellow
+            (0, maximum, 0),  # Green
+            (0, maximum, maximum),  # Cyan
+            (0, 0, maximum),  # Blue
+            (maximum, 0, maximum)  # Violet
         ]
+
+        if self.color_value is None:
+            self.color_value = [0, 0, 0]
+
         while getattr(t, "do_run", True):
-            if first:
-                color_value = self.color_change(color_value, 0, "up", maximum)
-                time.sleep(0.25)
             for each_cycle in cycle:
-                color_value = self.color_change(color_value, each_cycle[0], each_cycle[1], maximum)
+                self.color_value = self.go_to_color(self.color_value, each_cycle)
                 if not getattr(t, "do_run", True): break
-                time.sleep(0.25)
+                time.sleep(delay)
