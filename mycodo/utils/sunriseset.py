@@ -215,8 +215,9 @@ def suntime_calculate_next_sunrise_sunset_epoch(latitude, longitude, date_offset
             if time_offset_minutes != 0:
                 sunrise = sunrise + datetime.timedelta(minutes=time_offset_minutes)
             while sunrise.timestamp() > now.timestamp():  # Find sunrise for yesterday
-                sunrise = sunrise - datetime.timedelta(days=1)  # Make sunrise tomorrow
-            sunrise = sunrise + datetime.timedelta(days=1)
+                sunrise = sunrise - datetime.timedelta(days=1)  # Make sunrise yesterday
+            while sunrise.timestamp() < now.timestamp():  # Find sunrise for tomorrow
+                sunrise = sunrise + datetime.timedelta(days=1)  # Make sunrise tomorrow
             if return_dt:
                 return sunrise
             else:
@@ -226,8 +227,9 @@ def suntime_calculate_next_sunrise_sunset_epoch(latitude, longitude, date_offset
             if time_offset_minutes != 0:
                 sunset = sunset + datetime.timedelta(minutes=time_offset_minutes)
             while sunset.timestamp() > now.timestamp():  # Find sunset for yesterday
-                sunset = sunset - datetime.timedelta(days=1)  # Make sunset tomorrow
-            sunset = sunset + datetime.timedelta(days=1)
+                sunset = sunset - datetime.timedelta(days=1)  # Make sunset yesterday
+            while sunset.timestamp() < now.timestamp():  # Find sunset for tomorrow
+                sunset = sunset + datetime.timedelta(days=1)  # Make sunset tomorrow
             if return_dt:
                 return sunset
             else:

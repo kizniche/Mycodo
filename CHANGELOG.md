@@ -12,6 +12,7 @@
  - Fix consistency of Time Span Trigger Function execution times
  - Fix inability to use decimal values in float input fields for some browsers
  - Fix executing actions when no message passed to function
+ - Fix calculating next sunrise/sunset
 
 ### Features
 
