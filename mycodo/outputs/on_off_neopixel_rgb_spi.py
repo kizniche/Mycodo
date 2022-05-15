@@ -1,24 +1,16 @@
 # coding=utf-8
 #
-# on_off_color_kasa_kl125.py - Output for KL125
+# on_off_neopixel_rgb_spi.py - Output for Neopixel LED strip
 #
-import asyncio
-import copy
-import random
 import time
-import traceback
-from threading import Event
 from threading import Thread
+from threading import currentThread
 
 from flask_babel import lazy_gettext
 
-from mycodo.config_translations import TRANSLATIONS
 from mycodo.databases.models import OutputChannel
 from mycodo.outputs.base_output import AbstractOutput
-from mycodo.utils.constraints_pass import constraints_pass_positive_or_zero_value
-from mycodo.utils.constraints_pass import constraints_pass_positive_value
 from mycodo.utils.database import db_retrieve_table_daemon
-from mycodo.utils.influx import add_measurements_influxdb
 
 # Measurements
 # measurements_dict = {
@@ -101,6 +93,17 @@ OUTPUT_INFORMATION = {
             'phrase': 'How many LEDs in the string?'
         },
         {
+            'id': 'on_mode',
+            'type': 'select',
+            'default_value': 'single_color',
+            'options_select': [
+                ('single_color', 'Single Color'),
+                ('rainbow', 'Rainbow')
+            ],
+            'name': 'On Mode',
+            'phrase': 'The color mode when turned on'
+        },
+        {
             'id': 'on_color',
             'type': 'text',
             'default_value': "30, 30, 30",
@@ -159,8 +162,10 @@ class OutputModule(AbstractOutput):
         super().__init__(output, testing=testing, name=__name__)
 
         self.rgb = None
+        self.rainbow_thread = None
 
         self.number_leds = None
+        self.on_mode = None
         self.on_color = None
 
         self.setup_custom_options(
@@ -203,10 +208,13 @@ class OutputModule(AbstractOutput):
                     self.rgb[i] = (0, 0, 10)
                     self.rgb.show()
                     time.sleep(0.01)
-                for i in range(self.number_leds):
-                    self.rgb[i] = self.on_color
-                    self.rgb.show()
-                    time.sleep(0.01)
+                if self.on_mode == 'single_color':
+                    for i in range(self.number_leds):
+                        self.rgb[i] = self.on_color
+                        self.rgb.show()
+                        time.sleep(0.01)
+                elif self.on_mode == 'rainbow':
+                    self.start_stop_rainbow(True)
                 self.output_states[0] = True
             if self.options_channels['state_startup'][0] == 0:
                 for i in range(self.number_leds):
@@ -225,11 +233,17 @@ class OutputModule(AbstractOutput):
 
         try:
             if state == 'on':
-                for i in range(self.number_leds):
-                    self.rgb[i] = self.on_color
-                self.rgb.show()
+                if self.on_mode == 'single_color':
+                    for i in range(self.number_leds):
+                        self.rgb[i] = self.on_color
+                    self.rgb.show()
+                elif self.on_mode == 'rainbow':
+                    self.start_stop_rainbow(True)
                 self.output_states[0] = True
+
             elif state == 'off':
+                if self.on_mode == 'rainbow':
+                    self.start_stop_rainbow(False)
                 for i in range(self.number_leds):
                     self.rgb[i] = (0, 0, 0)
                 self.rgb.show()
@@ -252,6 +266,15 @@ class OutputModule(AbstractOutput):
             elif self.options_channels['state_shutdown'][0] == 0:
                 self.output_switch('off')
         self.running = False
+
+    def start_stop_rainbow(self, state):
+        if state and self.rainbow_thread is None:
+            self.rainbow_thread = Thread(target=self.rainbow)
+            self.rainbow_thread.start()
+        elif self.rainbow_thread:
+            self.rainbow_thread.do_run = False
+            self.rainbow_thread.join()
+            self.rainbow_thread = None
 
     def change_led(self, number, color):
         self.rgb[number] = (color[0], color[1], color[2])
@@ -278,3 +301,38 @@ class OutputModule(AbstractOutput):
         self.change_led(args_dict['led_number'], (red, green, blue))
 
         return f"Set Pixel {args_dict['led_number']} to color {args_dict['led_color']}"
+
+    def color_change(self, color_value, color, direction, maximum):
+        while ((direction == "up" and color_value[color] < maximum) or
+               (direction == "down" and color_value[color] > 0)):
+            if direction == "up":
+                color_value[color] += 1
+            else:
+                color_value[color] -= 1
+            for i in range(self.number_leds):
+                self.rgb[i] = tuple(color_value)
+                self.rgb.show()
+                time.sleep(0.01)
+        return color_value
+
+    def rainbow(self):
+        t = currentThread()
+        color_value = [0, 0, 0]
+        first = True
+        maximum = 20
+        cycle = [
+            (1, "up"),
+            (0, "down"),
+            (2, "up"),
+            (1, "down"),
+            (0, "up"),
+            (2, "down")
+        ]
+        while getattr(t, "do_run", True):
+            if first:
+                color_value = self.color_change(color_value, 0, "up", maximum)
+                time.sleep(0.25)
+            for each_cycle in cycle:
+                color_value = self.color_change(color_value, each_cycle[0], each_cycle[1], maximum)
+                if not getattr(t, "do_run", True): break
+                time.sleep(0.25)
