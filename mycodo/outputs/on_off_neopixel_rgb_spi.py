@@ -107,8 +107,22 @@ OUTPUT_INFORMATION = {
             'id': 'on_color',
             'type': 'text',
             'default_value': "30, 30, 30",
-            'name': f"On Color",
-            'phrase': 'The Color when turning on, in RGB format (red, green, blue), 0 - 255 each.'
+            'name': "Single Color",
+            'phrase': 'The Color when turning on in Single Color Mode, RGB format (red, green, blue), 0 - 255 each.'
+        },
+        {
+            'id': 'rainbow_speed_s',
+            'type': 'float',
+            'default_value': 0.01,
+            'name': "Rainbow Speed (seconds)",
+            'phrase': 'The speed to change colors in Rainbow Mode'
+        },
+        {
+            'id': 'rainbow_brightness',
+            'type': 'integer',
+            'default_value': 15,
+            'name': "Rainbow Brightness",
+            'phrase': 'The maximum brightness of LEDs in Rainbow Mode (1 - 255)'
         },
     ],
 
@@ -168,6 +182,8 @@ class OutputModule(AbstractOutput):
         self.number_leds = None
         self.on_mode = None
         self.on_color = None
+        self.rainbow_speed_s = None
+        self.rainbow_brightness = None
 
         self.setup_custom_options(
             OUTPUT_INFORMATION['custom_options'], output)
@@ -324,14 +340,14 @@ class OutputModule(AbstractOutput):
             for i in range(self.number_leds):
                 self.rgb[i] = tuple(current_color)
                 self.rgb.show()
-                time.sleep(0.01)
+                time.sleep(self.rainbow_speed_s)
 
         return current_color
 
     def rainbow(self):
         t = currentThread()
         delay = 0.25
-        maximum = 20
+        maximum = self.rainbow_brightness
         cycle = [
             (maximum, 0, 0),  # Red
             (maximum, maximum, 0),  # Yellow
