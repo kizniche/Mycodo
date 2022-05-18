@@ -12,14 +12,6 @@ from mycodo.databases.models import OutputChannel
 from mycodo.outputs.base_output import AbstractOutput
 from mycodo.utils.database import db_retrieve_table_daemon
 
-# Measurements
-# measurements_dict = {
-# }
-#
-# channels_dict = {
-#     0: {}
-# }
-
 measurements_dict = {
     0: {
         'measurement': 'duration_time',
@@ -120,9 +112,20 @@ OUTPUT_INFORMATION = {
         {
             'id': 'rainbow_brightness',
             'type': 'integer',
-            'default_value': 15,
+            'default_value': 20,
             'name': "Rainbow Brightness",
             'phrase': 'The maximum brightness of LEDs in Rainbow Mode (1 - 255)'
+        },
+        {
+            'id': 'rainbow_mode',
+            'type': 'select',
+            'default_value': 'single_led',
+            'options_select': [
+                ('all_leds', 'All LEDs change at once'),
+                ('single_led', 'One LED Changes at a time')
+            ],
+            'name': 'Rainbow Mode',
+            'phrase': 'How the rainbow is displayed'
         },
     ],
 
@@ -178,12 +181,14 @@ class OutputModule(AbstractOutput):
         self.rgb = None
         self.color_value = None
         self.rainbow_thread = None
+        self.shutdown = False
 
         self.number_leds = None
         self.on_mode = None
         self.on_color = None
         self.rainbow_speed_s = None
         self.rainbow_brightness = None
+        self.rainbow_mode = None
 
         self.setup_custom_options(
             OUTPUT_INFORMATION['custom_options'], output)
@@ -291,9 +296,11 @@ class OutputModule(AbstractOutput):
     def start_stop_rainbow(self, state):
         if state and self.rainbow_thread is None:
             self.rainbow_thread = Thread(target=self.rainbow)
+            self.rainbow_thread.daemon = True
             self.rainbow_thread.start()
         elif self.rainbow_thread:
             self.rainbow_thread.do_run = False
+            self.shutdown = True
             self.rainbow_thread.join()
             self.rainbow_thread = None
 
@@ -323,7 +330,7 @@ class OutputModule(AbstractOutput):
 
         return f"Set Pixel {args_dict['led_number']} to color {args_dict['led_color']}"
 
-    def go_to_color(self, current_color, new_color):
+    def go_to_color(self, t, current_color, new_color):
         try:
             current_color = list(current_color)
             new_color = list(new_color)
@@ -337,8 +344,17 @@ class OutputModule(AbstractOutput):
                     current_color[i] += 1
                 elif current_color[i] > new_color[i]:
                     current_color[i] -= 1
-            for i in range(self.number_leds):
-                self.rgb[i] = tuple(current_color)
+
+            if self.rainbow_mode == "single_led":
+                for i in range(self.number_leds):
+                    if self.shutdown:
+                        break
+                    self.rgb[i] = tuple(current_color)
+                    self.rgb.show()
+                    time.sleep(self.rainbow_speed_s)
+            elif self.rainbow_mode == "all_leds":
+                for i in range(self.number_leds):
+                    self.rgb[i] = tuple(current_color)
                 self.rgb.show()
                 time.sleep(self.rainbow_speed_s)
 
@@ -346,7 +362,6 @@ class OutputModule(AbstractOutput):
 
     def rainbow(self):
         t = currentThread()
-        delay = 0.25
         maximum = self.rainbow_brightness
         cycle = [
             (maximum, 0, 0),  # Red
@@ -362,6 +377,6 @@ class OutputModule(AbstractOutput):
 
         while getattr(t, "do_run", True):
             for each_cycle in cycle:
-                self.color_value = self.go_to_color(self.color_value, each_cycle)
+                self.color_value = self.go_to_color(t, self.color_value, each_cycle)
                 if not getattr(t, "do_run", True): break
-                time.sleep(delay)
+                time.sleep(self.rainbow_speed_s)
