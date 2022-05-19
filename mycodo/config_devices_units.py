@@ -177,6 +177,10 @@ MEASUREMENTS = {
         'name': lazy_gettext('Moisture'),
         'meas': 'moisture',
         'units': ['none']},
+    'o2': {
+        'name': lazy_gettext('O2'),
+        'meas': 'o2',
+        'units': ['ppt', 'ppm', 'ppb', 'percent']},
     'oxidation_reduction_potential': {
         'name': lazy_gettext('Oxidation Reduction Potential'),
         'meas': 'oxidation_reduction_potential',

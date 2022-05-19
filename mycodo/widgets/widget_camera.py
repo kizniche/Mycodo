@@ -74,7 +74,7 @@ def camera_img_latest_timelapse(camera_unique_id, max_age):
         return "You are not logged in and cannot access this endpoint"
 
     camera = Camera.query.filter(
-            Camera.unique_id == camera_unique_id).first()
+        Camera.unique_id == camera_unique_id).first()
 
     _, tl_path = utils_general.get_camera_paths(camera)
 

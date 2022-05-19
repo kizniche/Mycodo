@@ -20,7 +20,7 @@ measurements_dict = {
 INPUT_INFORMATION = {
     'input_name_unique': 'ATLAS_CO2',
     'input_manufacturer': 'Atlas Scientific',
-    'input_name': 'Atlas CO2',
+    'input_name': 'Atlas CO2 (Carbon Dioxide Gas)',
     'input_library': 'pylibftdi/fcntl/io/serial',
     'measurements_name': 'CO2',
     'measurements_dict': measurements_dict,
