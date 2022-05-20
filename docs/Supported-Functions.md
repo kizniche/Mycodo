@@ -371,6 +371,7 @@ This function acquires 2 measurements, calculates the difference, and stores the
 
 ### Display: Generic LCD 16x2 (I2C)
 
+- Dependencies: [smbus2](https://pypi.org/project/smbus2)
 
 This Function outputs to a generic 16x2 LCD display via I2C. Since this display can show 2 lines at a time, channels are added in sets of 2 when Number of Line Sets is modified. Every Period, the LCD will refresh and display the next set of lines. Therefore, the first 2 lines that are displayed are channels 0 and 1, then 2 and 3, and so on. After all channels have been displayed, it will cycle back to the beginning.
 
@@ -458,6 +459,7 @@ This Function outputs to a generic 16x2 LCD display via I2C. Since this display 
 - Type: Button
 ### Display: Generic LCD 20x4 (I2C)
 
+- Dependencies: [smbus2](https://pypi.org/project/smbus2)
 
 This Function outputs to a generic 20x4 LCD display via I2C. Since this display can show 4 lines at a time, channels are added in sets of 4 when Number of Line Sets is modified. Every Period, the LCD will refresh and display the next set of lines. Therefore, the first 4 lines that are displayed are channels 0, 1, 2, and 3, then 4, 5, 6, and 7, and so on. After all channels have been displayed, it will cycle back to the beginning.
 
@@ -539,6 +541,7 @@ This Function outputs to a generic 20x4 LCD display via I2C. Since this display 
 - Type: Button
 ### Display: Grove LCD 16x2 (I2C)
 
+- Dependencies: [smbus2](https://pypi.org/project/smbus2)
 
 This Function outputs to the Grove 16x2 LCD display via I2C. Since this display can show 2 lines at a time, channels are added in sets of 2 when Number of Line Sets is modified. Every Period, the LCD will refresh and display the next set of lines. Therefore, the first 2 lines that are displayed are channels 0 and 1, then 2 and 3, and so on. After all channels have been displayed, it will cycle back to the beginning.
 

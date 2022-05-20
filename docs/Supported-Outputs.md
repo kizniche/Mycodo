@@ -44,7 +44,7 @@ Publish "on" or "off" (or any other strings of your choosing) to an MQTT server.
 ##### Client ID
 
 - Type: Text
-- Default Value: client_9cletQYK
+- Default Value: client_IN7dcJMd
 - Description: Unique client ID for connecting to the MQTT server
 
 ##### On Payload
@@ -136,7 +136,7 @@ Publish a value to an MQTT server.
 ##### Client ID
 
 - Type: Text
-- Default Value: client_kx19LPFB
+- Default Value: client_iDsNPRLp
 - Description: Unique client ID for connecting to the MQTT server
 
 ##### Off Value
@@ -261,194 +261,11 @@ The DS3502 can generate a 0 - 10k Ohm resistance with 7-bit precision. This equa
 - Type: Decimal
 - Description: If Specified Value is selected, set the shutdown state value
 
-### Motor: Grove I2C Motor Driver (Board v1.3)
-
-- Manufacturer: Grove
-- Interfaces: I<sup>2</sup>C
-- Output Types: Volume, On/Off
-- Libraries: smbus2
-- Dependencies: [smbus2](https://pypi.org/project/smbus2)
-- Manufacturer URL: [Link](https://wiki.seeedstudio.com/Grove-I2C_Motor_Driver_V1.3)
-
-Controls the Grove I2C Motor Driver Board (v1.3). Both motors will turn at the same time. This output can also dispense volumes of fluid if the motors are attached to peristaltic pumps.
-
-#### Options
-
-##### I<sup>2</sup>C Address
-
-- Type: Text
-- Description: The I2C address of the device
-
-##### I<sup>2</sup>C Bus
-
-- Type: Integer
-- Description: The I2C bus the device is connected to
-
-#### Channel Options
-
-##### Name
-
-- Type: Text
-- Description: A name to distinguish this from others
-
-##### Motor Speed (0 - 100)
-
-- Type: Integer
-- Default Value: 100
-- Description: The motor output that determines the speed
-
-##### Flow Rate Method
-
-- Type: Select
-- Options: \[**Fastest Flow Rate** | Specify Flow Rate\] (Default in **bold**)
-- Description: The flow rate to use when pumping a volume
-
-##### Desired Flow Rate (ml/min)
-
-- Type: Decimal
-- Default Value: 10.0
-- Description: Desired flow rate in ml/minute when Specify Flow Rate set
-
-##### Fastest Rate (ml/min)
-
-- Type: Decimal
-- Default Value: 100.0
-- Description: The fastest rate that the pump can dispense (ml/min)
-
-### Motor: Grove I2C Motor Driver (TB6612FNG, Board v1.0)
-
-- Manufacturer: Grove
-- Interfaces: I<sup>2</sup>C
-- Output Types: Volume, On/Off
-- Libraries: smbus2
-- Dependencies: [smbus2](https://pypi.org/project/smbus2)
-- Manufacturer URL: [Link](https://wiki.seeedstudio.com/Grove-I2C_Motor_Driver-TB6612FNG)
-
-Controls the Grove I2C Motor Driver Board (v1.3). Both motors will turn at the same time. This output can also dispense volumes of fluid if the motors are attached to peristaltic pumps.
-
-#### Options
-
-##### I<sup>2</sup>C Address
-
-- Type: Text
-- Description: The I2C address of the device
-
-##### I<sup>2</sup>C Bus
-
-- Type: Integer
-- Description: The I2C bus the device is connected to
-
-#### Channel Options
-
-##### Name
-
-- Type: Text
-- Description: A name to distinguish this from others
-
-##### Motor Speed (0 - 255)
-
-- Type: Integer
-- Default Value: 255
-- Description: The motor output that determines the speed
-
-##### Flow Rate Method
-
-- Type: Select
-- Options: \[**Fastest Flow Rate** | Specify Flow Rate\] (Default in **bold**)
-- Description: The flow rate to use when pumping a volume
-
-##### Desired Flow Rate (ml/min)
-
-- Type: Decimal
-- Default Value: 10.0
-- Description: Desired flow rate in ml/minute when Specify Flow Rate set
-
-##### Fastest Rate (ml/min)
-
-- Type: Decimal
-- Default Value: 100.0
-- Description: The fastest rate that the pump can dispense (ml/min)
-
-##### Minimum On (sec/min)
-
-- Type: Decimal
-- Default Value: 1.0
-- Description: The minimum duration (seconds) the pump turns on for every 60 second period (only used for Specify Flow Rate mode).
-
-#### Commands
-
-##### New I2C Address
-
-- Type: Text
-- Default Value: 0x14
-- Description: The new I2C to set the sensor to
-
-##### Set I2C Address
-
-- Type: Button
-### Motor: L298N DC Motor Controller
-
-- Manufacturer: STMicroelectronics
-- Interfaces: GPIO
-- Output Types: Volume, On/Off
-- Libraries: RPi.GPIO
-- Dependencies: [RPi.GPIO](https://pypi.org/project/RPi.GPIO)
-- Additional URL: [Link](https://www.electronicshub.org/raspberry-pi-l298n-interface-tutorial-control-dc-motor-l298n-raspberry-pi/)
-
-The L298N can control 2 DC motors. If these motors control peristaltic pumps, set the Flow Rate and the output can can be instructed to dispense volumes accurately in addition to being turned on for durations.
-
-#### Options
-
-#### Channel Options
-
-##### Name
-
-- Type: Text
-- Description: A name to distinguish this from others
-
-##### Input Pin 1
-
-- Type: Integer
-- Description: The Input Pin 1 of the controller (BCM numbering)
-
-##### Input Pin 2
-
-- Type: Integer
-- Description: The Input Pin 2 of the controller (BCM numbering)
-
-##### Use Enable Pin
-
-- Type: Boolean
-- Default Value: True
-- Description: Enable the use of the Enable Pin
-
-##### Enable Pin
-
-- Type: Integer
-- Description: The Enable pin of the controller (BCM numbering)
-
-##### Enable Pin Duty Cycle
-
-- Type: Integer
-- Default Value: 50
-- Description: The duty cycle to apply to the Enable Pin (percent, 1 - 100)
-
-##### Direction
-
-- Type: Select
-- Options: \[**Forward** | Backward\] (Default in **bold**)
-- Description: The direction to turn the motor
-
-##### Volume Rate (ml/min)
-
-- Type: Decimal
-- Default Value: 150.0
-- Description: If a pump, the measured flow rate (ml/min) at the set Duty Cycle
-
 ### Motor: Stepper Motor, Bipolar (Generic)
 
 - Interfaces: GPIO
 - Output Types: Value
+- Libraries: RPi.GPIO
 - Dependencies: [RPi.GPIO](https://pypi.org/project/RPi.GPIO)
 - Manufacturer URLs: [Link 1](https://www.ti.com/product/DRV8825), [Link 2](https://www.allegromicro.com/en/products/motor-drivers/brush-dc-motor-drivers/a4988)
 - Datasheet URLs: [Link 1](https://www.ti.com/lit/ds/symlink/drv8825.pdf), [Link 2](https://www.allegromicro.com/-/media/files/datasheets/a4988-datasheet.ashx)
@@ -523,6 +340,7 @@ This is a generic module for bipolar stepper motor drivers such as the DRV8825, 
 - Manufacturer: STMicroelectronics
 - Interfaces: GPIO
 - Output Types: Value
+- Libraries: RPi.GPIO, rpimotorlib
 - Dependencies: [RPi.GPIO](https://pypi.org/project/RPi.GPIO), [rpimotorlib](https://pypi.org/project/rpimotorlib)
 - Manufacturer URL: [Link](https://www.ti.com/product/ULN2003A)
 - Datasheet URLs: [Link 1](https://www.electronicoscaldas.com/datasheet/ULN2003A-PCB.pdf), [Link 2](https://www.ti.com/lit/ds/symlink/uln2003a.pdf?ts=1617254568263&ref_url=https%253A%252F%252Fwww.ti.com%252Fproduct%252FULN2003A)
@@ -572,50 +390,6 @@ This is a module for the ULN2003 driver.
 - Type: Select
 - Options: \[**Full** | Half | Wave\] (Default in **bold**)
 - Description: The Step Resolution of the controller
-
-### On/Off: GPIO
-
-- Interfaces: GPIO
-- Output Types: On/Off
-- Libraries: RPi.GPIO
-- Dependencies: [RPi.GPIO](https://pypi.org/project/RPi.GPIO)
-
-The specified GPIO pin will be set HIGH (3.3 volts) or LOW (0 volts) when turned on or off, depending on the On State option.
-
-#### Options
-
-#### Channel Options
-
-##### GPIO Pin (BCM)
-
-- Type: Integer
-- Description: The pin to control the state of
-
-##### Startup State
-
-- Type: Select
-- Description: Set the state when Mycodo starts
-
-##### Shutdown State
-
-- Type: Select
-- Description: Set the state when Mycodo shuts down
-
-##### On State
-
-- Type: Select
-- Options: \[**HIGH** | LOW\] (Default in **bold**)
-- Description: The state of the GPIO that corresponds to an On state
-
-##### Trigger Functions at Startup
-
-- Type: Boolean
-- Description: Whether to trigger functions when the output switches at startup
-
-##### Current (Amps)
-
-- Type: Decimal
-- Description: The current draw of the device being controlled
 
 ### On/Off: Grove Multichannel Relay (4- or 8-Channel board)
 
@@ -675,7 +449,7 @@ Controls the 4 or 8 channel Grove multichannel relay board.
 - Type: Decimal
 - Description: The current draw of the device being controlled
 
-### On/Off: HS300 Kasa Smart WiFi Power Strip
+### On/Off: Kasa HS300 6-Outlet WiFi Power Strip (old library, deprecated)
 
 - Manufacturer: TP-Link
 - Interfaces: IP
@@ -683,7 +457,7 @@ Controls the 4 or 8 channel Grove multichannel relay board.
 - Dependencies: [python-kasa](https://pypi.org/project/python-kasa)
 - Manufacturer URL: [Link](https://www.kasasmart.com/us/products/smart-plugs/kasa-smart-wi-fi-power-strip-hs300)
 
-This output controls the 6 outlets of the Kasa HS300 Smart WiFi Power Strip.
+This output controls the 6 outlets of the Kasa HS300 Smart WiFi Power Strip. This module uses an outdated python library and is deprecated. Do not use it. You will break the current Kasa modules if you do not delete this deprecated Output.
 
 #### Options
 
@@ -732,7 +506,70 @@ This output controls the 6 outlets of the Kasa HS300 Smart WiFi Power Strip.
 - Type: Decimal
 - Description: The current draw of the device being controlled
 
-### On/Off: KP303 Kasa Smart WiFi Power Strip
+### On/Off: Kasa HS300 6-Outlet WiFi Power Strip
+
+- Manufacturer: TP-Link
+- Interfaces: IP
+- Output Types: On/Off
+- Dependencies: [python-kasa](https://pypi.org/project/python-kasa), [aio_msgpack_rpc](https://pypi.org/project/aio_msgpack_rpc)
+- Manufacturer URL: [Link](https://www.kasasmart.com/us/products/smart-plugs/kasa-smart-wi-fi-power-strip-hs300)
+
+This output controls the 6 outlets of the Kasa HS300 Smart WiFi Power Strip. This is a variant that uses the latest python-kasa library. Note: if you see errors in the daemon log about the server starting, try changing the Asyncio RPC Port to another port.
+
+#### Options
+
+##### Host
+
+- Type: Text
+- Default Value: 0.0.0.0
+- Description: Host address or IP
+
+##### Status Update (seconds)
+
+- Type: Integer
+- Default Value: 300
+- Description: The period (seconds) between checking if connected and output states. 0 disables.
+
+##### Asyncio RPC Port
+
+- Type: Integer
+- Default Value: 18125
+- Description: The port to start the asyncio RPC server. Must be unique from other Kasa Outputs.
+
+#### Channel Options
+
+##### Name
+
+- Type: Text
+- Default Value: Outlet Name
+- Description: A name to distinguish this from others
+
+##### Startup State
+
+- Type: Select
+- Description: Set the state when Mycodo starts
+
+##### Shutdown State
+
+- Type: Select
+- Description: Set the state when Mycodo shuts down
+
+##### Trigger Functions at Startup
+
+- Type: Boolean
+- Description: Whether to trigger functions when the output switches at startup
+
+##### Force Command
+
+- Type: Boolean
+- Description: Always send the command if instructed, regardless of the current state
+
+##### Current (Amps)
+
+- Type: Decimal
+- Description: The current draw of the device being controlled
+
+### On/Off: Kasa KP303 3-Outlet WiFi Power Strip (old library, deprecated)
 
 - Manufacturer: TP-Link
 - Interfaces: IP
@@ -740,7 +577,7 @@ This output controls the 6 outlets of the Kasa HS300 Smart WiFi Power Strip.
 - Dependencies: [python-kasa](https://pypi.org/project/python-kasa)
 - Manufacturer URL: [Link](https://www.tp-link.com/au/home-networking/smart-plug/kp303/)
 
-This output controls the 3 outlets of the Kasa KP303 Smart WiFi Power Strip.
+This output controls the 3 outlets of the Kasa KP303 Smart WiFi Power Strip. This module uses an outdated python library and is deprecated. Do not use it. You will break the current Kasa modules if you do not delete this deprecated Output.
 
 #### Options
 
@@ -789,6 +626,274 @@ This output controls the 3 outlets of the Kasa KP303 Smart WiFi Power Strip.
 - Type: Decimal
 - Description: The current draw of the device being controlled
 
+### On/Off: Kasa KP303 3-Outlet WiFi Power Strip
+
+- Manufacturer: TP-Link
+- Interfaces: IP
+- Output Types: On/Off
+- Dependencies: [python-kasa](https://pypi.org/project/python-kasa), [aio_msgpack_rpc](https://pypi.org/project/aio_msgpack_rpc)
+- Manufacturer URL: [Link](https://www.tp-link.com/au/home-networking/smart-plug/kp303/)
+
+This output controls the 3 outlets of the Kasa KP303 Smart WiFi Power Strip. This is a variant that uses the latest python-kasa library. Note: if you see errors in the daemon log about the server starting, try changing the Asyncio RPC Port to another port.
+
+#### Options
+
+##### Host
+
+- Type: Text
+- Default Value: 0.0.0.0
+- Description: Host address or IP
+
+##### Status Update (seconds)
+
+- Type: Integer
+- Default Value: 300
+- Description: The period (seconds) between checking if connected and output states. 0 disables.
+
+##### Asyncio RPC Port
+
+- Type: Integer
+- Default Value: 18806
+- Description: The port to start the asyncio RPC server. Must be unique from other Kasa Outputs.
+
+#### Channel Options
+
+##### Name
+
+- Type: Text
+- Default Value: Outlet Name
+- Description: A name to distinguish this from others
+
+##### Startup State
+
+- Type: Select
+- Description: Set the state when Mycodo starts
+
+##### Shutdown State
+
+- Type: Select
+- Description: Set the state when Mycodo shuts down
+
+##### Trigger Functions at Startup
+
+- Type: Boolean
+- Description: Whether to trigger functions when the output switches at startup
+
+##### Force Command
+
+- Type: Boolean
+- Description: Always send the command if instructed, regardless of the current state
+
+##### Current (Amps)
+
+- Type: Decimal
+- Description: The current draw of the device being controlled
+
+### On/Off: Kasa WiFi Power Plug
+
+- Manufacturer: TP-Link
+- Interfaces: IP
+- Output Types: On/Off
+- Dependencies: [python-kasa](https://pypi.org/project/python-kasa), [aio_msgpack_rpc](https://pypi.org/project/aio_msgpack_rpc)
+- Manufacturer URL: [Link](https://www.kasasmart.com/us/products/smart-plugs/kasa-smart-plug-slim-energy-monitoring-kp115)
+
+This output controls Kasa WiFi Power Plugs, including the KP105, KP115, KP125, KP401, HS100, HS103, HS105, HS107, and HS110. Note: if you see errors in the daemon log about the server starting, try changing the Asyncio RPC Port to another port.
+
+#### Options
+
+##### Host
+
+- Type: Text
+- Default Value: 0.0.0.0
+- Description: Host address or IP
+
+##### Status Update (seconds)
+
+- Type: Integer
+- Default Value: 300
+- Description: The period (seconds) between checking if connected and output states. 0 disables.
+
+##### Asyncio RPC Port
+
+- Type: Integer
+- Default Value: 18683
+- Description: The port to start the asyncio RPC server. Must be unique from other Kasa Outputs.
+
+#### Channel Options
+
+##### Startup State
+
+- Type: Select
+- Description: Set the state when Mycodo starts
+
+##### Shutdown State
+
+- Type: Select
+- Description: Set the state when Mycodo shuts down
+
+##### Trigger Functions at Startup
+
+- Type: Boolean
+- Description: Whether to trigger functions when the output switches at startup
+
+##### Force Command
+
+- Type: Boolean
+- Description: Always send the command if instructed, regardless of the current state
+
+##### Current (Amps)
+
+- Type: Decimal
+- Description: The current draw of the device being controlled
+
+### On/Off: Kasa WiFi RGB Light Bulb
+
+- Manufacturer: TP-Link
+- Interfaces: IP
+- Output Types: On/Off
+- Dependencies: [python-kasa](https://pypi.org/project/python-kasa), [aio_msgpack_rpc](https://pypi.org/project/aio_msgpack_rpc)
+- Manufacturer URL: [Link](https://www.kasasmart.com/us/products/smart-lighting/kasa-smart-light-bulb-multicolor-kl125)
+
+This output controls the the Kasa WiFi Light Bulbs, including the KL125, KL130, and KL135. Note: if you see errors in the daemon log about the server starting, try changing the Asyncio RPC Port to another port.
+
+#### Options
+
+##### Host
+
+- Type: Text
+- Default Value: 0.0.0.0
+- Description: Host address or IP
+
+##### Status Update (seconds)
+
+- Type: Integer
+- Default Value: 300
+- Description: The period (seconds) between checking if connected and output states. 0 disables.
+
+##### Asyncio RPC Port
+
+- Type: Integer
+- Default Value: 18155
+- Description: The port to start the asyncio RPC server. Must be unique from other Kasa Outputs.
+
+#### Channel Options
+
+##### Startup State
+
+- Type: Select
+- Description: Set the state when Mycodo starts
+
+##### Shutdown State
+
+- Type: Select
+- Description: Set the state when Mycodo shuts down
+
+##### Trigger Functions at Startup
+
+- Type: Boolean
+- Description: Whether to trigger functions when the output switches at startup
+
+##### Force Command
+
+- Type: Boolean
+- Description: Always send the command if instructed, regardless of the current state
+
+##### Current (Amps)
+
+- Type: Decimal
+- Description: The current draw of the device being controlled
+
+#### Commands
+
+##### Transition (milliseconds)
+
+- Type: Integer
+- Default Value: 0
+- Description: The hsv transition period, in milliseconds
+
+##### Brightness (percent)
+
+- Type: Integer
+- Description: The brightness to set, in percent (0 - 100)
+
+##### Set
+
+- Type: Button
+##### Transition (milliseconds)
+
+- Type: Integer
+- Default Value: 0
+- Description: The hsv transition period, in milliseconds
+
+##### Hue (degree)
+
+- Type: Integer
+- Description: The hue to set, in degrees (0 - 360)
+
+##### Set
+
+- Type: Button
+##### Transition (milliseconds)
+
+- Type: Integer
+- Default Value: 0
+- Description: The hsv transition period, in milliseconds
+
+##### Saturation (percent)
+
+- Type: Integer
+- Description: The saturation to set, in percent (0 - 100)
+
+##### Set
+
+- Type: Button
+##### Transition (milliseconds)
+
+- Type: Integer
+- Default Value: 0
+- Description: The hsv transition period, in milliseconds
+
+##### Color Temperature (Kelvin)
+
+- Type: Integer
+- Description: The color temperature to set, in degrees Kelvin
+
+##### Set
+
+- Type: Button
+##### Transition (milliseconds)
+
+- Type: Integer
+- Default Value: 0
+- Description: The hsv transition period, in milliseconds
+
+##### HSV
+
+- Type: Text
+- Default Value: 220, 20, 45
+- Description: The hue, saturation, brightness to set, e.g. "200, 20, 50"
+
+##### Set
+
+- Type: Button
+##### Transition (milliseconds)
+
+- Type: Integer
+- Default Value: 1000
+- Description: The transition period, in milliseconds
+
+##### On
+
+- Type: Button
+##### Transition (milliseconds)
+
+- Type: Integer
+- Default Value: 1000
+- Description: The transition period, in milliseconds
+
+##### Off
+
+- Type: Button
 ### On/Off: MCP23017 16-Channel I/O Expander
 
 - Manufacturer: MICROCHIP
@@ -846,7 +951,92 @@ Controls the 16 channels of the MCP23017.
 - Type: Decimal
 - Description: The current draw of the device being controlled
 
-### On/Off: PCF8574 8-Channel {lazy_gettext('I/O Expander')}
+### On/Off: Neopixel (WS2812) RGB Strip with Raspberry Pi
+
+- Manufacturer: Worldsemi
+- Interfaces: SPI
+- Output Types: On/Off
+- Dependencies: [adafruit-circuitpython-neopixel-spi](https://pypi.org/project/adafruit-circuitpython-neopixel-spi)
+
+Control the LEDs of a light strip. This library works with the strip data pin connected to the SPI MOSI pin. Enable SPI with raspi-config, reboot, then connect the RGB strip data pin to GPIO 10 (SPI0 MOSI). This output is best used with Actions to control individual LED color and brightness.
+
+#### Options
+
+##### Number of LEDs
+
+- Type: Integer
+- Default Value: 1
+- Description: How many LEDs in the string?
+
+##### On Mode
+
+- Type: Select
+- Options: \[**Single Color** | Rainbow\] (Default in **bold**)
+- Description: The color mode when turned on
+
+##### Single Color
+
+- Type: Text
+- Default Value: 30, 30, 30
+- Description: The Color when turning on in Single Color Mode, RGB format (red, green, blue), 0 - 255 each.
+
+##### Rainbow Speed (seconds)
+
+- Type: Decimal
+- Default Value: 0.01
+- Description: The speed to change colors in Rainbow Mode
+
+##### Rainbow Brightness
+
+- Type: Integer
+- Default Value: 20
+- Description: The maximum brightness of LEDs in Rainbow Mode (1 - 255)
+
+##### Rainbow Mode
+
+- Type: Select
+- Options: \[All LEDs change at once | **One LED Changes at a time**\] (Default in **bold**)
+- Description: How the rainbow is displayed
+
+#### Channel Options
+
+##### Startup State
+
+- Type: Select
+- Description: Set the state when Mycodo starts
+
+##### Shutdown State
+
+- Type: Select
+- Description: Set the state when Mycodo shuts down
+
+##### Trigger Functions at Startup
+
+- Type: Boolean
+- Description: Whether to trigger functions when the output switches at startup
+
+##### Force Command
+
+- Type: Boolean
+- Description: Always send the command if instructed, regardless of the current state
+
+#### Commands
+
+##### LED Position
+
+- Type: Integer
+- Description: Which LED in the strip to change
+
+##### RGB Color
+
+- Type: Text
+- Default Value: 10, 0, 0
+- Description: The color (e.g 10, 0 0)
+
+##### Set
+
+- Type: Button
+### On/Off: PCF8574 8-Channel I/O Expander
 
 - Manufacturer: Texas Instruments
 - Interfaces: I<sup>2</sup>C
@@ -858,6 +1048,64 @@ Controls the 16 channels of the MCP23017.
 - Product URL: [Link](https://www.amazon.com/gp/product/B07JGSNWFF)
 
 Controls the 8 channels of the PCF8574.
+
+#### Options
+
+##### I<sup>2</sup>C Address
+
+- Type: Text
+- Description: The I2C address of the device
+
+##### I<sup>2</sup>C Bus
+
+- Type: Integer
+- Description: The I2C bus the device is connected to
+
+#### Channel Options
+
+##### Name
+
+- Type: Text
+- Description: A name to distinguish this from others
+
+##### Startup State
+
+- Type: Select
+- Description: Set the state of the GPIO when Mycodo starts
+
+##### Shutdown State
+
+- Type: Select
+- Description: Set the state of the GPIO when Mycodo shuts down
+
+##### On State
+
+- Type: Select
+- Options: \[**HIGH** | LOW\] (Default in **bold**)
+- Description: The state of the GPIO that corresponds to an On state
+
+##### Trigger Functions at Startup
+
+- Type: Boolean
+- Description: Whether to trigger functions when the output switches at startup
+
+##### Current (Amps)
+
+- Type: Decimal
+- Description: The current draw of the device being controlled
+
+### On/Off: PCF8575 16-Channel I/O Expander
+
+- Manufacturer: Texas Instruments
+- Interfaces: I<sup>2</sup>C
+- Output Types: On/Off
+- Libraries: smbus2
+- Dependencies: [smbus2](https://pypi.org/project/smbus2)
+- Manufacturer URL: [Link](https://www.ti.com/product/PCF8575)
+- Datasheet URL: [Link](https://www.ti.com/lit/ds/symlink/pcf8575.pdf)
+- Product URL: [Link](https://www.amazon.com/gp/product/B07JGSNWFF)
+
+Controls the 16 channels of the PCF8575.
 
 #### Options
 
@@ -943,6 +1191,50 @@ Python 3 code will be executed when this output is turned on or off.
 
 - Type: Boolean
 - Description: Always send the command if instructed, regardless of the current state
+
+##### Current (Amps)
+
+- Type: Decimal
+- Description: The current draw of the device being controlled
+
+### On/Off: Raspberry Pi GPIO
+
+- Interfaces: GPIO
+- Output Types: On/Off
+- Libraries: RPi.GPIO
+- Dependencies: [RPi.GPIO](https://pypi.org/project/RPi.GPIO)
+
+The specified GPIO pin will be set HIGH (3.3 volts) or LOW (0 volts) when turned on or off, depending on the On State option.
+
+#### Options
+
+#### Channel Options
+
+##### GPIO Pin (BCM)
+
+- Type: Integer
+- Description: The pin to control the state of
+
+##### Startup State
+
+- Type: Select
+- Description: Set the state when Mycodo starts
+
+##### Shutdown State
+
+- Type: Select
+- Description: Set the state when Mycodo shuts down
+
+##### On State
+
+- Type: Select
+- Options: \[**HIGH** | LOW\] (Default in **bold**)
+- Description: The state of the GPIO that corresponds to an On state
+
+##### Trigger Functions at Startup
+
+- Type: Boolean
+- Description: Whether to trigger functions when the output switches at startup
 
 ##### Current (Amps)
 
@@ -1070,86 +1362,6 @@ This output uses a 315 or 433 MHz transmitter to turn wireless power outlets on 
 - Type: Decimal
 - Description: The current draw of the device being controlled
 
-### PWM: GPIO
-
-- Interfaces: GPIO
-- Output Types: PWM
-- Libraries: pigpio
-- Dependencies: pigpio, [pigpio](https://pypi.org/project/pigpio)
-
-See the PWM section of the manual for PWM information and determining which pins may be used for each library option.
-
-#### Channel Options
-
-##### GPIO Pin (BCM)
-
-- Type: Integer
-- Description: The pin to control the state of
-
-##### Startup State
-
-- Type: Select
-- Description: Set the state when Mycodo starts
-
-##### Startup Value
-
-- Type: Decimal
-- Description: The value when Mycodo starts
-
-##### Shutdown State
-
-- Type: Select
-- Description: Set the state when Mycodo shuts down
-
-##### Shutdown Value
-
-- Type: Decimal
-- Description: The value when Mycodo shuts down
-
-##### Library
-
-- Type: Select
-- Options: \[**Any Pin, <= 40 kHz** | Hardware Pin, <= 30 MHz\] (Default in **bold**)
-- Description: Which method to produce the PWM signal (hardware pins can produce higher frequencies)
-
-##### Frequency (Hertz)
-
-- Type: Integer
-- Default Value: 22000
-- Description: The Herts to output the PWM signal (0 - 70,000)
-
-##### Invert Signal
-
-- Type: Boolean
-- Description: Invert the PWM signal
-
-##### Invert Stored Signal
-
-- Type: Boolean
-- Description: Invert the value that is saved to the measurement database
-
-##### Trigger Functions at Startup
-
-- Type: Boolean
-- Description: Whether to trigger functions when the output switches at startup
-
-##### Current (Amps)
-
-- Type: Decimal
-- Description: The current draw of the device being controlled
-
-#### Commands
-
-##### Set the Duty Cycle.
-
-##### Duty Cycle
-
-- Type: Decimal
-- Description: The duty cycle to set
-
-##### Set Duty Cycle
-
-- Type: Button
 ### PWM: PCA9685 16-Channel LED Controller
 
 - Manufacturer: NXP Semiconductors
@@ -1287,6 +1499,86 @@ Python 3 code will be executed when this output is turned on or off. The "duty_c
 
 - Type: Boolean
 - Description: Always send the command if instructed, regardless of the current state
+
+##### Current (Amps)
+
+- Type: Decimal
+- Description: The current draw of the device being controlled
+
+#### Commands
+
+##### Set the Duty Cycle.
+
+##### Duty Cycle
+
+- Type: Decimal
+- Description: The duty cycle to set
+
+##### Set Duty Cycle
+
+- Type: Button
+### PWM: Raspberry Pi GPIO
+
+- Interfaces: GPIO
+- Output Types: PWM
+- Libraries: pigpio
+- Dependencies: pigpio, [pigpio](https://pypi.org/project/pigpio)
+
+See the PWM section of the manual for PWM information and determining which pins may be used for each library option.
+
+#### Channel Options
+
+##### GPIO Pin (BCM)
+
+- Type: Integer
+- Description: The pin to control the state of
+
+##### Startup State
+
+- Type: Select
+- Description: Set the state when Mycodo starts
+
+##### Startup Value
+
+- Type: Decimal
+- Description: The value when Mycodo starts
+
+##### Shutdown State
+
+- Type: Select
+- Description: Set the state when Mycodo shuts down
+
+##### Shutdown Value
+
+- Type: Decimal
+- Description: The value when Mycodo shuts down
+
+##### Library
+
+- Type: Select
+- Options: \[**Any Pin, <= 40 kHz** | Hardware Pin, <= 30 MHz\] (Default in **bold**)
+- Description: Which method to produce the PWM signal (hardware pins can produce higher frequencies)
+
+##### Frequency (Hertz)
+
+- Type: Integer
+- Default Value: 22000
+- Description: The Herts to output the PWM signal (0 - 70,000)
+
+##### Invert Signal
+
+- Type: Boolean
+- Description: Invert the PWM signal
+
+##### Invert Stored Signal
+
+- Type: Boolean
+- Description: Invert the value that is saved to the measurement database
+
+##### Trigger Functions at Startup
+
+- Type: Boolean
+- Description: Whether to trigger functions when the output switches at startup
 
 ##### Current (Amps)
 
@@ -1463,41 +1755,41 @@ Atlas Scientific peristaltic pumps can be set to dispense at their maximum rate 
 ##### Set I2C Address
 
 - Type: Button
-### Peristaltic Pump: GPIO
+### Peristaltic Pump: Grove I2C Motor Driver (Board v1.3)
 
-- Interfaces: GPIO
+- Manufacturer: Grove
+- Interfaces: I<sup>2</sup>C
 - Output Types: Volume, On/Off
-- Libraries: RPi.GPIO
-- Dependencies: [RPi.GPIO](https://pypi.org/project/RPi.GPIO)
+- Libraries: smbus2
+- Dependencies: [smbus2](https://pypi.org/project/smbus2)
+- Manufacturer URL: [Link](https://wiki.seeedstudio.com/Grove-I2C_Motor_Driver_V1.3)
 
-This output turns a GPIO pin HIGH and LOW to control power to a generic peristaltic pump. The peristaltic pump can then be turned on for a duration or, after determining the pump's maximum flow rate, instructed to dispense a specific volume at the maximum rate or at a specified rate.
+Controls the Grove I2C Motor Driver Board (v1.3). Both motors will turn at the same time. This output can also dispense volumes of fluid if the motors are attached to peristaltic pumps.
 
 #### Options
 
-#### Channel Options
+##### I<sup>2</sup>C Address
 
-##### GPIO Pin (BCM)
+- Type: Text
+- Description: The I2C address of the device
+
+##### I<sup>2</sup>C Bus
 
 - Type: Integer
-- Description: The pin to control the state of
+- Description: The I2C bus the device is connected to
 
-##### On State
+#### Channel Options
 
-- Type: Select
-- Options: \[**HIGH** | LOW\] (Default in **bold**)
-- Description: The state of the GPIO that corresponds to an On state
+##### Name
 
-##### Fastest Rate (ml/min)
+- Type: Text
+- Description: A name to distinguish this from others
 
-- Type: Decimal
-- Default Value: 150.0
-- Description: The fastest rate that the pump can dispense (ml/min)
+##### Motor Speed (0 - 100)
 
-##### Minimum On (sec/min)
-
-- Type: Decimal
-- Default Value: 1.0
-- Description: The minimum duration (seconds) the pump should be turned on for every 60 second period
+- Type: Integer
+- Default Value: 100
+- Description: The motor output that determines the speed
 
 ##### Flow Rate Method
 
@@ -1511,10 +1803,141 @@ This output turns a GPIO pin HIGH and LOW to control power to a generic peristal
 - Default Value: 10.0
 - Description: Desired flow rate in ml/minute when Specify Flow Rate set
 
-##### Current (Amps)
+##### Fastest Rate (ml/min)
 
 - Type: Decimal
-- Description: The current draw of the device being controlled
+- Default Value: 100.0
+- Description: The fastest rate that the pump can dispense (ml/min)
+
+### Peristaltic Pump: Grove I2C Motor Driver (TB6612FNG, Board v1.0)
+
+- Manufacturer: Grove
+- Interfaces: I<sup>2</sup>C
+- Output Types: Volume, On/Off
+- Libraries: smbus2
+- Dependencies: [smbus2](https://pypi.org/project/smbus2)
+- Manufacturer URL: [Link](https://wiki.seeedstudio.com/Grove-I2C_Motor_Driver-TB6612FNG)
+
+Controls the Grove I2C Motor Driver Board (v1.3). Both motors will turn at the same time. This output can also dispense volumes of fluid if the motors are attached to peristaltic pumps.
+
+#### Options
+
+##### I<sup>2</sup>C Address
+
+- Type: Text
+- Description: The I2C address of the device
+
+##### I<sup>2</sup>C Bus
+
+- Type: Integer
+- Description: The I2C bus the device is connected to
+
+#### Channel Options
+
+##### Name
+
+- Type: Text
+- Description: A name to distinguish this from others
+
+##### Motor Speed (0 - 255)
+
+- Type: Integer
+- Default Value: 255
+- Description: The motor output that determines the speed
+
+##### Flow Rate Method
+
+- Type: Select
+- Options: \[**Fastest Flow Rate** | Specify Flow Rate\] (Default in **bold**)
+- Description: The flow rate to use when pumping a volume
+
+##### Desired Flow Rate (ml/min)
+
+- Type: Decimal
+- Default Value: 10.0
+- Description: Desired flow rate in ml/minute when Specify Flow Rate set
+
+##### Fastest Rate (ml/min)
+
+- Type: Decimal
+- Default Value: 100.0
+- Description: The fastest rate that the pump can dispense (ml/min)
+
+##### Minimum On (sec/min)
+
+- Type: Decimal
+- Default Value: 1.0
+- Description: The minimum duration (seconds) the pump turns on for every 60 second period (only used for Specify Flow Rate mode).
+
+#### Commands
+
+##### New I2C Address
+
+- Type: Text
+- Default Value: 0x14
+- Description: The new I2C to set the sensor to
+
+##### Set I2C Address
+
+- Type: Button
+### Peristaltic Pump: L298N DC Motor Controller
+
+- Manufacturer: STMicroelectronics
+- Interfaces: GPIO
+- Output Types: Volume, On/Off
+- Libraries: RPi.GPIO
+- Dependencies: [RPi.GPIO](https://pypi.org/project/RPi.GPIO)
+- Additional URL: [Link](https://www.electronicshub.org/raspberry-pi-l298n-interface-tutorial-control-dc-motor-l298n-raspberry-pi/)
+
+The L298N can control 2 DC motors, both speed and direction. If these motors control peristaltic pumps, set the Flow Rate and the output can can be instructed to dispense volumes accurately in addition to being turned on for durations.
+
+#### Options
+
+#### Channel Options
+
+##### Name
+
+- Type: Text
+- Description: A name to distinguish this from others
+
+##### Input Pin 1
+
+- Type: Integer
+- Description: The Input Pin 1 of the controller (BCM numbering)
+
+##### Input Pin 2
+
+- Type: Integer
+- Description: The Input Pin 2 of the controller (BCM numbering)
+
+##### Use Enable Pin
+
+- Type: Boolean
+- Default Value: True
+- Description: Enable the use of the Enable Pin
+
+##### Enable Pin
+
+- Type: Integer
+- Description: The Enable pin of the controller (BCM numbering)
+
+##### Enable Pin Duty Cycle
+
+- Type: Integer
+- Default Value: 50
+- Description: The duty cycle to apply to the Enable Pin (percent, 1 - 100)
+
+##### Direction
+
+- Type: Select
+- Options: \[**Forward** | Backward\] (Default in **bold**)
+- Description: The direction to turn the motor
+
+##### Volume Rate (ml/min)
+
+- Type: Decimal
+- Default Value: 150.0
+- Description: If a pump, the measured flow rate (ml/min) at the set Duty Cycle
 
 ### Peristaltic Pump: MCP23017 16-Channel I/O Expander
 
@@ -1609,6 +2032,59 @@ Controls the 8 channels of the PCF8574 with a relay and peristaltic pump connect
 - Type: Select
 - Options: \[**HIGH** | LOW\] (Default in **bold**)
 - Description: The state of the output channel that corresponds to the pump being on
+
+##### Fastest Rate (ml/min)
+
+- Type: Decimal
+- Default Value: 150.0
+- Description: The fastest rate that the pump can dispense (ml/min)
+
+##### Minimum On (sec/min)
+
+- Type: Decimal
+- Default Value: 1.0
+- Description: The minimum duration (seconds) the pump should be turned on for every 60 second period
+
+##### Flow Rate Method
+
+- Type: Select
+- Options: \[**Fastest Flow Rate** | Specify Flow Rate\] (Default in **bold**)
+- Description: The flow rate to use when pumping a volume
+
+##### Desired Flow Rate (ml/min)
+
+- Type: Decimal
+- Default Value: 10.0
+- Description: Desired flow rate in ml/minute when Specify Flow Rate set
+
+##### Current (Amps)
+
+- Type: Decimal
+- Description: The current draw of the device being controlled
+
+### Peristaltic Pump: Raspberry Pi GPIO
+
+- Interfaces: GPIO
+- Output Types: Volume, On/Off
+- Libraries: RPi.GPIO
+- Dependencies: [RPi.GPIO](https://pypi.org/project/RPi.GPIO)
+
+This output turns a GPIO pin HIGH and LOW to control power to a generic peristaltic pump. The peristaltic pump can then be turned on for a duration or, after determining the pump's maximum flow rate, instructed to dispense a specific volume at the maximum rate or at a specified rate.
+
+#### Options
+
+#### Channel Options
+
+##### GPIO Pin (BCM)
+
+- Type: Integer
+- Description: The pin to control the state of
+
+##### On State
+
+- Type: Select
+- Options: \[**HIGH** | LOW\] (Default in **bold**)
+- Description: The state of the GPIO that corresponds to an On state
 
 ##### Fastest Rate (ml/min)
 

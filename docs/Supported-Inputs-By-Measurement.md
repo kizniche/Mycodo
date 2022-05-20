@@ -38,6 +38,7 @@ Measurements
  - [Light](#light)
  - [Magnetic Flux Density](#magnetic-flux-density)
  - [Moisture](#moisture)
+ - [O2](#o2)
  - [Oxidation Reduction Potential](#oxidation-reduction-potential)
  - [PM10](#pm10)
  - [PM1](#pm1)
@@ -137,13 +138,13 @@ Measurements
 
 ### [AMS: CCS811 (without Temperature)](/Mycodo/Supported-Inputs/#ams-ccs811-without-temperature)
 
-### [Atlas Scientific: Atlas CO2](/Mycodo/Supported-Inputs/#atlas-scientific-atlas-co2)
+### [Atlas Scientific: Atlas CO2 (Carbon Dioxide Gas)](/Mycodo/Supported-Inputs/#atlas-scientific-atlas-co2-carbon-dioxide-gas)
 
 ### [CO2Meter: K30](/Mycodo/Supported-Inputs/#co2meter-k30)
 
 ### [Cozir: Cozir CO2](/Mycodo/Supported-Inputs/#cozir-cozir-co2)
 
-### [Sensirion: SCD-4x (SCD-40, SCD-41)](/Mycodo/Supported-Inputs/#sensirion-scd-4x-scd-40-scd-41)
+### [Sensirion: SCD-4x (40, 41)](/Mycodo/Supported-Inputs/#sensirion-scd-4x-40-41)
 
 ### [Sensirion: SCD30](/Mycodo/Supported-Inputs/#sensirion-scd30)
 
@@ -219,7 +220,7 @@ Measurements
 
 ### [Seeedstudio: DHT11/22](/Mycodo/Supported-Inputs/#seeedstudio-dht11-22)
 
-### [Sensirion: SCD-4x (SCD-40, SCD-41)](/Mycodo/Supported-Inputs/#sensirion-scd-4x-scd-40-scd-41)
+### [Sensirion: SCD-4x (40, 41)](/Mycodo/Supported-Inputs/#sensirion-scd-4x-40-41)
 
 ### [Sensirion: SCD30](/Mycodo/Supported-Inputs/#sensirion-scd30)
 
@@ -301,6 +302,8 @@ Measurements
 
 ## Electrical Current
 
+### [TP-Link: Kasa WiFi Power Plug/Strip Energy Statistics](/Mycodo/Supported-Inputs/#tp-link-kasa-wifi-power-plug-strip-energy-statistics)
+
 ### [Tasmota: Tasmota Outlet Energy Monitor (HTTP)](/Mycodo/Supported-Inputs/#tasmota-tasmota-outlet-energy-monitor-http)
 
 ### [Texas Instruments: INA219x](/Mycodo/Supported-Inputs/#texas-instruments-ina219x)
@@ -310,6 +313,8 @@ Measurements
 ### [Microchip: MCP3008](/Mycodo/Supported-Inputs/#microchip-mcp3008)
 
 ### [Microchip: MCP342x (x=2,3,4,6,7,8)](/Mycodo/Supported-Inputs/#microchip-mcp342x-x=2-3-4-6-7-8)
+
+### [TP-Link: Kasa WiFi Power Plug/Strip Energy Statistics](/Mycodo/Supported-Inputs/#tp-link-kasa-wifi-power-plug-strip-energy-statistics)
 
 ### [Tasmota: Tasmota Outlet Energy Monitor (HTTP)](/Mycodo/Supported-Inputs/#tasmota-tasmota-outlet-energy-monitor-http)
 
@@ -326,6 +331,8 @@ Measurements
 ### [Texas Instruments: INA219x](/Mycodo/Supported-Inputs/#texas-instruments-ina219x)
 
 ## Energy
+
+### [TP-Link: Kasa WiFi Power Plug/Strip Energy Statistics](/Mycodo/Supported-Inputs/#tp-link-kasa-wifi-power-plug-strip-energy-statistics)
 
 ### [Tasmota: Tasmota Outlet Energy Monitor (HTTP)](/Mycodo/Supported-Inputs/#tasmota-tasmota-outlet-energy-monitor-http)
 
@@ -367,7 +374,7 @@ Measurements
 
 ### [Seeedstudio: DHT11/22](/Mycodo/Supported-Inputs/#seeedstudio-dht11-22)
 
-### [Sensirion: SCD-4x (SCD-40, SCD-41)](/Mycodo/Supported-Inputs/#sensirion-scd-4x-scd-40-scd-41)
+### [Sensirion: SCD-4x (40, 41)](/Mycodo/Supported-Inputs/#sensirion-scd-4x-40-41)
 
 ### [Sensirion: SCD30](/Mycodo/Supported-Inputs/#sensirion-scd30)
 
@@ -459,6 +466,10 @@ Measurements
 
 ### [Xiaomi: Miflora](/Mycodo/Supported-Inputs/#xiaomi-miflora)
 
+## O2
+
+### [Atlas Scientific: Atlas O2 (Oxygen Gas)](/Mycodo/Supported-Inputs/#atlas-scientific-atlas-o2-oxygen-gas)
+
 ## Oxidation Reduction Potential
 
 ### [AnyLeaf: AnyLeaf ORP](/Mycodo/Supported-Inputs/#anyleaf-anyleaf-orp)
@@ -478,6 +489,8 @@ Measurements
 ### [Winsen: ZH03B](/Mycodo/Supported-Inputs/#winsen-zh03b)
 
 ## Power
+
+### [TP-Link: Kasa WiFi Power Plug/Strip Energy Statistics](/Mycodo/Supported-Inputs/#tp-link-kasa-wifi-power-plug-strip-energy-statistics)
 
 ### [Tasmota: Tasmota Outlet Energy Monitor (HTTP)](/Mycodo/Supported-Inputs/#tasmota-tasmota-outlet-energy-monitor-http)
 
@@ -541,7 +554,9 @@ Measurements
 
 ## Revolutions
 
-### [Raspberry Pi: Signal (Revolutions)](/Mycodo/Supported-Inputs/#raspberry-pi-signal-revolutions)
+### [Raspberry Pi: Signal (Revolutions) (pigpio method #1)](/Mycodo/Supported-Inputs/#raspberry-pi-signal-revolutions--pigpio-method-#1)
+
+### [Raspberry Pi: Signal (Revolutions) (pigpio method #2)](/Mycodo/Supported-Inputs/#raspberry-pi-signal-revolutions--pigpio-method-#2)
 
 ## Salinity
 
@@ -613,6 +628,8 @@ Measurements
 
 ### [MAXIM: MAX31850K](/Mycodo/Supported-Inputs/#maxim-max31850k)
 
+### [MAXIM: MAX31855 (DFRobot PT100)](/Mycodo/Supported-Inputs/#maxim-max31855-dfrobot-pt100)
+
 ### [MAXIM: MAX31855](/Mycodo/Supported-Inputs/#maxim-max31855)
 
 ### [MAXIM: MAX31856](/Mycodo/Supported-Inputs/#maxim-max31856)
@@ -635,7 +652,7 @@ Measurements
 
 ### [Seeedstudio: DHT11/22](/Mycodo/Supported-Inputs/#seeedstudio-dht11-22)
 
-### [Sensirion: SCD-4x (SCD-40, SCD-41)](/Mycodo/Supported-Inputs/#sensirion-scd-4x-scd-40-scd-41)
+### [Sensirion: SCD-4x (40, 41)](/Mycodo/Supported-Inputs/#sensirion-scd-4x-40-41)
 
 ### [Sensirion: SCD30](/Mycodo/Supported-Inputs/#sensirion-scd30)
 
@@ -707,7 +724,7 @@ Measurements
 
 ### [Seeedstudio: DHT11/22](/Mycodo/Supported-Inputs/#seeedstudio-dht11-22)
 
-### [Sensirion: SCD-4x (SCD-40, SCD-41)](/Mycodo/Supported-Inputs/#sensirion-scd-4x-scd-40-scd-41)
+### [Sensirion: SCD-4x (40, 41)](/Mycodo/Supported-Inputs/#sensirion-scd-4x-40-41)
 
 ### [Sensirion: SCD30](/Mycodo/Supported-Inputs/#sensirion-scd30)
 

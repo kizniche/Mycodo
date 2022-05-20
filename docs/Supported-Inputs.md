@@ -57,7 +57,7 @@ This Input will execute a command in the shell and store the output as a float v
 - Interfaces: Mycodo
 - Dependencies: [pylint](https://pypi.org/project/pylint)
 
-All channels require a Measurement Unit to be selected and saved in order to store values to the database.
+All channels require a Measurement Unit to be selected and saved in order to store values to the database. Your code is executed from the same Python virtual environment that Mycodo runs from. Therefore, you must install Python libraries to this environment if you want them to be available to your code. This virtualenv is located at ~/Mycodo/env and if you wanted to install a library, for example "my_library" using pip, you would execute "sudo ~/Mycodo/env/bin/pip install my_library".
 
 #### Options
 
@@ -221,6 +221,45 @@ A spacer to organize Inputs.
 - Default Value: #000000
 - Description: The color of the name text
 
+### Mycodo: Test Input: Save your own measurement value
+
+- Manufacturer: Mycodo
+- Measurements: Variable measurements
+
+This is a simple test Input that allows you to save any value as a measurement, that will be stored in the measurement database. It can be useful for testing other parts of Mycodo, such as PIDs, Bang-Bang, and Conditional Controller Functions, since you can be completely in control of what values the input provides to the Functions. Note 1: Select and save the Name and Measurement Unit for each channel. Once the unit has been saved, you can convert to other units in the Convert Measurement section. Note 2: Activate the Input before storing measurements.
+
+#### Options
+
+##### Measurements Enabled
+
+- Type: Multi-Select
+- Description: The measurements to record
+
+#### Channel Options
+
+##### Name
+
+- Type: Text
+- Description: A name to distinguish this from others
+
+#### Commands
+
+##### Enter the Value you want to store as a measurement, then press Store Measurement.
+
+##### Channel
+
+- Type: Integer
+- Description: This is the channel to save the measurement value to
+
+##### Value
+
+- Type: Decimal
+- Default Value: 10.0
+- Description: This is the measurement value to save for this Input
+
+##### Store Measurement
+
+- Type: Button
 ### Raspberry Pi: CPU/GPU Temperature
 
 - Manufacturer: Raspberry Pi
@@ -357,13 +396,15 @@ Measures the state of a GPIO pin, returning either 0 (low) or 1 (high).
 - Type: Boolean
 - Description: Check to turn the output off after (opposed to before) the measurement is complete
 
-### Raspberry Pi: Signal (Revolutions)
+### Raspberry Pi: Signal (Revolutions) (pigpio method #1)
 
 - Manufacturer: Raspberry Pi
 - Measurements: RPM
 - Interfaces: GPIO
 - Libraries: pigpio
 - Dependencies: pigpio, [pigpio](https://pypi.org/project/pigpio)
+
+This calculates RPM from pulses on a pin using pigpio, but has been found to be less accurate than the method #2 module. This is typically used to measure the speed of a fan from a tachometer pin, however this can be used to measure any 3.3-volt pulses from a wire. Use a resistor to pull the measurement pin to 3.3 volts, set pigpio to the lowest latency (1 ms) on the Configure -> Raspberry Pi page. Note 1: Not setting pigpio to the lowest latency will hinder accuracy. Note 2: accuracy decreases as RPM increases.
 
 #### Options
 
@@ -386,6 +427,55 @@ Measures the state of a GPIO pin, returning either 0 (low) or 1 (high).
 
 - Type: Boolean
 - Description: Check to turn the output off after (opposed to before) the measurement is complete
+
+### Raspberry Pi: Signal (Revolutions) (pigpio method #2)
+
+- Manufacturer: Raspberry Pi
+- Measurements: RPM
+- Interfaces: GPIO
+- Libraries: pigpio
+- Dependencies: pigpio, [pigpio](https://pypi.org/project/pigpio)
+
+This is an alternate method to calculate RPM from pulses on a pin using pigpio, and has been found to be more accurate than the method #1 module. This is typically used to measure the speed of a fan from a tachometer pin, however this can be used to measure any 3.3-volt pulses from a wire. Use a resistor to pull the measurement pin to 3.3 volts, set pigpio to the lowest latency (1 ms) on the Configure -> Raspberry Pi page. Note 1: Not setting pigpio to the lowest latency will hinder accuracy. Note 2: accuracy decreases as RPM increases.
+
+#### Options
+
+##### Period (seconds)
+
+- Type: Decimal
+- Description: The duration (seconds) between measurements or actions
+
+##### Pre Output
+
+- Type: Select
+- Description: Turn the selected output on before taking every measurement
+
+##### Pre Out Duration
+
+- Type: Decimal
+- Description: If a Pre Output is selected, set the duration (seconds) to turn the Pre Output on for before every measurement is acquired.
+
+##### Pre During Measure
+
+- Type: Boolean
+- Description: Check to turn the output off after (opposed to before) the measurement is complete
+
+##### GPIO Pin (BCM)
+
+- Type: Integer
+- Description: The pin to measure pulses from
+
+##### Sample Time (seconds)
+
+- Type: Decimal
+- Default Value: 5.0
+- Description: The duration of time to sample
+
+##### Pulses Per Rev
+
+- Type: Decimal
+- Default Value: 15.8
+- Description: The number of pulses per revolution to calculate revolutions per minute (RPM)
 
 ## Built-In Inputs (Devices)
 
@@ -1141,7 +1231,7 @@ Measures the state of a GPIO pin, returning either 0 (low) or 1 (high).
 ##### Clear Calibration Slots
 
 - Type: Button
-### Atlas Scientific: Atlas CO2
+### Atlas Scientific: Atlas CO2 (Carbon Dioxide Gas)
 
 - Manufacturer: Atlas Scientific
 - Measurements: CO2
@@ -1613,7 +1703,7 @@ Set the Measurement Time Base to a value most appropriate for your anticipated f
 
 ##### The total volume can be cleared with the following button or with the Clear Total Volume Function Action.
 
-##### Clear Total Volume
+##### Clear Total: Volume
 
 - Type: Button
 ##### The I2C address can be changed. Enter a new address in the 0xYY format (e.g. 0x22, 0x50), then press Set I2C Address. Remember to deactivate and change the I2C address option after setting the new address.
@@ -1696,6 +1786,112 @@ Set the Measurement Time Base to a value most appropriate for your anticipated f
 
 - Type: Text
 - Default Value: 0x6f
+- Description: The new I2C to set the device to
+
+##### Set I2C Address
+
+- Type: Button
+### Atlas Scientific: Atlas O2 (Oxygen Gas)
+
+- Manufacturer: Atlas Scientific
+- Measurements: O2
+- Interfaces: I<sup>2</sup>C, UART, FTDI
+- Libraries: pylibftdi/fcntl/io/serial
+- Dependencies: [pylibftdi](https://pypi.org/project/pylibftdi)
+- Manufacturer URL: [Link](https://atlas-scientific.com/probes/oxygen-sensor/)
+- Datasheet URL: [Link](https://files.atlas-scientific.com/EZO_O2_datasheet.pdf)
+
+#### Options
+
+##### I<sup>2</sup>C Address
+
+- Type: Text
+- Description: The I2C address of the device
+
+##### I<sup>2</sup>C Bus
+
+- Type: Integer
+- Description: The I2C bus the device is connected to
+
+##### FTDI Device
+
+- Type: Text
+- Description: The FTDI device connected to the input/output/etc.
+
+##### UART Device
+
+- Type: Text
+- Description: The UART device location (e.g. /dev/ttyUSB1)
+
+##### Period (seconds)
+
+- Type: Decimal
+- Description: The duration (seconds) between measurements or actions
+
+##### Pre Output
+
+- Type: Select
+- Description: Turn the selected output on before taking every measurement
+
+##### Pre Out Duration
+
+- Type: Decimal
+- Description: If a Pre Output is selected, set the duration (seconds) to turn the Pre Output on for before every measurement is acquired.
+
+##### Pre During Measure
+
+- Type: Boolean
+- Description: Check to turn the output off after (opposed to before) the measurement is complete
+
+##### Temperature Compensation: Measurement
+
+- Type: Select Measurement
+- Selections: Input, Function
+- Description: Select a measurement for temperature compensation
+
+##### Temperature Compensation: Max Age
+
+- Type: Integer
+- Default Value: 120
+- Description: The maximum age (seconds) of the measurement to use
+
+##### Temperature Compensation: Manual
+
+- Type: Decimal
+- Default Value: 20.0
+- Description: If not using a measurement, set the temperature to compensate
+
+##### LED Mode
+
+- Type: Select
+- Options: \[**Always On** | Always Off | Only On During Measure\] (Default in **bold**)
+- Description: When to turn the LED on
+
+#### Commands
+
+##### A one- or two-point calibration can be performed. After exposing the probe to a specific concentration of O2 until readings stabilize, press Calibrate (High). You can place the probe in a 0% O2 environment until readings stabilize, then press Calibrate (Zero). You can also clear the currently-saved calibration by pressing Clear Calibration, returning to the factory-set calibration. Status messages will be set to the Daemon Log, accessible from Config -> Mycodo Logs -> Daemon Log.
+
+##### High Point O2
+
+- Type: Decimal
+- Default Value: 20.95
+- Description: The high O2 calibration point (percent)
+
+##### Calibrate (High)
+
+- Type: Button
+##### Calibrate (Zero)
+
+- Type: Button
+##### Clear Calibration
+
+- Type: Button
+##### The I2C address can be changed. Enter a new address in the 0xYY format (e.g. 0x22, 0x50), then press Set I2C Address. Remember to deactivate and change the I2C address option after setting the new address.
+
+##### New I2C Address
+
+- Type: Text
+- Default Value: 0x69
 - Description: The new I2C to set the device to
 
 ##### Set I2C Address
@@ -2680,7 +2876,7 @@ This is similar to the other BMP280 Input, except it uses a different library, w
 
 #### Commands
 
-##### Clear Total Volume
+##### Clear Total: Volume
 
 - Type: Button
 ### Infineon: DPS310
@@ -2886,6 +3082,11 @@ Warning: Counterfeit DS18B20 sensors are common and can cause a host of issues. 
 - Type: Boolean
 - Description: Check to turn the output off after (opposed to before) the measurement is complete
 
+##### Temperature Offset
+
+- Type: Decimal
+- Description: The temperature offset (degrees Celsius) to apply
+
 #### Commands
 
 ##### Set the resolution, precision, and response time for the sensor. This setting will be written to the EEPROM to allow persistence after power loss. The EEPROM has a limited amount of writes (>50k).
@@ -3031,6 +3232,39 @@ Warning: Counterfeit DS18B20 sensors are common and can cause a host of issues. 
 ##### Set Resolution
 
 - Type: Button
+### MAXIM: MAX31855 (DFRobot PT100)
+
+- Manufacturer: MAXIM
+- Measurements: Temperature
+- Interfaces: I<sup>2</sup>C
+- Libraries: wiringpi
+- Dependencies: [wiringpi](https://pypi.org/project/wiringpi)
+- Manufacturer URL: [Link](https://www.maximintegrated.com/en/products/interface/sensor-interface/MAX31855.html)
+- Datasheet URL: [Link](https://datasheets.maximintegrated.com/en/ds/MAX31855.pdf)
+- Product URL: [Link](https://www.dfrobot.com/product-1753.html)
+
+#### Options
+
+##### Period (seconds)
+
+- Type: Decimal
+- Description: The duration (seconds) between measurements or actions
+
+##### Pre Output
+
+- Type: Select
+- Description: Turn the selected output on before taking every measurement
+
+##### Pre Out Duration
+
+- Type: Decimal
+- Description: If a Pre Output is selected, set the duration (seconds) to turn the Pre Output on for before every measurement is acquired.
+
+##### Pre During Measure
+
+- Type: Boolean
+- Description: Check to turn the output off after (opposed to before) the measurement is complete
+
 ### MAXIM: MAX31855
 
 - Manufacturer: MAXIM
@@ -3248,7 +3482,7 @@ A single topic is subscribed to and the returned JSON payload contains one or mo
 ##### Client ID
 
 - Type: Text
-- Default Value: client_bZCtOuMT
+- Default Value: client_grfxexUW
 - Description: Unique client ID for connecting to the server
 
 ##### Use Login
@@ -3322,7 +3556,7 @@ A topic is subscribed to for each channel Subscription Topic and the returned pa
 ##### Client ID
 
 - Type: Text
-- Default Value: client_JBFze0AI
+- Default Value: client_dxiAku0b
 - Description: Unique client ID for connecting to the server
 
 ##### Use Login
@@ -3966,7 +4200,7 @@ Enter the Grove Pi+ GPIO pin connected to the sensor and select the sensor type.
 - Options: \[**DHT11 (Blue)** | DHT22 (White)\] (Default in **bold**)
 - Description: Sensor type
 
-### Sensirion: SCD-4x (SCD-40, SCD-41)
+### Sensirion: SCD-4x (40, 41)
 
 - Manufacturer: Sensirion
 - Measurements: CO2/Temperature/Humidity
@@ -4106,7 +4340,7 @@ Enter the Grove Pi+ GPIO pin connected to the sensor and select the sensor type.
 ##### Enable Automatic Self Calibration
 
 - Type: Boolean
-##### Temperature Offset: Specifies the offset to be added to the reported measurements to account for a bias in the measured signal. Value is in degrees Celsius with a resolution of 0.01 degrees and a maximum value of 655.35 C.
+##### Temperature Offset: Specifies the offset to be added to the reported measurements to account for a bias in the measured signal. Must be a positive value, and will reduce the recorded temperature by that amount. Give the sensor adequate time to acclimate after setting this value. Value is in degrees Celsius with a resolution of 0.01 degrees and a maximum value of 655.35 C.
 
 ##### Temperature Offset
 
@@ -4360,6 +4594,11 @@ Enter the Grove Pi+ GPIO pin connected to the sensor and select the sensor type.
 
 - Type: Boolean
 - Description: Check to turn the output off after (opposed to before) the measurement is complete
+
+##### Temperature Offset
+
+- Type: Decimal
+- Description: The temperature offset (degrees Celsius) to apply
 
 ### Sensirion: SHT3x (30, 31, 35)
 
@@ -4842,6 +5081,11 @@ This Input module allows the use of any temperature/huidity sensor with the TH10
 - Type: Boolean
 - Description: Check to turn the output off after (opposed to before) the measurement is complete
 
+##### Temperature Offset
+
+- Type: Decimal
+- Description: The temperature offset (degrees Celsius) to apply
+
 ### TE Connectivity: HTU21D
 
 - Manufacturer: TE Connectivity
@@ -4890,6 +5134,68 @@ This Input module allows the use of any temperature/huidity sensor with the TH10
 - Type: Boolean
 - Description: Check to turn the output off after (opposed to before) the measurement is complete
 
+### TP-Link: Kasa WiFi Power Plug/Strip Energy Statistics
+
+- Manufacturer: TP-Link
+- Measurements: kilowatt hours
+- Interfaces: IP
+- Libraries: python-kasa
+- Dependencies: [python-kasa](https://pypi.org/project/python-kasa), [aio_msgpack_rpc](https://pypi.org/project/aio_msgpack_rpc)
+- Manufacturer URL: [Link](https://www.kasasmart.com/us/products/smart-plugs/kasa-smart-plug-slim-energy-monitoring-kp115)
+
+This measures from several Kasa power devices (plugs/strips) capable of measuring energy consumption. These include, but are not limited to the KP115 and HS600.
+
+#### Options
+
+##### Measurements Enabled
+
+- Type: Multi-Select
+- Description: The measurements to record
+
+##### Period (seconds)
+
+- Type: Decimal
+- Description: The duration (seconds) between measurements or actions
+
+##### Pre Output
+
+- Type: Select
+- Description: Turn the selected output on before taking every measurement
+
+##### Pre Out Duration
+
+- Type: Decimal
+- Description: If a Pre Output is selected, set the duration (seconds) to turn the Pre Output on for before every measurement is acquired.
+
+##### Pre During Measure
+
+- Type: Boolean
+- Description: Check to turn the output off after (opposed to before) the measurement is complete
+
+##### Device Type
+
+- Type: Select
+- Description: The type of Kasa device
+
+##### Host
+
+- Type: Text
+- Default Value: 0.0.0.0
+- Description: Host address or IP
+
+##### Asyncio RPC Port
+
+- Type: Integer
+- Default Value: 18042
+- Description: The port to start the asyncio RPC server. Must be unique from other Kasa Outputs.
+
+#### Commands
+
+##### The total kWh can be cleared with the following button or with the Clear Total kWh Function Action. This will also clear all energy stats on the device, not just the total kWh.
+
+##### Clear Total: kWh
+
+- Type: Button
 ### Tasmota: Tasmota Outlet Energy Monitor (HTTP)
 
 - Manufacturer: Tasmota
@@ -5676,7 +5982,7 @@ The Adafruit_ADS1x15 is deprecated. It's advised to use The Circuit Python ADS1x
 - Type: Boolean
 - Description: Check to turn the output off after (opposed to before) the measurement is complete
 
-### The Things Network: TTN Integration: Data Storage (TTN v2)
+### The Things Network: The Things Network: Data Storage (TTN v2)
 
 - Manufacturer: The Things Network
 - Measurements: Variable measurements
@@ -5744,7 +6050,7 @@ This Input receives and stores measurements from the Data Storage Integration on
 - Type: Text
 - Description: The TTN variable name
 
-### The Things Network: TTN Integration: Data Storage (TTN v3, Payload Key)
+### The Things Network: The Things Network: Data Storage (TTN v3, Payload Key)
 
 - Manufacturer: The Things Network
 - Measurements: Variable measurements
@@ -5812,7 +6118,7 @@ This Input receives and stores measurements from the Data Storage Integration on
 - Type: Text
 - Description: The TTN variable name
 
-### The Things Network: TTN Integration: Data Storage (TTN v3, Payload jmespath Expression)
+### The Things Network: The Things Network: Data Storage (TTN v3, Payload jmespath Expression)
 
 - Manufacturer: The Things Network
 - Measurements: Variable measurements
@@ -5984,6 +6290,76 @@ Obtain a free API key at openweathermap.org. Notes: The free API subscription is
 - Options: \[**Current (Present)** | 1 Day (Future) | 2 Day (Future) | 3 Day (Future) | 4 Day (Future) | 5 Day (Future) | 6 Day (Future) | 7 Day (Future) | 1 Hour (Future) | 2 Hours (Future) | 3 Hours (Future) | 4 Hours (Future) | 5 Hours (Future) | 6 Hours (Future) | 7 Hours (Future) | 8 Hours (Future) | 9 Hours (Future) | 10 Hours (Future) | 11 Hours (Future) | 12 Hours (Future) | 13 Hours (Future) | 14 Hours (Future) | 15 Hours (Future) | 16 Hours (Future) | 17 Hours (Future) | 18 Hours (Future) | 19 Hours (Future) | 20 Hours (Future) | 21 Hours (Future) | 22 Hours (Future) | 23 Hours (Future) | 24 Hours (Future) | 25 Hours (Future) | 26 Hours (Future) | 27 Hours (Future) | 28 Hours (Future) | 29 Hours (Future) | 30 Hours (Future) | 31 Hours (Future) | 32 Hours (Future) | 33 Hours (Future) | 34 Hours (Future) | 35 Hours (Future) | 36 Hours (Future) | 37 Hours (Future) | 38 Hours (Future) | 39 Hours (Future) | 40 Hours (Future) | 41 Hours (Future) | 42 Hours (Future) | 43 Hours (Future) | 44 Hours (Future) | 45 Hours (Future) | 46 Hours (Future) | 47 Hours (Future) | 48 Hours (Future)\] (Default in **bold**)
 - Description: Select the time for the current or forecast weather
 
+### Winsen: MH-Z14A
+
+- Manufacturer: Winsen
+- Measurements: CO2
+- Interfaces: UART
+- Libraries: serial
+- Dependencies: [RPi.GPIO](https://pypi.org/project/RPi.GPIO)
+- Manufacturer URL: [Link](https://www.winsen-sensor.com/sensors/co2-sensor/mh-z14a.html)
+- Datasheet URL: [Link](https://www.winsen-sensor.com/d/files/mh-z14a-co2-manual-v1_4.pdf)
+
+#### Options
+
+##### UART Device
+
+- Type: Text
+- Description: The UART device location (e.g. /dev/ttyUSB1)
+
+##### Period (seconds)
+
+- Type: Decimal
+- Description: The duration (seconds) between measurements or actions
+
+##### Pre Output
+
+- Type: Select
+- Description: Turn the selected output on before taking every measurement
+
+##### Pre Out Duration
+
+- Type: Decimal
+- Description: If a Pre Output is selected, set the duration (seconds) to turn the Pre Output on for before every measurement is acquired.
+
+##### Pre During Measure
+
+- Type: Boolean
+- Description: Check to turn the output off after (opposed to before) the measurement is complete
+
+##### Automatic Self-calibration
+
+- Type: Boolean
+- Default Value: True
+- Description: Enable automatic self-calibration
+
+##### Measurement Range
+
+- Type: Select
+- Options: \[**400 - 2000 ppmv** | 400 - 5000 ppmv | 400 - 10000 ppmv\] (Default in **bold**)
+- Description: Set the measuring range of the sensor
+
+##### The CO2 measurement can also be obtained using PWM via a GPIO pin. Enter the pin number below or leave blank to disable this option. This also makes it possible to obtain measurements even if the UART interface is not available (note that the sensor can't be configured / calibrated without a working UART interface).
+
+##### GPIO Override
+
+- Type: Text
+- Description: Obtain readings using PWM on this GPIO pin instead of via UART
+
+#### Commands
+
+##### Calibrate Zero Point
+
+- Type: Button
+##### Span Point (ppmv)
+
+- Type: Integer
+- Default Value: 2000
+- Description: The ppmv concentration for a span point calibration
+
+##### Calibrate Span Point
+
+- Type: Button
 ### Winsen: MH-Z16
 
 - Manufacturer: Winsen
@@ -6030,78 +6406,6 @@ Obtain a free API key at openweathermap.org. Notes: The free API subscription is
 
 - Type: Boolean
 - Description: Check to turn the output off after (opposed to before) the measurement is complete
-
-### Winsen: MH-Z14A
-
-- Manufacturer: Winsen
-- Measurements: CO2
-- Interfaces: UART, GPIO
-- Libraries: serial, RPi.GPIO
-- Dependencies: [RPi.GPIO](https://pypi.org/project/RPi.GPIO)
-- Manufacturer URL: [Link](https://www.winsen-sensor.com/sensors/co2-sensor/mh-z14a.html)
-- Datasheet URL: [Link](https://www.winsen-sensor.com/d/files/mh-z14a-co2-manual-v1_4.pdf)
-
-This sensor can do automatic self-calibration on a 24-hour cycle. When this feature is enabled, the lowest sensor reading observed during this period becomes the new zero point (400 ppmv).
-
-#### Options
-
-##### UART Device
-
-- Type: Text
-- Description: The UART device location (e.g. /dev/ttyAMA0)
-
-##### Period (seconds)
-
-- Type: Decimal
-- Description: The duration (seconds) between measurements or actions
-
-##### Pre Output
-
-- Type: Select
-- Description: Turn the selected output on before taking every measurement
-
-##### Pre Out Duration
-
-- Type: Decimal
-- Description: If a Pre Output is selected, set the duration (seconds) to turn the Pre Output on for before every measurement is acquired.
-
-##### Pre During Measure
-
-- Type: Boolean
-- Description: Check to turn the output off after (opposed to before) the measurement is complete
-
-##### Automatic Self-Calibration
-
-- Type: Boolean
-- Description: Set the sensor automatic self-calibration
-
-##### Measurement Range
-
-- Type: Select
-- Options: \[**400 - 2000 ppmv** | 400 - 5000 ppmv | 400 - 10000 ppmv \] (Default in **bold**)
-- Description: Set the measuring range of the sensor
-
-##### GPIO Override
-
-- Type: Integer
-- Default Value: None
-- Description: Obtain readings using PWM on this pin instead of via UART.
-
-#### Commands
-
-##### Calibrate Zero Point
-
-- Type: Button
-
-##### Span Point (ppmv)
-
-- Type: Integer
-- Default Value: 2000
-- Description: The ppmv concentration for a span point calibration
-
-##### Calibrate Span Point
-
-- Type: Button
 
 ### Winsen: MH-Z19
 
@@ -6332,7 +6636,7 @@ This is the B version of the sensor that includes the ability to conduct automat
 - Measurements: Battery/Humidity/Temperature
 - Interfaces: BT
 - Libraries: bluepy/bluez
-- Dependencies: [bluez](https://packages.debian.org/buster/bluez), [bluetooth](https://packages.debian.org/buster/bluetooth), [libbluetooth-dev](https://packages.debian.org/buster/libbluetooth-dev), [bluepy](https://pypi.org/project/bluepy), [pybluez](https://pypi.org/project/pybluez)
+- Dependencies: [bluez](https://packages.debian.org/buster/bluez), [bluetooth](https://packages.debian.org/buster/bluetooth), [libbluetooth-dev](https://packages.debian.org/buster/libbluetooth-dev), [bluepy](https://pypi.org/project/bluepy), [bluetooth](https://github.com/pybluez/pybluez)
 
 More information about ATC mode can be found at https://github.com/JsBergbau/MiTemperature2
 
