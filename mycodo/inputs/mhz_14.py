@@ -1,7 +1,7 @@
 # coding=utf-8
+import copy
 import time
 
-import copy
 import serial
 
 from mycodo.inputs.base_input import AbstractInput
@@ -46,7 +46,12 @@ def constraints_pass_gpio(mod_input, value):
 
 
 # Measurements
-measurements_dict = {0: {"measurement": "co2", "unit": "ppm"}}
+measurements_dict = {
+    0: {
+        "measurement": "co2",
+        "unit": "ppm"
+    }
+}
 
 # Input information
 INPUT_INFORMATION = {
@@ -58,10 +63,21 @@ INPUT_INFORMATION = {
     "measurements_dict": measurements_dict,
     "url_manufacturer": "https://www.winsen-sensor.com/sensors/co2-sensor/mh-z14a.html",
     "url_datasheet": "https://www.winsen-sensor.com/d/files/mh-z14a-co2-manual-v1_4.pdf",
-    "options_enabled": ["interface", "uart_location", "period", "pre_output"],
-    "dependencies_module": [("pip-pypi", "RPi.GPIO", "RPi.GPIO")],
+
+    "options_enabled": [
+        "interface",
+        "uart_location",
+        "period",
+        "pre_output"
+    ],
+
+    "dependencies_module": [
+        ("pip-pypi", "RPi.GPIO", "RPi.GPIO")
+    ],
+
     "interfaces": ["UART"],
     "uart_location": "/dev/ttyAMA0",
+
     "custom_options": [
         {
             "id": "self_calibration_enable",
@@ -97,6 +113,7 @@ INPUT_INFORMATION = {
             "phrase": "Obtain readings using PWM on this GPIO pin instead of via UART",
         },
     ],
+
     "custom_commands_message": "Self-calibration: The module can gauge the zero point "
     "intelligently based on the lowest reading observed in the past 24 hours. This value "
     "is automatically set as the new zero point (400 ppmv). This method is suitable for "
@@ -111,6 +128,7 @@ INPUT_INFORMATION = {
     "button. If running a span point calibration, run a zero point calibration first. A span "
     "point calibration is not necessary and should only be performed if you know what you "
     "are doing and can accurately produce a 2000 ppmv environment.",
+
     "custom_commands": [
         {
             "id": "calibrate_zero_point",
@@ -120,7 +138,7 @@ INPUT_INFORMATION = {
         {
             "id": "span_point_value_ppmv",
             "type": "integer",
-            "default_value": 2_000,
+            "default_value": 2000,
             "name": "Span Point (ppmv)",
             "phrase": "The ppmv concentration for a span point calibration",
         },
@@ -156,18 +174,16 @@ class InputModule(AbstractInput):
         if is_device(self.input_dev.uart_location):
             self.ser = serial.Serial(
                 port=self.input_dev.uart_location,
-                baudrate=9_600,
-                # dsrdtr=True,
+                baudrate=9600,
                 timeout=1,
-                writeTimeout=5,
-            )
+                writeTimeout=5)
 
             self.set_measure_range()
             self.set_self_calibration()
         else:
             self.logger.error(
-                f"Could not open '{self.input_dev.uart_location}'. Check the device location is correct."
-            )
+                f"Could not open '{self.input_dev.uart_location}'. "
+                f"Check the device location is correct.")
 
         if self.gpio_location:
             # Prefer reading measurements using PWM via GPIO
@@ -238,13 +254,11 @@ class InputModule(AbstractInput):
         if self.get_custom_option("self_calibration_enable"):
             self.logger.info("Enabling self-calibration...")
             self.ser.write(
-                bytearray([0xFF, 0x01, 0x79, 0xA0, 0x00, 0x00, 0x00, 0x00, 0xE6])
-            )
+                bytearray([0xFF, 0x01, 0x79, 0xA0, 0x00, 0x00, 0x00, 0x00, 0xE6]))
         else:
             self.logger.info("Disabling self-calibration...")
             self.ser.write(
-                bytearray([0xFF, 0x01, 0x79, 0x00, 0x00, 0x00, 0x00, 0x00, 0x86])
-            )
+                bytearray([0xFF, 0x01, 0x79, 0x00, 0x00, 0x00, 0x00, 0x00, 0x86]))
         time.sleep(0.1)
         self.logger.info("Self-calibration settings updated!")
 
@@ -252,19 +266,19 @@ class InputModule(AbstractInput):
         """Gets the measurement in units by reading the MH-Z14A."""
         if not self.ser and not self.gpio:
             self.logger.error(
-                "Error 101: Device not set up. See https://kizniche.github.io/Mycodo/Error-Codes#error-101 for more info."
-            )
+                "Error 101: Device not set up. "
+                "See https://kizniche.github.io/Mycodo/Error-Codes#error-101 for more info.")
             return
 
         self.return_dict = copy.deepcopy(measurements_dict)
 
-        co2 = self.read_CO2()
+        co2 = self.read_co2()
         if co2 is not None:
             self.value_set(0, co2)
 
         return self.return_dict
 
-    def read_CO2(self):
+    def read_co2(self):
         """Gets the MH-Z14's CO2 concentration in ppmv"""
         while self.is_calibrating:
             time.sleep(0.1)
@@ -275,8 +289,7 @@ class InputModule(AbstractInput):
             if self.gpio:
                 # Obtain reading via GPIO
                 self.logger.debug(
-                    f"Obtaining reading via GPIO channel {self.gpio_location}..."
-                )
+                    f"Obtaining reading via GPIO channel {self.gpio_location}...")
                 return self._read_co2_gpio()
 
             elif self.ser:
@@ -285,11 +298,11 @@ class InputModule(AbstractInput):
                 return self._read_co2_uart()
             else:
                 self.logger.error(
-                    "Error 101: Device not set up. See https://kizniche.github.io/Mycodo/Error-Codes#error-101 for more info."
-                )
+                    "Error 101: Device not set up. "
+                    "See https://kizniche.github.io/Mycodo/Error-Codes#error-101 for more info.")
                 return None
         except:
-            self.logger.exception("read_CO2()")
+            self.logger.exception("read_co2()")
         finally:
             self.is_measuring = False
 
@@ -302,14 +315,11 @@ class InputModule(AbstractInput):
             self.logger.error("Input not set up - cannot calibrate span point")
             return
 
-        span_point_value_ppmv = None
-
         try:
             span_point_value_ppmv = int(args_dict["span_point_value_ppmv"])
         except KeyError:
             self.logger.error(
-                "Cannot conduct span point calibration without a valid integer ppmv value"
-            )
+                "Cannot conduct span point calibration without a valid integer ppmv value")
             return
 
         while self.is_measuring:
@@ -319,8 +329,7 @@ class InputModule(AbstractInput):
 
         try:
             self.logger.info(
-                f"Conducting span point calibration with a value of {span_point_value_ppmv} ppmv..."
-            )
+                f"Conducting span point calibration with a value of {span_point_value_ppmv} ppmv...")
             b3 = span_point_value_ppmv // 256
             b4 = span_point_value_ppmv % 256
             c = self.checksum([0x01, 0x88, b3, b4])
@@ -408,7 +417,7 @@ class InputModule(AbstractInput):
                 )
                 is None
             ):
-                raise RuntimeError(f"Timeout waiting for rising edge!")
+                raise RuntimeError("Timeout waiting for rising edge!")
             else:
                 th_start = time.time_ns() / 1_000
 
@@ -418,7 +427,7 @@ class InputModule(AbstractInput):
                 )
                 is None
             ):
-                raise RuntimeError(f"Timeout waiting for falling edge!")
+                raise RuntimeError("Timeout waiting for falling edge!")
             else:
                 th_end = time.time_ns() / 1_000
 
@@ -428,7 +437,7 @@ class InputModule(AbstractInput):
                 )
                 is None
             ):
-                raise RuntimeError(f"Timeout waiting for rising edge!")
+                raise RuntimeError("Timeout waiting for rising edge!")
             else:
                 tl_end = time.time_ns() / 1_000
 
