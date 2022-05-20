@@ -6031,6 +6031,78 @@ Obtain a free API key at openweathermap.org. Notes: The free API subscription is
 - Type: Boolean
 - Description: Check to turn the output off after (opposed to before) the measurement is complete
 
+### Winsen: MH-Z14A
+
+- Manufacturer: Winsen
+- Measurements: CO2
+- Interfaces: UART, GPIO
+- Libraries: serial, RPi.GPIO
+- Dependencies: [RPi.GPIO](https://pypi.org/project/RPi.GPIO)
+- Manufacturer URL: [Link](https://www.winsen-sensor.com/sensors/co2-sensor/mh-z14a.html)
+- Datasheet URL: [Link](https://www.winsen-sensor.com/d/files/mh-z14a-co2-manual-v1_4.pdf)
+
+This sensor can do automatic self-calibration on a 24-hour cycle. When this feature is enabled, the lowest sensor reading observed during this period becomes the new zero point (400 ppmv).
+
+#### Options
+
+##### UART Device
+
+- Type: Text
+- Description: The UART device location (e.g. /dev/ttyAMA0)
+
+##### Period (seconds)
+
+- Type: Decimal
+- Description: The duration (seconds) between measurements or actions
+
+##### Pre Output
+
+- Type: Select
+- Description: Turn the selected output on before taking every measurement
+
+##### Pre Out Duration
+
+- Type: Decimal
+- Description: If a Pre Output is selected, set the duration (seconds) to turn the Pre Output on for before every measurement is acquired.
+
+##### Pre During Measure
+
+- Type: Boolean
+- Description: Check to turn the output off after (opposed to before) the measurement is complete
+
+##### Automatic Self-Calibration
+
+- Type: Boolean
+- Description: Set the sensor automatic self-calibration
+
+##### Measurement Range
+
+- Type: Select
+- Options: \[**400 - 2000 ppmv** | 400 - 5000 ppmv | 400 - 10000 ppmv \] (Default in **bold**)
+- Description: Set the measuring range of the sensor
+
+##### GPIO Override
+
+- Type: Integer
+- Default Value: None
+- Description: Obtain readings using PWM on this pin instead of via UART.
+
+#### Commands
+
+##### Calibrate Zero Point
+
+- Type: Button
+
+##### Span Point (ppmv)
+
+- Type: Integer
+- Default Value: 2000
+- Description: The ppmv concentration for a span point calibration
+
+##### Calibrate Span Point
+
+- Type: Button
+
 ### Winsen: MH-Z19
 
 - Manufacturer: Winsen
