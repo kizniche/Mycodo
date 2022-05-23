@@ -1,7 +1,8 @@
 # coding=utf-8
+import copy
 import time
 
-import copy
+from flask_babel import lazy_gettext
 
 from mycodo.inputs.base_input import AbstractInput
 
@@ -46,7 +47,26 @@ INPUT_INFORMATION = {
 
     'interfaces': ['I2C'],
     'i2c_location': ['0x40'],
-    'i2c_address_editable': True
+    'i2c_address_editable': True,
+
+    'custom_commands': [
+        {
+            'type': 'message',
+            'default_value': """The I2C address can be changed. Enter a new address in the 0xYY format (e.g. 0x22, 0x50), then press Set I2C Address. Remember to deactivate and change the I2C address option after setting the new address."""
+        },
+        {
+            'id': 'new_i2c_address',
+            'type': 'text',
+            'default_value': '0x20',
+            'name': lazy_gettext('New I2C Address'),
+            'phrase': lazy_gettext('The new I2C to set the device to')
+        },
+        {
+            'id': 'set_i2c_address',
+            'type': 'button',
+            'name': lazy_gettext('Set I2C Address')
+        }
+    ]
 }
 
 
@@ -101,8 +121,10 @@ class InputModule(AbstractInput):
         # To change the I2C address of the sensor, write a new address
         # (one byte [1..127]) to register 1; the new address will take effect after reset
         self.bus.write_byte_data(self.i2c_address, 1, new_addr)
+        # second request is required since FW 0x26 to protect against spurious address changes
+        self.bus.write_byte_data(self.i2c_address, 1, new_addr)
         self.reset()
-        # self.address = new_addr
+        self.i2c_address = new_addr
 
     def moist(self):
         # To read soil moisture, read 2 bytes from register 0
@@ -122,3 +144,13 @@ class InputModule(AbstractInput):
             return 65535.0
         else:
             return(1 - (lux / 65535.0)) * 65535.0
+
+    def set_i2c_address(self, args_dict):
+        if 'new_i2c_address' not in args_dict:
+            self.logger.error("Cannot set new I2C address without an I2C address")
+            return
+        try:
+            i2c_address = int(str(args_dict['new_i2c_address']), 16)
+            self.set_addr(i2c_address)
+        except:
+            self.logger.exception("Exception changing I2C address")

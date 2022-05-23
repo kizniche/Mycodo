@@ -46,7 +46,7 @@ INPUT_INFORMATION = {
     'url_manufacturer': 'https://sonoff.tech/product/wifi-diy-smart-switches/th10-th16',
     'measurements_use_same_timestamp': False,
 
-    'message': "This Input module allows the use of any temperature/huidity sensor with the TH10/TH16. Changing the Sensor Name option changes the key that's queried from the returned dictionary of measurements. If you would like to use this module with a version of this device that uses the AM2301, change Sensor Name to AM2301.",
+    'message': "This Input module allows the use of any temperature/humidity sensor with the TH10/TH16. Changing the Sensor Name option changes the key that's queried from the returned dictionary of measurements. If you would like to use this module with a version of this device that uses the AM2301, change Sensor Name to AM2301.",
 
     'options_enabled': [
         'measurements_select',

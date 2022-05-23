@@ -3,6 +3,7 @@
 ### Features
 
  - Add Input: MH-Z14 CO2
+ - Add ability to set Chirp Input I2C address ([#1197](https://github.com/kizniche/mycodo/issues/1197))
 
 
 ## 8.13.10 (2022-05-19)
