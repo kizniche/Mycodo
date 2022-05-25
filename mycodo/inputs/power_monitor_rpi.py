@@ -37,7 +37,7 @@ for ct in range(1, 7):
 INPUT_INFORMATION = {
     'input_name_unique': 'input_rpi_power_monitor',
     'input_manufacturer': 'Power Monitor',
-    'input_name': 'RPi Power Monitor',
+    'input_name': 'RPi Power Monitor (6 Channels)',
     'input_name_short': 'RPi Power Monitor',
     'input_library': 'rpi-power-monitor',
     'measurements_name': 'AC Voltage, Power, Current, Power Factor',

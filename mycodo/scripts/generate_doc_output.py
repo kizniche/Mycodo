@@ -108,69 +108,83 @@ def generate_controller_doc(out_file, each_data):
         out_file.write("\nUsage: {}\n".format(each_data['usage']))
 
     if 'options_enabled' in each_data or 'custom_options' in each_data:
-        out_file.write("\n#### Options\n")
+        out_file.write('<table><thead><tr class="header"><th>Option</th><th>Type</th><th>Description</th></tr></thead><tbody>')
 
     if 'options_enabled' in each_data and 'i2c_location' in each_data['options_enabled']:
-        out_file.write("\n##### I<sup>2</sup>C Address\n")
-        out_file.write("\n- Type: Text")
-        out_file.write("\n- Description: {}\n".format(TRANSLATIONS['i2c_location']['phrase']))
-        out_file.write("\n##### I<sup>2</sup>C Bus\n")
-        out_file.write("\n- Type: Integer")
-        out_file.write("\n- Description: {}\n".format(TRANSLATIONS['i2c_bus']['phrase']))
+        out_file.write(
+            f"<tr><td>I<sup>2</sup>C Address</td>"
+            f"<td>Text</td>"
+            f"<td>{TRANSLATIONS['i2c_location']['phrase']}</td></tr>")
+        out_file.write(
+            f"<tr><td>I<sup>2</sup>C Bus</td>"
+            f"<td>Integer</td>"
+            f"<td>{TRANSLATIONS['i2c_bus']['phrase']}</td></tr>")
 
     if 'options_enabled' in each_data and 'bt_location' in each_data['options_enabled']:
-        out_file.write("\n##### {}\n".format(TRANSLATIONS['bt_location']['title']))
-        out_file.write("\n- Type: Text")
-        out_file.write("\n- Description: {}\n".format(TRANSLATIONS['bt_location']['phrase']))
-        out_file.write("\n##### {}\n".format(TRANSLATIONS['bt_adapter']['title']))
-        out_file.write("\n- Type: Integer")
-        out_file.write("\n- Description: {}\n".format(TRANSLATIONS['bt_adapter']['phrase']))
+        out_file.write(
+            f"<tr><td>{TRANSLATIONS['bt_location']['title']}</td>"
+            f"<td>Text</td>"
+            f"<td>{TRANSLATIONS['bt_location']['phrase']}</td></tr>")
+        out_file.write(
+            f"<tr><td>{TRANSLATIONS['bt_adapter']['title']}</td>"
+            f"<td>Text</td>"
+            f"<td>{TRANSLATIONS['bt_adapter']['phrase']}</td></tr>")
 
     if 'options_enabled' in each_data and 'ftdi_location' in each_data['options_enabled']:
-        out_file.write("\n##### {}\n".format(TRANSLATIONS['ftdi_location']['title']))
-        out_file.write("\n- Type: Text")
-        out_file.write("\n- Description: {}\n".format(TRANSLATIONS['ftdi_location']['phrase']))
+        out_file.write(
+            f"<tr><td>{TRANSLATIONS['ftdi_location']['title']}</td>"
+            f"<td>Text</td>"
+            f"<td>{TRANSLATIONS['ftdi_location']['phrase']}</td></tr>")
 
     if 'options_enabled' in each_data and 'uart_location' in each_data['options_enabled']:
-        out_file.write("\n##### {}\n".format(TRANSLATIONS['uart_location']['title']))
-        out_file.write("\n- Type: Text")
-        out_file.write("\n- Description: {}\n".format(TRANSLATIONS['uart_location']['phrase']))
+        out_file.write(
+            f"<tr><td>{TRANSLATIONS['uart_location']['title']}</td>"
+            f"<td>Text</td>"
+            f"<td>{TRANSLATIONS['uart_location']['phrase']}</td></tr>")
 
     if 'options_enabled' in each_data and 'baud_rate' in each_data['options_enabled']:
-        out_file.write("\n##### {}\n".format(TRANSLATIONS['baud_rate']['title']))
-        out_file.write("\n- Type: Integer")
-        out_file.write("\n- Description: {}\n".format(TRANSLATIONS['baud_rate']['phrase']))
+        out_file.write(
+            f"<tr><td>{TRANSLATIONS['baud_rate']['title']}</td>"
+            f"<td>Integer</td>"
+            f"<td>{TRANSLATIONS['baud_rate']['phrase']}</td></tr>")
 
     if 'options_enabled' in each_data and 'pin_cs' in each_data['options_enabled']:
-        out_file.write("\n##### {}\n".format(TRANSLATIONS['pin_cs']['title']))
-        out_file.write("\n- Type: Integer")
-        out_file.write("\n- Description: {}\n".format(TRANSLATIONS['pin_cs']['phrase']))
+        out_file.write(
+            f"<tr><td>{TRANSLATIONS['pin_cs']['title']}</td>"
+            f"<td>Integer</td>"
+            f"<td>{TRANSLATIONS['pin_cs']['phrase']}</td></tr>")
 
     if 'options_enabled' in each_data and 'measurements_select' in each_data['options_enabled']:
-        out_file.write("\n##### {}\n".format(TRANSLATIONS['measurements_enabled']['title']))
-        out_file.write("\n- Type: Multi-Select")
-        out_file.write("\n- Description: {}\n".format(TRANSLATIONS['measurements_enabled']['phrase']))
+        out_file.write(
+            f"<tr><td>{TRANSLATIONS['measurements_enabled']['title']}</td>"
+            f"<td>Multi-Select</td>"
+            f"<td>{TRANSLATIONS['measurements_enabled']['phrase']}</td></tr>")
 
     if 'options_enabled' in each_data and 'period' in each_data['options_enabled']:
-        out_file.write("\n##### {}\n".format(TRANSLATIONS['period']['title']))
-        out_file.write("\n- Type: Decimal")
-        out_file.write("\n- Description: {}\n".format(TRANSLATIONS['period']['phrase']))
+        out_file.write(
+            f"<tr><td>{TRANSLATIONS['period']['title']}</td>"
+            f"<td>Decimal</td>"
+            f"<td>{TRANSLATIONS['period']['phrase']}</td></tr>")
 
     if 'options_enabled' in each_data and 'start_offset' in each_data['options_enabled']:
-        out_file.write("\n##### {}\n".format(TRANSLATIONS['start_offset']['title']))
-        out_file.write("\n- Type: Integer")
-        out_file.write("\n- Description: {}\n".format(TRANSLATIONS['start_offset']['phrase']))
+        out_file.write(
+            f"<tr><td>{TRANSLATIONS['start_offset']['title']}</td>"
+            f"<td>Integer</td>"
+            f"<td>{TRANSLATIONS['start_offset']['phrase']}</td></tr>")
 
     if 'options_enabled' in each_data and 'pre_output' in each_data['options_enabled']:
-        out_file.write("\n##### {}\n".format(TRANSLATIONS['pre_output_id']['title']))
-        out_file.write("\n- Type: Select")
-        out_file.write("\n- Description: {}\n".format(TRANSLATIONS['pre_output_id']['phrase']))
-        out_file.write("\n##### {}\n".format(TRANSLATIONS['pre_output_duration']['title']))
-        out_file.write("\n- Type: Decimal")
-        out_file.write("\n- Description: {}\n".format(TRANSLATIONS['pre_output_duration']['phrase']))
-        out_file.write("\n##### {}\n".format(TRANSLATIONS['pre_output_during_measure']['title']))
-        out_file.write("\n- Type: Boolean")
-        out_file.write("\n- Description: {}\n".format(TRANSLATIONS['pre_output_during_measure']['phrase']))
+        out_file.write(
+            f"<tr><td>{TRANSLATIONS['pre_output_id']['title']}</td>"
+            f"<td>Select</td>"
+            f"<td>{TRANSLATIONS['pre_output_id']['phrase']}</td></tr>")
+        out_file.write(
+            f"<tr><td>{TRANSLATIONS['pre_output_duration']['title']}</td>"
+            f"<td>Decimal</td>"
+            f"<td>{TRANSLATIONS['pre_output_duration']['phrase']}</td></tr>")
+        out_file.write(
+            f"<tr><td>{TRANSLATIONS['pre_output_during_measure']['title']}</td>"
+            f"<td>Boolean</td>"
+            f"<td>{TRANSLATIONS['pre_output_during_measure']['phrase']}</td></tr>")
 
     option_headings = [
         ('custom_options', ""),
@@ -181,41 +195,43 @@ def generate_controller_doc(out_file, each_data):
     for each_opt, each_head in option_headings:
         if each_opt in each_data:
             if each_head:
-                out_file.write("\n#### {}\n".format(each_head))
+                out_file.write(f'<tr><td colspan="3">{each_head}</td></tr>')
 
             for each_option in each_data[each_opt]:
                 if each_option['type'] == 'new_line':
                     pass
 
                 elif each_option['type'] == 'message':
-                    out_file.write("\n##### {}\n".format(each_option['default_value']))
+                    out_file.write(f'<tr><td colspan="3">{each_option["default_value"]}</td></tr>')
 
                 elif each_option['type'] == 'button':
-                    out_file.write("\n##### {}\n".format(each_option['name']))
-                    out_file.write("\n- Type: Button")
+                    out_file.write(
+                        f"<tr><td>{each_option['name']}</td>"
+                        f"<td>Button</td></tr>")
 
                 else:
-                    out_file.write("\n##### {}\n".format(each_option['name']))
+                    out_file.write(f"<tr><td>{each_option['name']}</td>")
 
                     # Common types
                     if each_option['type'] == 'integer':
-                        out_file.write("\n- Type: Integer")
+                        out_file.write(f"<td>Integer")
                     elif each_option['type'] == 'text':
-                        out_file.write("\n- Type: Text")
+                        out_file.write(f"<td>Text")
                     elif each_option['type'] == 'float':
-                        out_file.write("\n- Type: Decimal")
+                        out_file.write(f"<td>Decimal")
                     elif each_option['type'] == 'select':
-                        out_file.write("\n- Type: Select")
+                        out_file.write(f"<td>Select")
                     elif each_option['type'] == 'bool':
-                        out_file.write("\n- Type: Boolean")
+                        out_file.write(f"<td>Boolean")
 
                     # Less common types
                     elif each_option['type'] == 'select_device':
-                        out_file.write("\n- Type: Select Device")
+                        out_file.write(f"<td>Select Device")
+
                     elif each_option['type'] == 'select_measurement_channel':
-                        out_file.write("\n- Type: Select Device, Measurement, and Channel")
+                        out_file.write(f'<td>Select Device, Measurement, and Channel')
                         if 'options_select' in each_option and each_option['options_select']:
-                            out_file.write("\n- Selections: ")
+                            out_file.write(" (")
                             for i, each_sel in enumerate(each_option['options_select'], start=1):
                                 if each_sel == "Output_Channels_Measurements":
                                     out_file.write("Output")
@@ -223,43 +239,53 @@ def generate_controller_doc(out_file, each_data):
                                     out_file.write("Output (PWM)")
                                 if i < len(each_option['options_select']):
                                     out_file.write(", ")
+                            out_file.write(")")
+
                     elif each_option['type'] == 'select_channel':
-                        out_file.write("\n- Type: Select Channel")
+                        out_file.write(f'<td>Select Channel')
                         if 'options_select' in each_option and each_option['options_select']:
-                            out_file.write("\n- Selections: ")
+                            out_file.write(" (")
                             for i, each_sel in enumerate(each_option['options_select'], start=1):
                                 out_file.write(each_sel)
                                 if i < len(each_option['options_select']):
                                     out_file.write(", ")
+                            out_file.write(")")
+
                     elif each_option['type'] == 'select_measurement':
-                        out_file.write("\n- Type: Select Measurement")
+                        out_file.write(f'<td>Select Measurement')
                         if 'options_select' in each_option and each_option['options_select']:
-                            out_file.write("\n- Selections: ")
+                            out_file.write(" (")
                             for i, each_sel in enumerate(each_option['options_select'], start=1):
                                 out_file.write(each_sel)
                                 if i < len(each_option['options_select']):
                                     out_file.write(", ")
+                            out_file.write(")")
 
                     # Show the select options
                     if 'default_value' in each_option and each_option['default_value']:
                         if each_option['type'] in ['integer', 'text', 'float', 'bool']:
                             out_file.write("\n- Default Value: {}".format(each_option['default_value']))
                         elif each_option['type'] == 'select':
-                            select_options = "\n- Options: \["
+                            select_options = "(Options: ["
                             select_default = None
                             if 'default_value' in each_option and each_option['default_value']:
                                 select_default = each_option['default_value']
                             for i, each_option_sel in enumerate(each_option['options_select']):
                                 if select_default and select_default == each_option_sel[0]:
-                                    select_options += "**{}**".format(each_option_sel[1])
+                                    select_options += f"<strong>{each_option_sel[1]}</strong>"
                                 else:
                                     select_options += each_option_sel[1]
                                 if i < len(each_option['options_select']) - 1:
                                     select_options += " | "
-                            select_options += "\] (Default in **bold**)"
+                            select_options += "] (Default in <strong>bold</strong>)"
                             out_file.write(select_options)
 
-                    if 'phrase' in each_option:
-                        out_file.write("\n- Description: {}\n".format(each_option['phrase']))
+                    out_file.write(f"</td>")
 
-    out_file.write("\n")
+                    if 'phrase' in each_option:
+                        out_file.write(f"<td>{each_option['phrase']}</td></tr>")
+
+    if 'options_enabled' in each_data or 'custom_options' in each_data:
+        out_file.write('</tbody></table>')
+
+    out_file.write("\n\n")

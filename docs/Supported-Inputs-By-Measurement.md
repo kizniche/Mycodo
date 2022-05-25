@@ -150,8 +150,6 @@ Measurements
 
 ### [Sensirion: SCD30](/Mycodo/Supported-Inputs/#sensirion-scd30)
 
-### [Winsen: MH-Z14A](/Mycodo/Supported-Inputs/#winsen-mh-z14a)
-
 ### [Winsen: MH-Z16](/Mycodo/Supported-Inputs/#winsen-mh-z16)
 
 ### [Winsen: MH-Z19](/Mycodo/Supported-Inputs/#winsen-mh-z19)
@@ -625,6 +623,8 @@ Measurements
 ### [MAXIM: DS18S20](/Mycodo/Supported-Inputs/#maxim-ds18s20)
 
 ### [MAXIM: DS28EA00](/Mycodo/Supported-Inputs/#maxim-ds28ea00)
+
+### [MAXIM: MAX3010x (MAX30101/MAX30105)](/Mycodo/Supported-Inputs/#maxim-max3010x-max30101-max30105)
 
 ### [MAXIM: MAX31850K](/Mycodo/Supported-Inputs/#maxim-max31850k)
 
