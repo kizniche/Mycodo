@@ -202,7 +202,7 @@ def generate_controller_doc(out_file, each_data):
                     pass
 
                 elif each_option['type'] == 'message':
-                    out_file.write(f'<tr><td colspan="3">{each_option["default_value"]}</td></tr>')
+                    out_file.write(f'<tr><td>Message</td><td colspan="2">{each_option["default_value"]}</td></tr>')
 
                 elif each_option['type'] == 'button':
                     out_file.write(
