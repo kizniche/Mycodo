@@ -36,7 +36,7 @@ This function will use rsync to back up assets on this system to a remote system
 - Default Value: True</td><td>Create and backup exported settings file</td></tr><tr><td>Remove Local Settings Backups</td><td>Boolean</td><td>Remove local settings backups after successful transfer to remote host</td></tr><tr><td>Backup Measurements</td><td>Boolean
 - Default Value: True</td><td>Backup all influxdb measurements</td></tr><tr><td>Remove Local Measurements Backups</td><td>Boolean</td><td>Remove local measurements backups after successful transfer to remote host</td></tr><tr><td>Backup Camera Directories</td><td>Boolean
 - Default Value: True</td><td>Backup all camera directories</td></tr><tr><td>Remove Local Camera Images</td><td>Boolean</td><td>Remove local camera images after successful transfer to remote host</td></tr><tr><td>SSH Port</td><td>Integer
-- Default Value: 22</td><td>Specify a nonstandard SSH port</td></tr><tr><td colspan="3">Commands</td></tr><tr><td colspan="3">Backup of settings are only created if the Mycodo version or database versions change. This is due to this Function running periodically- if it created a new backup every Period, there would soon be many identical backups. Therefore, if you want to induce the backup of settings, measurements, or camera directories and sync them to your remote system, use the buttons below.</td></tr><tr><td>Backup Settings Now</td><td>Button</td></tr><tr><td>Backup Measurements Now</td><td>Button</td></tr><tr><td>Backup Camera Directories Now</td><td>Button</td></tr></tbody></table>
+- Default Value: 22</td><td>Specify a nonstandard SSH port</td></tr><tr><td colspan="3">Commands</td></tr><tr><td colspan="3">Backup of settings are only created if the Mycodo version or database versions change. This is due to this Function running periodically- if it created a new backup every Period, there would soon be many identical backups. Therefore, if you want to induce the backup of settings, measurements, or camera directories and sync them to your remote system, use the buttons below.</td></tr><tr><td>Backup Settings Now</td><td>Button</td><td></td></tr><tr><td>Backup Measurements Now</td><td>Button</td><td></td></tr><tr><td>Backup Camera Directories Now</td><td>Button</td><td></td></tr></tbody></table>
 
 ### Bang-Bang Hysteretic (On/Off) (Raise/Lower)
 
@@ -90,7 +90,7 @@ This Function outputs to a generic 16x2 LCD display via I2C. Since this display 
 - Default Value: 360</td><td>The maximum age (seconds) of the measurement to use</td></tr><tr><td>Measurement Label</td><td>Text</td><td>Set to overwrite the default measurement label</td></tr><tr><td>Measurement Decimal</td><td>Integer
 - Default Value: 1</td><td>The number of digits after the decimal</td></tr><tr><td>Text</td><td>Text
 - Default Value: Text</td><td>Text to display</td></tr><tr><td>Display Unit</td><td>Boolean
-- Default Value: True</td><td>Display the measurement unit (if available)</td></tr><tr><td colspan="3">Commands</td></tr><tr><td>Backlight On</td><td>Button</td></tr><tr><td>Backlight Off</td><td>Button</td></tr><tr><td>Backlight Flashing On</td><td>Button</td></tr><tr><td>Backlight Flashing Off</td><td>Button</td></tr></tbody></table>
+- Default Value: True</td><td>Display the measurement unit (if available)</td></tr><tr><td colspan="3">Commands</td></tr><tr><td>Backlight On</td><td>Button</td><td></td></tr><tr><td>Backlight Off</td><td>Button</td><td></td></tr><tr><td>Backlight Flashing On</td><td>Button</td><td></td></tr><tr><td>Backlight Flashing Off</td><td>Button</td><td></td></tr></tbody></table>
 
 ### Display: Generic LCD 20x4 (I2C)
 
@@ -105,7 +105,7 @@ This Function outputs to a generic 20x4 LCD display via I2C. Since this display 
 - Default Value: 360</td><td>The maximum age (seconds) of the measurement to use</td></tr><tr><td>Measurement Label</td><td>Text</td><td>Set to overwrite the default measurement label</td></tr><tr><td>Measurement Decimal</td><td>Integer
 - Default Value: 1</td><td>The number of digits after the decimal</td></tr><tr><td>Text</td><td>Text
 - Default Value: Text</td><td>Text to display</td></tr><tr><td>Display Unit</td><td>Boolean
-- Default Value: True</td><td>Display the measurement unit (if available)</td></tr><tr><td colspan="3">Commands</td></tr><tr><td>Backlight On</td><td>Button</td></tr><tr><td>Backlight Off</td><td>Button</td></tr></tbody></table>
+- Default Value: True</td><td>Display the measurement unit (if available)</td></tr><tr><td colspan="3">Commands</td></tr><tr><td>Backlight On</td><td>Button</td><td></td></tr><tr><td>Backlight Off</td><td>Button</td><td></td></tr></tbody></table>
 
 ### Display: Grove LCD 16x2 (I2C)
 
@@ -124,8 +124,8 @@ This Function outputs to the Grove 16x2 LCD display via I2C. Since this display 
 - Default Value: 360</td><td>The maximum age (seconds) of the measurement to use</td></tr><tr><td>Measurement Label</td><td>Text</td><td>Set to overwrite the default measurement label</td></tr><tr><td>Measurement Decimal</td><td>Integer
 - Default Value: 1</td><td>The number of digits after the decimal</td></tr><tr><td>Text</td><td>Text
 - Default Value: Text</td><td>Text to display</td></tr><tr><td>Display Unit</td><td>Boolean
-- Default Value: True</td><td>Display the measurement unit (if available)</td></tr><tr><td colspan="3">Commands</td></tr><tr><td>Backlight On</td><td>Button</td></tr><tr><td>Backlight Off</td><td>Button</td></tr><tr><td>Color (RGB)</td><td>Text
-- Default Value: 255,0,0</td><td>Color as R,G,B values (e.g. "255,0,0" without quotes)</td></tr><tr><td>Set Backlight Color</td><td>Button</td></tr></tbody></table>
+- Default Value: True</td><td>Display the measurement unit (if available)</td></tr><tr><td colspan="3">Commands</td></tr><tr><td>Backlight On</td><td>Button</td><td></td></tr><tr><td>Backlight Off</td><td>Button</td><td></td></tr><tr><td>Color (RGB)</td><td>Text
+- Default Value: 255,0,0</td><td>Color as R,G,B values (e.g. "255,0,0" without quotes)</td></tr><tr><td>Set Backlight Color</td><td>Button</td><td></td></tr></tbody></table>
 
 ### Display: SSD1306 OLED 128x32 [2 Lines] (I2C)
 

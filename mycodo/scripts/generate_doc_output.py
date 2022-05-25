@@ -207,7 +207,7 @@ def generate_controller_doc(out_file, each_data):
                 elif each_option['type'] == 'button':
                     out_file.write(
                         f"<tr><td>{each_option['name']}</td>"
-                        f"<td>Button</td></tr>")
+                        f"<td>Button</td><td></td></tr>")
 
                 else:
                     out_file.write(f"<tr><td>{each_option['name']}</td>")
