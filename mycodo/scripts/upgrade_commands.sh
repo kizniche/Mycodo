@@ -376,7 +376,7 @@ case "${1:-''}" in
         elif [[ "$GPIOD_SAMPLE_RATE" -eq "100" ]]; then
             /bin/bash "${MYCODO_PATH}"/mycodo/scripts/upgrade_commands.sh enable-pigpiod-disabled
         else
-            printf "#### Could not determine pgiod sample rate. Setting up pigpiod with 1 ms sample rate\n"
+            printf "#### Could not determine pigpiod sample rate. Setting up pigpiod with 1 ms sample rate\n"
             /bin/bash "${MYCODO_PATH}"/mycodo/scripts/upgrade_commands.sh enable-pigpiod-low
         fi
     ;;
