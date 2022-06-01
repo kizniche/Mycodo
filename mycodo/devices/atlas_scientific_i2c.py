@@ -148,7 +148,6 @@ class AtlasScientificI2C(AbstractBaseAtlasScientific):
 
                 return self.read()
             except Exception as err:
-                self.logger.exception(1)
                 self.logger.debug(
                     f"{type(self).__name__} raised an exception when taking a reading: {err}")
                 return "error", err
