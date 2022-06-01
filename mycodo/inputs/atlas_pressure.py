@@ -157,7 +157,7 @@ class InputModule(AbstractInput):
             if str_is_float(value):
                 pressure = float(value)
             else:
-                self.logger.error("Could not determine pressure from returned value: '{}'".format(atlas_return))
+                self.logger.debug("Could not determine pressure from returned value: '{}'".format(atlas_return))
                 return
 
         self.value_set(0, pressure)

@@ -234,7 +234,7 @@ class InputModule(AbstractInput):
             if str_is_float(value):
                 do = float(value)
             else:
-                self.logger.error("Could not determine do from returned value: '{}'".format(atlas_return))
+                self.logger.debug("Could not determine do from returned value: '{}'".format(atlas_return))
                 return
 
         self.value_set(0, do)

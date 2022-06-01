@@ -131,7 +131,7 @@ class InputModule(AbstractInput):
             if str_is_float(value):
                 temp = float(value)
             else:
-                self.logger.error("Could not determine temp from returned value: '{}'".format(atlas_return))
+                self.logger.debug("Could not determine temp from returned value: '{}'".format(atlas_return))
                 return
 
         if temp == -1023:  # Erroneous measurement

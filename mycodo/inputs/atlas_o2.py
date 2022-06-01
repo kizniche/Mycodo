@@ -274,7 +274,7 @@ class InputModule(AbstractInput):
             if str_is_float(value):
                 o2 = float(value)
             else:
-                self.logger.error("Could not determine o2 from returned value: '{}'".format(atlas_return))
+                self.logger.debug("Could not determine o2 from returned value: '{}'".format(atlas_return))
                 return
 
         self.value_set(0, o2)

@@ -229,7 +229,7 @@ class InputModule(AbstractInput):
             if str_is_float(value):
                 orp = float(value)
             else:
-                self.logger.error("Could not determine orp from returned value: '{}'".format(atlas_return))
+                self.logger.debug("Could not determine orp from returned value: '{}'".format(atlas_return))
                 return
 
         self.value_set(0, orp)

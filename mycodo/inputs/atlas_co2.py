@@ -161,8 +161,12 @@ class InputModule(AbstractInput):
             if str_is_float(value):
                 co2 = float(value)
             else:
-                self.logger.error("Could not determine co2 from returned value: '{}'".format(atlas_return))
+                self.logger.debug("Could not determine co2 from returned value: '{}'".format(atlas_return))
                 return
+
+        if co2 and co2 < 100:
+            self.logger.debug("CO2 measured less than 100, not storing measurement.")
+            return
 
         self.value_set(0, co2)
 
