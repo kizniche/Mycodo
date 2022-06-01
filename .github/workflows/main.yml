@@ -24,9 +24,9 @@ jobs:
           sudo bash mycodo/scripts/upgrade_commands.sh update-packages
           git clone --recursive https://github.com/WiringPi/WiringPi-Python.git && cd WiringPi-Python && git submodule update --init && cd WiringPi && ./build && cd ../..
           sudo bash mycodo/scripts/upgrade_commands.sh build-pigpiod
-          sudo bash mycodo/scripts/upgrade_commands.sh update-influxdb
+          sudo bash mycodo/scripts/upgrade_commands.sh update-influxdb-1
           sudo service influxdb start && sleep 3
-          sudo bash mycodo/scripts/upgrade_commands.sh update-influxdb-db-user
+          sudo bash mycodo/scripts/upgrade_commands.sh update-influxdb-1-db-user
           sudo useradd -M mycodo
           export PATH=/usr/bin:$PATH
       - name: Test setup components

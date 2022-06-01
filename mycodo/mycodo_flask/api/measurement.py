@@ -153,7 +153,7 @@ class MeasurementsHistorical(Resource):
 
         try:
             return_ = read_influxdb_list(
-                unique_id, unit, channel, start_str=start_str, end_str=end_str)
+                unique_id, unit, channel, start_str=start_str, end_str=end_str, datetime_obj=True)
             if return_ and len(return_) > 0:
                 dict_return = {'measurements': []}
                 for each_set in return_:
@@ -201,7 +201,7 @@ class MeasurementsLast(Resource):
 
         try:
             return_ = read_influxdb_single(
-                unique_id, unit, channel, duration_sec=past_seconds)
+                unique_id, unit, channel, duration_sec=past_seconds, datetime_obj=True)
             if return_ and len(return_) == 2:
                 return {'time': return_[0], 'value': return_[1]}, 200
             else:
@@ -245,7 +245,7 @@ class MeasurementsPast(Resource):
 
         try:
             return_ = read_influxdb_list(
-                unique_id, unit, channel, duration_sec=past_seconds)
+                unique_id, unit, channel, duration_sec=past_seconds, datetime_obj=True)
             if return_ and len(return_) > 0:
                 dict_return = {'measurements': []}
                 for each_set in return_:

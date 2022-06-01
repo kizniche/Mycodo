@@ -11,7 +11,6 @@ from collections import OrderedDict
 
 from dateutil import relativedelta
 
-from mycodo.config import INFLUXDB_DATABASE
 from mycodo.config import INSTALL_DIRECTORY
 from mycodo.config import PATH_FUNCTIONS_CUSTOM
 from mycodo.config import PATH_ACTIONS_CUSTOM
@@ -55,7 +54,8 @@ def create_measurements_export(save_path=None):
         # Create new directory (make sure it's empty)
         assure_path_exists(influx_backup_dir)
 
-        cmd = f"/usr/bin/influxd backup -database {INFLUXDB_DATABASE} -portable {influx_backup_dir}"
+        settings = db_retrieve_table_daemon(Misc, entry='first')
+        cmd = f"/usr/bin/influxd backup -database {settings.measurement_db_dbname} -portable {influx_backup_dir}"
         _, _, status = cmd_output(cmd)
 
         if not status:

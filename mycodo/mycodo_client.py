@@ -35,11 +35,6 @@ from influxdb import InfluxDBClient
 
 sys.path.append(os.path.abspath(os.path.join(os.path.realpath(__file__), '../..')))
 
-from mycodo.config import INFLUXDB_DATABASE
-from mycodo.config import INFLUXDB_HOST
-from mycodo.config import INFLUXDB_PASSWORD
-from mycodo.config import INFLUXDB_PORT
-from mycodo.config import INFLUXDB_USER
 from mycodo.config import PYRO_URI
 from mycodo.databases.models import Misc
 from mycodo.databases.models import SMTP
@@ -472,8 +467,14 @@ if __name__ == "__main__":
             f"ID '{args.input_force_measurements}': Server returned: {return_msg[1]}")
 
     elif args.get_measurement:
-        client = InfluxDBClient(INFLUXDB_HOST, INFLUXDB_PORT, INFLUXDB_USER,
-                                INFLUXDB_PASSWORD, INFLUXDB_DATABASE, timeout=5)
+        settings = db_retrieve_table_daemon(Misc, entry='first')
+        client = InfluxDBClient(
+            settings.measurement_db_host,
+            settings.measurement_db_port,
+            settings.measurement_db_user,
+            settings.measurement_db_password,
+            settings.measurement_db_dbname,
+            timeout=5)
         query = f"SELECT LAST(value) FROM {args.get_measurement[1]} " \
                 f"WHERE device_id='{args.get_measurement[0]}' " \
                 f"AND channel='{args.get_measurement[2]}'"

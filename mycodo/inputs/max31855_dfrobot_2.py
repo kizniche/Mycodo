@@ -13,10 +13,10 @@ measurements_dict = {
 }
 
 INPUT_INFORMATION = {
-    'input_name_unique': 'input_MAX31855_dfrobot',
+    'input_name_unique': 'input_MAX31855_dfrobot_gpio',
     'input_manufacturer': 'MAXIM',
     'input_name': 'MAX31855 (Gravity PT100)',
-    'input_library': 'wiringpi',
+    'input_library': 'smbus2',
     'measurements_name': 'Temperature',
     'measurements_dict': measurements_dict,
     'url_manufacturer': 'https://www.maximintegrated.com/en/products/interface/sensor-interface/MAX31855.html',
@@ -33,7 +33,7 @@ INPUT_INFORMATION = {
     ],
 
     'dependencies_module': [
-        ('pip-pypi', 'wiringpi', 'wiringpi')
+        ('pip-pypi', 'smbus2', 'smbus2==0.4.1')
     ],
 
     'interfaces': ['I2C'],
@@ -53,7 +53,7 @@ class InputModule(AbstractInput):
             self.try_initialize()
 
     def initialize(self):
-        self.sensor = DFRobotMAX31855()
+        self.sensor = DFRobotMAX31855(self.input_dev.i2c_bus, 0x10)
 
     def get_measurement(self):
         """Gets the measurement in units by reading the MAX31855."""
@@ -75,32 +75,40 @@ class InputModule(AbstractInput):
 
 
 class DFRobotMAX31855:
-    def __init__(self):
-        import wiringpi
+    '''
+      @brief A class to get sensor temperature
+    '''
 
-        self.wiringpi = wiringpi
-        self.i2c = self.wiringpi.wiringPiI2CSetup(0x10)
+    def __init__(self, bus, addr):
+        import smbus2
 
-    def read_data(self):
-        a = self.wiringpi.wiringPiI2CReadReg8(self.i2c, 0x00)
-        b = self.wiringpi.wiringPiI2CReadReg8(self.i2c, 0x01)
-        #    c = wiringpi.wiringPiI2CReadReg8(self.i2c,0x02)
-        d = self.wiringpi.wiringPiI2CReadReg8(self.i2c, 0x03)
-
-        return a, b, d
+        self.__addr = addr
+        self.i2cbus = smbus2.SMBus(bus)
 
     def read_celsius(self):
-        a, b, d = self.read_data()
-
-        if d & 0x7:
-            return False
-
-        if a & 0x80:
-            a = 0xff - a
-            b = 0xff - b
-            temp = -((((a << 8) | b) >> 2) + 1) * 0.25
+        '''
+          @brief Read temperature data of probe
+          @return Temperature value
+        '''
+        rxbuf = self.read_data(0x00, 4)
+        if (rxbuf[3] & 0x7):
+            return -1
+        if (rxbuf[0] & 0x80):
+            rxbuf[0] = 0xff - rxbuf[0]
+            rxbuf[1] = 0xff - rxbuf[1]
+            temp = -((((rxbuf[0] << 8) | (rxbuf[1] & 0xfc)) >> 2) + 1) * 0.25
             return temp
-
-        temp = (((a << 8) | b) >> 2) * 0.25
-
+        temp = (((rxbuf[0] << 8) | (rxbuf[1] & 0xfc)) >> 2) * 0.25
         return temp
+
+    def read_data(self, reg, length):
+        '''
+          @brief read the data from the register
+          @param reg register address
+          @param length read data length
+        '''
+        try:
+            rslt = self.i2cbus.read_i2c_block_data(self.__addr, reg, length)
+            return rslt
+        except:
+            return -1

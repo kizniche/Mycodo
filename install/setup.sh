@@ -47,7 +47,7 @@ LICENSE=$(whiptail --title "Mycodo Installer: License Agreement" \
 
 exitstatus=$?
 if [ $exitstatus != 0 ]; then
-    printf "Mycodo install canceled by user" 2>&1 | tee -a "${LOG_LOCATION}"
+    printf "Mycodo install canceled by user\n" 2>&1 | tee -a "${LOG_LOCATION}"
     exit 1
 fi
 
@@ -59,7 +59,60 @@ INSTALL=$(whiptail --title "Mycodo Installer: Install" \
                    3>&1 1>&2 2>&3)
 exitstatus=$?
 if [ $exitstatus != 0 ]; then
-    printf "Mycodo install canceled by user" 2>&1 | tee -a "${LOG_LOCATION}"
+    printf "Mycodo install canceled by user\n" 2>&1 | tee -a "${LOG_LOCATION}"
+    exit 1
+fi
+
+UNAME_TYPE=$(uname -m)
+MACHINE_TYPE=$(dpkg --print-architecture)
+
+clear
+if [[ ${MACHINE_TYPE} == 'armhf' ]]; then
+    INFLUX=$(whiptail --title "Mycodo Installer: Measurement Database" \
+                      --backtitle "Mycodo" \
+                      --menu "Install Influxdb?\n\nIf you do not install Influxdb, you will need to set the server settings in the Mycodo Configuration after Mycodo is installed." 20 68 4 \
+                      "1)" "Install Influxdb 1.x" \
+                      "0)" "Do Not Install Influxdb" \
+                      3>&1 1>&2 2>&3)
+    exitstatus=$?
+    if [ $exitstatus != 0 ]; then
+        printf "Mycodo install canceled by user\n" 2>&1 | tee -a "${LOG_LOCATION}"
+        exit 1
+    fi
+elif [[ ${MACHINE_TYPE} == 'arm64' || ${UNAME_TYPE} == 'x86_64' ]]; then
+    INFLUX=$(whiptail --title "Mycodo Installer: Measurement Database" \
+                      --backtitle "Mycodo" \
+                      --menu "Install Influxdb?\n\nIf you do not install Influxdb, you will need to set the server settings in the Mycodo Configuration after Mycodo is installed." 20 68 4 \
+                      "1)" "Install Influxdb 1.x" \
+                      "2)" "Install Influxdb 2.x" \
+                      "0)" "Do Not Install Influxdb" \
+                      3>&1 1>&2 2>&3)
+    exitstatus=$?
+    if [ $exitstatus != 0 ]; then
+        printf "Mycodo install canceled by user\n" 2>&1 | tee -a "${LOG_LOCATION}"
+        exit 1
+    fi
+else
+    printf "\nCould not detect architecture\n"
+    exit 1
+fi
+
+if [[ ${INFLUX} == '0)' ]]; then
+    clear
+    INSTALL=$(whiptail --title "Mycodo Installer: Measurement Database" \
+                       --backtitle "Mycodo" \
+                       --yesno "You have chosen not to install Influxdb. This is typically done if you want to use an existing influxdb server. Make sure to change the influxdb client options in the Mycodo Configuration after installing to ensure measurements can be properly saved/queried. If you would like to install influxdb, select cancel and start the Mycodo Installer over again." \
+                       20 68 \
+                       3>&1 1>&2 2>&3)
+    exitstatus=$?
+    if [ $exitstatus != 0 ]; then
+        printf "Mycodo install canceled by user\n" 2>&1 | tee -a "${LOG_LOCATION}"
+        exit 1
+    fi
+fi
+
+if [[ ${INFLUX} == 'NONE' ]]; then
+    printf "\nInflux install option not selected\n"
     exit 1
 fi
 
@@ -101,8 +154,15 @@ ${INSTALL_CMD} setup-virtualenv 2>&1 | tee -a "${LOG_LOCATION}"
 ${INSTALL_CMD} update-pip3 2>&1 | tee -a "${LOG_LOCATION}"
 ${INSTALL_CMD} update-pip3-packages 2>&1 | tee -a "${LOG_LOCATION}"
 ${INSTALL_CMD} install-wiringpi 2>&1 | tee -a "${LOG_LOCATION}"
-${INSTALL_CMD} update-influxdb 2>&1 | tee -a "${LOG_LOCATION}"
-${INSTALL_CMD} update-influxdb-db-user 2>&1 | tee -a "${LOG_LOCATION}"
+if [[ ${INFLUX} == '1)' ]]; then
+    ${INSTALL_CMD} update-influxdb-1 2>&1 | tee -a "${LOG_LOCATION}"
+    ${INSTALL_CMD} update-influxdb-1-db-user 2>&1 | tee -a "${LOG_LOCATION}"
+elif [[ ${INFLUX} == '2)' ]]; then
+    ${INSTALL_CMD} update-influxdb-2 2>&1 | tee -a "${LOG_LOCATION}"
+    ${INSTALL_CMD} update-influxdb-2-db-user 2>&1 | tee -a "${LOG_LOCATION}"
+elif [[ ${INFLUX} == '0)' ]]; then
+    printf "Instructed to not install Influxdb/n"
+fi
 ${INSTALL_CMD} initialize 2>&1 | tee -a "${LOG_LOCATION}"
 ${INSTALL_CMD} update-logrotate 2>&1 | tee -a "${LOG_LOCATION}"
 ${INSTALL_CMD} ssl-certs-generate 2>&1 | tee -a "${LOG_LOCATION}"

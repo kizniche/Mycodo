@@ -14,6 +14,7 @@ import time
 import traceback
 from collections import OrderedDict
 from threading import Timer
+from uuid import UUID
 
 from mycodo.config import INSTALL_DIRECTORY
 from mycodo.config_devices_units import MEASUREMENTS
@@ -580,15 +581,12 @@ def internet(host="8.8.8.8", port=53, timeout=3):
 
 
 #
-# Type checking
+# Validation
 #
 
-
 def str_is_float(text):
-    """Returns true if the string represents a float value."""
+    """Returns true if the object represents a float value (either a string representing a float or an actual number)."""
     try:
-        if not text:
-            return False
         if text.isalpha():
             return False
         float(text)
@@ -617,10 +615,18 @@ def is_int(test_var, check_range=None):
     return True
 
 
+def valid_uuid(uuid_str):
+    try:
+        val = UUID(uuid_str)
+    except Exception:
+        logger.exception(1)
+        return False
+    return val.hex == uuid_str.replace('-', '')
+
+
 #
 # File tools
 #
-
 
 def assure_path_exists(path):
     """Create path if it doesn't exist."""
@@ -677,7 +683,6 @@ def set_user_grp(filepath, user, group):
     uid = pwd.getpwnam(user).pw_uid
     gid = grp.getgrnam(group).gr_gid
     os.chown(filepath, uid, gid)
-
 
 #
 # Converters

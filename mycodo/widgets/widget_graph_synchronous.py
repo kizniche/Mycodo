@@ -38,6 +38,7 @@ from mycodo.databases.models import CustomController
 from mycodo.databases.models import DeviceMeasurements
 from mycodo.databases.models import Input
 from mycodo.databases.models import Measurement
+from mycodo.databases.models import Misc
 from mycodo.databases.models import NoteTags
 from mycodo.databases.models import Notes
 from mycodo.databases.models import Output
@@ -113,10 +114,20 @@ def past_data(unique_id, measure_type, measurement_id, past_seconds):
                 channel=channel,
                 past_sec=past_seconds)
 
-            if data:
-                return jsonify(data)
-            else:
+            if not data:
                 return '', 204
+
+            settings = Misc.query.first()
+            if settings.measurement_db_name == 'influxdb':
+                if settings.measurement_db_version == '2':
+                    list_data = []
+                    for table in data:
+                        for row in table.records:
+                            list_data.append((row.values['_time'].timestamp() * 1000, row.values['_value']))
+                    return jsonify(list_data)
+
+                elif settings.measurement_db_version == '1':
+                    return jsonify(data)
         except Exception as err:
             logger.debug(f"URL for 'past_data' raised and error: {err}")
             return '', 204

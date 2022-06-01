@@ -14,7 +14,7 @@ sys.path.append(os.path.abspath(os.path.dirname(__file__)))
 from config_translations import TRANSLATIONS as T
 
 MYCODO_VERSION = '8.13.10'
-ALEMBIC_VERSION = '743de2cd05e3'
+ALEMBIC_VERSION = '2c70a9e9e131'
 
 #  FORCE_UPGRADE_MASTER
 #  Set True to enable upgrading to the master branch of the Mycodo repository.
@@ -106,13 +106,6 @@ if DOCKER_CONTAINER:
     PYRO_URI = 'PYRO:mycodo.pyro_server@mycodo_daemon:9080'
 else:
     PYRO_URI = 'PYRO:mycodo.pyro_server@127.0.0.1:9080'
-
-# InfluxDB time-series database
-INFLUXDB_HOST = 'localhost' if not DOCKER_CONTAINER else 'influxdb'
-INFLUXDB_PORT = 8086
-INFLUXDB_USER = 'mycodo'
-INFLUXDB_PASSWORD = 'mmdu77sj3nIoiajjs'
-INFLUXDB_DATABASE = 'mycodo_db'
 
 # Anonymous statistics
 STATS_INTERVAL = 86400

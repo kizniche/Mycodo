@@ -18,15 +18,10 @@ from mycodo.config import ALEMBIC_VERSION
 from mycodo.config import DATABASE_NAME
 from mycodo.config import DEPENDENCY_LOG_FILE
 from mycodo.config import DOCKER_CONTAINER
-from mycodo.config import INFLUXDB_DATABASE
-from mycodo.config import INFLUXDB_HOST
-from mycodo.config import INFLUXDB_PASSWORD
-from mycodo.config import INFLUXDB_PORT
-from mycodo.config import INFLUXDB_USER
 from mycodo.config import INSTALL_DIRECTORY
 from mycodo.config import MYCODO_VERSION
-from mycodo.config import PATH_FUNCTIONS_CUSTOM
 from mycodo.config import PATH_ACTIONS_CUSTOM
+from mycodo.config import PATH_FUNCTIONS_CUSTOM
 from mycodo.config import PATH_HTML_USER
 from mycodo.config import PATH_INPUTS_CUSTOM
 from mycodo.config import PATH_OUTPUTS_CUSTOM
@@ -35,8 +30,10 @@ from mycodo.config import PATH_USER_SCRIPTS
 from mycodo.config import PATH_WIDGETS_CUSTOM
 from mycodo.config import SQL_DATABASE_MYCODO
 from mycodo.config_translations import TRANSLATIONS
+from mycodo.databases.models import Misc
 from mycodo.mycodo_flask.utils.utils_general import flash_form_errors
 from mycodo.mycodo_flask.utils.utils_general import flash_success_errors
+from mycodo.utils.database import db_retrieve_table_daemon
 from mycodo.utils.system_pi import assure_path_exists
 from mycodo.utils.system_pi import cmd_output
 from mycodo.utils.tools import create_measurements_export
@@ -389,12 +386,13 @@ def import_settings(form):
 
 
 def thread_import_influxdb(tmp_folder):
+    settings = db_retrieve_table_daemon(Misc, entry='first')
     mycodo_db_backup = 'mycodo_db_bak'
     client = InfluxDBClient(
-        INFLUXDB_HOST,
-        INFLUXDB_PORT,
-        INFLUXDB_USER,
-        INFLUXDB_PASSWORD,
+        settings.measurement_db_host,
+        settings.measurement_db_port,
+        settings.measurement_db_user,
+        settings.measurement_db_password,
         mycodo_db_backup)
 
     # Delete any backup database that may exist (can't copy over a current db)
@@ -424,7 +422,7 @@ def thread_import_influxdb(tmp_folder):
     try:
         logger.info("Beginning restore of data from tmp db to main db. This could take a while...")
         query_str = "SELECT * INTO {}..:MEASUREMENT FROM /.*/ GROUP BY *".format(
-            INFLUXDB_DATABASE)
+            settings.measurement_db_dbname)
         client.query(query_str)
         logger.info("Restore of data from tmp db complete.")
     except Exception as msg:
