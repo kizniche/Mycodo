@@ -251,7 +251,7 @@ class InputModule(AbstractInput):
 
         elif self.interface == 'I2C':
             self.logger.debug('Value: {val}'.format(val=return_string))
-            return_string = atlas_return
+            return_string = self.atlas_device.build_string(atlas_return)
 
         if return_string and ',' in return_string:
             index_place = 0

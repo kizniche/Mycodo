@@ -1,10 +1,10 @@
 # coding=utf-8
 import copy
-
 from flask_babel import lazy_gettext
 
 from mycodo.inputs.base_input import AbstractInput
 from mycodo.utils.atlas_calibration import setup_atlas_device
+from mycodo.utils.system_pi import is_int
 from mycodo.utils.system_pi import str_is_float
 
 # Measurements
@@ -140,7 +140,6 @@ class InputModule(AbstractInput):
             self.logger.error("Sensor read unsuccessful: {err}".format(err=atlas_return))
             return
 
-        # Parse device return data
         if self.interface in ['FTDI', 'UART']:
             # Find float value in list
             float_value = None
@@ -158,10 +157,16 @@ class InputModule(AbstractInput):
                 self.logger.error('Value or "check probe" not found in list: {val}'.format(val=atlas_return))
 
         elif self.interface == 'I2C':
-            if str_is_float(atlas_return):
-                co2 = float(atlas_return)
+            value = self.atlas_device.build_string(atlas_return)
+            if str_is_float(value):
+                co2 = float(value)
             else:
-                self.logger.error("Could not determine co2 from returned value: '{}'".format(atlas_return))
+                self.logger.debug("Could not determine co2 from returned value: '{}'".format(atlas_return))
+                return
+
+        if co2 and co2 < 100:
+            self.logger.debug("CO2 measured less than 100, not storing measurement.")
+            return
 
         self.value_set(0, co2)
 

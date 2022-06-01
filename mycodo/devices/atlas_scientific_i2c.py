@@ -17,7 +17,7 @@ class AtlasScientificI2C(AbstractBaseAtlasScientific):
     """Class for Atlas Scientific sensor communication via I2C."""
 
     LONG_TIMEOUT = 1.5  # the timeout needed to query readings and calibrations
-    SHORT_TIMEOUT = 0.3  # timeout for regular commands
+    SHORT_TIMEOUT = 0.5  # timeout for regular commands
     DEFAULT_BUS = 1  # the default bus for I2C on the newer Raspberry Pis, certain older boards use bus 0
     DEFAULT_ADDRESS = 98  # the default address for the sensor
     LONG_TIMEOUT_COMMANDS = ("R", "CAL")
@@ -102,15 +102,23 @@ class AtlasScientificI2C(AbstractBaseAtlasScientific):
         # self.logger.error("Atlas Scientific command being sent: '{}'".format(cmd))
         self.file_write.write(cmd.encode('latin-1'))
 
+    @staticmethod
+    def response_valid(response):
+        valid = True
+        error_code = None
+        if len(response) > 0:
+            error_code = str(response[0])
+            if error_code != '1':
+                valid = False
+        return valid, error_code
+
     def read(self, num_of_bytes=50):
         """Read a specified number of bytes from I2C, then parse and display the result."""
         res = self.file_read.read(num_of_bytes)  # read from the board
-        if res[0] == 1:  # if the response isn't an error
-            response = list(filter(lambda x: x != '\x00', res.decode()))  # remove the null characters
-            # change MSB to 0 for all received characters except the first and get a list of characters
-            char_list = map(lambda x: chr(ord(x) & ~0x80), list(response[1:]))
-            # NOTE: having to change the MSB to 0 is a glitch in the raspberry pi, and you shouldn't have to do this!
-            return "success", ''.join(char_list)  # convert the char list to a string and returns it
+        is_valid, error_code = self.response_valid(res)
+        if is_valid:
+            char_list = list(map(lambda x: chr(x & ~0x80), list(res)))
+            return "success", str(''.join(char_list))  # convert the char list to a string and returns it
         else:
             return "error", str(res[0])
 
@@ -163,6 +171,20 @@ class AtlasScientificI2C(AbstractBaseAtlasScientific):
                 pass
         self.set_i2c_address(prev_addr)  # restore the address we were using
         return i2c_devices
+
+    @staticmethod
+    def build_string(data):
+        try:
+            list_chars = []
+            for each_char in data:
+                try:
+                    if each_char.isalnum() or each_char in [".", ","]:
+                        list_chars.append(each_char)
+                except:
+                    pass
+            return ''.join(list_chars)
+        except:
+            return None
 
 
 def print_devices(device_list, device):

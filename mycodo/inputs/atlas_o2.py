@@ -270,10 +270,12 @@ class InputModule(AbstractInput):
                 self.logger.error('Value or "check probe" not found in list: {val}'.format(val=atlas_return))
 
         elif self.interface == 'I2C':
-            if str_is_float(atlas_return):
-                o2 = float(atlas_return)
+            value = self.atlas_device.build_string(atlas_return)
+            if str_is_float(value):
+                o2 = float(value)
             else:
-                self.logger.error("Could not determine O2 from returned value: '{}'".format(atlas_return))
+                self.logger.debug("Could not determine o2 from returned value: '{}'".format(atlas_return))
+                return
 
         self.value_set(0, o2)
 
