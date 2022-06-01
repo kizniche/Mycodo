@@ -230,7 +230,12 @@ class InputModule(AbstractInput):
 
         # Read sensor via I2C
         elif self.interface == 'I2C':
-            do = float(atlas_return)
+            value = self.atlas_device.build_string(atlas_return)
+            if str_is_float(value):
+                do = float(value)
+            else:
+                self.logger.error("Could not determine do from returned value: '{}'".format(atlas_return))
+                return
 
         self.value_set(0, do)
 

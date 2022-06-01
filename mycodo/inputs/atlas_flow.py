@@ -340,7 +340,7 @@ class InputModule(AbstractInput):
                         break
 
         elif self.interface == 'I2C':
-            return_string = atlas_return
+            return_string = self.atlas_device.build_string(atlas_return)
 
         total_volume = None
         flow_rate_raw = None

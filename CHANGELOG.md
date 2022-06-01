@@ -1,5 +1,9 @@
 ## 8.13.11 (Unreleased)
 
+### Bugfixes
+
+ - Fix "could not convert string to float" error for Atlas Scientific inputs
+
 ### Features
 
  - Add Input: Raspberry Pi Power Monitor

@@ -305,12 +305,14 @@ class InputModule(AbstractInput):
                 self.logger.error(f'Value or "check probe" not found in list: {atlas_return}')
 
         elif self.interface == 'I2C':
-            if ',' in atlas_return and str_is_float(atlas_return.split(',')[2]):
-                ph = float(atlas_return.split(',')[2])
-            elif str_is_float(atlas_return):
-                ph = float(atlas_return)
+            return_string = self.atlas_device.build_string(atlas_return)
+
+            if ',' in return_string and str_is_float(return_string.split(',')[2]):
+                ph = float(return_string.split(',')[2])
+            elif str_is_float(return_string):
+                ph = float(return_string)
             else:
-                self.logger.error(f"Could not determine pH from returned value: '{atlas_return}'")
+                self.logger.error(f"Could not determine pH from returned value: '{return_string}'")
 
         self.value_set(0, ph)
 
