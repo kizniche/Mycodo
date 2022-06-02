@@ -21,14 +21,15 @@
 #
 #  Contact at kylegabriel.com
 import logging
-
 import os
 
 from mycodo.config import PATH_WIDGETS
 from mycodo.config import PATH_WIDGETS_CUSTOM
+from mycodo.utils.logging_utils import set_log_level
 from mycodo.utils.modules import load_module_from_file
 
 logger = logging.getLogger("mycodo.utils.widgets")
+logger.setLevel(set_log_level(logging))
 
 
 def parse_widget_information(exclude_custom=False):

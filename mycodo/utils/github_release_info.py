@@ -2,13 +2,12 @@
 import argparse
 import json
 import logging
-import sys
-from urllib.request import Request
-from urllib.request import urlopen
-
 import os
 import re
+import sys
 from pkg_resources import parse_version
+from urllib.request import Request
+from urllib.request import urlopen
 
 sys.path.append(
     os.path.abspath(os.path.join(
@@ -16,8 +15,10 @@ sys.path.append(
 
 from mycodo.config import MYCODO_VERSION
 from mycodo.config import RELEASE_URL
+from mycodo.utils.logging_utils import set_log_level
 
 logger = logging.getLogger("mycodo.release_info")
+logger.setLevel(set_log_level(logging))
 
 
 class MycodoRelease:

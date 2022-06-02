@@ -282,7 +282,7 @@ class InputModule(AbstractInput):
         self.logger.debug("Device Returned: {}: {}".format(atlas_status, atlas_return))
 
         if atlas_status == 'error':
-            self.logger.error("Sensor read unsuccessful: {err}".format(err=atlas_return))
+            self.logger.debug("Sensor read unsuccessful: {err}".format(err=atlas_return))
             return
 
         # Parse device return data
@@ -348,12 +348,18 @@ class InputModule(AbstractInput):
                 write_cmd = "Cal,{}".format(ec)
             else:
                 write_cmd = "Cal,{},{}".format(level, ec)
-            self.logger.debug("Calibration command: {}".format(write_cmd))
 
-            self.logger.info("Command returned: {}".format(self.atlas_device.query(write_cmd)))
-            self.logger.info("Device Calibrated?: {}".format(self.atlas_device.query("Cal,?")))
-        except:
-            self.logger.exception("Exception calibrating")
+            self.logger.debug(f"Command to send: {write_cmd}")
+            cmd_status, cmd_return = self.atlas_device.query(write_cmd)
+            cmd_return = self.atlas_device.build_string(cmd_return)
+            self.logger.info(f"Command returned: {cmd_status}:{cmd_return}")
+            cal_status, cal_return = self.atlas_device.query("Cal,?")
+            cal_return = self.atlas_device.build_string(cal_return)
+            self.logger.info(f"Device Calibrated?: {cal_status}:{cal_return}")
+            return f"Command: {write_cmd}, Returned: {cmd_status}:{cmd_return}, Calibrated?: {cal_status}:{cal_return}"
+        except Exception as err:
+            self.logger.exception("Exception calibrating sensor")
+            return f"Exception calibrating sensor: {err}"
 
     def clear_calibrate(self, args_dict):
         self.calibrate('clear', None)

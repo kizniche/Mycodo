@@ -26,12 +26,14 @@ from mycodo.mycodo_client import DaemonControl
 from mycodo.utils.database import db_retrieve_table_daemon
 from mycodo.utils.influx import get_last_measurement
 from mycodo.utils.influx import get_past_measurements
+from mycodo.utils.logging_utils import set_log_level
 from mycodo.utils.modules import load_module_from_file
 from mycodo.utils.system_pi import return_measurement_info
 
 MYCODO_DB_PATH = f'sqlite:///{SQL_DATABASE_MYCODO}'
 
 logger = logging.getLogger("mycodo.actions")
+logger.setLevel(set_log_level(logging))
 
 
 def parse_action_information(exclude_custom=False):

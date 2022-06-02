@@ -321,7 +321,7 @@ class InputModule(AbstractInput):
         self.logger.debug("Device Returned: {}: {}".format(atlas_status, atlas_return))
 
         if atlas_status == 'error':
-            self.logger.error("Sensor read unsuccessful: {err}".format(err=atlas_return))
+            self.logger.debug("Sensor read unsuccessful: {err}".format(err=atlas_return))
             return
 
         # Parse device return data
@@ -397,7 +397,6 @@ class InputModule(AbstractInput):
             return 1, "Error: {}".format(return_string)
         elif atlas_status == 'success':
             return 0, "Success"
-
 
     def set_i2c_address(self, args_dict):
         if 'new_i2c_address' not in args_dict:

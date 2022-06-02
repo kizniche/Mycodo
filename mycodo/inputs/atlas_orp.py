@@ -93,11 +93,13 @@ INPUT_INFORMATION = {
         {
             'id': 'calibrate_mv',
             'type': 'button',
+            'wait_for_return': True,
             'name': lazy_gettext('Calibrate')
         },
         {
             'id': 'calibrate_clear',
             'type': 'button',
+            'wait_for_return': True,
             'name': lazy_gettext('Clear Calibration')
         },
         {
@@ -204,7 +206,7 @@ class InputModule(AbstractInput):
         self.logger.debug("Device Returned: {}: {}".format(atlas_status, atlas_return))
 
         if atlas_status == 'error':
-            self.logger.error("Sensor read unsuccessful: {err}".format(err=atlas_return))
+            self.logger.debug("Sensor read unsuccessful: {err}".format(err=atlas_return))
             return
 
         # Parse device return data
@@ -238,11 +240,17 @@ class InputModule(AbstractInput):
 
     def calibrate(self, write_cmd):
         try:
-            self.logger.info("Command: {}".format(write_cmd))
-            self.logger.info("Command returned: {}".format(self.atlas_device.query(write_cmd)))
-            self.logger.info("Device Calibrated?: {}".format(self.atlas_device.query("Cal,?")))
-        except:
-            self.logger.exception("Exception calibrating")
+            self.logger.debug(f"Command to send: {write_cmd}")
+            cmd_status, cmd_return = self.atlas_device.query(write_cmd)
+            cmd_return = self.atlas_device.build_string(cmd_return)
+            self.logger.info(f"Command returned: {cmd_status}:{cmd_return}")
+            cal_status, cal_return = self.atlas_device.query("Cal,?")
+            cal_return = self.atlas_device.build_string(cal_return)
+            self.logger.info(f"Device Calibrated?: {cal_status}:{cal_return}")
+            return f"Command: {write_cmd}, Returned: {cmd_status}:{cmd_return}, Calibrated?: {cal_status}:{cal_return}"
+        except Exception as err:
+            self.logger.exception("Exception calibrating sensor")
+            return f"Exception calibrating sensor: {err}"
 
     def calibrate_mv(self, args_dict):
         if 'solution_mV' not in args_dict:

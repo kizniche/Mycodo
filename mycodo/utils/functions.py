@@ -25,9 +25,11 @@ import os
 
 from mycodo.config import PATH_FUNCTIONS
 from mycodo.config import PATH_FUNCTIONS_CUSTOM
+from mycodo.utils.logging_utils import set_log_level
 from mycodo.utils.modules import load_module_from_file
 
 logger = logging.getLogger("mycodo.utils.functions")
+logger.setLevel(set_log_level(logging))
 
 
 def parse_function_information(exclude_custom=False):

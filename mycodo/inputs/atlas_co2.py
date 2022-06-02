@@ -68,6 +68,7 @@ INPUT_INFORMATION = {
         {
             'id': 'calibrate_high',
             'type': 'button',
+            'wait_for_return': True,
             'name': 'Calibrate (High)'
         },
         {
@@ -76,11 +77,13 @@ INPUT_INFORMATION = {
         {
             'id': 'calibrate_zero',
             'type': 'button',
+            'wait_for_return': True,
             'name': 'Calibrate (Zero)'
         },
         {
             'id': 'calibrate_clear',
             'type': 'button',
+            'wait_for_return': True,
             'name': lazy_gettext('Clear Calibration')
         },
         {
@@ -97,6 +100,7 @@ INPUT_INFORMATION = {
         {
             'id': 'set_i2c_address',
             'type': 'button',
+            'wait_for_return': True,
             'name': lazy_gettext('Set I2C Address')
         }
     ]
@@ -137,7 +141,7 @@ class InputModule(AbstractInput):
         self.logger.debug("Device Returned: {}: {}".format(atlas_status, atlas_return))
 
         if atlas_status == 'error':
-            self.logger.error("Sensor read unsuccessful: {err}".format(err=atlas_return))
+            self.logger.debug("Sensor read unsuccessful: {err}".format(err=atlas_return))
             return
 
         if self.interface in ['FTDI', 'UART']:
@@ -174,23 +178,29 @@ class InputModule(AbstractInput):
 
     def calibrate(self, write_cmd):
         try:
-            self.logger.debug("Command to send: {}".format(write_cmd))
-            self.logger.info("Command returned: {}".format(self.atlas_device.query(write_cmd)))
-            self.logger.info("Device Calibrated?: {}".format(self.atlas_device.query("Cal,?")))
-        except:
+            self.logger.debug(f"Command to send: {write_cmd}")
+            cmd_status, cmd_return = self.atlas_device.query(write_cmd)
+            cmd_return = self.atlas_device.build_string(cmd_return)
+            self.logger.info(f"Command returned: {cmd_status}:{cmd_return}")
+            cal_status, cal_return = self.atlas_device.query("Cal,?")
+            cal_return = self.atlas_device.build_string(cal_return)
+            self.logger.info(f"Device Calibrated?: {cal_status}:{cal_return}")
+            return f"Command: {write_cmd}, Returned: {cmd_status}:{cmd_return}, Calibrated?: {cal_status}:{cal_return}"
+        except Exception as err:
             self.logger.exception("Exception calibrating sensor")
+            return f"Exception calibrating sensor: {err}"
 
     def calibrate_high(self, args_dict):
         if 'co2_high' not in args_dict:
             self.logger.error("Cannot calibrate without high point CO2 ppmv")
             return
-        self.calibrate("Cal,{}".format(args_dict['co2_high']))
+        return self.calibrate("Cal,{}".format(args_dict['co2_high']))
 
     def calibrate_zero(self, args_dict):
-        self.calibrate("Cal,0")
+        return self.calibrate("Cal,0")
 
     def calibrate_clear(self, args_dict):
-        self.calibrate("Cal,clear")
+        return self.calibrate("Cal,clear")
 
     def set_i2c_address(self, args_dict):
         if 'new_i2c_address' not in args_dict:

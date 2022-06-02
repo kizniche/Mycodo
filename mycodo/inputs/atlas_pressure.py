@@ -132,7 +132,7 @@ class InputModule(AbstractInput):
             self.atlas_device.query('L,0')
 
         if atlas_status == 'error':
-            self.logger.error("Sensor read unsuccessful: {err}".format(err=atlas_return))
+            self.logger.debug("Sensor read unsuccessful: {err}".format(err=atlas_return))
             return
 
         # Parse device return data

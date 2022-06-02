@@ -97,6 +97,7 @@ INPUT_INFORMATION = {
         {
             'id': 'compensation_temp_set',
             'type': 'button',
+            'wait_for_return': True,
             'name': 'Set Temperature Compensation'
         },
         {
@@ -105,6 +106,7 @@ INPUT_INFORMATION = {
         {
             'id': 'clear_calibrate',
             'type': 'button',
+            'wait_for_return': True,
             'name': lazy_gettext('Clear Calibration')
         },
         {
@@ -120,6 +122,7 @@ INPUT_INFORMATION = {
         {
             'id': 'mid_calibrate',
             'type': 'button',
+            'wait_for_return': True,
             'name': 'Calibrate Mid'
         },
         {
@@ -135,6 +138,7 @@ INPUT_INFORMATION = {
         {
             'id': 'low_calibrate',
             'type': 'button',
+            'wait_for_return': True,
             'name': 'Calibrate Low'
         },
         {
@@ -150,6 +154,7 @@ INPUT_INFORMATION = {
         {
             'id': 'high_calibrate',
             'type': 'button',
+            'wait_for_return': True,
             'name': 'Calibrate High'
         },
         {
@@ -159,6 +164,7 @@ INPUT_INFORMATION = {
         {
             'id': 'calibration_export',
             'type': 'button',
+            'wait_for_return': True,
             'name': 'Export Calibration'
         },
         {
@@ -174,6 +180,7 @@ INPUT_INFORMATION = {
         {
             'id': 'calibration_import',
             'type': 'button',
+            'wait_for_return': True,
             'name': 'Import Calibration'
         },
         {
@@ -284,7 +291,7 @@ class InputModule(AbstractInput):
         self.logger.debug(f"Device Returned: {atlas_status}: {atlas_return}")
 
         if atlas_status == 'error':
-            self.logger.error(f"Sensor read unsuccessful: {atlas_return}")
+            self.logger.debug(f"Sensor read unsuccessful: {atlas_return}")
             return
 
         # Parse device return data
@@ -322,13 +329,18 @@ class InputModule(AbstractInput):
         if 'compensation_temp_c' not in args_dict:
             self.logger.error("Cannot set temperature compensation without temperature")
             return
+
         try:
             write_cmd = f"T,{args_dict['compensation_temp_c']:.2f}"
-            self.logger.info(f"Command: {write_cmd}")
-            self.logger.info(f"Command returned: {self.atlas_device.query(write_cmd)}")
-            self.logger.info(f"Stored temperature value: {self.atlas_device.query('T,?')}")
-        except:
+            self.logger.debug(f"Command to send: {write_cmd}")
+            cmd_return = self.atlas_device.build_string(self.atlas_device.query(write_cmd))
+            self.logger.info(f"Command returned: {cmd_return}")
+            val_return = self.atlas_device.build_string(self.atlas_device.query('T,?'))
+            self.logger.info(f"Stored temperature value: {slope_return}")
+            return f"Command: {write_cmd}, Returned: {cmd_return}, Stored Temp: {val_return}"
+        except Exception as err:
             self.logger.exception("Exception compensating temperature")
+            return f"Exception compensating temperature: {err}"
 
     def calibrate(self, level, ph):
         try:
@@ -336,13 +348,21 @@ class InputModule(AbstractInput):
                 write_cmd = "Cal,clear"
             else:
                 write_cmd = f"Cal,{level},{ph:.2f}"
-            self.logger.info(f"Calibration command: {write_cmd}")
-            self.logger.info(f"Command returned: {self.atlas_device.query(write_cmd)}")
-            self.logger.info(f"Calibrated: {self.atlas_device.query('Cal,?')}")
-            self.logger.info(f"Slope: {self.atlas_device.query('Slope,?')}")
-            time.sleep(2)
-        except:
-            self.logger.exception("Exception calibrating")
+
+            self.logger.debug(f"Command to send: {write_cmd}")
+            cmd_status, cmd_return = self.atlas_device.query(write_cmd)
+            cmd_return = self.atlas_device.build_string(cmd_return)
+            self.logger.info(f"Command returned: {cmd_status}:{cmd_return}")
+            cal_status, cal_return = self.atlas_device.query("Cal,?")
+            cal_return = self.atlas_device.build_string(cal_return)
+            self.logger.info(f"Device Calibrated?: {cal_status}:{cal_return}")
+            slope_status, slope_return = self.atlas_device.query('Slope,?')
+            slope_return = self.atlas_device.build_string(slope_return)
+            self.logger.info(f"Slope: {slope_status}:{slope_return}")
+            return f"Command: {write_cmd}, Returned: {cmd_status}:{cmd_return}, Calibrated?: {cal_status}:{cal_return}, Slope: {slope_status}:{slope_return}"
+        except Exception as err:
+            self.logger.exception("Exception calibrating sensor")
+            return f"Exception calibrating sensor: {err}"
 
     def clear_calibrate(self, args_dict):
         self.calibrate('clear', None)
@@ -395,6 +415,7 @@ class InputModule(AbstractInput):
                 self.logger.info(f"Slope: {atlas_return}")
         except:
             self.logger.exception("Exception exporting calibrating")
+        return "Check the Daemon Log to see if the export was successful"
 
     def calibration_import(self, args_dict):
         if 'calibration_import_str' not in args_dict:
@@ -425,6 +446,7 @@ class InputModule(AbstractInput):
             time.sleep(2)
         except:
             self.logger.exception("Exception importing calibrating")
+        return "Check the Daemon Log to see if the import was successful"
 
     def set_i2c_address(self, args_dict):
         if 'new_i2c_address' not in args_dict:

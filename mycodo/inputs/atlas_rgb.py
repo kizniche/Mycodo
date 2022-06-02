@@ -138,6 +138,7 @@ INPUT_INFORMATION = {
         {
             'id': 'calibrate',
             'type': 'button',
+            'wait_for_return': True,
             'name': lazy_gettext('Calibrate')
         },
         {
@@ -232,7 +233,7 @@ class InputModule(AbstractInput):
         self.logger.debug("Device Returned: {}: {}".format(atlas_status, atlas_return))
 
         if atlas_status == 'error':
-            self.logger.error("Sensor read unsuccessful: {err}".format(err=atlas_return))
+            self.logger.debug("Sensor read unsuccessful: {err}".format(err=atlas_return))
             return
 
         # Parse device return data
@@ -276,10 +277,15 @@ class InputModule(AbstractInput):
 
     def calibrate(self, args_dict):
         try:
-            self.logger.info("Command: {}".format('Cal'))
-            self.logger.info("Command returned: {}".format(self.atlas_device.query('Cal')))
-        except:
-            self.logger.exception("Exception calibrating")
+            write_cmd = "Cal"
+            self.logger.debug(f"Command to send: {write_cmd}")
+            cmd_status, cmd_return = self.atlas_device.query(write_cmd)
+            cmd_return = self.atlas_device.build_string(cmd_return)
+            self.logger.info(f"Command returned: {cmd_status}:{cmd_return}")
+            return f"Command: {write_cmd}, Returned: {cmd_status}:{cmd_return}"
+        except Exception as err:
+            self.logger.exception("Exception calibrating sensor")
+            return f"Exception calibrating sensor: {err}"
 
     def set_i2c_address(self, args_dict):
         if 'new_i2c_address' not in args_dict:

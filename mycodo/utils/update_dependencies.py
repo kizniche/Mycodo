@@ -31,8 +31,10 @@ from mycodo.utils.outputs import parse_output_information
 from mycodo.utils.inputs import parse_input_information
 from mycodo.utils.system_pi import cmd_output
 from mycodo.utils.widgets import parse_widget_information
+from mycodo.utils.logging_utils import set_log_level
 
 logger = logging.getLogger("mycodo.update_dependencies")
+logger.setLevel(set_log_level(logging))
 
 
 def get_installed_apt_dependencies():
