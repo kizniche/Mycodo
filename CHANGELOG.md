@@ -2,7 +2,7 @@
 
 ### Bugfixes
 
- - Fix "could not convert string to float" error for Atlas Scientific inputs
+ - Fix "Could not determine measurement from returned value" error for Atlas Scientific inputs
 
 ### Features
 
