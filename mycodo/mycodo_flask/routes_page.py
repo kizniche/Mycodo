@@ -245,15 +245,12 @@ def page_camera():
             mod_camera.timelapse_next_capture = now
             mod_camera.timelapse_capture_number = 0
             db.session.commit()
-            control.refresh_daemon_camera_settings()
         elif form_camera.pause_timelapse.data:
             mod_camera.timelapse_paused = True
             db.session.commit()
-            control.refresh_daemon_camera_settings()
         elif form_camera.resume_timelapse.data:
             mod_camera.timelapse_paused = False
             db.session.commit()
-            control.refresh_daemon_camera_settings()
         elif form_camera.stop_timelapse.data:
             mod_camera.timelapse_started = False
             mod_camera.timelapse_start_time = None
@@ -262,7 +259,6 @@ def page_camera():
             mod_camera.timelapse_next_capture = None
             mod_camera.timelapse_capture_number = None
             db.session.commit()
-            control.refresh_daemon_camera_settings()
         elif form_camera.start_stream.data:
             if mod_camera.timelapse_started:
                 flash(gettext(

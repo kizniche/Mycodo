@@ -132,10 +132,6 @@ class DaemonController:
         self.timer_upgrade = time.time() + 120
         self.timer_upgrade_message = time.time()
 
-        # Update camera settings
-        self.camera = []
-        self.refresh_daemon_camera_settings()
-
         # Update Misc settings
         self.output_usage_report_gen = None
         self.output_usage_report_span = None
@@ -709,16 +705,6 @@ class DaemonController:
             self.logger.exception(message)
 
 
-    def refresh_daemon_camera_settings(self):
-        try:
-            self.logger.debug("Refreshing camera settings")
-            self.camera = db_retrieve_table_daemon(Camera, entry='all')
-        except Exception as except_msg:
-            self.camera = []
-            message = f"Could not read camera table: {except_msg}"
-            self.logger.exception(message)
-
-
     def refresh_daemon_conditional_settings(self, unique_id):
         try:
             return self.controller['Conditional'][unique_id].refresh_settings()
@@ -1050,53 +1036,39 @@ class DaemonController:
 
 
     def check_all_timelapses(self, now):
-        try:
-            if not self.camera:
-                return
-            for each_camera in self.camera:
+        with session_scope(MYCODO_DB_PATH) as new_session:
+            for each_camera in new_session.query(Camera).all():
                 try:
-                    self.timelapse_check(each_camera, now)
+                    if (each_camera.timelapse_started and
+                            now > each_camera.timelapse_end_time):
+                        each_camera.timelapse_started = False
+                        each_camera.timelapse_paused = False
+                        each_camera.timelapse_start_time = None
+                        each_camera.timelapse_end_time = None
+                        each_camera.timelapse_interval = None
+                        each_camera.timelapse_next_capture = None
+                        each_camera.timelapse_capture_number = None
+                        new_session.commit()
+                        self.logger.debug(f"Camera {each_camera.id}: End of time-lapse.")
+                    elif ((each_camera.timelapse_started and not each_camera.timelapse_paused) and
+                            now > each_camera.timelapse_next_capture):
+                        # Ensure next capture is greater than now (in case of power failure/reboot)
+                        capture_now = each_camera.timelapse_next_capture
+                        while now > each_camera.timelapse_next_capture:
+                            # Update last capture and image number to latest before capture
+                            each_camera.timelapse_next_capture += each_camera.timelapse_interval
+                        each_camera.timelapse_capture_number += 1
+                        new_session.commit()
+                        if abs(now - capture_now) < 60:
+                            # Only capture if close to timelapse capture time
+                            # This prevents an unscheduled timelapse capture upon resume.
+                            self.logger.debug(f"Camera {each_camera.id}: Capturing time-lapse image")
+                            capture_image = threading.Thread(
+                                target=camera_record,
+                                args=('timelapse', each_camera.unique_id,))
+                            capture_image.start()
                 except Exception:
                     self.logger.exception("Could not execute timelapse")
-        except Exception:
-            self.logger.exception("Timelapse ERROR")
-
-
-    def timelapse_check(self, camera, now):
-        """If time-lapses are active, take photo at predefined periods."""
-        if (camera.timelapse_started and
-                now > camera.timelapse_end_time):
-            with session_scope(MYCODO_DB_PATH) as new_session:
-                mod_camera = new_session.query(Camera).filter(
-                    Camera.unique_id == camera.unique_id).first()
-                mod_camera.timelapse_started = False
-                mod_camera.timelapse_paused = False
-                mod_camera.timelapse_start_time = None
-                mod_camera.timelapse_end_time = None
-                mod_camera.timelapse_interval = None
-                mod_camera.timelapse_next_capture = None
-                mod_camera.timelapse_capture_number = None
-                new_session.commit()
-            self.refresh_daemon_camera_settings()
-            self.logger.debug(f"Camera {camera.id}: End of time-lapse.")
-        elif ((camera.timelapse_started and not camera.timelapse_paused) and
-                now > camera.timelapse_next_capture):
-            # Ensure next capture is greater than now (in case of power failure/reboot)
-            next_capture = camera.timelapse_next_capture
-            while now > next_capture:
-                # Update last capture and image number to latest before capture
-                next_capture += camera.timelapse_interval
-            with session_scope(MYCODO_DB_PATH) as new_session:
-                mod_camera = new_session.query(Camera).filter(Camera.unique_id == camera.unique_id).first()
-                mod_camera.timelapse_next_capture = next_capture
-                mod_camera.timelapse_capture_number += 1
-                new_session.commit()
-            self.refresh_daemon_camera_settings()
-            self.logger.debug(f"Camera {camera.id}: Capturing time-lapse image")
-            # Capture image
-            path, filename = camera_record('timelapse', camera.unique_id)
-            if not path or not filename:
-                self.logger.error(f"{camera.id}: Could not acquire time-lapse image.")
 
 
     def generate_usage_report(self):
@@ -1235,10 +1207,6 @@ class PyroServer(object):
     def pid_set(self, pid_id, setting, value):
         """Set PID setting."""
         return self.mycodo.pid_set(pid_id, setting, value)
-
-    def refresh_daemon_camera_settings(self, ):
-        """Instruct the daemon to refresh the camera settings."""
-        return self.mycodo.refresh_daemon_camera_settings()
 
     def refresh_daemon_conditional_settings(self, unique_id):
         """Instruct the daemon to refresh a conditional's settings."""

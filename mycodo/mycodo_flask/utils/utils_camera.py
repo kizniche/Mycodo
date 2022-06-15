@@ -217,8 +217,6 @@ def camera_mod(form_camera):
 
         if not messages["error"]:
             db.session.commit()
-            control = DaemonControl()
-            control.refresh_daemon_camera_settings()
             messages["success"].append("Camera settings saved")
     except Exception as except_msg:
         logger.exception(1)

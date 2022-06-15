@@ -2,6 +2,7 @@
 
 ### Bugfixes
 
+ - Fix inability to resume timelapses
  - Fix "Could not determine measurement from returned value" error for Atlas Scientific inputs
 
 ### Features

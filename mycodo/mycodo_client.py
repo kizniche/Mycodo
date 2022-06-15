@@ -129,9 +129,6 @@ class DaemonControl:
     def controller_deactivate(self, controller_id):
         return self.proxy().controller_deactivate(controller_id)
 
-    def refresh_daemon_camera_settings(self):
-        return self.proxy().refresh_daemon_camera_settings()
-
     def refresh_daemon_conditional_settings(self, unique_id):
         return self.proxy().refresh_daemon_conditional_settings(unique_id)
 

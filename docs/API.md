@@ -321,12 +321,6 @@ Parameters:
 -  **setting** - Which option to set. Options are: "setpoint", "method", "integrator", "derivator", "kp", "ki", or "kd".
 -  **value** - The value to set.
 
-### refresh_daemon_camera_settings()
-
-**refresh_daemon_camera_settings**\ ()
-
-Refresh the camera settings stored in the running daemon from the database values.
-
 ### refresh_daemon_conditional_settings()
 
 **refresh_daemon_conditional_settings**\ (*unique_id*)
