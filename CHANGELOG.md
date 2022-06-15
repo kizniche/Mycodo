@@ -2,7 +2,7 @@
 
 ### Bugfixes
 
- - Fix inability to resume timelapses
+ - Fix inability to resume timelapses ([#1163](https://github.com/kizniche/Mycodo/issues/1163))
  - Fix "Could not determine measurement from returned value" error for Atlas Scientific inputs
 
 ### Features
