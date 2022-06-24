@@ -43,7 +43,7 @@ def is_email(email):
         return True
 
 
-def pass_length_min(pw, min_len=6):
+def pass_length_min(pw, min_len=4):
     """
     Validate password length
 
@@ -78,7 +78,7 @@ def characters(un):
         return True
 
 
-def user_length_min(un, min_len=2):
+def user_length_min(un, min_len=4):
     """
     Validate Username length
 
