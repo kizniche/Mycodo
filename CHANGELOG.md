@@ -13,6 +13,10 @@
  - Add ability to set Chirp Input I2C address ([#1197](https://github.com/kizniche/mycodo/issues/1197))
  - Add UI feedback for Atlas Scientific calibration commands ([#1198](https://github.com/kizniche/Mycodo/issues/1198))
 
+### Miscellaneous
+
+ - Add username/password requirements to Admin Creation page
+
 
 ## 8.13.10 (2022-05-19)
 
