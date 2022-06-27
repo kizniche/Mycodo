@@ -4,6 +4,7 @@
 
  - Fix inability to resume timelapses ([#1163](https://github.com/kizniche/Mycodo/issues/1163))
  - Fix "Could not determine measurement from returned value" error for Atlas Scientific inputs
+ - Only increment the timelapse count when an image is captured
 
 ### Features
 

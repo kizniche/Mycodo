@@ -1057,16 +1057,20 @@ class DaemonController:
                         while now > each_camera.timelapse_next_capture:
                             # Update last capture and image number to latest before capture
                             each_camera.timelapse_next_capture += each_camera.timelapse_interval
-                        each_camera.timelapse_capture_number += 1
                         new_session.commit()
                         if abs(now - capture_now) < 60:
                             # Only capture if close to timelapse capture time
                             # This prevents an unscheduled timelapse capture upon resume.
+                            each_camera.timelapse_capture_number += 1
+                            new_session.commit()
                             self.logger.debug(f"Camera {each_camera.id}: Capturing time-lapse image")
                             capture_image = threading.Thread(
                                 target=camera_record,
                                 args=('timelapse', each_camera.unique_id,))
                             capture_image.start()
+                        else:
+                            self.logger.error(f"Camera {each_camera.id}: "
+                                              f"Timelapse too far from scheduled time, not capturing.")
                 except Exception:
                     self.logger.exception("Could not execute timelapse")
 
