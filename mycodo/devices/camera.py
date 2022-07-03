@@ -239,7 +239,9 @@ def camera_record(record_type, unique_id, duration_sec=None, tmp_filename=None):
 
         try:
             if settings.output_format:
-                filename = f'Still-{settings.id}-{settings.name}-{timestamp}.{settings.output_format.lower()}'.replace(" ", "_")
+                # replace extension
+                filename = filename.rsplit('.', 1)[0]
+                filename = f"{filename}.{settings.output_format.lower()}"
                 path_file = os.path.join(save_path, filename)
 
             cmd = f"/usr/bin/libcamera-still " \
