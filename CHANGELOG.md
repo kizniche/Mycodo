@@ -19,6 +19,7 @@
 ### Miscellaneous
 
  - Add username/password requirements to Admin Creation page
+ - Move Conditional Condition text ([#1204](https://github.com/kizniche/Mycodo/issues/1204))
 
 
 ## 8.13.10 (2022-05-19)
