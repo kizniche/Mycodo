@@ -4,7 +4,7 @@
     {{form_conditional_conditions.conditional_id(class_='form-control', value=each_function.unique_id)}}
     {{form_conditional_conditions.conditional_condition_id(class_='form-control', value=each_condition.unique_id)}}
 
-    <div class="row align-items-end small-gutters" style="padding-bottom: 0.3em; border-top: 1px dashed #ddd">
+    <div class="row align-items-end small-gutters" style="padding-bottom: 0.3em; border-top: 1px solid #ddd">
       <div class="col-auto">
         <input onclick="return $(this).processRequest(this, 'save_condition');" name="save_condition" value="{{_('Save')}}" class="form-control btn btn-primary btn-sm btn-block" type="button"/>
       </div>

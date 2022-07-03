@@ -15,7 +15,7 @@
 
   {% if 'name' in dict_options and 'message' in dict_options %}
       <div class="col-12">
-        <strong>[Action] {{dict_options["name"]}}</strong>: {{dict_options["message"]}}
+        <strong>[{{_('Action')}}] {{dict_options["name"]}}</strong>: {{dict_options["message"]}}
       </div>
   {% endif %}
 

@@ -265,9 +265,16 @@ def camera_timelapse_video(form_camera):
         try:
             camera = db_retrieve_table(
                 Camera, unique_id=form_camera.camera_id.data)
+
+            if camera.path_timelapse:
+                timelapse_path = assure_path_exists(camera.path_timelapse)
+            else:
+                image_path = assure_path_exists(
+                    os.path.join(PATH_CAMERAS, camera.unique_id))
+                timelapse_path = assure_path_exists(os.path.join(image_path, 'timelapse'))
+
             camera_path = assure_path_exists(
-                os.path.join(PATH_CAMERAS, '{uid}'.format(uid=camera.unique_id)))
-            timelapse_path = assure_path_exists(os.path.join(camera_path, 'timelapse'))
+                os.path.join(PATH_CAMERAS, camera.unique_id))
             video_path = assure_path_exists(os.path.join(camera_path, 'timelapse_video'))
             timestamp = datetime.datetime.now().strftime('%Y-%m-%d_%H-%M-%S')
             path_file = os.path.join(
