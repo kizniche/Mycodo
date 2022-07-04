@@ -97,11 +97,11 @@ class SettingsGeneral(FlaskForm):
     hide_warning = BooleanField(lazy_gettext('Hide warning messages'))
     hide_tooltips = BooleanField(lazy_gettext('Hide Form Tooltips'))
 
-    measurement_db_host = StringField(lazy_gettext('Influxdb Host'))
-    measurement_db_port = IntegerField(lazy_gettext('Influxdb Port'))
-    measurement_db_dbname = StringField(lazy_gettext('Influxdb Database Name'))
-    measurement_db_user = StringField(lazy_gettext('Influxdb User'))
-    measurement_db_password = PasswordField(lazy_gettext('Influxdb Password'))
+    measurement_db_host = StringField(lazy_gettext('Hostname'))
+    measurement_db_port = IntegerField(lazy_gettext('Port'))
+    measurement_db_dbname = StringField(lazy_gettext('Database Name'))
+    measurement_db_user = StringField(lazy_gettext('Username'))
+    measurement_db_password = PasswordField(lazy_gettext('Password'))
 
     grid_cell_height = IntegerField(
         lazy_gettext('Grid Cell Height (px)'), widget=NumberInput())
