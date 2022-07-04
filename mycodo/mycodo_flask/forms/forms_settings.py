@@ -97,6 +97,7 @@ class SettingsGeneral(FlaskForm):
     hide_warning = BooleanField(lazy_gettext('Hide warning messages'))
     hide_tooltips = BooleanField(lazy_gettext('Hide Form Tooltips'))
 
+    use_database = StringField(lazy_gettext('Database'))
     measurement_db_host = StringField(lazy_gettext('Hostname'))
     measurement_db_port = IntegerField(lazy_gettext('Port'))
     measurement_db_dbname = StringField(lazy_gettext('Database Name'))

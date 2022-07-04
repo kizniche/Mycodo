@@ -393,6 +393,13 @@ def settings_general_mod(form):
                 mod_misc.hide_alert_warning = form.hide_warning.data
                 mod_misc.hide_tooltips = form.hide_tooltips.data
 
+                if form.use_database.data == "influxdb_1":
+                    mod_misc.measurement_db_name = "influxdb"
+                    mod_misc.measurement_db_version = "1"
+                elif form.use_database.data == "influxdb_2":
+                    mod_misc.measurement_db_name = "influxdb"
+                    mod_misc.measurement_db_version = "2"
+
                 mod_misc.measurement_db_host = form.measurement_db_host.data
                 mod_misc.measurement_db_port = form.measurement_db_port.data
                 mod_misc.measurement_db_dbname = form.measurement_db_dbname.data

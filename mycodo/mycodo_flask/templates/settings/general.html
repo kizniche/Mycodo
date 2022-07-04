@@ -206,6 +206,15 @@
         </div>
       </div>
       <div class="form-group">
+        {{form_settings_general.use_database.label(class_='col-sm-12 control-label checkbox-nopad')}}
+        <div class="col-sm-12">
+          <select class="form-control form-tooltip form-dropdown" id="use_database" name="use_database" title="">
+            <option value="influxdb_1"{% if misc.measurement_db_name == 'influxdb' and misc.measurement_db_version == '1' %} selected{% endif %}>Influxdb 1.x</option>
+            <option value="influxdb_2"{% if misc.measurement_db_name == 'influxdb' and misc.measurement_db_version == '2' %} selected{% endif %}>Influxdb 2.x</option>
+          </select>
+        </div>
+      </div>
+      <div class="form-group">
         {{form_settings_general.measurement_db_host.label(class_='col-sm-12 control-label checkbox-nopad')}}
         <div class="col-sm-12">
           {{form_settings_general.measurement_db_host(class_='form-control', value=misc.measurement_db_host)}}
