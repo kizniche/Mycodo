@@ -387,7 +387,6 @@ case "${1:-''}" in
     ;;
     'update-influxdb-1')
         printf "\n#### Ensuring compatible version of influxdb 1.x is installed ####\n"
-        apt remove -y influxdb2
         INSTALL_ADDRESS="https://dl.influxdata.com/influxdb/releases/"
         INSTALL_FILE="influxdb_${INFLUXDB1_VERSION}_${MACHINE_TYPE}.deb"
         CORRECT_VERSION="${INFLUXDB1_VERSION}-1"
@@ -405,7 +404,6 @@ case "${1:-''}" in
     'update-influxdb-2')
         printf "\n#### Ensuring compatible version of influxdb 2.x is installed ####\n"
         if [[ ${UNAME_TYPE} == 'x86_64' || ${MACHINE_TYPE} == 'arm64' ]]; then
-            apt remove -y influxdb
             INSTALL_ADDRESS="https://dl.influxdata.com/influxdb/releases/"
             INSTALL_FILE="influxdb2-${INFLUXDB2_VERSION}-${MACHINE_TYPE}.deb"
             CLI_FILE="influxdb2-client-${INFLUXDB2_VERSION}-${MACHINE_TYPE}.deb"
