@@ -199,6 +199,43 @@
           &nbsp;&nbsp;{{_('Check if you do not wish to send anonymous usage statistics.')}} <a href="/admin/statistics">{{_('View collected statistics')}}</a>
         </div>
       </div>
+
+      <div class="form-group">
+        <div class="col-sm-12">
+          <h3>Influxdb Options</h3>
+        </div>
+      </div>
+      <div class="form-group">
+        {{form_settings_general.measurement_db_host.label(class_='col-sm-12 control-label checkbox-nopad')}}
+        <div class="col-sm-12">
+          {{form_settings_general.measurement_db_host(class_='form-control', value=misc.measurement_db_host)}}
+        </div>
+      </div>
+      <div class="form-group">
+        {{form_settings_general.measurement_db_port.label(class_='col-sm-12 control-label checkbox-nopad')}}
+        <div class="col-sm-12">
+          {{form_settings_general.measurement_db_port(class_='form-control', value=misc.measurement_db_port)}}
+        </div>
+      </div>
+      <div class="form-group">
+        {{form_settings_general.measurement_db_dbname.label(class_='col-sm-12 control-label checkbox-nopad')}}
+        <div class="col-sm-12">
+          {{form_settings_general.measurement_db_dbname(class_='form-control', value=misc.measurement_db_dbname)}}
+        </div>
+      </div>
+      <div class="form-group">
+        {{form_settings_general.measurement_db_user.label(class_='col-sm-12 control-label checkbox-nopad')}}
+        <div class="col-sm-12">
+          {{form_settings_general.measurement_db_user(class_='form-control', value=misc.measurement_db_user)}}
+        </div>
+      </div>
+      <div class="form-group">
+        {{form_settings_general.measurement_db_password.label(class_='col-sm-12 control-label checkbox-nopad')}}
+        <div class="col-sm-12">
+          {{form_settings_general.measurement_db_password(class_='form-control', **{'title':"Only enter a password to change the saved password"})}}
+        </div>
+      </div>
+
       <div class="form-group">
         <div class="col-sm-12">
           <h3>Dashboard Options</h3>

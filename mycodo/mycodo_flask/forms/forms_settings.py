@@ -96,6 +96,13 @@ class SettingsGeneral(FlaskForm):
     hide_info = BooleanField(lazy_gettext('Hide info messages'))
     hide_warning = BooleanField(lazy_gettext('Hide warning messages'))
     hide_tooltips = BooleanField(lazy_gettext('Hide Form Tooltips'))
+
+    measurement_db_host = StringField(lazy_gettext('Influxdb Host'))
+    measurement_db_port = IntegerField(lazy_gettext('Influxdb Port'))
+    measurement_db_dbname = StringField(lazy_gettext('Influxdb Database Name'))
+    measurement_db_user = StringField(lazy_gettext('Influxdb User'))
+    measurement_db_password = PasswordField(lazy_gettext('Influxdb Password'))
+
     grid_cell_height = IntegerField(
         lazy_gettext('Grid Cell Height (px)'), widget=NumberInput())
     max_amps = DecimalField(

@@ -392,6 +392,15 @@ def settings_general_mod(form):
                 mod_misc.hide_alert_info = form.hide_info.data
                 mod_misc.hide_alert_warning = form.hide_warning.data
                 mod_misc.hide_tooltips = form.hide_tooltips.data
+
+                mod_misc.measurement_db_host = form.measurement_db_host.data
+                mod_misc.measurement_db_port = form.measurement_db_port.data
+                mod_misc.measurement_db_dbname = form.measurement_db_dbname.data
+                mod_misc.measurement_db_user = form.measurement_db_user.data
+                if (form.measurement_db_password.data and
+                        form.measurement_db_password.data != mod_misc.measurement_db_password):
+                    mod_misc.measurement_db_password = form.measurement_db_password.data
+
                 mod_misc.grid_cell_height = form.grid_cell_height.data
                 mod_misc.max_amps = form.max_amps.data
                 mod_misc.output_usage_volts = form.output_stats_volts.data
