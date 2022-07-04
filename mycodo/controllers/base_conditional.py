@@ -57,6 +57,7 @@ class AbstractConditional:
 
     def condition(self, condition_id):
         full_cond_id = condition_id
+        cond = None
         if len(condition_id) < 36:
             condition_id = condition_id.replace("{", "").replace("}", "")
             with session_scope(MYCODO_DB_PATH) as new_session:
@@ -70,6 +71,7 @@ class AbstractConditional:
 
     def condition_dict(self, condition_id):
         full_cond_id = condition_id
+        cond = None
         if len(condition_id) < 36:
             condition_id = condition_id.replace("{", "").replace("}", "")
             with session_scope(MYCODO_DB_PATH) as new_session:
