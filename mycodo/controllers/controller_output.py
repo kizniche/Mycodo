@@ -25,7 +25,6 @@ import threading
 import time
 import timeit
 
-from mycodo.config import SQL_DATABASE_MYCODO
 from mycodo.controllers.base_controller import AbstractController
 from mycodo.databases.models import Misc
 from mycodo.databases.models import Output
@@ -35,8 +34,6 @@ from mycodo.utils.database import db_retrieve_table_daemon
 from mycodo.utils.modules import load_module_from_file
 from mycodo.utils.outputs import output_types
 from mycodo.utils.outputs import parse_output_information
-
-MYCODO_DB_PATH = f'sqlite:///{SQL_DATABASE_MYCODO}'
 
 
 class OutputController(AbstractController, threading.Thread):

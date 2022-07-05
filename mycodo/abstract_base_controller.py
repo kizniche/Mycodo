@@ -17,7 +17,7 @@ import logging
 import time
 from collections import OrderedDict
 
-from mycodo.config import SQL_DATABASE_MYCODO
+from mycodo.config import MYCODO_DB_PATH
 from mycodo.databases.models import Conversion
 from mycodo.databases.models import DeviceMeasurements
 from mycodo.databases.models import OutputChannel
@@ -25,8 +25,6 @@ from mycodo.databases.utils import session_scope
 from mycodo.utils.database import db_retrieve_table_daemon
 from mycodo.utils.influx import get_last_measurement
 from mycodo.utils.influx import get_past_measurements
-
-MYCODO_DB_PATH = f'sqlite:///{SQL_DATABASE_MYCODO}'
 
 
 class AbstractBaseController(object):

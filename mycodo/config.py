@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 #
-#  config.py - Global Mycodo settings
+# config.py - Global Mycodo settings
 #
 import binascii
 import sys
@@ -16,11 +16,11 @@ from config_translations import TRANSLATIONS as T
 MYCODO_VERSION = '8.13.10'
 ALEMBIC_VERSION = '2c70a9e9e131'
 
-#  FORCE_UPGRADE_MASTER
-#  Set True to enable upgrading to the master branch of the Mycodo repository.
-#  Set False to enable upgrading to the latest Release version (default).
-#  Do not use this feature unless you know what you're doing or have been
-#  instructed to do so, as it can really mess up your system.
+# FORCE UPGRADE MASTER
+# Set True to enable upgrading to the master branch of the Mycodo repository.
+# Set False to enable upgrading to the latest Release version (default).
+# Do not use this feature unless you know what you're doing or have been
+# instructed to do so, as it can really mess up your system.
 FORCE_UPGRADE_MASTER = False
 
 # Final release for each major version number
@@ -31,8 +31,7 @@ FINAL_RELEASES = ['5.7.3', '6.4.7', '7.10.0']
 # Accessed at https://127.0.0.1/mycodo-flask-profiler
 ENABLE_FLASK_PROFILER = False
 
-
-# Install path (the parent directory of this script)
+# Install path (the parent directory of this file)
 INSTALL_DIRECTORY = os.path.abspath(os.path.dirname(os.path.realpath(__file__)) + '/..')
 
 # Database
@@ -222,7 +221,6 @@ CAMERA_INFO = {
         'capable_stream': False
     },
 }
-
 
 METHOD_DEP_BASE = [
     ('apt', 'unzip', 'unzip'),

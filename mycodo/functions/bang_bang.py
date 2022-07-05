@@ -8,15 +8,11 @@ import time
 
 from flask_babel import lazy_gettext
 
-from mycodo.config import SQL_DATABASE_MYCODO
 from mycodo.databases.models import CustomController
 from mycodo.functions.base_function import AbstractFunction
 from mycodo.mycodo_client import DaemonControl
 from mycodo.utils.constraints_pass import constraints_pass_positive_value
 from mycodo.utils.database import db_retrieve_table_daemon
-
-MYCODO_DB_PATH = f'sqlite:///{SQL_DATABASE_MYCODO}'
-
 
 # TODO: Remove this at next major version (obsolete because a On/Off Raise/Lower/Both Bang-Bang exists
 FUNCTION_INFORMATION = {

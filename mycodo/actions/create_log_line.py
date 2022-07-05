@@ -2,12 +2,10 @@
 from flask_babel import lazy_gettext
 
 from mycodo.actions.base_action import AbstractFunctionAction
-from mycodo.config import SQL_DATABASE_MYCODO
 from mycodo.config_translations import TRANSLATIONS
 from mycodo.databases.models import Actions
 from mycodo.utils.database import db_retrieve_table_daemon
 
-MYCODO_DB_PATH = f'sqlite:///{SQL_DATABASE_MYCODO}'
 
 ACTION_INFORMATION = {
     'name_unique': 'create_log_line',

@@ -4,7 +4,7 @@ import time
 
 import requests
 
-from mycodo.config import SQL_DATABASE_MYCODO
+from mycodo.config import MYCODO_DB_PATH
 from mycodo.config_translations import TRANSLATIONS
 from mycodo.databases.models import Conversion
 from mycodo.databases.models import Input
@@ -14,8 +14,6 @@ from mycodo.inputs.base_input import AbstractInput
 from mycodo.utils.database import db_retrieve_table_daemon
 from mycodo.utils.influx import add_measurements_influxdb
 from mycodo.utils.inputs import parse_measurement
-
-MYCODO_DB_PATH = f'sqlite:///{SQL_DATABASE_MYCODO}'
 
 
 def constraints_pass_positive_value(mod_input, value):

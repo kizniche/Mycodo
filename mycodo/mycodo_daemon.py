@@ -44,8 +44,8 @@ from daemonize import Daemonize
 from mycodo.config import DAEMON_LOG_FILE
 from mycodo.config import DAEMON_PID_FILE
 from mycodo.config import DOCKER_CONTAINER
+from mycodo.config import MYCODO_DB_PATH
 from mycodo.config import MYCODO_VERSION
-from mycodo.config import SQL_DATABASE_MYCODO
 from mycodo.config import STATS_CSV
 from mycodo.config import STATS_INTERVAL
 from mycodo.config import UPGRADE_CHECK_INTERVAL
@@ -78,8 +78,6 @@ from mycodo.utils.stats import return_stat_file_dict
 from mycodo.utils.stats import send_anonymous_stats
 from mycodo.utils.tools import generate_output_usage_report
 from mycodo.utils.tools import next_schedule
-
-MYCODO_DB_PATH = f'sqlite:///{SQL_DATABASE_MYCODO}'
 
 
 class DaemonController:

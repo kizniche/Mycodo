@@ -1,14 +1,13 @@
 # coding=utf-8
 import logging
-import sqlalchemy
 import time
 from sqlite3 import OperationalError
 
-from mycodo.config import SQL_DATABASE_MYCODO
+import sqlalchemy
+
+from mycodo.config import MYCODO_DB_PATH
 from mycodo.databases.utils import session_scope
 from mycodo.utils.logging_utils import set_log_level
-
-MYCODO_DB_PATH = f'sqlite:///{SQL_DATABASE_MYCODO}'
 
 logger = logging.getLogger("mycodo.database")
 logger.setLevel(set_log_level(logging))

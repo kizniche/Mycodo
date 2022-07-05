@@ -4,9 +4,9 @@ import os
 import time
 import traceback
 
+from mycodo.config import MYCODO_DB_PATH
 from mycodo.config import PATH_ACTIONS
 from mycodo.config import PATH_ACTIONS_CUSTOM
-from mycodo.config import SQL_DATABASE_MYCODO
 from mycodo.databases.models import Actions
 from mycodo.databases.models import Camera
 from mycodo.databases.models import Conditional
@@ -29,8 +29,6 @@ from mycodo.utils.influx import get_past_measurements
 from mycodo.utils.logging_utils import set_log_level
 from mycodo.utils.modules import load_module_from_file
 from mycodo.utils.system_pi import return_measurement_info
-
-MYCODO_DB_PATH = f'sqlite:///{SQL_DATABASE_MYCODO}'
 
 logger = logging.getLogger("mycodo.actions")
 logger.setLevel(set_log_level(logging))

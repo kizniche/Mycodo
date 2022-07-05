@@ -5,8 +5,8 @@ import logging
 import os
 import time
 
+from mycodo.config import MYCODO_DB_PATH
 from mycodo.config import PATH_CAMERAS
-from mycodo.config import SQL_DATABASE_MYCODO
 from mycodo.databases.models import Camera
 from mycodo.databases.models import OutputChannel
 from mycodo.databases.utils import session_scope
@@ -16,8 +16,6 @@ from mycodo.utils.logging_utils import set_log_level
 from mycodo.utils.system_pi import assure_path_exists
 from mycodo.utils.system_pi import cmd_output
 from mycodo.utils.system_pi import set_user_grp
-
-MYCODO_DB_PATH = f'sqlite:///{SQL_DATABASE_MYCODO}'
 
 logger = logging.getLogger(__name__)
 logger.setLevel(set_log_level(logging))

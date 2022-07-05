@@ -3,7 +3,7 @@ import traceback
 
 from flask_babel import lazy_gettext
 
-from mycodo.config import SQL_DATABASE_MYCODO
+from mycodo.config import MYCODO_DB_PATH
 from mycodo.databases.models import Conversion
 from mycodo.databases.models import DeviceMeasurements
 from mycodo.databases.utils import session_scope
@@ -12,8 +12,6 @@ from mycodo.inputs.sensorutils import convert_from_x_to_y_unit
 from mycodo.utils.database import db_retrieve_table_daemon
 from mycodo.utils.system_pi import get_measurement
 from mycodo.utils.system_pi import return_measurement_info
-
-MYCODO_DB_PATH = f'sqlite:///{SQL_DATABASE_MYCODO}'
 
 
 def constraints_pass_positive_value(mod_input, value):

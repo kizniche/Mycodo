@@ -26,7 +26,7 @@ import time
 
 from flask_babel import lazy_gettext
 
-from mycodo.config import SQL_DATABASE_MYCODO
+from mycodo.config import MYCODO_DB_PATH
 from mycodo.databases.models import CustomController
 from mycodo.databases.utils import session_scope
 from mycodo.functions.base_function import AbstractFunction
@@ -35,7 +35,6 @@ from mycodo.utils.PID_hirschmann.pid_autotune import PIDAutotune
 from mycodo.utils.constraints_pass import constraints_pass_positive_value
 from mycodo.utils.database import db_retrieve_table_daemon
 
-MYCODO_DB_PATH = f'sqlite:///{SQL_DATABASE_MYCODO}'
 
 FUNCTION_INFORMATION = {
     'function_name_unique': 'pid_autotune',

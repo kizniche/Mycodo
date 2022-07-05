@@ -1,22 +1,22 @@
 # coding=utf-8
 import csv
-import distro
-import geocoder
 import hashlib
 import logging
 import os
 import pwd
-import requests
 import resource
 import time
 from collections import OrderedDict
+
+import distro
+import geocoder
+import requests
 from influxdb import InfluxDBClient
 from influxdb.exceptions import InfluxDBServerError
 
 from mycodo.config import ID_FILE
 from mycodo.config import INSTALL_DIRECTORY
 from mycodo.config import MYCODO_VERSION
-from mycodo.config import SQL_DATABASE_MYCODO
 from mycodo.config import STATS_CSV
 from mycodo.config import STATS_DATABASE
 from mycodo.config import STATS_HOST
@@ -34,8 +34,6 @@ from mycodo.databases.models import PID
 from mycodo.databases.models import Trigger
 from mycodo.utils.database import db_retrieve_table_daemon
 from mycodo.utils.logging_utils import set_log_level
-
-MYCODO_DB_PATH = f'sqlite:///{SQL_DATABASE_MYCODO}'
 
 logger = logging.getLogger("mycodo.stats")
 logger.setLevel(set_log_level(logging))

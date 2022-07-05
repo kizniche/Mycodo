@@ -28,10 +28,8 @@ sys.path.append(os.path.abspath(os.path.join(__file__, "../..")))
 
 from alembic_db.alembic_post_utils import read_revision_file
 from mycodo.config import ALEMBIC_UPGRADE_POST
-from mycodo.config import SQL_DATABASE_MYCODO
+from mycodo.config import MYCODO_DB_PATH
 from mycodo.databases.utils import session_scope
-
-MYCODO_DB_PATH = f'sqlite:///{SQL_DATABASE_MYCODO}'
 
 
 def upgrade_revision(error, revision):

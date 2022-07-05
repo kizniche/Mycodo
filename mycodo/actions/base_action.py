@@ -13,7 +13,7 @@ import logging
 import timeit
 
 from mycodo.abstract_base_controller import AbstractBaseController
-from mycodo.config import SQL_DATABASE_MYCODO
+from mycodo.config import MYCODO_DB_PATH
 from mycodo.databases.models import Conditional
 from mycodo.databases.models import Function
 from mycodo.databases.models import Input
@@ -21,7 +21,6 @@ from mycodo.databases.models import Trigger
 from mycodo.databases.utils import session_scope
 from mycodo.mycodo_client import DaemonControl
 
-MYCODO_DB_PATH = f'sqlite:///{SQL_DATABASE_MYCODO}'
 
 class AbstractFunctionAction(AbstractBaseController):
     """

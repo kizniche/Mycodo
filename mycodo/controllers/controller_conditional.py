@@ -29,7 +29,6 @@ import time
 import timeit
 
 from mycodo.config import PATH_PYTHON_CODE_USER
-from mycodo.config import SQL_DATABASE_MYCODO
 from mycodo.controllers.base_controller import AbstractController
 from mycodo.databases.models import Actions
 from mycodo.databases.models import Conditional
@@ -37,8 +36,6 @@ from mycodo.databases.models import ConditionalConditions
 from mycodo.databases.models import Misc
 from mycodo.utils.conditional import save_conditional_code
 from mycodo.utils.database import db_retrieve_table_daemon
-
-MYCODO_DB_PATH = f'sqlite:///{SQL_DATABASE_MYCODO}'
 
 
 class ConditionalController(AbstractController, threading.Thread):

@@ -30,6 +30,7 @@ from mycodo.mycodo_client import DaemonControl
 from mycodo.utils.constraints_pass import constraints_pass_positive_value
 from mycodo.utils.database import db_retrieve_table_daemon
 
+
 FUNCTION_INFORMATION = {
     'function_name_unique': 'example_function_generic',
     'function_name': 'Example: Generic',
@@ -317,7 +318,7 @@ class CustomModule(AbstractFunction):
                 "Deactivating (SQL) Custom controller select_device_2 with ID {}".format(self.select_device_2_id))
             from mycodo.databases.utils import session_scope
             from mycodo.config import SQL_DATABASE_MYCODO
-            MYCODO_DB_PATH = f'sqlite:///{SQL_DATABASE_MYCODO}'
+            from mycodo.config import MYCODO_DB_PATH
             with session_scope(MYCODO_DB_PATH) as new_session:
                 mod_cont = new_session.query(CustomController).filter(
                     CustomController.unique_id == self.select_device_2_id).first()

@@ -1,21 +1,20 @@
 # -*- coding: utf-8 -*-
 """Create admin user."""
+import os
 import sys
 import traceback
 from getpass import getpass
 
 import bcrypt
-import os
 
 sys.path.append(os.path.abspath(os.path.join(__file__, "../../..")))
 
 from mycodo.databases.models import User
 from mycodo.databases.utils import session_scope
-from mycodo.config import SQL_DATABASE_MYCODO
 from mycodo.databases import set_uuid
 from mycodo.utils.utils import test_username
 
-MYCODO_DB_PATH = f'sqlite:///{SQL_DATABASE_MYCODO}'
+from mycodo.config import MYCODO_DB_PATH
 
 passwords_match = False
 password_valid = False
