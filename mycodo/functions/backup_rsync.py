@@ -123,6 +123,14 @@ FUNCTION_INFORMATION = {
             'phrase': 'How long to allow rsync to complete (seconds)'
         },
         {
+            'id': 'local_backup_path',
+            'type': 'text',
+            'default_value': '',
+            'required': True,
+            'name': 'Local Backup Path',
+            'phrase': 'A local path to backup (leave blank to disable)'
+        },
+        {
             'id': 'do_backup_settings',
             'type': 'bool',
             'default_value': True,
@@ -230,6 +238,7 @@ class CustomModule(AbstractFunction):
         self.remote_host = None
         self.remote_backup_path = None
         self.rsync_timeout = None
+        self.local_backup_path = None
         self.do_backup_settings = None
         self.backup_remove_settings_archives = None
         self.do_backup_measurements = None
@@ -272,6 +281,9 @@ class CustomModule(AbstractFunction):
             self.logger.error("Cannot run: Not all options are set")
             return
 
+        if self.local_backup_path:
+            self.local_backup()
+
         if self.do_backup_settings:
             self.backup_settings()
 
@@ -280,6 +292,20 @@ class CustomModule(AbstractFunction):
 
         if self.do_backup_cameras:
             self.backup_camera()
+
+    def local_backup(self):
+        rsync_cmd = "rsync -avz -e 'ssh -p {port}' {path_local} {user}@{host}:{remote_path}".format(
+            port=self.ssh_port,
+            path_local=self.local_backup_path,
+            user=self.remote_user,
+            host=self.remote_host,
+            remote_path=self.remote_backup_path)
+
+        self.logger.debug("rsync command: {}".format(rsync_cmd))
+        cmd_out, cmd_err, cmd_status = cmd_output(
+            rsync_cmd, timeout=self.rsync_timeout, user=self.local_user)
+        self.logger.debug("rsync returned:\nOut: {}\nError: {}\nStatus: {}".format(
+            cmd_out.decode(), cmd_err.decode(), cmd_status))
 
     def backup_settings(self):
         filename = 'Mycodo_{mver}_Settings_{aver}_{host}_{dt}.zip'.format(
