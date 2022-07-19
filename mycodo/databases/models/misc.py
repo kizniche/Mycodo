@@ -48,19 +48,19 @@ class Misc(CRUDMixin, db.Model):
     default_login_page = db.Column(db.String, default='password')
 
     # Measurement database
+    measurement_db_name = db.Column(db.String, default='influxdb')
+    measurement_db_version = db.Column(db.String, default='1')
     try:
         from mycodo.scripts.measurement_db import get_influxdb_info
         influx_info = get_influxdb_info()
         if influx_info['influxdb_installed']:
-            measurement_db_name = db.Column(db.String, default='influxdb')
             if influx_info['influxdb_version'].startswith('1'):
                 measurement_db_version = db.Column(db.String, default='1')
             elif influx_info['influxdb_version'].startswith('2'):
                 measurement_db_version = db.Column(db.String, default='2')
     except:
         logger.exception("creating influxdb options")
-        measurement_db_name = db.Column(db.String, default='influxdb')
-        measurement_db_version = db.Column(db.String, default='1')
+
     measurement_db_host = db.Column(db.String, default='localhost')
     measurement_db_port = db.Column(db.String, default=8086)
     measurement_db_user = db.Column(db.String, default='mycodo')
