@@ -6,7 +6,7 @@ INFLUX_API_PORT="8086"
 API_URL="http://${INFLUX_HOST}:${INFLUX_API_PORT}"
 
 echo "=> Starting InfluxDB ..."
-exec influxd &
+exec influxdb &
 
 # Pre create database on the initiation of the container
 if [ -n "${PRE_CREATE_DB}" ]; then

@@ -60,6 +60,7 @@ def create_admin():
     form_notice = forms_authentication.InstallNotice()
 
     if request.method == 'POST':
+        logger.info("Creating admin!")
         form_name = request.form['form-name']
         if form_name == 'acknowledge':
             mod_misc = Misc.query.first()
