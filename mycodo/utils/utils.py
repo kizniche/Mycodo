@@ -78,7 +78,7 @@ def characters(un):
         return True
 
 
-def user_length_min(un, min_len=4):
+def user_length_min(un, min_len=3):
     """
     Validate Username length
 
