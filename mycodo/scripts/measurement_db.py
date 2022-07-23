@@ -3,6 +3,7 @@
 import argparse
 import json
 import os
+import requests
 import subprocess
 import sys
 
@@ -32,17 +33,16 @@ def get_influxdb_info():
         'influxdb_version': ''
     }
     try:
-        output = subprocess.check_output("influxd version", shell=True)
-        if output:
-            list_output = str(output).split(" ")
-            for i, each_str in enumerate(list_output):
-                if i == 1 and each_str.startswith("v"):
-                    dict_info['influxdb_installed'] = True
-                    dict_info['influxdb_version'] = each_str.split("v")[1]
+        from mycodo.databases.models import Misc
+        from mycodo.utils.database import db_retrieve_table_daemon
+        settings = db_retrieve_table_daemon(Misc, entry='first')
+        r = requests.get(f'http://{settings.measurement_db_host}:{settings.measurement_db_port}/ping')
+
+        if r.headers and "X-Influxdb-Version" in r.headers:
+            dict_info['influxdb_installed'] = True
+            dict_info['influxdb_version'] = r.headers["X-Influxdb-Version"]
     except Exception as err:
         print(f"Error: {err}")
-        dict_info['influxdb_installed'] = False
-        dict_info['influxdb_version'] = ""
 
     return dict_info
 

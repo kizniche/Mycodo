@@ -1,7 +1,13 @@
 #!/bin/bash
 
 set -m
-INFLUX_HOST="influxdb"
+
+if [ -f /.dockerenv ]; then
+    INFLUX_HOST="mycodo_influxdb"
+else
+    INFLUX_HOST="influxdb"
+fi
+
 INFLUX_API_PORT="8086"
 API_URL="http://${INFLUX_HOST}:${INFLUX_API_PORT}"
 

@@ -74,18 +74,22 @@ def create_admin():
                 error = True
             if not test_username(username):
                 flash(gettext(
-                    "Invalid user name. Must be between 2 and 64 characters "
+                    "Invalid username. Must be between 3 and 64 characters "
                     "and only contain letters and numbers."),
                     "error")
                 error = True
             if not test_password(form_create_admin.password.data):
                 flash(gettext(
-                    "Invalid password. Must be between 6 and 64 characters "
-                    "and only contain letters, numbers, and symbols."),
+                    "Invalid password. Must be between 4 and 64 characters "
+                    "and only contain letters and numbers."),
                       "error")
                 error = True
             if error:
-                return redirect(url_for('routes_general.home'))
+                return render_template('create_admin.html',
+                                       dict_translation=TRANSLATIONS,
+                                       dismiss_notification=1,
+                                       form_create_admin=form_create_admin,
+                                       form_notice=form_notice)
 
             new_user = User()
             new_user.name = username
@@ -94,8 +98,7 @@ def create_admin():
             new_user.role_id = 1  # Admin
             new_user.theme = 'spacelab'
             try:
-                db.session.add(new_user)
-                db.session.commit()
+                new_user.save()
                 flash(gettext("User '%(user)s' successfully created. Please "
                               "log in below.", user=username),
                       "success")
