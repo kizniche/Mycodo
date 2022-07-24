@@ -1,6 +1,6 @@
 # coding=utf-8
 #
-# on_off_neopixel_rgb_spi.py - Output for Neopixel LED strip
+# on_off_neopixel_rgb.py - Output for Neopixel LED strip
 #
 import time
 from threading import Thread

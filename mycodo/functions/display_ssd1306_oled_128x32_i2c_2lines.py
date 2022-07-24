@@ -507,9 +507,7 @@ class CustomModule(AbstractFunction):
         self.device.lcd_init()
         self.device.lcd_write_lines(
             lines_display[0],
-            lines_display[1],
-            lines_display[2],
-            lines_display[3])
+            lines_display[1])
 
     def stop_function(self):
         self.device.lcd_write_lines(

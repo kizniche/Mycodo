@@ -7,6 +7,7 @@
  - Only increment the timelapse count when an image is captured
  - Fix generating timelapse with custom file path ([#1205](https://github.com/kizniche/Mycodo/issues/1205))
  - Fix timelapse filenames when using libcamera
+ - Fix printing lines on 2-line 128x32 SSD1306 Functions
 
 ### Features
 
@@ -14,6 +15,7 @@
  - Add ability to set influxdb host and credentials in configuration
  - Add Input: Raspberry Pi Power Monitor
  - Add Input: MH-Z14 CO2
+ - Add Output: Non-SPI Neopixel
  - Add ability to set Chirp Input I2C address ([#1197](https://github.com/kizniche/mycodo/issues/1197))
  - Add UI feedback for Atlas Scientific calibration commands ([#1198](https://github.com/kizniche/Mycodo/issues/1198))
  - Add ability to use non-standard condition/action ID strings in Conditional Functions
