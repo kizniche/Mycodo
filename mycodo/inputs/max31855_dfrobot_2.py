@@ -1,6 +1,5 @@
 # coding=utf-8
 import copy
-import sys
 import time
 
 from mycodo.inputs.base_input import AbstractInput
@@ -63,13 +62,25 @@ class InputModule(AbstractInput):
 
         self.return_dict = copy.deepcopy(measurements_dict)
 
-        temp = self.sensor.read_celsius()
+        list_temps = []
+        for _ in range(5):
+            try:
+                temp = self.sensor.read_celsius()
 
-        if temp < -300 or temp > 1400:
-            self.logger.error(f"Incorrect temperature reading: {temp}")
-            return
+                if temp < -300 or temp > 1400:
+                    self.logger.error(f"Incorrect temperature reading: {temp}")
+                    continue
 
-        self.value_set(0, temp)
+                if temp == -1:
+                    self.logger.debug(f"Incorrect temperature reading: {temp}")
+                    continue
+
+                list_temps.append(temp)
+            finally:
+                time.sleep(0.25)
+
+        if list_temps:
+            self.value_set(0, sum(list_temps) / len(list_temps))
 
         return self.return_dict
 
