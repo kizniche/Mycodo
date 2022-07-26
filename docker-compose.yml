@@ -5,8 +5,8 @@ services:
   mycodo_influxdb:
     container_name: mycodo_influxdb
     build:
-      context: ../
-      dockerfile: docker/influxdb/Dockerfile
+      context: ./
+      dockerfile: influxdb/Dockerfile
     env_file:
       - 'influxdb/env.influxdb'
     volumes:
@@ -17,8 +17,8 @@ services:
     container_name: mycodo_nginx
     restart: always
     build:
-      context: ../
-      dockerfile: docker/nginx/Dockerfile
+      context: ./
+      dockerfile: nginx/Dockerfile
     volumes:
       - mycodo:/usr/local/mycodo
       - mycodo_log:/var/log/mycodo
@@ -61,8 +61,8 @@ services:
     image: app
     restart: always
     build:
-      context: ../
-      dockerfile: docker/Dockerfile
+      context: ./
+      dockerfile: ./Dockerfile
     volumes:
       - mycodo:/usr/local/mycodo
       - mycodo_env:/home/mycodo/env
