@@ -135,7 +135,6 @@ class CustomModule(AbstractFunction):
         super().__init__(function, testing=testing, name=__name__)
 
         self.control_variable = None
-        self.timestamp = None
         self.control = DaemonControl()
         self.outputIsOn = False
         self.timer_loop = time.time()
@@ -166,8 +165,6 @@ class CustomModule(AbstractFunction):
             self.try_initialize()
 
     def initialize(self):
-        self.timestamp = time.time()
-
         self.output_channel = self.get_output_channel_from_channel_id(
             self.output_channel_id)
 
