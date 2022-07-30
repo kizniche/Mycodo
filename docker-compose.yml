@@ -1,6 +1,11 @@
 version: "2.1"
 
 services:
+  webcam-capture:
+    build: ./balena.mono_go4vl
+    privileged: true
+    volumes:
+      - 'resin-data:/data'
 
   mycodo_influxdb:
     container_name: mycodo_influxdb
@@ -12,6 +17,8 @@ services:
     volumes:
       - mycodo_influxdb:/var/lib/influxdb
         #- /etc/localtime:/etc/localtime:ro  # Use timezone of the host (read-only)
+    ports:
+      - "8086:8086"
 
   mycodo_nginx:
     container_name: mycodo_nginx
@@ -32,11 +39,11 @@ services:
 
   mycodo_daemon:
     container_name: mycodo_daemon
-    image: app
+    image: nargetdev/app
     restart: always
-    build:
-      context: ./
-      dockerfile: ./Dockerfile
+    # build:
+    #   context: ./
+    #   dockerfile: ./Dockerfile.template
     volumes:
       - mycodo:/usr/local/mycodo
       - mycodo_env:/home/mycodo/env
@@ -61,11 +68,11 @@ services:
 
   mycodo_flask:
     container_name: mycodo_flask
-    image: app
+    image: nargetdev/app
     restart: always
-    build:
-      context: ./
-      dockerfile: ./Dockerfile
+    # build:
+    #   context: ./
+    #   dockerfile: ./Dockerfile.template
     volumes:
       - mycodo:/usr/local/mycodo
       - mycodo_env:/home/mycodo/env
@@ -86,26 +93,27 @@ services:
     depends_on:
       - mycodo_influxdb
 
-        #  mycodo_telegraf:
-        #    image: telegraf:latest
-        #    container_name: mycodo_telegraf
-        #    volumes:
-        #      - ./telegraf/telegraf.conf:/etc/telegraf/telegraf.conf:ro
-        #    depends_on:
-        #      - mycodo_influxdb
-        # 
-        #  mycodo_grafana:
-        #    image: grafana/grafana:latest
-        #    container_name: mycodo_grafana
-        #    ports:
-        #      - "3000:3000"
-        #    env_file:
-        #      - 'grafana/env.grafana'
-        #    volumes:
-        #      - mycodo_grafana:/var/lib/grafana
-        #    depends_on:
-        #      - mycodo_influxdb
-        #
+  mycodo_telegraf:
+    image: telegraf_w_conf
+    container_name: mycodo_telegraf
+    build:
+      context: ./telegraf
+      dockerfile: Dockerfile.template
+    depends_on:
+      - mycodo_influxdb
+
+  mycodo_grafana:
+    image: grafana/grafana:latest
+    container_name: mycodo_grafana
+    ports:
+      - "3000:3000"
+    env_file:
+      - 'grafana/env.grafana'
+    volumes:
+      - mycodo_grafana:/var/lib/grafana
+    depends_on:
+      - mycodo_influxdb
+  
 volumes:
   mycodo:
   mycodo_env:
@@ -120,3 +128,4 @@ volumes:
   mycodo_log:
   mycodo_influxdb:
   mycodo_grafana:
+  resin-data:
