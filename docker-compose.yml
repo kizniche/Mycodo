@@ -32,8 +32,11 @@ services:
 
   mycodo_daemon:
     container_name: mycodo_daemon
-    image: nargetdev/app
+    image: app
     restart: always
+    build:
+      context: ./
+      dockerfile: ./Dockerfile
     volumes:
       - mycodo:/usr/local/mycodo
       - mycodo_env:/home/mycodo/env
@@ -58,8 +61,11 @@ services:
 
   mycodo_flask:
     container_name: mycodo_flask
-    image: nargetdev/app
+    image: app
     restart: always
+    build:
+      context: ./
+      dockerfile: ./Dockerfile
     volumes:
       - mycodo:/usr/local/mycodo
       - mycodo_env:/home/mycodo/env
