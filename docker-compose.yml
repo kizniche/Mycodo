@@ -9,14 +9,10 @@ services:
 
   mycodo_influxdb:
     container_name: mycodo_influxdb
-    build:
-      context: ./
-      dockerfile: influxdb/Dockerfile
-    env_file:
-      - 'influxdb/env.influxdb'
+    image: influxdb:2.3.0-alpine
     volumes:
-      - mycodo_influxdb:/var/lib/influxdb
-        #- /etc/localtime:/etc/localtime:ro  # Use timezone of the host (read-only)
+      # Mount for influxdb data directory and configuration
+      - $HOME/temp/influxdbv2:/var/lib/influxdb2:rw
     ports:
       - "8086:8086"
 
