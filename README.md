@@ -1,3 +1,12 @@
+# Nathan's Notes
+This is my go at running Mycodo on balenaOS devices.  This has the handy benefit of being able to push CI/CD validated commits to hundreds of devices simultaneously, with safe rollback options when things go pearshaped.
+
+I am running influxdb:2.3.0-alpine (unconfigured) in one of the containers.  Check out the `make initialize-influx-2-db` command to clue into how you would initialize if running on your own machine - note that while `balena push you/your_fleet` is great, you can also run `make build` locally to test things on your laptop.  This works for me on both Ubuntu and Mac OS X.
+
+This method is not yet well tested.  You should run Mycodo "the normal way" for critical applications.  With that said this is a great start to a well isolated services architecture.
+
+-----
+
 # Docker
 
 This effort is to get Mycodo running in Docker containers with all features working. many parts of the system work, however there are also many that do not.
