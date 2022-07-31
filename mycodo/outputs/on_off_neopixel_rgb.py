@@ -36,7 +36,7 @@ OUTPUT_INFORMATION = {
     'channels_dict': channels_dict,
     'output_types': ['on_off'],
 
-    'message': 'Control the LEDs of a light strip. This output is best used with Actions to control individual LED color and brightness.',
+    'message': 'Control the LEDs of a neopixel light strip. USE WITH CAUTION: This library uses the Hardware-PWM0 bus. Only GPIO pins 12 or 18 will work. If you use one of these pins for a NeoPixel strip, you can not use the other for Hardware-PWM control of another output or there will be conflicts that can cause the Mycodo Daemon to crash and the Pi to become unresponsive. If you need to control another PWM output like a servo, fan, or dimmable grow lights, you will need to use the Software-PWM by setting the Output PWM: Raspberry Pi GPIO and set the "Library" field to "Any Pin, <=40kHz". If you select the "Hardware Pin, <=30MHz" option, it will cause conflicts. This output is best used with Actions to control individual LED color and brightness.',
 
     'options_enabled': [
         'button_on',
@@ -48,7 +48,7 @@ OUTPUT_INFORMATION = {
         ('pip-pypi', 'neopixel', 'adafruit-circuitpython-neopixel')
     ],
 
-    'interfaces': ['GPIO 18'],
+    'interfaces': ['GPIO'],
 
     'custom_commands_message':
         'Control each LED of an RGB strip. Color is represented by RGB comma-separated values (red, green, blue). RGB color values can be between 0 (off) and 255 (brightest), e.g. 0, 0, 0 is completely off, 255, 255, 255 is the brightest white, and 125, 0, 0 is a mid-brightness red.',
