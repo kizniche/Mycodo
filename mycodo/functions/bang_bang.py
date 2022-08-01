@@ -165,7 +165,7 @@ class CustomModule(AbstractFunction):
 
         outputState = self.control.output_state(self.output_device_id, self.output_channel)
 
-        self.logger.info("Input: {}, output: {}, target: {}, hyst: {}".format(
+        self.logger.debug("Input: {}, output: {}, target: {}, hyst: {}".format(
             last_measurement, outputState, self.setpoint, self.hysteresis))
 
         if self.direction == 'raise':
@@ -191,7 +191,7 @@ class CustomModule(AbstractFunction):
                         self.output_device_id,
                         output_channel=self.output_channel)
         else:
-            self.logger.info("Unknown controller direction: '{}'".format(self.direction))
+            self.logger.error("Unknown controller direction: '{}'".format(self.direction))
 
     def stop_function(self):
         self.control.output_off(self.output_device_id, self.output_channel)

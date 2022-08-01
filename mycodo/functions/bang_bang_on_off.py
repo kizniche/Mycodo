@@ -227,7 +227,7 @@ class CustomModule(AbstractFunction):
                 self.control.output_on(
                     self.output_raise_device_id, output_channel=self.output_raise_channel)
         else:
-            self.logger.info(
+            self.logger.error(
                 "Unknown controller direction: '{}'".format(self.direction))
 
         output_raise_state = self.control.output_state(

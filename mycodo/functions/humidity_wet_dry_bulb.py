@@ -277,10 +277,10 @@ class CustomModule(AbstractFunction):
             humidity_ratio = float(psypi[4])
 
             self.logger.debug(
-                "Dry Temp: {dtk}, "
-                "Wet Temp: {wtk}, "
-                "Pressure: {pres},"
-                "Humidity: {rh}".format(
+                "Dry Temp: {dtk} K, "
+                "Wet Temp: {wtk} K, "
+                "Pressure: {pres} Pa, "
+                "Relative Humidity: {rh} %".format(
                     dtk=temp_dry_k,
                     wtk=temp_wet_k,
                     pres=pressure_pa,

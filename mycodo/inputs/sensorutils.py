@@ -56,9 +56,6 @@ def convert_from_x_to_y_unit(unit_from, unit_to, in_value):
     :return:
     """
     if unit_from == unit_to:  # Units are the same, no conversion
-        logger.debug("Units are the same ('{uf}' to '{ut}'). "
-                     "Not performing conversion.".format(
-            uf=unit_to, ut=unit_from))
         return in_value
     conversion = db_retrieve_table_daemon(Conversion)
     conversion = conversion.filter(Conversion.convert_unit_from == unit_from)
