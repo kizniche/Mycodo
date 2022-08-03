@@ -19,5 +19,6 @@ def load_module_from_file(path_file, module_type):
         spec.loader.exec_module(module_custom)
         return module_custom, "success"
     except Exception:
+        logger.error(f"Path: {path_file}, Type: {module_type}")
         logger.error(f"Could not load module: {traceback.format_exc()}")
         return None, traceback.format_exc()

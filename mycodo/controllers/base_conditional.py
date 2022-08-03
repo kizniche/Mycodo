@@ -38,6 +38,7 @@ class AbstractConditional:
         self.message = self.control.trigger_all_actions(self.function_id, message=message)
 
     def run_action(self, action_id, value=None, message=None):
+        action = None
         full_action_id = action_id
         if len(action_id) < 36:
             action_id = action_id.replace("{", "").replace("}", "")
