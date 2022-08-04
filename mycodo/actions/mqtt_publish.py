@@ -115,6 +115,14 @@ ACTION_INFORMATION = {
             'required': False,
             'name': lazy_gettext('Password'),
             'phrase': 'Password for connecting to the server'
+        },
+        {
+            'id': 'mqtt_use_websockets',
+            'type': 'bool',
+            'default_value': False,
+            'required': False,
+            'name': 'Use Websockets',
+            'phrase': 'Use websockets to connect to the server.'
         }
     ]
 }
@@ -137,6 +145,7 @@ class ActionModule(AbstractFunctionAction):
         self.login = None
         self.username = None
         self.password = None
+        self.mqtt_use_websockets = None
 
         action = db_retrieve_table_daemon(
             Actions, unique_id=self.unique_id)
@@ -193,7 +202,8 @@ class ActionModule(AbstractFunctionAction):
                 port=self.port,
                 client_id=self.clientid,
                 keepalive=self.keepalive,
-                auth=auth_dict)
+                auth=auth_dict,
+                transport='websockets' if self.mqtt_use_websockets else 'tcp')
             message += f" MQTT Publish '{payload}'."
         except Exception as err:
             msg = f" Could not execute MQTT Publish: {err}"

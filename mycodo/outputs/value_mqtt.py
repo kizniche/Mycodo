@@ -120,6 +120,14 @@ OUTPUT_INFORMATION = {
             'required': False,
             'name': lazy_gettext('Password'),
             'phrase': 'Password for connecting to the server.'
+        },
+        {
+            'id': 'mqtt_use_websockets',
+            'type': 'bool',
+            'default_value': False,
+            'required': False,
+            'name': 'Use Websockets',
+            'phrase': 'Use websockets to connect to the server.'
         }
     ]
 }
@@ -166,7 +174,8 @@ class OutputModule(AbstractOutput):
                     port=self.options_channels['port'][0],
                     client_id=self.options_channels['clientid'][0],
                     keepalive=self.options_channels['keepalive'][0],
-                    auth=auth_dict)
+                    auth=auth_dict,
+                    transport='websockets' if self.options_channels['mqtt_use_websockets'][0] else 'tcp')
                 self.output_states[output_channel] = amount
                 measure_dict[0]['value'] = amount
             elif state == 'off':
@@ -177,7 +186,8 @@ class OutputModule(AbstractOutput):
                     port=self.options_channels['port'][0],
                     client_id=self.options_channels['clientid'][0],
                     keepalive=self.options_channels['keepalive'][0],
-                    auth=auth_dict)
+                    auth=auth_dict,
+                    transport='websockets' if self.options_channels['mqtt_use_websockets'][0] else 'tcp')
                 self.output_states[output_channel] = False
                 measure_dict[0]['value'] = self.options_channels['off_value'][0]
         except Exception as e:
