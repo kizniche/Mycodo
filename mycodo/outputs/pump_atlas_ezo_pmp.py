@@ -299,12 +299,17 @@ class OutputModule(AbstractOutput):
             return True
         return False
 
+    def dispense_ml(self, args_dict):
+        if 'dispense_volume_ml' not in args_dict:
+            self.logger.error("Cannot calibrate without volume (instructed)")
+            return
+        write_cmd = "D,{}".format(args_dict['dispense_volume_ml'])
+        self.logger.debug("Command returned: {}".format(self.atlas_device.query(write_cmd)))
+
     def calibrate(self, level, ml):
         try:
             if level == "clear":
                 write_cmd = "Cal,clear"
-            elif level == "dispense_ml":
-                write_cmd = "D,{}".format(ml)
             elif level == "calibrate_ml":
                 write_cmd = "Cal,{}".format(ml)
             else:
@@ -318,12 +323,6 @@ class OutputModule(AbstractOutput):
 
     def clear_calibrate(self, args_dict):
         self.calibrate('clear', None)
-
-    def dispense_ml(self, args_dict):
-        if 'dispense_volume_ml' not in args_dict:
-            self.logger.error("Cannot calibrate without volume (instructed)")
-            return
-        self.calibrate('dispense_ml', args_dict['dispense_volume_ml'])
 
     def calibrate_ml(self, args_dict):
         if 'calibrate_volume_ml' not in args_dict:
