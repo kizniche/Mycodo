@@ -168,6 +168,14 @@ OUTPUT_INFORMATION = {
             'required': False,
             'name': lazy_gettext('Password'),
             'phrase': 'Password for connecting to the server. Leave blank to disable.'
+        },
+        {
+            'id': 'mqtt_use_websockets',
+            'type': 'bool',
+            'default_value': False,
+            'required': False,
+            'name': 'Use Websockets',
+            'phrase': 'Use websockets to connect to the server.'
         }
     ]
 }
@@ -217,7 +225,8 @@ class OutputModule(AbstractOutput):
                     port=self.options_channels['port'][0],
                     client_id=self.options_channels['clientid'][0],
                     keepalive=self.options_channels['keepalive'][0],
-                    auth=auth_dict)
+                    auth=auth_dict,
+                    transport='websockets' if self.options_channels['mqtt_use_websockets'][0] else 'tcp')
                 self.output_states[output_channel] = True
             elif state == 'off':
                 self.publish.single(
@@ -227,7 +236,8 @@ class OutputModule(AbstractOutput):
                     port=self.options_channels['port'][0],
                     client_id=self.options_channels['clientid'][0],
                     keepalive=self.options_channels['keepalive'][0],
-                    auth=auth_dict)
+                    auth=auth_dict,
+                    transport='websockets' if self.options_channels['mqtt_use_websockets'][0] else 'tcp')
                 self.output_states[output_channel] = False
         except Exception as e:
             self.logger.error("State change error: {}".format(e))

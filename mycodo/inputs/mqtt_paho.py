@@ -117,6 +117,14 @@ INPUT_INFORMATION = {
             'required': False,
             'name': lazy_gettext('Password'),
             'phrase': 'Password for connecting to the server. Leave blank to disable.'
+        },
+        {
+            'id': 'mqtt_use_websockets',
+            'type': 'bool',
+            'default_value': False,
+            'required': False,
+            'name': 'Use Websockets',
+            'phrase': 'Use websockets to connect to the server.'
         }
     ],
 
@@ -158,6 +166,7 @@ class InputModule(AbstractInput):
         self.mqtt_use_tls = None
         self.mqtt_username = None
         self.mqtt_password = None
+        self.mqtt_use_websockets = None
 
         if not testing:
             self.setup_custom_options(
@@ -172,7 +181,9 @@ class InputModule(AbstractInput):
         self.options_channels = self.setup_custom_channel_options_json(
             INPUT_INFORMATION['custom_channel_options'], input_channels)
 
-        self.client = mqtt.Client(self.mqtt_clientid)
+        self.client = mqtt.Client(
+            self.mqtt_clientid,
+            transport='websockets' if self.mqtt_use_websockets else 'tcp')
         self.logger.debug("Client created with ID {}".format(self.mqtt_clientid))
         if self.mqtt_login:
             if not self.mqtt_password:
