@@ -19,6 +19,7 @@
  - Add ability to set Chirp Input I2C address ([#1197](https://github.com/kizniche/mycodo/issues/1197))
  - Add UI feedback for Atlas Scientific calibration commands ([#1198](https://github.com/kizniche/Mycodo/issues/1198))
  - Add ability to use non-standard condition/action ID strings in Conditional Functions
+ - Add Websocket support to MQTT Outputs ([#1219](https://github.com/kizniche/Mycodo/pull/1219))
 
 ### Miscellaneous
 
