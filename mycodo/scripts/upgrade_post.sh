@@ -13,9 +13,7 @@ fi
 INSTALL_DIRECTORY=$( cd "$( dirname "${BASH_SOURCE[0]}" )/../../" && pwd -P )
 INSTALL_CMD="/bin/bash ${INSTALL_DIRECTORY}/mycodo/scripts/upgrade_commands.sh"
 
-DB_INFO=$( ${INSTALL_DIRECTORY}/env/bin/python ${INSTALL_DIRECTORY}/mycodo/scripts/measurement_db.py -i )
-INFLUXDB_INSTALLED=$( jq -r  '.influxdb_installed' <<< "${DB_INFO}" )
-INFLUXDB_VERSION=$( jq -r  '.influxdb_version' <<< "${DB_INFO}" )
+
 
 cd "${INSTALL_DIRECTORY}" || exit
 
@@ -58,6 +56,18 @@ TIMER_START_update_pip3_packages=$SECONDS
 ${INSTALL_CMD} update-pip3-packages
 TIMER_TOTAL_update_pip3_packages=$((SECONDS - TIMER_START_update_pip3_packages))
 
+TIMER_START_update_alembic=$SECONDS
+${INSTALL_CMD} update-alembic
+TIMER_TOTAL_update_alembic=$((SECONDS - TIMER_START_update_alembic))
+
+TIMER_START_update_alembic_post=$SECONDS
+${INSTALL_CMD} update-alembic-post
+TIMER_TOTAL_update_alembic_post=$((SECONDS - TIMER_START_update_alembic_post))
+
+DB_INFO=$( ${INSTALL_DIRECTORY}/env/bin/python ${INSTALL_DIRECTORY}/mycodo/scripts/measurement_db.py -i )
+INFLUXDB_INSTALLED=$( jq -r  '.influxdb_installed' <<< "${DB_INFO}" )
+INFLUXDB_VERSION=$( jq -r  '.influxdb_version' <<< "${DB_INFO}" )
+
 if [ "$INFLUXDB_INSTALLED" == "true" ] && [[ ${INFLUXDB_VERSION} == 1* ]]; then
     TIMER_START_update_influxdb=$SECONDS
     ${INSTALL_CMD} update-influxdb-1
@@ -67,14 +77,6 @@ elif [ "$INFLUXDB_INSTALLED" == "true" ] && [[ ${INFLUXDB_VERSION} == 2* ]]; the
     ${INSTALL_CMD} update-influxdb-2
     TIMER_TOTAL_update_influxdb=$((SECONDS - TIMER_START_update_influxdb))
 fi
-
-TIMER_START_update_alembic=$SECONDS
-${INSTALL_CMD} update-alembic
-TIMER_TOTAL_update_alembic=$((SECONDS - TIMER_START_update_alembic))
-
-TIMER_START_update_alembic_post=$SECONDS
-${INSTALL_CMD} update-alembic-post
-TIMER_TOTAL_update_alembic_post=$((SECONDS - TIMER_START_update_alembic_post))
 
 TIMER_START_update_dependencies=$SECONDS
 ${INSTALL_CMD} update-dependencies
