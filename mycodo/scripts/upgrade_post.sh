@@ -13,8 +13,6 @@ fi
 INSTALL_DIRECTORY=$( cd "$( dirname "${BASH_SOURCE[0]}" )/../../" && pwd -P )
 INSTALL_CMD="/bin/bash ${INSTALL_DIRECTORY}/mycodo/scripts/upgrade_commands.sh"
 
-
-
 cd "${INSTALL_DIRECTORY}" || exit
 
 rm -f "${INSTALL_DIRECTORY}"/statistics.csv
@@ -56,6 +54,7 @@ TIMER_START_update_pip3_packages=$SECONDS
 ${INSTALL_CMD} update-pip3-packages
 TIMER_TOTAL_update_pip3_packages=$((SECONDS - TIMER_START_update_pip3_packages))
 
+# Upgrade database
 TIMER_START_update_alembic=$SECONDS
 ${INSTALL_CMD} update-alembic
 TIMER_TOTAL_update_alembic=$((SECONDS - TIMER_START_update_alembic))
@@ -64,6 +63,7 @@ TIMER_START_update_alembic_post=$SECONDS
 ${INSTALL_CMD} update-alembic-post
 TIMER_TOTAL_update_alembic_post=$((SECONDS - TIMER_START_update_alembic_post))
 
+# Must upgrade database before attempting to access DB with the following script
 DB_INFO=$( ${INSTALL_DIRECTORY}/env/bin/python ${INSTALL_DIRECTORY}/mycodo/scripts/measurement_db.py -i )
 INFLUXDB_INSTALLED=$( jq -r  '.influxdb_installed' <<< "${DB_INFO}" )
 INFLUXDB_VERSION=$( jq -r  '.influxdb_version' <<< "${DB_INFO}" )

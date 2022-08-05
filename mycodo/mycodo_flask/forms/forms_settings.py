@@ -134,6 +134,26 @@ class SettingsGeneral(FlaskForm):
         lazy_gettext('Internet Test Port'), widget=NumberInput())
     net_test_timeout = IntegerField(
         lazy_gettext('Internet Test Timeout'), widget=NumberInput())
+
+    sample_rate_controller_conditional = DecimalField(
+        lazy_gettext('Conditional Sample Rate (seconds)'),
+        widget=NumberInput(step='any'))
+    sample_rate_controller_function = DecimalField(
+        lazy_gettext('Function Sample Rate (seconds)'),
+        widget=NumberInput(step='any'))
+    sample_rate_controller_input = DecimalField(
+        lazy_gettext('Input Sample Rate (seconds)'),
+        widget=NumberInput(step='any'))
+    sample_rate_controller_output = DecimalField(
+        lazy_gettext('Output Sample Rate (seconds)'),
+        widget=NumberInput(step='any'))
+    sample_rate_controller_pid = DecimalField(
+        lazy_gettext('PID Sample Rate (seconds)'),
+        widget=NumberInput(step='any'))
+    sample_rate_controller_widget = DecimalField(
+        lazy_gettext('Widget Sample Rate (seconds)'),
+        widget=NumberInput(step='any'))
+
     settings_general_save = SubmitField(TRANSLATIONS['save']['title'])
 
 
@@ -396,26 +416,6 @@ class SettingsPi(FlaskForm):
     change_hostname = SubmitField(lazy_gettext('Change Hostname'))
     pigpiod_sample_rate = StringField(lazy_gettext('Configure pigpiod'))
     change_pigpiod_sample_rate = SubmitField(lazy_gettext('Reconfigure'))
-
-    sample_rate_controller_conditional = DecimalField(
-        lazy_gettext('Conditional Sample Rate (seconds)'),
-        widget=NumberInput(step='any'))
-    sample_rate_controller_function = DecimalField(
-        lazy_gettext('Function Sample Rate (seconds)'),
-        widget=NumberInput(step='any'))
-    sample_rate_controller_input = DecimalField(
-        lazy_gettext('Input Sample Rate (seconds)'),
-        widget=NumberInput(step='any'))
-    sample_rate_controller_output = DecimalField(
-        lazy_gettext('Output Sample Rate (seconds)'),
-        widget=NumberInput(step='any'))
-    sample_rate_controller_pid = DecimalField(
-        lazy_gettext('PID Sample Rate (seconds)'),
-        widget=NumberInput(step='any'))
-    sample_rate_controller_widget = DecimalField(
-        lazy_gettext('Widget Sample Rate (seconds)'),
-        widget=NumberInput(step='any'))
-    save_sample_rates = SubmitField(lazy_gettext('Save Sample Rates'))
 
 
 #

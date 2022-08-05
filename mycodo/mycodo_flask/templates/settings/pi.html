@@ -21,7 +21,7 @@
       </div>
       <div class="row small-gutters">
         <div class="col">
-          I<sup>2</sup>C Enabled: {{pi_settings['i2c_enabled']}}
+          I<sup>2</sup>C is {% if pi_settings['i2c_enabled'] %}Enabled{% else %}Disabled{% endif %}
         </div>
         <div class="col">
           {% if pi_settings['i2c_enabled'] %}
@@ -33,7 +33,7 @@
       </div>
       <div class="row small-gutters">
         <div class="col">
-          1-Wire Enabled: {{pi_settings['one_wire_enabled']}}
+          1-Wire is {% if pi_settings['one_wire_enabled'] %}Enabled{% else %}Disabled{% endif %}
         </div>
         <div class="col">
           {% if pi_settings['one_wire_enabled'] %}
@@ -45,7 +45,7 @@
       </div>
       <div class="row small-gutters">
         <div class="col">
-          Serial Enabled: {{pi_settings['serial_enabled']}}
+          Serial is {% if pi_settings['serial_enabled'] %}Enabled{% else %}Disabled{% endif %}
         </div>
         <div class="col">
           {% if pi_settings['serial_enabled'] %}
@@ -57,7 +57,7 @@
       </div>
       <div class="row small-gutters">
         <div class="col">
-          SPI Enabled: {{pi_settings['spi_enabled']}}
+          SPI is {% if pi_settings['spi_enabled'] %}Enabled{% else %}Disabled{% endif %}
         </div>
         <div class="col">
           {% if pi_settings['spi_enabled'] %}
@@ -69,7 +69,7 @@
       </div>
       <div class="row small-gutters">
         <div class="col">
-          SSH Enabled: {{pi_settings['ssh_enabled']}}
+          SSH is {% if pi_settings['ssh_enabled'] %}Enabled{% else %}Disabled{% endif %}
         </div>
         <div class="col">
           {% if pi_settings['ssh_enabled'] %}
@@ -81,7 +81,7 @@
       </div>
       <div class="row small-gutters">
         <div class="col">
-          Pi Camera Enabled: {{pi_settings['pi_camera_enabled']}}
+          Pi Camera is {% if pi_settings['pi_camera_enabled'] %}Enabled{% else %}Disabled{% endif %}
         </div>
         <div class="col">
           {% if pi_settings['pi_camera_enabled'] %}
@@ -122,54 +122,6 @@
         </div>
         <div class="col">
           {{form_settings_pi.change_pigpiod_sample_rate(class_='btn btn-primary',**{'onclick':'return confirm("Changing the sample rate of pigpiod requires restarting both pigpiod and the mycodo daemon. Please confirm this is what you wish to do.")'})}}
-        </div>
-      </div>
-
-      <div class="row small-gutters" style="padding-top: 2em">
-        <div class="col-12">
-          Mycodo Controller Sample Rates<br/>
-          The sample rates of Mycodo daemon controllers can be changed below. Note that the daemon will need to be restarted after saving in order for the new options to take effect. Select Config [Gear Icon] -> Restart Backend to restart the daemon.
-        </div>
-        <div class="col-auto">
-          {{form_settings_pi.sample_rate_controller_conditional.label(class_='control-label')}}
-          <div>
-            {{form_settings_pi.sample_rate_controller_conditional(class_='form-control', value=misc.sample_rate_controller_conditional)}}
-          </div>
-        </div>
-        <div class="col-auto">
-          {{form_settings_pi.sample_rate_controller_function.label(class_='control-label')}}
-          <div>
-            {{form_settings_pi.sample_rate_controller_function(class_='form-control', value=misc.sample_rate_controller_function)}}
-          </div>
-        </div>
-        <div class="col-auto">
-          {{form_settings_pi.sample_rate_controller_input.label(class_='control-label')}}
-          <div>
-            {{form_settings_pi.sample_rate_controller_input(class_='form-control', value=misc.sample_rate_controller_input)}}
-          </div>
-        </div>
-        <div class="col-auto">
-          {{form_settings_pi.sample_rate_controller_output.label(class_='control-label')}}
-          <div>
-            {{form_settings_pi.sample_rate_controller_output(class_='form-control', value=misc.sample_rate_controller_output)}}
-          </div>
-        </div>
-        <div class="col-auto">
-          {{form_settings_pi.sample_rate_controller_pid.label(class_='control-label')}}
-          <div>
-            {{form_settings_pi.sample_rate_controller_pid(class_='form-control', value=misc.sample_rate_controller_pid)}}
-          </div>
-        </div>
-        <div class="col-auto">
-          {{form_settings_pi.sample_rate_controller_widget.label(class_='control-label')}}
-          <div>
-            {{form_settings_pi.sample_rate_controller_widget(class_='form-control', value=misc.sample_rate_controller_widget)}}
-          </div>
-        </div>
-      </div>
-      <div class="row small-gutters" style="padding: 0.5em 0 0.5em 0">
-        <div class="col-auto">
-          {{form_settings_pi.save_sample_rates(class_='btn btn-primary')}}
         </div>
       </div>
 

@@ -393,6 +393,13 @@ def settings_general_mod(form):
                 mod_misc.hide_alert_warning = form.hide_warning.data
                 mod_misc.hide_tooltips = form.hide_tooltips.data
 
+                mod_misc.sample_rate_controller_conditional = form.sample_rate_controller_conditional.data
+                mod_misc.sample_rate_controller_function = form.sample_rate_controller_function.data
+                mod_misc.sample_rate_controller_input = form.sample_rate_controller_input.data
+                mod_misc.sample_rate_controller_output = form.sample_rate_controller_output.data
+                mod_misc.sample_rate_controller_pid = form.sample_rate_controller_pid.data
+                mod_misc.sample_rate_controller_widget = form.sample_rate_controller_widget.data
+
                 if form.use_database.data == "influxdb_1":
                     mod_misc.measurement_db_name = "influxdb"
                     mod_misc.measurement_db_version = "1"
@@ -1557,16 +1564,7 @@ def settings_pi_mod(form):
     status = None
     action_str = None
 
-    if form.save_sample_rates.data:
-        mod_misc = Misc.query.first()
-        mod_misc.sample_rate_controller_conditional = form.sample_rate_controller_conditional.data
-        mod_misc.sample_rate_controller_function = form.sample_rate_controller_function.data
-        mod_misc.sample_rate_controller_input = form.sample_rate_controller_input.data
-        mod_misc.sample_rate_controller_output = form.sample_rate_controller_output.data
-        mod_misc.sample_rate_controller_pid = form.sample_rate_controller_pid.data
-        mod_misc.sample_rate_controller_widget = form.sample_rate_controller_widget.data
-        db.session.commit()
-    elif form.enable_i2c.data:
+    if form.enable_i2c.data:
         _, _, status = cmd_output("raspi-config nonint do_i2c 0", user='root')
         action_str = "Enable I2C"
     elif form.disable_i2c.data:

@@ -359,6 +359,50 @@
           {{form_settings_general.output_usage_report_hour(class_='form-control', value=misc.output_usage_report_hour, **{'title':_('Hour Options: 0-23')})}}
         </div>
       </div>
+
+      <div class="form-group">
+        <div class="col-sm-12">
+          <h3>Controller Sample Rates</h3>
+          The sample rates of Mycodo daemon controllers can be changed below. Note that the daemon will need to be restarted after saving in order for the new options to take effect. Select Config [Gear Icon] -> Restart Backend to restart the daemon.
+        </div>
+      </div>
+      <div class="form-group">
+        {{form_settings_general.sample_rate_controller_conditional.label(class_='col-sm-12 control-label')}}
+        <div class="col-sm-12">
+          {{form_settings_general.sample_rate_controller_conditional(class_='form-control', value=misc.sample_rate_controller_conditional)}}
+        </div>
+      </div>
+      <div class="form-group">
+        {{form_settings_general.sample_rate_controller_function.label(class_='col-sm-12 control-label')}}
+        <div class="col-sm-12">
+          {{form_settings_general.sample_rate_controller_function(class_='form-control', value=misc.sample_rate_controller_function)}}
+        </div>
+      </div>
+      <div class="form-group">
+        {{form_settings_general.sample_rate_controller_input.label(class_='col-sm-12 control-label')}}
+        <div class="col-sm-12">
+          {{form_settings_general.sample_rate_controller_input(class_='form-control', value=misc.sample_rate_controller_input)}}
+        </div>
+      </div>
+      <div class="form-group">
+        {{form_settings_general.sample_rate_controller_output.label(class_='col-sm-12 control-label')}}
+        <div class="col-sm-12">
+          {{form_settings_general.sample_rate_controller_output(class_='form-control', value=misc.sample_rate_controller_output)}}
+        </div>
+      </div>
+      <div class="form-group">
+        {{form_settings_general.sample_rate_controller_pid.label(class_='col-sm-12 control-label')}}
+        <div class="col-sm-12">
+          {{form_settings_general.sample_rate_controller_pid(class_='form-control', value=misc.sample_rate_controller_pid)}}
+        </div>
+      </div>
+      <div class="form-group">
+        {{form_settings_general.sample_rate_controller_widget.label(class_='col-sm-12 control-label')}}
+        <div class="col-sm-12">
+          {{form_settings_general.sample_rate_controller_widget(class_='form-control', value=misc.sample_rate_controller_widget)}}
+        </div>
+      </div>
+
       <div class="form-group">
         <div class="col-sm-offset-4 col-sm-12">
           {{form_settings_general.settings_general_save(class_='btn btn-primary')}}
