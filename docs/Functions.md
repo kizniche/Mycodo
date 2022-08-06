@@ -349,7 +349,7 @@ And typical Daemon Log output will look like this:
 2018-08-04 23:47:55,904 - mycodo.pid_3b533dff - INFO - Kd: 4.101408080354794
 ```
 
-## Conditional Function
+## Conditional
 
 Conditional Functions are used to perform simple to complex actions based a user-generated Python code. Conditional Functions allow the execution of Python 3 code as well as the use of Conditions and [Actions](Actions.md) within your code to interact with Mycodo. Conditions typically acquire data from Mycodo, such as Input measurements, and Actions typically affect Mycodo, such as actuating an Output or pausing a PID controller. Each Condition and Action you add will have its own description and example code to demonstrate how to use it in your Python code.
 
