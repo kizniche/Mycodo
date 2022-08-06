@@ -21,8 +21,8 @@ ACTION_INFORMATION = {
 
     'message': 'Publish a value to an MQTT server.',
 
-    'usage': 'Executing <strong>self.run_action("{ACTION_ID}")</strong> will publish the saved payload text options to the MQTT server. '
-             'Executing <strong>self.run_action("{ACTION_ID}", value={"payload": 42})</strong> will publish the specified payload (any type) to the MQTT server. '
+    'usage': 'Executing <strong>self.run_action("ACTION_ID")</strong> will publish the saved payload text options to the MQTT server. '
+             'Executing <strong>self.run_action("ACTION_ID", value={"payload": 42})</strong> will publish the specified payload (any type) to the MQTT server. '
              'You can also specify the topic (e.g. value={"topic": "my_topic", "payload": 42}). '
              'Warning: If using multiple MQTT Inputs or Functions, ensure the Client IDs are unique.',
 

@@ -26,8 +26,8 @@ ACTION_INFORMATION = {
 
     'message': lazy_gettext('Deactivate a controller.'),
 
-    'usage': 'Executing <strong>self.run_action("{ACTION_ID}")</strong> will deactivate the selected Controller. '
-             'Executing <strong>self.run_action("{ACTION_ID}", value={"controller_id": "959019d1-c1fa-41fe-a554-7be3366a9c5b"})</strong> will deactivate the controller with the specified ID.',
+    'usage': 'Executing <strong>self.run_action("ACTION_ID")</strong> will deactivate the selected Controller. '
+             'Executing <strong>self.run_action("ACTION_ID", value={"controller_id": "959019d1-c1fa-41fe-a554-7be3366a9c5b"})</strong> will deactivate the controller with the specified ID.',
 
     'custom_options': [
         {

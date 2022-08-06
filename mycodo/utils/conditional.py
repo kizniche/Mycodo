@@ -16,7 +16,7 @@ def cond_statement_replace(
         cond_statement,
         table_conditions_all,
         table_actions_all):
-    """Replace short condition/action IDs in conditional statement with full condition/action IDs."""
+    """Replace short condition/action IDs in conditional code with full condition/action IDs."""
     cond_statement_replaced = cond_statement
     for each_condition in table_conditions_all:
         condition_id_short = each_condition.unique_id.split('-')[0]
@@ -35,6 +35,8 @@ def cond_statement_replace(
 
 def save_conditional_code(
         error,
+        cond_import,
+        cond_initialize,
         cond_statement,
         cond_status,
         unique_id,
@@ -47,12 +49,19 @@ def save_conditional_code(
     cmd_out = None
 
     try:
-        pre_statement_run = """import os
+        class_code = """import os
 import sys
 sys.path.append(os.path.abspath('/var/mycodo-root'))
 from mycodo.controllers.base_conditional import AbstractConditional
 from mycodo.mycodo_client import DaemonControl
 control = DaemonControl(pyro_timeout={timeout})
+
+"""
+
+        if cond_import:
+            class_code += cond_import
+
+        class_code += """
 
 class ConditionalRun(AbstractConditional):
     def __init__(self, logger, function_id, message):
@@ -63,42 +72,48 @@ class ConditionalRun(AbstractConditional):
         self.variables = {{}}
         self.message = message
         self.running = True
+"""
+
+        if cond_initialize:
+            class_code += textwrap.indent(cond_initialize, ' ' * 8)
+
+        class_code += """
 
     def conditional_code_run(self):
 """.format(timeout=timeout)
 
         if cond_statement:
-            indented_code = textwrap.indent(cond_statement, ' ' * 8)
+            class_code += textwrap.indent(cond_statement, ' ' * 8)
         else:
-            indented_code = textwrap.indent("pass", ' ' * 8)
+            class_code += textwrap.indent("pass", ' ' * 8)
 
-        cond_statement_run = pre_statement_run + indented_code
-        cond_statement_run = cond_statement_replace(
-            cond_statement_run, table_conditions_all, table_actions_all)
-
-        cond_statement_run += """
+        class_code += """
 
     def function_status(self):
 """
         if cond_status:
-            cond_statement_run += textwrap.indent(cond_status, ' ' * 8)
+            class_code += textwrap.indent(cond_status, ' ' * 8)
         else:
-            cond_statement_run += textwrap.indent("pass", ' ' * 8)
+            class_code += textwrap.indent("pass", ' ' * 8)
+
+        # Replace short condition and action IDs with full IDs
+        class_code = cond_statement_replace(
+            class_code, table_conditions_all, table_actions_all)
 
         assure_path_exists(PATH_PYTHON_CODE_USER)
         file_run = '{}/conditional_{}.py'.format(
             PATH_PYTHON_CODE_USER, unique_id)
         with open(file_run, 'w') as fw:
-            fw.write('{}\n'.format(cond_statement_run))
+            fw.write('{}\n'.format(class_code))
             fw.close()
         set_user_grp(file_run, 'mycodo', 'mycodo')
 
-        if len(cond_statement_run.splitlines()) > 999:
+        if len(class_code.splitlines()) > 999:
             error.append("Too many lines in code. Reduce code to less than 1000 lines.")
 
         if test:
             lines_code = ''
-            for line_num, each_line in enumerate(cond_statement_run.splitlines(), 1):
+            for line_num, each_line in enumerate(class_code.splitlines(), 1):
                 if len(str(line_num)) == 3:
                     line_spacing = ''
                 elif len(str(line_num)) == 2:

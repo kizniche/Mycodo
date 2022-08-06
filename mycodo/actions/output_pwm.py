@@ -24,8 +24,8 @@ ACTION_INFORMATION = {
 
     'message': lazy_gettext('Set a PWM Output to set a duty cycle.'),
 
-    'usage': 'Executing <strong>self.run_action("{ACTION_ID}")</strong> will set the PWM output duty cycle. '
-             'Executing <strong>self.run_action("{ACTION_ID}", value={"output_id": "959019d1-c1fa-41fe-a554-7be3366a9c5b", "channel": 0, "duty_cycle": 42})</strong> will set the duty cycle of the PWM output with the specified ID and channel.',
+    'usage': 'Executing <strong>self.run_action("ACTION_ID")</strong> will set the PWM output duty cycle. '
+             'Executing <strong>self.run_action("ACTION_ID", value={"output_id": "959019d1-c1fa-41fe-a554-7be3366a9c5b", "channel": 0, "duty_cycle": 42})</strong> will set the duty cycle of the PWM output with the specified ID and channel.',
 
     'custom_options': [
         {

@@ -1,5 +1,5 @@
 
-There are numerous places where Python 3 code can be used within Mycodo, including the Python Code Input, the Python Code Output, and Conditional Controller Functions.
+There are numerous places where Python 3 code can be used within Mycodo, including the Python Code Input, the Python Code Output, and Conditional Function.
 
 Here are a few example that demonstrates some useful ways to interact with Mycodo with Python 3 code.
 

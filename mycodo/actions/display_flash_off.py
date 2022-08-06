@@ -23,8 +23,8 @@ ACTION_INFORMATION = {
 
     'message': 'Turn display flashing off',
 
-    'usage': 'Executing <strong>self.run_action("{ACTION_ID}")</strong> will stop the backlight flashing on the selected display. '
-             'Executing <strong>self.run_action("{ACTION_ID}", value={"display_id": "959019d1-c1fa-41fe-a554-7be3366a9c5b"})</strong> will stop the backlight flashing on the controller with the specified ID.',
+    'usage': 'Executing <strong>self.run_action("ACTION_ID")</strong> will stop the backlight flashing on the selected display. '
+             'Executing <strong>self.run_action("ACTION_ID", value={"display_id": "959019d1-c1fa-41fe-a554-7be3366a9c5b"})</strong> will stop the backlight flashing on the controller with the specified ID.',
 
     'custom_options': [
         {

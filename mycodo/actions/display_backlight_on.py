@@ -23,8 +23,8 @@ ACTION_INFORMATION = {
 
     'message': 'Turn display backlight on',
 
-    'usage': 'Executing <strong>self.run_action("{ACTION_ID}")</strong> will turn the backlight on for the selected display. '
-             'Executing <strong>self.run_action("{ACTION_ID}", value={"display_id": "959019d1-c1fa-41fe-a554-7be3366a9c5b"})</strong> will turn the backlight on for the controller with the specified ID.',
+    'usage': 'Executing <strong>self.run_action("ACTION_ID")</strong> will turn the backlight on for the selected display. '
+             'Executing <strong>self.run_action("ACTION_ID", value={"display_id": "959019d1-c1fa-41fe-a554-7be3366a9c5b"})</strong> will turn the backlight on for the controller with the specified ID.',
 
     'custom_options': [
         {

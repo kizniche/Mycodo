@@ -22,8 +22,8 @@ ACTION_INFORMATION = {
 
     'message': lazy_gettext('Force measurements to be conducted for an input'),
 
-    'usage': 'Executing <strong>self.run_action("{ACTION_ID}")</strong> will force acquiring measurements for the selected Input. '
-             'Executing <strong>self.run_action("{ACTION_ID}", value={"input_id": "959019d1-c1fa-41fe-a554-7be3366a9c5b"})</strong> will force acquiring measurements for the Input with the specified ID.',
+    'usage': 'Executing <strong>self.run_action("ACTION_ID")</strong> will force acquiring measurements for the selected Input. '
+             'Executing <strong>self.run_action("ACTION_ID", value={"input_id": "959019d1-c1fa-41fe-a554-7be3366a9c5b"})</strong> will force acquiring measurements for the Input with the specified ID.',
 
     'custom_options': [
         {

@@ -22,8 +22,8 @@ ACTION_INFORMATION = {
 
     'message': 'Send an email.',
 
-    'usage': 'Executing <strong>self.run_action("{ACTION_ID}")</strong> will email the specified recipient(s) using the SMTP credentials in the system configuration. Separate multiple recipients with commas. The body of the email will be the self-generated message. '
-             'Executing <strong>self.run_action("{ACTION_ID}", value={"email_address": ["email1@email.com", "email2@email.com"], "message": "My message"})</strong> will send an email to the specified recipient(s) with the specified message.',
+    'usage': 'Executing <strong>self.run_action("ACTION_ID")</strong> will email the specified recipient(s) using the SMTP credentials in the system configuration. Separate multiple recipients with commas. The body of the email will be the self-generated message. '
+             'Executing <strong>self.run_action("ACTION_ID", value={"email_address": ["email1@email.com", "email2@email.com"], "message": "My message"})</strong> will send an email to the specified recipient(s) with the specified message.',
 
     'custom_options': [
         {

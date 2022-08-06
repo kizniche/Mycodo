@@ -26,8 +26,10 @@ class Conditional(FlaskForm):
     function_id = StringField('Function ID', widget=widgets.HiddenInput())
     function_type = StringField('Function Type', widget=widgets.HiddenInput())
     name = StringField(TRANSLATIONS['name']['title'])
-    conditional_statement = StringField(lazy_gettext('Conditional Statement'))
-    conditional_status = StringField(lazy_gettext('Conditional Status'))
+    conditional_import = StringField(lazy_gettext('Import Python Code'))
+    conditional_initialize = StringField(lazy_gettext('Initialize Python Code'))
+    conditional_statement = StringField(lazy_gettext('Run Python Code'))
+    conditional_status = StringField(lazy_gettext('Status Python Code'))
     period = DecimalField(
         lazy_gettext('Period (seconds)'),
         widget=NumberInput(step='any'))

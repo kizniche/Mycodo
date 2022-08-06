@@ -46,7 +46,7 @@ FUNCTION_INFORMATION = {
     'measurements_dict': measurements_dict,
     'enable_channel_unit_select': True,
 
-    'message': "This function acquires 2 measurements, calculates the difference, and if the difference is not larger than the set threshold, the Measurement A value is stored. This enables verifying one sensor's measurement with another sensor's measurement. Only when they are both in agreement is a measurement stored. This stored measurement can be used in functions such as Conditional Statements that will notify the user if no measurement is avilable to indicate there may be an issue with a sensor.",
+    'message': "This function acquires 2 measurements, calculates the difference, and if the difference is not larger than the set threshold, the Measurement A value is stored. This enables verifying one sensor's measurement with another sensor's measurement. Only when they are both in agreement is a measurement stored. This stored measurement can be used in functions such as Conditional Functions that will notify the user if no measurement is available to indicate there may be an issue with a sensor.",
 
     'options_enabled': [
         'measurements_select_measurement_unit',

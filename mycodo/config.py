@@ -369,7 +369,7 @@ DEPENDENCIES_GENERAL = {
     }
 }
 
-# Conditional controllers
+# Conditional Functions
 CONDITIONAL_CONDITIONS = [
     ('measurement',
      f"{T['measurement']['title']} ({T['single']['title']}, {T['last']['title']})"),

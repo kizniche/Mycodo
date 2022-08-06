@@ -22,8 +22,8 @@ ACTION_INFORMATION = {
 
     'message': 'An example action for Inputs that merely performs a calculation from the Input measurement.',
 
-    'usage': 'Executing <strong>self.run_action("{ACTION_ID}")</strong> will execute the calculation. '
-             'Executing <strong>self.run_action("{ACTION_ID}", value={"integer_1": 24})</strong> will pass the integer value 24 to the action.',
+    'usage': 'Executing <strong>self.run_action("ACTION_ID")</strong> will execute the calculation. '
+             'Executing <strong>self.run_action("ACTION_ID", value={"integer_1": 24})</strong> will pass the integer value 24 to the action.',
 
     'dependencies_module': [],
 

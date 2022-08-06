@@ -42,7 +42,7 @@ class ConditionalController(AbstractController, threading.Thread):
     """
     Class to operate Conditional controller
 
-    Conditional statements are user-editable Python code that is executed.
+    Conditional controllers allow user-editable Python code to be executed.
     This code typically queries measurement data and causes execution of function
     actions as a result of the conditions set by the user.
     """
@@ -59,6 +59,8 @@ class ConditionalController(AbstractController, threading.Thread):
         self.pyro_timeout = None
         self.log_level_debug = None
         self.message_include_code = None
+        self.conditional_import = None
+        self.conditional_initialize = None
         self.conditional_statement = None
         self.conditional_status = None
         self.timer_period = None
@@ -68,7 +70,7 @@ class ConditionalController(AbstractController, threading.Thread):
         self.conditional_run = None
 
     def loop(self):
-        # Pause loop to modify conditional statements.
+        # Pause loop to modify conditional.
         # Prevents execution of conditional while variables are
         # being modified.
         if self.pause_loop:
@@ -92,6 +94,8 @@ class ConditionalController(AbstractController, threading.Thread):
             Conditional, unique_id=self.unique_id)
         self.is_activated = cond.is_activated
         self.conditional_statement = cond.conditional_statement
+        self.conditional_import = cond.conditional_import
+        self.conditional_initialize = cond.conditional_initialize
         self.conditional_status = cond.conditional_status
         self.period = cond.period
         self.start_offset = cond.start_offset
@@ -113,6 +117,8 @@ class ConditionalController(AbstractController, threading.Thread):
         if not os.path.exists(self.file_run):
             save_conditional_code(
                 [],
+                self.conditional_import,
+                self.conditional_initialize,
                 self.conditional_statement,
                 self.conditional_status,
                 self.unique_id,
@@ -129,11 +135,11 @@ class ConditionalController(AbstractController, threading.Thread):
             self.logger, self.unique_id, '')
 
         self.logger.debug(
-            f"Conditional Statement (pre-replacement):\n{self.conditional_statement}")
+            f"Run Python Code (pre-replacement):\n{self.conditional_statement}")
 
         with open(self.file_run, 'r') as file:
             self.logger.debug(
-                f"Conditional Statement (post-replacement):\n{file.read()}")
+                f"Run Python Code (post-replacement):\n{file.read()}")
 
         self.ready.set()
         self.running = True
@@ -163,7 +169,7 @@ class ConditionalController(AbstractController, threading.Thread):
         message = f"{timestamp}\n[Conditional {self.unique_id}]\n[Name: {cond.name}]"
 
         if self.message_include_code:
-            message += '\n[Conditional Statement Code Executed]:' \
+            message += '\n[Run Python Code Code Executed]:' \
                        '\n--------------------' \
                        f'\n{cond.conditional_statement}' \
                        '\n--------------------\n'
@@ -174,7 +180,7 @@ class ConditionalController(AbstractController, threading.Thread):
         try:
             self.conditional_run.conditional_code_run()
         except Exception:
-            self.logger.exception("Exception executing Conditional Statement code")
+            self.logger.exception("Exception executing Run Python Code")
 
     def function_status(self):
         return self.conditional_run.function_status()

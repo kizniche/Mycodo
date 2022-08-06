@@ -24,7 +24,7 @@ ACTION_INFORMATION = {
 
     'message': 'Emits a HTTP request when triggered. The first line contains a HTTP verb (GET, POST, PUT, ...) followed by a space and the URL to call. Subsequent lines are optional "name: value"-header parameters. After a blank line, the body payload to be sent follows. {{{message}}} is a placeholder that gets replaced by the message, {{{quoted_message}}} is the message in an URL safe encoding.',
 
-    'usage': 'Executing <strong>self.run_action("{ACTION_ID}")</strong> will run the Action.',
+    'usage': 'Executing <strong>self.run_action("ACTION_ID")</strong> will run the Action.',
 
     'custom_options': [
         {

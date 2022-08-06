@@ -502,7 +502,7 @@ def page_function():
             names_function[each_func_name.unique_id] = '[{id}] {name}'.format(
                 id=each_func_name.unique_id.split('-')[0], name=each_func_name.name)
 
-    # Calculate sunrise/sunset times if conditional controller is set up properly
+    # Calculate sunrise/sunset times if set up properly
     sunrise_set_calc = {}
     for each_trigger in trigger:
         if each_trigger.trigger_type == 'trigger_sunrise_sunset':

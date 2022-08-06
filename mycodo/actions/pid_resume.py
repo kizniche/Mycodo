@@ -26,8 +26,8 @@ ACTION_INFORMATION = {
 
     'message': lazy_gettext('Resume a PID.'),
 
-    'usage': 'Executing <strong>self.run_action("{ACTION_ID}")</strong> will resume the selected PID Controller. '
-             'Executing <strong>self.run_action("{ACTION_ID}", value="959019d1-c1fa-41fe-a554-7be3366a9c5b")</strong> will resume the PID Controller with the specified ID.',
+    'usage': 'Executing <strong>self.run_action("ACTION_ID")</strong> will resume the selected PID Controller. '
+             'Executing <strong>self.run_action("ACTION_ID", value="959019d1-c1fa-41fe-a554-7be3366a9c5b")</strong> will resume the PID Controller with the specified ID.',
 
     'custom_options': [
         {

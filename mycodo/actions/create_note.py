@@ -24,8 +24,8 @@ ACTION_INFORMATION = {
     'url_product_purchase': None,
     'url_additional': None,
 
-    'usage': 'Executing <strong>self.run_action("{ACTION_ID}")</strong> will create a note with the selected tag and note. '
-             'Executing <strong>self.run_action("{ACTION_ID}", value={"tags": ["tag1", "tag2"], "name": "My Note", "note": "this is a message"})</strong> will execute the action with the specified list of tag(s) and note. If using only one tag, make it the only element of the list (e.g. ["tag1"]). If note is not specified, then the action message will be used as the note.',
+    'usage': 'Executing <strong>self.run_action("ACTION_ID")</strong> will create a note with the selected tag and note. '
+             'Executing <strong>self.run_action("ACTION_ID", value={"tags": ["tag1", "tag2"], "name": "My Note", "note": "this is a message"})</strong> will execute the action with the specified list of tag(s) and note. If using only one tag, make it the only element of the list (e.g. ["tag1"]). If note is not specified, then the action message will be used as the note.',
 
     'custom_options': [
         {

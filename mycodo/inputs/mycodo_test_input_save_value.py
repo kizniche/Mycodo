@@ -28,7 +28,7 @@ INPUT_INFORMATION = {
 
     'message': 'This is a simple test Input that allows you to save any value as a measurement, that will be '
                'stored in the measurement database. It can be useful for testing other parts of Mycodo, such '
-               'as PIDs, Bang-Bang, and Conditional Controller Functions, since you can be completely in '
+               'as PIDs, Bang-Bang, and Conditional Functions, since you can be completely in '
                'control of what values the input provides to the Functions. '
                'Note 1: Select and save the Name and Measurement Unit for each channel. Once the unit has been saved, '
                'you can convert to other units in the Convert Measurement section. '

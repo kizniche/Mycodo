@@ -22,7 +22,7 @@ ACTION_INFORMATION = {
 
     'message': 'Restart the System',
 
-    'usage': 'Executing <strong>self.run_action("{ACTION_ID}")</strong> will restart the system in 10 seconds.',
+    'usage': 'Executing <strong>self.run_action("ACTION_ID")</strong> will restart the system in 10 seconds.',
 }
 
 

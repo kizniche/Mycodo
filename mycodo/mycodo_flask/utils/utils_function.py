@@ -76,20 +76,18 @@ def function_add(form_add_func):
         if function_name == 'conditional_conditional':
             new_func = Conditional()
             new_func.position_y = 999
+            new_func.conditional_import = """
+from datetime import datetime"""
+            new_func.conditional_initialize = """
+self.run_loop_count = 0"""
             new_func.conditional_statement = '''
 # Example code for learning how to use a Conditional. See the manual for more information.
-
 self.logger.info("This INFO log entry will appear in the Daemon Log")
-self.logger.error("This ERROR log entry will appear in the Daemon Log")
 
-if not hasattr(self, "loop_count"):  # Initialize objects saved across executions
-    self.loop_count = 1
-else:
-    self.loop_count += 1
+self.run_loop_count += 1  # Counts how many times the run code has been executed
 
-# Replace "asdf1234" with a Condition ID
-measurement = self.condition("{asdf1234}") 
-self.logger.info(f"Check this measurement in the Daemon Log. The value is {measurement}")
+measurement = self.condition("asdf1234")  # Replace ID with correct Conditional ID
+self.logger.info(f"Measurement value is {measurement}")
 
 if measurement is not None:  # If a measurement exists
     self.message += "This message appears in email alerts and notes.\\n"
@@ -101,13 +99,12 @@ if measurement is not None:  # If a measurement exists
     elif measurement > 27:  # Else If the measurement is greater than 27
         self.message += f"Measurement is too High! Measurement is {measurement}\\n"
         # Replace "qwer5678" with an Action ID
-        self.run_action("{qwer5678}", message=self.message)  # Run a single specific Action'''
+        self.run_action("qwer5678", message=self.message)  # Run a single specific Action'''
 
             new_func.conditional_status = '''
 # Example code to provide a return status for other controllers and widgets.
 status_dict = {
-    'string_status': f"This is the demo status of the conditional controller. "
-                     f"The controller has looped {self.loop_count} times",
+    'string_status': f"The controller has looped {self.loop_count} times at {datetime.now()}",
     'loop_count': self.loop_count,
     'error': []
 }
@@ -119,6 +116,8 @@ return status_dict'''
                 if not current_app.config['TESTING']:
                     save_conditional_code(
                         messages["error"],
+                        new_func.conditional_import,
+                        new_func.conditional_initialize,
                         new_func.conditional_statement,
                         new_func.conditional_status,
                         new_func.unique_id,

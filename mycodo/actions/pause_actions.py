@@ -23,7 +23,7 @@ ACTION_INFORMATION = {
 
     'message': lazy_gettext('Set a delay between executing Actions when self.run_all_actions() is used.'),
 
-    'usage': 'Executing <strong>self.run_action("{ACTION_ID}")</strong> will create a pause for the set duration. When <strong>self.run_all_actions()</strong> is executed, this will add a pause in the sequential execution of all actions.',
+    'usage': 'Executing <strong>self.run_action("ACTION_ID")</strong> will create a pause for the set duration. When <strong>self.run_all_actions()</strong> is executed, this will add a pause in the sequential execution of all actions.',
 
     'custom_options': [
         {

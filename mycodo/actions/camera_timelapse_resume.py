@@ -24,8 +24,8 @@ ACTION_INFORMATION = {
 
     'message': 'Resume a camera time-lapse',
 
-    'usage': 'Executing <strong>self.run_action("{ACTION_ID}")</strong> will resume the selected Camera time-lapse. '
-             'Executing <strong>self.run_action("{ACTION_ID}", value={"camera_id": "959019d1-c1fa-41fe-a554-7be3366a9c5b"})</strong> will resume the Camera time-lapse with the specified ID.',
+    'usage': 'Executing <strong>self.run_action("ACTION_ID")</strong> will resume the selected Camera time-lapse. '
+             'Executing <strong>self.run_action("ACTION_ID", value={"camera_id": "959019d1-c1fa-41fe-a554-7be3366a9c5b"})</strong> will resume the Camera time-lapse with the specified ID.',
 
     'custom_options': [
         {

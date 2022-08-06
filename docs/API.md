@@ -131,7 +131,7 @@ Parameters:
 
 **get_condition_measurement**\ (*condition_id*)
 
-Gets the measurement from a Condition of a Conditional Controller.
+Gets the measurement from a Condition of a Conditional Function.
 
 Parameters:
 
@@ -141,7 +141,7 @@ Parameters:
 
 **get_condition_measurement_dict**\ (*condition_id*)
 
-Gets the measurement dictionary from a Condition of a Conditional Controller.
+Gets the measurement dictionary from a Condition of a Conditional Function.
 
 Parameters:
 
@@ -325,7 +325,7 @@ Parameters:
 
 **refresh_daemon_conditional_settings**\ (*unique_id*)
 
-Refresh the Conditional Controller settings of a running Conditional Controller.
+Refresh the settings of a running Conditional Function.
 
 Parameters:
 

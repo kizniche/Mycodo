@@ -20,8 +20,8 @@ ACTION_INFORMATION = {
     'url_product_purchase': None,
     'url_additional': None,
 
-    'usage': 'Executing <strong>self.run_action("{ACTION_ID}")</strong> will add a line to the Daemon log. '
-             'Executing <strong>self.run_action("{ACTION_ID}", value={"log_level": "info", "log_text": "this is a log line"})</strong> will execute the action with the specified log level and log line text. If a log line text is not specified, then the action message will be used as the text.',
+    'usage': 'Executing <strong>self.run_action("ACTION_ID")</strong> will add a line to the Daemon log. '
+             'Executing <strong>self.run_action("ACTION_ID", value={"log_level": "info", "log_text": "this is a log line"})</strong> will execute the action with the specified log level and log line text. If a log line text is not specified, then the action message will be used as the text.',
 
     'custom_options': [
         {

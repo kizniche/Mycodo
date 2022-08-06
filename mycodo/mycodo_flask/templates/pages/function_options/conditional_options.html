@@ -24,7 +24,7 @@
 
     <div class="row small-gutters" style="padding: 0.3em 0.2em 0.3em 0.3em">
       <div class="col-12" style="padding-top: 0.3em">
-        Conditional Controllers allow the execution of Python 3 code as well as the use of Conditions and Actions within your code to interact with Mycodo. Conditions typically acquire data from Mycodo, such as Input measurements, and Actions typically affect Mycodo, such as actuating an Output or pausing a PID controller. Each Condition and Action you add will have its own description and example code to demonstrate how to use it in your Conditional Statement code. See the <a href="https://kizniche.github.io/Mycodo/Functions/#conditional-controller">Conditional Controller docs</a> for more information.
+        Conditional Functions allow the execution of Python 3 code as well as the use of Conditions and Actions within your code to interact with Mycodo. Conditions typically acquire data from Mycodo, such as Input measurements, and Actions typically affect Mycodo, such as actuating an Output or pausing a PID controller. Each Condition and Action you add will have its own description and example code to demonstrate use. See the <a href="https://kizniche.github.io/Mycodo/Functions/#conditional-function">Conditional Function docs</a> for more information.
       </div>
     </div>
 
@@ -41,15 +41,27 @@
 
     <div class="row small-gutters" style="padding: 0.3em 0.2em 0.3em 0.3em">
       <div class="col-12">
+        {{form_conditional.conditional_import.label(class_='control-label')}}
+        <div>
+          <textarea style="font-family:monospace;" class="form-control" id="conditional_import" name="conditional_import" rows="4" type="text">{{each_function.conditional_import}}</textarea>
+        </div>
+      </div>
+      <div class="col-12">
+        {{form_conditional.conditional_initialize.label(class_='control-label')}}
+        <div>
+          <textarea style="font-family:monospace;" class="form-control" id="conditional_initialize" name="conditional_initialize" rows="4" type="text">{{each_function.conditional_initialize}}</textarea>
+        </div>
+      </div>
+      <div class="col-12">
         {{form_conditional.conditional_statement.label(class_='control-label')}}
         <div>
-          <textarea style="font-family:monospace;" class="form-control" id="conditional_statement" name="conditional_statement" rows="8" type="text" title="{{_('The Python 3 code to execute')}}">{{each_function.conditional_statement}}</textarea>
+          <textarea style="font-family:monospace;" class="form-control" id="conditional_statement" name="conditional_statement" rows="12" type="text">{{each_function.conditional_statement}}</textarea>
         </div>
       </div>
       <div class="col-12">
         {{form_conditional.conditional_status.label(class_='control-label')}}
         <div>
-          <textarea style="font-family:monospace;" class="form-control" id="conditional_status" name="conditional_status" rows="8" type="text" title="{{_('The Python 3 code to execute')}}. {{_('The return value provides a status for the controller')}}.">{{each_function.conditional_status}}</textarea>
+          <textarea style="font-family:monospace;" class="form-control" id="conditional_status" name="conditional_status" rows="8" type="text">{{each_function.conditional_status}}</textarea>
         </div>
       </div>
       <div class="col-auto">
@@ -73,7 +85,7 @@
       <div class="col-auto">
         {{form_conditional.pyro_timeout.label(class_='control-label')}}
         <div>
-          {{form_conditional.pyro_timeout(class_='form-control', value=each_function.pyro_timeout, **{'title':_('The timeout (seconds) for the execution of the Conditional Statement')})}}
+          {{form_conditional.pyro_timeout(class_='form-control', value=each_function.pyro_timeout, **{'title':_('The timeout (seconds) for the execution of the Run Python Code')})}}
         </div>
       </div>
       <div class="col-auto">

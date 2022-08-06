@@ -41,11 +41,11 @@ Every Period the Input will acquire measurements and store then in the time-seri
 <tbody>
 <tr>
 <td>Activate</td>
-<td>After the sensor has been properly configured, activation begins acquiring measurements from the sensor. Any activated conditional statements will now being operating.</td>
+<td>After the sensor has been properly configured, activation begins acquiring measurements from the sensor. Any activated Conditional Functions will now being operating.</td>
 </tr>
 <tr>
 <td>Deactivate</td>
-<td>Deactivation stops measurements from being acquired from the sensor. All associated conditional statements will cease to operate.</td>
+<td>Deactivation stops measurements from being acquired from the sensor. All associated Conditional Functions will cease to operate.</td>
 </tr>
 <tr>
 <td>Save</td>

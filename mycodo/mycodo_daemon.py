@@ -776,7 +776,7 @@ class DaemonController:
         :param min_off: Don't turn on if not off for at least this duration (0 = disabled)
         :type min_off: float
         :param trigger_conditionals: bool
-        :type trigger_conditionals: Indicate whether to trigger conditional statements
+        :type trigger_conditionals: Indicate whether to trigger conditional
         """
         try:
             if self.controller['Output'] is None:

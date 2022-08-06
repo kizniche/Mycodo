@@ -24,8 +24,8 @@ ACTION_INFORMATION = {
 
     'message': lazy_gettext('Send a value to the Output.'),
 
-    'usage': 'Executing <strong>self.run_action("{ACTION_ID}")</strong> will actuate a value output. '
-             'Executing <strong>self.run_action("{ACTION_ID}", value={"output_id": "959019d1-c1fa-41fe-a554-7be3366a9c5b", "channel": 0, "value": 42})</strong> will send a value to the output with the specified ID and channel.',
+    'usage': 'Executing <strong>self.run_action("ACTION_ID")</strong> will actuate a value output. '
+             'Executing <strong>self.run_action("ACTION_ID", value={"output_id": "959019d1-c1fa-41fe-a554-7be3366a9c5b", "channel": 0, "value": 42})</strong> will send a value to the output with the specified ID and channel.',
 
     'custom_options': [
         {

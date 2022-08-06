@@ -25,8 +25,8 @@ ACTION_INFORMATION = {
 
     'message': lazy_gettext('Turn an On/Off Output On, Off, or On for a duration.'),
 
-    'usage': 'Executing <strong>self.run_action("{ACTION_ID}")</strong> will actuate an output. '
-             'Executing <strong>self.run_action("{ACTION_ID}", value={"output_id": "959019d1-c1fa-41fe-a554-7be3366a9c5b", "channel": 0, "state": "on", "duration": 300})</strong> will set the state of the output with the specified ID and channel. If state is on and a duration is set, the output will turn off after the duration.',
+    'usage': 'Executing <strong>self.run_action("ACTION_ID")</strong> will actuate an output. '
+             'Executing <strong>self.run_action("ACTION_ID", value={"output_id": "959019d1-c1fa-41fe-a554-7be3366a9c5b", "channel": 0, "state": "on", "duration": 300})</strong> will set the state of the output with the specified ID and channel. If state is on and a duration is set, the output will turn off after the duration.',
 
     'custom_options': [
         {

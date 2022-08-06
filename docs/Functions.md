@@ -349,18 +349,15 @@ And typical Daemon Log output will look like this:
 2018-08-04 23:47:55,904 - mycodo.pid_3b533dff - INFO - Kd: 4.101408080354794
 ```
 
-## Conditional Controller
+## Conditional Function
 
-Conditional controllers are used to perform simple to complex actions based a user-generated Conditional Statement. Conditional Controllers allow the execution of Python 3 code as well as the use of Conditions and [Actions](Actions.md) within your code to interact with Mycodo. Conditions typically acquire data from Mycodo, such as Input measurements, and Actions typically affect Mycodo, such as actuating an Output or pausing a PID controller. Each Condition and Action you add will have its own description and example code to demonstrate how to use it in your Conditional Statement code.
-
-!!! note
-    `Timeout` must be set longer than it takes your `Conditional Statement` to execute (if `Timeout` is set too low, only part of your `Conditional Statement` may execute).
+Conditional Functions are used to perform simple to complex actions based a user-generated Python code. Conditional Functions allow the execution of Python 3 code as well as the use of Conditions and [Actions](Actions.md) within your code to interact with Mycodo. Conditions typically acquire data from Mycodo, such as Input measurements, and Actions typically affect Mycodo, such as actuating an Output or pausing a PID controller. Each Condition and Action you add will have its own description and example code to demonstrate how to use it in your Python code.
 
 !!! note
-    `Period` must be set longer than the time it takes for your `Conditional Statement` to execute, otherwise it will execute again before the previous execution has finished.
+    `Timeout` must be set longer than it takes your `Run Python Code` to execute (if `Timeout` is set too low, only part of your `Run Python Code` may execute).
 
 !!! note
-    `Conditional Status` allows you to provide a return value that can be used by other controllers or dashboard widgets.
+    `Period` must be set longer than the time it takes for your `Run Python Code` to execute, otherwise it will execute again before the previous execution has finished.
 
 !!! note
     The code is executed within the same Python virtual environment that Mycodo runs from, therefore you must install Python libraries to this environment if you want them to be available to your code. This virtualenv is located at ~/Mycodo/env and if you wanted to install, for example, "my_library" using pip, you would execute "sudo ~/Mycodo/env/bin/pip install my_library".
@@ -376,16 +373,24 @@ Conditional controllers are used to perform simple to complex actions based a us
 </thead>
 <tbody>
 <tr>
-<td>Conditional Statement</td>
-<td>User-created Python 3 code that will be executed.</td>
+<td>Import Python Code</td>
+<td>Python 3 code that is used for importing Python libraries. This is executed before the class is created when generating the Conditional Function code.</td>
 </tr>
 <tr>
-<td>Conditional Status</td>
+<td>Initialize Python Code</td>
+<td>Python 3 code that is executed during the initialization of the class, within __init__(). This is where variables are initialized that will be used within the class.</td>
+</tr>
+<tr>
+<td>Run Python Code</td>
+<td>Python 3 code that will be executed every set Period. This is where the Condtions and Actions are executed. Once a Condition or Action is added, the functions that can be executed for each will be shown above each Condition or Action.</td>
+</tr>
+<tr>
+<td>Status Python Code</td>
 <td>A dictionary can be returned that allows information to be passed to other controllers and widgets. For example, the Function Status Widget will display this information on the Dashboard. This code can be removed if you do not want to return any information.</td>
 </tr>
 <tr>
 <td>Period (seconds)</td>
-<td>The period (seconds) that the Conditional Statement will be executed.</td>
+<td>The period (seconds) that the Run Python Code will be executed.</td>
 </tr>
 <tr>
 <td>Start Offset (seconds)</td>
@@ -397,12 +402,12 @@ Conditional controllers are used to perform simple to complex actions based a us
 </tr>
 <tr>
 <td>Message Includes Code</td>
-<td>Include the Conditional Statement code in the message (self.message) that is passed to Actions.</td>
+<td>Include the Python code in the message (self.message) that is passed to Actions.</td>
 </tr>
 </tbody>
 </table>
 
-Conditions are functions that can be used within the Conditional Statement, and return specific information.
+Conditions are functions that can be used within the Run Python Code, and return specific information.
 
 <table>
 <thead>
@@ -453,7 +458,7 @@ Conditions are functions that can be used within the Conditional Statement, and 
 
 ### Conditional Setup Guide
 
-Python 3 is the environment that these conditionals will be executed. The following functions can be used within your Conditional Statement code.
+Python 3 is the environment that these conditionals will be executed. The following functions can be used within your Python code.
 
 !!! note
     Python code indentations must use 4 spaces (not 2 spaces, tabs, or anything else).
@@ -501,10 +506,10 @@ There are additional functions that can be used, but these must use the full UUI
 
 `output_on_seconds = control.output_sec_currently_on("1b6ada50-1e69-403a-9fa6-ec748b16dc23")`
 
-Since the Python code contained in the Conditional Statement must be formatted properly, it's best to familiarize yourself with the [basics of Python](https://realpython.com/python-conditional-statements/).
+Since the Python code must be formatted properly, it's best to familiarize yourself with the [basics of Python](https://realpython.com/python-conditional-statements/).
 
 !!! note
-    There are two different IDs in use here, one set of IDs are found under the `Conditions` section of the Conditional Controller, and one set of IDs are found under the `Actions` section of the Conditional Controller. Read all of this section, including the examples, below, to fully understand how to properly set up a Conditional Controller.
+    There are two different IDs in use here, one set of IDs are found under the `Conditions` section of the Conditional Function, and one set of IDs are found under the `Actions` section of the Conditional Function. Read all of this section, including the examples, below, to fully understand how to properly set up a Conditional Function.
 
 !!! info
     If a measurement hasn't been acquired within the set `Max Age`, "None" will be returned when self.condition("{ID}") is called in the code. It is very important that you account for this. All examples below incorporate a test for the measurement being None, and this should not be removed. If an error occurs (such as if the statement resolves to comparing None to a numerical value, such as "if None < 23"), then the code will stop there and an error will be logged in the daemon log. Accounting for None is useful for determining if an Input is no longer acquiring measurements (e.g. dead sensor, malfunction, etc.).
@@ -513,34 +518,32 @@ To create a basic conditional, follow these steps, using the numbers in the scre
 
 -   Navigate to the `Setup -> Function` page.
 -   Select "Controller: Conditional", then click `Add`.
--   Under Conditions (1), select a condition option, then click `Add Condition`.
+-   Under Conditions, select a condition option, then click `Add Condition`.
 -   Configure the newly-added Condition then click `Save`.
--   Under Actions (2), select an action option, then click `Add Action`.
+-   Under Actions, select an action option, then click `Add Action`.
 -   Configure the newly-added Action then click `Save`.
 -   Notice that each Condition and each Action has its own ID (underlined).
--   The default Conditional Statement (3) contains placeholder IDs that need to be changed to your Condition and Action IDs. Change the ID in self.condition("{asdf1234}") to your Condition ID. Change the ID in self.run_action("{qwer5678}", message=message) to your Action ID. Click `Save` at the top of the Conditional.
--   The logic used in the Conditional Statement will need to be adjusted to suit your particular needs. Additionally, you may add more Conditions or Actions. See the `Advanced Conditional Statement examples`, below, for usage examples.
+-   The default Run Python Code contains placeholder IDs that need to be changed to your Condition and Action IDs. Change the ID in self.condition("asdf1234") to your Condition ID. Change the ID in self.run_action("qwer5678", message=message) to your Action ID. Click `Save` at the top of the Conditional.
+-   The logic used in the Run Python Code will need to be adjusted to suit your particular needs. Additionally, you may add more Conditions or Actions. See the `Advanced Conditional code examples`, below, for usage examples.
 
-If your `Conditional Statement` has been formatted correctly, your Conditional will save and it will be ready to activate. If an error is returned, your options will not have been saved. Inspect the error for which line is causing the issue and read the error message itself to try to understand what the problem is and how to fix it. There are an unfathomable number of ways to configure a Conditional, but this should hopefully get you started to developing one that suits your needs.
+If your Python code has been formatted correctly, your Conditional will save and it will be ready to activate. If an error is returned, your options will not have been saved. Inspect the error for which line is causing the issue and read the error message itself to try to understand what the problem is and how to fix it. There are an unfathomable number of ways to configure a Conditional, but this should hopefully get you started to developing one that suits your needs.
 
 !!! note
-    Mycodo is constantly changing, so the screenshots below may not match what you see exactly. Be sure to read this entire section of the manual to understand how to use Conditional Controllers.
+    Mycodo is constantly changing, so the screenshots below may not match what you see exactly. Be sure to read this entire section of the manual to understand how to use Conditional Functions.
 
-![Figure-Mycodo-Conditional-Setup](images/Figure-Mycodo-Conditional-Setup.png)
+Beginner Conditional `Run Python Code` examples:
 
-Beginner `Conditional Statement` examples:
-
-Each self.condition("{ID}") will return the most recent measurement obtained from that particular measurement under the `Conditions` section of the Conditional Controller, as long as it's within the set Max Age.
+Each self.condition("ID") will return the most recent measurement obtained from that particular measurement under the `Conditions` section of the Conditional Function, as long as it's within the set Max Age.
 
 ```python
 # Example 1, no measurement (i.e. None) returned
 # useful with the Email Notify Action to email when an Input stops working
-if self.condition("{asdf1234}") is None:
+if self.condition("asdf1234") is None:
     self.run_all_actions()  # Execute all configured actions
 
 # Example 2, test two measurement conditions
-measure_1 = self.condition("{asdf1234}")
-measure_2 = self.condition("{hjkl5678}")
+measure_1 = self.condition("asdf1234")
+measure_2 = self.condition("hjkl5678")
 if None not in [measure_1, measure_2]:
     # If neither measurement is None (both are working)
     if measure_1 < 20 and measure_2 > 10:
@@ -548,35 +551,35 @@ if None not in [measure_1, measure_2]:
         self.run_all_actions()  # Execute all configured actions
 
 # Example 3, test two measurements and sum of measurements
-measure_1 = self.condition("{asdf1234}")
-measure_2 = self.condition("{hjkl5678}")
+measure_1 = self.condition("asdf1234")
+measure_2 = self.condition("hjkl5678")
 if None not in [measure_1, measure_2]:
     sum_ = measure_1 + measure_2
     if measure_1 > 2 and 10 < measure_2 < 23 and sum_ < 30.5:
         self.run_all_actions()
 
 # Example 4, combine into one conditional
-measurement = self.condition("{asdf1234}")
+measurement = self.condition("asdf1234")
 if measurement is not None and 20 < measurement < 30:  # combine conditions
     self.run_all_actions()
 
 # Example 5, test two measurements
 # convert Edge Input from 0 or 1 to True or False
-measure_1 = self.condition("{asdf1234}")
-measure_2 = self.condition("{hjkl5678}")
+measure_1 = self.condition("asdf1234")
+measure_2 = self.condition("hjkl5678")
 if None not in [measure_1, measure_2]:
     if bool(measure_1) and measure_2 > 10:
         self.run_all_actions()
 
 # Example 6, test measurement with "or" and a rounded measurement
-measure_1 = self.condition("{asdf1234}")
-measure_2 = self.condition("{hjkl5678}")
+measure_1 = self.condition("asdf1234")
+measure_2 = self.condition("hjkl5678")
 if None not in [measure_1, measure_2]:
     if measure_1 > 20 or int(round(measure_2)) in [20, 21, 22]:
         self.run_all_actions()
 
 # Example 7, use self to store variables across multiple executions
-measurement = self.condition("{asdf1234}")
+measurement = self.condition("asdf1234")
 if not hasattr(self, "stored_measurement"):  # Initialize variable
     self.stored_measurement = measurement
 if measurement is not None:
@@ -589,7 +592,7 @@ The "Measurement (Multiple)" Condition is useful if you desire to check if a par
 
 ```python
 # Example 1, find a measurement in the past 30 minutes (Max Age: 1800 seconds)
-measurements = self.condition_dict("{asdf1234}")
+measurements = self.condition_dict("asdf1234")
 if measurements:  # If the list is not empty
     for each_measure in measurements:  # Loop through each measurement in the list
         if each_measure['value'] == 119:
@@ -599,72 +602,72 @@ if measurements:  # If the list is not empty
             break  # Exit the for loop
 ```
 
-Advanced `Conditional Statement` examples:
+Advanced Conditional `Run Python Code` examples:
 
-These examples expand on the beginner examples, above, by activating specific actions. The following examples will reference actions with IDs that can be found under the `Actions` section of the Conditional Controller. Two example action IDs will be used: "qwer1234" and "uiop5678". Additionally, self.run_all_actions() is used here, which will run all actions in the order in which they were created.
+These examples expand on the beginner examples, above, by activating specific actions. The following examples will reference actions with IDs that can be found under the `Actions` section of the Conditional Function. Two example action IDs will be used: "qwer1234" and "uiop5678". Additionally, self.run_all_actions() is used here, which will run all actions in the order in which they were created.
 
 ```python
 # Example 1
-measurement = self.condition("{asdf1234}")
+measurement = self.condition("asdf1234")
 if measurement is None:
-    self.run_action("{qwer1234}")
+    self.run_action("qwer1234")
 elif measurement > 23:
-    self.run_action("{uiop5678}")
+    self.run_action("uiop5678")
 else:
     self.run_all_actions()
 
 # Example 2, test two measurements
-measure_1 = self.condition("{asdf1234}")
-measure_2 = self.condition("{hjkl5678}")
+measure_1 = self.condition("asdf1234")
+measure_2 = self.condition("hjkl5678")
 if None not in [measure_1, measure_2]:
     if measure_1 < 20 and measure_2 > 10:
-        self.run_action("{qwer1234}")
-        self.run_action("{uiop5678}")
+        self.run_action("qwer1234")
+        self.run_action("uiop5678")
 
 # Example 3, test two measurements and sum of measurements
-measure_1 = self.condition("{asdf1234}")
-measure_2 = self.condition("{hjkl5678}")
+measure_1 = self.condition("asdf1234")
+measure_2 = self.condition("hjkl5678")
 if None not in [measure_1, measure_2]:
     sum_ = measure_1 + measure_2
     if measure_1 > 2 and 10 < measure_2 < 23 and sum_ < 30.5:
-        self.run_action("{qwer1234}")
+        self.run_action("qwer1234")
     else:
-        self.run_action("{uiop5678}")
+        self.run_action("uiop5678")
 
 # Example 4, combine into one conditional
-measurement = self.condition("{asdf1234}")
+measurement = self.condition("asdf1234")
 if measurement is not None and 20 < measurement < 30:
-    self.run_action("{uiop5678}")
+    self.run_action("uiop5678")
 
 # Example 5, test two measurements, convert Edge Input from 0/1 to True/False
-measure_1 = self.condition("{asdf1234}")
-measure_2 = self.condition("{hjkl5678}")
+measure_1 = self.condition("asdf1234")
+measure_2 = self.condition("hjkl5678")
 if None not in [measure_1, measure_2]:
     if bool(measure_1) and measure_2 > 10:
         self.run_all_actions()
 
 # Example 6, test measurement with "or" and a rounded measurement
-measure_1 = self.measure("{asdf1234}")
-measure_2 = self.measure("{hjkl5678}")
+measure_1 = self.measure("asdf1234")
+measure_2 = self.measure("hjkl5678")
 if None not in [measure_1, measure_2]:
     if measure_1 > 20 or int(round(measure_2)) in [20, 21, 22]:
-        self.run_action("{qwer1234}")
+        self.run_action("qwer1234")
         if measure_1 > 30:
-            self.run_action("{uiop5678}")
+            self.run_action("uiop5678")
 ```
 
 If your Action is a type that receives a message (E-Mail or Note), you can modify this message to include extra information before it is passed to the function (so the new information is passed to the Note, E-Mail, etc.). To do this, append a string to the variable `self.message` and add this to the `message` parameter of self.run_action() or self.run_all_actions(). Below are some examples. Note the use of "+=" instead of "=", which appends the string to the variable `self.message` instead of overwriting it.
 
 ```python
 # Example 1
-measurement = self.measure("{asdf1234}")
+measurement = self.measure("asdf1234")
 if measurement is None and measurement > 23:
     self.message += "Measurement was {}".format(measurement)
-    self.run_action("{uiop5678}", message=self.message)
+    self.run_action("uiop5678}", message=self.message)
 
 # Example 2
-measure_1 = self.measure("{asdf1234}")
-measure_2 = self.measure("{hjkl5678}")
+measure_1 = self.measure("asdf1234")
+measure_2 = self.measure("hjkl5678")
 if None not in [measure_1, measure_2]:
     if measure_1 < 20 and measure_2 > 10:
         self.message += "Measurement 1: {m1}, Measurement 2: {m2}".format(
@@ -676,11 +679,11 @@ Logging can also be used to log messages to the daemon log using `self.logger`. 
 
 ```python
 # Example 1
-measurement = self.measure("{asdf1234}")
+measurement = self.measure("asdf1234")
 if measurement is None and measurement > 23:
     self.logging.error("Warning, measurement was {}".format(measurement))
     self.message += "Measurement was {}".format(measurement)
-    self.run_action("{uiop5678}", message=self.message)
+    self.run_action("uiop5678}", message=self.message)
 ```
 
 Before activating any conditionals, it's advised to thoroughly explore all possible scenarios and plan a configuration that eliminates conflicts. Some devices or outputs may respond atypically or fail when switched on and off in rapid succession. Therefore, trial run your configuration before connecting devices to any outputs.

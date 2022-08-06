@@ -128,7 +128,7 @@ class InputController(AbstractController, threading.Thread):
         return str(self.__class__)
 
     def loop(self):
-        # Pause loop to modify conditional statements.
+        # Pause loop to modify conditional.
         # Prevents execution of conditional while variables are
         # being modified.
         if self.pause_loop:

@@ -24,8 +24,8 @@ ACTION_INFORMATION = {
 
     'message': lazy_gettext('Instruct the Output to dispense a volume.'),
 
-    'usage': 'Executing <strong>self.run_action("{ACTION_ID}")</strong> will actuate a volume output. '
-             'Executing <strong>self.run_action("{ACTION_ID}", value={"output_id": "959019d1-c1fa-41fe-a554-7be3366a9c5b", "channel": 0, "volume": 42})</strong> will send a volume to the output with the specified ID and channel.',
+    'usage': 'Executing <strong>self.run_action("ACTION_ID")</strong> will actuate a volume output. '
+             'Executing <strong>self.run_action("ACTION_ID", value={"output_id": "959019d1-c1fa-41fe-a554-7be3366a9c5b", "channel": 0, "volume": 42})</strong> will send a volume to the output with the specified ID and channel.',
 
     'custom_options': [
         {

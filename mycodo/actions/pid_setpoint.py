@@ -26,8 +26,8 @@ ACTION_INFORMATION = {
 
     'message': lazy_gettext('Set the Setpoint of a PID.'),
 
-    'usage': 'Executing <strong>self.run_action("{ACTION_ID}")</strong> will set the setpoint of the selected PID Controller. '
-             'Executing <strong>self.run_action("{ACTION_ID}", value={"setpoint": 42})</strong> will set the setpoint of the PID Controller (e.g. 42). '
+    'usage': 'Executing <strong>self.run_action("ACTION_ID")</strong> will set the setpoint of the selected PID Controller. '
+             'Executing <strong>self.run_action("ACTION_ID", value={"setpoint": 42})</strong> will set the setpoint of the PID Controller (e.g. 42). '
              'You can also specify the PID ID (e.g. value={"setpoint": 42, "pid_id": "959019d1-c1fa-41fe-a554-7be3366a9c5b"})',
 
     'custom_options': [

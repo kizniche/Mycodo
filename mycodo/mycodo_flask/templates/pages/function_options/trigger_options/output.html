@@ -11,7 +11,7 @@
 </div>
 <div class="col-auto">
   {{form_trigger.output_state.label(class_='control-label')}}
-  <select class="form-control form-tooltip form-dropdown" id="output_state" name="output_state" data-placement="top" title="{{_('What action will trigger this conditional statement, on or off?')}}">
+  <select class="form-control form-tooltip form-dropdown" id="output_state" name="output_state" data-placement="top" title="{{_('What action will trigger this conditional, on or off?')}}">
     <option value="">{{dict_translation['select_one']['title']}}</option>
     <option value="on_duration_none"{% if each_function.output_state == 'on_duration_none' %} selected{% endif %}>{{dict_translation['on']['title']}} ({{_('no duration')}})</option>
     <option value="on_duration_any"{% if each_function.output_state == 'on_duration_any' %} selected{% endif %}>{{dict_translation['on']['title']}} ({{_('any duration')}})</option>

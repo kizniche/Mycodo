@@ -27,8 +27,8 @@ ACTION_INFORMATION = {
 
     'message': lazy_gettext('Select a method to set the PID to use.'),
 
-    'usage': 'Executing <strong>self.run_action("{ACTION_ID}")</strong> will pause the selected PID Controller. '
-             'Executing <strong>self.run_action("{ACTION_ID}", value={"pid_id": "959019d1-c1fa-41fe-a554-7be3366a9c5b", "method_id": "fe8b8f41-131b-448d-ba7b-00a044d24075"})</strong> will set a method for the PID Controller with the specified IDs.',
+    'usage': 'Executing <strong>self.run_action("ACTION_ID")</strong> will pause the selected PID Controller. '
+             'Executing <strong>self.run_action("ACTION_ID", value={"pid_id": "959019d1-c1fa-41fe-a554-7be3366a9c5b", "method_id": "fe8b8f41-131b-448d-ba7b-00a044d24075"})</strong> will set a method for the PID Controller with the specified IDs.',
 
     'custom_options': [
         {

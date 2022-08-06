@@ -22,8 +22,8 @@ ACTION_INFORMATION = {
 
     'message': lazy_gettext('Capture a photo with the selected Camera.'),
 
-    'usage': 'Executing <strong>self.run_action("{ACTION_ID}")</strong> will capture a photo with the selected Camera. '
-             'Executing <strong>self.run_action("{ACTION_ID}", value={"camera_id": "959019d1-c1fa-41fe-a554-7be3366a9c5b"})</strong> will capture a photo with the Camera with the specified ID.',
+    'usage': 'Executing <strong>self.run_action("ACTION_ID")</strong> will capture a photo with the selected Camera. '
+             'Executing <strong>self.run_action("ACTION_ID", value={"camera_id": "959019d1-c1fa-41fe-a554-7be3366a9c5b"})</strong> will capture a photo with the Camera with the specified ID.',
 
     'custom_options': [
         {

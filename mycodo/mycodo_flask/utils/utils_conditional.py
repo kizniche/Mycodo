@@ -40,6 +40,8 @@ def conditional_mod(form):
         else:
             messages["error"], lines_code, cmd_status, cmd_out = save_conditional_code(
                 messages["error"],
+                form.conditional_import.data,
+                form.conditional_initialize.data,
                 form.conditional_statement.data,
                 form.conditional_status.data,
                 form.function_id.data,
@@ -50,8 +52,8 @@ def conditional_mod(form):
 
             pylint_message = Markup(
                 '<pre>\n\n'
-                'Full Conditional Statement code:\n\n{code}\n\n'
-                'Conditional Statement code analysis:\n\n{report}'
+                'Full Conditional code:\n\n{code}\n\n'
+                'Conditional code analysis:\n\n{report}'
                 '</pre>'.format(
                     code=lines_code, report=cmd_out.decode("utf-8")))
 
@@ -324,14 +326,14 @@ def conditional_activate(cond_id):
     if not conditions.count():
         messages["info"].append(
             "Conditional activated without any Conditions. Typical "
-            "Conditional Controller use involves the use of Conditions. Only "
+            "Conditional Function use involves the use of Conditions. Only "
             "proceed without Conditions if you know what you're doing.")
 
     actions = Actions.query.filter(Actions.function_id == cond_id)
     if not actions.count():
         messages["info"].append(
             "Conditional activated without any Actions. Typical "
-            "Conditional Controller use involves the use of Actions. Only "
+            "Conditional Function use involves the use of Actions. Only "
             "proceed without Actions if you know what you're doing.")
 
     messages = controller_activate_deactivate(

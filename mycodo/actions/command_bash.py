@@ -20,8 +20,8 @@ ACTION_INFORMATION = {
 
     'message': lazy_gettext('Execute a Linux bash shell command.'),
 
-    'usage': 'Executing <strong>self.run_action("{ACTION_ID}")</strong> will execute the bash command.'
-             'Executing <strong>self.run_action("{ACTION_ID}", value={"user": "mycodo", "command": "/home/pi/my_script.sh on"})</strong> will execute the action with the specified command and user.',
+    'usage': 'Executing <strong>self.run_action("ACTION_ID")</strong> will execute the bash command.'
+             'Executing <strong>self.run_action("ACTION_ID", value={"user": "mycodo", "command": "/home/pi/my_script.sh on"})</strong> will execute the action with the specified command and user.',
 
     'custom_options': [
         {

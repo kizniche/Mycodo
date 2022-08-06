@@ -22,7 +22,7 @@ ACTION_INFORMATION = {
 
     'message': 'Shutdown the System',
 
-    'usage': 'Executing <strong>self.run_action("{ACTION_ID}")</strong> will shut down the system in 10 seconds.',
+    'usage': 'Executing <strong>self.run_action("ACTION_ID")</strong> will shut down the system in 10 seconds.',
 }
 
 

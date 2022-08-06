@@ -22,8 +22,8 @@ ACTION_INFORMATION = {
 
     'message': 'Clear the total volume saved for a flow meter Input. The Input must have the Clear Total Volume option.',
 
-    'usage': 'Executing <strong>self.run_action("{ACTION_ID}")</strong> will clear the total volume for the selected flow meter Input. '
-             'Executing <strong>self.run_action("{ACTION_ID}", value={"input_id": "959019d1-c1fa-41fe-a554-7be3366a9c5b"})</strong> will clear the total volume for the flow meter Input with the specified ID.',
+    'usage': 'Executing <strong>self.run_action("ACTION_ID")</strong> will clear the total volume for the selected flow meter Input. '
+             'Executing <strong>self.run_action("ACTION_ID", value={"input_id": "959019d1-c1fa-41fe-a554-7be3366a9c5b"})</strong> will clear the total volume for the flow meter Input with the specified ID.',
 
     'custom_options': [
         {

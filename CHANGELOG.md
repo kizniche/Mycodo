@@ -21,6 +21,7 @@
  - Add UI feedback for Atlas Scientific calibration commands ([#1198](https://github.com/kizniche/Mycodo/issues/1198))
  - Add ability to use non-standard condition/action ID strings in Conditional Functions
  - Add Websocket support to MQTT Outputs ([#1219](https://github.com/kizniche/Mycodo/pull/1219))
+ - Add Import and Initialize options to Conditional Functions ([#1203](https://github.com/kizniche/Mycodo/pull/1203))
 
 ### Miscellaneous
 

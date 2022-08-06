@@ -11,7 +11,7 @@ Supported Actions are listed below.
 
 Set a delay between executing Actions when self.run_all_actions() is used.
 
-Usage: Executing <strong>self.run_action("{ACTION_ID}")</strong> will create a pause for the set duration. When <strong>self.run_all_actions()</strong> is executed, this will add a pause in the sequential execution of all actions.
+Usage: Executing <strong>self.run_action("ACTION_ID")</strong> will create a pause for the set duration. When <strong>self.run_all_actions()</strong> is executed, this will add a pause in the sequential execution of all actions.
 
 #### Options
 
@@ -27,7 +27,7 @@ Usage: Executing <strong>self.run_action("{ACTION_ID}")</strong> will create a p
 
 Capture a photo with the selected Camera.
 
-Usage: Executing <strong>self.run_action("{ACTION_ID}")</strong> will capture a photo with the selected Camera. Executing <strong>self.run_action("{ACTION_ID}", value={"camera_id": "959019d1-c1fa-41fe-a554-7be3366a9c5b"})</strong> will capture a photo with the Camera with the specified ID.
+Usage: Executing <strong>self.run_action("ACTION_ID")</strong> will capture a photo with the selected Camera. Executing <strong>self.run_action("ACTION_ID", value={"camera_id": "959019d1-c1fa-41fe-a554-7be3366a9c5b"})</strong> will capture a photo with the Camera with the specified ID.
 
 #### Options
 
@@ -43,7 +43,7 @@ Usage: Executing <strong>self.run_action("{ACTION_ID}")</strong> will capture a 
 
 Pause a camera time-lapse
 
-Usage: Executing <strong>self.run_action("{ACTION_ID}")</strong> will pause the selected Camera time-lapse. Executing <strong>self.run_action("{ACTION_ID}", value={"camera_id": "959019d1-c1fa-41fe-a554-7be3366a9c5b"})</strong> will pause the Camera time-lapse with the specified ID.
+Usage: Executing <strong>self.run_action("ACTION_ID")</strong> will pause the selected Camera time-lapse. Executing <strong>self.run_action("ACTION_ID", value={"camera_id": "959019d1-c1fa-41fe-a554-7be3366a9c5b"})</strong> will pause the Camera time-lapse with the specified ID.
 
 #### Options
 
@@ -59,7 +59,7 @@ Usage: Executing <strong>self.run_action("{ACTION_ID}")</strong> will pause the 
 
 Resume a camera time-lapse
 
-Usage: Executing <strong>self.run_action("{ACTION_ID}")</strong> will resume the selected Camera time-lapse. Executing <strong>self.run_action("{ACTION_ID}", value={"camera_id": "959019d1-c1fa-41fe-a554-7be3366a9c5b"})</strong> will resume the Camera time-lapse with the specified ID.
+Usage: Executing <strong>self.run_action("ACTION_ID")</strong> will resume the selected Camera time-lapse. Executing <strong>self.run_action("ACTION_ID", value={"camera_id": "959019d1-c1fa-41fe-a554-7be3366a9c5b"})</strong> will resume the Camera time-lapse with the specified ID.
 
 #### Options
 
@@ -75,7 +75,7 @@ Usage: Executing <strong>self.run_action("{ACTION_ID}")</strong> will resume the
 
 Activate a controller.
 
-Usage: Executing <strong>self.run_action("{ACTION_ID}")</strong> will activate the selected Controller. Executing <strong>self.run_action("{ACTION_ID}", value={"controller_id": "959019d1-c1fa-41fe-a554-7be3366a9c5b"})</strong> will activate the controller with the specified ID.
+Usage: Executing <strong>self.run_action("ACTION_ID")</strong> will activate the selected Controller. Executing <strong>self.run_action("ACTION_ID", value={"controller_id": "959019d1-c1fa-41fe-a554-7be3366a9c5b"})</strong> will activate the controller with the specified ID.
 
 #### Options
 
@@ -91,7 +91,7 @@ Usage: Executing <strong>self.run_action("{ACTION_ID}")</strong> will activate t
 
 Deactivate a controller.
 
-Usage: Executing <strong>self.run_action("{ACTION_ID}")</strong> will deactivate the selected Controller. Executing <strong>self.run_action("{ACTION_ID}", value={"controller_id": "959019d1-c1fa-41fe-a554-7be3366a9c5b"})</strong> will deactivate the controller with the specified ID.
+Usage: Executing <strong>self.run_action("ACTION_ID")</strong> will deactivate the selected Controller. Executing <strong>self.run_action("ACTION_ID", value={"controller_id": "959019d1-c1fa-41fe-a554-7be3366a9c5b"})</strong> will deactivate the controller with the specified ID.
 
 #### Options
 
@@ -107,7 +107,7 @@ Usage: Executing <strong>self.run_action("{ACTION_ID}")</strong> will deactivate
 
 Create a note with the selected Tag.
 
-Usage: Executing <strong>self.run_action("{ACTION_ID}")</strong> will create a note with the selected tag and note. Executing <strong>self.run_action("{ACTION_ID}", value={"tags": ["tag1", "tag2"], "name": "My Note", "note": "this is a message"})</strong> will execute the action with the specified list of tag(s) and note. If using only one tag, make it the only element of the list (e.g. ["tag1"]). If note is not specified, then the action message will be used as the note.
+Usage: Executing <strong>self.run_action("ACTION_ID")</strong> will create a note with the selected tag and note. Executing <strong>self.run_action("ACTION_ID", value={"tags": ["tag1", "tag2"], "name": "My Note", "note": "this is a message"})</strong> will execute the action with the specified list of tag(s) and note. If using only one tag, make it the only element of the list (e.g. ["tag1"]). If note is not specified, then the action message will be used as the note.
 
 #### Options
 
@@ -134,7 +134,7 @@ Usage: Executing <strong>self.run_action("{ACTION_ID}")</strong> will create a n
 
 Execute a Linux bash shell command.
 
-Usage: Executing <strong>self.run_action("{ACTION_ID}")</strong> will execute the bash command.Executing <strong>self.run_action("{ACTION_ID}", value={"user": "mycodo", "command": "/home/pi/my_script.sh on"})</strong> will execute the action with the specified command and user.
+Usage: Executing <strong>self.run_action("ACTION_ID")</strong> will execute the bash command.Executing <strong>self.run_action("ACTION_ID", value={"user": "mycodo", "command": "/home/pi/my_script.sh on"})</strong> will execute the action with the specified command and user.
 
 #### Options
 
@@ -157,7 +157,7 @@ Usage: Executing <strong>self.run_action("{ACTION_ID}")</strong> will execute th
 
 Clear the total volume saved for a flow meter Input. The Input must have the Clear Total Volume option.
 
-Usage: Executing <strong>self.run_action("{ACTION_ID}")</strong> will clear the total volume for the selected flow meter Input. Executing <strong>self.run_action("{ACTION_ID}", value={"input_id": "959019d1-c1fa-41fe-a554-7be3366a9c5b"})</strong> will clear the total volume for the flow meter Input with the specified ID.
+Usage: Executing <strong>self.run_action("ACTION_ID")</strong> will clear the total volume for the selected flow meter Input. Executing <strong>self.run_action("ACTION_ID", value={"input_id": "959019d1-c1fa-41fe-a554-7be3366a9c5b"})</strong> will clear the total volume for the flow meter Input with the specified ID.
 
 #### Options
 
@@ -173,7 +173,7 @@ Usage: Executing <strong>self.run_action("{ACTION_ID}")</strong> will clear the 
 
 Force measurements to be conducted for an input
 
-Usage: Executing <strong>self.run_action("{ACTION_ID}")</strong> will force acquiring measurements for the selected Input. Executing <strong>self.run_action("{ACTION_ID}", value={"input_id": "959019d1-c1fa-41fe-a554-7be3366a9c5b"})</strong> will force acquiring measurements for the Input with the specified ID.
+Usage: Executing <strong>self.run_action("ACTION_ID")</strong> will force acquiring measurements for the selected Input. Executing <strong>self.run_action("ACTION_ID", value={"input_id": "959019d1-c1fa-41fe-a554-7be3366a9c5b"})</strong> will force acquiring measurements for the Input with the specified ID.
 
 #### Options
 
@@ -190,7 +190,7 @@ Usage: Executing <strong>self.run_action("{ACTION_ID}")</strong> will force acqu
 
 Publish to an MQTT server.
 
-Usage: Executing <strong>self.run_action("{ACTION_ID}")</strong> will publish the saved payload text options to the MQTT server. Executing <strong>self.run_action("{ACTION_ID}", value={"payload": 42})</strong> will publish the specified payload (any type) to the MQTT server. You can also specify the topic (e.g. value={"topic": "my_topic", "payload": 42}). Warning: If using multiple MQTT Inputs or Functions, ensure the Client IDs are unique.
+Usage: Executing <strong>self.run_action("ACTION_ID")</strong> will publish the saved payload text options to the MQTT server. Executing <strong>self.run_action("ACTION_ID", value={"payload": 42})</strong> will publish the specified payload (any type) to the MQTT server. You can also specify the topic (e.g. value={"topic": "my_topic", "payload": 42}). Warning: If using multiple MQTT Inputs or Functions, ensure the Client IDs are unique.
 
 #### Options
 
@@ -312,7 +312,7 @@ Publish an Input measurement to an MQTT server.
 
 Set a PWM Output to set a duty cycle.
 
-Usage: Executing <strong>self.run_action("{ACTION_ID}")</strong> will set the PWM output duty cycle. Executing <strong>self.run_action("{ACTION_ID}", value={"output_id": "959019d1-c1fa-41fe-a554-7be3366a9c5b", "channel": 0, "duty_cycle": 42})</strong> will set the duty cycle of the PWM output with the specified ID and channel.
+Usage: Executing <strong>self.run_action("ACTION_ID")</strong> will set the PWM output duty cycle. Executing <strong>self.run_action("ACTION_ID", value={"output_id": "959019d1-c1fa-41fe-a554-7be3366a9c5b", "channel": 0, "duty_cycle": 42})</strong> will set the duty cycle of the PWM output with the specified ID and channel.
 
 #### Options
 
@@ -334,7 +334,7 @@ Usage: Executing <strong>self.run_action("{ACTION_ID}")</strong> will set the PW
 
 Turn an On/Off Output On, Off, or On for a duration.
 
-Usage: Executing <strong>self.run_action("{ACTION_ID}")</strong> will actuate an output. Executing <strong>self.run_action("{ACTION_ID}", value={"output_id": "959019d1-c1fa-41fe-a554-7be3366a9c5b", "channel": 0, "state": "on", "duration": 300})</strong> will set the state of the output with the specified ID and channel. If state is on and a duration is set, the output will turn off after the duration.
+Usage: Executing <strong>self.run_action("ACTION_ID")</strong> will actuate an output. Executing <strong>self.run_action("ACTION_ID", value={"output_id": "959019d1-c1fa-41fe-a554-7be3366a9c5b", "channel": 0, "state": "on", "duration": 300})</strong> will set the state of the output with the specified ID and channel. If state is on and a duration is set, the output will turn off after the duration.
 
 #### Options
 
@@ -361,7 +361,7 @@ Usage: Executing <strong>self.run_action("{ACTION_ID}")</strong> will actuate an
 
 Ramp a PWM Output from one duty cycle to another duty cycle over a period of time.
 
-Usage: Executing <strong>self.run_action("{ACTION_ID}")</strong> will ramp the PWM output duty cycle according to the settings. Executing <strong>self.run_action("{ACTION_ID}", value={"output_id": "959019d1-c1fa-41fe-a554-7be3366a9c5b", "channel": 0, "start": 42, "end": 62, "increment": 1.0, "duration": 600})</strong> will ramp the duty cycle of the PWM output with the specified ID and channel.
+Usage: Executing <strong>self.run_action("ACTION_ID")</strong> will ramp the PWM output duty cycle according to the settings. Executing <strong>self.run_action("ACTION_ID", value={"output_id": "959019d1-c1fa-41fe-a554-7be3366a9c5b", "channel": 0, "start": 42, "end": 62, "increment": 1.0, "duration": 600})</strong> will ramp the duty cycle of the PWM output with the specified ID and channel.
 
 #### Options
 
@@ -400,7 +400,7 @@ Usage: Executing <strong>self.run_action("{ACTION_ID}")</strong> will ramp the P
 
 Send a value to the Output.
 
-Usage: Executing <strong>self.run_action("{ACTION_ID}")</strong> will actuate a value output. Executing <strong>self.run_action("{ACTION_ID}", value={"output_id": "959019d1-c1fa-41fe-a554-7be3366a9c5b", "channel": 0, "value": 42})</strong> will send a value to the output with the specified ID and channel.
+Usage: Executing <strong>self.run_action("ACTION_ID")</strong> will actuate a value output. Executing <strong>self.run_action("ACTION_ID", value={"output_id": "959019d1-c1fa-41fe-a554-7be3366a9c5b", "channel": 0, "value": 42})</strong> will send a value to the output with the specified ID and channel.
 
 #### Options
 
@@ -422,7 +422,7 @@ Usage: Executing <strong>self.run_action("{ACTION_ID}")</strong> will actuate a 
 
 Instruct the Output to dispense a volume.
 
-Usage: Executing <strong>self.run_action("{ACTION_ID}")</strong> will actuate a volume output. Executing <strong>self.run_action("{ACTION_ID}", value={"output_id": "959019d1-c1fa-41fe-a554-7be3366a9c5b", "channel": 0, "volume": 42})</strong> will send a volume to the output with the specified ID and channel.
+Usage: Executing <strong>self.run_action("ACTION_ID")</strong> will actuate a volume output. Executing <strong>self.run_action("ACTION_ID", value={"output_id": "959019d1-c1fa-41fe-a554-7be3366a9c5b", "channel": 0, "volume": 42})</strong> will send a volume to the output with the specified ID and channel.
 
 #### Options
 
@@ -444,7 +444,7 @@ Usage: Executing <strong>self.run_action("{ACTION_ID}")</strong> will actuate a 
 
 Lower the Setpoint of a PID.
 
-Usage: Executing <strong>self.run_action("{ACTION_ID}")</strong> will lower the setpoint of the selected PID Controller. Executing <strong>self.run_action("{ACTION_ID}", value={"pid_id": "959019d1-c1fa-41fe-a554-7be3366a9c5b", "amount": 2})</strong> will lower the setpoint of the PID with the specified ID.
+Usage: Executing <strong>self.run_action("ACTION_ID")</strong> will lower the setpoint of the selected PID Controller. Executing <strong>self.run_action("ACTION_ID", value={"pid_id": "959019d1-c1fa-41fe-a554-7be3366a9c5b", "amount": 2})</strong> will lower the setpoint of the PID with the specified ID.
 
 #### Options
 
@@ -465,7 +465,7 @@ Usage: Executing <strong>self.run_action("{ACTION_ID}")</strong> will lower the 
 
 Pause a PID.
 
-Usage: Executing <strong>self.run_action("{ACTION_ID}")</strong> will pause the selected PID Controller. Executing <strong>self.run_action("{ACTION_ID}", value="959019d1-c1fa-41fe-a554-7be3366a9c5b")</strong> will pause the PID Controller with the specified ID.
+Usage: Executing <strong>self.run_action("ACTION_ID")</strong> will pause the selected PID Controller. Executing <strong>self.run_action("ACTION_ID", value="959019d1-c1fa-41fe-a554-7be3366a9c5b")</strong> will pause the PID Controller with the specified ID.
 
 #### Options
 
@@ -481,7 +481,7 @@ Usage: Executing <strong>self.run_action("{ACTION_ID}")</strong> will pause the 
 
 Raise the Setpoint of a PID.
 
-Usage: Executing <strong>self.run_action("{ACTION_ID}")</strong> will raise the setpoint of the selected PID Controller. Executing <strong>self.run_action("{ACTION_ID}", value={"pid_id": "959019d1-c1fa-41fe-a554-7be3366a9c5b", "amount": 2})</strong> will raise the setpoint of the PID with the specified ID.
+Usage: Executing <strong>self.run_action("ACTION_ID")</strong> will raise the setpoint of the selected PID Controller. Executing <strong>self.run_action("ACTION_ID", value={"pid_id": "959019d1-c1fa-41fe-a554-7be3366a9c5b", "amount": 2})</strong> will raise the setpoint of the PID with the specified ID.
 
 #### Options
 
@@ -502,7 +502,7 @@ Usage: Executing <strong>self.run_action("{ACTION_ID}")</strong> will raise the 
 
 Resume a PID.
 
-Usage: Executing <strong>self.run_action("{ACTION_ID}")</strong> will resume the selected PID Controller. Executing <strong>self.run_action("{ACTION_ID}", value="959019d1-c1fa-41fe-a554-7be3366a9c5b")</strong> will resume the PID Controller with the specified ID.
+Usage: Executing <strong>self.run_action("ACTION_ID")</strong> will resume the selected PID Controller. Executing <strong>self.run_action("ACTION_ID", value="959019d1-c1fa-41fe-a554-7be3366a9c5b")</strong> will resume the PID Controller with the specified ID.
 
 #### Options
 
@@ -518,7 +518,7 @@ Usage: Executing <strong>self.run_action("{ACTION_ID}")</strong> will resume the
 
 Select a method to set the PID to use.
 
-Usage: Executing <strong>self.run_action("{ACTION_ID}")</strong> will pause the selected PID Controller. Executing <strong>self.run_action("{ACTION_ID}", value={"pid_id": "959019d1-c1fa-41fe-a554-7be3366a9c5b", "method_id": "fe8b8f41-131b-448d-ba7b-00a044d24075"})</strong> will set a method for the PID Controller with the specified IDs.
+Usage: Executing <strong>self.run_action("ACTION_ID")</strong> will pause the selected PID Controller. Executing <strong>self.run_action("ACTION_ID", value={"pid_id": "959019d1-c1fa-41fe-a554-7be3366a9c5b", "method_id": "fe8b8f41-131b-448d-ba7b-00a044d24075"})</strong> will set a method for the PID Controller with the specified IDs.
 
 #### Options
 
@@ -539,7 +539,7 @@ Usage: Executing <strong>self.run_action("{ACTION_ID}")</strong> will pause the 
 
 Set the Setpoint of a PID.
 
-Usage: Executing <strong>self.run_action("{ACTION_ID}")</strong> will set the setpoint of the selected PID Controller. Executing <strong>self.run_action("{ACTION_ID}", value={"setpoint": 42})</strong> will set the setpoint of the PID Controller (e.g. 42). You can also specify the PID ID (e.g. value={"setpoint": 42, "pid_id": "959019d1-c1fa-41fe-a554-7be3366a9c5b"})
+Usage: Executing <strong>self.run_action("ACTION_ID")</strong> will set the setpoint of the selected PID Controller. Executing <strong>self.run_action("ACTION_ID", value={"setpoint": 42})</strong> will set the setpoint of the PID Controller (e.g. 42). You can also specify the PID ID (e.g. value={"setpoint": 42, "pid_id": "959019d1-c1fa-41fe-a554-7be3366a9c5b"})
 
 #### Options
 
@@ -560,7 +560,7 @@ Usage: Executing <strong>self.run_action("{ACTION_ID}")</strong> will set the se
 
 Send an email.
 
-Usage: Executing <strong>self.run_action("{ACTION_ID}")</strong> will email the specified recipient(s) using the SMTP credentials in the system configuration. Separate multiple recipients with commas. The body of the email will be the self-generated message. Executing <strong>self.run_action("{ACTION_ID}", value={"email_address": ["email1@email.com", "email2@email.com"], "message": "My message"})</strong> will send an email to the specified recipient(s) with the specified message.
+Usage: Executing <strong>self.run_action("ACTION_ID")</strong> will email the specified recipient(s) using the SMTP credentials in the system configuration. Separate multiple recipients with commas. The body of the email will be the self-generated message. Executing <strong>self.run_action("ACTION_ID", value={"email_address": ["email1@email.com", "email2@email.com"], "message": "My message"})</strong> will send an email to the specified recipient(s) with the specified message.
 
 #### Options
 
@@ -577,7 +577,7 @@ Usage: Executing <strong>self.run_action("{ACTION_ID}")</strong> will email the 
 
 Take a photo and send an email with it attached.
 
-Usage: Executing <strong>self.run_action("{ACTION_ID}")</strong> will take a photo and email it to the specified recipient(s) using the SMTP credentials in the system configuration. Separate multiple recipients with commas. The body of the email will be the self-generated message. Executing <strong>self.run_action("{ACTION_ID}", value={"camera_id": "959019d1-c1fa-41fe-a554-7be3366a9c5b", "email_address": ["email1@email.com", "email2@email.com"], "message": "My message"})</strong> will capture a photo using the camera with the specified ID and send an email to the specified email(s) with message and attached photo.
+Usage: Executing <strong>self.run_action("ACTION_ID")</strong> will take a photo and email it to the specified recipient(s) using the SMTP credentials in the system configuration. Separate multiple recipients with commas. The body of the email will be the self-generated message. Executing <strong>self.run_action("ACTION_ID", value={"camera_id": "959019d1-c1fa-41fe-a554-7be3366a9c5b", "email_address": ["email1@email.com", "email2@email.com"], "message": "My message"})</strong> will capture a photo using the camera with the specified ID and send an email to the specified email(s) with message and attached photo.
 
 #### Options
 
@@ -599,7 +599,7 @@ Usage: Executing <strong>self.run_action("{ACTION_ID}")</strong> will take a pho
 
 Restart the System
 
-Usage: Executing <strong>self.run_action("{ACTION_ID}")</strong> will restart the system in 10 seconds.
+Usage: Executing <strong>self.run_action("ACTION_ID")</strong> will restart the system in 10 seconds.
 
 ### System: Shutdown
 
@@ -608,7 +608,7 @@ Usage: Executing <strong>self.run_action("{ACTION_ID}")</strong> will restart th
 
 Shutdown the System
 
-Usage: Executing <strong>self.run_action("{ACTION_ID}")</strong> will shut down the system in 10 seconds.
+Usage: Executing <strong>self.run_action("ACTION_ID")</strong> will shut down the system in 10 seconds.
 
 ### Webhook
 
@@ -617,7 +617,7 @@ Usage: Executing <strong>self.run_action("{ACTION_ID}")</strong> will shut down 
 
 Emits a HTTP request when triggered. The first line contains a HTTP verb (GET, POST, PUT, ...) followed by a space and the URL to call. Subsequent lines are optional "name: value"-header parameters. After a blank line, the body payload to be sent follows. {{{message}}} is a placeholder that gets replaced by the message, {{{quoted_message}}} is the message in an URL safe encoding.
 
-Usage: Executing <strong>self.run_action("{ACTION_ID}")</strong> will run the Action.
+Usage: Executing <strong>self.run_action("ACTION_ID")</strong> will run the Action.
 
 #### Options
 
@@ -634,7 +634,7 @@ Usage: Executing <strong>self.run_action("{ACTION_ID}")</strong> will run the Ac
 
 Set the display backlight color
 
-Usage: Executing <strong>self.run_action("{ACTION_ID}")</strong> will change the backlight color on the selected display. Executing <strong>self.run_action("{ACTION_ID}", value={"display_id": "959019d1-c1fa-41fe-a554-7be3366a9c5b", "color": "255,0,0"})</strong> will change the backlight color on the controller with the specified ID and color.
+Usage: Executing <strong>self.run_action("ACTION_ID")</strong> will change the backlight color on the selected display. Executing <strong>self.run_action("ACTION_ID", value={"display_id": "959019d1-c1fa-41fe-a554-7be3366a9c5b", "color": "255,0,0"})</strong> will change the backlight color on the controller with the specified ID and color.
 
 #### Options
 
@@ -656,7 +656,7 @@ Usage: Executing <strong>self.run_action("{ACTION_ID}")</strong> will change the
 
 Turn display backlight off
 
-Usage: Executing <strong>self.run_action("{ACTION_ID}")</strong> will turn the backlight off for the selected display. Executing <strong>self.run_action("{ACTION_ID}", value={"display_id": "959019d1-c1fa-41fe-a554-7be3366a9c5b"})</strong> will turn the backlight off for the controller with the specified ID.
+Usage: Executing <strong>self.run_action("ACTION_ID")</strong> will turn the backlight off for the selected display. Executing <strong>self.run_action("ACTION_ID", value={"display_id": "959019d1-c1fa-41fe-a554-7be3366a9c5b"})</strong> will turn the backlight off for the controller with the specified ID.
 
 #### Options
 
@@ -672,7 +672,7 @@ Usage: Executing <strong>self.run_action("{ACTION_ID}")</strong> will turn the b
 
 Turn display backlight on
 
-Usage: Executing <strong>self.run_action("{ACTION_ID}")</strong> will turn the backlight on for the selected display. Executing <strong>self.run_action("{ACTION_ID}", value={"display_id": "959019d1-c1fa-41fe-a554-7be3366a9c5b"})</strong> will turn the backlight on for the controller with the specified ID.
+Usage: Executing <strong>self.run_action("ACTION_ID")</strong> will turn the backlight on for the selected display. Executing <strong>self.run_action("ACTION_ID", value={"display_id": "959019d1-c1fa-41fe-a554-7be3366a9c5b"})</strong> will turn the backlight on for the controller with the specified ID.
 
 #### Options
 
@@ -688,7 +688,7 @@ Usage: Executing <strong>self.run_action("{ACTION_ID}")</strong> will turn the b
 
 Turn display flashing off
 
-Usage: Executing <strong>self.run_action("{ACTION_ID}")</strong> will stop the backlight flashing on the selected display. Executing <strong>self.run_action("{ACTION_ID}", value={"display_id": "959019d1-c1fa-41fe-a554-7be3366a9c5b"})</strong> will stop the backlight flashing on the controller with the specified ID.
+Usage: Executing <strong>self.run_action("ACTION_ID")</strong> will stop the backlight flashing on the selected display. Executing <strong>self.run_action("ACTION_ID", value={"display_id": "959019d1-c1fa-41fe-a554-7be3366a9c5b"})</strong> will stop the backlight flashing on the controller with the specified ID.
 
 #### Options
 
@@ -704,7 +704,7 @@ Usage: Executing <strong>self.run_action("{ACTION_ID}")</strong> will stop the b
 
 Turn display flashing on
 
-Usage: Executing <strong>self.run_action("{ACTION_ID}")</strong> will start the backlight flashing on the selected display. Executing <strong>self.run_action("{ACTION_ID}", value={"display_id": "959019d1-c1fa-41fe-a554-7be3366a9c5b"})</strong> will start the backlight flashing on the controller with the specified ID.
+Usage: Executing <strong>self.run_action("ACTION_ID")</strong> will start the backlight flashing on the selected display. Executing <strong>self.run_action("ACTION_ID", value={"display_id": "959019d1-c1fa-41fe-a554-7be3366a9c5b"})</strong> will start the backlight flashing on the controller with the specified ID.
 
 #### Options
 
