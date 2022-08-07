@@ -9,6 +9,7 @@
  - Fix timelapse filenames when using libcamera
  - Fix printing lines on 2-line 128x32 SSD1306 Functions
  - Fix PWM Slider Widget when Output signal is inverted
+ - Fix MCP3008 Input python library version number
 
 ### Features
 

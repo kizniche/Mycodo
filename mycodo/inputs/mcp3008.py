@@ -42,7 +42,7 @@ INPUT_INFORMATION = {
     'options_disabled': ['interface'],
 
     'dependencies_module': [
-        ('pip-pypi', 'Adafruit_MCP3008', 'Adafruit-MCP3008==1.5.6')
+        ('pip-pypi', 'Adafruit_MCP3008', 'Adafruit-MCP3008==1.0.2')
     ],
 
     'interfaces': ['UART'],
