@@ -254,10 +254,7 @@ WIDGET_INFORMATION = {
           
           if (invert_status) {
             measurement = 100 - measurement;
-          }
-          
-          console.log("Meas: " + measurement);
-          
+          }          
           document.getElementById('value-' + widget_id).innerHTML = measurement.toFixed(decimal_places);
    
           const range_exists = document.getElementById("range_" + widget_id);
@@ -307,11 +304,12 @@ WIDGET_INFORMATION = {
             document.getElementById("container-output-" + widget_id).className = "active-background";
             
             if (invert_status) {
-              state = 100 - state;
-              if (state === 0) {
+              if (state === 100) {
                 document.getElementById("container-output-" + widget_id).className = "inactive-background";
                 document.getElementById("text-output-state-" + widget_id).innerHTML = '({{_('Inactive')}})';
               } else {
+                if (state === 'off') state = 100;
+                else state = 100 - state;
                 document.getElementById("text-output-state-" + widget_id).innerHTML = '({{_('Active')}}, ' + state.toFixed(decimal_places) + '%)';
               }
             }
@@ -348,20 +346,20 @@ WIDGET_INFORMATION = {
 
     'widget_dashboard_js_ready': """
   $('.turn_off_pwm_slider').click(function() {
-    const btn_val = this.name;
-    const send_cmd = btn_val.substring(btn_val.indexOf('/') + 1);
+    let btn_val = this.name;
+    let send_cmd = btn_val.substring(btn_val.indexOf('/') + 1);
     {% if not misc.hide_alert_info %}
     toastr['info']('Command sent to turn output Off');
     {% endif %}
     modOutputPWM(send_cmd);
   });
-  $('.duty_cycle_on_amt_pwm_slider').click(function() {const output_id = btn_val.split('/')[1];
-    const channel_id = btn_val.split('/')[2];
-    const btn_val = this.name;
-    const chart = btn_val.split('/')[0];
-    
-    const dc = $('#pwm_slider_duty_cycle_on_amt_' + chart + '_' + output_id + '_' + channel_id).val();
-    const send_cmd = btn_val.substring(btn_val.indexOf('/') + 1);
+  $('.duty_cycle_on_amt_pwm_slider').click(function() {
+    let btn_val = this.name;
+    let chart = btn_val.split('/')[0];
+    let output_id = btn_val.split('/')[1];
+    let channel_id = btn_val.split('/')[2];
+    let dc = $('#pwm_slider_duty_cycle_on_amt_' + chart + '_' + output_id + '_' + channel_id).val();
+    let send_cmd = btn_val.substring(btn_val.indexOf('/') + 1);
     {% if not misc.hide_alert_info %}
     toastr['info']('Command sent to turn output On with a duty cycle of ' + dc + '%');
     {% endif %}

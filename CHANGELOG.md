@@ -8,7 +8,7 @@
  - Fix generating timelapse with custom file path ([#1205](https://github.com/kizniche/Mycodo/issues/1205))
  - Fix timelapse filenames when using libcamera
  - Fix printing lines on 2-line 128x32 SSD1306 Functions
- - Fix PWM Slider Widget when Output signal is inverted
+ - Fix PWM Slider Widget issues when Output signal is inverted and setting duty cycle
  - Fix MCP3008 Input python library version number
 
 ### Features
