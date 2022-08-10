@@ -23,6 +23,7 @@
  - Add ability to use non-standard condition/action ID strings in Conditional Functions
  - Add Websocket support to MQTT Outputs ([#1219](https://github.com/kizniche/Mycodo/pull/1219))
  - Add Import and Initialize options to Conditional Functions ([#1203](https://github.com/kizniche/Mycodo/pull/1203))
+ - Add Input: MCP3208 Analog-to-Digital Converter ([#1215](https://github.com/kizniche/Mycodo/pull/1215))
 
 ### Miscellaneous
 
