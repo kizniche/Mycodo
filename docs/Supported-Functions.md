@@ -32,7 +32,7 @@ This function will use rsync to back up assets on this system to a remote system
 - Default Value: pi</td><td>The user to log in to the remote host</td></tr><tr><td>Remote Host</td><td>Text
 - Default Value: 192.168.0.50</td><td>The IP or host address to send the backup to</td></tr><tr><td>Remote Backup Path</td><td>Text
 - Default Value: /home/pi/backup_mycodo</td><td>The path to backup to on the remote host</td></tr><tr><td>Rsync Timeout</td><td>Integer
-- Default Value: 3600</td><td>How long to allow rsync to complete (seconds)</td></tr><tr><td>Backup Settings Export File</td><td>Boolean
+- Default Value: 3600</td><td>How long to allow rsync to complete (seconds)</td></tr><tr><td>Local Backup Path</td><td>Text</td><td>A local path to backup (leave blank to disable)</td></tr><tr><td>Backup Settings Export File</td><td>Boolean
 - Default Value: True</td><td>Create and backup exported settings file</td></tr><tr><td>Remove Local Settings Backups</td><td>Boolean</td><td>Remove local settings backups after successful transfer to remote host</td></tr><tr><td>Backup Measurements</td><td>Boolean
 - Default Value: True</td><td>Backup all influxdb measurements</td></tr><tr><td>Remove Local Measurements Backups</td><td>Boolean</td><td>Remove local measurements backups after successful transfer to remote host</td></tr><tr><td>Backup Camera Directories</td><td>Boolean
 - Default Value: True</td><td>Backup all camera directories</td></tr><tr><td>Remove Local Camera Images</td><td>Boolean</td><td>Remove local camera images after successful transfer to remote host</td></tr><tr><td>SSH Port</td><td>Integer
@@ -400,7 +400,7 @@ This function calculates the vapor pressure deficit based on leaf temperature an
 ### Verification
 
 
-This function acquires 2 measurements, calculates the difference, and if the difference is not larger than the set threshold, the Measurement A value is stored. This enables verifying one sensor's measurement with another sensor's measurement. Only when they are both in agreement is a measurement stored. This stored measurement can be used in functions such as Conditional Function that will notify the user if no measurement is available to indicate there may be an issue with a sensor.
+This function acquires 2 measurements, calculates the difference, and if the difference is not larger than the set threshold, the Measurement A value is stored. This enables verifying one sensor's measurement with another sensor's measurement. Only when they are both in agreement is a measurement stored. This stored measurement can be used in functions such as Conditional Functions that will notify the user if no measurement is available to indicate there may be an issue with a sensor.
 <table><thead><tr class="header"><th>Option</th><th>Type</th><th>Description</th></tr></thead><tbody><tr><td>Period (seconds)</td><td>Decimal
 - Default Value: 60</td><td>The duration (seconds) between measurements or actions</td></tr><tr><td>Measurement A</td><td>Select Measurement (Input, Function)</td><td>Measurement A</td></tr><tr><td>Measurement A Max Age</td><td>Integer
 - Default Value: 360</td><td>The maximum age (seconds) of the measurement to use</td></tr><tr><td>Measurement B</td><td>Select Measurement (Input, Function)</td><td>Measurement B</td></tr><tr><td>Measurement A Max Age</td><td>Integer

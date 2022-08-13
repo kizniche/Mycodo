@@ -17,10 +17,10 @@ Publish "on" or "off" (or any other strings of your choosing) to an MQTT server.
 - Default Value: 1883</td><td>The port of the MQTT server</td></tr><tr><td>Topic</td><td>Text
 - Default Value: paho/test/single</td><td>The topic to publish with</td></tr><tr><td>Keep Alive</td><td>Integer
 - Default Value: 60</td><td>The keepalive timeout value for the client. Set to 0 to disable.</td></tr><tr><td>Client ID</td><td>Text
-- Default Value: client_N6hDA5Ye</td><td>Unique client ID for connecting to the MQTT server</td></tr><tr><td>On Payload</td><td>Text
+- Default Value: client_oB7zRaH6</td><td>Unique client ID for connecting to the MQTT server</td></tr><tr><td>On Payload</td><td>Text
 - Default Value: on</td><td>The payload to send when turned on</td></tr><tr><td>Off Payload</td><td>Text
 - Default Value: off</td><td>The payload to send when turned off</td></tr><tr><td>Startup State</td><td>Select</td><td>Set the state when Mycodo starts</td></tr><tr><td>Shutdown State</td><td>Select</td><td>Set the state when Mycodo shuts down</td></tr><tr><td>Force Command</td><td>Boolean</td><td>Always send the command if instructed, regardless of the current state</td></tr><tr><td>Current (Amps)</td><td>Decimal</td><td>The current draw of the device being controlled</td></tr><tr><td>Use Login</td><td>Boolean</td><td>Send login credentials</td></tr><tr><td>Username</td><td>Text
-- Default Value: user</td><td>Username for connecting to the server</td></tr><tr><td>Password</td><td>Text</td><td>Password for connecting to the server. Leave blank to disable.</td></tr></tbody></table>
+- Default Value: user</td><td>Username for connecting to the server</td></tr><tr><td>Password</td><td>Text</td><td>Password for connecting to the server. Leave blank to disable.</td></tr><tr><td>Use Websockets</td><td>Boolean</td><td>Use websockets to connect to the server.</td></tr></tbody></table>
 
 ### Value: MQTT Publish
 
@@ -36,8 +36,8 @@ Publish a value to an MQTT server.
 - Default Value: 1883</td><td>The port of the MQTT server</td></tr><tr><td>Topic</td><td>Text
 - Default Value: paho/test/single</td><td>The topic to publish with</td></tr><tr><td>Keep Alive</td><td>Integer
 - Default Value: 60</td><td>The keepalive timeout value for the client. Set to 0 to disable.</td></tr><tr><td>Client ID</td><td>Text
-- Default Value: client_MH0ZIDz9</td><td>Unique client ID for connecting to the MQTT server</td></tr><tr><td>Off Value</td><td>Integer</td><td>The value to send when an Off command is given</td></tr><tr><td>Use Login</td><td>Boolean</td><td>Send login credentials</td></tr><tr><td>Username</td><td>Text
-- Default Value: user</td><td>Username for connecting to the server</td></tr><tr><td>Password</td><td>Text</td><td>Password for connecting to the server.</td></tr></tbody></table>
+- Default Value: client_SzAr2l57</td><td>Unique client ID for connecting to the MQTT server</td></tr><tr><td>Off Value</td><td>Integer</td><td>The value to send when an Off command is given</td></tr><tr><td>Use Login</td><td>Boolean</td><td>Send login credentials</td></tr><tr><td>Username</td><td>Text
+- Default Value: user</td><td>Username for connecting to the server</td></tr><tr><td>Password</td><td>Text</td><td>Password for connecting to the server.</td></tr><tr><td>Use Websockets</td><td>Boolean</td><td>Use websockets to connect to the server.</td></tr></tbody></table>
 
 ## Built-In Outputs (Devices)
 
@@ -98,6 +98,15 @@ This is a module for the ULN2003 driver.
 - Default Value: 25</td><td>The pin (BCM numbering) connected to IN4 of the ULN2003</td></tr><tr><td>Step Delay</td><td>Decimal
 - Default Value: 0.001</td><td>The Step Delay of the controller</td></tr><tr><td colspan="3">Notes about step resolution...</td></tr><tr><td>Step Resolution</td><td>Select(Options: [<strong>Full</strong> | Half | Wave] (Default in <strong>bold</strong>)</td><td>The Step Resolution of the controller</td></tr></tbody></table>
 
+### On/Off: GPIO (variant)
+
+- Interfaces: GPIO
+- Output Types: On/Off
+- Libraries: sysfs
+
+The specified GPIO pin will be set HIGH (3.3 volts) or LOW (0 volts) when turned on or off, depending on the On State option. This module uses the sysfs method to control GPIO pins.
+<table><thead><tr class="header"><th>Option</th><th>Type</th><th>Description</th></tr></thead><tbody><tr><td colspan="3">Channel Options</td></tr><tr><td>GPIO Pin (BCM)</td><td>Integer</td><td>The pin to control the state of</td></tr><tr><td>Startup State</td><td>Select</td><td>Set the state when Mycodo starts</td></tr><tr><td>Shutdown State</td><td>Select</td><td>Set the state when Mycodo shuts down</td></tr><tr><td>On State</td><td>Select(Options: [<strong>HIGH</strong> | LOW] (Default in <strong>bold</strong>)</td><td>The state of the GPIO that corresponds to an On state</td></tr><tr><td>Trigger Functions at Startup</td><td>Boolean</td><td>Whether to trigger functions when the output switches at startup</td></tr><tr><td>Current (Amps)</td><td>Decimal</td><td>The current draw of the device being controlled</td></tr></tbody></table>
+
 ### On/Off: Grove Multichannel Relay (4- or 8-Channel board)
 
 - Manufacturer: Grove
@@ -138,7 +147,7 @@ This output controls the 6 outlets of the Kasa HS300 Smart WiFi Power Strip. Thi
 <table><thead><tr class="header"><th>Option</th><th>Type</th><th>Description</th></tr></thead><tbody><tr><td>Host</td><td>Text
 - Default Value: 0.0.0.0</td><td>Host address or IP</td></tr><tr><td>Status Update (seconds)</td><td>Integer
 - Default Value: 300</td><td>The period (seconds) between checking if connected and output states. 0 disables.</td></tr><tr><td>Asyncio RPC Port</td><td>Integer
-- Default Value: 18723</td><td>The port to start the asyncio RPC server. Must be unique from other Kasa Outputs.</td></tr><tr><td colspan="3">Channel Options</td></tr><tr><td>Name</td><td>Text
+- Default Value: 18201</td><td>The port to start the asyncio RPC server. Must be unique from other Kasa Outputs.</td></tr><tr><td colspan="3">Channel Options</td></tr><tr><td>Name</td><td>Text
 - Default Value: Outlet Name</td><td>A name to distinguish this from others</td></tr><tr><td>Startup State</td><td>Select</td><td>Set the state when Mycodo starts</td></tr><tr><td>Shutdown State</td><td>Select</td><td>Set the state when Mycodo shuts down</td></tr><tr><td>Trigger Functions at Startup</td><td>Boolean</td><td>Whether to trigger functions when the output switches at startup</td></tr><tr><td>Force Command</td><td>Boolean</td><td>Always send the command if instructed, regardless of the current state</td></tr><tr><td>Current (Amps)</td><td>Decimal</td><td>The current draw of the device being controlled</td></tr></tbody></table>
 
 ### On/Off: Kasa KP303 3-Outlet WiFi Power Strip (old library, deprecated)
@@ -167,7 +176,7 @@ This output controls the 3 outlets of the Kasa KP303 Smart WiFi Power Strip. Thi
 <table><thead><tr class="header"><th>Option</th><th>Type</th><th>Description</th></tr></thead><tbody><tr><td>Host</td><td>Text
 - Default Value: 0.0.0.0</td><td>Host address or IP</td></tr><tr><td>Status Update (seconds)</td><td>Integer
 - Default Value: 300</td><td>The period (seconds) between checking if connected and output states. 0 disables.</td></tr><tr><td>Asyncio RPC Port</td><td>Integer
-- Default Value: 18191</td><td>The port to start the asyncio RPC server. Must be unique from other Kasa Outputs.</td></tr><tr><td colspan="3">Channel Options</td></tr><tr><td>Name</td><td>Text
+- Default Value: 18726</td><td>The port to start the asyncio RPC server. Must be unique from other Kasa Outputs.</td></tr><tr><td colspan="3">Channel Options</td></tr><tr><td>Name</td><td>Text
 - Default Value: Outlet Name</td><td>A name to distinguish this from others</td></tr><tr><td>Startup State</td><td>Select</td><td>Set the state when Mycodo starts</td></tr><tr><td>Shutdown State</td><td>Select</td><td>Set the state when Mycodo shuts down</td></tr><tr><td>Trigger Functions at Startup</td><td>Boolean</td><td>Whether to trigger functions when the output switches at startup</td></tr><tr><td>Force Command</td><td>Boolean</td><td>Always send the command if instructed, regardless of the current state</td></tr><tr><td>Current (Amps)</td><td>Decimal</td><td>The current draw of the device being controlled</td></tr></tbody></table>
 
 ### On/Off: Kasa WiFi Power Plug
@@ -182,7 +191,7 @@ This output controls Kasa WiFi Power Plugs, including the KP105, KP115, KP125, K
 <table><thead><tr class="header"><th>Option</th><th>Type</th><th>Description</th></tr></thead><tbody><tr><td>Host</td><td>Text
 - Default Value: 0.0.0.0</td><td>Host address or IP</td></tr><tr><td>Status Update (seconds)</td><td>Integer
 - Default Value: 300</td><td>The period (seconds) between checking if connected and output states. 0 disables.</td></tr><tr><td>Asyncio RPC Port</td><td>Integer
-- Default Value: 18569</td><td>The port to start the asyncio RPC server. Must be unique from other Kasa Outputs.</td></tr><tr><td colspan="3">Channel Options</td></tr><tr><td>Startup State</td><td>Select</td><td>Set the state when Mycodo starts</td></tr><tr><td>Shutdown State</td><td>Select</td><td>Set the state when Mycodo shuts down</td></tr><tr><td>Trigger Functions at Startup</td><td>Boolean</td><td>Whether to trigger functions when the output switches at startup</td></tr><tr><td>Force Command</td><td>Boolean</td><td>Always send the command if instructed, regardless of the current state</td></tr><tr><td>Current (Amps)</td><td>Decimal</td><td>The current draw of the device being controlled</td></tr></tbody></table>
+- Default Value: 18010</td><td>The port to start the asyncio RPC server. Must be unique from other Kasa Outputs.</td></tr><tr><td colspan="3">Channel Options</td></tr><tr><td>Startup State</td><td>Select</td><td>Set the state when Mycodo starts</td></tr><tr><td>Shutdown State</td><td>Select</td><td>Set the state when Mycodo shuts down</td></tr><tr><td>Trigger Functions at Startup</td><td>Boolean</td><td>Whether to trigger functions when the output switches at startup</td></tr><tr><td>Force Command</td><td>Boolean</td><td>Always send the command if instructed, regardless of the current state</td></tr><tr><td>Current (Amps)</td><td>Decimal</td><td>The current draw of the device being controlled</td></tr></tbody></table>
 
 ### On/Off: Kasa WiFi RGB Light Bulb
 
@@ -196,7 +205,7 @@ This output controls the the Kasa WiFi Light Bulbs, including the KL125, KL130, 
 <table><thead><tr class="header"><th>Option</th><th>Type</th><th>Description</th></tr></thead><tbody><tr><td>Host</td><td>Text
 - Default Value: 0.0.0.0</td><td>Host address or IP</td></tr><tr><td>Status Update (seconds)</td><td>Integer
 - Default Value: 300</td><td>The period (seconds) between checking if connected and output states. 0 disables.</td></tr><tr><td>Asyncio RPC Port</td><td>Integer
-- Default Value: 18189</td><td>The port to start the asyncio RPC server. Must be unique from other Kasa Outputs.</td></tr><tr><td colspan="3">Channel Options</td></tr><tr><td>Startup State</td><td>Select</td><td>Set the state when Mycodo starts</td></tr><tr><td>Shutdown State</td><td>Select</td><td>Set the state when Mycodo shuts down</td></tr><tr><td>Trigger Functions at Startup</td><td>Boolean</td><td>Whether to trigger functions when the output switches at startup</td></tr><tr><td>Force Command</td><td>Boolean</td><td>Always send the command if instructed, regardless of the current state</td></tr><tr><td>Current (Amps)</td><td>Decimal</td><td>The current draw of the device being controlled</td></tr><tr><td colspan="3">Commands</td></tr><tr><td>Transition (milliseconds)</td><td>Integer
+- Default Value: 18885</td><td>The port to start the asyncio RPC server. Must be unique from other Kasa Outputs.</td></tr><tr><td colspan="3">Channel Options</td></tr><tr><td>Startup State</td><td>Select</td><td>Set the state when Mycodo starts</td></tr><tr><td>Shutdown State</td><td>Select</td><td>Set the state when Mycodo shuts down</td></tr><tr><td>Trigger Functions at Startup</td><td>Boolean</td><td>Whether to trigger functions when the output switches at startup</td></tr><tr><td>Force Command</td><td>Boolean</td><td>Always send the command if instructed, regardless of the current state</td></tr><tr><td>Current (Amps)</td><td>Decimal</td><td>The current draw of the device being controlled</td></tr><tr><td colspan="3">Commands</td></tr><tr><td>Transition (milliseconds)</td><td>Integer
 - Default Value: 0</td><td>The hsv transition period, in milliseconds</td></tr><tr><td>Brightness (percent)</td><td>Integer</td><td>The brightness to set, in percent (0 - 100)</td></tr><tr><td>Set</td><td>Button</td><td></td></tr><tr><td>Transition (milliseconds)</td><td>Integer
 - Default Value: 0</td><td>The hsv transition period, in milliseconds</td></tr><tr><td>Hue (degree)</td><td>Integer</td><td>The hue to set, in degrees (0 - 360)</td></tr><tr><td>Set</td><td>Button</td><td></td></tr><tr><td>Transition (milliseconds)</td><td>Integer
 - Default Value: 0</td><td>The hsv transition period, in milliseconds</td></tr><tr><td>Saturation (percent)</td><td>Integer</td><td>The saturation to set, in percent (0 - 100)</td></tr><tr><td>Set</td><td>Button</td><td></td></tr><tr><td>Transition (milliseconds)</td><td>Integer
@@ -222,12 +231,13 @@ Controls the 16 channels of the MCP23017.
 ### On/Off: Neopixel (WS2812) RGB Strip with Raspberry Pi
 
 - Manufacturer: Worldsemi
-- Interfaces: SPI
+- Interfaces: GPIO
 - Output Types: On/Off
-- Dependencies: [adafruit-circuitpython-neopixel-spi](https://pypi.org/project/adafruit-circuitpython-neopixel-spi)
+- Dependencies: Output Variant 1: [adafruit-circuitpython-neopixel](https://pypi.org/project/adafruit-circuitpython-neopixel); Output Variant 2: [adafruit-circuitpython-neopixel-spi](https://pypi.org/project/adafruit-circuitpython-neopixel-spi)
 
-Control the LEDs of a light strip. This library works with the strip data pin connected to the SPI MOSI pin. Enable SPI with raspi-config, reboot, then connect the RGB strip data pin to GPIO 10 (SPI0 MOSI). This output is best used with Actions to control individual LED color and brightness.
-<table><thead><tr class="header"><th>Option</th><th>Type</th><th>Description</th></tr></thead><tbody><tr><td>Number of LEDs</td><td>Integer
+Control the LEDs of a neopixel light strip. USE WITH CAUTION: This library uses the Hardware-PWM0 bus. Only GPIO pins 12 or 18 will work. If you use one of these pins for a NeoPixel strip, you can not use the other for Hardware-PWM control of another output or there will be conflicts that can cause the Mycodo Daemon to crash and the Pi to become unresponsive. If you need to control another PWM output like a servo, fan, or dimmable grow lights, you will need to use the Software-PWM by setting the Output PWM: Raspberry Pi GPIO and set the "Library" field to "Any Pin, <=40kHz". If you select the "Hardware Pin, <=30MHz" option, it will cause conflicts. This output is best used with Actions to control individual LED color and brightness.
+<table><thead><tr class="header"><th>Option</th><th>Type</th><th>Description</th></tr></thead><tbody><tr><td>Data Pin</td><td>Integer
+- Default Value: 18</td><td>Enter the GPIO Pin connected to your device data wire (BCM numbering).</td></tr><tr><td>Number of LEDs</td><td>Integer
 - Default Value: 1</td><td>How many LEDs in the string?</td></tr><tr><td>On Mode</td><td>Select(Options: [<strong>Single Color</strong> | Rainbow] (Default in <strong>bold</strong>)</td><td>The color mode when turned on</td></tr><tr><td>Single Color</td><td>Text
 - Default Value: 30, 30, 30</td><td>The Color when turning on in Single Color Mode, RGB format (red, green, blue), 0 - 255 each.</td></tr><tr><td>Rainbow Speed (seconds)</td><td>Decimal
 - Default Value: 0.01</td><td>The speed to change colors in Rainbow Mode</td></tr><tr><td>Rainbow Brightness</td><td>Integer

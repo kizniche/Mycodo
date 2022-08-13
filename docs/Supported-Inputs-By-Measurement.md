@@ -150,6 +150,8 @@ Measurements
 
 ### [Sensirion: SCD30](/Mycodo/Supported-Inputs/#sensirion-scd30)
 
+### [Winsen: MH-Z14A](/Mycodo/Supported-Inputs/#winsen-mh-z14a)
+
 ### [Winsen: MH-Z16](/Mycodo/Supported-Inputs/#winsen-mh-z16)
 
 ### [Winsen: MH-Z19](/Mycodo/Supported-Inputs/#winsen-mh-z19)
@@ -300,6 +302,8 @@ Measurements
 
 ## Electrical Current
 
+### [Power Monitor: RPi Power Monitor (6 Channels)](/Mycodo/Supported-Inputs/#power-monitor-rpi-power-monitor-6-channels)
+
 ### [TP-Link: Kasa WiFi Power Plug/Strip Energy Statistics](/Mycodo/Supported-Inputs/#tp-link-kasa-wifi-power-plug-strip-energy-statistics)
 
 ### [Tasmota: Tasmota Outlet Energy Monitor (HTTP)](/Mycodo/Supported-Inputs/#tasmota-tasmota-outlet-energy-monitor-http)
@@ -310,7 +314,11 @@ Measurements
 
 ### [Microchip: MCP3008](/Mycodo/Supported-Inputs/#microchip-mcp3008)
 
+### [Microchip: MCP3208](/Mycodo/Supported-Inputs/#microchip-mcp3208)
+
 ### [Microchip: MCP342x (x=2,3,4,6,7,8)](/Mycodo/Supported-Inputs/#microchip-mcp342x-x=2-3-4-6-7-8)
+
+### [Power Monitor: RPi Power Monitor (6 Channels)](/Mycodo/Supported-Inputs/#power-monitor-rpi-power-monitor-6-channels)
 
 ### [TP-Link: Kasa WiFi Power Plug/Strip Energy Statistics](/Mycodo/Supported-Inputs/#tp-link-kasa-wifi-power-plug-strip-energy-statistics)
 
@@ -488,6 +496,8 @@ Measurements
 
 ## Power
 
+### [Power Monitor: RPi Power Monitor (6 Channels)](/Mycodo/Supported-Inputs/#power-monitor-rpi-power-monitor-6-channels)
+
 ### [TP-Link: Kasa WiFi Power Plug/Strip Energy Statistics](/Mycodo/Supported-Inputs/#tp-link-kasa-wifi-power-plug-strip-energy-statistics)
 
 ### [Tasmota: Tasmota Outlet Energy Monitor (HTTP)](/Mycodo/Supported-Inputs/#tasmota-tasmota-outlet-energy-monitor-http)
@@ -497,6 +507,8 @@ Measurements
 ### [Tasmota: Tasmota Outlet Energy Monitor (HTTP)](/Mycodo/Supported-Inputs/#tasmota-tasmota-outlet-energy-monitor-http)
 
 ## Power Factor
+
+### [Power Monitor: RPi Power Monitor (6 Channels)](/Mycodo/Supported-Inputs/#power-monitor-rpi-power-monitor-6-channels)
 
 ### [Tasmota: Tasmota Outlet Energy Monitor (HTTP)](/Mycodo/Supported-Inputs/#tasmota-tasmota-outlet-energy-monitor-http)
 
@@ -628,7 +640,9 @@ Measurements
 
 ### [MAXIM: MAX31850K](/Mycodo/Supported-Inputs/#maxim-max31850k)
 
-### [MAXIM: MAX31855 (DFRobot PT100)](/Mycodo/Supported-Inputs/#maxim-max31855-dfrobot-pt100)
+### [MAXIM: MAX31855 (Gravity PT100)](/Mycodo/Supported-Inputs/#maxim-max31855-gravity-pt100)
+
+### [MAXIM: MAX31855 (Gravity PT100)](/Mycodo/Supported-Inputs/#maxim-max31855-gravity-pt100)
 
 ### [MAXIM: MAX31855](/Mycodo/Supported-Inputs/#maxim-max31855)
 
