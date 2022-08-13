@@ -38,6 +38,97 @@ Page\: `[Gear Icon] -> Configure -> General`
 <td>Opt-out of statistics</td>
 <td>Turn off sending anonymous usage statistics. Please consider that this helps the development to leave on.</td>
 </tr>
+</tbody>
+</table>
+
+## Time Series Database Settings
+
+Page\: `[Gear Icon] -> Configure -> General`
+
+Measurements are stored in a time-series database. There are currently two options that can be used with Mycodo, InfluxDB 1.x and InfluxDB 2.x. InfluxDB 1.x works on both 32-bit and 64-bit operating systems, but 2.x only works on 64-bit operating systems. Therefore, if you are using a 32-bit operating system, you will need to use InfluxDB 1.x. During the Mycodo install, you can select to install influxDB 1.x, 2.x, or neither. If you don't install InfluxDB, you will need to specify the host and credentials to an alternate install for Mycodo to be able to store and query measurements.
+
+If you are installing via Docker, you will need to change the hostname to "mycodo_influxdb" after the Mycodo install to be able to connect to the InfluxDB Docker container.
+
+<table>
+<thead>
+<tr class="header">
+<th>Setting</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Database</td>
+<td>Select the time-series server type.</td>
+</tr>
+<tr>
+<td>Hostname</td>
+<td>The hostname to connect to the time-series server.</td>
+</tr>
+<tr>
+<td>Port</td>
+<td>The time-series database port.</td>
+</tr>
+<tr>
+<td>Database Name</td>
+<td>The name of the database for Mycodo to store to and query from.</td>
+</tr>
+<tr>
+<td>Username</td>
+<td>The username to access the database (if credentials are required).</td>
+</tr>
+<tr>
+<td>Password</td>
+<td>The password to access the database (if credentials are required).</td>
+</tr>
+</tbody>
+</table>
+
+## Dashboard Settings
+
+Page\: `[Gear Icon] -> Configure -> General`
+
+<table>
+<thead>
+<tr class="header">
+<th>Setting</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Grid Cell Height (px)</td>
+<td>The height of each widget cell, in pixels.</td>
+</tr>
+</tbody>
+</table>
+
+## Upgrade Settings
+
+Page\: `[Gear Icon] -> Configure -> General`
+
+<table>
+<thead>
+<tr class="header">
+<th>Setting</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Internet Test IP Address</td>
+<td>The IP address to use to test for an active internet connection.</td>
+</tr>
+<tr>
+<tr>
+<td>Internet Test Port</td>
+<td>The port to use to test for an active internet connection.</td>
+</tr>
+<tr>
+<tr>
+<td>Internet Test Timeout</td>
+<td>The timeout period for testing for an active internet connection.</td>
+</tr>
 <tr>
 <td>Check for Updates</td>
 <td>Automatically check for updates every 2 days and notify through the web interface. If there is a new update, the Configure (Gear Icon) as well as the Upgrade menu will turn the color red.</td>
@@ -53,6 +144,59 @@ In order to calculate accurate energy usage statistics, a few characteristics of
 
 !!! note
     If not using a current sensor, proper energy usage calculations will rely on the correct current draw to be set for each output (see [Output Settings](Outputs.md)).
+
+<table>
+<thead>
+<tr class="header">
+<th>Setting</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Max Amps</td>
+<td>Set the maximum allowed amperage to be switched on at any given time. If a output that's instructed to turn on will cause the sum of active devices to exceed this amount, the output will not be allowed to turn on, to prevent any damage that may result from exceeding current limits.</td>
+</tr>
+<tr>
+<td>Voltage</td>
+<td>Alternating current (AC) voltage that is switched by the outputs. This is usually 120 or 240.</td>
+</tr>
+<tr>
+<td>Cost per kWh</td>
+<td>This is how much you pay per kWh.</td>
+</tr>
+<tr>
+<td>Currency Unit</td>
+<td>This is the unit used for the currency that pays for electricity.</td>
+</tr>
+<tr>
+<td>Day of Month</td>
+<td>This is the day of the month (1-30) that the electricity meter is read (which will correspond to the electrical bill).</td>
+</tr>
+<tr>
+<td>Generate Usage/Cost Report</td>
+<td>These options define when an Energy Usage Report will be generated. Currently, these Only support the Output Duration calculation method.</td>
+</tr>
+<tr>
+<td>Time Span to Generate</td>
+<td>How often to automatically generate a usage/cost report.</td>
+</tr>
+<tr>
+<td>Day of Week/Month to Generate</td>
+<td>On which day of the week to generate the report. Daily: 1-7 (Monday = 1), Monthly: 1-28.</td>
+</tr>
+<tr>
+<td>Hour of Day to Generate</td>
+<td>On which hour of the day to generate the report (0-23).</td>
+</tr>
+</tbody>
+</table>
+
+## Controller Sample Rate Settings
+
+Page\: `[Gear Icon] -> Configure -> General`
+
+Each controller for Inputs, Outputs, and Functions operate periodically. The fastest these controllers can respond is determined by the sample rate of each. The looping function of each controller is paused for the specific duration. For instance, the Output controller can only have a resolution of 1 second if the sample rate is set to 1 second, meaning if you instruct an output to turn on or off, it will take a maximum of 1 second to respond to that request.
 
 <table>
 <thead>
@@ -247,7 +391,7 @@ New measurements, units, and conversions can be created that can extend function
 </tbody>
 </table>
 
-## Users
+## User Settings
 
 Page\: `[Gear Icon] -> Configure -> Users`
 
@@ -359,7 +503,7 @@ The `Edit Controllers` permission protects the editing of Conditionals, Graphs, 
 
 The `View Stats` permission protects the viewing of usage statistics and the System Information and Energy Usage pages.
 
-## Pi Settings
+## Raspberry Pi Settings
 
 Page\: `[Gear Icon] -> Configure -> Raspberry Pi`
 
@@ -514,12 +658,44 @@ Sometimes issues arise in the system as a result of incompatible configurations,
 </thead>
 <tbody>
 <tr>
-<td>Delete All Dashboard Elements</td>
-<td>Delete all saved Dashboard Elements from the Dashboard.</td>
+<td>Delete All Dashboards</td>
+<td>Delete all saved Dashboards on the Data - Dashboard page.</td>
 </tr>
 <tr>
-<td>Delete All Notes and Note Tags</td>
-<td>Delete all notes and note tags.</td>
+<td>Delete All Inputs</td>
+<td>Delete all Inputs on the Setup -> Input page.</td>
+</tr>
+<tr>
+<td>Delete all Note and Note Tags</td>
+<td>Delete all notes and tags from the More -> Note page.</td>
+</tr>
+<tr>
+<td>Delete all Outputs</td>
+<td>Delete all Outputs from the Setup -> Output page.</td>
+</tr>
+<tr>
+<td>Delete Settings Database</td>
+<td>Delete the mycodo.db settings database (WARNING: This will delete all settings and users).</td>
+</tr>
+<tr>
+<td>Delete File: .dependency</td>
+<td>Delete the .dependency file. If you are having an issue accessing the dependency install page, try this.</td>
+</tr>
+<tr>
+<td>Delete File: .upgrade</td>
+<td>Delete the .upgrade file. If you are having an issue accessing the upgrade page or running an upgrade, try this.</td>
+</tr>
+<tr>
+<td>Reset Email Counter</td>
+<td>Reset the email/hour email counter.</td>
+</tr>
+<tr>
+<td>Install Dependencies</td>
+<td>Start the dependency install script that will install all needed dependencies for the entire Mycodo system.</td>
+</tr>
+<tr>
+<td>Set to Upgrade to Master</td>
+<td>This will change FORCE_UPGRADE_MASTER to True in config.py. This is a way to instruct the upgrade system to upgrade to the master branch on GitHub without having to log in and manually edit the config.py file.</td>
 </tr>
 </tbody>
 </table>
