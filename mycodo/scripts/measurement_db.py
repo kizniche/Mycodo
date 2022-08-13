@@ -41,8 +41,8 @@ def get_influxdb_info():
         if r.headers and "X-Influxdb-Version" in r.headers:
             dict_info['influxdb_installed'] = True
             dict_info['influxdb_version'] = r.headers["X-Influxdb-Version"]
-    except Exception as err:
-        print(f"Error: {err}")
+    except:
+        pass
 
     return dict_info
 
