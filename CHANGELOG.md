@@ -1,3 +1,10 @@
+## 8.14.1 (2022-08-14)
+
+### Bugfixes
+
+ - Fix Conditional Function 'timeout' undefined error ([#1220](https://github.com/kizniche/Mycodo/issues/1220))
+
+
 ## 8.14.0 (2022-08-13)
 
 ### Bugfixes

@@ -56,7 +56,7 @@ from mycodo.controllers.base_conditional import AbstractConditional
 from mycodo.mycodo_client import DaemonControl
 control = DaemonControl(pyro_timeout={timeout})
 
-"""
+""".format(timeout=timeout)
 
         if cond_import:
             class_code += cond_import
@@ -72,7 +72,7 @@ class ConditionalRun(AbstractConditional):
         self.variables = {{}}
         self.message = message
         self.running = True
-"""
+""".format(timeout=timeout)
 
         if cond_initialize:
             class_code += textwrap.indent(cond_initialize, ' ' * 8)
@@ -80,7 +80,7 @@ class ConditionalRun(AbstractConditional):
         class_code += """
 
     def conditional_code_run(self):
-""".format(timeout=timeout)
+"""
 
         if cond_statement:
             class_code += textwrap.indent(cond_statement, ' ' * 8)
