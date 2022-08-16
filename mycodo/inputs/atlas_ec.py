@@ -99,11 +99,13 @@ INPUT_INFORMATION = {
         {
             'id': 'clear_calibrate',
             'type': 'button',
+            'wait_for_return': True,
             'name': 'Clear Calibration'
         },
         {
             'id': 'dry_calibrate',
             'type': 'button',
+            'wait_for_return': True,
             'name': 'Calibrate Dry'
         },
         {
@@ -119,6 +121,7 @@ INPUT_INFORMATION = {
         {
             'id': 'single_calibrate',
             'type': 'button',
+            'wait_for_return': True,
             'name': 'Calibrate Single Point'
         },
         {
@@ -134,6 +137,7 @@ INPUT_INFORMATION = {
         {
             'id': 'low_calibrate',
             'type': 'button',
+            'wait_for_return': True,
             'name': 'Calibrate Low Point'
         },
         {
@@ -149,6 +153,7 @@ INPUT_INFORMATION = {
         {
             'id': 'high_calibrate',
             'type': 'button',
+            'wait_for_return': True,
             'name': 'Calibrate High Point'
         },
         {
