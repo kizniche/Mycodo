@@ -195,7 +195,7 @@ class OutputModule(AbstractOutput):
                 self.status_thread = Thread(target=self.status_update)
                 self.status_thread.start()
 
-    def aio_rpc_server(self, started_evt, loop, logger):
+    def aio_rpc_server(self, started_evt, loop, logger, channel_count):
         import aio_msgpack_rpc
         from kasa import SmartPlug
 
