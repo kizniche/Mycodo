@@ -174,7 +174,7 @@ class OutputModule(AbstractOutput):
 
         loop = asyncio.new_event_loop()
         self.rpc_server_thread = Thread(
-            target=self.aio_rpc_server, args=(started_evt, loop, self.logger, len(channels_dict)))
+            target=self.aio_rpc_server, args=(started_evt, loop, self.logger))
         self.rpc_server_thread.start()
 
         started_evt.wait()  # Wait for thread to either start running or error
