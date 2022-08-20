@@ -3,6 +3,7 @@
 ### Bugfixes
 
  - Fix Kasa Plug Output ([#1221](https://github.com/kizniche/Mycodo/pull/1221))
+ - Fix Conditional Function not saving Import and Initialize Python Code
 
 
 ## 8.14.1 (2022-08-14)

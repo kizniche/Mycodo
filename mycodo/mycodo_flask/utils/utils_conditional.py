@@ -61,6 +61,8 @@ def conditional_mod(form):
             Conditional.unique_id == form.function_id.data).first()
         cond_mod.name = form.name.data
         messages["name"] = form.name.data
+        cond_mod.conditional_import = form.conditional_import.data
+        cond_mod.conditional_initialize = form.conditional_initialize.data
         cond_mod.conditional_statement = form.conditional_statement.data
         cond_mod.conditional_status = form.conditional_status.data
         cond_mod.period = form.period.data
