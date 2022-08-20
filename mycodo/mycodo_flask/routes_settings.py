@@ -636,6 +636,8 @@ def settings_diagnostic():
             utils_settings.settings_diagnostic_reset_email_counter()
         elif form_settings_diagnostic.install_dependencies.data:
             utils_settings.settings_diagnostic_install_dependencies()
+        elif form_settings_diagnostic.regenerate_widget_html.data:
+            utils_settings.settings_regenerate_widget_html()
         elif form_settings_diagnostic.upgrade_master.data:
             utils_settings.settings_diagnostic_upgrade_master()
 

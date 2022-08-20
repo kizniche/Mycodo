@@ -432,4 +432,5 @@ class SettingsDiagnostic(FlaskForm):
     delete_file_upgrade = SubmitField(lazy_gettext('Delete File') + ': .upgrade')
     reset_email_counter = SubmitField(lazy_gettext('Reset Email Counter'))
     install_dependencies = SubmitField(lazy_gettext('Install Dependencies'))
+    regenerate_widget_html = SubmitField(lazy_gettext('Regenerate Widget HTML'))
     upgrade_master = SubmitField(lazy_gettext('Set to Upgrade to Master'))

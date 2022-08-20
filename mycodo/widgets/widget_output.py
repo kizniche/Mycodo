@@ -39,7 +39,7 @@ WIDGET_INFORMATION = {
     'message': 'Displays and allows control of an output channel. All output options and measurements for the selected channel will be displayed. E.g. pumps will have seconds on and volume as measurements, and can be turned on for a duration (seconds) or amount (volume). If NO DATA or TOO OLD is displayed, the Max Age is not sufficiently long enough to find a current measurement.',
 
     'widget_width': 5,
-    'widget_height': 4,
+    'widget_height': 7,
 
     'custom_options': [
         {

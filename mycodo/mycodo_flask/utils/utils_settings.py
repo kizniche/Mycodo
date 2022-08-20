@@ -1958,6 +1958,23 @@ def settings_diagnostic_install_dependencies():
         error, action, url_for('routes_settings.settings_diagnostic'))
 
 
+def settings_regenerate_widget_html():
+    action = gettext("Regenerate Widget HTML")
+    error = []
+
+    if not error:
+        try:
+            command = '/bin/bash {path}/mycodo/scripts/upgrade_commands.sh generate-widget-html'.format(
+                path=INSTALL_DIRECTORY)
+            subprocess.Popen(command, shell=True)
+        except Exception as except_msg:
+            error.append(except_msg)
+
+    flash("Widget HTML Regeneration complete.", "success")
+    flash_success_errors(
+        error, action, url_for('routes_settings.settings_diagnostic'))
+
+
 def settings_diagnostic_upgrade_master():
     action = gettext("Set to Upgrade to Master")
     error = []
