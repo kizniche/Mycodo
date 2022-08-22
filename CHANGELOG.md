@@ -1,3 +1,10 @@
+## 8.14.3 (Unreleased)
+
+### Features
+
+ - Add MCP3008 Input using the mcp3008 library
+
+
 ## 8.14.2 (2022-08-20)
 
 ### Bugfixes
