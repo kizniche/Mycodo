@@ -62,8 +62,6 @@ class InputModule(AbstractInput):
         self.channels = []
 
         if not testing:
-            self.setup_custom_options(
-                INPUT_INFORMATION['custom_options'], input_dev)
             self.try_initialize()
 
     def initialize(self):
