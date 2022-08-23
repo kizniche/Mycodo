@@ -30,7 +30,7 @@ INPUT_INFORMATION = {
     'input_name_unique': 'SI7021_CIRCUITPYTHON',
     'input_manufacturer': 'Silicon Labs',
     'input_name': 'Si7021',
-    'input_library': 'Adafruit-CircuitPython-Si7021',
+    'input_library': 'Adafruit_CircuitPython_SI7021',
     'measurements_name': 'Temperature/Humidity',
     'measurements_dict': measurements_dict,
     'url_datasheet': 'https://www.silabs.com/documents/public/data-sheets/Si7021-A20.pdf',

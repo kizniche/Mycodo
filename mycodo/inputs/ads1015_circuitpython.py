@@ -38,7 +38,7 @@ INPUT_INFORMATION = {
     'input_name_unique': 'ADS1015_CP',
     'input_manufacturer': 'Texas Instruments',
     'input_name': 'ADS1015',
-    'input_library': 'Adafruit_CircuitPython',
+    'input_library': 'Adafruit_CircuitPython_ADS1x15',
     'measurements_name': 'Voltage (Analog-to-Digital Converter)',
     'measurements_dict': measurements_dict,
     'measurements_rescale': True,

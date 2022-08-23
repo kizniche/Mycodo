@@ -31,7 +31,7 @@ INPUT_INFORMATION = {
     'input_name_unique': 'HTU21D_CIRCUITPYTHON',
     'input_manufacturer': 'TE Connectivity',
     'input_name': 'HTU21D',
-    'input_library': 'Adafruit-CircuitPython-HTU21D',
+    'input_library': 'Adafruit_CircuitPython_HTU21D',
     'measurements_name': 'Humidity/Temperature',
     'measurements_dict': measurements_dict,
     'url_manufacturer': 'https://www.te.com/usa-en/product-CAT-HSC0004.html',

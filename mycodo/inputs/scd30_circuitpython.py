@@ -34,7 +34,7 @@ INPUT_INFORMATION = {
     'input_name_unique': 'SCD30_CIRCUITPYTHON',
     'input_manufacturer': 'Sensirion',
     'input_name': 'SCD30',
-    'input_library': 'Adafruit-CircuitPython-SCD30',
+    'input_library': 'Adafruit_CircuitPython_SCD30',
     'measurements_name': 'CO2/Humidity/Temperature',
     'measurements_dict': measurements_dict,
     'measurements_use_same_timestamp': True,

@@ -18,7 +18,7 @@ INPUT_INFORMATION = {
     'input_name_unique': 'HCSR04_CIRCUITPYTHON',
     'input_manufacturer': 'Multiple Manufacturers',
     'input_name': 'HC-SR04',
-    'input_library': 'Adafruit-CircuitPython-HCSR04',
+    'input_library': 'Adafruit_CircuitPython_HCSR04',
     'measurements_name': 'Ultrasonic Distance',
     'measurements_dict': measurements_dict,
     'url_manufacturer': 'https://www.cytron.io/p-5v-hc-sr04-ultrasonic-sensor',

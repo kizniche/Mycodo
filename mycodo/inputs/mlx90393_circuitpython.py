@@ -14,7 +14,7 @@ INPUT_INFORMATION = {
     "input_name_unique": "MLX90393_CIRCUITPYTHON",
     "input_manufacturer": "Melexis",
     "input_name": "MLX90393",
-    "input_library": "Adafruit-CircuitPython-MLX90393",
+    "input_library": "Adafruit_CircuitPython_MLX90393",
     "measurements_name": "Magnetic Flux",
     "measurements_dict": measurements_dict,
     "url_manufacturer": "https://www.melexis.com/en/product/MLX90393/Triaxis-Micropower-Magnetometer",

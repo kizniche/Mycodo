@@ -13,7 +13,7 @@ INPUT_INFORMATION = {
     "input_name_unique": "DPS310_CIRCUITPYTHON",
     "input_manufacturer": "Infineon",
     "input_name": "DPS310",
-    "input_library": "Adafruit-CircuitPython-DPS310",
+    "input_library": "Adafruit_CircuitPython_DPS310",
     "measurements_name": "Pressure/Temperature",
     "measurements_dict": measurements_dict,
     "url_manufacturer": "https://www.infineon.com/cms/en/product/sensor/pressure-sensors/pressure-sensors-for-iot/dps310/",

@@ -20,7 +20,7 @@ INPUT_INFORMATION = {
     'input_name_unique': 'AHTx0_CIRCUITPYTHON',
     'input_manufacturer': 'ASAIR',
     'input_name': 'AHTx0',
-    'input_library': 'Adafruit-CircuitPython-AHTx0',
+    'input_library': 'Adafruit_CircuitPython_AHTx0',
     'measurements_name': 'Temperature/Humidity',
     'measurements_dict': measurements_dict,
     'url_manufacturer': 'http://www.aosong.com/en/products-40.html',

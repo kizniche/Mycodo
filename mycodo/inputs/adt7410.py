@@ -16,7 +16,7 @@ INPUT_INFORMATION = {
     'input_name_unique': 'ADT7410',
     'input_manufacturer': 'Analog Devices',
     'input_name': 'ADT7410',
-    'input_library': 'Adafruit_CircuitPython',
+    'input_library': 'Adafruit_CircuitPython_ADT7410',
     'measurements_name': 'Temperature',
     'measurements_dict': measurements_dict,
     'url_datasheet': 'https://www.analog.com/media/en/technical-documentation/data-sheets/ADT7410.pdf',

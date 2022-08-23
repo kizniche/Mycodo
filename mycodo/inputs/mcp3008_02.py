@@ -3,7 +3,6 @@ import copy
 from collections import OrderedDict
 
 from mycodo.inputs.base_input import AbstractInput
-from mycodo.utils.constraints_pass import constraints_pass_positive_or_zero_value
 from mycodo.utils.constraints_pass import constraints_pass_positive_value
 
 # Measurements
@@ -16,10 +15,10 @@ for each_channel in range(4):
 
 # Input information
 INPUT_INFORMATION = {
-    'input_name_unique': 'MCP3008_02',
+    'input_name_unique': 'MCP3008_circuitpython',
     'input_manufacturer': 'Microchip',
     'input_name': 'MCP3008',
-    'input_library': 'MCP3008',
+    'input_library': 'Adafruit_CircuitPython_MCP3xxx',
     'measurements_name': 'Voltage (Analog-to-Digital Converter)',
     'measurements_dict': measurements_dict,
     'url_manufacturer': 'https://www.microchip.com/wwwproducts/en/en010530',
@@ -31,6 +30,10 @@ INPUT_INFORMATION = {
     'scale_from_max': 4.096,
 
     'options_enabled': [
+        'pin_cs',
+        'pin_miso',
+        'pin_mosi',
+        'pin_clock',
         'measurements_select',
         'channels_convert',
         'period',
@@ -39,37 +42,14 @@ INPUT_INFORMATION = {
     'options_disabled': ['interface'],
 
     'dependencies_module': [
-        ('pip-pypi', 'mcp3008', 'mcp3008==1.0.0')
+        ('pip-pypi', 'adafruit_mcp3xxx', 'adafruit-circuitpython-mcp3xxx==1.4.11')
     ],
 
     'interfaces': ['UART'],
-
-    'custom_options': [
-        {
-            'id': 'uart_bus',
-            'type': 'integer',
-            'default_value': 0,
-            'constraints_pass': constraints_pass_positive_or_zero_value,
-            'name': 'UART Bus',
-            'phrase': 'The bus number of the UART'
-        },
-        {
-            'id': 'uart_device',
-            'type': 'integer',
-            'default_value': 0,
-            'constraints_pass': constraints_pass_positive_or_zero_value,
-            'name': 'UART Device',
-            'phrase': 'The device number of the UART'
-        },
-        {
-            'id': 'vref',
-            'type': 'float',
-            'default_value': 3.3,
-            'constraints_pass': constraints_pass_positive_value,
-            'name': 'VREF (volts)',
-            'phrase': 'Set the VREF voltage'
-        }
-    ]
+    'pin_cs': 8,
+    'pin_miso': 9,
+    'pin_mosi': 10,
+    'pin_clock': 11
 }
 
 
@@ -81,29 +61,31 @@ class InputModule(AbstractInput):
         self.sensor = None
         self.channels = []
 
-        self.uart_bus = None
-        self.uart_device = None
-        self.vref = None
-
         if not testing:
             self.setup_custom_options(
                 INPUT_INFORMATION['custom_options'], input_dev)
             self.try_initialize()
 
     def initialize(self):
-        import mcp3008
+        import busio
+        import digitalio
+        import adafruit_mcp3xxx.mcp3008 as MCP
+        from adafruit_mcp3xxx.analog_in import AnalogIn
 
-        self.sensor = mcp3008
+        # create the spi bus
+        spi = busio.SPI(clock=self.input_dev.pin_clock, MISO=self.input_dev.pin_miso, MOSI=self.input_dev.pin_mosi)
+
+        # create the cs (chip select)
+        cs = digitalio.DigitalInOut(self.input_dev.pin_cs)
+
+        # create the mcp object
+        mcp = MCP.MCP3008(spi, cs)
 
         self.channels = [
-            self.sensor.CH0,
-            self.sensor.CH1,
-            self.sensor.CH2,
-            self.sensor.CH3,
-            self.sensor.CH4,
-            self.sensor.CH5,
-            self.sensor.CH6,
-            self.sensor.CH7,
+            AnalogIn(mcp, MCP.P0),
+            AnalogIn(mcp, MCP.P1),
+            AnalogIn(mcp, MCP.P2),
+            AnalogIn(mcp, MCP.P3)
         ]
 
     def get_measurement(self):
@@ -113,9 +95,8 @@ class InputModule(AbstractInput):
 
         self.return_dict = copy.deepcopy(measurements_dict)
 
-        with self.sensor.MCP3008(bus=self.uart_bus, device=self.uart_device) as adc:
-            for channel in self.channels_measurement:
-                if self.is_enabled(channel):
-                    self.value_set(channel, ((adc.read([self.channels[channel]]) / 1024.0) * self.vref))
+        for channel in self.channels_measurement:
+            if self.is_enabled(channel):
+                self.value_set(channel, self.channels[channel].voltage)
 
         return self.return_dict
