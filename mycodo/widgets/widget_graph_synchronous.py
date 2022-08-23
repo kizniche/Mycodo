@@ -137,6 +137,7 @@ def execute_at_creation(error, new_widget, dict_widget):
     # Create initial default values
     custom_options_json = json.loads(new_widget.custom_options)
     custom_options_json['disable_data_grouping'] = ""
+    custom_options_json['series_type'] = ""
     custom_options_json['custom_yaxes'] = ""
     custom_options_json['custom_colors'] = ""
     new_widget.custom_options = json.dumps(custom_options_json)
@@ -173,6 +174,9 @@ def execute_at_modification(
 
     disable_data_grouping, error = data_grouping_graph(request_form, error)
     custom_options_json_postsave['disable_data_grouping'] = disable_data_grouping
+
+    series_type, error = series_type_graph(request_form, error)
+    custom_options_json_postsave['series_type'] = series_type
 
     for each_error in error:
         flash(each_error, "error")
@@ -498,6 +502,15 @@ WIDGET_INFORMATION = {
             <label class="control-label">Disable Data Grouping</label>
             <div class="input-group-text">
               <input id="disable_data_grouping-{{widget_variables['colors_graph'][n]['measure_id']}}" name="disable_data_grouping-{{widget_variables['colors_graph'][n]['measure_id']}}" type="checkbox" value="y"{% if widget_variables['colors_graph'][n]['disable_data_grouping'] %} checked{% endif %}>
+            </div>
+          </div>
+          <div class="col-auto">
+            <label class="control-label">Series Type</label>
+            <div class="input-group-text">
+              <select id="series_type-{{widget_variables['colors_graph'][n]['measure_id']}}" name="series_type-{{widget_variables['colors_graph'][n]['measure_id']}}">
+                <option value="line" {% if widget_variables['colors_graph'][n]['series_type'] == "line" %} selected{% endif %}>Line</option>
+                <option value="column" {% if widget_variables['colors_graph'][n]['series_type'] == "column" %} selected{% endif %}>Column</option>
+              </select>
             </div>
           </div>
             {% endif %}
@@ -1069,10 +1082,16 @@ WIDGET_INFORMATION = {
     {%- set this_output = table_output.query.filter(table_output.unique_id == output_id).first() -%}
     {%- if this_output -%}
       {%- set measurement_id = output_and_measurement_ids.split(',')[1] -%}
+      {%- set ns = namespace() -%}
 
-      {% set disable_data_grouping = [] -%}
+      {%- set ns.disable_data_grouping = false -%}
       {% for each_series in widget_variables['colors_graph'] if each_series['measure_id'] == measurement_id and each_series['disable_data_grouping'] %}
-        {%- do disable_data_grouping.append(1) %}
+        {%- set ns.disable_data_grouping = true -%}
+      {% endfor %}
+      
+      {%- set ns.series_type = "column" %}
+      {% for each_series in widget_variables['colors_graph'] if each_series['measure_id'] == measurement_id and each_series['series_type'] %}
+        {% set ns.series_type = each_series['series_type'] -%}
       {% endfor %}
 
       {%- if measurement_id in device_measurements_dict -%}
@@ -1107,9 +1126,9 @@ WIDGET_INFORMATION = {
         {%- endif -%}
 
           )",
-        type: 'column',
+        type: '{{ns.series_type}}',
         dataGrouping: {
-          enabled: {% if disable_data_grouping %}false{% else %}true{% endif %},
+          enabled: {% if ns.disable_data_grouping %}false{% else %}true{% endif %},
           groupPixelWidth: 5
         },
         tooltip: {
@@ -1141,10 +1160,16 @@ WIDGET_INFORMATION = {
     {%- set this_input = table_input.query.filter(table_input.unique_id == input_id).first() -%}
     {%- if this_input -%}
       {%- set measurement_id = input_and_measurement_ids.split(',')[1] -%}
+      {%- set ns = namespace() -%}
 
-      {% set disable_data_grouping = [] -%}
+      {%- set ns.disable_data_grouping = false -%}
       {% for each_series in widget_variables['colors_graph'] if each_series['measure_id'] == measurement_id and each_series['disable_data_grouping'] %}
-        {%- do disable_data_grouping.append(1) %}
+        {%- set ns.disable_data_grouping = true -%}
+      {% endfor %}
+      
+      {%- set ns.series_type = "line" %}
+      {% for each_series in widget_variables['colors_graph'] if each_series['measure_id'] == measurement_id and each_series['series_type'] %}
+        {% set ns.series_type = each_series['series_type'] -%}
       {% endfor %}
 
       {%- if measurement_id in device_measurements_dict -%}
@@ -1168,15 +1193,9 @@ WIDGET_INFORMATION = {
         {%- endif -%}
 
           )",
-
-      {% if dict_measure_measurements[measurement_id] in dict_measurements and
-            dict_measurements[dict_measure_measurements[measurement_id]]['meas'] == 'edge' %}
-        type: 'column',
-      {% else -%}
-        type: 'line',
-      {%- endif -%}
+        type: '{{ns.series_type}}',
         dataGrouping: {
-          enabled: {% if disable_data_grouping %}false{% else %}true{% endif %},
+          enabled: {% if ns.disable_data_grouping %}false{% else %}true{% endif %},
           groupPixelWidth: 2
         },
         tooltip: {
@@ -1206,10 +1225,16 @@ WIDGET_INFORMATION = {
   {% for each_function in function -%}
     {%- for function_and_measurement_ids in graph_function_ids if each_function.unique_id == function_and_measurement_ids.split(',')[0] -%}
       {%- set measurement_id = function_and_measurement_ids.split(',')[1] -%}
+      {%- set ns = namespace() -%}
 
-      {% set disable_data_grouping = [] -%}
+      {%- set ns.disable_data_grouping = false -%}
       {% for each_series in widget_variables['colors_graph'] if each_series['measure_id'] == measurement_id and each_series['disable_data_grouping'] %}
-        {%- do disable_data_grouping.append(1) %}
+        {%- set ns.disable_data_grouping = true -%}
+      {% endfor %}
+      
+      {%- set ns.series_type = "line" %}
+      {% for each_series in widget_variables['colors_graph'] if each_series['measure_id'] == measurement_id and each_series['series_type'] %}
+        {% set ns.series_type = each_series['series_type'] -%}
       {% endfor %}
 
       {%- if measurement_id in device_measurements_dict -%}
@@ -1233,15 +1258,9 @@ WIDGET_INFORMATION = {
         {%- endif -%}
 
         )",
-
-      {% if dict_measure_measurements[measurement_id] in dict_measurements and
-            dict_measurements[dict_measure_measurements[measurement_id]]['meas'] == 'edge' %}
-      type: 'column',
-      {% else %}
-      type: 'line',
-      {% endif %}
+      type: '{{ns.series_type}}',
       dataGrouping: {
-        enabled: {% if disable_data_grouping %}false{% else %}true{% endif %},
+        enabled: {% if ns.disable_data_grouping %}false{% else %}true{% endif %},
         groupPixelWidth: 2
       },
       tooltip: {
@@ -1271,10 +1290,16 @@ WIDGET_INFORMATION = {
   {%- for each_pid in pid -%}
     {%- for pid_and_measurement_ids in graph_pid_ids if each_pid.unique_id == pid_and_measurement_ids.split(',')[0] -%}
       {%- set measurement_id = pid_and_measurement_ids.split(',')[1] -%}
+      {%- set ns = namespace() -%}
 
-      {% set disable_data_grouping = [] -%}
+      {%- set ns.disable_data_grouping = false -%}
       {% for each_series in widget_variables['colors_graph'] if each_series['measure_id'] == measurement_id and each_series['disable_data_grouping'] %}
-        {%- do disable_data_grouping.append(1) %}
+        {%- set ns.disable_data_grouping = true -%}
+      {% endfor %}
+      
+      {%- set ns.series_type = "line" %}
+      {% for each_series in widget_variables['colors_graph'] if each_series['measure_id'] == measurement_id and each_series['series_type'] %}
+        {% set ns.series_type = each_series['series_type'] -%}
       {% endfor %}
 
       {%- if measurement_id in device_measurements_dict -%}
@@ -1298,15 +1323,9 @@ WIDGET_INFORMATION = {
         {%- endif -%}
 
         )",
-
-      {% if dict_measure_measurements[measurement_id] in dict_measurements and
-            dict_measurements[dict_measure_measurements[measurement_id]]['meas'] == 'edge' %}
-      type: 'column',
-      {% else %}
-      type: 'line',
-      {% endif %}
+      type: '{{ns.series_type}}',
       dataGrouping: {
-        enabled: {% if disable_data_grouping %}false{% else %}true{% endif %},
+        enabled: {% if ns.disable_data_grouping %}false{% else %}true{% endif %},
         groupPixelWidth: 2
       },
       tooltip: {
@@ -1423,6 +1442,23 @@ def data_grouping_graph(form, error):
         if 'disable_data_grouping' in key:
             list_data_grouping.append(key[22:])
     return list_data_grouping, error
+
+
+def series_type_graph(form, error):
+    """
+    Get select options for series type
+    :param form: form object submitted by user on web page
+    :param error: list of accumulated errors to add to
+    :return:
+    """
+    series_types = {}
+    for key in form.keys():
+        if 'series_type' in key:
+            for value in form.getlist(key):
+                if value not in ["column", "line"]:
+                    error.append("Invalid series type")
+                series_types[key[12:]] = value
+    return series_types, error
 
 
 def custom_yaxes_str_from_form(form):
@@ -1560,8 +1596,13 @@ def dict_custom_colors(widget_options):
 
                 # Data grouping
                 disable_data_grouping = False
-                if output_measure_id in widget_options['disable_data_grouping']:
+                if 'disable_data_grouping' in widget_options and output_measure_id in widget_options['disable_data_grouping']:
                     disable_data_grouping = True
+
+                # Series type
+                series_type = 'column'
+                if 'series_type' in widget_options and output_measure_id in widget_options['series_type']:
+                    series_type = widget_options['series_type'][output_measure_id]
 
                 if None not in [output, device_measurement]:
                     total.append({
@@ -1574,7 +1615,9 @@ def dict_custom_colors(widget_options):
                         'measure': measurement,
                         'measure_name': measurement_name,
                         'color': color,
-                        'disable_data_grouping': disable_data_grouping})
+                        'disable_data_grouping': disable_data_grouping,
+                        'series_type': series_type
+                    })
                     index += 1
             index_sum += index
 
@@ -1610,8 +1653,13 @@ def dict_custom_colors(widget_options):
 
                 # Data grouping
                 disable_data_grouping = False
-                if input_measure_id in widget_options['disable_data_grouping']:
+                if 'disable_data_grouping' in widget_options and input_measure_id in widget_options['disable_data_grouping']:
                     disable_data_grouping = True
+
+                # Series type
+                series_type = 'line'
+                if 'series_type' in widget_options and input_measure_id in widget_options['series_type']:
+                    series_type = widget_options['series_type'][input_measure_id]
 
                 if None not in [input_dev, device_measurement]:
                     total.append({
@@ -1624,7 +1672,9 @@ def dict_custom_colors(widget_options):
                         'measure': measurement,
                         'measure_name': measurement_name,
                         'color': color,
-                        'disable_data_grouping': disable_data_grouping})
+                        'disable_data_grouping': disable_data_grouping,
+                        'series_type': series_type
+                    })
                     index += 1
             index_sum += index
 
@@ -1660,8 +1710,13 @@ def dict_custom_colors(widget_options):
 
                 # Data grouping
                 disable_data_grouping = False
-                if function_measure_id in widget_options['disable_data_grouping']:
+                if 'disable_data_grouping' in widget_options and function_measure_id in widget_options['disable_data_grouping']:
                     disable_data_grouping = True
+
+                # Series type
+                series_type = 'line'
+                if 'series_type' in widget_options and function_measure_id in widget_options['series_type']:
+                    series_type = widget_options['series_type'][function_measure_id]
 
                 if function is not None:
                     total.append({
@@ -1674,7 +1729,9 @@ def dict_custom_colors(widget_options):
                         'measure': measurement,
                         'measure_name': measurement_name,
                         'color': color,
-                        'disable_data_grouping': disable_data_grouping})
+                        'disable_data_grouping': disable_data_grouping,
+                        'series_type': series_type
+                    })
                     index += 1
             index_sum += index
 
@@ -1710,8 +1767,13 @@ def dict_custom_colors(widget_options):
 
                 # Data grouping
                 disable_data_grouping = False
-                if pid_measure_id in widget_options['disable_data_grouping']:
+                if 'disable_data_grouping' in widget_options and pid_measure_id in widget_options['disable_data_grouping']:
                     disable_data_grouping = True
+
+                # Series type
+                series_type = 'line'
+                if 'series_type' in widget_options and pid_measure_id in widget_options['series_type']:
+                    series_type = widget_options['series_type'][pid_measure_id]
 
                 if None not in [pid, device_measurement]:
                     total.append({
@@ -1724,7 +1786,9 @@ def dict_custom_colors(widget_options):
                         'measure': measurement,
                         'measure_name': measurement_name,
                         'color': color,
-                        'disable_data_grouping': disable_data_grouping})
+                        'disable_data_grouping': disable_data_grouping,
+                        'series_type': series_type
+                    })
                     index += 1
             index_sum += index
 
@@ -1754,7 +1818,8 @@ def dict_custom_colors(widget_options):
                         'measure': None,
                         'measure_name': None,
                         'color': color,
-                        'disable_data_grouping': None
+                        'disable_data_grouping': None,
+                        'series_type': None
                     })
                     index += 1
             index_sum += index

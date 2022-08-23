@@ -3,6 +3,7 @@
 ### Features
 
  - Add MCP3008 Input using the mcp3008 library
+ - Add ability to set each Graph Widget series type to either Line or Column
 
 
 ## 8.14.2 (2022-08-20)

@@ -1964,9 +1964,14 @@ def settings_regenerate_widget_html():
 
     if not error:
         try:
-            command = '/bin/bash {path}/mycodo/scripts/upgrade_commands.sh generate-widget-html'.format(
-                path=INSTALL_DIRECTORY)
-            subprocess.Popen(command, shell=True)
+            command = f'/bin/bash {INSTALL_DIRECTORY}/mycodo/scripts/upgrade_commands.sh generate-widget-html'
+            p = subprocess.Popen(command, shell=True)
+            p.communicate()
+
+            cmd = f"{INSTALL_DIRECTORY}/mycodo/scripts/mycodo_wrapper frontend_reload" \
+                  f" | ts '[%Y-%m-%d %H:%M:%S]' >> {DEPENDENCY_LOG_FILE} 2>&1"
+            p = subprocess.Popen(cmd, shell=True)
+            p.communicate()
         except Exception as except_msg:
             error.append(except_msg)
 
