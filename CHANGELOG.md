@@ -2,7 +2,7 @@
 
 ### Features
 
- - Add alternate MCP3008 Input using CircuitPython
+ - Add two alternate MCP3008 Input (adafruit-circuitpython-mcp3xxx and mcp3008)
  - Add ability to set each Graph Widget series type to either Line or Column
 
 
