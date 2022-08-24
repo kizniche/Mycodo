@@ -117,6 +117,10 @@ class InputModule(AbstractInput):
         # create the spi bus
         spi = busio.SPI(clock=self.input_dev.pin_clock, MISO=self.input_dev.pin_miso, MOSI=self.input_dev.pin_mosi)
 
+        if self.input_dev.pin_cs < 1 or self.input_dev.pin_cs > 26:
+            self.logger.error("CS Pin must be between 1 - 26.")
+            return
+
         # create the cs (chip select)
         cs = digitalio.DigitalInOut(bcm_to_board[self.input_dev.pin_cs - 1])
 

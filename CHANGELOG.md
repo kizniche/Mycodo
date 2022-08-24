@@ -2,8 +2,9 @@
 
 ### Features
 
- - Add two alternate MCP3008 Input (adafruit-circuitpython-mcp3xxx and mcp3008)
  - Add ability to set each Graph Widget series type to either Line or Column
+ - Add Input: MCP3008 (adafruit-circuitpython-mcp3xxx library)
+ - Add Input: On/Off Output State
 
 
 ## 8.14.2 (2022-08-20)
