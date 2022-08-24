@@ -7,7 +7,7 @@ from mycodo.utils.constraints_pass import constraints_pass_positive_value
 
 # Measurements
 measurements_dict = OrderedDict()
-for each_channel in range(4):
+for each_channel in range(8):
     measurements_dict[each_channel] = {
         'measurement': 'electrical_potential',
         'unit': 'V'
