@@ -1,6 +1,5 @@
 # coding=utf-8
 import copy
-import os
 
 from mycodo.inputs.base_input import AbstractInput
 from mycodo.mycodo_client import DaemonControl
@@ -35,7 +34,7 @@ INPUT_INFORMATION = {
             'default_value': '',
             'required': True,
             'options_select': [
-                'Output_Channels_Measurements',
+                'Output_Channels',
             ],
             'name': 'On/Off Output Channel',
             'phrase': 'Select an output to control that will raise the measurement'
@@ -54,7 +53,6 @@ class InputModule(AbstractInput):
 
         self.control = DaemonControl()
         self.output_device_id = None
-        self.output_measurement_id = None
         self.output_channel_id = None
         self.output_channel = None
 
@@ -68,7 +66,7 @@ class InputModule(AbstractInput):
             self.output_channel_id)
 
     def get_measurement(self):
-        """Determine if the return value of the command is a number."""
+        """Determine the output state."""
         self.return_dict = copy.deepcopy(measurements_dict)
 
         output_state = self.control.output_state(
