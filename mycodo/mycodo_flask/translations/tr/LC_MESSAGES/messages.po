@@ -5072,7 +5072,7 @@ msgstr ""
 
 #: mycodo_flask/templates/settings/users.html:257
 msgid "Roles"
-msgstr ""
+msgstr "Roller"
 
 #: mycodo_flask/templates/settings/widget.html:11
 msgid "Widget Settings"
