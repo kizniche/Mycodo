@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: Mycodo 8.14.0\n"
 "Report-Msgid-Bugs-To: mycodo@kylegabriel.com\n"
 "POT-Creation-Date: 2022-08-13 13:45-0400\n"
-"PO-Revision-Date: 2022-08-31 14:18+0300\n"
+"PO-Revision-Date: 2022-08-31 14:21+0300\n"
 "Last-Translator: Ramazan Sancar <me@ramazansancar.com.tr>\n"
 "Language-Team: Turkish <http://translate.kylegabriel.com:8080/projects/mycodo/"
 "master/tr/>\n"
@@ -1768,7 +1768,7 @@ msgstr ""
 
 #: actions/controller_deactivate.py:27
 msgid "Deactivate a controller."
-msgstr "Denetleyiciyi devre dışı bırak"
+msgstr "Denetleyiciyi devre dışı bırak."
 
 #: actions/create_log_line.py:13
 msgid "Create a log line in the daemon log."
