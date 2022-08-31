@@ -1,7 +1,7 @@
 # Turkish translations for Mycodo
 # Copyright (C) 2022 Ramazan Sancar
 # This file is distributed under the same license as the Mycodo project.
-# FIRST AUTHOR <EMAIL@ADDRESS>, 2022.
+# Proud Translation by Ramazan Sancar <me@ramazansancar.com.tr>, 7% complete @ 31/08/2022.
 #
 msgid ""
 msgstr ""

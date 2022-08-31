@@ -226,6 +226,7 @@ Languages
    `Serbian <#serbian>`__,
    `Spanish <#spanish>`__,
    `Swedish <#swedish>`__,
+   `Turkish <#turkish>`__,
    `Chinese <#chinese>`__.
 
 By default, mycodo will display the default language set by your browser. You may also force a language in the settings at ``[Gear Icon] -> Configure -> General -> Language``
@@ -515,6 +516,12 @@ Mycodo最初设计用于种植可食用的蘑菇，已经发展到能够做更�
    :target: https://doi.org/10.5281/zenodo.824199
 .. |Mycodo| image:: https://kylegabriel.com/projects/wp-content/uploads/sites/3/2016/05/Mycodo-3.6.0-tango-Graph-2016-05-21-11-15-26.png
    :target: https://kylegabriel.com/projects/
+
+Turkish
+~~~~~~~
+
+Düzenlenecektir.
+
 
 Thanks
 ------

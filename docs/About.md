@@ -22,4 +22,4 @@ If using the auto-generated certificate from the install, be aware that it will 
 
 ## Languages
 
-The Mycodo user interface has been translated from English to Dutch, German, French, Italian, Norwegian, Polish, Portuguese, Russian, Serbian, Spanish, Swedish, and Chinese. If the default language for your web browser is one of these languages, it will be automatically selected. Otherwise, you can manually set the language from the Configuration menu.
+The Mycodo user interface has been translated from English to Dutch, German, French, Italian, Norwegian, Polish, Portuguese, Russian, Serbian, Spanish, Swedish, Turkish, and Chinese. If the default language for your web browser is one of these languages, it will be automatically selected. Otherwise, you can manually set the language from the Configuration menu.

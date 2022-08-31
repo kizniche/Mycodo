@@ -138,6 +138,7 @@ LANGUAGES = {
     'ru': 'русский язык (Russian)',
     'sr': 'српски (Serbian)',
     'sv': 'Svenska (Swedish)',
+    'tr': 'Türkçe (Turkish)',
     'zh': '中文 (Chinese)'
 }
 
