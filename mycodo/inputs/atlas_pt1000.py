@@ -50,7 +50,8 @@ INPUT_INFORMATION = {
     'custom_commands_message':
         'The I2C address can be changed. Enter a new address in the 0xYY format '
         '(e.g. 0x22, 0x50), then press Set I2C Address. Remember to deactivate and '
-        'change the I2C address option after setting the new address.',
+        'change the I2C address option after setting the new address. '
+        'A single point calibration can also be performed for any temperature (°C).',
 
     'custom_commands': [
         {
@@ -64,6 +65,29 @@ INPUT_INFORMATION = {
             'id': 'set_i2c_address',
             'type': 'button',
             'name': lazy_gettext('Set I2C Address')
+        },
+        {
+            'type': 'new_line'
+        },
+        {
+            'id': 'calibrate_temp_c',
+            'type': 'float',
+            'default_value': 100.0,
+            'name': f"{lazy_gettext('Temperature')} (°C)",
+            'phrase': 'Temperature for single point calibration'
+        },
+        {
+            'id': 'calibrate_temp',
+            'type': 'button',
+            'name': lazy_gettext('Calibrate')
+        },
+        {
+            'type': 'new_line'
+        },
+        {
+            'id': 'calibrate_temp_clear',
+            'type': 'button',
+            'name': 'Clear Calibration'
         }
     ]
 }
@@ -147,9 +171,36 @@ class InputModule(AbstractInput):
             return
         try:
             i2c_address = int(str(args_dict['new_i2c_address']), 16)
-            write_cmd = "I2C,{}".format(i2c_address)
-            self.logger.info("I2C Change command: {}".format(write_cmd))
-            self.logger.info("Command returned: {}".format(self.atlas_device.query(write_cmd)))
+            write_cmd = f"I2C,{i2c_address}"
+            self.logger.info(f"I2C Change command: {write_cmd}")
+            self.logger.info(f"Command returned: {self.atlas_device.query(write_cmd)}")
             self.atlas_device = None
         except:
             self.logger.exception("Exception changing I2C address")
+
+    def calibrate_temp(self, args_dict):
+        if 'calibrate_temp_c' not in args_dict:
+            self.logger.error("Cannot calibrate without a temperature")
+            return
+        try:
+            write_cmd = f"Cal,{args_dict['calibrate_temp_c']}"
+            self.logger.info(f"Calibrate command: {write_cmd}")
+            self.logger.info(f"Command returned: {self.atlas_device.query(write_cmd)}")
+            cal_status, cal_return = self.atlas_device.query("Cal,?")
+            cal_return = self.atlas_device.build_string(cal_return)
+            self.logger.info(f"Device Calibrated?: {cal_status}:{cal_return}")
+            self.atlas_device = None
+        except:
+            self.logger.exception("Exception calibrating")
+
+    def calibrate_temp_clear(self, args_dict):
+        try:
+            write_cmd = f"Cal,clear"
+            self.logger.info(f"Calibrate clear command: {write_cmd}")
+            self.logger.info(f"Command returned: {self.atlas_device.query(write_cmd)}")
+            cal_status, cal_return = self.atlas_device.query("Cal,?")
+            cal_return = self.atlas_device.build_string(cal_return)
+            self.logger.info(f"Device Calibrated?: {cal_status}:{cal_return}")
+            self.atlas_device = None
+        except:
+            self.logger.exception("Exception clearing calibration")

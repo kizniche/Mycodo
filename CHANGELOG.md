@@ -5,6 +5,7 @@
  - Add ability to set each Graph Widget series type to either Line or Column
  - Add Input: MCP3008 (adafruit-circuitpython-mcp3xxx library)
  - Add Input: On/Off Output State
+ - Add Temperature Calibration for Atlas Scientific PT-1000 Input
 
 
 ## 8.14.2 (2022-08-20)
