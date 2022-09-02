@@ -30,14 +30,14 @@ INPUT_INFORMATION = {
     'custom_options': [
         {
             'id': 'output',
-            'type': 'select_measurement_channel',
+            'type': 'select_channel',
             'default_value': '',
             'required': True,
             'options_select': [
                 'Output_Channels',
             ],
             'name': 'On/Off Output Channel',
-            'phrase': 'Select an output to control that will raise the measurement'
+            'phrase': 'Select an output to measure'
         }
     ]
 }
