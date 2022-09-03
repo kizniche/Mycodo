@@ -237,3 +237,5 @@ class InputModule(AbstractInput):
             run.python_code_run()
         except Exception:
             self.logger.exception(1)
+
+        return self.return_dict

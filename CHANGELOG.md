@@ -7,6 +7,10 @@
  - Add Input: On/Off Output State
  - Add Temperature Calibration for Atlas Scientific PT-1000 Input
 
+### Bugfixes
+
+ - Fix Python Code Input logging Exceptions in the Daemon Log
+
 
 ## 8.14.2 (2022-08-20)
 
