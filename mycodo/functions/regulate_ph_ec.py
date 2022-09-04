@@ -1,8 +1,8 @@
 # coding=utf-8
 #
-#  regulate_ph_ec.py - Perform equation with multiple measurements
+#  regulate_ph_ec.py - Regulate pH and Electrical Conductivity
 #
-#  Copyright (C) 2015-2020 Kyle T. Gabriel <mycodo@kylegabriel.com>
+#  Copyright (C) 2015-2022 Kyle T. Gabriel <mycodo@kylegabriel.com>
 #
 #  This file is part of Mycodo
 #
