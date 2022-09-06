@@ -35,6 +35,7 @@ import resource
 import threading
 import time
 import timeit
+import traceback
 
 from Pyro5.api import Proxy
 from Pyro5.api import expose
@@ -491,18 +492,18 @@ class DaemonController:
         if function_id in self.controller["Function"]:
             try:
                 return self.controller["Function"][function_id].function_status()
-            except Exception as err:
-                return {'error': [f"Error getting Function status: {err}"]}
+            except Exception:
+                return {'error': [f"Error getting Function status: {traceback.format_exc()}"]}
         elif function_id in self.controller["Conditional"]:
             try:
                 return self.controller["Conditional"][function_id].function_status()
-            except Exception as err:
-                return {'error': [f"Error getting Function status: {err}"]}
+            except Exception:
+                return {'error': [f"Error getting Function status: {traceback.format_exc()}"]}
         elif function_id in self.controller["PID"]:
             try:
                 return self.controller["PID"][function_id].function_status()
-            except Exception as err:
-                return {'error': [f"Error getting Function status: {err}"]}
+            except Exception:
+                return {'error': [f"Error getting Function status: {traceback.format_exc()}"]}
         else:
             return {'error': [f"Function ID not found"]}
 

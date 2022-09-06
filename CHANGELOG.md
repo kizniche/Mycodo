@@ -12,6 +12,10 @@
 
  - Fix Python Code Input logging Exceptions in the Daemon Log
 
+### Miscellaneous
+
+ - Make Function Status errors appear in the Function Status area of the UI
+
 
 ## 8.14.2 (2022-08-20)
 
