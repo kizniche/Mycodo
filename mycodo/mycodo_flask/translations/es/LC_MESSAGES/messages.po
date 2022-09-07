@@ -604,7 +604,7 @@ msgstr "Claro"
 #: mycodo_flask/templates/pages/output_options.html:91
 #, fuzzy
 msgid "Commands"
-msgstr "Ordenador"
+msgstr "Comandos"
 
 #: config_translations.py:39
 msgid "Completed"
@@ -1112,7 +1112,7 @@ msgstr "Adaptador BT (hci [X])"
 
 #: config_translations.py:227
 msgid "The adapter of the Bluetooth device"
-msgstr ""
+msgstr "El adaptador del dispositivo Bluetooth"
 
 #: actions/command_bash.py:40 config_translations.py:229
 msgid "Command"

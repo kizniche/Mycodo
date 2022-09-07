@@ -7,6 +7,7 @@
  - Add Input: On/Off Output State
  - Add ability to set each Graph Widget series type to either Line or Column
  - Add Temperature Calibration for Atlas Scientific PT-1000 Input
+ - Add Turkish Translation
 
 ### Bugfixes
 

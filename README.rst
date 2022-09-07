@@ -226,6 +226,7 @@ Languages
    `Serbian <#serbian>`__,
    `Spanish <#spanish>`__,
    `Swedish <#swedish>`__,
+   `Turkish <#turkish>`__,
    `Chinese <#chinese>`__.
 
 By default, mycodo will display the default language set by your browser. You may also force a language in the settings at ``[Gear Icon] -> Configure -> General -> Language``
@@ -492,6 +493,11 @@ ta bilder och strömma video, utlös åtgärder när mätningar uppfyller
 vissa villkor (modulera reläer, utföra kommandon, meddela via e-post
 etc.) och mer. Frontend är ett webbgränssnitt som möjliggör enkel
 navigering och konfiguration från alla webbläsaraktiverade enheter.
+
+Turkish
+~~~~~~~
+
+Düzenlenecektir.
 
 Chinese
 ~~~~~~~

@@ -4533,7 +4533,7 @@ msgstr "Die Dauer zwischen der Überprüfung, ob die Bedingung wahr ist"
 #: mycodo_flask/templates/pages/function_options/conditional_options.html:88
 #, fuzzy
 msgid "The timeout (seconds) for the execution of the Run Python Code"
-msgstr "Die Timeout-Zeit (Sekunden) für die Prüfung der Internet-Verbindung."
+msgstr "Die Timeout-Zeit (Sekunden) für die Prüfung der Internet-Verbindung"
 
 #: mycodo_flask/templates/pages/function_options/conditional_options.html:108
 msgid "Conditions"
