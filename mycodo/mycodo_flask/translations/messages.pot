@@ -6,9 +6,9 @@
 #, fuzzy
 msgid ""
 msgstr ""
-"Project-Id-Version: Mycodo 8.14.0\n"
+"Project-Id-Version: Mycodo 8.14.2\n"
 "Report-Msgid-Bugs-To: mycodo@kylegabriel.com\n"
-"POT-Creation-Date: 2022-08-13 13:45-0400\n"
+"POT-Creation-Date: 2022-09-07 19:49-0400\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -56,7 +56,7 @@ msgstr ""
 #: config_devices_units.py:101 functions/bang_bang.py:84
 #: functions/bang_bang_on_off.py:95 functions/bang_bang_pwm.py:82
 #: functions/pid_autotune.py:129 mycodo_flask/forms/forms_pid.py:32
-#: outputs/pump_l298n.py:140 outputs/pump_pca9685_l298n.py:252
+#: outputs/pump_l298n.py:140 outputs/pump_pca9685_l298n.py:253
 msgid "Direction"
 msgstr ""
 
@@ -718,7 +718,7 @@ msgstr ""
 #: config_translations.py:79 mycodo_flask/templates/flash_messages.html:46
 #: mycodo_flask/templates/user_templates/widget_template_widget_measurement_js.html:49
 #: mycodo_flask/templates/user_templates/widget_template_widget_output_js.html:58
-#: mycodo_flask/templates/user_templates/widget_template_widget_output_pwm_slider_js.html:69
+#: mycodo_flask/templates/user_templates/widget_template_widget_output_pwm_slider_js.html:73
 msgid "Error"
 msgstr ""
 
@@ -731,7 +731,7 @@ msgid "Fail"
 msgstr ""
 
 #: config_translations.py:85 mycodo_flask/templates/pages/function.html:56
-#: widgets/widget_function_status.py:54 widgets/widget_graph_synchronous.py:380
+#: widgets/widget_function_status.py:54 widgets/widget_graph_synchronous.py:384
 msgid "Function"
 msgstr ""
 
@@ -1371,7 +1371,7 @@ msgstr ""
 #: functions/examples/custom_function_multiple_channels.py:73
 #: functions/examples/custom_function_simple_loop_with_status.py:58
 #: functions/humidity_wet_dry_bulb.py:79 functions/redundancy.py:63
-#: functions/statistics_last_multiple.py:101
+#: functions/regulate_ph_ec.py:179 functions/statistics_last_multiple.py:101
 #: functions/statistics_past_single.py:100 functions/sum_last_multiple.py:68
 #: functions/sum_past_single.py:68 functions/vapor_pressure_deficit.py:66
 #: functions/verification.py:63 mycodo_flask/forms/forms_conditional.py:34
@@ -1399,7 +1399,7 @@ msgstr ""
 #: functions/examples/custom_function_multiple_channels.py:74
 #: functions/examples/custom_function_simple_loop_with_status.py:59
 #: functions/humidity_wet_dry_bulb.py:80 functions/redundancy.py:64
-#: functions/statistics_last_multiple.py:102
+#: functions/regulate_ph_ec.py:180 functions/statistics_last_multiple.py:102
 #: functions/statistics_past_single.py:101 functions/sum_last_multiple.py:69
 #: functions/sum_past_single.py:69 functions/vapor_pressure_deficit.py:67
 #: functions/verification.py:64
@@ -1500,8 +1500,9 @@ msgstr ""
 msgid "Command to execute to set the PWM duty cycle (%)"
 msgstr ""
 
-#: config_translations.py:359 outputs/pump_pca9685_l298n.py:144
-#: outputs/pwm_gpio.py:144 outputs/pwm_pca9685.py:101
+#: config_translations.py:359 outputs/pump_pca9685.py:156
+#: outputs/pump_pca9685_l298n.py:145 outputs/pwm_gpio.py:144
+#: outputs/pwm_pca9685.py:101
 msgid "Frequency (Hertz)"
 msgstr ""
 
@@ -1941,6 +1942,7 @@ msgstr ""
 #: functions/humidity_wet_dry_bulb.py:128
 #: functions/humidity_wet_dry_bulb.py:148 functions/redundancy.py:83
 #: functions/redundancy.py:102 functions/redundancy.py:121
+#: functions/regulate_ph_ec.py:219 functions/regulate_ph_ec.py:241
 #: functions/statistics_last_multiple.py:110
 #: functions/statistics_past_single.py:109 functions/sum_last_multiple.py:85
 #: functions/sum_past_single.py:96 functions/vapor_pressure_deficit.py:95
@@ -2075,7 +2077,8 @@ msgid "Range"
 msgstr ""
 
 #: inputs/anyleaf_orp.py:52 inputs/anyleaf_orp.py:59 inputs/anyleaf_orp.py:71
-#: inputs/anyleaf_orp.py:78 inputs/atlas_orp.py:97 inputs/atlas_rgb.py:142
+#: inputs/anyleaf_orp.py:78 inputs/atlas_orp.py:97 inputs/atlas_pt1000.py:82
+#: inputs/atlas_rgb.py:142
 msgid "Calibrate"
 msgstr ""
 
@@ -2100,27 +2103,27 @@ msgstr ""
 msgid "Clear Calibration"
 msgstr ""
 
-#: inputs/atlas_co2.py:97 inputs/atlas_do.py:113 inputs/atlas_ec.py:162
+#: inputs/atlas_co2.py:97 inputs/atlas_do.py:113 inputs/atlas_ec.py:167
 #: inputs/atlas_flow.py:214 inputs/atlas_humidity.py:84 inputs/atlas_o2.py:150
 #: inputs/atlas_orp.py:113 inputs/atlas_ph.py:194 inputs/atlas_pressure.py:75
-#: inputs/atlas_pt1000.py:60 inputs/atlas_rgb.py:152 inputs/chirp.py:61
+#: inputs/atlas_pt1000.py:61 inputs/atlas_rgb.py:152 inputs/chirp.py:61
 #: inputs/vl53l0x.py:75 outputs/pump_atlas_ezo_pmp.py:154
 #: outputs/pump_grove_motor_driver_v1_0.py:170
 msgid "New I2C Address"
 msgstr ""
 
-#: inputs/atlas_co2.py:98 inputs/atlas_do.py:114 inputs/atlas_ec.py:163
+#: inputs/atlas_co2.py:98 inputs/atlas_do.py:114 inputs/atlas_ec.py:168
 #: inputs/atlas_flow.py:215 inputs/atlas_humidity.py:85 inputs/atlas_o2.py:151
 #: inputs/atlas_orp.py:114 inputs/atlas_ph.py:195 inputs/atlas_pressure.py:76
-#: inputs/atlas_pt1000.py:61 inputs/atlas_rgb.py:153 inputs/chirp.py:62
+#: inputs/atlas_pt1000.py:62 inputs/atlas_rgb.py:153 inputs/chirp.py:62
 #: inputs/vl53l0x.py:76 outputs/pump_atlas_ezo_pmp.py:155
 msgid "The new I2C to set the device to"
 msgstr ""
 
-#: inputs/atlas_co2.py:104 inputs/atlas_do.py:119 inputs/atlas_ec.py:168
+#: inputs/atlas_co2.py:104 inputs/atlas_do.py:119 inputs/atlas_ec.py:173
 #: inputs/atlas_flow.py:220 inputs/atlas_humidity.py:90 inputs/atlas_o2.py:156
 #: inputs/atlas_orp.py:119 inputs/atlas_ph.py:200 inputs/atlas_pressure.py:81
-#: inputs/atlas_pt1000.py:66 inputs/atlas_rgb.py:158 inputs/chirp.py:67
+#: inputs/atlas_pt1000.py:67 inputs/atlas_rgb.py:158 inputs/chirp.py:67
 #: inputs/vl53l0x.py:81 outputs/pump_atlas_ezo_pmp.py:160
 #: outputs/pump_grove_motor_driver_v1_0.py:176
 msgid "Set I2C Address"
@@ -3421,6 +3424,11 @@ msgstr ""
 
 #: mycodo_flask/forms/forms_settings.py:435
 #: mycodo_flask/utils/utils_settings.py:1962
+msgid "Regenerate Widget HTML"
+msgstr ""
+
+#: mycodo_flask/forms/forms_settings.py:436
+#: mycodo_flask/utils/utils_settings.py:1984
 msgid "Set to Upgrade to Master"
 msgstr ""
 
@@ -3536,12 +3544,12 @@ msgid "Exit"
 msgstr ""
 
 #: mycodo_flask/templates/layout-settings.html:34
-#: widgets/widget_graph_synchronous.py:370
+#: widgets/widget_graph_synchronous.py:374
 msgid "Inputs"
 msgstr ""
 
 #: mycodo_flask/templates/layout-settings.html:35
-#: widgets/widget_graph_synchronous.py:390
+#: widgets/widget_graph_synchronous.py:394
 msgid "Outputs"
 msgstr ""
 
@@ -3598,7 +3606,7 @@ msgstr ""
 #: mycodo_flask/templates/layout.html:125
 #: mycodo_flask/templates/pages/output.html:112
 #: mycodo_flask/templates/user_templates/widget_template_widget_output_js.html:105
-#: mycodo_flask/templates/user_templates/widget_template_widget_output_pwm_slider_js.html:116
+#: mycodo_flask/templates/user_templates/widget_template_widget_output_pwm_slider_js.html:137
 msgid "No Connection"
 msgstr ""
 
@@ -4154,8 +4162,9 @@ msgstr ""
 #: mycodo_flask/templates/pages/output.html:97
 #: mycodo_flask/templates/user_templates/widget_template_widget_output_js.html:92
 #: mycodo_flask/templates/user_templates/widget_template_widget_output_js.html:94
-#: mycodo_flask/templates/user_templates/widget_template_widget_output_pwm_slider_js.html:103
-#: mycodo_flask/templates/user_templates/widget_template_widget_output_pwm_slider_js.html:105
+#: mycodo_flask/templates/user_templates/widget_template_widget_output_pwm_slider_js.html:116
+#: mycodo_flask/templates/user_templates/widget_template_widget_output_pwm_slider_js.html:122
+#: mycodo_flask/templates/user_templates/widget_template_widget_output_pwm_slider_js.html:124
 #: mycodo_flask/templates/user_templates/widget_template_widget_pid_js.html:132
 msgid "Active"
 msgstr ""
@@ -4166,7 +4175,8 @@ msgstr ""
 #: mycodo_flask/templates/pages/function_options/trigger_entry.html:25
 #: mycodo_flask/templates/pages/output.html:101
 #: mycodo_flask/templates/user_templates/widget_template_widget_output_js.html:99
-#: mycodo_flask/templates/user_templates/widget_template_widget_output_pwm_slider_js.html:110
+#: mycodo_flask/templates/user_templates/widget_template_widget_output_pwm_slider_js.html:112
+#: mycodo_flask/templates/user_templates/widget_template_widget_output_pwm_slider_js.html:129
 #: mycodo_flask/templates/user_templates/widget_template_widget_pid_js.html:167
 msgid "Inactive"
 msgstr ""
@@ -4403,9 +4413,9 @@ msgstr ""
 #: mycodo_flask/templates/pages/function_options/conditional_options/measurement_past_sum.html:2
 #: mycodo_flask/templates/pages/function_options/conditional_options/output_duration_on.html:2
 #: mycodo_flask/templates/pages/function_options/conditional_options/output_state.html:2
-#: mycodo_flask/utils/utils_conditional.py:198
-#: mycodo_flask/utils/utils_conditional.py:249
-#: mycodo_flask/utils/utils_conditional.py:295
+#: mycodo_flask/utils/utils_conditional.py:200
+#: mycodo_flask/utils/utils_conditional.py:251
+#: mycodo_flask/utils/utils_conditional.py:297
 msgid "Condition"
 msgstr ""
 
@@ -5215,8 +5225,8 @@ msgstr ""
 msgid "CONNECTION ERROR"
 msgstr ""
 
-#: mycodo_flask/utils/utils_conditional.py:90
-#: mycodo_flask/utils/utils_conditional.py:255
+#: mycodo_flask/utils/utils_conditional.py:92
+#: mycodo_flask/utils/utils_conditional.py:257
 #: mycodo_flask/utils/utils_trigger.py:147
 #, python-format
 msgid "Daemon response: %(resp)s"
@@ -5655,31 +5665,31 @@ msgstr ""
 msgid "The maximum age (seconds) of the measurement"
 msgstr ""
 
-#: widgets/widget_graph_synchronous.py:371
+#: widgets/widget_graph_synchronous.py:375
 msgid "Select Input measurements to display"
 msgstr ""
 
-#: widgets/widget_graph_synchronous.py:381
+#: widgets/widget_graph_synchronous.py:385
 msgid "Select Function measurements to display"
 msgstr ""
 
-#: widgets/widget_graph_synchronous.py:391
+#: widgets/widget_graph_synchronous.py:395
 msgid "Select Output measurements to display"
 msgstr ""
 
-#: widgets/widget_graph_synchronous.py:400
+#: widgets/widget_graph_synchronous.py:404
 msgid "PIDs"
 msgstr ""
 
-#: widgets/widget_graph_synchronous.py:401
+#: widgets/widget_graph_synchronous.py:405
 msgid "Select PID measurements to display"
 msgstr ""
 
-#: widgets/widget_graph_synchronous.py:410
+#: widgets/widget_graph_synchronous.py:414
 msgid "Note Tags"
 msgstr ""
 
-#: widgets/widget_graph_synchronous.py:411
+#: widgets/widget_graph_synchronous.py:415
 msgid "Select Note Tags measurements to display"
 msgstr ""
 
