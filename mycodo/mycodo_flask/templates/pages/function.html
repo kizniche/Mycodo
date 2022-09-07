@@ -376,7 +376,7 @@
                 if ("function_type" in form_values && ["conditional", "function", "pid"].includes(form_values.function_type)) {
                   ids_show(data.data.function_id, ["status_enable"]);
                   function_status(data.data.function_id);
-                  if ("period_status" in data.data.messages) {
+                  if ("period_status" in data.data.messages && data.data.messages.period_status) {
                     repeat_function_status(data.data.function_id, data.data.messages.period_status);
                   } else {
                     repeat_function_status(data.data.function_id, 30);

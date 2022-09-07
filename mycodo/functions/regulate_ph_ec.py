@@ -439,6 +439,8 @@ class CustomModule(AbstractFunction):
 
         # Initialize custom options
         self.period = None
+        self.start_offset = None
+
         self.select_measurement_ph_device_id = None
         self.select_measurement_ph_measurement_id = None
         self.measurement_max_age_ph = None
@@ -502,6 +504,7 @@ class CustomModule(AbstractFunction):
         }
 
         self.output_types = {
+            '': 'sec',
             'duration_sec': 'sec',
             'volume_ml': 'ml'
         }
@@ -620,12 +623,11 @@ class CustomModule(AbstractFunction):
                 f"Measurement A device ID {self.select_measurement_ec_device_id} and measurement "
                 f"ID {self.select_measurement_ec_measurement_id} in the past {self.measurement_max_age_ec} seconds")
 
-        self.logger.debug(f"Measurements: EC: {last_measurement_ec[1]}, pH: {last_measurement_ph[1]}")
-
-        if None in [last_measurement_ec[1], last_measurement_ph[1]]:
-            if last_measurement_ec[1] is None:
+        if (None in [last_measurement_ec, last_measurement_ph] or
+                None in [last_measurement_ec[1], last_measurement_ph[1]]):
+            if not last_measurement_ec or last_measurement_ec[1] is None:
                 message += "\nWarning: No EC Measurement! Check sensor!"
-            if last_measurement_ph[1] is None:
+            if not last_measurement_ph or last_measurement_ph[1] is None:
                 message += "\nWarning: No pH Measurement! Check sensor!"
 
             if self.email_notification:
@@ -633,6 +635,8 @@ class CustomModule(AbstractFunction):
                     self.email_timers['notify_none'] = time.time() + (self.email_timer_duration_hours * 60 * 60)
                     self.email(message)
             return
+
+        self.logger.debug(f"Measurements: EC: {last_measurement_ec[1]}, pH: {last_measurement_ph[1]}")
 
         #
         # First check if pH is dangerously low or high, and adjust if it is
@@ -794,5 +798,4 @@ class CustomModule(AbstractFunction):
                              f"<br>EC: {self.range_ec[0]:.2f} - {self.range_ec[1]:.2f} at {':'.join(map(str, self.ratio_numbers))} ({':'.join(self.ratio_letters)})",
             'error': []
         }
-        self.logger.info(f"TEST00: {return_str}")
         return return_str
