@@ -42,7 +42,10 @@ FUNCTION_INFORMATION = {
     'measurements_dict': measurements_dict,
     'enable_channel_unit_select': False,
 
-    'message': 'This function regulates pH with 2 pumps (acid and base solutions) and electrical conductivity (EC) with up to 4 pumps (nutrient solutions A, B, C, and D). Set only the nutrient solution outputs you want to use. Any outputs not set will not dispense when EC is being adjusted, allowing as few as 1 pump or as many as 4 pumps. Outputs can be instructed to turn on for durations (seconds) or volumes (ml). Set each Output Type to the correct type for each selected Output Channel (only select on/off Output Channels for durations and volume Output Channels for volumes). If an e-mail address (or multiple addresses separated by commas) is entered into the E-Mail Notification field, a notification e-mail will be sent if 1) pH is outside the set danger range, 2) EC is too high and water needs to be added to the reservoir, or 3) a measurement could not be found in the database for the specific Max Age. Each e-mail notification type has its own timer that prevents e-mail spam, and will only allow sending for each notification type every set E-Mail Timer Duration. After this duration, the timer will automatically reset to allow new notifications to be sent. You may also manually reset e-mail timers at any time with the Custom Commands, below.',
+    'message':
+        'This function regulates pH with 2 pumps (acid and base solutions) and electrical conductivity (EC) with up to 4 pumps (nutrient solutions A, B, C, and D). Set only the nutrient solution outputs you want to use. Any outputs not set will not dispense when EC is being adjusted, allowing as few as 1 pump or as many as 4 pumps. Outputs can be instructed to turn on for durations (seconds) or volumes (ml). Set each Output Type to the correct type for each selected Output Channel (only select on/off Output Channels for durations and volume Output Channels for volumes). The ratio of nutrient solutions being dispensed is defined by the duration or volume set for each EC output.'
+        '<br>If an e-mail address (or multiple addresses separated by commas) is entered into the E-Mail Notification field, a notification e-mail will be sent if 1) pH is outside the set danger range, 2) EC is too high and water needs to be added to the reservoir, or 3) a measurement could not be found in the database for the specific Max Age. Each e-mail notification type has its own timer that prevents e-mail spam, and will only allow sending for each notification type every set E-Mail Timer Duration. After this duration, the timer will automatically reset to allow new notifications to be sent. You may also manually reset e-mail timers at any time with the Custom Commands, below.'
+        '<br>When the Function is active, Status text will appear below indicating the regulation information and total duration/volume for each output.',
 
     'options_enabled': ['custom_options'],
     'options_disabled': ['measurements_select'],
@@ -75,6 +78,94 @@ FUNCTION_INFORMATION = {
             'type': 'button',
             'wait_for_return': True,
             'name': 'Reset All E-Mail Timers'
+        },
+        {
+            'type': 'message',
+            'default_value': """Each total duration and volume can be manually reset."""
+        },
+        {
+            'id': 'reset_all_totals',
+            'type': 'button',
+            'wait_for_return': True,
+            'name': 'Reset All Totals'
+        },
+        {
+            'type': 'new_line'
+        },
+        {
+            'id': 'reset_ph_raise_sec',
+            'type': 'button',
+            'wait_for_return': True,
+            'name': 'Reset Total Raise pH Duration'
+        },
+        {
+            'id': 'reset_ph_lower_sec',
+            'type': 'button',
+            'wait_for_return': True,
+            'name': 'Reset Total Lower pH Duration'
+        },
+        {
+            'id': 'reset_ph_raise_ml',
+            'type': 'button',
+            'wait_for_return': True,
+            'name': 'Reset Total Raise pH Volume'
+        },
+        {
+            'id': 'reset_ph_lower_ml',
+            'type': 'button',
+            'wait_for_return': True,
+            'name': 'Reset Total Lower pH Volume'
+        },
+        {
+            'type': 'new_line'
+        },
+        {
+            'id': 'reset_ec_a_sec',
+            'type': 'button',
+            'wait_for_return': True,
+            'name': 'Reset Total EC A Duration'
+        },
+        {
+            'id': 'reset_ec_a_ml',
+            'type': 'button',
+            'wait_for_return': True,
+            'name': 'Reset Total EC A Volume'
+        },
+        {
+            'id': 'reset_ec_b_sec',
+            'type': 'button',
+            'wait_for_return': True,
+            'name': 'Reset Total EC B Duration'
+        },
+        {
+            'id': 'reset_ec_b_ml',
+            'type': 'button',
+            'wait_for_return': True,
+            'name': 'Reset Total EC B Volume'
+        },
+        {
+            'id': 'reset_ec_c_sec',
+            'type': 'button',
+            'wait_for_return': True,
+            'name': 'Reset Total EC C Duration'
+        },
+        {
+            'id': 'reset_ec_c_ml',
+            'type': 'button',
+            'wait_for_return': True,
+            'name': 'Reset Total EC C Volume'
+        },
+        {
+            'id': 'reset_ec_d_sec',
+            'type': 'button',
+            'wait_for_return': True,
+            'name': 'Reset Total EC D Duration'
+        },
+        {
+            'id': 'reset_ec_d_ml',
+            'type': 'button',
+            'wait_for_return': True,
+            'name': 'Reset Total EC D Volume'
         }
     ],
 
@@ -432,22 +523,22 @@ class CustomModule(AbstractFunction):
 
     def __init__(self, function, testing=False):
         super().__init__(function, testing=testing, name=__name__)
-
-        self.timer_loop = time.time()
-
         self.control = DaemonControl()
 
-        # Initialize custom options
+        self.timer_loop = time.time()
         self.period = None
         self.start_offset = None
 
+        # Measurements
         self.select_measurement_ph_device_id = None
         self.select_measurement_ph_measurement_id = None
         self.measurement_max_age_ph = None
+
         self.select_measurement_ec_device_id = None
         self.select_measurement_ec_measurement_id = None
         self.measurement_max_age_ec = None
 
+        # Outputs
         self.output_ph_raise_device_id = None
         self.output_ph_raise_channel_id = None
         self.output_ph_lower_device_id = None
@@ -475,6 +566,7 @@ class CustomModule(AbstractFunction):
         self.output_ec_d_type = None
         self.output_ec_d_amount = None
 
+        # Setpoints
         self.setpoint_ph = None
         self.hysteresis_ph = None
         self.setpoint_ec = None
@@ -487,7 +579,6 @@ class CustomModule(AbstractFunction):
 
         self.range_ph = None
         self.range_ec = None
-        self.ph_type = None
 
         self.output_ph_raise_channel = None
         self.output_ph_lower_channel = None
@@ -503,15 +594,36 @@ class CustomModule(AbstractFunction):
             "notify_none": 0
         }
 
-        self.output_types = {
+        self.output_units = {
             '': 'sec',
             'duration_sec': 'sec',
             'volume_ml': 'ml'
         }
 
+        self.ph_type = 'sec'
+        self.ec_a_type = 'sec'
+        self.ec_b_type = 'sec'
+        self.ec_c_type = 'sec'
+        self.ec_d_type = 'sec'
+
         self.list_doses = []
         self.ratio_letters = []
         self.ratio_numbers = []
+
+        self.total = {
+            "sec_ph_raise": self.get_custom_option("sec_ph_raise"),
+            "sec_ph_lower": self.get_custom_option("sec_ph_lower"),
+            "sec_ec_a": self.get_custom_option("sec_ec_a"),
+            "sec_ec_b": self.get_custom_option("sec_ec_b"),
+            "sec_ec_c": self.get_custom_option("sec_ec_c"),
+            "sec_ec_d": self.get_custom_option("sec_ec_d"),
+            "ml_ph_raise": self.get_custom_option("ml_ph_raise"),
+            "ml_ph_lower": self.get_custom_option("ml_ph_lower"),
+            "ml_ec_a": self.get_custom_option("ml_ec_a"),
+            "ml_ec_b": self.get_custom_option("ml_ec_b"),
+            "ml_ec_c": self.get_custom_option("ml_ec_c"),
+            "ml_ec_d": self.get_custom_option("ml_ec_d")
+        }
 
         # Set custom options
         custom_function = db_retrieve_table_daemon(
@@ -542,23 +654,23 @@ class CustomModule(AbstractFunction):
         self.output_ec_d_channel = self.get_output_channel_from_channel_id(
             self.output_ec_d_channel_id)
 
-        self.ph_type = 'sec'
+        # Check if total sec/ml is set
+        list_alter = []
+        for each_total in self.total:
+            if self.total[each_total] is None:
+                list_alter.append(each_total)
+
+        for each_alter in list_alter:
+            self.total[each_alter] = self.set_custom_option(each_alter, 0)
+
         if self.output_ph_type == "volume_ml":
             self.ph_type = 'vol'
-
-        self.ec_a_type = 'sec'
         if self.output_ec_a_type == "volume_ml":
             self.ec_a_type = 'vol'
-
-        self.ec_b_type = 'sec'
         if self.output_ec_b_type == "volume_ml":
             self.ec_b_type = 'vol'
-
-        self.ec_c_type = 'sec'
         if self.output_ec_c_type == "volume_ml":
             self.ec_c_type = 'vol'
-
-        self.ec_d_type = 'sec'
         if self.output_ec_d_type == "volume_ml":
             self.ec_d_type = 'vol'
 
@@ -568,19 +680,19 @@ class CustomModule(AbstractFunction):
         if self.output_ec_a_device_id:
             self.ratio_letters.append("A")
             self.ratio_numbers.append(self.output_ec_a_amount)
-            self.list_doses.append(f"{self.output_ec_a_amount} {self.output_types[self.output_ec_a_type]} Nut A")
+            self.list_doses.append(f"{self.output_ec_a_amount} {self.output_units[self.output_ec_a_type]} Nut A")
         if self.output_ec_b_device_id:
             self.ratio_letters.append("B")
             self.ratio_numbers.append(self.output_ec_b_amount)
-            self.list_doses.append(f"{self.output_ec_b_amount} {self.output_types[self.output_ec_b_type]} Nut B")
+            self.list_doses.append(f"{self.output_ec_b_amount} {self.output_units[self.output_ec_b_type]} Nut B")
         if self.output_ec_c_device_id:
             self.ratio_letters.append("C")
             self.ratio_numbers.append(self.output_ec_c_amount)
-            self.list_doses.append(f"{self.output_ec_c_amount} {self.output_types[self.output_ec_c_type]} Nut C")
+            self.list_doses.append(f"{self.output_ec_c_amount} {self.output_units[self.output_ec_c_type]} Nut C")
         if self.output_ec_d_device_id:
             self.ratio_letters.append("D")
             self.ratio_numbers.append(self.output_ec_d_amount)
-            self.list_doses.append(f"{self.output_ec_d_amount} {self.output_types[self.output_ec_d_type]} Nut D")
+            self.list_doses.append(f"{self.output_ec_d_amount} {self.output_units[self.output_ec_d_type]} Nut D")
 
     def loop(self):
         if self.timer_loop > time.time():
@@ -644,10 +756,16 @@ class CustomModule(AbstractFunction):
 
         # pH dangerously low, add base (pH up)
         if last_measurement_ph[1] < self.danger_range_ph_low:
-            msg = f"pH is dangerously low: {last_measurement_ph[1]}. Should be > {self.danger_range_ph_low}. " \
-                  f"Dispensing {self.output_ph_amount} {self.output_types[self.output_ph_type]} base"
-            self.logger.debug(msg)
-            message += msg
+            message += f"pH is dangerously low: {last_measurement_ph[1]:.2f}. Should be > {self.danger_range_ph_low:.2f}. " \
+                       f"Dispensing {self.output_ph_amount} {self.output_units[self.output_ph_type]} base"
+            self.logger.debug(message)
+
+            if self.ph_type == "sec":
+                self.total["sec_ph_raise"] = self.set_custom_option(
+                    "sec_ph_raise", self.get_custom_option("sec_ph_raise") + self.output_ph_amount)
+            elif self.ph_type == "vol":
+                self.total["ml_ph_raise"] = self.set_custom_option(
+                    "ml_ph_raise", self.get_custom_option("ml_ph_raise") + self.output_ph_amount)
 
             output_on_off = threading.Thread(
                 target=self.control.output_on_off,
@@ -664,10 +782,16 @@ class CustomModule(AbstractFunction):
 
         # pH dangerously high, add acid (pH down)
         elif last_measurement_ph[1] > self.danger_range_ph_high:
-            msg = f"pH is dangerously high: {last_measurement_ph[1]}. Should be < {self.danger_range_ph_high}. " \
-                  f"Dispensing {self.output_ph_amount} {self.output_types[self.output_ph_type]} acid"
-            self.logger.debug(msg)
-            message += msg
+            message += f"pH is dangerously high: {last_measurement_ph[1]:.2f}. Should be < {self.danger_range_ph_high:.2f}. " \
+                       f"Dispensing {self.output_ph_amount} {self.output_units[self.output_ph_type]} acid"
+            self.logger.debug(message)
+
+            if self.ph_type == "sec":
+                self.total["sec_ph_lower"] = self.set_custom_option(
+                    "sec_ph_lower", self.get_custom_option("sec_ph_lower") + self.output_ph_amount)
+            elif self.ph_type == "vol":
+                self.total["ml_ph_lower"] = self.set_custom_option(
+                    "ml_ph_lower", self.get_custom_option("ml_ph_lower") + self.output_ph_amount)
 
             output_on_off = threading.Thread(
                 target=self.control.output_on_off,
@@ -689,10 +813,17 @@ class CustomModule(AbstractFunction):
         # EC too low, add nutrient
         elif last_measurement_ec[1] < self.range_ec[0]:
             self.logger.debug(
-                f"EC: {last_measurement_ec[1]}. Should be > {self.range_ec[0]}. "
+                f"EC: {last_measurement_ec[1]:.2f}. Should be > {self.range_ec[0]:.2f}. "
                 f"Dosing {':'.join(self.ratio_numbers)} ({':'.join(map(str, self.ratio_letters))}): {', '.join(self.list_doses)})")
 
             if self.output_ec_a_device_id:
+                if self.ph_type == "sec":
+                    self.total["sec_ec_a"] = self.set_custom_option(
+                        "sec_ec_a", self.get_custom_option("sec_ec_a") + self.output_ec_a_amount)
+                elif self.ph_type == "vol":
+                    self.total["ml_ec_a"] = self.set_custom_option(
+                        "ml_ec_a", self.get_custom_option("ml_ec_a") + self.output_ec_a_amount)
+
                 output_on_off = threading.Thread(
                     target=self.control.output_on_off,
                     args=(self.output_ec_a_device_id, "on",),
@@ -702,6 +833,13 @@ class CustomModule(AbstractFunction):
                 output_on_off.start()
 
             if self.output_ec_b_device_id:
+                if self.ph_type == "sec":
+                    self.total["sec_ec_b"] = self.set_custom_option(
+                        "sec_ec_b", self.get_custom_option("sec_ec_b") + self.output_ec_b_amount)
+                elif self.ph_type == "vol":
+                    self.total["ml_ec_b"] = self.set_custom_option(
+                        "ml_ec_b", self.get_custom_option("ml_ec_b") + self.output_ec_b_amount)
+
                 output_on_off = threading.Thread(
                     target=self.control.output_on_off,
                     args=(self.output_ec_b_device_id, "on",),
@@ -711,6 +849,13 @@ class CustomModule(AbstractFunction):
                 output_on_off.start()
 
             if self.output_ec_c_device_id:
+                if self.ph_type == "sec":
+                    self.total["sec_ec_c"] = self.set_custom_option(
+                        "sec_ec_c", self.get_custom_option("sec_ec_c") + self.output_ec_c_amount)
+                elif self.ph_type == "vol":
+                    self.total["ml_ec_c"] = self.set_custom_option(
+                        "ml_ec_c", self.get_custom_option("ml_ec_c") + self.output_ec_c_amount)
+
                 output_on_off = threading.Thread(
                     target=self.control.output_on_off,
                     args=(self.output_ec_c_device_id, "on",),
@@ -720,6 +865,13 @@ class CustomModule(AbstractFunction):
                 output_on_off.start()
 
             if self.output_ec_d_device_id:
+                if self.ph_type == "sec":
+                    self.total["sec_ec_d"] = self.set_custom_option(
+                        "sec_ec_d", self.get_custom_option("sec_ec_d") + self.output_ec_d_amount)
+                elif self.ph_type == "vol":
+                    self.total["ml_ec_d"] = self.set_custom_option(
+                        "ml_ec_d", self.get_custom_option("ml_ec_d") + self.output_ec_d_amount)
+
                 output_on_off = threading.Thread(
                     target=self.control.output_on_off,
                     args=(self.output_ec_d_device_id, "on",),
@@ -728,10 +880,10 @@ class CustomModule(AbstractFunction):
                             'output_channel': self.output_ec_d_channel})
                 output_on_off.start()
 
-        # EC too high, add nutrient
+        # EC too high, add water
         elif last_measurement_ec[1] > self.range_ec[1]:
-            msg = f"EC: {last_measurement_ec[1]}. Should be < {self.range_ec[1]}. Need to add water to dilute!"
-            self.logger.debug(msg)
+            message += f"EC: {last_measurement_ec[1]:.2f}. Should be < {self.range_ec[1]:.2f}. Add water to dilute."
+            self.logger.debug(message)
 
             if self.email_notification:
                 if self.email_timers['notify_ec'] < time.time():
@@ -740,14 +892,21 @@ class CustomModule(AbstractFunction):
                     self.email(message)
 
         #
-        # If pH is in range, make sure pH is within range
+        # If EC is in range, make sure pH is within range
         #
 
         # pH too low, add base (pH up)
         elif last_measurement_ph[1] < self.range_ph[0]:
             self.logger.debug(
-                f"pH is {last_measurement_ph[1]}. Should be > {self.range_ph[0]}. "
-                f"Dispensing {self.output_ph_amount} {self.output_types[self.output_ph_type]} base")
+                f"pH is {last_measurement_ph[1]:.2f}. Should be > {self.range_ph[0]:.2f}. "
+                f"Dispensing {self.output_ph_amount} {self.output_units[self.output_ph_type]} base")
+
+            if self.ph_type == "sec":
+                self.total["sec_ph_raise"] = self.set_custom_option(
+                    "sec_ph_raise", self.get_custom_option("sec_ph_raise") + self.output_ph_amount)
+            elif self.ph_type == "vol":
+                self.total["ml_ph_raise"] = self.set_custom_option(
+                    "ml_ph_raise", self.get_custom_option("ml_ph_raise") + self.output_ph_amount)
 
             output_on_off = threading.Thread(
                 target=self.control.output_on_off,
@@ -760,8 +919,15 @@ class CustomModule(AbstractFunction):
         # pH too high, add acid (pH down)
         elif last_measurement_ph[1] > self.range_ph[1]:
             self.logger.debug(
-                f"pH is {last_measurement_ph[1]}. Should be < {self.range_ph[1]}. "
-                f"Dispensing {self.output_ph_amount} {self.output_types[self.output_ph_type]} acid")
+                f"pH is {last_measurement_ph[1]:.2f}. Should be < {self.range_ph[1]:.2f}. "
+                f"Dispensing {self.output_ph_amount} {self.output_units[self.output_ph_type]} acid")
+
+            if self.ph_type == "sec":
+                self.total["sec_ph_lower"] = self.set_custom_option(
+                    "sec_ph_lower", self.get_custom_option("sec_ph_lower") + self.output_ph_amount)
+            elif self.ph_type == "vol":
+                self.total["ml_ph_lower"] = self.set_custom_option(
+                    "ml_ph_lower", self.get_custom_option("ml_ph_lower") + self.output_ph_amount)
 
             output_on_off = threading.Thread(
                 target=self.control.output_on_off,
@@ -779,23 +945,102 @@ class CustomModule(AbstractFunction):
 
     def reset_timer_ec(self, args_dict):
         self.email_timers['notify_ec'] = 0
+        return "Success"
 
     def reset_timer_ph(self, args_dict):
         self.email_timers['notify_ph'] = 0
+        return "Success"
 
     def reset_timer_no_measure(self, args_dict):
         self.email_timers['notify_none'] = 0
+        return "Success"
 
     def reset_timer_all(self, args_dict):
         self.email_timers['notify_ec'] = 0
         self.email_timers['notify_ph'] = 0
         self.email_timers['notify_none'] = 0
+        return "Success"
+
+    def reset_all_totals(self, args_dict):
+        self.total = {
+            "sec_ph_raise": self.set_custom_option("sec_ph_raise", 0),
+            "sec_ph_lower": self.set_custom_option("sec_ph_lower", 0),
+            "sec_ec_a": self.set_custom_option("sec_ec_a", 0),
+            "sec_ec_b": self.set_custom_option("sec_ec_b", 0),
+            "sec_ec_c": self.set_custom_option("sec_ec_c", 0),
+            "sec_ec_d": self.set_custom_option("sec_ec_d", 0),
+            "ml_ph_raise": self.set_custom_option("ml_ph_raise", 0),
+            "ml_ph_lower": self.set_custom_option("ml_ph_lower", 0),
+            "ml_ec_a": self.set_custom_option("ml_ec_a", 0),
+            "ml_ec_b": self.set_custom_option("ml_ec_b", 0),
+            "ml_ec_c": self.set_custom_option("ml_ec_c", 0),
+            "ml_ec_d": self.set_custom_option("ml_ec_d", 0)
+        }
+        return "Success"
+
+    def reset_ph_raise_sec(self, args_dict):
+        self.total["sec_ph_raise"] = self.set_custom_option("sec_ph_raise", 0)
+        return "Success"
+
+    def reset_ph_lower_sec(self, args_dict):
+        self.total["sec_ph_lower"] = self.set_custom_option("sec_ph_lower", 0)
+        return "Success"
+
+    def reset_ph_raise_ml(self, args_dict):
+        self.total["ml_ph_raise"] = self.set_custom_option("ml_ph_raise", 0)
+        return "Success"
+
+    def reset_ph_lower_ml(self, args_dict):
+        self.total["ml_ph_lower"] = self.set_custom_option("ml_ph_lower", 0)
+        return "Success"
+
+    def reset_ec_a_sec(self, args_dict):
+        self.total["sec_ec_a"] = self.set_custom_option("sec_ec_a", 0)
+        return "Success"
+
+    def reset_ec_a_ml(self, args_dict):
+        self.total["ml_ec_a"] = self.set_custom_option("ml_ec_a", 0)
+        return "Success"
+
+    def reset_ec_b_sec(self, args_dict):
+        self.total["sec_ec_b"] = self.set_custom_option("sec_ec_b", 0)
+        return "Success"
+
+    def reset_ec_b_ml(self, args_dict):
+        self.total["ml_ec_b"] = self.set_custom_option("ml_ec_b", 0)
+        return "Success"
+
+    def reset_ec_c_sec(self, args_dict):
+        self.total["sec_ec_c"] = self.set_custom_option("sec_ec_c", 0)
+        return "Success"
+
+    def reset_ec_c_ml(self, args_dict):
+        self.total["ml_ec_c"] = self.set_custom_option("ml_ec_c", 0)
+        return "Success"
+
+    def reset_ec_d_sec(self, args_dict):
+        self.total["sec_ec_d"] = self.set_custom_option("sec_ec_d", 0)
+        return "Success"
+
+    def reset_ec_d_ml(self, args_dict):
+        self.total["ml_ec_d"] = self.set_custom_option("ml_ec_d", 0)
+        return "Success"
 
     def function_status(self):
+        str_ratio = "(Error: No EC Pumps Enabled!)"
+        if self.ratio_numbers and self.ratio_letters:
+            str_ratio = f"at {':'.join(map(str, self.ratio_numbers))} ({':'.join(self.ratio_letters)})"
         return_str = {
             'string_status': f"Regulating"
-                             f"<br>pH: {self.range_ph[0]:.2f} - {self.range_ph[1]:.2f} at {self.output_ph_amount:.2f} {self.output_types[self.output_ph_type]}"
-                             f"<br>EC: {self.range_ec[0]:.2f} - {self.range_ec[1]:.2f} at {':'.join(map(str, self.ratio_numbers))} ({':'.join(self.ratio_letters)})",
+                             f"<br>pH: {self.range_ph[0]:.2f} - {self.range_ph[1]:.2f} at {self.output_ph_amount:.2f} {self.output_units[self.output_ph_type]}"
+                             f"<br>EC: {self.range_ec[0]:.2f} - {self.range_ec[1]:.2f} {str_ratio}"
+                             f"<br> <br>Totals"
+                             f"<br>pH Raise: {self.total['sec_ph_raise']:.2f} sec, {self.total['ml_ph_raise']:.2f} ml"
+                             f"<br>pH Lower: {self.total['sec_ph_lower']:.2f} sec, {self.total['ml_ph_lower']:.2f} ml"
+                             f"<br>EC A: {self.total['sec_ec_a']:.2f} sec, {self.total['ml_ec_a']:.2f} ml"
+                             f"<br>EC B: {self.total['sec_ec_b']:.2f} sec, {self.total['ml_ec_b']:.2f} ml"
+                             f"<br>EC C: {self.total['sec_ec_c']:.2f} sec, {self.total['ml_ec_c']:.2f} ml"
+                             f"<br>EC D: {self.total['sec_ec_d']:.2f} sec, {self.total['ml_ec_d']:.2f} ml",
             'error': []
         }
         return return_str

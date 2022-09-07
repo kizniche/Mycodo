@@ -455,7 +455,7 @@ class DaemonController:
             elif controller_type == "Output":
                 return self.controller["Output"].call_module_function(
                     button_id, args_dict, unique_id=unique_id, thread=thread)
-            elif controller_type == "Function":
+            elif controller_type in ["Function", "Function_Custom"]:
                 return self.controller["Function"][unique_id].call_module_function(
                     button_id, args_dict, thread=thread)
             else:

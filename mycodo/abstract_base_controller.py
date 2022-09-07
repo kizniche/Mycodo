@@ -399,17 +399,26 @@ class AbstractBaseController(object):
                 dict_custom_options[option] = value
                 mod_function.custom_options = json.dumps(dict_custom_options)
                 new_session.commit()
+            return value
         except Exception:
             self.logger.exception("set_custom_option")
 
     @staticmethod
-    def _get_custom_option(custom_options, option):
+    def _get_custom_option(controller, unique_id, option):
+        read_function = None
         try:
-            dict_custom_options = json.loads(custom_options)
-        except:
-            dict_custom_options = {}
-        if option in dict_custom_options:
-            return dict_custom_options[option]
+            with session_scope(MYCODO_DB_PATH) as new_session:
+                read_function = new_session.query(controller).filter(
+                    controller.unique_id == unique_id).first()
+                new_session.expunge_all()
+            try:
+                dict_custom_options = json.loads(read_function.custom_options)
+            except:
+                dict_custom_options = {}
+            if option in dict_custom_options:
+                return dict_custom_options[option]
+        except Exception:
+            self.logger.exception("set_custom_option")
 
     @staticmethod
     def get_last_measurement(device_id, measurement_id, max_age=None):
