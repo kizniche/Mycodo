@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Mycodo VERSION\n"
 "Report-Msgid-Bugs-To: mycodo@kylegabriel.com\n"
-"POT-Creation-Date: 2022-09-07 19:49-0400\n"
+"POT-Creation-Date: 2022-09-09 18:22-0400\n"
 "PO-Revision-Date: 2021-11-20 22:53+0000\n"
 "Last-Translator: Stephane Trichot <s.trichot@hotmail.fr>\n"
 "Language: fr\n"
@@ -2017,25 +2017,6 @@ msgstr ""
 "La quantité au-dessus et en-dessous de la consigne qui défini la bande de"
 " contrôle"
 
-#: functions/difference.py:75 functions/equation_multi.py:75
-msgid "{} A"
-msgstr "{} A"
-
-#: functions/difference.py:83 functions/equation_multi.py:83
-#: functions/redundancy.py:82 functions/verification.py:82
-#: functions/verification.py:101
-msgid "{} A {}"
-msgstr "{} A {}"
-
-#: functions/difference.py:94 functions/equation_multi.py:94
-msgid "{} B"
-msgstr "{} B"
-
-#: functions/difference.py:102 functions/equation_multi.py:102
-#: functions/redundancy.py:101
-msgid "{} B {}"
-msgstr "{} B {}"
-
 #: functions/display_generic_lcd_16x2_i2c.py:291
 #: functions/humidity_wet_dry_bulb.py:107
 #: functions/humidity_wet_dry_bulb.py:127
@@ -2075,10 +2056,6 @@ msgstr "Bande de bruit"
 #: functions/pid_autotune.py:115
 msgid "Outstep"
 msgstr "Sortir"
-
-#: functions/redundancy.py:120
-msgid "{} C {}"
-msgstr "{} C {}"
 
 #: inputs/ads1015_circuitpython.py:80 inputs/ads1115_circuitpython.py:81
 #: inputs/ads1x15.py:81 inputs/ina219x.py:154
@@ -2270,7 +2247,7 @@ msgstr "Temps"
 msgid "City"
 msgstr "Ville"
 
-#: mycodo_flask/app.py:215
+#: mycodo_flask/app.py:229
 msgid "Please log in to access this page"
 msgstr "Veuillez vous connecter pour accéder à cette page"
 
@@ -2312,19 +2289,19 @@ msgstr ""
 "Vous ne pouvez pas mettre à niveau si une mise à niveau n'est pas "
 "disponible"
 
-#: mycodo_flask/routes_authentication.py:49
+#: mycodo_flask/routes_authentication.py:52
 msgid "Cannot access admin creation form if an admin user already exists."
 msgstr ""
 "Impossible d'accéder au formulaire de création admin si un utilisateur "
 "admin existe déjà."
 
-#: mycodo_flask/routes_authentication.py:72
+#: mycodo_flask/routes_authentication.py:75
 #: mycodo_flask/utils/utils_settings.py:202
 #: mycodo_flask/utils/utils_settings.py:305
 msgid "Passwords do not match. Please try again."
 msgstr "Les mots de passe ne correspondent pas. Veuillez réessayer."
 
-#: mycodo_flask/routes_authentication.py:76
+#: mycodo_flask/routes_authentication.py:79
 #, fuzzy
 msgid ""
 "Invalid username. Must be between 3 and 64 characters and only contain "
@@ -2333,7 +2310,7 @@ msgstr ""
 "Nom d'utilisateur invalide. Doit comporter entre 2 et 64 caractères et ne"
 " contenir que des lettres et des chiffres."
 
-#: mycodo_flask/routes_authentication.py:82
+#: mycodo_flask/routes_authentication.py:85
 #, fuzzy
 msgid ""
 "Invalid password. Must be between 4 and 64 characters and only contain "
@@ -2342,30 +2319,30 @@ msgstr ""
 "Nom d'utilisateur invalide. Doit comporter entre 2 et 64 caractères et ne"
 " contenir que des lettres et des chiffres."
 
-#: mycodo_flask/routes_authentication.py:102
+#: mycodo_flask/routes_authentication.py:121
 #, python-format
 msgid "User '%(user)s' successfully created. Please log in below."
 msgstr ""
 "Utilisateur '%(user)s' créé avec succès. Veuillez vous connecter ci-"
 "dessous."
 
-#: mycodo_flask/routes_authentication.py:107
+#: mycodo_flask/routes_authentication.py:126
 #, python-format
 msgid "Failed to create user '%(user)s': %(err)s"
 msgstr "Échec de la création de l'utilisateur '%(user)s': %(err)s"
 
-#: mycodo_flask/routes_authentication.py:128
-#: mycodo_flask/routes_authentication.py:146
-#: mycodo_flask/routes_authentication.py:214
-#: mycodo_flask/routes_authentication.py:246
+#: mycodo_flask/routes_authentication.py:147
+#: mycodo_flask/routes_authentication.py:165
+#: mycodo_flask/routes_authentication.py:233
+#: mycodo_flask/routes_authentication.py:265
 msgid "Cannot access login page if you're already logged in"
 msgstr ""
 "Vous ne pouvez pas accéder à la page de connexion si vous êtes déjà "
 "connecté"
 
-#: mycodo_flask/routes_authentication.py:157
-#: mycodo_flask/routes_authentication.py:223
-#: mycodo_flask/routes_authentication.py:255
+#: mycodo_flask/routes_authentication.py:176
+#: mycodo_flask/routes_authentication.py:242
+#: mycodo_flask/routes_authentication.py:274
 #, python-format
 msgid ""
 "Too many failed login attempts. Please wait %(min)s minutes before "
@@ -2374,7 +2351,7 @@ msgstr ""
 "Trop de tentatives de connexion ont échoué. Veuillez patienter quelques "
 "%(min)s avant d'essayer de vous reconnecter"
 
-#: mycodo_flask/routes_authentication.py:298
+#: mycodo_flask/routes_authentication.py:317
 msgid "Successfully logged out"
 msgstr "Déconnecté avec succès"
 
@@ -3582,6 +3559,12 @@ msgstr "Erreur 500 - Erreur interne du serveur"
 #: mycodo_flask/templates/create_admin.html:78
 msgid "Create Admin"
 msgstr "Créer un administrateur"
+
+#: mycodo_flask/templates/create_admin.html:37
+msgid ""
+"This appears to be a new Mycodo install. Please create an administrator "
+"user. Read and accept the agreement to begin."
+msgstr ""
 
 #: mycodo_flask/templates/create_admin.html:67
 msgid "Login information is stored locally"
@@ -6220,4 +6203,19 @@ msgstr "Code Python à exécuter à chaque rafraîchissement du tableau de bord/
 
 #~ msgid "Current"
 #~ msgstr "Actuel"
+
+#~ msgid "{} A"
+#~ msgstr "{} A"
+
+#~ msgid "{} A {}"
+#~ msgstr "{} A {}"
+
+#~ msgid "{} B"
+#~ msgstr "{} B"
+
+#~ msgid "{} B {}"
+#~ msgstr "{} B {}"
+
+#~ msgid "{} C {}"
+#~ msgstr "{} C {}"
 
