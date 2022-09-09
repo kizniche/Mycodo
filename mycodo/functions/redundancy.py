@@ -79,7 +79,7 @@ FUNCTION_INFORMATION = {
             'type': 'integer',
             'default_value': 360,
             'required': True,
-            'name': lazy_gettext('{} A {}'.format(lazy_gettext('Measurement'), lazy_gettext('Max Age'))),
+            'name': f'{lazy_gettext("Measurement")} A: {lazy_gettext("Max Age")}',
             'phrase': lazy_gettext('The maximum age (seconds) of the measurement to use')
         },
         {
@@ -98,7 +98,7 @@ FUNCTION_INFORMATION = {
             'type': 'integer',
             'default_value': 360,
             'required': True,
-            'name': lazy_gettext('{} B {}'.format(lazy_gettext('Measurement'), lazy_gettext('Max Age'))),
+            'name': f'{lazy_gettext("Measurement")} B: {lazy_gettext("Max Age")}',
             'phrase': lazy_gettext('The maximum age (seconds) of the measurement to use')
         },
         {
@@ -117,7 +117,7 @@ FUNCTION_INFORMATION = {
             'type': 'integer',
             'default_value': 360,
             'required': True,
-            'name': lazy_gettext('{} C {}'.format(lazy_gettext('Measurement'), lazy_gettext('Max Age'))),
+            'name': f'{lazy_gettext("Measurement")} C: {lazy_gettext("Max Age")}',
             'phrase': lazy_gettext('The maximum age (seconds) of the measurement to use')
         }
     ]

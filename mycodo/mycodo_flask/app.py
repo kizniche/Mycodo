@@ -4,6 +4,7 @@
 #
 import base64
 import logging
+import os
 
 import flask_login
 from flask import Flask
@@ -19,6 +20,7 @@ from flask_login import current_user
 from flask_session import Session
 from flask_talisman import Talisman
 
+from mycodo.config import INSTALL_DIRECTORY
 from mycodo.config import LANGUAGES
 from mycodo.config import ProdConfig
 from mycodo.databases.models import Misc
@@ -131,6 +133,18 @@ def extension_babel(app):
         # Bypass endpoint test error "'AnonymousUserMixin' object has no attribute 'id'"
         except AttributeError:
             pass
+
+        # Find user-selected language in Mycodo/.language
+        try:
+            lang_path = os.path.join(INSTALL_DIRECTORY, ".language")
+            if os.path.exists(lang_path):
+                with open(lang_path) as f:
+                    language = f.read().split(":")[0]
+                    if language and language in LANGUAGES:
+                        return language
+        except:
+            pass
+
         return request.accept_languages.best_match(LANGUAGES.keys())
 
     return app

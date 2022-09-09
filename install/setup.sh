@@ -45,6 +45,33 @@ LICENSE=$(whiptail --title "Mycodo Installer: License Agreement" \
                    20 68 \
                    3>&1 1>&2 2>&3)
 
+clear
+LANGUAGE=$(whiptail --title "Mycodo Installer" \
+                  --backtitle "Mycodo" \
+                  --menu "User Interface Language" 23 68 14 \
+                  "en": "English" \
+                  "de": "Deutsche (German)" \
+                  "es": "Español (Spanish)" \
+                  "fr": "Français (French)" \
+                  "it": "Italiano (Italian)" \
+                  "nl": "Nederlands (Dutch)" \
+                  "nb": "Norsk (Norwegian)" \
+                  "pl": "Polski (Polish)" \
+                  "pt": "Português (Portuguese)" \
+                  "ru": "русский язык (Russian)" \
+                  "sr": "српски (Serbian)" \
+                  "sv": "Svenska (Swedish)" \
+                  "tr": "Türkçe (Turkish)" \
+                  "zh": "中文 (Chinese)" \
+                  3>&1 1>&2 2>&3)
+exitstatus=$?
+if [ $exitstatus != 0 ]; then
+    printf "Mycodo install canceled by user\n" 2>&1 | tee -a "${LOG_LOCATION}"
+    exit 1
+else
+    echo "${LANGUAGE}" > "${INSTALL_DIRECTORY}/.language"
+fi
+
 exitstatus=$?
 if [ $exitstatus != 0 ]; then
     printf "Mycodo install canceled by user\n" 2>&1 | tee -a "${LOG_LOCATION}"

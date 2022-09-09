@@ -3,6 +3,7 @@
 
 import datetime
 import logging
+import os
 import socket
 import time
 
@@ -19,6 +20,8 @@ from flask.blueprints import Blueprint
 from flask_babel import gettext
 from sqlalchemy import func
 
+from mycodo.config import INSTALL_DIRECTORY
+from mycodo.config import LANGUAGES
 from mycodo.config import LOGIN_ATTEMPTS
 from mycodo.config import LOGIN_BAN_SECONDS
 from mycodo.config import LOGIN_LOG_FILE
@@ -97,6 +100,22 @@ def create_admin():
             new_user.set_password(form_create_admin.password.data)
             new_user.role_id = 1  # Admin
             new_user.theme = 'spacelab'
+
+            # Find user-selected language in Mycodo/.language
+            lang_path = os.path.join(INSTALL_DIRECTORY, ".language")
+            try:
+                if os.path.exists(lang_path):
+                    with open(lang_path) as f:
+                        language = f.read().split(":")[0]
+                        if language and language in LANGUAGES:
+                            new_user.language = language
+            finally:
+                if os.path.exists(lang_path):
+                    try:
+                        os.remove(lang_path)
+                    except:
+                        pass
+
             try:
                 new_user.save()
                 flash(gettext("User '%(user)s' successfully created. Please "
