@@ -183,7 +183,7 @@ WIDGET_INFORMATION = {
             'type': 'integer',
             'default_value': 1200,
             'constraints_pass': constraints_pass_positive_value,
-            'name': 'Max Age (seconds)',
+            'name': f"{lazy_gettext('Max Age')} ({lazy_gettext('Seconds')})",
             'phrase': 'The maximum age of the camera image'
         },
         {

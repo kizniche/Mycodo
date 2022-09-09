@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Mycodo VERSION\n"
 "Report-Msgid-Bugs-To: mycodo@kylegabriel.com\n"
-"POT-Creation-Date: 2022-09-09 19:04-0400\n"
+"POT-Creation-Date: 2022-09-09 19:29-0400\n"
 "PO-Revision-Date: 2021-11-23 17:53+0000\n"
 "Last-Translator: Kyle Gabriel <kyletgabriel@gmail.com>\n"
 "Language: es\n"
@@ -1781,26 +1781,6 @@ msgstr "consigna aumento"
 msgid "Webhook"
 msgstr ""
 
-#: functions/average_last_multiple.py:83 functions/average_past_single.py:94
-#: functions/display_generic_lcd_20x4_i2c.py:276
-#: functions/display_grove_lcd_16x2_i2c.py:325
-#: functions/display_ssd1306_oled_128x32_i2c.py:300
-#: functions/display_ssd1306_oled_128x32_i2c_2lines.py:300
-#: functions/display_ssd1306_oled_128x32_spi.py:323
-#: functions/display_ssd1306_oled_128x32_spi_2lines.py:315
-#: functions/display_ssd1306_oled_128x64_i2c.py:300
-#: functions/display_ssd1306_oled_128x64_i2c_4lines.py:300
-#: functions/display_ssd1306_oled_128x64_spi.py:315
-#: functions/display_ssd1306_oled_128x64_spi_4lines.py:315
-#: functions/display_ssd1309_oled_128x64_i2c.py:270 functions/equation.py:83
-#: functions/statistics_last_multiple.py:109
-#: functions/statistics_past_single.py:108 functions/sum_last_multiple.py:84
-#: functions/sum_past_single.py:95 inputs/ads1115_analog_ph_ec.py:147
-#: inputs/ads1256_analog_ph_ec.py:231 inputs/anyleaf_ph.py:71
-#: inputs/atlas_do.py:77 inputs/atlas_ec.py:89 inputs/atlas_orp.py:76
-msgid "Max Age"
-msgstr ""
-
 #: functions/average_last_multiple.py:84 functions/average_past_single.py:95
 #: functions/difference.py:84 functions/difference.py:103
 #: functions/display_generic_lcd_16x2_i2c.py:292
@@ -1829,6 +1809,10 @@ msgstr ""
 #: inputs/ads1256_analog_ph_ec.py:232 inputs/anyleaf_ph.py:72
 #: inputs/atlas_do.py:78 inputs/atlas_ec.py:90 inputs/atlas_o2.py:79
 #: inputs/atlas_orp.py:77 inputs/atlas_ph.py:81
+#: widgets/widget_gauge_angular.py:163 widgets/widget_gauge_solid.py:185
+#: widgets/widget_indicator.py:65 widgets/widget_measurement.py:65
+#: widgets/widget_output.py:61 widgets/widget_output_pwm_slider.py:61
+#: widgets/widget_pid.py:254
 #, fuzzy
 msgid "The maximum age (seconds) of the measurement to use"
 msgstr ""
@@ -1859,17 +1843,6 @@ msgstr ""
 
 #: functions/bang_bang.py:73 functions/bang_bang_on_off.py:83
 msgid "The amount above and below the setpoint that defines the control band"
-msgstr ""
-
-#: functions/display_generic_lcd_16x2_i2c.py:291
-#: functions/humidity_wet_dry_bulb.py:107
-#: functions/humidity_wet_dry_bulb.py:127
-#: functions/humidity_wet_dry_bulb.py:147
-#: functions/vapor_pressure_deficit.py:94
-#: functions/vapor_pressure_deficit.py:114 widgets/widget_gauge_angular.py:162
-#: widgets/widget_gauge_solid.py:184 widgets/widget_indicator.py:64
-#: widgets/widget_measurement.py:64
-msgid "{} {}"
 msgstr ""
 
 #: functions/equation_multi.py:110 mycodo_flask/forms/forms_settings.py:276
@@ -1928,6 +1901,12 @@ msgstr ""
 #: inputs/atlas_o2.py:70 inputs/atlas_orp.py:68 inputs/atlas_ph.py:72
 msgid "Select a measurement for temperature compensation"
 msgstr "Seleccionar una medida para la compensación de temperatura"
+
+#: inputs/ads1115_analog_ph_ec.py:147 inputs/ads1256_analog_ph_ec.py:231
+#: inputs/anyleaf_ph.py:71 inputs/atlas_do.py:77 inputs/atlas_ec.py:89
+#: inputs/atlas_orp.py:76
+msgid "Max Age"
+msgstr ""
 
 #: inputs/ads1256.py:86 inputs/ads1256_analog_ph_ec.py:348
 msgid "Set the calibration method to perform during Input activation"
@@ -5809,11 +5788,6 @@ msgstr ""
 msgid "Select a measurement to display"
 msgstr ""
 
-#: widgets/widget_gauge_angular.py:163 widgets/widget_gauge_solid.py:185
-#: widgets/widget_indicator.py:65 widgets/widget_measurement.py:65
-msgid "The maximum age (seconds) of the measurement"
-msgstr ""
-
 #: widgets/widget_graph_synchronous.py:375
 msgid "Select Input measurements to display"
 msgstr ""
@@ -5999,154 +5973,4 @@ msgstr ""
 #: widgets/widget_python_code.py:212
 msgid "Python code to execute every dashboard/widget refresh"
 msgstr ""
-
-#~ msgid ""
-#~ "The amount of time (seconds) to "
-#~ "sample the input before caluclating the"
-#~ " measurement"
-#~ msgstr ""
-#~ "La cantidad de tiempo (segundos) para"
-#~ " muestrear la entrada antes de "
-#~ "calcular la medición"
-
-#~ msgid "Clear Total Volume"
-#~ msgstr "Claro Volumen Total"
-
-#~ msgid "Conditional Statement"
-#~ msgstr "Sentencia condicional"
-
-#~ msgid "Conditional Status"
-#~ msgstr ""
-
-#~ msgid "Save Sample Rates"
-#~ msgstr "Ahorre tarifas de muestra"
-
-#~ msgid "The return value provides a status for the controller"
-#~ msgstr ""
-
-#~ msgid "Current"
-#~ msgstr "actual"
-
-#~ msgid "{} A"
-#~ msgstr ""
-
-#~ msgid "{} A {}"
-#~ msgstr ""
-
-#~ msgid "{} B"
-#~ msgstr ""
-
-#~ msgid "{} B {}"
-#~ msgstr ""
-
-#~ msgid "{} C {}"
-#~ msgstr ""
-
-#~ msgid "Select the 1-wire device ID"
-#~ msgstr "Seleccione la ID del dispositivo de 1 cable"
-
-#~ msgid ""
-#~ "Adjust the gain to change the "
-#~ "measurable voltage range. See ADC "
-#~ "documentation for details."
-#~ msgstr ""
-#~ "Ajusta la gananciapara cambiar el rango"
-#~ " de medición de tensión. Ver la "
-#~ "documentación del ADC para más detalles."
-
-#~ msgid "ADC Resolution (see ADC documentation)"
-#~ msgstr "Resolución de ADC (ver documentación de ADC)"
-
-#~ msgid "ADC Sample Speed (see ADC documentation)"
-#~ msgstr "Velocidad de muestreo de ADC (consulte la documentación de ADC)"
-
-#~ msgid "The number of amps the output device draws (at 120/240 VAC)"
-#~ msgstr ""
-#~ "La cantidad de amperios que consume "
-#~ "el dispositivo de salida (a 120/240 "
-#~ "VCA)"
-
-#~ msgid "MAC (XX:XX:XX:XX:XX:XX)"
-#~ msgstr "MAC (XX: XX: XX: XX: XX: XX)"
-
-#~ msgid "The MAC address of the Bluetooth device"
-#~ msgstr "La direccion MAC del dispositivo Bluetooth"
-
-#~ msgid "The adapter of the Bluetooth device"
-#~ msgstr "El adaptador del dispositivo Bluetooth"
-
-#~ msgid "The command to be executed to return a measurement value"
-#~ msgstr ""
-
-#~ msgid "Desired Flow Rate (ml/min)"
-#~ msgstr ""
-
-#~ msgid "Desired flow rate in ml/minute when Specify Flow Rate set"
-#~ msgstr ""
-
-#~ msgid "Pin (GPIO)"
-#~ msgstr "Pin (GPIO)"
-
-#~ msgid "The GPIO pin using BCM numbering"
-#~ msgstr "El pin GPIO usando numeración BCM"
-
-#~ msgid "The I2C bus the device is connected to"
-#~ msgstr "El bus I2C al que está conectado el dispositivo."
-
-#~ msgid "The I2C address of the device"
-#~ msgstr "La dirección I2C del dispositivo."
-
-#~ msgid "Max Age (seconds)"
-#~ msgstr "Edad Máxima (segundos)"
-
-#~ msgid "Duration to send to output controller"
-#~ msgstr ""
-
-#~ msgid "Value to send to output controller"
-#~ msgstr ""
-
-#~ msgid "Voltage to send to output controller"
-#~ msgstr ""
-
-#~ msgid "Volume to send to output controller"
-#~ msgstr ""
-
-#~ msgid "Period (seconds)"
-#~ msgstr "Período (segundos)"
-
-#~ msgid "Clock Pin"
-#~ msgstr "Pin Clock"
-
-#~ msgid "The GPIO (using BCM numbering) connected to the Clock pin"
-#~ msgstr "El GPIO (usando la numeración BCM) conectado al pin del reloj"
-
-#~ msgid "CS Pin"
-#~ msgstr "Pin CS"
-
-#~ msgid "The GPIO (using BCM numbering) connected to the Cable Select pin"
-#~ msgstr ""
-#~ "El GPIO (usando la numeración BCM) "
-#~ "conectado al pin de selección de "
-#~ "cable"
-
-#~ msgid "MISO Pin"
-#~ msgstr "Pin MISO"
-
-#~ msgid "The GPIO (using BCM numbering) connected to the MISO pin"
-#~ msgstr "El GPIO (usando la numeración BCM) conectado al pin MISO"
-
-#~ msgid "MOSI Pin"
-#~ msgstr "Pin MOSI"
-
-#~ msgid "The GPIO (using BCM numbering) connected to the MOSI pin"
-#~ msgstr "El GPIO (usando numeración BCM) conectado al pin MOSI"
-
-#~ msgid "Reference resistance (Ohm)"
-#~ msgstr "Resistencia de referencia (Ohm)"
-
-#~ msgid "Refresh (seconds)"
-#~ msgstr "Refrescar (segundos)"
-
-#~ msgid "Duration (seconds)"
-#~ msgstr "Duración (segundos)"
 

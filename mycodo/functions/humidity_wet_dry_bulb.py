@@ -104,7 +104,7 @@ FUNCTION_INFORMATION = {
             'type': 'integer',
             'default_value': 360,
             'required': False,
-            'name': lazy_gettext('{} {}'.format(lazy_gettext('Dry Bulb'), lazy_gettext('Max Age'))),
+            'name': f"{lazy_gettext('Max Age')}: {lazy_gettext('Dry Bulb')}",
             'phrase': lazy_gettext('The maximum age (seconds) of the measurement to use')
         },
         {
@@ -124,7 +124,7 @@ FUNCTION_INFORMATION = {
             'type': 'integer',
             'default_value': 360,
             'required': False,
-            'name': lazy_gettext('{} {}'.format(lazy_gettext('Wet Bulb'), lazy_gettext('Max Age'))),
+            'name': f"{lazy_gettext('Max Age')}: {lazy_gettext('Wet Bulb')}",
             'phrase': lazy_gettext('The maximum age (seconds) of the measurement to use')
         },
         {
@@ -144,7 +144,7 @@ FUNCTION_INFORMATION = {
             'type': 'integer',
             'default_value': 360,
             'required': False,
-            'name': lazy_gettext('{} {}'.format(lazy_gettext('Pressure'), lazy_gettext('Max Age'))),
+            'name': f"{lazy_gettext('Max Age')}: {lazy_gettext('Pressure')}",
             'phrase': lazy_gettext('The maximum age (seconds) of the measurement to use')
         }
     ]

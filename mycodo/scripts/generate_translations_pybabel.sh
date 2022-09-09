@@ -26,4 +26,4 @@ printf "\n#### Extracting translatable texts\n"
 
 printf "\n#### Generating translations\n"
 
-"${INSTALL_DIRECTORY}"/env/bin/pybabel update --update-header-comment -i mycodo_flask/translations/messages.pot -d mycodo_flask/translations
+"${INSTALL_DIRECTORY}"/env/bin/pybabel update --ignore-obsolete --update-header-comment -i mycodo_flask/translations/messages.pot -d mycodo_flask/translations

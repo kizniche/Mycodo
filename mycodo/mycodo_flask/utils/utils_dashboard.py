@@ -43,7 +43,7 @@ def dashboard_add():
         Dashboard.id.desc()).first()
 
     new_dash = Dashboard()
-    new_dash.name = '{} {}'.format(TRANSLATIONS['dashboard']['title'], last_dashboard.id + 1)
+    new_dash.name = f"{TRANSLATIONS['dashboard']['title']} {last_dashboard.id + 1}"
 
     if not error:
         new_dash.save()

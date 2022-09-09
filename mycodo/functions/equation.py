@@ -80,7 +80,7 @@ FUNCTION_INFORMATION = {
             'type': 'integer',
             'default_value': 360,
             'required': True,
-            'name': lazy_gettext('Max Age'),
+            'name': f"{lazy_gettext('Max Age')} ({lazy_gettext('Seconds')})",
             'phrase': lazy_gettext('The maximum age (seconds) of the measurement to use')
         },
         {
