@@ -58,7 +58,7 @@ ACTION_INFORMATION = {
             'default_value': 0.0,
             'required': True,
             'constraints_pass': constraints_pass_positive_or_zero_value,
-            'name': lazy_gettext('Duration (seconds)'),
+            'name': f"{lazy_gettext('Duration')} ({lazy_gettext('Seconds')})",
             'phrase': 'If On, you can set a duration to turn the output on. 0 stays on.'
         }
     ]

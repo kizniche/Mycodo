@@ -80,7 +80,7 @@ OUTPUT_INFORMATION = {
             'default_value': None,
             'required': False,
             'constraints_pass': constraints_pass_positive_or_zero_value,
-            'name': lazy_gettext('GPIO Pin (BCM)'),
+            'name': f"{lazy_gettext('Pin')}: {lazy_gettext('GPIO')} ({lazy_gettext('BCM')})",
             'phrase': lazy_gettext('The pin to control the state of')
         },
         {

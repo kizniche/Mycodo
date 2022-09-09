@@ -191,7 +191,7 @@ FUNCTION_INFORMATION = {
             'default_value': 10,
             'required': True,
             'constraints_pass': constraints_pass_positive_value,
-            'name': lazy_gettext('Period (seconds)'),
+            'name': f"{lazy_gettext('Period')} ({lazy_gettext('Seconds')})",
             'phrase': lazy_gettext('The duration (seconds) between measurements or actions')
         },
         {

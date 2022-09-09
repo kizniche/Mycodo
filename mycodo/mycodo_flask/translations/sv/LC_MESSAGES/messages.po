@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Mycodo1 8.11.0\n"
 "Report-Msgid-Bugs-To: mycodo@kylegabriel.com\n"
-"POT-Creation-Date: 2022-09-09 18:22-0400\n"
+"POT-Creation-Date: 2022-09-09 19:04-0400\n"
 "PO-Revision-Date: 2022-03-10 06:00+0000\n"
 "Last-Translator: Jonas Harnesk <jonas@harnesk.net>\n"
 "Language: sv\n"
@@ -71,14 +71,14 @@ msgid "Dissolved Oxygen"
 msgstr "löst syre"
 
 #: config_devices_units.py:113 config_translations.py:69
-#: config_translations.py:306 mycodo_flask/templates/pages/usage.html:230
+#: config_translations.py:307 mycodo_flask/templates/pages/usage.html:230
 #: mycodo_flask/templates/pages/usage.html:265
 msgid "Duration"
 msgstr "Varaktighet"
 
 #: actions/output_pwm.py:48 actions/output_ramp_pwm.py:50
 #: actions/output_ramp_pwm.py:59 actions/output_ramp_pwm.py:68
-#: config_devices_units.py:117 config_translations.py:243
+#: config_devices_units.py:117 config_translations.py:244
 msgid "Duty Cycle"
 msgstr "Driftscykel"
 
@@ -272,7 +272,7 @@ msgid "VOC"
 msgstr "VOC"
 
 #: actions/output_volume.py:48 config_devices_units.py:317
-#: config_translations.py:199 config_translations.py:315
+#: config_translations.py:199 config_translations.py:316
 msgid "Volume"
 msgstr "Volym"
 
@@ -697,7 +697,7 @@ msgstr "Ner"
 msgid "Duplicate"
 msgstr ""
 
-#: config_translations.py:71 config_translations.py:422
+#: config_translations.py:71 config_translations.py:423
 #: mycodo_flask/forms/forms_input.py:153
 msgid "Edge"
 msgstr "Kant"
@@ -1029,13 +1029,13 @@ msgid "User"
 msgstr "Användare"
 
 #: actions/output_value.py:47 config_translations.py:195
-#: config_translations.py:309 inputs/mycodo_test_input_save_value.py:72
+#: config_translations.py:310 inputs/mycodo_test_input_save_value.py:72
 #: mycodo_flask/templates/user_templates/widget_template_widget_indicator_js.html:60
 msgid "Value"
 msgstr ""
 
-#: config_translations.py:197 config_translations.py:312
-#: config_translations.py:404 inputs/anyleaf_orp.py:52
+#: config_translations.py:197 config_translations.py:313
+#: config_translations.py:405 inputs/anyleaf_orp.py:52
 #: mycodo_flask/forms/forms_settings.py:112
 msgid "Voltage"
 msgstr "Spänning"
@@ -1048,47 +1048,23 @@ msgstr "widget"
 msgid "1-Wire Device ID"
 msgstr "1-tråds-ID"
 
-#: config_translations.py:206
-msgid "Select the 1-wire device ID"
-msgstr "Välj 1-tråds-enhetens ID"
-
 #: config_translations.py:208 inputs/as7262.py:83
 #: mycodo_flask/forms/forms_camera.py:63
 msgid "Gain"
 msgstr "Få"
 
-#: config_translations.py:209
-msgid ""
-"Adjust the gain to change the measurable voltage range. See ADC "
-"documentation for details."
-msgstr ""
-"Justera förstärkningen för att ändra det mätbara spänningsområdet. Se "
-"ADC-dokumentation för detaljer."
-
-#: config_translations.py:211 config_translations.py:371
-#: config_translations.py:374
+#: config_translations.py:211 config_translations.py:372
+#: config_translations.py:375
 msgid "Resolution"
 msgstr "Upplösning"
-
-#: config_translations.py:212
-msgid "ADC Resolution (see ADC documentation)"
-msgstr "ADC-upplösning (se ADC-dokumentation)"
 
 #: config_translations.py:214
 msgid "Sample Speed"
 msgstr "Provhastighet"
 
-#: config_translations.py:215
-msgid "ADC Sample Speed (see ADC documentation)"
-msgstr "ADC-provhastighet (se ADC-dokumentation)"
-
 #: config_translations.py:217
 msgid "Current Draw (amps)"
 msgstr "Nuvarande Draw (ampere)"
-
-#: config_translations.py:218
-msgid "The number of amps the output device draws (at 120/240 VAC)"
-msgstr "Antalet ampere som utmatningsenheten drar (vid 120/240 VAC)"
 
 #: config_translations.py:220
 msgid "Baud Rate"
@@ -1099,28 +1075,22 @@ msgid "The UART baud rate"
 msgstr "UART baudräntan"
 
 #: config_translations.py:223
-msgid "MAC (XX:XX:XX:XX:XX:XX)"
-msgstr "MAC (XX: XX: XX: XX: XX: XX)"
-
-#: config_translations.py:224
-msgid "The MAC address of the Bluetooth device"
+msgid "Bluetooth MAC (XX:XX:XX:XX:XX:XX)"
 msgstr ""
 
 #: config_translations.py:226
-msgid "BT Adapter (hci[X])"
+#, fuzzy
+msgid "Bluetooth Adapter (hci[X])"
 msgstr "BT-adapter (hci [X])"
-
-#: config_translations.py:227
-msgid "The adapter of the Bluetooth device"
-msgstr ""
 
 #: actions/command_bash.py:40 config_translations.py:229
 msgid "Command"
 msgstr "Kommando"
 
 #: config_translations.py:230
-msgid "The command to be executed to return a measurement value"
-msgstr ""
+#, fuzzy
+msgid "The command to be executed"
+msgstr "Python 3-koden som ska utföras"
 
 #: config_translations.py:233
 msgid "Select the unit of the measurement to be stored in the database"
@@ -1134,40 +1104,32 @@ msgstr "Konvertera till enhet"
 msgid "Convert the measurement to a different unit"
 msgstr "Konvertera mätningen till en annan enhet"
 
-#: config_translations.py:238
+#: config_translations.py:239
 msgid "click to copy to the clipboard"
 msgstr "klicka för att kopiera till Urklipp"
 
-#: config_translations.py:240
+#: config_translations.py:241
 msgid "Deadline"
 msgstr "Deadline"
 
-#: config_translations.py:241
+#: config_translations.py:242
 msgid "Time (seconds) to wait until failure"
 msgstr "Tid (sekunder) för att vänta tills fel"
 
 #: actions/output_pwm.py:49 actions/output_ramp_pwm.py:51
-#: actions/output_ramp_pwm.py:60 config_translations.py:244
+#: actions/output_ramp_pwm.py:60 config_translations.py:245
 msgid "Duty cycle for the PWM (percent, 0.0 - 100.0)"
 msgstr "Driftscykel för PWM (procent, 0,0 - 100,0)"
 
-#: config_translations.py:246
-msgid "Desired Flow Rate (ml/min)"
-msgstr ""
-
-#: config_translations.py:247
-msgid "Desired flow rate in ml/minute when Specify Flow Rate set"
-msgstr ""
-
-#: config_translations.py:249
+#: config_translations.py:250
 msgid "Name Font Size (em)"
 msgstr "Namn Teckenstorlek (em)"
 
-#: config_translations.py:250
+#: config_translations.py:251
 msgid "The font size of the Name text"
 msgstr "Teckenstorleken Namn text"
 
-#: config_translations.py:252 outputs/on_off_kasa_hs300.py:126
+#: config_translations.py:253 outputs/on_off_kasa_hs300.py:126
 #: outputs/on_off_kasa_hs300_0_4_2.py:139 outputs/on_off_kasa_kp303.py:126
 #: outputs/on_off_kasa_kp303_0_4_2.py:139 outputs/on_off_kasa_plugs.py:128
 #: outputs/on_off_kasa_rgb_bulbs.py:297 outputs/on_off_mqtt.py:138
@@ -1178,124 +1140,104 @@ msgstr "Teckenstorleken Namn text"
 msgid "Force Command"
 msgstr "force Command"
 
-#: config_translations.py:253 outputs/on_off_python.py:241
+#: config_translations.py:254 outputs/on_off_python.py:241
 msgid "Always send the command if instructed, regardless of the current state"
 msgstr "skickar alltid kommandot om uppdrag, oavsett det aktuella läget"
 
-#: config_translations.py:255
+#: config_translations.py:256
 msgid "FTDI Device"
 msgstr "FTDI-enhet"
 
-#: config_translations.py:256
+#: config_translations.py:257
 msgid "The FTDI device connected to the input/output/etc."
 msgstr ""
 
-#: config_translations.py:258
-msgid "Pin (GPIO)"
-msgstr "Pin (GPIO)"
-
-#: config_translations.py:259
-msgid "The GPIO pin using BCM numbering"
-msgstr "GPIO-stiftet med BCM-nummerering"
-
-#: config_translations.py:261 outputs/pump_grove_motor_driver_v1_3.py:132
+#: config_translations.py:262 outputs/pump_grove_motor_driver_v1_3.py:132
 msgid "Flow Rate Method"
 msgstr ""
 
-#: config_translations.py:262 outputs/pump_grove_motor_driver_v1_3.py:133
+#: config_translations.py:263 outputs/pump_grove_motor_driver_v1_3.py:133
 msgid "The flow rate to use when pumping a volume"
 msgstr ""
 
-#: config_translations.py:264
+#: config_translations.py:265
 msgid "Host"
 msgstr "Värd"
 
-#: config_translations.py:265
+#: config_translations.py:266
 msgid "Host address or IP"
 msgstr "Värdadress eller IP"
 
-#: config_translations.py:267
+#: config_translations.py:268
 msgid "I2C Bus"
 msgstr ""
 
-#: config_translations.py:268
-msgid "The I2C bus the device is connected to"
-msgstr "Den I2C-buss som enheten är ansluten till"
-
-#: config_translations.py:270
+#: config_translations.py:271
 msgid "I2C Address"
 msgstr ""
 
-#: config_translations.py:271
-msgid "The I2C address of the device"
-msgstr "I2C-adressen till enheten"
-
-#: config_translations.py:273
+#: config_translations.py:274
 #: mycodo_flask/templates/pages/data_options/input_options.html:43
 msgid "Interface"
 msgstr "Gränssnitt"
 
-#: config_translations.py:274
+#: config_translations.py:275
 msgid "The interface used to communicate"
 msgstr "Gränssnittet användes för att kommunicera"
 
-#: config_translations.py:276
+#: config_translations.py:277
 msgid "Invert Scale"
 msgstr "Invertera skalan"
 
-#: config_translations.py:277
+#: config_translations.py:278
 msgid "Invert the scale"
 msgstr "Invertera skalan"
 
-#: config_translations.py:279
+#: config_translations.py:280
 msgid "Execute as User"
 msgstr ""
 
-#: config_translations.py:280 outputs/pwm_shell.py:69
+#: config_translations.py:281 outputs/pwm_shell.py:69
 msgid "The user to execute the command"
 msgstr ""
 
-#: config_translations.py:282
+#: config_translations.py:283
 msgid "Log Level: Debug"
 msgstr "Log Level: Debug"
 
-#: config_translations.py:283
+#: config_translations.py:284
 msgid "Show debug lines in the Daemon Log"
 msgstr "Visa felsöknings linjer i Daemon Log"
 
-#: config_translations.py:285
-msgid "Max Age (seconds)"
-msgstr "Max ålder (sekunder)"
-
-#: config_translations.py:286
+#: config_translations.py:287
 msgid "The maximum allowable measurement age"
 msgstr "Den maximala tillåtna mätåldern"
 
-#: config_translations.py:288
+#: config_translations.py:289
 msgid "Unit Measurement"
 msgstr "Enhetsmätning"
 
-#: config_translations.py:289
+#: config_translations.py:290
 msgid "Select a unit for the stored value"
 msgstr "Välj en enhet för det lagrade värdet"
 
-#: config_translations.py:291
+#: config_translations.py:292
 msgid "Measurements Enabled"
 msgstr "Mätningar aktiverade"
 
-#: config_translations.py:292
+#: config_translations.py:293
 msgid "The measurements to record"
 msgstr "Mätningarna att spela in"
 
-#: config_translations.py:294
+#: config_translations.py:295
 msgid "Message Includes Code"
 msgstr "Meddelandet innehåller kod"
 
-#: config_translations.py:295
+#: config_translations.py:296
 msgid "Include the code in the message variable"
 msgstr "Inkludera koden i meddelandet variabeln"
 
-#: actions/create_note.py:46 config_translations.py:297
+#: actions/create_note.py:46 config_translations.py:298
 #: mycodo_flask/templates/pages/function_options/custom_function_options.html:37
 #: mycodo_flask/templates/pages/function_options/function_options.html:31
 #: mycodo_flask/templates/pages/usage.html:205
@@ -1307,20 +1249,20 @@ msgstr "Inkludera koden i meddelandet variabeln"
 msgid "Name"
 msgstr "namn"
 
-#: config_translations.py:298
+#: config_translations.py:299
 msgid "A name to distinguish this from others"
 msgstr "Ett namn som skiljer det från andra"
 
-#: config_translations.py:300 outputs/on_off_python.py:202
+#: config_translations.py:301 outputs/on_off_python.py:202
 #: outputs/on_off_shell.py:60 outputs/on_off_wireless_rpi_rf.py:77
 msgid "Off Command"
 msgstr "Av komando"
 
-#: config_translations.py:301 outputs/on_off_wireless_rpi_rf.py:78
+#: config_translations.py:302 outputs/on_off_wireless_rpi_rf.py:78
 msgid "Command to execute when the output is instructed to turn off"
 msgstr ""
 
-#: config_translations.py:303 outputs/on_off_gpio.py:91
+#: config_translations.py:304 outputs/on_off_gpio.py:91
 #: outputs/on_off_gpio_sysfs.py:87
 #: outputs/on_off_grove_multichannel_relay.py:163
 #: outputs/on_off_mcp23017.py:100 outputs/on_off_pcf8574.py:99
@@ -1329,64 +1271,20 @@ msgstr ""
 msgid "On State"
 msgstr "på State"
 
-#: config_translations.py:304
+#: config_translations.py:305
 msgid "What state triggers the output to turn on? High or Low?"
 msgstr "Vilket tillstånd utlöses för att sätta på? Hög eller låg?"
 
-#: config_translations.py:307
-msgid "Duration to send to output controller"
-msgstr ""
-
-#: config_translations.py:310
-msgid "Value to send to output controller"
-msgstr ""
-
-#: config_translations.py:313
-msgid "Voltage to send to output controller"
-msgstr ""
-
-#: config_translations.py:316
-msgid "Volume to send to output controller"
-msgstr ""
-
-#: config_translations.py:318 outputs/on_off_python.py:190
+#: config_translations.py:319 outputs/on_off_python.py:190
 #: outputs/on_off_shell.py:51 outputs/on_off_wireless_rpi_rf.py:69
 msgid "On Command"
 msgstr "På kommando"
 
-#: config_translations.py:319 outputs/on_off_wireless_rpi_rf.py:70
+#: config_translations.py:320 outputs/on_off_wireless_rpi_rf.py:70
 msgid "Command to execute when the output is instructed to turn on"
 msgstr ""
 
-#: config_translations.py:321 functions/average_last_multiple.py:67
-#: functions/average_past_single.py:67 functions/backup_rsync.py:73
-#: functions/bang_bang.py:93 functions/bang_bang_on_off.py:104
-#: functions/bang_bang_pwm.py:91 functions/difference.py:64
-#: functions/display_generic_lcd_16x2_i2c.py:225
-#: functions/display_generic_lcd_20x4_i2c.py:210
-#: functions/display_grove_lcd_16x2_i2c.py:227
-#: functions/display_ssd1306_oled_128x32_i2c.py:194
-#: functions/display_ssd1306_oled_128x32_i2c_2lines.py:194
-#: functions/display_ssd1306_oled_128x32_spi.py:193
-#: functions/display_ssd1306_oled_128x32_spi_2lines.py:193
-#: functions/display_ssd1306_oled_128x64_i2c.py:194
-#: functions/display_ssd1306_oled_128x64_i2c_4lines.py:194
-#: functions/display_ssd1306_oled_128x64_spi.py:193
-#: functions/display_ssd1306_oled_128x64_spi_4lines.py:193
-#: functions/display_ssd1309_oled_128x64_i2c.py:196 functions/equation.py:64
-#: functions/equation_multi.py:64
-#: functions/examples/custom_function_multiple_channels.py:73
-#: functions/examples/custom_function_simple_loop_with_status.py:58
-#: functions/humidity_wet_dry_bulb.py:79 functions/redundancy.py:63
-#: functions/regulate_ph_ec.py:179 functions/statistics_last_multiple.py:101
-#: functions/statistics_past_single.py:100 functions/sum_last_multiple.py:68
-#: functions/sum_past_single.py:68 functions/vapor_pressure_deficit.py:66
-#: functions/verification.py:63 mycodo_flask/forms/forms_conditional.py:34
-#: mycodo_flask/forms/forms_trigger.py:48
-msgid "Period (seconds)"
-msgstr "Period (sekunder)"
-
-#: config_translations.py:322 functions/average_last_multiple.py:68
+#: config_translations.py:323 functions/average_last_multiple.py:68
 #: functions/average_past_single.py:68 functions/backup_rsync.py:74
 #: functions/bang_bang.py:94 functions/bang_bang_on_off.py:105
 #: functions/bang_bang_pwm.py:92 functions/difference.py:65
@@ -1408,58 +1306,25 @@ msgstr "Period (sekunder)"
 #: functions/humidity_wet_dry_bulb.py:80 functions/redundancy.py:64
 #: functions/regulate_ph_ec.py:180 functions/statistics_last_multiple.py:102
 #: functions/statistics_past_single.py:101 functions/sum_last_multiple.py:69
-#: functions/sum_past_single.py:69 functions/vapor_pressure_deficit.py:67
-#: functions/verification.py:64
+#: functions/sum_past_single.py:69 functions/verification.py:64
 msgid "The duration (seconds) between measurements or actions"
 msgstr "Varaktighet (sekunder) mellan mätningarna eller åtgärder"
 
-#: config_translations.py:324
-msgid "Clock Pin"
-msgstr "Klocka Pin"
-
-#: config_translations.py:325
-msgid "The GPIO (using BCM numbering) connected to the Clock pin"
-msgstr "GPIO (med BCM-nummerering) ansluten till klockstiften"
-
-#: config_translations.py:327
-msgid "CS Pin"
-msgstr "CS Pin"
-
-#: config_translations.py:328
-msgid "The GPIO (using BCM numbering) connected to the Cable Select pin"
-msgstr "GPIO (med BCM-numrering) ansluten till kabelvalstiften"
-
-#: config_translations.py:330
-msgid "MISO Pin"
-msgstr "MISO Pin"
-
-#: config_translations.py:331
-msgid "The GPIO (using BCM numbering) connected to the MISO pin"
-msgstr "GPIO (med BCM-nummerering) ansluten till MISO-stiftet"
-
-#: config_translations.py:333
-msgid "MOSI Pin"
-msgstr "MOSI-pin"
-
-#: config_translations.py:334
-msgid "The GPIO (using BCM numbering) connected to the MOSI pin"
-msgstr "GPIO (med BCM-nummerering) ansluten till MOSI-stiftet"
-
 #: actions/mqtt_publish.py:47 actions/mqtt_publish_input.py:52
-#: config_translations.py:336 mycodo_flask/forms/forms_settings.py:102
+#: config_translations.py:337 mycodo_flask/forms/forms_settings.py:102
 #: outputs/on_off_mqtt.py:66 outputs/value_mqtt.py:65
 msgid "Port"
 msgstr "Hamn"
 
-#: config_translations.py:337
+#: config_translations.py:338
 msgid "Host port number"
 msgstr "Värd port nummer"
 
-#: config_translations.py:339
+#: config_translations.py:340
 msgid "Pre Out Duration"
 msgstr "Fördröjningstid"
 
-#: config_translations.py:340
+#: config_translations.py:341
 msgid ""
 "If a Pre Output is selected, set the duration (seconds) to turn the Pre "
 "Output on for before every measurement is acquired."
@@ -1467,11 +1332,11 @@ msgstr ""
 "Om en Pre Output har valts, ställa in varaktigheten (sekunder) för att "
 "slå på Pre Output innan varje mätning förvärvas."
 
-#: config_translations.py:344
+#: config_translations.py:345
 msgid "Pre During Measure"
 msgstr "Pre under åtgärd"
 
-#: config_translations.py:345
+#: config_translations.py:346
 msgid ""
 "Check to turn the output off after (opposed to before) the measurement is"
 " complete"
@@ -1479,56 +1344,50 @@ msgstr ""
 "Kontrollera att utgången är avstängd efter (i motsats till tidigare) "
 "mätningen är klar"
 
-#: config_translations.py:347
+#: config_translations.py:348
 msgid "Pre Output"
 msgstr "Pre Output"
 
-#: config_translations.py:348
+#: config_translations.py:349
 msgid "Turn the selected output on before taking every measurement"
 msgstr "Vrid den valda utsignalen innan du tar varje mätning"
 
-#: config_translations.py:350 outputs/on_off_wireless_rpi_rf.py:91
+#: config_translations.py:351 outputs/on_off_wireless_rpi_rf.py:91
 msgid "Protocol"
 msgstr "Protokoll"
 
-#: config_translations.py:351
+#: config_translations.py:352
 msgid "Wireless 433 MHz protocol"
 msgstr "Trådlöst 433 MHz protokoll"
 
-#: config_translations.py:353 outputs/on_off_wireless_rpi_rf.py:100
+#: config_translations.py:354 outputs/on_off_wireless_rpi_rf.py:100
 msgid "Pulse Length"
 msgstr "Pulslängd"
 
-#: config_translations.py:354
+#: config_translations.py:355
 msgid "Wireless 433 MHz pulse length"
 msgstr "Trådlös 433 MHz pulslängd"
 
-#: config_translations.py:356
+#: config_translations.py:357
 msgid "PWM Command"
 msgstr "PWM-kommando"
 
-#: config_translations.py:357 outputs/pwm_shell.py:62
+#: config_translations.py:358 outputs/pwm_shell.py:62
 msgid "Command to execute to set the PWM duty cycle (%)"
 msgstr ""
 
-#: config_translations.py:359 outputs/pump_pca9685.py:156
-#: outputs/pump_pca9685_l298n.py:145 outputs/pwm_gpio.py:144
-#: outputs/pwm_pca9685.py:101
-msgid "Frequency (Hertz)"
-msgstr "Frekvens (Hertz)"
-
-#: config_translations.py:360
+#: config_translations.py:361
 msgid "The Hertz to output the PWM signal (0 - 70,000)"
 msgstr "Hertz för att mata ut PWM-signalen (0 - 70 000)"
 
-#: config_translations.py:362 mycodo_flask/forms/forms_camera.py:23
+#: config_translations.py:363 mycodo_flask/forms/forms_camera.py:23
 #: mycodo_flask/templates/pages/data_options/input_options.html:55
 #: mycodo_flask/templates/pages/function_options/custom_function_options.html:49
 #: mycodo_flask/templates/pages/output_options.html:34 outputs/pwm_gpio.py:135
 msgid "Library"
 msgstr "Bibliotek"
 
-#: config_translations.py:363
+#: config_translations.py:364
 msgid ""
 "Which method to produce the PWM signal (hardware pins can produce higher "
 "frequencies)"
@@ -1536,134 +1395,126 @@ msgstr ""
 "Vilken metod för att producera PWM-signalen (hårdvarubärmar kan producera"
 " högre frekvenser)"
 
-#: config_translations.py:365
+#: config_translations.py:366
 msgid "Reference Resistance"
 msgstr "Referensresistens"
 
-#: config_translations.py:366
-msgid "Reference resistance (Ohm)"
-msgstr "Referensmotstånd (Ohm)"
-
-#: config_translations.py:368
-msgid "Refresh (seconds)"
-msgstr "Uppdatera (sekunder)"
-
-#: config_translations.py:369
+#: config_translations.py:370
 msgid "Number of seconds to wait between acquiring any new measurements."
 msgstr "Antal sekunder att vänta mellan att förvärva nya mätningar."
 
-#: config_translations.py:372 config_translations.py:375
+#: config_translations.py:373 config_translations.py:376
 msgid "Measurement resolution"
 msgstr "Mätupplösning"
 
-#: config_translations.py:377
+#: config_translations.py:378
 msgid "Pulses Per Rev"
 msgstr "Pulser per rev"
 
-#: config_translations.py:378
+#: config_translations.py:379
 msgid ""
 "The number of pulses per revolution to calculate revolutions per minute "
 "(RPM)"
 msgstr "Antalet pulser per revolution för att beräkna varv per minut (RPM)"
 
-#: config_translations.py:380
+#: config_translations.py:381
 msgid "Sample Time"
 msgstr "Provtid"
 
-#: config_translations.py:381
+#: config_translations.py:382
 msgid "The duration of time to sample"
 msgstr ""
 
-#: config_translations.py:383
+#: config_translations.py:384
 msgid "Unscaled Unit Min"
 msgstr "Oskalad enhet Min"
 
-#: config_translations.py:384
+#: config_translations.py:385
 msgid "Unscaled minimum unit"
 msgstr "Oskalad minsta enhet"
 
-#: config_translations.py:386
+#: config_translations.py:387
 msgid "Unscaled Unit Max"
 msgstr "Oskalad enhet Max"
 
-#: config_translations.py:387
+#: config_translations.py:388
 msgid "Unscaled maximum unit"
 msgstr "Oskalad maximal enhet"
 
-#: config_translations.py:389
+#: config_translations.py:390
 msgid "Rescaled Unit Min"
 msgstr "Uppskalad enhet Min"
 
-#: config_translations.py:390
+#: config_translations.py:391
 msgid "Rescaled minimum unit"
 msgstr "Uppskalad minsta enhet"
 
-#: config_translations.py:392
+#: config_translations.py:393
 msgid "Rescaled Unit Max"
 msgstr "Uppskalad enhet Max"
 
-#: config_translations.py:393
+#: config_translations.py:394
 msgid "Rescaled maximum unit"
 msgstr "Uppskalad maximal enhet"
 
-#: config_translations.py:395
+#: config_translations.py:396
 msgid "Measurement Unit"
 msgstr "Måttenhet"
 
-#: config_translations.py:396
+#: config_translations.py:397
 msgid "Select the measurement and unit to store this measurement in the database"
 msgstr "Välj mätning och enhet för att lagra denna mätning i databasen"
 
-#: config_translations.py:398
+#: config_translations.py:399
 msgid "Sensitivity"
 msgstr "Känslighet"
 
-#: config_translations.py:399
+#: config_translations.py:400
 msgid "Measurement sensitivity"
 msgstr "Mätningskänslighet"
 
-#: config_translations.py:401
+#: config_translations.py:402
 msgid "Setpoint Tracking Type"
 msgstr "Börvärde Tracking Typ"
 
-#: config_translations.py:402
+#: config_translations.py:403
 msgid "Select the type of setpoint tracking"
 msgstr "Välj typ av börvärde spårning"
 
-#: config_translations.py:405
+#: config_translations.py:406
 msgid "The input voltage to the sensor"
 msgstr "Ingångsspänningen till sensorn"
 
-#: config_translations.py:407 outputs/pwm_gpio.py:124
+#: config_translations.py:408 outputs/pwm_gpio.py:124
 #: outputs/pwm_pca9685.py:154 outputs/pwm_python.py:255
 #: outputs/pwm_shell.py:109
 msgid "Shutdown Value"
 msgstr "avstängning Värde"
 
-#: config_translations.py:408
+#: config_translations.py:409
 msgid "The output value to set when Mycodo shuts down"
 msgstr "Produktionen värde för att ange när Mycodo stängs ner"
 
-#: config_translations.py:410 mycodo_flask/forms/forms_conditional.py:44
+#: config_translations.py:411 mycodo_flask/forms/forms_conditional.py:44
 #: mycodo_flask/forms/forms_trigger.py:50
 msgid "Start Offset (seconds)"
 msgstr "Start Offset (sekunder)"
 
-#: config_translations.py:411
+#: config_translations.py:412
 #: mycodo_flask/templates/pages/function_options/conditional_options.html:82
 msgid "The duration (seconds) to wait before the first operation"
 msgstr "Varaktigheten (sekunder) att vänta innan den första operationen"
 
-#: config_translations.py:413 outputs/pwm_gpio.py:104
+#: config_translations.py:414 outputs/pwm_gpio.py:104
 #: outputs/pwm_pca9685.py:133 outputs/pwm_python.py:235 outputs/pwm_shell.py:89
 msgid "Startup Value"
 msgstr "Startup Värde"
 
-#: config_translations.py:414
+#: config_translations.py:415
 msgid "The output value to set when Mycodo starts up"
 msgstr "Produktionen värde för att ange när Mycodo startar"
 
-#: config_translations.py:416 outputs/on_off_gpio.py:80
+#: config_translations.py:417 outputs/on_off_gpio.py:80
 #: outputs/on_off_gpio_sysfs.py:76
 #: outputs/on_off_grove_multichannel_relay.py:152
 #: outputs/on_off_kasa_hs300.py:112 outputs/on_off_kasa_hs300_0_4_2.py:125
@@ -1679,11 +1530,11 @@ msgstr "Produktionen värde för att ange när Mycodo startar"
 msgid "Shutdown State"
 msgstr "avstängning State"
 
-#: config_translations.py:417
+#: config_translations.py:418
 msgid "When Mycodo shuts down, set the output state"
 msgstr "När Mycodo stängs av ställa in produktionen tillståndet"
 
-#: config_translations.py:419 outputs/on_off_gpio.py:69
+#: config_translations.py:420 outputs/on_off_gpio.py:69
 #: outputs/on_off_gpio_sysfs.py:65
 #: outputs/on_off_grove_multichannel_relay.py:141
 #: outputs/on_off_kasa_hs300.py:100 outputs/on_off_kasa_hs300_0_4_2.py:113
@@ -1698,29 +1549,29 @@ msgstr "När Mycodo stängs av ställa in produktionen tillståndet"
 msgid "Startup State"
 msgstr "Starta staten"
 
-#: config_translations.py:420
+#: config_translations.py:421
 msgid "When Mycodo starts, set the output state"
 msgstr "När Mycodo startar, ställ in utgångsläget"
 
-#: config_translations.py:423
+#: config_translations.py:424
 msgid "Edge detection: low to high (rising), high to low (falling), or both"
 msgstr ""
 "Kantdetektering: låg till hög (stigande), hög till låg (fallande) eller "
 "båda"
 
-#: config_translations.py:425 mycodo_flask/forms/forms_input.py:155
+#: config_translations.py:426 mycodo_flask/forms/forms_input.py:155
 msgid "Bounce Time (ms)"
 msgstr "Bounce Time (ms)"
 
-#: config_translations.py:426
+#: config_translations.py:427
 msgid "The amount of time (miliseconds) to bounce the input signal"
 msgstr "Mängden tid (milisekunder) för att studsa insignalen"
 
-#: config_translations.py:428 mycodo_flask/forms/forms_input.py:157
+#: config_translations.py:429 mycodo_flask/forms/forms_input.py:157
 msgid "Reset Period"
 msgstr "Återställningsperiod"
 
-#: config_translations.py:429
+#: config_translations.py:430
 msgid ""
 "Wait a period of time (seconds) after the first edge detection to begin "
 "detecting again"
@@ -1728,43 +1579,43 @@ msgstr ""
 "Vänta en tid (sekunder) efter det att den första kanten upptäcktes för "
 "att börja upptäcka igen"
 
-#: config_translations.py:431
+#: config_translations.py:432
 msgid "RTD Probe Type"
 msgstr "RTD Probe Type"
 
-#: config_translations.py:432
+#: config_translations.py:433
 msgid "The type of thermocouple connected"
 msgstr "Typ av termoelement anslutet"
 
-#: config_translations.py:434
+#: config_translations.py:435
 msgid "Times Check"
 msgstr "Tidscheck"
 
-#: config_translations.py:435
+#: config_translations.py:436
 msgid "Number of times to check"
 msgstr "Antal gånger att kontrollera"
 
-#: config_translations.py:437
+#: config_translations.py:438
 msgid "Trigger at Startup"
 msgstr "Utlösare vid uppstart"
 
-#: config_translations.py:438
+#: config_translations.py:439
 msgid "Whether or not to trigger Functions when Mycodo starts"
 msgstr "Oavsett om du vill aktivera Funktioner när Mycodo startar"
 
-#: config_translations.py:440
+#: config_translations.py:441
 msgid "UART Device"
 msgstr "UART-enhet"
 
-#: config_translations.py:441
+#: config_translations.py:442
 msgid "The UART device location (e.g. /dev/ttyUSB1)"
 msgstr "UART-enhetens plats (t.ex. / dev / ttyUSB1)"
 
-#: config_translations.py:443
+#: config_translations.py:444
 msgid "Weighting"
 msgstr "viktning"
 
-#: config_translations.py:444
+#: config_translations.py:445
 msgid ""
 "The weighting of the previous measurement on the current measurement. "
 "Range: 0.0 - 1.0. Used for smoothing measurements. 0.0 means no "
@@ -1773,15 +1624,15 @@ msgstr ""
 "Vägningen av föregående mätning på nuvarande mätning. Område: 0,0-1,0. "
 "Används för utjämning av mätningar. 0,0 betyder ingen viktning."
 
-#: config_translations.py:450
+#: config_translations.py:451
 msgid "Always Min (Raise)"
 msgstr "Alltid Min (Höj)"
 
-#: config_translations.py:451 config_translations.py:454
+#: config_translations.py:452 config_translations.py:455
 msgid "Never allow duty cycle to go below Min."
 msgstr "tillåter aldrig duty cycle att gå under Min."
 
-#: config_translations.py:453
+#: config_translations.py:454
 msgid "Always Min (Lower)"
 msgstr "Alltid Min (lägre)"
 
@@ -1844,12 +1695,6 @@ msgstr "Stäng en Output Off, On, eller på eller varaktighet."
 #: actions/output_on_off.py:52
 msgid "State"
 msgstr "Stat"
-
-#: actions/output_on_off.py:61 actions/output_ramp_pwm.py:77
-#: actions/pause_actions.py:35 mycodo_flask/forms/forms_method.py:58
-#: mycodo_flask/forms/forms_method.py:119
-msgid "Duration (seconds)"
-msgstr "Varaktighet (sekunder)"
 
 #: actions/output_pwm.py:25
 #, fuzzy
@@ -2202,13 +2047,6 @@ msgstr "Visa Channel"
 #, fuzzy
 msgid "Store Measurement"
 msgstr "Force Mätningar"
-
-#: inputs/rpi_signal_revolutions_pigpio_callback.py:52
-#: mycodo_flask/forms/forms_conditional.py:69 outputs/on_off_gpio.py:58
-#: outputs/on_off_gpio_sysfs.py:54 outputs/on_off_wireless_rpi_rf.py:61
-#: outputs/pump_gpio.py:84 outputs/pwm_gpio.py:83
-msgid "GPIO Pin (BCM)"
-msgstr "GPIO Pin (BCM)"
 
 #: inputs/th1x.py:68 inputs/th1x_am2301.py:67 inputs/th1x_ds18b20.py:53
 msgid "IP Address"
@@ -5776,6 +5614,10 @@ msgstr ""
 msgid "Trigger Functions at Startup"
 msgstr ""
 
+#: outputs/on_off_gpio_sysfs.py:54
+msgid "GPIO Pin (BCM)"
+msgstr "GPIO Pin (BCM)"
+
 #: outputs/on_off_kasa_rgb_bulbs.py:104 outputs/on_off_kasa_rgb_bulbs.py:127
 #: outputs/on_off_kasa_rgb_bulbs.py:150 outputs/on_off_kasa_rgb_bulbs.py:173
 #: outputs/on_off_kasa_rgb_bulbs.py:196 outputs/on_off_neopixel_rgb.py:75
@@ -5841,6 +5683,11 @@ msgstr ""
 #: outputs/output_spacer.py:9
 msgid "Spacer"
 msgstr "spacer"
+
+#: outputs/pump_pca9685.py:156 outputs/pump_pca9685_l298n.py:145
+#: outputs/pwm_gpio.py:144 outputs/pwm_pca9685.py:101
+msgid "Frequency (Hertz)"
+msgstr "Frekvens (Hertz)"
 
 #: outputs/pwm_gpio.py:151 outputs/pwm_pca9685.py:161 outputs/pwm_python.py:262
 #: outputs/pwm_shell.py:116
@@ -6142,4 +5989,106 @@ msgstr ""
 
 #~ msgid "{} C {}"
 #~ msgstr ""
+
+#~ msgid "Select the 1-wire device ID"
+#~ msgstr "Välj 1-tråds-enhetens ID"
+
+#~ msgid ""
+#~ "Adjust the gain to change the "
+#~ "measurable voltage range. See ADC "
+#~ "documentation for details."
+#~ msgstr ""
+#~ "Justera förstärkningen för att ändra det"
+#~ " mätbara spänningsområdet. Se ADC-"
+#~ "dokumentation för detaljer."
+
+#~ msgid "ADC Resolution (see ADC documentation)"
+#~ msgstr "ADC-upplösning (se ADC-dokumentation)"
+
+#~ msgid "ADC Sample Speed (see ADC documentation)"
+#~ msgstr "ADC-provhastighet (se ADC-dokumentation)"
+
+#~ msgid "The number of amps the output device draws (at 120/240 VAC)"
+#~ msgstr "Antalet ampere som utmatningsenheten drar (vid 120/240 VAC)"
+
+#~ msgid "MAC (XX:XX:XX:XX:XX:XX)"
+#~ msgstr "MAC (XX: XX: XX: XX: XX: XX)"
+
+#~ msgid "The MAC address of the Bluetooth device"
+#~ msgstr ""
+
+#~ msgid "The adapter of the Bluetooth device"
+#~ msgstr ""
+
+#~ msgid "The command to be executed to return a measurement value"
+#~ msgstr ""
+
+#~ msgid "Desired Flow Rate (ml/min)"
+#~ msgstr ""
+
+#~ msgid "Desired flow rate in ml/minute when Specify Flow Rate set"
+#~ msgstr ""
+
+#~ msgid "Pin (GPIO)"
+#~ msgstr "Pin (GPIO)"
+
+#~ msgid "The GPIO pin using BCM numbering"
+#~ msgstr "GPIO-stiftet med BCM-nummerering"
+
+#~ msgid "The I2C bus the device is connected to"
+#~ msgstr "Den I2C-buss som enheten är ansluten till"
+
+#~ msgid "The I2C address of the device"
+#~ msgstr "I2C-adressen till enheten"
+
+#~ msgid "Max Age (seconds)"
+#~ msgstr "Max ålder (sekunder)"
+
+#~ msgid "Duration to send to output controller"
+#~ msgstr ""
+
+#~ msgid "Value to send to output controller"
+#~ msgstr ""
+
+#~ msgid "Voltage to send to output controller"
+#~ msgstr ""
+
+#~ msgid "Volume to send to output controller"
+#~ msgstr ""
+
+#~ msgid "Period (seconds)"
+#~ msgstr "Period (sekunder)"
+
+#~ msgid "Clock Pin"
+#~ msgstr "Klocka Pin"
+
+#~ msgid "The GPIO (using BCM numbering) connected to the Clock pin"
+#~ msgstr "GPIO (med BCM-nummerering) ansluten till klockstiften"
+
+#~ msgid "CS Pin"
+#~ msgstr "CS Pin"
+
+#~ msgid "The GPIO (using BCM numbering) connected to the Cable Select pin"
+#~ msgstr "GPIO (med BCM-numrering) ansluten till kabelvalstiften"
+
+#~ msgid "MISO Pin"
+#~ msgstr "MISO Pin"
+
+#~ msgid "The GPIO (using BCM numbering) connected to the MISO pin"
+#~ msgstr "GPIO (med BCM-nummerering) ansluten till MISO-stiftet"
+
+#~ msgid "MOSI Pin"
+#~ msgstr "MOSI-pin"
+
+#~ msgid "The GPIO (using BCM numbering) connected to the MOSI pin"
+#~ msgstr "GPIO (med BCM-nummerering) ansluten till MOSI-stiftet"
+
+#~ msgid "Reference resistance (Ohm)"
+#~ msgstr "Referensmotstånd (Ohm)"
+
+#~ msgid "Refresh (seconds)"
+#~ msgstr "Uppdatera (sekunder)"
+
+#~ msgid "Duration (seconds)"
+#~ msgstr "Varaktighet (sekunder)"
 

@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Mycodo1 8.11.0\n"
 "Report-Msgid-Bugs-To: mycodo@kylegabriel.com\n"
-"POT-Creation-Date: 2022-09-09 18:22-0400\n"
+"POT-Creation-Date: 2022-09-09 19:04-0400\n"
 "PO-Revision-Date: 2021-06-11 14:13+0000\n"
 "Last-Translator: Kyle Gabriel <kyletgabriel@gmail.com>\n"
 "Language: zh\n"
@@ -71,14 +71,14 @@ msgid "Dissolved Oxygen"
 msgstr "溶解氧"
 
 #: config_devices_units.py:113 config_translations.py:69
-#: config_translations.py:306 mycodo_flask/templates/pages/usage.html:230
+#: config_translations.py:307 mycodo_flask/templates/pages/usage.html:230
 #: mycodo_flask/templates/pages/usage.html:265
 msgid "Duration"
 msgstr "持续时间"
 
 #: actions/output_pwm.py:48 actions/output_ramp_pwm.py:50
 #: actions/output_ramp_pwm.py:59 actions/output_ramp_pwm.py:68
-#: config_devices_units.py:117 config_translations.py:243
+#: config_devices_units.py:117 config_translations.py:244
 msgid "Duty Cycle"
 msgstr "占空比"
 
@@ -272,7 +272,7 @@ msgid "VOC"
 msgstr "VOC"
 
 #: actions/output_volume.py:48 config_devices_units.py:317
-#: config_translations.py:199 config_translations.py:315
+#: config_translations.py:199 config_translations.py:316
 msgid "Volume"
 msgstr "体积"
 
@@ -697,7 +697,7 @@ msgstr "下"
 msgid "Duplicate"
 msgstr ""
 
-#: config_translations.py:71 config_translations.py:422
+#: config_translations.py:71 config_translations.py:423
 #: mycodo_flask/forms/forms_input.py:153
 msgid "Edge"
 msgstr "边缘"
@@ -1029,13 +1029,13 @@ msgid "User"
 msgstr "用户"
 
 #: actions/output_value.py:47 config_translations.py:195
-#: config_translations.py:309 inputs/mycodo_test_input_save_value.py:72
+#: config_translations.py:310 inputs/mycodo_test_input_save_value.py:72
 #: mycodo_flask/templates/user_templates/widget_template_widget_indicator_js.html:60
 msgid "Value"
 msgstr ""
 
-#: config_translations.py:197 config_translations.py:312
-#: config_translations.py:404 inputs/anyleaf_orp.py:52
+#: config_translations.py:197 config_translations.py:313
+#: config_translations.py:405 inputs/anyleaf_orp.py:52
 #: mycodo_flask/forms/forms_settings.py:112
 msgid "Voltage"
 msgstr "电压"
@@ -1048,45 +1048,23 @@ msgstr "窗口小部件"
 msgid "1-Wire Device ID"
 msgstr "1-Wire器件ID"
 
-#: config_translations.py:206
-msgid "Select the 1-wire device ID"
-msgstr "选择1线设备ID"
-
 #: config_translations.py:208 inputs/as7262.py:83
 #: mycodo_flask/forms/forms_camera.py:63
 msgid "Gain"
 msgstr "获得"
 
-#: config_translations.py:209
-msgid ""
-"Adjust the gain to change the measurable voltage range. See ADC "
-"documentation for details."
-msgstr "调整增益以改变可测量的电压范围。有关详情，请参阅ADC文档。"
-
-#: config_translations.py:211 config_translations.py:371
-#: config_translations.py:374
+#: config_translations.py:211 config_translations.py:372
+#: config_translations.py:375
 msgid "Resolution"
 msgstr "解析度"
-
-#: config_translations.py:212
-msgid "ADC Resolution (see ADC documentation)"
-msgstr "ADC分辨率（参见ADC文档）"
 
 #: config_translations.py:214
 msgid "Sample Speed"
 msgstr "采样速度"
 
-#: config_translations.py:215
-msgid "ADC Sample Speed (see ADC documentation)"
-msgstr "ADC采样速度（参见ADC文档）"
-
 #: config_translations.py:217
 msgid "Current Draw (amps)"
 msgstr "电流消耗（安培）"
-
-#: config_translations.py:218
-msgid "The number of amps the output device draws (at 120/240 VAC)"
-msgstr "输出设备绘制的放大器数量（120/240 VAC）"
 
 #: config_translations.py:220
 msgid "Baud Rate"
@@ -1097,28 +1075,22 @@ msgid "The UART baud rate"
 msgstr "UART波特率"
 
 #: config_translations.py:223
-msgid "MAC (XX:XX:XX:XX:XX:XX)"
-msgstr "MAC（XX：XX：XX：XX：XX：XX）"
-
-#: config_translations.py:224
-msgid "The MAC address of the Bluetooth device"
+msgid "Bluetooth MAC (XX:XX:XX:XX:XX:XX)"
 msgstr ""
 
 #: config_translations.py:226
-msgid "BT Adapter (hci[X])"
+#, fuzzy
+msgid "Bluetooth Adapter (hci[X])"
 msgstr "BT适配器（hci [X]）"
-
-#: config_translations.py:227
-msgid "The adapter of the Bluetooth device"
-msgstr ""
 
 #: actions/command_bash.py:40 config_translations.py:229
 msgid "Command"
 msgstr "命令"
 
 #: config_translations.py:230
-msgid "The command to be executed to return a measurement value"
-msgstr ""
+#, fuzzy
+msgid "The command to be executed"
+msgstr "要执行的Python 3代码"
 
 #: config_translations.py:233
 msgid "Select the unit of the measurement to be stored in the database"
@@ -1132,40 +1104,32 @@ msgstr "转换为单位"
 msgid "Convert the measurement to a different unit"
 msgstr "将测量值转换为其他单位"
 
-#: config_translations.py:238
+#: config_translations.py:239
 msgid "click to copy to the clipboard"
 msgstr "点击复制到剪贴板"
 
-#: config_translations.py:240
+#: config_translations.py:241
 msgid "Deadline"
 msgstr "最后期限"
 
-#: config_translations.py:241
+#: config_translations.py:242
 msgid "Time (seconds) to wait until failure"
 msgstr "等待失败的时间（秒）"
 
 #: actions/output_pwm.py:49 actions/output_ramp_pwm.py:51
-#: actions/output_ramp_pwm.py:60 config_translations.py:244
+#: actions/output_ramp_pwm.py:60 config_translations.py:245
 msgid "Duty cycle for the PWM (percent, 0.0 - 100.0)"
 msgstr "PWM的占空比（百分比，0.0 - 100.0）"
 
-#: config_translations.py:246
-msgid "Desired Flow Rate (ml/min)"
-msgstr ""
-
-#: config_translations.py:247
-msgid "Desired flow rate in ml/minute when Specify Flow Rate set"
-msgstr ""
-
-#: config_translations.py:249
+#: config_translations.py:250
 msgid "Name Font Size (em)"
 msgstr "名称字体大小（EM）"
 
-#: config_translations.py:250
+#: config_translations.py:251
 msgid "The font size of the Name text"
 msgstr "名称文本的字体大小"
 
-#: config_translations.py:252 outputs/on_off_kasa_hs300.py:126
+#: config_translations.py:253 outputs/on_off_kasa_hs300.py:126
 #: outputs/on_off_kasa_hs300_0_4_2.py:139 outputs/on_off_kasa_kp303.py:126
 #: outputs/on_off_kasa_kp303_0_4_2.py:139 outputs/on_off_kasa_plugs.py:128
 #: outputs/on_off_kasa_rgb_bulbs.py:297 outputs/on_off_mqtt.py:138
@@ -1176,124 +1140,104 @@ msgstr "名称文本的字体大小"
 msgid "Force Command"
 msgstr "空军指挥"
 
-#: config_translations.py:253 outputs/on_off_python.py:241
+#: config_translations.py:254 outputs/on_off_python.py:241
 msgid "Always send the command if instructed, regardless of the current state"
 msgstr "如果指示总是发送命令，不管当前状态"
 
-#: config_translations.py:255
+#: config_translations.py:256
 msgid "FTDI Device"
 msgstr "FTDI设备"
 
-#: config_translations.py:256
+#: config_translations.py:257
 msgid "The FTDI device connected to the input/output/etc."
 msgstr ""
 
-#: config_translations.py:258
-msgid "Pin (GPIO)"
-msgstr "引脚（GPIO）"
-
-#: config_translations.py:259
-msgid "The GPIO pin using BCM numbering"
-msgstr "GPIO引脚使用BCM编号"
-
-#: config_translations.py:261 outputs/pump_grove_motor_driver_v1_3.py:132
+#: config_translations.py:262 outputs/pump_grove_motor_driver_v1_3.py:132
 msgid "Flow Rate Method"
 msgstr ""
 
-#: config_translations.py:262 outputs/pump_grove_motor_driver_v1_3.py:133
+#: config_translations.py:263 outputs/pump_grove_motor_driver_v1_3.py:133
 msgid "The flow rate to use when pumping a volume"
 msgstr ""
 
-#: config_translations.py:264
+#: config_translations.py:265
 msgid "Host"
 msgstr "主办"
 
-#: config_translations.py:265
+#: config_translations.py:266
 msgid "Host address or IP"
 msgstr "主机地址或IP"
 
-#: config_translations.py:267
+#: config_translations.py:268
 msgid "I2C Bus"
 msgstr ""
 
-#: config_translations.py:268
-msgid "The I2C bus the device is connected to"
-msgstr "设备连接的I2C总线"
-
-#: config_translations.py:270
+#: config_translations.py:271
 msgid "I2C Address"
 msgstr ""
 
-#: config_translations.py:271
-msgid "The I2C address of the device"
-msgstr "设备的I2C地址"
-
-#: config_translations.py:273
+#: config_translations.py:274
 #: mycodo_flask/templates/pages/data_options/input_options.html:43
 msgid "Interface"
 msgstr "接口"
 
-#: config_translations.py:274
+#: config_translations.py:275
 msgid "The interface used to communicate"
 msgstr "用于通信的接口"
 
-#: config_translations.py:276
+#: config_translations.py:277
 msgid "Invert Scale"
 msgstr "反转比例"
 
-#: config_translations.py:277
+#: config_translations.py:278
 msgid "Invert the scale"
 msgstr "反转比例"
 
-#: config_translations.py:279
+#: config_translations.py:280
 msgid "Execute as User"
 msgstr ""
 
-#: config_translations.py:280 outputs/pwm_shell.py:69
+#: config_translations.py:281 outputs/pwm_shell.py:69
 msgid "The user to execute the command"
 msgstr ""
 
-#: config_translations.py:282
+#: config_translations.py:283
 msgid "Log Level: Debug"
 msgstr "日志级别：调试"
 
-#: config_translations.py:283
+#: config_translations.py:284
 msgid "Show debug lines in the Daemon Log"
 msgstr "显示在守护程序日志调试线"
 
-#: config_translations.py:285
-msgid "Max Age (seconds)"
-msgstr "最大年龄（秒）"
-
-#: config_translations.py:286
+#: config_translations.py:287
 msgid "The maximum allowable measurement age"
 msgstr "最大允许测量年龄"
 
-#: config_translations.py:288
+#: config_translations.py:289
 msgid "Unit Measurement"
 msgstr "单位测量"
 
-#: config_translations.py:289
+#: config_translations.py:290
 msgid "Select a unit for the stored value"
 msgstr "选择存储值的单位"
 
-#: config_translations.py:291
+#: config_translations.py:292
 msgid "Measurements Enabled"
 msgstr "测量已启用"
 
-#: config_translations.py:292
+#: config_translations.py:293
 msgid "The measurements to record"
 msgstr "测量记录"
 
-#: config_translations.py:294
+#: config_translations.py:295
 msgid "Message Includes Code"
 msgstr "消息中包含的代码"
 
-#: config_translations.py:295
+#: config_translations.py:296
 msgid "Include the code in the message variable"
 msgstr "包括在消息变量的代码"
 
-#: actions/create_note.py:46 config_translations.py:297
+#: actions/create_note.py:46 config_translations.py:298
 #: mycodo_flask/templates/pages/function_options/custom_function_options.html:37
 #: mycodo_flask/templates/pages/function_options/function_options.html:31
 #: mycodo_flask/templates/pages/usage.html:205
@@ -1305,20 +1249,20 @@ msgstr "包括在消息变量的代码"
 msgid "Name"
 msgstr "名称"
 
-#: config_translations.py:298
+#: config_translations.py:299
 msgid "A name to distinguish this from others"
 msgstr "一个名称，以区别于其他人"
 
-#: config_translations.py:300 outputs/on_off_python.py:202
+#: config_translations.py:301 outputs/on_off_python.py:202
 #: outputs/on_off_shell.py:60 outputs/on_off_wireless_rpi_rf.py:77
 msgid "Off Command"
 msgstr "关闭命令"
 
-#: config_translations.py:301 outputs/on_off_wireless_rpi_rf.py:78
+#: config_translations.py:302 outputs/on_off_wireless_rpi_rf.py:78
 msgid "Command to execute when the output is instructed to turn off"
 msgstr ""
 
-#: config_translations.py:303 outputs/on_off_gpio.py:91
+#: config_translations.py:304 outputs/on_off_gpio.py:91
 #: outputs/on_off_gpio_sysfs.py:87
 #: outputs/on_off_grove_multichannel_relay.py:163
 #: outputs/on_off_mcp23017.py:100 outputs/on_off_pcf8574.py:99
@@ -1327,64 +1271,20 @@ msgstr ""
 msgid "On State"
 msgstr "触发"
 
-#: config_translations.py:304
+#: config_translations.py:305
 msgid "What state triggers the output to turn on? High or Low?"
 msgstr "什么状态触发输出打开？高还是低？"
 
-#: config_translations.py:307
-msgid "Duration to send to output controller"
-msgstr ""
-
-#: config_translations.py:310
-msgid "Value to send to output controller"
-msgstr ""
-
-#: config_translations.py:313
-msgid "Voltage to send to output controller"
-msgstr ""
-
-#: config_translations.py:316
-msgid "Volume to send to output controller"
-msgstr ""
-
-#: config_translations.py:318 outputs/on_off_python.py:190
+#: config_translations.py:319 outputs/on_off_python.py:190
 #: outputs/on_off_shell.py:51 outputs/on_off_wireless_rpi_rf.py:69
 msgid "On Command"
 msgstr "在命令"
 
-#: config_translations.py:319 outputs/on_off_wireless_rpi_rf.py:70
+#: config_translations.py:320 outputs/on_off_wireless_rpi_rf.py:70
 msgid "Command to execute when the output is instructed to turn on"
 msgstr ""
 
-#: config_translations.py:321 functions/average_last_multiple.py:67
-#: functions/average_past_single.py:67 functions/backup_rsync.py:73
-#: functions/bang_bang.py:93 functions/bang_bang_on_off.py:104
-#: functions/bang_bang_pwm.py:91 functions/difference.py:64
-#: functions/display_generic_lcd_16x2_i2c.py:225
-#: functions/display_generic_lcd_20x4_i2c.py:210
-#: functions/display_grove_lcd_16x2_i2c.py:227
-#: functions/display_ssd1306_oled_128x32_i2c.py:194
-#: functions/display_ssd1306_oled_128x32_i2c_2lines.py:194
-#: functions/display_ssd1306_oled_128x32_spi.py:193
-#: functions/display_ssd1306_oled_128x32_spi_2lines.py:193
-#: functions/display_ssd1306_oled_128x64_i2c.py:194
-#: functions/display_ssd1306_oled_128x64_i2c_4lines.py:194
-#: functions/display_ssd1306_oled_128x64_spi.py:193
-#: functions/display_ssd1306_oled_128x64_spi_4lines.py:193
-#: functions/display_ssd1309_oled_128x64_i2c.py:196 functions/equation.py:64
-#: functions/equation_multi.py:64
-#: functions/examples/custom_function_multiple_channels.py:73
-#: functions/examples/custom_function_simple_loop_with_status.py:58
-#: functions/humidity_wet_dry_bulb.py:79 functions/redundancy.py:63
-#: functions/regulate_ph_ec.py:179 functions/statistics_last_multiple.py:101
-#: functions/statistics_past_single.py:100 functions/sum_last_multiple.py:68
-#: functions/sum_past_single.py:68 functions/vapor_pressure_deficit.py:66
-#: functions/verification.py:63 mycodo_flask/forms/forms_conditional.py:34
-#: mycodo_flask/forms/forms_trigger.py:48
-msgid "Period (seconds)"
-msgstr "期间（秒）"
-
-#: config_translations.py:322 functions/average_last_multiple.py:68
+#: config_translations.py:323 functions/average_last_multiple.py:68
 #: functions/average_past_single.py:68 functions/backup_rsync.py:74
 #: functions/bang_bang.py:94 functions/bang_bang_on_off.py:105
 #: functions/bang_bang_pwm.py:92 functions/difference.py:65
@@ -1406,256 +1306,209 @@ msgstr "期间（秒）"
 #: functions/humidity_wet_dry_bulb.py:80 functions/redundancy.py:64
 #: functions/regulate_ph_ec.py:180 functions/statistics_last_multiple.py:102
 #: functions/statistics_past_single.py:101 functions/sum_last_multiple.py:69
-#: functions/sum_past_single.py:69 functions/vapor_pressure_deficit.py:67
-#: functions/verification.py:64
+#: functions/sum_past_single.py:69 functions/verification.py:64
 msgid "The duration (seconds) between measurements or actions"
 msgstr "测量或动作之间的持续时间（秒）"
 
-#: config_translations.py:324
-msgid "Clock Pin"
-msgstr "时钟针"
-
-#: config_translations.py:325
-msgid "The GPIO (using BCM numbering) connected to the Clock pin"
-msgstr "GPIO（使用BCM编号）连接到Clock引脚"
-
-#: config_translations.py:327
-msgid "CS Pin"
-msgstr "CS Pin"
-
-#: config_translations.py:328
-msgid "The GPIO (using BCM numbering) connected to the Cable Select pin"
-msgstr "GPIO（使用BCM编号）连接到Cable Select引脚"
-
-#: config_translations.py:330
-msgid "MISO Pin"
-msgstr "MISO Pin"
-
-#: config_translations.py:331
-msgid "The GPIO (using BCM numbering) connected to the MISO pin"
-msgstr "GPIO（使用BCM编号）连接到MISO引脚"
-
-#: config_translations.py:333
-msgid "MOSI Pin"
-msgstr "MOSI Pin"
-
-#: config_translations.py:334
-msgid "The GPIO (using BCM numbering) connected to the MOSI pin"
-msgstr "GPIO（使用BCM编号）连接到MOSI引脚"
-
 #: actions/mqtt_publish.py:47 actions/mqtt_publish_input.py:52
-#: config_translations.py:336 mycodo_flask/forms/forms_settings.py:102
+#: config_translations.py:337 mycodo_flask/forms/forms_settings.py:102
 #: outputs/on_off_mqtt.py:66 outputs/value_mqtt.py:65
 msgid "Port"
 msgstr "港口"
 
-#: config_translations.py:337
+#: config_translations.py:338
 msgid "Host port number"
 msgstr "主机端口号"
 
-#: config_translations.py:339
+#: config_translations.py:340
 msgid "Pre Out Duration"
 msgstr "预备持续时间"
 
-#: config_translations.py:340
+#: config_translations.py:341
 msgid ""
 "If a Pre Output is selected, set the duration (seconds) to turn the Pre "
 "Output on for before every measurement is acquired."
 msgstr "如果选择了预输出，则设置持续时间（秒）以在获取每个测量值之前打开预输出。"
 
-#: config_translations.py:344
+#: config_translations.py:345
 msgid "Pre During Measure"
 msgstr "预测期间"
 
-#: config_translations.py:345
+#: config_translations.py:346
 msgid ""
 "Check to turn the output off after (opposed to before) the measurement is"
 " complete"
 msgstr "检查在完成测量后（与之前相反）关闭输出"
 
-#: config_translations.py:347
+#: config_translations.py:348
 msgid "Pre Output"
 msgstr "预输出"
 
-#: config_translations.py:348
+#: config_translations.py:349
 msgid "Turn the selected output on before taking every measurement"
 msgstr "在进行每次测量之前，打开所选输出"
 
-#: config_translations.py:350 outputs/on_off_wireless_rpi_rf.py:91
+#: config_translations.py:351 outputs/on_off_wireless_rpi_rf.py:91
 msgid "Protocol"
 msgstr "协议"
 
-#: config_translations.py:351
+#: config_translations.py:352
 msgid "Wireless 433 MHz protocol"
 msgstr "无线433 MHz协议"
 
-#: config_translations.py:353 outputs/on_off_wireless_rpi_rf.py:100
+#: config_translations.py:354 outputs/on_off_wireless_rpi_rf.py:100
 msgid "Pulse Length"
 msgstr "脉冲长度"
 
-#: config_translations.py:354
+#: config_translations.py:355
 msgid "Wireless 433 MHz pulse length"
 msgstr "无线433 MHz脉冲长度"
 
-#: config_translations.py:356
+#: config_translations.py:357
 msgid "PWM Command"
 msgstr "PWM命令"
 
-#: config_translations.py:357 outputs/pwm_shell.py:62
+#: config_translations.py:358 outputs/pwm_shell.py:62
 msgid "Command to execute to set the PWM duty cycle (%)"
 msgstr ""
 
-#: config_translations.py:359 outputs/pump_pca9685.py:156
-#: outputs/pump_pca9685_l298n.py:145 outputs/pwm_gpio.py:144
-#: outputs/pwm_pca9685.py:101
-msgid "Frequency (Hertz)"
-msgstr "频率（赫兹）"
-
-#: config_translations.py:360
+#: config_translations.py:361
 msgid "The Hertz to output the PWM signal (0 - 70,000)"
 msgstr "赫兹输出PWM信号（0 - 70,000）"
 
-#: config_translations.py:362 mycodo_flask/forms/forms_camera.py:23
+#: config_translations.py:363 mycodo_flask/forms/forms_camera.py:23
 #: mycodo_flask/templates/pages/data_options/input_options.html:55
 #: mycodo_flask/templates/pages/function_options/custom_function_options.html:49
 #: mycodo_flask/templates/pages/output_options.html:34 outputs/pwm_gpio.py:135
 msgid "Library"
 msgstr "图书馆"
 
-#: config_translations.py:363
+#: config_translations.py:364
 msgid ""
 "Which method to produce the PWM signal (hardware pins can produce higher "
 "frequencies)"
 msgstr "哪种方法可以产生PWM信号（硬件引脚可以产生更高的频率）"
 
-#: config_translations.py:365
+#: config_translations.py:366
 msgid "Reference Resistance"
 msgstr "参考电阻"
 
-#: config_translations.py:366
-msgid "Reference resistance (Ohm)"
-msgstr "参考电阻（欧姆）"
-
-#: config_translations.py:368
-msgid "Refresh (seconds)"
-msgstr "刷新（秒）"
-
-#: config_translations.py:369
+#: config_translations.py:370
 msgid "Number of seconds to wait between acquiring any new measurements."
 msgstr "获取任何新测量值之间等待的秒数。"
 
-#: config_translations.py:372 config_translations.py:375
+#: config_translations.py:373 config_translations.py:376
 msgid "Measurement resolution"
 msgstr "测量分辨率"
 
-#: config_translations.py:377
+#: config_translations.py:378
 msgid "Pulses Per Rev"
 msgstr "脉冲每转"
 
-#: config_translations.py:378
+#: config_translations.py:379
 msgid ""
 "The number of pulses per revolution to calculate revolutions per minute "
 "(RPM)"
 msgstr "计算每分钟转数（RPM）的每转脉冲数"
 
-#: config_translations.py:380
+#: config_translations.py:381
 msgid "Sample Time"
 msgstr "采样时间"
 
-#: config_translations.py:381
+#: config_translations.py:382
 msgid "The duration of time to sample"
 msgstr ""
 
-#: config_translations.py:383
+#: config_translations.py:384
 msgid "Unscaled Unit Min"
 msgstr "非标定单位最小值"
 
-#: config_translations.py:384
+#: config_translations.py:385
 msgid "Unscaled minimum unit"
 msgstr "非标定最小单位"
 
-#: config_translations.py:386
+#: config_translations.py:387
 msgid "Unscaled Unit Max"
 msgstr "非标定单位最大值"
 
-#: config_translations.py:387
+#: config_translations.py:388
 msgid "Unscaled maximum unit"
 msgstr "非标定最大单位"
 
-#: config_translations.py:389
+#: config_translations.py:390
 msgid "Rescaled Unit Min"
 msgstr "重新调整的单位分钟"
 
-#: config_translations.py:390
+#: config_translations.py:391
 msgid "Rescaled minimum unit"
 msgstr "重新调整的最小单位"
 
-#: config_translations.py:392
+#: config_translations.py:393
 msgid "Rescaled Unit Max"
 msgstr "重新调整的单位最大值"
 
-#: config_translations.py:393
+#: config_translations.py:394
 msgid "Rescaled maximum unit"
 msgstr "重新调整的最大单位"
 
-#: config_translations.py:395
+#: config_translations.py:396
 msgid "Measurement Unit"
 msgstr "测量单位"
 
-#: config_translations.py:396
+#: config_translations.py:397
 msgid "Select the measurement and unit to store this measurement in the database"
 msgstr "选择测量和单位以将此测量值存储在数据库中"
 
-#: config_translations.py:398
+#: config_translations.py:399
 msgid "Sensitivity"
 msgstr "灵敏度"
 
-#: config_translations.py:399
+#: config_translations.py:400
 msgid "Measurement sensitivity"
 msgstr "测量灵敏度"
 
-#: config_translations.py:401
+#: config_translations.py:402
 msgid "Setpoint Tracking Type"
 msgstr "定值跟踪类型"
 
-#: config_translations.py:402
+#: config_translations.py:403
 msgid "Select the type of setpoint tracking"
 msgstr "选择设定值跟踪的类型"
 
-#: config_translations.py:405
+#: config_translations.py:406
 msgid "The input voltage to the sensor"
 msgstr "传感器的输入电压"
 
-#: config_translations.py:407 outputs/pwm_gpio.py:124
+#: config_translations.py:408 outputs/pwm_gpio.py:124
 #: outputs/pwm_pca9685.py:154 outputs/pwm_python.py:255
 #: outputs/pwm_shell.py:109
 msgid "Shutdown Value"
 msgstr "关闭值"
 
-#: config_translations.py:408
+#: config_translations.py:409
 msgid "The output value to set when Mycodo shuts down"
 msgstr "产值集时Mycodo关闭"
 
-#: config_translations.py:410 mycodo_flask/forms/forms_conditional.py:44
+#: config_translations.py:411 mycodo_flask/forms/forms_conditional.py:44
 #: mycodo_flask/forms/forms_trigger.py:50
 msgid "Start Offset (seconds)"
 msgstr "开始偏移（秒）"
 
-#: config_translations.py:411
+#: config_translations.py:412
 #: mycodo_flask/templates/pages/function_options/conditional_options.html:82
 msgid "The duration (seconds) to wait before the first operation"
 msgstr "在第一次操作之前等待的持续时间（秒）"
 
-#: config_translations.py:413 outputs/pwm_gpio.py:104
+#: config_translations.py:414 outputs/pwm_gpio.py:104
 #: outputs/pwm_pca9685.py:133 outputs/pwm_python.py:235 outputs/pwm_shell.py:89
 msgid "Startup Value"
 msgstr "启动值"
 
-#: config_translations.py:414
+#: config_translations.py:415
 msgid "The output value to set when Mycodo starts up"
 msgstr "产值集时Mycodo启动"
 
-#: config_translations.py:416 outputs/on_off_gpio.py:80
+#: config_translations.py:417 outputs/on_off_gpio.py:80
 #: outputs/on_off_gpio_sysfs.py:76
 #: outputs/on_off_grove_multichannel_relay.py:152
 #: outputs/on_off_kasa_hs300.py:112 outputs/on_off_kasa_hs300_0_4_2.py:125
@@ -1671,11 +1524,11 @@ msgstr "产值集时Mycodo启动"
 msgid "Shutdown State"
 msgstr "关机状态"
 
-#: config_translations.py:417
+#: config_translations.py:418
 msgid "When Mycodo shuts down, set the output state"
 msgstr "当Mycodo关闭，设置输出状态"
 
-#: config_translations.py:419 outputs/on_off_gpio.py:69
+#: config_translations.py:420 outputs/on_off_gpio.py:69
 #: outputs/on_off_gpio_sysfs.py:65
 #: outputs/on_off_grove_multichannel_relay.py:141
 #: outputs/on_off_kasa_hs300.py:100 outputs/on_off_kasa_hs300_0_4_2.py:113
@@ -1690,84 +1543,84 @@ msgstr "当Mycodo关闭，设置输出状态"
 msgid "Startup State"
 msgstr "开始状态"
 
-#: config_translations.py:420
+#: config_translations.py:421
 msgid "When Mycodo starts, set the output state"
 msgstr "当Mycodo启动时，设置输出状态"
 
-#: config_translations.py:423
+#: config_translations.py:424
 msgid "Edge detection: low to high (rising), high to low (falling), or both"
 msgstr "边沿检测：从低到高（上升），从高到低（下降）或两者兼而有之"
 
-#: config_translations.py:425 mycodo_flask/forms/forms_input.py:155
+#: config_translations.py:426 mycodo_flask/forms/forms_input.py:155
 msgid "Bounce Time (ms)"
 msgstr "弹跳时间（ms）"
 
-#: config_translations.py:426
+#: config_translations.py:427
 msgid "The amount of time (miliseconds) to bounce the input signal"
 msgstr "反射输入信号的时间量（毫秒）"
 
-#: config_translations.py:428 mycodo_flask/forms/forms_input.py:157
+#: config_translations.py:429 mycodo_flask/forms/forms_input.py:157
 msgid "Reset Period"
 msgstr "重置期间"
 
-#: config_translations.py:429
+#: config_translations.py:430
 msgid ""
 "Wait a period of time (seconds) after the first edge detection to begin "
 "detecting again"
 msgstr "在第一次边缘检测后等待一段时间（秒）以再次开始检测"
 
-#: config_translations.py:431
+#: config_translations.py:432
 msgid "RTD Probe Type"
 msgstr "RTD探头类型"
 
-#: config_translations.py:432
+#: config_translations.py:433
 msgid "The type of thermocouple connected"
 msgstr "连接的热电偶类型"
 
-#: config_translations.py:434
+#: config_translations.py:435
 msgid "Times Check"
 msgstr "时间检查"
 
-#: config_translations.py:435
+#: config_translations.py:436
 msgid "Number of times to check"
 msgstr "要检查的次数"
 
-#: config_translations.py:437
+#: config_translations.py:438
 msgid "Trigger at Startup"
 msgstr "在启动时触发"
 
-#: config_translations.py:438
+#: config_translations.py:439
 msgid "Whether or not to trigger Functions when Mycodo starts"
 msgstr "是否在Mycodo启动时触发功能"
 
-#: config_translations.py:440
+#: config_translations.py:441
 msgid "UART Device"
 msgstr "UART设备"
 
-#: config_translations.py:441
+#: config_translations.py:442
 msgid "The UART device location (e.g. /dev/ttyUSB1)"
 msgstr "UART设备位置（例如/ dev / ttyUSB1）"
 
-#: config_translations.py:443
+#: config_translations.py:444
 msgid "Weighting"
 msgstr "权重"
 
-#: config_translations.py:444
+#: config_translations.py:445
 msgid ""
 "The weighting of the previous measurement on the current measurement. "
 "Range: 0.0 - 1.0. Used for smoothing measurements. 0.0 means no "
 "weighting."
 msgstr "前一次测量对当前测量的加权。范围：0.0 - 1.0。用于平滑测量。 0.0表示没有加权。"
 
-#: config_translations.py:450
+#: config_translations.py:451
 msgid "Always Min (Raise)"
 msgstr "始终敏（提高）"
 
-#: config_translations.py:451 config_translations.py:454
+#: config_translations.py:452 config_translations.py:455
 msgid "Never allow duty cycle to go below Min."
 msgstr "不要让占空比去min以下。"
 
-#: config_translations.py:453
+#: config_translations.py:454
 msgid "Always Min (Lower)"
 msgstr "始终敏（下）"
 
@@ -1830,12 +1683,6 @@ msgstr "打开一个输出关，开，或开或持续时间。"
 #: actions/output_on_off.py:52
 msgid "State"
 msgstr "然后陈述"
-
-#: actions/output_on_off.py:61 actions/output_ramp_pwm.py:77
-#: actions/pause_actions.py:35 mycodo_flask/forms/forms_method.py:58
-#: mycodo_flask/forms/forms_method.py:119
-msgid "Duration (seconds)"
-msgstr "持续时间（秒）"
 
 #: actions/output_pwm.py:25
 #, fuzzy
@@ -2181,13 +2028,6 @@ msgstr "展会频道"
 #, fuzzy
 msgid "Store Measurement"
 msgstr "力测量"
-
-#: inputs/rpi_signal_revolutions_pigpio_callback.py:52
-#: mycodo_flask/forms/forms_conditional.py:69 outputs/on_off_gpio.py:58
-#: outputs/on_off_gpio_sysfs.py:54 outputs/on_off_wireless_rpi_rf.py:61
-#: outputs/pump_gpio.py:84 outputs/pwm_gpio.py:83
-msgid "GPIO Pin (BCM)"
-msgstr "GPIO引脚（BCM）"
 
 #: inputs/th1x.py:68 inputs/th1x_am2301.py:67 inputs/th1x_ds18b20.py:53
 msgid "IP Address"
@@ -5577,6 +5417,10 @@ msgstr ""
 msgid "Trigger Functions at Startup"
 msgstr ""
 
+#: outputs/on_off_gpio_sysfs.py:54
+msgid "GPIO Pin (BCM)"
+msgstr "GPIO引脚（BCM）"
+
 #: outputs/on_off_kasa_rgb_bulbs.py:104 outputs/on_off_kasa_rgb_bulbs.py:127
 #: outputs/on_off_kasa_rgb_bulbs.py:150 outputs/on_off_kasa_rgb_bulbs.py:173
 #: outputs/on_off_kasa_rgb_bulbs.py:196 outputs/on_off_neopixel_rgb.py:75
@@ -5642,6 +5486,11 @@ msgstr ""
 #: outputs/output_spacer.py:9
 msgid "Spacer"
 msgstr "间隔"
+
+#: outputs/pump_pca9685.py:156 outputs/pump_pca9685_l298n.py:145
+#: outputs/pwm_gpio.py:144 outputs/pwm_pca9685.py:101
+msgid "Frequency (Hertz)"
+msgstr "频率（赫兹）"
 
 #: outputs/pwm_gpio.py:151 outputs/pwm_pca9685.py:161 outputs/pwm_python.py:262
 #: outputs/pwm_shell.py:116
@@ -5941,4 +5790,103 @@ msgstr ""
 
 #~ msgid "{} C {}"
 #~ msgstr ""
+
+#~ msgid "Select the 1-wire device ID"
+#~ msgstr "选择1线设备ID"
+
+#~ msgid ""
+#~ "Adjust the gain to change the "
+#~ "measurable voltage range. See ADC "
+#~ "documentation for details."
+#~ msgstr "调整增益以改变可测量的电压范围。有关详情，请参阅ADC文档。"
+
+#~ msgid "ADC Resolution (see ADC documentation)"
+#~ msgstr "ADC分辨率（参见ADC文档）"
+
+#~ msgid "ADC Sample Speed (see ADC documentation)"
+#~ msgstr "ADC采样速度（参见ADC文档）"
+
+#~ msgid "The number of amps the output device draws (at 120/240 VAC)"
+#~ msgstr "输出设备绘制的放大器数量（120/240 VAC）"
+
+#~ msgid "MAC (XX:XX:XX:XX:XX:XX)"
+#~ msgstr "MAC（XX：XX：XX：XX：XX：XX）"
+
+#~ msgid "The MAC address of the Bluetooth device"
+#~ msgstr ""
+
+#~ msgid "The adapter of the Bluetooth device"
+#~ msgstr ""
+
+#~ msgid "The command to be executed to return a measurement value"
+#~ msgstr ""
+
+#~ msgid "Desired Flow Rate (ml/min)"
+#~ msgstr ""
+
+#~ msgid "Desired flow rate in ml/minute when Specify Flow Rate set"
+#~ msgstr ""
+
+#~ msgid "Pin (GPIO)"
+#~ msgstr "引脚（GPIO）"
+
+#~ msgid "The GPIO pin using BCM numbering"
+#~ msgstr "GPIO引脚使用BCM编号"
+
+#~ msgid "The I2C bus the device is connected to"
+#~ msgstr "设备连接的I2C总线"
+
+#~ msgid "The I2C address of the device"
+#~ msgstr "设备的I2C地址"
+
+#~ msgid "Max Age (seconds)"
+#~ msgstr "最大年龄（秒）"
+
+#~ msgid "Duration to send to output controller"
+#~ msgstr ""
+
+#~ msgid "Value to send to output controller"
+#~ msgstr ""
+
+#~ msgid "Voltage to send to output controller"
+#~ msgstr ""
+
+#~ msgid "Volume to send to output controller"
+#~ msgstr ""
+
+#~ msgid "Period (seconds)"
+#~ msgstr "期间（秒）"
+
+#~ msgid "Clock Pin"
+#~ msgstr "时钟针"
+
+#~ msgid "The GPIO (using BCM numbering) connected to the Clock pin"
+#~ msgstr "GPIO（使用BCM编号）连接到Clock引脚"
+
+#~ msgid "CS Pin"
+#~ msgstr "CS Pin"
+
+#~ msgid "The GPIO (using BCM numbering) connected to the Cable Select pin"
+#~ msgstr "GPIO（使用BCM编号）连接到Cable Select引脚"
+
+#~ msgid "MISO Pin"
+#~ msgstr "MISO Pin"
+
+#~ msgid "The GPIO (using BCM numbering) connected to the MISO pin"
+#~ msgstr "GPIO（使用BCM编号）连接到MISO引脚"
+
+#~ msgid "MOSI Pin"
+#~ msgstr "MOSI Pin"
+
+#~ msgid "The GPIO (using BCM numbering) connected to the MOSI pin"
+#~ msgstr "GPIO（使用BCM编号）连接到MOSI引脚"
+
+#~ msgid "Reference resistance (Ohm)"
+#~ msgstr "参考电阻（欧姆）"
+
+#~ msgid "Refresh (seconds)"
+#~ msgstr "刷新（秒）"
+
+#~ msgid "Duration (seconds)"
+#~ msgstr "持续时间（秒）"
 

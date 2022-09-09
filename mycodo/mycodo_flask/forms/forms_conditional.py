@@ -31,7 +31,7 @@ class Conditional(FlaskForm):
     conditional_statement = StringField(lazy_gettext('Run Python Code'))
     conditional_status = StringField(lazy_gettext('Status Python Code'))
     period = DecimalField(
-        lazy_gettext('Period (seconds)'),
+        f"{lazy_gettext('Period')} ({lazy_gettext('Seconds')})",
         widget=NumberInput(step='any'))
     log_level_debug = BooleanField(
         TRANSLATIONS['log_level_debug']['title'])
@@ -66,7 +66,7 @@ class ConditionalConditions(FlaskForm):
 
     # GPIO State
     gpio_pin = IntegerField(
-        lazy_gettext('GPIO Pin (BCM)'), widget=NumberInput())
+        f"{lazy_gettext('Pin')}: {lazy_gettext('GPIO')} ({lazy_gettext('BCM')})", widget=NumberInput())
 
     output_id = StringField(TRANSLATIONS['output']['title'])
     controller_id = StringField(TRANSLATIONS['controller']['title'])

@@ -63,8 +63,8 @@ FUNCTION_INFORMATION = {
             'default_value': 60,
             'required': True,
             'constraints_pass': constraints_pass_positive_value,
-            'name': lazy_gettext('Period (seconds)'),
-            'phrase': lazy_gettext('The duration (seconds) between measurements or actions')
+            'name': f"{lazy_gettext('Period')} ({lazy_gettext('Seconds')})",
+            'phrase': 'The duration (seconds) between measurements or actions'
         },
         {
             'id': 'start_offset',
