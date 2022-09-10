@@ -143,7 +143,7 @@ OUTPUT_INFORMATION = {
             'type': 'float',
             'default_value': 0.0,
             'required': True,
-            'name': lazy_gettext('Current (Amps)'),
+            'name': f'{lazy_gettext("Current")} ({lazy_gettext("Amps")})',
             'phrase': lazy_gettext('The current draw of the device being controlled')
         }
     ]

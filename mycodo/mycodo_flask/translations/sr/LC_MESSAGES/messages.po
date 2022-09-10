@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Mycodo1 8.11.0\n"
 "Report-Msgid-Bugs-To: mycodo@kylegabriel.com\n"
-"POT-Creation-Date: 2022-09-09 21:32-0400\n"
+"POT-Creation-Date: 2022-09-10 11:38-0400\n"
 "PO-Revision-Date: 2021-06-11 14:13+0000\n"
 "Last-Translator: Kyle Gabriel <kyletgabriel@gmail.com>\n"
 "Language: sr\n"
@@ -3946,7 +3946,7 @@ msgid "Back to Method Management"
 msgstr "Назад на управљање методама"
 
 #: mycodo_flask/templates/pages/method-build.html:90
-msgid "Methods invoked to calculate the value of this method:"
+msgid "Methods invoked to calculate the value of this method"
 msgstr ""
 
 #: mycodo_flask/templates/pages/method-list.html:23
@@ -5041,7 +5041,7 @@ msgstr "Подешавања корисника"
 
 #: mycodo_flask/templates/settings/users.html:110
 #, fuzzy
-msgid "Which page to land on for logging in"
+msgid "Which page to land on before logging in"
 msgstr "Која страница ће се приказати након пријаве"
 
 #: mycodo_flask/templates/settings/users.html:112
@@ -5235,10 +5235,6 @@ msgid ""
 "measurements"
 msgstr "Активирајте контролер пре него што покушате да примените меру"
 
-#: mycodo_flask/utils/utils_measurement.py:54
-msgid "Deactivate controller '{}' before modifying its settings"
-msgstr ""
-
 #: mycodo_flask/utils/utils_method.py:30
 msgid "Duration must be a positive integer"
 msgstr "Трајање мора бити позитиван цео број"
@@ -5247,53 +5243,19 @@ msgstr "Трајање мора бити позитиван цео број"
 msgid "Duration must be a valid integer"
 msgstr "Трајање мора бити важећи цео број"
 
-#: mycodo_flask/utils/utils_method.py:43
-msgid "Required: Start date/time, end date/time, start setpoint"
-msgstr "Обавезно: Датум / време почетка, датум / време завршетка, стартна вредност"
-
-#: mycodo_flask/utils/utils_method.py:52
-msgid "Invalid Date/Time format. Correct format: MM/DD/YYYY HH:MM:SS"
-msgstr ""
-"Неважећи формат датума / времена. Исправан формат: ДД / ММ / ГГГГ ХХ: ММ:"
-" СС"
-
-#: mycodo_flask/utils/utils_method.py:56
-msgid "The end time/date must be after the start time/date."
-msgstr "Вријеме / датум завршетка мора бити након почетка / датума почетка."
-
-#: mycodo_flask/utils/utils_method.py:64
-msgid "Required: Start time, end time, start setpoint"
-msgstr "Потребно: Почетно време, време завршетка, почетна задата вредност"
-
-#: mycodo_flask/utils/utils_method.py:73
-msgid "Invalid Date/Time format. Correct format: HH:MM:SS"
-msgstr "Неважећи формат датума / времена. Исправан формат: ХХ: ММ: СС"
-
-#: mycodo_flask/utils/utils_method.py:77
+#: mycodo_flask/utils/utils_method.py:55 mycodo_flask/utils/utils_method.py:73
 msgid "The end time must be after the start time."
 msgstr "Време завршетка мора бити након почетка."
 
-#: mycodo_flask/utils/utils_method.py:93
-msgid "Required: Duration"
-msgstr ""
-
-#: mycodo_flask/utils/utils_method.py:96
-msgid "Required: Duration must be positive"
-msgstr "Потребно: Трајање мора бити позитивно"
-
-#: mycodo_flask/utils/utils_method.py:99
-msgid "Required: Start Setpoint"
-msgstr ""
-
-#: mycodo_flask/utils/utils_method.py:210
+#: mycodo_flask/utils/utils_method.py:205
 msgid "Error: Angle Shift is out of range. It must be <= 0 and <= 360."
 msgstr "Грешка: Померање угла је изван опсега. Мора бити <= 0 и <= 360."
 
-#: mycodo_flask/utils/utils_method.py:214
+#: mycodo_flask/utils/utils_method.py:209
 msgid "Error: X0 must be greater than X3."
 msgstr "Грешка: Кс0 мора бити већа од Кс3."
 
-#: mycodo_flask/utils/utils_method.py:268
+#: mycodo_flask/utils/utils_method.py:263
 #, python-format
 msgid ""
 "The new entry start time (%(st)s) cannot overlap the last entry's end "
@@ -5302,22 +5264,22 @@ msgstr ""
 "Ново време почетка уноса (%(st)s) не може се преклапати са крајњим "
 "временом последњег уноса (%(et)s). Напомена: Могу бити у исто вријеме."
 
-#: mycodo_flask/utils/utils_method.py:313
-#: mycodo_flask/utils/utils_method.py:320
+#: mycodo_flask/utils/utils_method.py:308
+#: mycodo_flask/utils/utils_method.py:315
 #, python-format
 msgid "Added duration to method from %(st)s to %(end)s"
 msgstr "Додато трајање методу од %(st)s до %(end)s"
 
-#: mycodo_flask/utils/utils_method.py:324
+#: mycodo_flask/utils/utils_method.py:319
 msgid "Added method restart"
 msgstr "Додато је поновно покретање методе"
 
-#: mycodo_flask/utils/utils_method.py:326
+#: mycodo_flask/utils/utils_method.py:321
 #, python-format
 msgid "Added duration to method for %(sec)s seconds"
 msgstr "Додато трајање методи за %(sec)s секунди"
 
-#: mycodo_flask/utils/utils_method.py:391
+#: mycodo_flask/utils/utils_method.py:386
 #, python-format
 msgid ""
 "The entry start time (%(st)s) cannot overlap the previous entry's end "
@@ -5326,7 +5288,7 @@ msgstr ""
 "Време почетка уноса (%(st)s) не може се преклапати са временом завршетка "
 "претходног уноса (%(et)s)"
 
-#: mycodo_flask/utils/utils_method.py:401
+#: mycodo_flask/utils/utils_method.py:396
 #, python-format
 msgid ""
 "The entry end time (%(et)s) cannot overlap the next entry's start time "
@@ -5521,12 +5483,6 @@ msgstr ""
 #: outputs/on_off_python.py:234 outputs/on_off_wireless_rpi_rf.py:132
 #: outputs/pwm_shell.py:131
 msgid "Whether to trigger functions when the output switches at startup"
-msgstr ""
-
-#: outputs/on_off_python.py:248 outputs/on_off_shell.py:113
-#: outputs/on_off_wireless_rpi_rf.py:146 outputs/pwm_gpio.py:173
-#: outputs/pwm_shell.py:145
-msgid "Current (Amps)"
 msgstr ""
 
 #: outputs/on_off_python.py:249 outputs/on_off_wireless_rpi_rf.py:147

@@ -107,7 +107,7 @@
         <div class="col-auto">
           {{form_user.default_login_page.label(class_='control-label')}}
           <div>
-            <select class="form-control form-tooltip form-dropdown" data-placement="top" id="default_login_page" name="default_login_page" title="{{_('Which page to land on for logging in')}}">
+            <select class="form-control form-tooltip form-dropdown" data-placement="top" id="default_login_page" name="default_login_page" title="{{_('Which page to land on before logging in')}}">
               <option value="password"{% if misc.default_login_page == 'password' %} selected{% endif %}>{{_('Password')}}</option>
               <option value="keypad"{% if misc.default_login_page == 'keypad' %} selected{% endif %}>{{_('Keypad')}}</option>
             </select>

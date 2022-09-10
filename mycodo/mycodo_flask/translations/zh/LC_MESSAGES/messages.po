@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Mycodo1 8.11.0\n"
 "Report-Msgid-Bugs-To: mycodo@kylegabriel.com\n"
-"POT-Creation-Date: 2022-09-09 21:32-0400\n"
+"POT-Creation-Date: 2022-09-10 11:38-0400\n"
 "PO-Revision-Date: 2021-06-11 14:13+0000\n"
 "Last-Translator: Kyle Gabriel <kyletgabriel@gmail.com>\n"
 "Language: zh\n"
@@ -3877,7 +3877,7 @@ msgid "Back to Method Management"
 msgstr "返回方法管理"
 
 #: mycodo_flask/templates/pages/method-build.html:90
-msgid "Methods invoked to calculate the value of this method:"
+msgid "Methods invoked to calculate the value of this method"
 msgstr ""
 
 #: mycodo_flask/templates/pages/method-list.html:23
@@ -4880,7 +4880,7 @@ msgstr "用户设置"
 
 #: mycodo_flask/templates/settings/users.html:110
 #, fuzzy
-msgid "Which page to land on for logging in"
+msgid "Which page to land on before logging in"
 msgstr "登录后要登陆的页面"
 
 #: mycodo_flask/templates/settings/users.html:112
@@ -5072,10 +5072,6 @@ msgid ""
 "measurements"
 msgstr "在尝试强制采集测量之前激活控制器"
 
-#: mycodo_flask/utils/utils_measurement.py:54
-msgid "Deactivate controller '{}' before modifying its settings"
-msgstr ""
-
 #: mycodo_flask/utils/utils_method.py:30
 msgid "Duration must be a positive integer"
 msgstr "持续时间必须是正整数"
@@ -5084,80 +5080,48 @@ msgstr "持续时间必须是正整数"
 msgid "Duration must be a valid integer"
 msgstr "持续时间必须是有效整数"
 
-#: mycodo_flask/utils/utils_method.py:43
-msgid "Required: Start date/time, end date/time, start setpoint"
-msgstr "必需：开始日期/时间，结束日期/时间，开始设定值"
-
-#: mycodo_flask/utils/utils_method.py:52
-msgid "Invalid Date/Time format. Correct format: MM/DD/YYYY HH:MM:SS"
-msgstr "无效的日期/时间格式。格式正确：DD / MM / YYYY HH：MM：SS"
-
-#: mycodo_flask/utils/utils_method.py:56
-msgid "The end time/date must be after the start time/date."
-msgstr "结束时间/日期必须在开始时间/日期之后。"
-
-#: mycodo_flask/utils/utils_method.py:64
-msgid "Required: Start time, end time, start setpoint"
-msgstr "必需：开始时间，结束时间，开始设定值"
-
-#: mycodo_flask/utils/utils_method.py:73
-msgid "Invalid Date/Time format. Correct format: HH:MM:SS"
-msgstr "无效的日期/时间格式。格式正确：HH：MM：SS"
-
-#: mycodo_flask/utils/utils_method.py:77
+#: mycodo_flask/utils/utils_method.py:55 mycodo_flask/utils/utils_method.py:73
 msgid "The end time must be after the start time."
 msgstr "结束时间必须在开始时间之后。"
 
-#: mycodo_flask/utils/utils_method.py:93
-msgid "Required: Duration"
-msgstr ""
-
-#: mycodo_flask/utils/utils_method.py:96
-msgid "Required: Duration must be positive"
-msgstr "必需：持续时间必须为正"
-
-#: mycodo_flask/utils/utils_method.py:99
-msgid "Required: Start Setpoint"
-msgstr ""
-
-#: mycodo_flask/utils/utils_method.py:210
+#: mycodo_flask/utils/utils_method.py:205
 msgid "Error: Angle Shift is out of range. It must be <= 0 and <= 360."
 msgstr "错误：角度偏移超出范围。它必须<= 0且<= 360。"
 
-#: mycodo_flask/utils/utils_method.py:214
+#: mycodo_flask/utils/utils_method.py:209
 msgid "Error: X0 must be greater than X3."
 msgstr "错误：X0必须大于X3。"
 
-#: mycodo_flask/utils/utils_method.py:268
+#: mycodo_flask/utils/utils_method.py:263
 #, python-format
 msgid ""
 "The new entry start time (%(st)s) cannot overlap the last entry's end "
 "time (%(et)s). Note: They may be the same time."
 msgstr "新的条目开始时间 (%(st)s) 不能与最后一个条目的结束时间 (%(et)s) 重叠。注意：它们可能是同一时间。"
 
-#: mycodo_flask/utils/utils_method.py:313
-#: mycodo_flask/utils/utils_method.py:320
+#: mycodo_flask/utils/utils_method.py:308
+#: mycodo_flask/utils/utils_method.py:315
 #, python-format
 msgid "Added duration to method from %(st)s to %(end)s"
 msgstr "从 %(st)s 到 %(end)s 增加了方法的持续时间"
 
-#: mycodo_flask/utils/utils_method.py:324
+#: mycodo_flask/utils/utils_method.py:319
 msgid "Added method restart"
 msgstr "添加方法重启"
 
-#: mycodo_flask/utils/utils_method.py:326
+#: mycodo_flask/utils/utils_method.py:321
 #, python-format
 msgid "Added duration to method for %(sec)s seconds"
 msgstr "为 %(sec)s 秒增加了方法的持续时间"
 
-#: mycodo_flask/utils/utils_method.py:391
+#: mycodo_flask/utils/utils_method.py:386
 #, python-format
 msgid ""
 "The entry start time (%(st)s) cannot overlap the previous entry's end "
 "time (%(et)s)"
 msgstr "进入开始时间 (%(st)s) 不能与前一个条目的结束时间重叠 (%(et)s)"
 
-#: mycodo_flask/utils/utils_method.py:401
+#: mycodo_flask/utils/utils_method.py:396
 #, python-format
 msgid ""
 "The entry end time (%(et)s) cannot overlap the next entry's start time "
@@ -5341,12 +5305,6 @@ msgstr ""
 #: outputs/on_off_python.py:234 outputs/on_off_wireless_rpi_rf.py:132
 #: outputs/pwm_shell.py:131
 msgid "Whether to trigger functions when the output switches at startup"
-msgstr ""
-
-#: outputs/on_off_python.py:248 outputs/on_off_shell.py:113
-#: outputs/on_off_wireless_rpi_rf.py:146 outputs/pwm_gpio.py:173
-#: outputs/pwm_shell.py:145
-msgid "Current (Amps)"
 msgstr ""
 
 #: outputs/on_off_python.py:249 outputs/on_off_wireless_rpi_rf.py:147

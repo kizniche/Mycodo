@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Mycodo1 8.11.0\n"
 "Report-Msgid-Bugs-To: mycodo@kylegabriel.com\n"
-"POT-Creation-Date: 2022-09-09 21:32-0400\n"
+"POT-Creation-Date: 2022-09-10 11:38-0400\n"
 "PO-Revision-Date: 2021-06-12 15:11+0000\n"
 "Last-Translator: Kyle Gabriel <kyletgabriel@gmail.com>\n"
 "Language: nl\n"
@@ -3967,7 +3967,7 @@ msgid "Back to Method Management"
 msgstr "Terug naar Method Management"
 
 #: mycodo_flask/templates/pages/method-build.html:90
-msgid "Methods invoked to calculate the value of this method:"
+msgid "Methods invoked to calculate the value of this method"
 msgstr ""
 
 #: mycodo_flask/templates/pages/method-list.html:23
@@ -5087,7 +5087,7 @@ msgstr "Gebruikersinstellingen"
 
 #: mycodo_flask/templates/settings/users.html:110
 #, fuzzy
-msgid "Which page to land on for logging in"
+msgid "Which page to land on before logging in"
 msgstr "Op welke pagina moet je komen nadat je bent ingelogd"
 
 #: mycodo_flask/templates/settings/users.html:112
@@ -5285,10 +5285,6 @@ msgstr ""
 "Activeer de controller voordat u de acquisitie van metingen probeert te "
 "forceren"
 
-#: mycodo_flask/utils/utils_measurement.py:54
-msgid "Deactivate controller '{}' before modifying its settings"
-msgstr ""
-
 #: mycodo_flask/utils/utils_method.py:30
 msgid "Duration must be a positive integer"
 msgstr "Duur moet een positief geheel getal zijn"
@@ -5297,53 +5293,19 @@ msgstr "Duur moet een positief geheel getal zijn"
 msgid "Duration must be a valid integer"
 msgstr "Duur moet een geldig geheel getal zijn"
 
-#: mycodo_flask/utils/utils_method.py:43
-msgid "Required: Start date/time, end date/time, start setpoint"
-msgstr "Vereist: begindatum / -tijd, einddatum / -tijd, start-instelpunt"
-
-#: mycodo_flask/utils/utils_method.py:52
-msgid "Invalid Date/Time format. Correct format: MM/DD/YYYY HH:MM:SS"
-msgstr ""
-"Ongeldige datum / tijd-indeling. Juiste indeling: DD / MM / JJJJ UU: MM: "
-"SS"
-
-#: mycodo_flask/utils/utils_method.py:56
-msgid "The end time/date must be after the start time/date."
-msgstr "De eindtijd / datum moet na de starttijd / datum liggen."
-
-#: mycodo_flask/utils/utils_method.py:64
-msgid "Required: Start time, end time, start setpoint"
-msgstr "Vereist: starttijd, eindtijd, start-setpoint"
-
-#: mycodo_flask/utils/utils_method.py:73
-msgid "Invalid Date/Time format. Correct format: HH:MM:SS"
-msgstr "Ongeldige datum / tijd-indeling. Juiste indeling: UU: MM: SS"
-
-#: mycodo_flask/utils/utils_method.py:77
+#: mycodo_flask/utils/utils_method.py:55 mycodo_flask/utils/utils_method.py:73
 msgid "The end time must be after the start time."
 msgstr "De eindtijd moet na de starttijd zijn."
 
-#: mycodo_flask/utils/utils_method.py:93
-msgid "Required: Duration"
-msgstr ""
-
-#: mycodo_flask/utils/utils_method.py:96
-msgid "Required: Duration must be positive"
-msgstr "Vereist: de duur moet positief zijn"
-
-#: mycodo_flask/utils/utils_method.py:99
-msgid "Required: Start Setpoint"
-msgstr ""
-
-#: mycodo_flask/utils/utils_method.py:210
+#: mycodo_flask/utils/utils_method.py:205
 msgid "Error: Angle Shift is out of range. It must be <= 0 and <= 360."
 msgstr "Fout: hoekverschuiving is buiten bereik. Het moet <= 0 en <= 360 zijn."
 
-#: mycodo_flask/utils/utils_method.py:214
+#: mycodo_flask/utils/utils_method.py:209
 msgid "Error: X0 must be greater than X3."
 msgstr "Fout: X0 moet groter zijn dan X3."
 
-#: mycodo_flask/utils/utils_method.py:268
+#: mycodo_flask/utils/utils_method.py:263
 #, python-format
 msgid ""
 "The new entry start time (%(st)s) cannot overlap the last entry's end "
@@ -5352,22 +5314,22 @@ msgstr ""
 "De nieuwe starttijd (%(st)s) kan de eindtijd van het laatste item "
 "(%(et)s) niet overlappen. Opmerking: ze kunnen hetzelfde zijn."
 
-#: mycodo_flask/utils/utils_method.py:313
-#: mycodo_flask/utils/utils_method.py:320
+#: mycodo_flask/utils/utils_method.py:308
+#: mycodo_flask/utils/utils_method.py:315
 #, python-format
 msgid "Added duration to method from %(st)s to %(end)s"
 msgstr "Duur toegevoegd aan methode van %(st)s tot %(end)s"
 
-#: mycodo_flask/utils/utils_method.py:324
+#: mycodo_flask/utils/utils_method.py:319
 msgid "Added method restart"
 msgstr "Herhaalde methode opnieuw toegevoegd"
 
-#: mycodo_flask/utils/utils_method.py:326
+#: mycodo_flask/utils/utils_method.py:321
 #, python-format
 msgid "Added duration to method for %(sec)s seconds"
 msgstr "Duur toegevoegd aan methode voor %(sec)s seconden"
 
-#: mycodo_flask/utils/utils_method.py:391
+#: mycodo_flask/utils/utils_method.py:386
 #, python-format
 msgid ""
 "The entry start time (%(st)s) cannot overlap the previous entry's end "
@@ -5376,7 +5338,7 @@ msgstr ""
 "De starttijd van het item (%(st)s) kan de eindtijd van het vorige item "
 "niet overlappen (%(et)s)"
 
-#: mycodo_flask/utils/utils_method.py:401
+#: mycodo_flask/utils/utils_method.py:396
 #, python-format
 msgid ""
 "The entry end time (%(et)s) cannot overlap the next entry's start time "
@@ -5571,12 +5533,6 @@ msgstr ""
 #: outputs/on_off_python.py:234 outputs/on_off_wireless_rpi_rf.py:132
 #: outputs/pwm_shell.py:131
 msgid "Whether to trigger functions when the output switches at startup"
-msgstr ""
-
-#: outputs/on_off_python.py:248 outputs/on_off_shell.py:113
-#: outputs/on_off_wireless_rpi_rf.py:146 outputs/pwm_gpio.py:173
-#: outputs/pwm_shell.py:145
-msgid "Current (Amps)"
 msgstr ""
 
 #: outputs/on_off_python.py:249 outputs/on_off_wireless_rpi_rf.py:147
