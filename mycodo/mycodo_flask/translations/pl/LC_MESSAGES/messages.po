@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Mycodo1 8.11.0\n"
 "Report-Msgid-Bugs-To: mycodo@kylegabriel.com\n"
-"POT-Creation-Date: 2022-09-09 19:29-0400\n"
+"POT-Creation-Date: 2022-09-09 21:32-0400\n"
 "PO-Revision-Date: 2021-06-12 15:11+0000\n"
 "Last-Translator: Kyle Gabriel <kyletgabriel@gmail.com>\n"
 "Language: pl\n"
@@ -1623,17 +1623,9 @@ msgstr ""
 "Ważenie poprzedniego pomiaru na aktualnym pomiarem. Zakres: 0,0 - 1,0. "
 "Używany do wygładzania pomiarów. 0.0, bez obciążania."
 
-#: config_translations.py:451
-msgid "Always Min (Raise)"
-msgstr "Zawsze min (podnoszenie)"
-
 #: config_translations.py:452 config_translations.py:455
 msgid "Never allow duty cycle to go below Min."
 msgstr "Nie wolno dopuścić, aby przejść cykl pracy poniżej min."
-
-#: config_translations.py:454
-msgid "Always Min (Lower)"
-msgstr "Zawsze Min (Dolna)"
 
 #: actions/command_bash.py:21
 #, fuzzy
@@ -2741,94 +2733,6 @@ msgstr "Integrator Min"
 msgid "Integrator Max"
 msgstr "Integrator Max"
 
-#: mycodo_flask/forms/forms_pid.py:101
-msgid "Output (Raise)"
-msgstr "Wyjście (podnoszenie)"
-
-#: mycodo_flask/forms/forms_pid.py:102
-msgid "Action (Raise)"
-msgstr "Akcja (Raise)"
-
-#: mycodo_flask/forms/forms_pid.py:103
-msgid "Output (Lower)"
-msgstr "Wyjście (dolny)"
-
-#: mycodo_flask/forms/forms_pid.py:104
-msgid "Action (Lower)"
-msgstr "Akcja (Dolna)"
-
-#: mycodo_flask/forms/forms_pid.py:118
-msgid "Min On Duration (Raise)"
-msgstr "Min Na Czas (podnoszenie)"
-
-#: mycodo_flask/forms/forms_pid.py:126
-msgid "Max On Duration (Raise)"
-msgstr "Maksymalny czas włączenia (podnoszenie)"
-
-#: mycodo_flask/forms/forms_pid.py:134
-msgid "Min Off Duration (Raise)"
-msgstr "Min Off Czas trwania (Raise)"
-
-#: mycodo_flask/forms/forms_pid.py:145
-msgid "Min On Duration (Lower)"
-msgstr "Na czas trwania min (Dolna)"
-
-#: mycodo_flask/forms/forms_pid.py:153
-msgid "Max On Duration (Lower)"
-msgstr "Maksymalny czas włączenia (Dolna)"
-
-#: mycodo_flask/forms/forms_pid.py:161
-msgid "Min Off Duration (Lower)"
-msgstr "Min Off Czas trwania (Dolna)"
-
-#: mycodo_flask/forms/forms_pid.py:172
-msgid "Min Amount (Raise)"
-msgstr ""
-
-#: mycodo_flask/forms/forms_pid.py:176
-msgid "Max Amount (Raise)"
-msgstr ""
-
-#: mycodo_flask/forms/forms_pid.py:183
-msgid "Min Amount (Lower)"
-msgstr ""
-
-#: mycodo_flask/forms/forms_pid.py:187
-msgid "Max Amount (Lower)"
-msgstr ""
-
-#: mycodo_flask/forms/forms_pid.py:194
-msgid "Min On Amount (Raise)"
-msgstr "Min od ilości (podnoszenie)"
-
-#: mycodo_flask/forms/forms_pid.py:202
-msgid "Max On Amount (Raise)"
-msgstr "Max Na Kwota (Raise)"
-
-#: mycodo_flask/forms/forms_pid.py:213
-msgid "Min On Amount (Lower)"
-msgstr "Min od ilości (Dolna)"
-
-#: mycodo_flask/forms/forms_pid.py:221
-msgid "Max On Amount (Lower)"
-msgstr "Max Na Kwota (Dolna)"
-
-#: mycodo_flask/forms/forms_pid.py:232
-msgid "Min Duty Cycle (Raise)"
-msgstr "Min Cykl pracy (podnoszenie)"
-
-#: mycodo_flask/forms/forms_pid.py:240
-msgid "Max Duty Cycle (Raise)"
-msgstr "Max Cykl (podnoszenie)"
-
-#: mycodo_flask/forms/forms_pid.py:253
-msgid "Min Duty Cycle (Lower)"
-msgstr "Min Cykl pracy (niższy)"
-
-#: mycodo_flask/forms/forms_pid.py:261
-msgid "Max Duty Cycle (Lower)"
-msgstr "Max Cykl (Dolna)"
-
 #: mycodo_flask/forms/forms_settings.py:32
 #: mycodo_flask/forms/forms_settings.py:33
 msgid "SMTP Host"
@@ -3129,6 +3033,8 @@ msgid "Edit Settings"
 msgstr "Edytuj ustawienia"
 
 #: mycodo_flask/forms/forms_settings.py:303
+#: mycodo_flask/templates/forgot_password.html:26
+#: mycodo_flask/templates/reset_password.html:26
 msgid "Reset Password"
 msgstr "Zresetuj hasło"
 
@@ -3390,11 +3296,6 @@ msgstr "Info"
 #: mycodo_flask/templates/flash_messages.html:33
 msgid "Warning"
 msgstr ""
-
-#: mycodo_flask/templates/forgot_password.html:26
-#: mycodo_flask/templates/reset_password.html:26
-msgid "Password Reset"
-msgstr "Resetowania hasła"
 
 #: mycodo_flask/templates/layout-remote.html:47
 #: mycodo_flask/templates/layout.html:204
@@ -3961,11 +3862,13 @@ msgstr ""
 " jedną"
 
 #: mycodo_flask/templates/pages/info.html:14
-msgid "Mycodo Version:"
+#, fuzzy
+msgid "Mycodo Version"
 msgstr "Mycodo wersja:"
 
 #: mycodo_flask/templates/pages/info.html:15
-msgid "Python Version:"
+#, fuzzy
+msgid "Python Version"
 msgstr "Python wersja:"
 
 #: mycodo_flask/templates/pages/info.html:16
@@ -4175,7 +4078,8 @@ msgstr "Wykonaj"
 
 #: mycodo_flask/templates/pages/usage.html:41
 #: mycodo_flask/templates/pages/usage.html:96
-msgid "Select a measurement with the unit:"
+#, fuzzy
+msgid "Select a measurement with the unit"
 msgstr "Wybierz pomiar z urządzenia:"
 
 #: mycodo_flask/templates/pages/usage.html:41

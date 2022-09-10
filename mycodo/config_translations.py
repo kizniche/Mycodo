@@ -448,10 +448,10 @@ TRANSLATIONS = {
 
     # PID
     'raise_always_min_pwm': {
-        'title': lazy_gettext('Always Min (Raise)'),
+        'title': f"{lazy_gettext('Always Min')} ({lazy_gettext('Raise')})",
         'phrase': lazy_gettext('Never allow duty cycle to go below Min.')},
     'lower_always_min_pwm': {
-        'title': lazy_gettext('Always Min (Lower)'),
+        'title': f"{lazy_gettext('Always Min')} ({lazy_gettext('Lower')})",
         'phrase': lazy_gettext('Never allow duty cycle to go below Min.')},
 
     # '': {

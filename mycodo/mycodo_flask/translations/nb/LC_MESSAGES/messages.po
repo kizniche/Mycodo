@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Mycodo1 8.11.0\n"
 "Report-Msgid-Bugs-To: mycodo@kylegabriel.com\n"
-"POT-Creation-Date: 2022-09-09 19:29-0400\n"
+"POT-Creation-Date: 2022-09-09 21:32-0400\n"
 "PO-Revision-Date: 2021-11-23 17:53+0000\n"
 "Last-Translator: Kyle Gabriel <kyletgabriel@gmail.com>\n"
 "Language: nb\n"
@@ -1624,17 +1624,9 @@ msgstr ""
 "Vektingen av forrige måling på gjeldende måling. Område: 0,0 - 1,0. "
 "Brukes til utjevningsmålinger. 0,0 betyr ingen vekting."
 
-#: config_translations.py:451
-msgid "Always Min (Raise)"
-msgstr "Alltid Min (Raise)"
-
 #: config_translations.py:452 config_translations.py:455
 msgid "Never allow duty cycle to go below Min."
 msgstr "La aldri driftssyklus for å gå under Min."
-
-#: config_translations.py:454
-msgid "Always Min (Lower)"
-msgstr "Alltid Min (lavere)"
 
 #: actions/command_bash.py:21
 #, fuzzy
@@ -2746,94 +2738,6 @@ msgstr "Integrator Min"
 msgid "Integrator Max"
 msgstr "Integrator Maks"
 
-#: mycodo_flask/forms/forms_pid.py:101
-msgid "Output (Raise)"
-msgstr "Output (Raise)"
-
-#: mycodo_flask/forms/forms_pid.py:102
-msgid "Action (Raise)"
-msgstr ""
-
-#: mycodo_flask/forms/forms_pid.py:103
-msgid "Output (Lower)"
-msgstr "Utgang (lavere)"
-
-#: mycodo_flask/forms/forms_pid.py:104
-msgid "Action (Lower)"
-msgstr ""
-
-#: mycodo_flask/forms/forms_pid.py:118
-msgid "Min On Duration (Raise)"
-msgstr "Min på varighet (heve)"
-
-#: mycodo_flask/forms/forms_pid.py:126
-msgid "Max On Duration (Raise)"
-msgstr "Maks på varighet (heve)"
-
-#: mycodo_flask/forms/forms_pid.py:134
-msgid "Min Off Duration (Raise)"
-msgstr "Min Av Varighet (Raise)"
-
-#: mycodo_flask/forms/forms_pid.py:145
-msgid "Min On Duration (Lower)"
-msgstr "Min på varighet (lavere)"
-
-#: mycodo_flask/forms/forms_pid.py:153
-msgid "Max On Duration (Lower)"
-msgstr "Maks på varighet (lavere)"
-
-#: mycodo_flask/forms/forms_pid.py:161
-msgid "Min Off Duration (Lower)"
-msgstr "Min Av Varighet (Nedre)"
-
-#: mycodo_flask/forms/forms_pid.py:172
-msgid "Min Amount (Raise)"
-msgstr ""
-
-#: mycodo_flask/forms/forms_pid.py:176
-msgid "Max Amount (Raise)"
-msgstr ""
-
-#: mycodo_flask/forms/forms_pid.py:183
-msgid "Min Amount (Lower)"
-msgstr ""
-
-#: mycodo_flask/forms/forms_pid.py:187
-msgid "Max Amount (Lower)"
-msgstr ""
-
-#: mycodo_flask/forms/forms_pid.py:194
-msgid "Min On Amount (Raise)"
-msgstr ""
-
-#: mycodo_flask/forms/forms_pid.py:202
-msgid "Max On Amount (Raise)"
-msgstr ""
-
-#: mycodo_flask/forms/forms_pid.py:213
-msgid "Min On Amount (Lower)"
-msgstr ""
-
-#: mycodo_flask/forms/forms_pid.py:221
-msgid "Max On Amount (Lower)"
-msgstr ""
-
-#: mycodo_flask/forms/forms_pid.py:232
-msgid "Min Duty Cycle (Raise)"
-msgstr "Min Driftssyklus (Raise)"
-
-#: mycodo_flask/forms/forms_pid.py:240
-msgid "Max Duty Cycle (Raise)"
-msgstr "Maks driftssyklus (løft)"
-
-#: mycodo_flask/forms/forms_pid.py:253
-msgid "Min Duty Cycle (Lower)"
-msgstr "Min Driftssyklus (Nedre)"
-
-#: mycodo_flask/forms/forms_pid.py:261
-msgid "Max Duty Cycle (Lower)"
-msgstr "Maks driftssyklus (lavere)"
-
 #: mycodo_flask/forms/forms_settings.py:32
 #: mycodo_flask/forms/forms_settings.py:33
 msgid "SMTP Host"
@@ -3134,6 +3038,8 @@ msgid "Edit Settings"
 msgstr "Endre innstillinger"
 
 #: mycodo_flask/forms/forms_settings.py:303
+#: mycodo_flask/templates/forgot_password.html:26
+#: mycodo_flask/templates/reset_password.html:26
 msgid "Reset Password"
 msgstr ""
 
@@ -3393,11 +3299,6 @@ msgstr "info"
 
 #: mycodo_flask/templates/flash_messages.html:33
 msgid "Warning"
-msgstr ""
-
-#: mycodo_flask/templates/forgot_password.html:26
-#: mycodo_flask/templates/reset_password.html:26
-msgid "Password Reset"
 msgstr ""
 
 #: mycodo_flask/templates/layout-remote.html:47
@@ -3954,11 +3855,13 @@ msgstr ""
 "mer enn ett"
 
 #: mycodo_flask/templates/pages/info.html:14
-msgid "Mycodo Version:"
+#, fuzzy
+msgid "Mycodo Version"
 msgstr "Mycodo Versjon:"
 
 #: mycodo_flask/templates/pages/info.html:15
-msgid "Python Version:"
+#, fuzzy
+msgid "Python Version"
 msgstr "Python Versjon:"
 
 #: mycodo_flask/templates/pages/info.html:16
@@ -4167,7 +4070,8 @@ msgstr ""
 
 #: mycodo_flask/templates/pages/usage.html:41
 #: mycodo_flask/templates/pages/usage.html:96
-msgid "Select a measurement with the unit:"
+#, fuzzy
+msgid "Select a measurement with the unit"
 msgstr "Velg en måling med enheten:"
 
 #: mycodo_flask/templates/pages/usage.html:41

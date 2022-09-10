@@ -11,8 +11,8 @@
 
     <div style="padding-bottom: 1.5em">
       <div style="padding-bottom: 0.5em; font-size: 1.3em">
-        {{_('Mycodo Version:')}} <span style="color: #4E9258; font-weight: bold;">{{mycodo_version}}</span>
-        <br>{{_('Python Version:')}} <span style="color: #4E9258; font-weight: bold;">{{python_version}}</span>
+        {{_('Mycodo Version')}}: <span style="color: #4E9258; font-weight: bold;">{{mycodo_version}}</span>
+        <br>{{_('Python Version')}}: <span style="color: #4E9258; font-weight: bold;">{{python_version}}</span>
         <br>{{_('Database Version')}}:&nbsp;
         {%- if database_version == correct_database_version -%}<span style="color: #4E9258; font-weight: bold;">{{database_version}}</span>
             {%- else -%}<span style="color: #F70D1A; font-weight: bold;">{{database_version}}</span> (Incorrect Version. Should be {{correct_database_version}}) <a href="https://kizniche.github.io/Mycodo/Troubleshooting/#incorrect-database-version"><span style="font-size: 16px" class="fas fa-question-circle"></span></a>
