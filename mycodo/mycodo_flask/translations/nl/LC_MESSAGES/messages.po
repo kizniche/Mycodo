@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: Mycodo1 8.11.0\n"
 "Report-Msgid-Bugs-To: mycodo@kylegabriel.com\n"
 "POT-Creation-Date: 2022-09-10 11:53-0400\n"
-"PO-Revision-Date: 2022-09-10 22:54+0000\n"
+"PO-Revision-Date: 2022-09-10 23:02+0000\n"
 "Last-Translator: Kyle Gabriel <business@kylegabriel.com>\n"
 "Language-Team: Dutch <http://translate.kylegabriel.com:8080/projects/mycodo/"
 "translations/nl/>\n"
@@ -603,9 +603,8 @@ msgstr "Doorzichtig"
 #: mycodo_flask/templates/pages/data_options/input_options.html:112
 #: mycodo_flask/templates/pages/function_options/custom_function_options.html:116
 #: mycodo_flask/templates/pages/output_options.html:91
-#, fuzzy
 msgid "Commands"
-msgstr "Commando"
+msgstr "Opdrachten"
 
 #: config_translations.py:39
 msgid "Completed"
