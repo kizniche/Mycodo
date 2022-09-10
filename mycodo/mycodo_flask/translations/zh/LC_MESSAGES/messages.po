@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Mycodo1 8.11.0\n"
 "Report-Msgid-Bugs-To: mycodo@kylegabriel.com\n"
-"POT-Creation-Date: 2022-09-10 11:38-0400\n"
+"POT-Creation-Date: 2022-09-10 11:53-0400\n"
 "PO-Revision-Date: 2021-06-11 14:13+0000\n"
 "Last-Translator: Kyle Gabriel <kyletgabriel@gmail.com>\n"
 "Language: zh\n"
@@ -21,7 +21,7 @@ msgstr ""
 
 #: config_devices_units.py:13
 msgid "Acceleration"
-msgstr ""
+msgstr "加速"
 
 #: config_devices_units.py:29
 msgid "ADC"
@@ -33,7 +33,7 @@ msgstr "高度"
 
 #: config_devices_units.py:37
 msgid "Angle"
-msgstr ""
+msgstr "角度"
 
 #: config_devices_units.py:41
 msgid "Battery"
@@ -100,7 +100,7 @@ msgstr "电势"
 
 #: config_devices_units.py:137
 msgid "Energy"
-msgstr ""
+msgstr "能源"
 
 #: config_devices_units.py:141 mycodo_flask/forms/forms_method.py:67
 msgid "Frequency"
@@ -137,7 +137,7 @@ msgstr "光"
 
 #: config_devices_units.py:173
 msgid "Magnetic Flux Density"
-msgstr ""
+msgstr "磁通密度"
 
 #: config_devices_units.py:177
 msgid "Moisture"
@@ -165,19 +165,19 @@ msgstr "PID D值"
 
 #: config_devices_units.py:213
 msgid "Power"
-msgstr ""
+msgstr "权力"
 
 #: config_devices_units.py:217
 msgid "Apparent Power"
-msgstr ""
+msgstr "表观功率"
 
 #: config_devices_units.py:221
 msgid "Power Factor"
-msgstr ""
+msgstr "功率因数"
 
 #: config_devices_units.py:225
 msgid "Reactive Power"
-msgstr ""
+msgstr "无功功率"
 
 #: config_devices_units.py:229
 msgid "Pressure"
@@ -201,7 +201,7 @@ msgstr "抵抗性"
 
 #: config_devices_units.py:249
 msgid "Rotation"
-msgstr ""
+msgstr "旋转"
 
 #: config_devices_units.py:253
 msgid "Revolutions"
@@ -209,7 +209,7 @@ msgstr "革命"
 
 #: config_devices_units.py:257
 msgid "Salinity"
-msgstr ""
+msgstr "盐度"
 
 #: config_devices_units.py:261 mycodo_flask/forms/forms_camera.py:67
 msgid "Saturation"
@@ -236,7 +236,7 @@ msgstr "具体焓"
 
 #: config_devices_units.py:281
 msgid "Specific Gravity"
-msgstr ""
+msgstr "比重"
 
 #: config_devices_units.py:285
 msgid "Specific Volume"
@@ -244,7 +244,7 @@ msgstr "比容"
 
 #: config_devices_units.py:289
 msgid "Speed"
-msgstr ""
+msgstr "速度"
 
 #: config_devices_units.py:293
 msgid "Temperature"
@@ -252,7 +252,7 @@ msgstr "温度"
 
 #: config_devices_units.py:297
 msgid "Total Dissolved Solids"
-msgstr ""
+msgstr "溶解性总固体"
 
 #: config_devices_units.py:301 config_devices_units.py:325
 #: config_devices_units.py:478
@@ -295,7 +295,7 @@ msgstr "安培"
 
 #: config_devices_units.py:340
 msgid "Bearing"
-msgstr ""
+msgstr "軸承"
 
 #: config_devices_units.py:346
 msgid "Celsius"
@@ -311,7 +311,7 @@ msgstr "厘米"
 
 #: config_devices_units.py:355
 msgid "Centimeters of water"
-msgstr ""
+msgstr "水的厘米数"
 
 #: config_devices_units.py:358
 msgid "Counts per minute"
@@ -327,7 +327,7 @@ msgstr "十进制"
 
 #: config_devices_units.py:367
 msgid "Degree"
-msgstr ""
+msgstr "学位"
 
 #: config_devices_units.py:370
 msgid "8-Bit Color"
@@ -359,7 +359,7 @@ msgstr "小时"
 
 #: config_devices_units.py:391
 msgid "Hectopascals"
-msgstr ""
+msgstr "百万帕斯卡"
 
 #: config_devices_units.py:394
 msgid "Hertz"
@@ -391,7 +391,7 @@ msgstr "Kilojoule每公斤"
 
 #: config_devices_units.py:415
 msgid "Knot"
-msgstr ""
+msgstr "结"
 
 #: config_devices_units.py:418
 msgid "Kilopascal"
@@ -399,7 +399,7 @@ msgstr "千帕"
 
 #: config_devices_units.py:421
 msgid "Kilowatt-hour"
-msgstr ""
+msgstr "千瓦时"
 
 #: config_devices_units.py:424
 msgid "Liter"
@@ -427,11 +427,11 @@ msgstr "仪表"
 
 #: config_devices_units.py:442
 msgid "Meters per second"
-msgstr ""
+msgstr "米/秒"
 
 #: config_devices_units.py:445
 msgid "Meters per second per second"
-msgstr ""
+msgstr "米/秒/秒"
 
 #: config_devices_units.py:448
 msgid "Milligram per Liter"
@@ -443,7 +443,7 @@ msgstr "分钟"
 
 #: config_devices_units.py:454
 msgid "Milliamp"
-msgstr ""
+msgstr "毫升"
 
 #: config_devices_units.py:457
 msgid "Milliliter"
@@ -451,11 +451,11 @@ msgstr "毫升"
 
 #: config_devices_units.py:460
 msgid "Millimeter"
-msgstr ""
+msgstr "毫米"
 
 #: config_devices_units.py:463
 msgid "Miles per hour"
-msgstr ""
+msgstr "每小时英里数"
 
 #: config_devices_units.py:466
 msgid "Millivolt"
@@ -499,7 +499,7 @@ msgstr "百万分之一"
 
 #: config_devices_units.py:502
 msgid "Parts per thousand"
-msgstr ""
+msgstr "千分之几"
 
 #: config_devices_units.py:505
 msgid "Pounds per square inch"
@@ -515,7 +515,7 @@ msgstr "第二"
 
 #: config_devices_units.py:517
 msgid "Steps"
-msgstr ""
+msgstr "阶梯"
 
 #: config_devices_units.py:520
 msgid "Microgram per cubic meter"
@@ -1665,7 +1665,7 @@ msgstr "活着"
 #: mycodo_flask/forms/forms_settings.py:104 outputs/on_off_mqtt.py:161
 #: outputs/value_mqtt.py:113
 msgid "Username"
-msgstr ""
+msgstr "帐号"
 
 #: actions/output_on_off.py:26
 #, fuzzy
@@ -1988,7 +1988,7 @@ msgstr "shell环境的当前工作目录。"
 
 #: inputs/mqtt_paho.py:111 inputs/mqtt_paho_json.py:127
 msgid "Username for connecting to the server"
-msgstr ""
+msgstr "用于连接到服务器的用户名"
 
 #: inputs/mycodo_test_input_save_value.py:65
 #, fuzzy
@@ -2080,11 +2080,10 @@ msgid "Passwords do not match. Please try again."
 msgstr "密码不匹配。请再试一次。"
 
 #: mycodo_flask/routes_authentication.py:79
-#, fuzzy
 msgid ""
 "Invalid username. Must be between 3 and 64 characters and only contain "
 "letters and numbers."
-msgstr "无效的用户名。必须介于2到64个字符之间，且只能包含字母和数字。"
+msgstr "无效的用户名。必须在3到64个字符之间，并且只包含字母和数字。"
 
 #: mycodo_flask/routes_authentication.py:85
 #, fuzzy
@@ -2182,7 +2181,7 @@ msgstr ""
 
 #: mycodo_flask/forms/forms_authentication.py:74
 msgid "Submit"
-msgstr ""
+msgstr "提交"
 
 #: mycodo_flask/forms/forms_authentication.py:87
 msgid "Change Password"
@@ -3246,18 +3245,17 @@ msgstr "创建管理员"
 msgid ""
 "This appears to be a new Mycodo install. Please create an administrator "
 "user. Read and accept the agreement to begin."
-msgstr ""
+msgstr "这似乎是一个新的Mycodo安装。请创建一个管理员用户。阅读并接受协议，开始。"
 
 #: mycodo_flask/templates/create_admin.html:67
 msgid "Login information is stored locally"
 msgstr "登录信息存储在本地"
 
 #: mycodo_flask/templates/create_admin.html:68
-#, fuzzy
 msgid ""
 "Usernames must be 3 to 64 characters, passwords >3 characters, and "
 "contain only letters and numbers"
-msgstr "无效的用户名。必须介于2到64个字符之间，且只能包含字母和数字。"
+msgstr "用户名必须是3至64个字符，密码>3个字符，并且只包含字母和数字"
 
 #: mycodo_flask/templates/flash_messages.html:20
 msgid "Info"
@@ -3418,7 +3416,7 @@ msgstr "更新日志"
 
 #: mycodo_flask/templates/layout.html:248
 msgid "Donate"
-msgstr ""
+msgstr "捐赠"
 
 #: mycodo_flask/templates/layout.html:255
 #: mycodo_flask/templates/pages/dashboard_entry.html:26
@@ -3784,14 +3782,12 @@ msgid ""
 msgstr "按住<kbd>Ctrl</kbd>或<kbd>&#8984;</kbd>键选择多个"
 
 #: mycodo_flask/templates/pages/info.html:14
-#, fuzzy
 msgid "Mycodo Version"
-msgstr "Mycodo版本："
+msgstr "Mycodo版本"
 
 #: mycodo_flask/templates/pages/info.html:15
-#, fuzzy
 msgid "Python Version"
-msgstr "Python版本："
+msgstr "Python版本"
 
 #: mycodo_flask/templates/pages/info.html:16
 msgid "Database Version"
@@ -3991,9 +3987,8 @@ msgstr ""
 
 #: mycodo_flask/templates/pages/usage.html:41
 #: mycodo_flask/templates/pages/usage.html:96
-#, fuzzy
 msgid "Select a measurement with the unit"
-msgstr "选择与该单元的测量："
+msgstr "选择与该单元的测量"
 
 #: mycodo_flask/templates/pages/usage.html:41
 #: mycodo_flask/templates/pages/usage.html:96
@@ -5245,8 +5240,9 @@ msgstr "测试发送给 %(recip)s 的电子邮件。检查收件箱是否成功�
 msgid "Set to None to disable."
 msgstr ""
 
-#: outputs/on_off_gpio.py:59 outputs/on_off_wireless_rpi_rf.py:62
-#: outputs/pump_gpio.py:85 outputs/pwm_gpio.py:84
+#: outputs/on_off_gpio.py:59 outputs/on_off_gpio_sysfs.py:55
+#: outputs/on_off_wireless_rpi_rf.py:62 outputs/pump_gpio.py:85
+#: outputs/pwm_gpio.py:84
 msgid "The pin to control the state of"
 msgstr ""
 
@@ -5263,10 +5259,6 @@ msgstr ""
 #: outputs/pwm_shell.py:130
 msgid "Trigger Functions at Startup"
 msgstr ""
-
-#: outputs/on_off_gpio_sysfs.py:54
-msgid "GPIO Pin (BCM)"
-msgstr "GPIO引脚（BCM）"
 
 #: outputs/on_off_kasa_rgb_bulbs.py:104 outputs/on_off_kasa_rgb_bulbs.py:127
 #: outputs/on_off_kasa_rgb_bulbs.py:150 outputs/on_off_kasa_rgb_bulbs.py:173

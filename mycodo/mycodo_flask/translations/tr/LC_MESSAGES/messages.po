@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Mycodo 8.14.0\n"
 "Report-Msgid-Bugs-To: mycodo@kylegabriel.com\n"
-"POT-Creation-Date: 2022-09-10 11:38-0400\n"
+"POT-Creation-Date: 2022-09-10 11:53-0400\n"
 "PO-Revision-Date: 2022-08-31 14:21+0300\n"
 "Last-Translator: Ramazan Sancar <me@ramazansancar.com.tr>\n"
 "Language: tr\n"
@@ -21,7 +21,7 @@ msgstr ""
 
 #: config_devices_units.py:13
 msgid "Acceleration"
-msgstr ""
+msgstr "Hızlanma"
 
 #: config_devices_units.py:29
 msgid "ADC"
@@ -29,23 +29,23 @@ msgstr ""
 
 #: config_devices_units.py:33
 msgid "Altitude"
-msgstr ""
+msgstr "Rakım"
 
 #: config_devices_units.py:37
 msgid "Angle"
-msgstr ""
+msgstr "Açı"
 
 #: config_devices_units.py:41
 msgid "Battery"
-msgstr ""
+msgstr "Pil"
 
 #: config_devices_units.py:45 config_devices_units.py:343
 msgid "Boolean"
-msgstr ""
+msgstr "Boole"
 
 #: config_devices_units.py:49 mycodo_flask/forms/forms_camera.py:57
 msgid "Brightness"
-msgstr ""
+msgstr "Parlaklık"
 
 #: config_devices_units.py:53
 msgid "CO2"
@@ -53,14 +53,14 @@ msgstr "CO²"
 
 #: config_devices_units.py:97
 msgid "Dewpoint"
-msgstr ""
+msgstr "çiğ noktası"
 
 #: config_devices_units.py:101 functions/bang_bang.py:84
 #: functions/bang_bang_on_off.py:95 functions/bang_bang_pwm.py:82
 #: functions/pid_autotune.py:129 mycodo_flask/forms/forms_pid.py:32
 #: outputs/pump_l298n.py:140 outputs/pump_pca9685_l298n.py:253
 msgid "Direction"
-msgstr ""
+msgstr "Yön"
 
 #: config_devices_units.py:105
 msgid "Disk"
@@ -68,7 +68,7 @@ msgstr "Disk"
 
 #: config_devices_units.py:109
 msgid "Dissolved Oxygen"
-msgstr ""
+msgstr "Çözünmüş oksijen"
 
 #: config_devices_units.py:113 config_translations.py:69
 #: config_translations.py:307 mycodo_flask/templates/pages/usage.html:230
@@ -80,7 +80,7 @@ msgstr "Süre"
 #: actions/output_ramp_pwm.py:59 actions/output_ramp_pwm.py:68
 #: config_devices_units.py:117 config_translations.py:244
 msgid "Duty Cycle"
-msgstr ""
+msgstr "Görev döngüsü"
 
 #: config_devices_units.py:121
 msgid "GPIO Edge"
@@ -88,15 +88,15 @@ msgstr ""
 
 #: config_devices_units.py:125
 msgid "Electrical Conductivity"
-msgstr ""
+msgstr "Elektiriksel iletkenlik"
 
 #: config_devices_units.py:129
 msgid "Electrical Current"
-msgstr ""
+msgstr "Elektrik akımı"
 
 #: config_devices_units.py:133
 msgid "Electrical Potential"
-msgstr ""
+msgstr "Elektriksel Potansiyel"
 
 #: config_devices_units.py:137
 msgid "Energy"
@@ -104,44 +104,44 @@ msgstr "Enerji"
 
 #: config_devices_units.py:141 mycodo_flask/forms/forms_method.py:67
 msgid "Frequency"
-msgstr ""
+msgstr "Sıklık"
 
 #: config_devices_units.py:145
 #: mycodo_flask/templates/pages/function_options/conditional_options/gpio_state.html:2
 msgid "GPIO State"
-msgstr ""
+msgstr "GPIO Durumu"
 
 #: config_devices_units.py:149 mycodo_flask/forms/forms_camera.py:65
 msgid "Hue"
-msgstr ""
+msgstr "Renk tonu"
 
 #: config_devices_units.py:153 functions/humidity_wet_dry_bulb.py:62
 msgid "Humidity"
-msgstr ""
+msgstr "Nem"
 
 #: config_devices_units.py:157
 msgid "Humidity Ratio"
-msgstr ""
+msgstr "Nem Oranı"
 
 #: config_devices_units.py:161 config_devices_units.py:490
 msgid "Ion Concentration"
-msgstr ""
+msgstr "iyon konsantrasyonu"
 
 #: config_devices_units.py:165
 msgid "Length"
-msgstr ""
+msgstr "Uzunluk"
 
 #: config_devices_units.py:169
 msgid "Light"
-msgstr ""
+msgstr "Işık"
 
 #: config_devices_units.py:173
 msgid "Magnetic Flux Density"
-msgstr ""
+msgstr "Manyetik akı yoğunluğu"
 
 #: config_devices_units.py:177
 msgid "Moisture"
-msgstr ""
+msgstr "Nem"
 
 #: config_devices_units.py:181
 msgid "O2"
@@ -149,7 +149,7 @@ msgstr "O²"
 
 #: config_devices_units.py:185
 msgid "Oxidation Reduction Potential"
-msgstr ""
+msgstr "Oksidasyon indirgeme potansiyeli"
 
 #: config_devices_units.py:201
 msgid "PID P-Value"
@@ -169,58 +169,58 @@ msgstr "Güç"
 
 #: config_devices_units.py:217
 msgid "Apparent Power"
-msgstr ""
+msgstr "Görünür Güç"
 
 #: config_devices_units.py:221
 msgid "Power Factor"
-msgstr ""
+msgstr "Güç Faktörü"
 
 #: config_devices_units.py:225
 msgid "Reactive Power"
-msgstr ""
+msgstr "Reaktif Güç"
 
 #: config_devices_units.py:229
 msgid "Pressure"
-msgstr ""
+msgstr "Basınç"
 
 #: config_devices_units.py:233
 msgid "Pulse Width"
-msgstr ""
+msgstr "Darbe Genişliği"
 
 #: config_devices_units.py:237
 msgid "Radiation Dose Rate"
-msgstr ""
+msgstr "Radyasyon Doz Oranı"
 
 #: config_devices_units.py:241
 msgid "Volume Flow Rate"
-msgstr ""
+msgstr "Hacim Akış Hızı"
 
 #: config_devices_units.py:245
 msgid "Resistance"
-msgstr ""
+msgstr "Direnç"
 
 #: config_devices_units.py:249
 msgid "Rotation"
-msgstr ""
+msgstr "Rotasyon"
 
 #: config_devices_units.py:253
 msgid "Revolutions"
-msgstr ""
+msgstr "Devrimler"
 
 #: config_devices_units.py:257
 msgid "Salinity"
-msgstr ""
+msgstr "Tuzluluk"
 
 #: config_devices_units.py:261 mycodo_flask/forms/forms_camera.py:67
 msgid "Saturation"
-msgstr ""
+msgstr "Doygunluk"
 
 #: actions/pid_setpoint.py:49 config_devices_units.py:265
 #: config_devices_units.py:514 config_translations.py:161
 #: functions/bang_bang.py:63 functions/bang_bang_on_off.py:73
 #: functions/bang_bang_pwm.py:60 functions/pid_autotune.py:97
 msgid "Setpoint"
-msgstr ""
+msgstr "Ayar Noktası"
 
 #: config_devices_units.py:269
 msgid "Band Min"
@@ -232,11 +232,11 @@ msgstr ""
 
 #: config_devices_units.py:277
 msgid "Specific Enthalpy"
-msgstr ""
+msgstr "Spesifik Entalpi"
 
 #: config_devices_units.py:281
 msgid "Specific Gravity"
-msgstr ""
+msgstr "Özgül Ağırlık"
 
 #: config_devices_units.py:285
 msgid "Specific Volume"
@@ -252,16 +252,16 @@ msgstr "Sıcaklık"
 
 #: config_devices_units.py:297
 msgid "Total Dissolved Solids"
-msgstr ""
+msgstr "Toplam Çözünmüş Katı Madde"
 
 #: config_devices_units.py:301 config_devices_units.py:325
 #: config_devices_units.py:478
 msgid "Unitless"
-msgstr ""
+msgstr "Birimsiz"
 
 #: config_devices_units.py:305
 msgid "Vapor Pressure Deficit"
-msgstr ""
+msgstr "Buhar Basıncı Açığı"
 
 #: config_devices_units.py:309
 msgid "Version"
@@ -295,7 +295,7 @@ msgstr ""
 
 #: config_devices_units.py:340
 msgid "Bearing"
-msgstr ""
+msgstr "Rulman"
 
 #: config_devices_units.py:346
 msgid "Celsius"
@@ -315,7 +315,7 @@ msgstr "Santimetre Su"
 
 #: config_devices_units.py:358
 msgid "Counts per minute"
-msgstr ""
+msgstr "Dakika başına sayım"
 
 #: config_devices_units.py:361
 msgid "CPU Load"
@@ -323,11 +323,11 @@ msgstr "CPU Yükü"
 
 #: config_devices_units.py:364
 msgid "Decimal"
-msgstr ""
+msgstr "Ondalık"
 
 #: config_devices_units.py:367
 msgid "Degree"
-msgstr ""
+msgstr "Derece"
 
 #: config_devices_units.py:370
 msgid "8-Bit Color"
@@ -339,11 +339,11 @@ msgstr ""
 
 #: config_devices_units.py:376
 msgid "Foot"
-msgstr ""
+msgstr "Ayak"
 
 #: config_devices_units.py:379
 msgid "Full"
-msgstr ""
+msgstr "Tam"
 
 #: config_devices_units.py:382
 msgid "G-Force"
@@ -359,7 +359,7 @@ msgstr "Saat"
 
 #: config_devices_units.py:391
 msgid "Hectopascals"
-msgstr ""
+msgstr "Hektopaskal"
 
 #: config_devices_units.py:394
 msgid "Hertz"
@@ -367,7 +367,7 @@ msgstr "Hertz"
 
 #: config_devices_units.py:397
 msgid "Infrared"
-msgstr ""
+msgstr "Kızılötesi"
 
 #: config_devices_units.py:400
 msgid "Kelvin"
@@ -375,7 +375,7 @@ msgstr "Kelvin"
 
 #: config_devices_units.py:403
 msgid "Kilobyte"
-msgstr ""
+msgstr "Kilobayt"
 
 #: config_devices_units.py:406
 msgid "Kilogram per kilogram"
@@ -407,7 +407,7 @@ msgstr ""
 
 #: config_devices_units.py:427
 msgid "Liters per Hour"
-msgstr ""
+msgstr "Saat Başına Litre"
 
 #: config_devices_units.py:430
 msgid "Liters per Minute"
@@ -626,7 +626,7 @@ msgstr ""
 
 #: config_translations.py:45 mycodo_flask/templates/tools/notes.html:73
 msgid "Create"
-msgstr ""
+msgstr "Oluştur"
 
 #: config_translations.py:47 mycodo_flask/templates/layout-settings.html:34
 #: mycodo_flask/templates/layout-settings.html:35
@@ -735,7 +735,7 @@ msgstr "Başarısız"
 #: config_translations.py:85 mycodo_flask/templates/pages/function.html:56
 #: widgets/widget_function_status.py:54 widgets/widget_graph_synchronous.py:384
 msgid "Function"
-msgstr ""
+msgstr "Fonksiyon"
 
 #: config_translations.py:87 mycodo_flask/templates/layout-settings.html:33
 msgid "General"
@@ -772,7 +772,7 @@ msgstr ""
 #: config_translations.py:97 mycodo_flask/templates/layout-remote.html:50
 #: mycodo_flask/templates/pages/function_options/pid_options.html:273
 msgid "Input"
-msgstr ""
+msgstr "Giriş"
 
 #: config_translations.py:99
 msgid "Invalid"
@@ -797,7 +797,7 @@ msgstr ""
 
 #: config_translations.py:109
 msgid "Login"
-msgstr ""
+msgstr "Giriş"
 
 #: config_translations.py:111
 msgid "Math"
@@ -862,7 +862,7 @@ msgstr "Açık"
 #: functions/bang_bang_pwm.py:52 functions/pid_autotune.py:79
 #: widgets/widget_output.py:52 widgets/widget_output_pwm_slider.py:52
 msgid "Output"
-msgstr ""
+msgstr "Çıktı"
 
 #: config_translations.py:131
 #: mycodo_flask/templates/pages/function_options/conditional_options/measurement_dict.html:2
@@ -1009,7 +1009,7 @@ msgstr ""
 
 #: config_translations.py:189
 msgid "Up"
-msgstr ""
+msgstr "Yukarı"
 
 #: config_translations.py:191 mycodo_flask/forms/forms_settings.py:165
 #: mycodo_flask/forms/forms_settings.py:179
@@ -1497,7 +1497,7 @@ msgstr ""
 #: config_translations.py:414 outputs/pwm_gpio.py:104
 #: outputs/pwm_pca9685.py:133 outputs/pwm_python.py:235 outputs/pwm_shell.py:89
 msgid "Startup Value"
-msgstr ""
+msgstr "Başlangıç Değeri"
 
 #: config_translations.py:415
 msgid "The output value to set when Mycodo starts up"
@@ -1536,7 +1536,7 @@ msgstr ""
 #: outputs/on_off_wireless_rpi_rf.py:112 outputs/pwm_gpio.py:96
 #: outputs/pwm_pca9685.py:124 outputs/pwm_python.py:227 outputs/pwm_shell.py:81
 msgid "Startup State"
-msgstr ""
+msgstr "Başlangıç Durumu"
 
 #: config_translations.py:421
 msgid "When Mycodo starts, set the output state"
@@ -1625,11 +1625,11 @@ msgstr "Denetleyiciyi devre dışı bırak."
 
 #: actions/create_log_line.py:13
 msgid "Create a log line in the daemon log."
-msgstr ""
+msgstr "Daemon günlüğünde bir günlük satırı oluşturun."
 
 #: actions/create_note.py:17
 msgid "Create a note with the selected Tag."
-msgstr ""
+msgstr "Seçilen Etiket ile bir not oluşturun."
 
 #: actions/create_note.py:38 mycodo_flask/forms/forms_notes.py:47
 #: mycodo_flask/templates/tools/notes.html:16
@@ -1658,7 +1658,7 @@ msgstr ""
 #: mycodo_flask/forms/forms_settings.py:104 outputs/on_off_mqtt.py:161
 #: outputs/value_mqtt.py:113
 msgid "Username"
-msgstr ""
+msgstr "Kullanıcı Adı"
 
 #: actions/output_on_off.py:26
 msgid "Turn an On/Off Output On, Off, or On for a duration."
@@ -1971,7 +1971,7 @@ msgstr ""
 
 #: inputs/mqtt_paho.py:111 inputs/mqtt_paho_json.py:127
 msgid "Username for connecting to the server"
-msgstr ""
+msgstr "Sunucuya bağlanmak için kullanıcı adı"
 
 #: inputs/mycodo_test_input_save_value.py:65
 msgid "Channel"
@@ -2058,36 +2058,40 @@ msgstr ""
 #: mycodo_flask/utils/utils_settings.py:202
 #: mycodo_flask/utils/utils_settings.py:305
 msgid "Passwords do not match. Please try again."
-msgstr ""
+msgstr "Şifreler eşleşmiyor. Lütfen tekrar deneyin."
 
 #: mycodo_flask/routes_authentication.py:79
 msgid ""
 "Invalid username. Must be between 3 and 64 characters and only contain "
 "letters and numbers."
 msgstr ""
+"Geçersiz kullanıcı adı. 3 ile 64 karakter arasında olmalı ve yalnızca "
+"harf ve rakam içermelidir."
 
 #: mycodo_flask/routes_authentication.py:85
 msgid ""
 "Invalid password. Must be between 4 and 64 characters and only contain "
 "letters and numbers."
 msgstr ""
+"Geçersiz şifre. 4 ile 64 karakter arasında olmalı ve yalnızca harf ve "
+"rakam içermelidir."
 
 #: mycodo_flask/routes_authentication.py:121
 #, python-format
 msgid "User '%(user)s' successfully created. Please log in below."
-msgstr ""
+msgstr "Kullanıcı '%(user)s' başarıyla oluşturuldu. Lütfen aşağıdan giriş yapınız."
 
 #: mycodo_flask/routes_authentication.py:126
 #, python-format
 msgid "Failed to create user '%(user)s': %(err)s"
-msgstr ""
+msgstr "'%(user)s' kullanıcısı oluşturulamadı: %(err)s"
 
 #: mycodo_flask/routes_authentication.py:147
 #: mycodo_flask/routes_authentication.py:165
 #: mycodo_flask/routes_authentication.py:233
 #: mycodo_flask/routes_authentication.py:265
 msgid "Cannot access login page if you're already logged in"
-msgstr ""
+msgstr "Zaten giriş yaptıysanız giriş sayfasına erişilemiyor"
 
 #: mycodo_flask/routes_authentication.py:176
 #: mycodo_flask/routes_authentication.py:242
@@ -2097,6 +2101,8 @@ msgid ""
 "Too many failed login attempts. Please wait %(min)s minutes before "
 "attempting to log in again"
 msgstr ""
+"Çok fazla başarısız giriş denemesi. Tekrar oturum açmayı denemeden önce "
+"lütfen %(min)s dakika bekleyin"
 
 #: mycodo_flask/routes_authentication.py:317
 msgid "Successfully logged out"
@@ -2104,11 +2110,11 @@ msgstr ""
 
 #: mycodo_flask/routes_general.py:853
 msgid "System rebooting in 10 seconds"
-msgstr ""
+msgstr "Sistem 10 saniye içinde yeniden başlatılıyor"
 
 #: mycodo_flask/routes_general.py:855
 msgid "System shutting down in 10 seconds"
-msgstr ""
+msgstr "Sistem 10 saniye içinde kapanıyor"
 
 #: mycodo_flask/routes_general.py:857
 msgid "Command to restart the daemon sent"
@@ -2132,6 +2138,8 @@ msgid ""
 "Invalid password. Must be between 6 and 64 characters and only contain "
 "letters, numbers, and symbols."
 msgstr ""
+"Geçersiz şifre. 6 ile 64 karakter arasında olmalı ve yalnızca harf, rakam"
+" ve sembol içermelidir."
 
 #: mycodo_flask/routes_password_reset.py:135
 msgid "Code expired or invalid"
@@ -2145,7 +2153,7 @@ msgstr ""
 #: mycodo_flask/forms/forms_settings.py:380
 #: mycodo_flask/forms/forms_settings.py:381
 msgid "Repeat Password"
-msgstr ""
+msgstr "Şifreyi Tekrarla"
 
 #: mycodo_flask/forms/forms_authentication.py:65
 msgid "Reset Method"
@@ -2161,11 +2169,11 @@ msgstr ""
 
 #: mycodo_flask/forms/forms_authentication.py:74
 msgid "Submit"
-msgstr ""
+msgstr "Gönder"
 
 #: mycodo_flask/forms/forms_authentication.py:87
 msgid "Change Password"
-msgstr ""
+msgstr "Şifre Değiştir"
 
 #: mycodo_flask/forms/forms_authentication.py:97
 msgid "Domain or IP Address"
@@ -2701,7 +2709,7 @@ msgstr ""
 
 #: mycodo_flask/forms/forms_settings.py:51
 msgid "SMTP Password"
-msgstr ""
+msgstr "SMTP Şifresi"
 
 #: mycodo_flask/forms/forms_settings.py:55
 msgid "From Email"
@@ -2952,7 +2960,7 @@ msgstr ""
 #: mycodo_flask/forms/forms_settings.py:296
 #: mycodo_flask/templates/tools/logview.html:3
 msgid "View Logs"
-msgstr ""
+msgstr "Günlükleri Görüntüle"
 
 #: mycodo_flask/forms/forms_settings.py:297
 msgid "View Stats"
@@ -2982,7 +2990,7 @@ msgstr ""
 #: mycodo_flask/templates/forgot_password.html:26
 #: mycodo_flask/templates/reset_password.html:26
 msgid "Reset Password"
-msgstr ""
+msgstr "Şifre Sıfırlama"
 
 #: mycodo_flask/forms/forms_settings.py:305
 msgid "Add Role"
@@ -2990,17 +2998,17 @@ msgstr "Rol Ekle"
 
 #: mycodo_flask/forms/forms_settings.py:311
 msgid "Default Login Page"
-msgstr ""
+msgstr "Varsayılan Giriş Sayfası"
 
 #: mycodo_flask/forms/forms_settings.py:330
 #: mycodo_flask/forms/forms_settings.py:371
 msgid "Passwords must match"
-msgstr ""
+msgstr "Parolalar eşleşmelidir"
 
 #: mycodo_flask/forms/forms_settings.py:333
 #: mycodo_flask/forms/forms_settings.py:375
 msgid "Password must be 6 or more characters"
-msgstr ""
+msgstr "Şifre 6 veya daha fazla karakterden oluşmalıdır"
 
 #: mycodo_flask/forms/forms_settings.py:340
 #: mycodo_flask/forms/forms_settings.py:383
@@ -3023,7 +3031,7 @@ msgstr "Kullanıcı Ekle"
 
 #: mycodo_flask/forms/forms_settings.py:366
 msgid "New Password"
-msgstr ""
+msgstr "Yeni Şifre"
 
 #: mycodo_flask/forms/forms_settings.py:387
 msgid "Role ID"
@@ -3211,23 +3219,27 @@ msgstr ""
 #: mycodo_flask/templates/create_admin.html:66
 #: mycodo_flask/templates/create_admin.html:78
 msgid "Create Admin"
-msgstr ""
+msgstr "Yönetici Oluştur"
 
 #: mycodo_flask/templates/create_admin.html:37
 msgid ""
 "This appears to be a new Mycodo install. Please create an administrator "
 "user. Read and accept the agreement to begin."
 msgstr ""
+"Bu yeni bir Mycodo yüklemesi gibi görünüyor. Lütfen bir yönetici "
+"kullanıcı oluşturun. Başlamak için sözleşmeyi okuyun ve kabul edin."
 
 #: mycodo_flask/templates/create_admin.html:67
 msgid "Login information is stored locally"
-msgstr ""
+msgstr "Giriş bilgileri yerel olarak saklanır"
 
 #: mycodo_flask/templates/create_admin.html:68
 msgid ""
 "Usernames must be 3 to 64 characters, passwords >3 characters, and "
 "contain only letters and numbers"
 msgstr ""
+"Kullanıcı adları 3 ila 64 karakter, parolalar >3 karakter olmalı ve "
+"yalnızca harf ve rakam içermelidir"
 
 #: mycodo_flask/templates/flash_messages.html:20
 msgid "Info"
@@ -3240,7 +3252,7 @@ msgstr ""
 #: mycodo_flask/templates/layout-remote.html:47
 #: mycodo_flask/templates/layout.html:204
 msgid "Setup"
-msgstr ""
+msgstr "Kurulum"
 
 #: mycodo_flask/templates/layout-remote.html:56
 msgid "Exit"
@@ -3337,7 +3349,7 @@ msgstr ""
 
 #: mycodo_flask/templates/layout.html:214
 msgid "More"
-msgstr ""
+msgstr "Daha fazla"
 
 #: mycodo_flask/templates/layout.html:220
 #: mycodo_flask/templates/pages/usage_reports.html:12
@@ -3347,7 +3359,7 @@ msgstr "Enerji Kullanım Raporu"
 #: mycodo_flask/templates/layout.html:237
 #: mycodo_flask/templates/pages/function_options/conditional_options.html:21
 msgid "Help"
-msgstr ""
+msgstr "Yardım"
 
 #: mycodo_flask/templates/layout.html:239
 #: mycodo_flask/templates/layout.html:240
@@ -3376,7 +3388,7 @@ msgstr ""
 
 #: mycodo_flask/templates/layout.html:245
 msgid "Submit an Issue"
-msgstr ""
+msgstr "Bir Sorun Gönderin"
 
 #: mycodo_flask/templates/layout.html:246
 msgid "Mycodo on Github"
@@ -3388,7 +3400,7 @@ msgstr ""
 
 #: mycodo_flask/templates/layout.html:248
 msgid "Donate"
-msgstr ""
+msgstr "Bağış Yapın"
 
 #: mycodo_flask/templates/layout.html:255
 #: mycodo_flask/templates/pages/dashboard_entry.html:26
@@ -3403,11 +3415,11 @@ msgstr ""
 #: mycodo_flask/templates/pages/output_entry.html:24
 #: mycodo_flask/templates/pages/output_spacer.html:13
 msgid "Configure"
-msgstr ""
+msgstr "Yapılandırma"
 
 #: mycodo_flask/templates/layout.html:256
 msgid "Mycodo Logs"
-msgstr ""
+msgstr "Mycodo Günlükleri"
 
 #: mycodo_flask/templates/layout.html:257
 #: mycodo_flask/templates/pages/info.html:3
@@ -3415,7 +3427,7 @@ msgstr ""
 #: mycodo_flask/templates/settings/general.html:104
 #: mycodo_flask/templates/settings/general.html:115
 msgid "System Information"
-msgstr ""
+msgstr "Sistem Bilgileri"
 
 #: mycodo_flask/templates/admin/dependencies.html:3
 #: mycodo_flask/templates/admin/dependencies.html:5
@@ -3445,11 +3457,11 @@ msgstr ""
 
 #: mycodo_flask/templates/layout.html:267
 msgid "Restart System"
-msgstr ""
+msgstr "Sistemi Yeniden Başlat"
 
 #: mycodo_flask/templates/layout.html:268
 msgid "Shutdown System"
-msgstr ""
+msgstr "Kapatma Sistemi"
 
 #: mycodo_flask/templates/layout.html:270
 #: mycodo_flask/templates/layout.html:284
@@ -3477,7 +3489,7 @@ msgstr ""
 
 #: mycodo_flask/templates/login_keypad.html:64
 msgid "Password Login"
-msgstr ""
+msgstr "Şifre Girişi"
 
 #: mycodo_flask/templates/login_password.html:41
 msgid "Remember me"
@@ -3489,11 +3501,11 @@ msgstr ""
 
 #: mycodo_flask/templates/login_password.html:46
 msgid "Forgot password?"
-msgstr ""
+msgstr "Şifrenizi mi unuttunuz?"
 
 #: mycodo_flask/templates/login_password.html:46
 msgid "Keypad Login"
-msgstr ""
+msgstr "Tuş Takımı Girişi"
 
 #: mycodo_flask/templates/admin/backup.html:14
 msgid ""
@@ -3501,6 +3513,9 @@ msgid ""
 "later time. Camera images are not backed up. To save measurement data, go"
 " to the Export / Import page."
 msgstr ""
+"Mycodo ayarlarını korumak veya daha sonra geri yüklemek için yedeklemeler"
+" oluşturulabilir. Kamera görüntüleri yedeklenmez. Ölçüm verilerini "
+"kaydetmek için Dışa Aktar / İçe Aktar sayfasına gidin."
 
 #: mycodo_flask/templates/admin/dependencies.html:45
 msgid ""
@@ -3733,6 +3748,11 @@ msgid ""
 "example, this could be using a PID Controller to create a feedback loop "
 "with a temperature sensor and heater in order to regulate temperature."
 msgstr ""
+"Fonksiyonlar, genellikle bir veya daha fazla <a "
+"href=\"/input\">Girişi</a> ile <a href=\"/output\">Çıkışı</a> birbirine "
+"bağlayarak karmaşık görevleri yerine getirir. Örneğin, sıcaklığı "
+"düzenlemek amacıyla bir sıcaklık sensörü ve ısıtıcı ile bir geri besleme "
+"döngüsü oluşturmak için bir PID Denetleyici kullanmak olabilir."
 
 #: mycodo_flask/templates/pages/graph-async.html:18
 msgid "Asynchronous Graph"
@@ -3747,14 +3767,12 @@ msgid ""
 msgstr ""
 
 #: mycodo_flask/templates/pages/info.html:14
-#, fuzzy
 msgid "Mycodo Version"
-msgstr "Mycodo Versiyonu:"
+msgstr "Mycodo Versiyonu"
 
 #: mycodo_flask/templates/pages/info.html:15
-#, fuzzy
 msgid "Python Version"
-msgstr "Python Versiyonu:"
+msgstr "Python Versiyonu"
 
 #: mycodo_flask/templates/pages/info.html:16
 msgid "Database Version"
@@ -3955,7 +3973,7 @@ msgstr ""
 #: mycodo_flask/templates/pages/usage.html:41
 #: mycodo_flask/templates/pages/usage.html:96
 msgid "Select a measurement with the unit"
-msgstr ""
+msgstr "Birim ile bir ölçüm seçin"
 
 #: mycodo_flask/templates/pages/usage.html:41
 #: mycodo_flask/templates/pages/usage.html:96
@@ -4642,7 +4660,7 @@ msgstr ""
 
 #: mycodo_flask/templates/settings/alerts.html:51
 msgid "Only enter a password here if you wish to change it"
-msgstr ""
+msgstr "Buraya yalnızca değiştirmek istediğiniz bir şifre girin"
 
 #: mycodo_flask/templates/settings/alerts.html:63
 msgid "Maximum number of alerts that can be emailed per hour."
@@ -5125,7 +5143,7 @@ msgstr ""
 
 #: mycodo_flask/utils/utils_settings.py:303
 msgid "Invalid password"
-msgstr ""
+msgstr "Geçersiz şifre"
 
 #: mycodo_flask/utils/utils_settings.py:1194
 #, python-format
@@ -5177,8 +5195,9 @@ msgstr ""
 msgid "Set to None to disable."
 msgstr ""
 
-#: outputs/on_off_gpio.py:59 outputs/on_off_wireless_rpi_rf.py:62
-#: outputs/pump_gpio.py:85 outputs/pwm_gpio.py:84
+#: outputs/on_off_gpio.py:59 outputs/on_off_gpio_sysfs.py:55
+#: outputs/on_off_wireless_rpi_rf.py:62 outputs/pump_gpio.py:85
+#: outputs/pwm_gpio.py:84
 msgid "The pin to control the state of"
 msgstr ""
 
@@ -5194,10 +5213,6 @@ msgstr ""
 #: outputs/pwm_gpio.py:165 outputs/pwm_pca9685.py:175 outputs/pwm_python.py:276
 #: outputs/pwm_shell.py:130
 msgid "Trigger Functions at Startup"
-msgstr ""
-
-#: outputs/on_off_gpio_sysfs.py:54
-msgid "GPIO Pin (BCM)"
 msgstr ""
 
 #: outputs/on_off_kasa_rgb_bulbs.py:104 outputs/on_off_kasa_rgb_bulbs.py:127

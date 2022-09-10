@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Mycodo1 8.11.0\n"
 "Report-Msgid-Bugs-To: mycodo@kylegabriel.com\n"
-"POT-Creation-Date: 2022-09-10 11:38-0400\n"
+"POT-Creation-Date: 2022-09-10 11:53-0400\n"
 "PO-Revision-Date: 2022-09-07 23:14+0000\n"
 "Last-Translator: Kyle Gabriel <kyletgabriel@gmail.com>\n"
 "Language: ru\n"
@@ -432,7 +432,7 @@ msgstr "Метров в секунду"
 
 #: config_devices_units.py:445
 msgid "Meters per second per second"
-msgstr ""
+msgstr "Метров в секунду в секунду в секунду"
 
 #: config_devices_units.py:448
 msgid "Milligram per Liter"
@@ -524,7 +524,7 @@ msgstr "Микрограмм на кубический метр"
 
 #: config_devices_units.py:523
 msgid "Microtesla"
-msgstr ""
+msgstr "Микротесла"
 
 #: config_devices_units.py:532
 msgid "Volt"
@@ -1086,9 +1086,8 @@ msgid "Command"
 msgstr "команда"
 
 #: config_translations.py:230
-#, fuzzy
 msgid "The command to be executed"
-msgstr "Код Python 3 для выполнения"
+msgstr "Команда для выполнения"
 
 #: config_translations.py:233
 msgid "Select the unit of the measurement to be stored in the database"
@@ -1373,7 +1372,7 @@ msgstr "Команда PWM"
 
 #: config_translations.py:358 outputs/pwm_shell.py:62
 msgid "Command to execute to set the PWM duty cycle (%)"
-msgstr ""
+msgstr "Команда для выполнения для установки рабочего цикла ШИМ (%)"
 
 #: config_translations.py:361
 msgid "The Hertz to output the PWM signal (0 - 70,000)"
@@ -1422,7 +1421,7 @@ msgstr "Время выборки"
 
 #: config_translations.py:382
 msgid "The duration of time to sample"
-msgstr ""
+msgstr "Продолжительность времени для выборки"
 
 #: config_translations.py:384
 msgid "Unscaled Unit Min"
@@ -1677,7 +1676,7 @@ msgstr "поддерживать"
 #: mycodo_flask/forms/forms_settings.py:104 outputs/on_off_mqtt.py:161
 #: outputs/value_mqtt.py:113
 msgid "Username"
-msgstr ""
+msgstr "Имя пользователя"
 
 #: actions/output_on_off.py:26
 #, fuzzy
@@ -2003,7 +2002,7 @@ msgstr "Текущий рабочий каталог"
 
 #: inputs/mqtt_paho.py:111 inputs/mqtt_paho_json.py:127
 msgid "Username for connecting to the server"
-msgstr ""
+msgstr "Имя пользователя для подключения к серверу"
 
 #: inputs/mycodo_test_input_save_value.py:65
 #, fuzzy
@@ -2097,21 +2096,19 @@ msgid "Passwords do not match. Please try again."
 msgstr "Пароли не совпадают. Пожалуйста, попробуйте еще раз."
 
 #: mycodo_flask/routes_authentication.py:79
-#, fuzzy
 msgid ""
 "Invalid username. Must be between 3 and 64 characters and only contain "
 "letters and numbers."
 msgstr ""
-"Неверное имя пользователя. Должно быть от 2 до 64 символов и содержать "
+"Неверное имя пользователя. Должно быть от 3 до 64 символов и содержать "
 "только буквы и цифры."
 
 #: mycodo_flask/routes_authentication.py:85
-#, fuzzy
 msgid ""
 "Invalid password. Must be between 4 and 64 characters and only contain "
 "letters and numbers."
 msgstr ""
-"Неверное имя пользователя. Должно быть от 2 до 64 символов и содержать "
+"Неверный пароль. Пароль должен состоять из 4-64 символов и содержать "
 "только буквы и цифры."
 
 #: mycodo_flask/routes_authentication.py:121
@@ -2207,11 +2204,11 @@ msgstr ""
 
 #: mycodo_flask/forms/forms_authentication.py:74
 msgid "Submit"
-msgstr ""
+msgstr "Отправить"
 
 #: mycodo_flask/forms/forms_authentication.py:87
 msgid "Change Password"
-msgstr ""
+msgstr "Изменить пароль"
 
 #: mycodo_flask/forms/forms_authentication.py:97
 msgid "Domain or IP Address"
@@ -3034,7 +3031,7 @@ msgstr "Изменить настройки"
 #: mycodo_flask/templates/forgot_password.html:26
 #: mycodo_flask/templates/reset_password.html:26
 msgid "Reset Password"
-msgstr ""
+msgstr "Сброс пароля"
 
 #: mycodo_flask/forms/forms_settings.py:305
 msgid "Add Role"
@@ -3272,19 +3269,21 @@ msgid ""
 "This appears to be a new Mycodo install. Please create an administrator "
 "user. Read and accept the agreement to begin."
 msgstr ""
+"Похоже, что это новая установка Mycodo. Пожалуйста, создайте "
+"пользователя-администратора. Прочитайте и примите соглашение, чтобы "
+"начать работу."
 
 #: mycodo_flask/templates/create_admin.html:67
 msgid "Login information is stored locally"
 msgstr "Информация о пользователе хранится локально"
 
 #: mycodo_flask/templates/create_admin.html:68
-#, fuzzy
 msgid ""
 "Usernames must be 3 to 64 characters, passwords >3 characters, and "
 "contain only letters and numbers"
 msgstr ""
-"Неверное имя пользователя. Должно быть от 2 до 64 символов и содержать "
-"только буквы и цифры."
+"Имена пользователей должны состоять из 3-64 символов, пароли >3 символов "
+"и содержать только буквы и цифры."
 
 #: mycodo_flask/templates/flash_messages.html:20
 msgid "Info"
@@ -3445,7 +3444,7 @@ msgstr "Изменения"
 
 #: mycodo_flask/templates/layout.html:248
 msgid "Donate"
-msgstr ""
+msgstr "Пожертвовать"
 
 #: mycodo_flask/templates/layout.html:255
 #: mycodo_flask/templates/pages/dashboard_entry.html:26
@@ -3856,14 +3855,12 @@ msgstr ""
 " несколько"
 
 #: mycodo_flask/templates/pages/info.html:14
-#, fuzzy
 msgid "Mycodo Version"
-msgstr "Версия для Микодо:"
+msgstr "Версия для Микодо"
 
 #: mycodo_flask/templates/pages/info.html:15
-#, fuzzy
 msgid "Python Version"
-msgstr "Версия Python:"
+msgstr "Версия Python"
 
 #: mycodo_flask/templates/pages/info.html:16
 msgid "Database Version"
@@ -4072,9 +4069,8 @@ msgstr ""
 
 #: mycodo_flask/templates/pages/usage.html:41
 #: mycodo_flask/templates/pages/usage.html:96
-#, fuzzy
 msgid "Select a measurement with the unit"
-msgstr "Выберите измерение с блоком:"
+msgstr "Выберите измерение с блоком"
 
 #: mycodo_flask/templates/pages/usage.html:41
 #: mycodo_flask/templates/pages/usage.html:96
@@ -5455,8 +5451,9 @@ msgstr ""
 msgid "Set to None to disable."
 msgstr "Установите 0, чтобы отключить."
 
-#: outputs/on_off_gpio.py:59 outputs/on_off_wireless_rpi_rf.py:62
-#: outputs/pump_gpio.py:85 outputs/pwm_gpio.py:84
+#: outputs/on_off_gpio.py:59 outputs/on_off_gpio_sysfs.py:55
+#: outputs/on_off_wireless_rpi_rf.py:62 outputs/pump_gpio.py:85
+#: outputs/pwm_gpio.py:84
 msgid "The pin to control the state of"
 msgstr ""
 
@@ -5473,10 +5470,6 @@ msgstr ""
 #: outputs/pwm_shell.py:130
 msgid "Trigger Functions at Startup"
 msgstr ""
-
-#: outputs/on_off_gpio_sysfs.py:54
-msgid "GPIO Pin (BCM)"
-msgstr "GPIO Pin (BCM)"
 
 #: outputs/on_off_kasa_rgb_bulbs.py:104 outputs/on_off_kasa_rgb_bulbs.py:127
 #: outputs/on_off_kasa_rgb_bulbs.py:150 outputs/on_off_kasa_rgb_bulbs.py:173

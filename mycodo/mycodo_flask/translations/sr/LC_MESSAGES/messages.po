@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Mycodo1 8.11.0\n"
 "Report-Msgid-Bugs-To: mycodo@kylegabriel.com\n"
-"POT-Creation-Date: 2022-09-10 11:38-0400\n"
+"POT-Creation-Date: 2022-09-10 11:53-0400\n"
 "PO-Revision-Date: 2021-06-11 14:13+0000\n"
 "Last-Translator: Kyle Gabriel <kyletgabriel@gmail.com>\n"
 "Language: sr\n"
@@ -22,7 +22,7 @@ msgstr ""
 
 #: config_devices_units.py:13
 msgid "Acceleration"
-msgstr ""
+msgstr "убрзање"
 
 #: config_devices_units.py:29
 msgid "ADC"
@@ -34,7 +34,7 @@ msgstr "Надморска висина"
 
 #: config_devices_units.py:37
 msgid "Angle"
-msgstr ""
+msgstr "Угао"
 
 #: config_devices_units.py:41
 msgid "Battery"
@@ -1676,7 +1676,7 @@ msgstr "Одржи у животу"
 #: mycodo_flask/forms/forms_settings.py:104 outputs/on_off_mqtt.py:161
 #: outputs/value_mqtt.py:113
 msgid "Username"
-msgstr ""
+msgstr "корисничко име"
 
 #: actions/output_on_off.py:26
 #, fuzzy
@@ -2108,13 +2108,12 @@ msgstr ""
 "слова и бројеве."
 
 #: mycodo_flask/routes_authentication.py:85
-#, fuzzy
 msgid ""
 "Invalid password. Must be between 4 and 64 characters and only contain "
 "letters and numbers."
 msgstr ""
-"Погрешно корисничко име. Мора да буде између 2 и 64 знака и садржи само "
-"слова и бројеве."
+"Неважећа лозинка. Мора да има између 4 и 64 знака и да садржи само слова "
+"и бројеве."
 
 #: mycodo_flask/routes_authentication.py:121
 #, python-format
@@ -2209,7 +2208,7 @@ msgstr ""
 
 #: mycodo_flask/forms/forms_authentication.py:74
 msgid "Submit"
-msgstr ""
+msgstr "прихвати"
 
 #: mycodo_flask/forms/forms_authentication.py:87
 msgid "Change Password"
@@ -3274,6 +3273,8 @@ msgid ""
 "This appears to be a new Mycodo install. Please create an administrator "
 "user. Read and accept the agreement to begin."
 msgstr ""
+"Чини се да је ово нова Мицодо инсталација. Направите администраторског "
+"корисника. Прочитајте и прихватите уговор да бисте започели."
 
 #: mycodo_flask/templates/create_admin.html:67
 msgid "Login information is stored locally"
@@ -3447,7 +3448,7 @@ msgstr "Цхангелог"
 
 #: mycodo_flask/templates/layout.html:248
 msgid "Donate"
-msgstr ""
+msgstr "донирати"
 
 #: mycodo_flask/templates/layout.html:255
 #: mycodo_flask/templates/pages/dashboard_entry.html:26
@@ -3853,14 +3854,12 @@ msgstr ""
 "више од једног"
 
 #: mycodo_flask/templates/pages/info.html:14
-#, fuzzy
 msgid "Mycodo Version"
-msgstr "Верзија за Мицодо:"
+msgstr "Верзија за Мицодо"
 
 #: mycodo_flask/templates/pages/info.html:15
-#, fuzzy
 msgid "Python Version"
-msgstr "Питхон Версион:"
+msgstr "Питхон Версион"
 
 #: mycodo_flask/templates/pages/info.html:16
 msgid "Database Version"
@@ -4068,9 +4067,8 @@ msgstr ""
 
 #: mycodo_flask/templates/pages/usage.html:41
 #: mycodo_flask/templates/pages/usage.html:96
-#, fuzzy
 msgid "Select a measurement with the unit"
-msgstr "Изаберите мерење са јединицом:"
+msgstr "Изаберите мерење са јединицом"
 
 #: mycodo_flask/templates/pages/usage.html:41
 #: mycodo_flask/templates/pages/usage.html:96
@@ -4146,7 +4144,7 @@ msgid ""
 "No Reports. Go to <a href=\"%(loc)\">Energy Usage Options</a> to schedule"
 " a report to be generated."
 msgstr ""
-"Нема Репортс. Иди на <а хреф=\"%(лоц)\"> Енерги Опције Употреба </а> да "
+"Нема Репортс. Иди на<a href=\"%(loc)\"> Енерги Опције Употреба</a> да "
 "испланирам извештај који ће бити генерисан."
 
 #: mycodo_flask/templates/pages/data_options/input_options.html:27
@@ -4752,9 +4750,9 @@ msgid ""
 "within a 24-hour period and this method will repeat daily."
 msgstr ""
 "Дефинишите задату вредност током дана на основу кубне Безиер-ове криве. "
-"Ако не познајете Безиер-ову криву, препоручујемо вам да користите <а "
+"Ако не познајете Безиер-ову криву, препоручујемо вам да користите <a "
 "href=\"https://www.desmos.com/calculator/cahqdxeshd\" "
-"target=\"_blank\">графички генератор Безиер кривуље</а> и користимо 8 "
+"target=\"_blank\">графички генератор Безиер кривуље</a> и користимо 8 "
 "варијабли које ствара за 4 бода (сваки скуп к и и). Почетак к-оси (к3) и "
 "крај (к0) ће се аутоматски истегнути или искривити тако да стане у року "
 "од 24 сата и ова метода ће се понављати свакодневно."
@@ -5423,8 +5421,9 @@ msgstr ""
 msgid "Set to None to disable."
 msgstr "Подесите на 0 до искључити."
 
-#: outputs/on_off_gpio.py:59 outputs/on_off_wireless_rpi_rf.py:62
-#: outputs/pump_gpio.py:85 outputs/pwm_gpio.py:84
+#: outputs/on_off_gpio.py:59 outputs/on_off_gpio_sysfs.py:55
+#: outputs/on_off_wireless_rpi_rf.py:62 outputs/pump_gpio.py:85
+#: outputs/pwm_gpio.py:84
 msgid "The pin to control the state of"
 msgstr ""
 
@@ -5441,10 +5440,6 @@ msgstr ""
 #: outputs/pwm_shell.py:130
 msgid "Trigger Functions at Startup"
 msgstr ""
-
-#: outputs/on_off_gpio_sysfs.py:54
-msgid "GPIO Pin (BCM)"
-msgstr "ГПИО Пин (БЦМ)"
 
 #: outputs/on_off_kasa_rgb_bulbs.py:104 outputs/on_off_kasa_rgb_bulbs.py:127
 #: outputs/on_off_kasa_rgb_bulbs.py:150 outputs/on_off_kasa_rgb_bulbs.py:173

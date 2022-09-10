@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Mycodo1 8.11.0\n"
 "Report-Msgid-Bugs-To: mycodo@kylegabriel.com\n"
-"POT-Creation-Date: 2022-09-10 11:38-0400\n"
+"POT-Creation-Date: 2022-09-10 11:53-0400\n"
 "PO-Revision-Date: 2022-03-10 06:00+0000\n"
 "Last-Translator: Jonas Harnesk <jonas@harnesk.net>\n"
 "Language: sv\n"
@@ -33,7 +33,7 @@ msgstr "Höjd över havet"
 
 #: config_devices_units.py:37
 msgid "Angle"
-msgstr ""
+msgstr "Vinkel"
 
 #: config_devices_units.py:41
 msgid "Battery"
@@ -100,7 +100,7 @@ msgstr "Elektrisk potential"
 
 #: config_devices_units.py:137
 msgid "Energy"
-msgstr ""
+msgstr "Energi"
 
 #: config_devices_units.py:141 mycodo_flask/forms/forms_method.py:67
 msgid "Frequency"
@@ -137,7 +137,7 @@ msgstr "Ljus"
 
 #: config_devices_units.py:173
 msgid "Magnetic Flux Density"
-msgstr ""
+msgstr "Magnetisk flödestäthet"
 
 #: config_devices_units.py:177
 msgid "Moisture"
@@ -165,19 +165,19 @@ msgstr "PID D-värde"
 
 #: config_devices_units.py:213
 msgid "Power"
-msgstr ""
+msgstr "Effekt"
 
 #: config_devices_units.py:217
 msgid "Apparent Power"
-msgstr ""
+msgstr "Uppenbar effekt"
 
 #: config_devices_units.py:221
 msgid "Power Factor"
-msgstr ""
+msgstr "Effektfaktor"
 
 #: config_devices_units.py:225
 msgid "Reactive Power"
-msgstr ""
+msgstr "Reaktiv effekt"
 
 #: config_devices_units.py:229
 msgid "Pressure"
@@ -201,7 +201,7 @@ msgstr "Motstånd"
 
 #: config_devices_units.py:249
 msgid "Rotation"
-msgstr ""
+msgstr "Rotation"
 
 #: config_devices_units.py:253
 msgid "Revolutions"
@@ -209,7 +209,7 @@ msgstr "Iterationer"
 
 #: config_devices_units.py:257
 msgid "Salinity"
-msgstr ""
+msgstr "Salthalt"
 
 #: config_devices_units.py:261 mycodo_flask/forms/forms_camera.py:67
 msgid "Saturation"
@@ -236,7 +236,7 @@ msgstr "Specifik engtal"
 
 #: config_devices_units.py:281
 msgid "Specific Gravity"
-msgstr ""
+msgstr "Specifik tyngd"
 
 #: config_devices_units.py:285
 msgid "Specific Volume"
@@ -244,7 +244,7 @@ msgstr "Specifik volym"
 
 #: config_devices_units.py:289
 msgid "Speed"
-msgstr ""
+msgstr "Hastighet"
 
 #: config_devices_units.py:293
 msgid "Temperature"
@@ -1677,7 +1677,7 @@ msgstr "Håll vid liv"
 #: mycodo_flask/forms/forms_settings.py:104 outputs/on_off_mqtt.py:161
 #: outputs/value_mqtt.py:113
 msgid "Username"
-msgstr ""
+msgstr "Användarnamn"
 
 #: actions/output_on_off.py:26
 #, fuzzy
@@ -2007,7 +2007,7 @@ msgstr "Den aktuella arbetskatalogen"
 
 #: inputs/mqtt_paho.py:111 inputs/mqtt_paho_json.py:127
 msgid "Username for connecting to the server"
-msgstr ""
+msgstr "Användarnamn för anslutning till servern"
 
 #: inputs/mycodo_test_input_save_value.py:65
 #, fuzzy
@@ -2103,22 +2103,20 @@ msgid "Passwords do not match. Please try again."
 msgstr "Lösenorden matchar inte. Var god försök igen."
 
 #: mycodo_flask/routes_authentication.py:79
-#, fuzzy
 msgid ""
 "Invalid username. Must be between 3 and 64 characters and only contain "
 "letters and numbers."
 msgstr ""
-"Ogiltigt användarnamn. Måste vara mellan 2 och 64 tecken och innehåller "
-"bara bokstäver och siffror."
+"Felaktigt användarnamn. Måste vara mellan 3 och 64 tecken och endast "
+"innehålla bokstäver och siffror."
 
 #: mycodo_flask/routes_authentication.py:85
-#, fuzzy
 msgid ""
 "Invalid password. Must be between 4 and 64 characters and only contain "
 "letters and numbers."
 msgstr ""
-"Ogiltigt användarnamn. Måste vara mellan 2 och 64 tecken och innehåller "
-"bara bokstäver och siffror."
+"Felaktigt lösenord. Måste vara mellan 4 och 64 tecken och endast "
+"innehålla bokstäver och siffror."
 
 #: mycodo_flask/routes_authentication.py:121
 #, python-format
@@ -2213,11 +2211,11 @@ msgstr ""
 
 #: mycodo_flask/forms/forms_authentication.py:74
 msgid "Submit"
-msgstr ""
+msgstr "Skicka in"
 
 #: mycodo_flask/forms/forms_authentication.py:87
 msgid "Change Password"
-msgstr ""
+msgstr "Ändra lösenord"
 
 #: mycodo_flask/forms/forms_authentication.py:97
 msgid "Domain or IP Address"
@@ -3040,7 +3038,7 @@ msgstr "Ändra inställningar"
 #: mycodo_flask/templates/forgot_password.html:26
 #: mycodo_flask/templates/reset_password.html:26
 msgid "Reset Password"
-msgstr ""
+msgstr "Återställ lösenordet"
 
 #: mycodo_flask/forms/forms_settings.py:305
 msgid "Add Role"
@@ -3278,19 +3276,20 @@ msgid ""
 "This appears to be a new Mycodo install. Please create an administrator "
 "user. Read and accept the agreement to begin."
 msgstr ""
+"Detta verkar vara en ny Mycodo installation. Skapa en "
+"administratörsanvändare. Läs och acceptera avtalet för att börja."
 
 #: mycodo_flask/templates/create_admin.html:67
 msgid "Login information is stored locally"
 msgstr "Inloggningsinformation lagras lokalt"
 
 #: mycodo_flask/templates/create_admin.html:68
-#, fuzzy
 msgid ""
 "Usernames must be 3 to 64 characters, passwords >3 characters, and "
 "contain only letters and numbers"
 msgstr ""
-"Ogiltigt användarnamn. Måste vara mellan 2 och 64 tecken och innehåller "
-"bara bokstäver och siffror."
+"Användarnamn måste bestå av 3 till 64 tecken, lösenord > 3 tecken och "
+"innehålla endast bokstäver och siffror."
 
 #: mycodo_flask/templates/flash_messages.html:20
 msgid "Info"
@@ -3451,7 +3450,7 @@ msgstr "Ändringslogg"
 
 #: mycodo_flask/templates/layout.html:248
 msgid "Donate"
-msgstr ""
+msgstr "Donera"
 
 #: mycodo_flask/templates/layout.html:255
 #: mycodo_flask/templates/pages/dashboard_entry.html:26
@@ -3859,14 +3858,12 @@ msgid ""
 msgstr "Håll ner <kbd>Ctrl</kbd> eller <kbd>&#8984;</kbd> för att välja mer än en"
 
 #: mycodo_flask/templates/pages/info.html:14
-#, fuzzy
 msgid "Mycodo Version"
-msgstr "Mycodo Version:"
+msgstr "Mycodo Version"
 
 #: mycodo_flask/templates/pages/info.html:15
-#, fuzzy
 msgid "Python Version"
-msgstr "Python Version:"
+msgstr "Python Version"
 
 #: mycodo_flask/templates/pages/info.html:16
 msgid "Database Version"
@@ -4074,9 +4071,8 @@ msgstr ""
 
 #: mycodo_flask/templates/pages/usage.html:41
 #: mycodo_flask/templates/pages/usage.html:96
-#, fuzzy
 msgid "Select a measurement with the unit"
-msgstr "Välj en mätning med enheten:"
+msgstr "Välj en mätning med enheten"
 
 #: mycodo_flask/templates/pages/usage.html:41
 #: mycodo_flask/templates/pages/usage.html:96
@@ -5443,8 +5439,9 @@ msgstr ""
 msgid "Set to None to disable."
 msgstr "Sätt till 0 för att inaktivera."
 
-#: outputs/on_off_gpio.py:59 outputs/on_off_wireless_rpi_rf.py:62
-#: outputs/pump_gpio.py:85 outputs/pwm_gpio.py:84
+#: outputs/on_off_gpio.py:59 outputs/on_off_gpio_sysfs.py:55
+#: outputs/on_off_wireless_rpi_rf.py:62 outputs/pump_gpio.py:85
+#: outputs/pwm_gpio.py:84
 msgid "The pin to control the state of"
 msgstr ""
 
@@ -5461,10 +5458,6 @@ msgstr ""
 #: outputs/pwm_shell.py:130
 msgid "Trigger Functions at Startup"
 msgstr ""
-
-#: outputs/on_off_gpio_sysfs.py:54
-msgid "GPIO Pin (BCM)"
-msgstr "GPIO Pin (BCM)"
 
 #: outputs/on_off_kasa_rgb_bulbs.py:104 outputs/on_off_kasa_rgb_bulbs.py:127
 #: outputs/on_off_kasa_rgb_bulbs.py:150 outputs/on_off_kasa_rgb_bulbs.py:173

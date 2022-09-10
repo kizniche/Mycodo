@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Mycodo1 8.11.0\n"
 "Report-Msgid-Bugs-To: mycodo@kylegabriel.com\n"
-"POT-Creation-Date: 2022-09-10 11:38-0400\n"
+"POT-Creation-Date: 2022-09-10 11:53-0400\n"
 "PO-Revision-Date: 2021-06-12 15:11+0000\n"
 "Last-Translator: Kyle Gabriel <kyletgabriel@gmail.com>\n"
 "Language: nl\n"
@@ -21,7 +21,7 @@ msgstr ""
 
 #: config_devices_units.py:13
 msgid "Acceleration"
-msgstr ""
+msgstr "Versnelling"
 
 #: config_devices_units.py:29
 msgid "ADC"
@@ -33,7 +33,7 @@ msgstr "Hoogte"
 
 #: config_devices_units.py:37
 msgid "Angle"
-msgstr ""
+msgstr "Hoek"
 
 #: config_devices_units.py:41
 msgid "Battery"
@@ -100,7 +100,7 @@ msgstr "Elektrisch potentieel"
 
 #: config_devices_units.py:137
 msgid "Energy"
-msgstr ""
+msgstr "Energie"
 
 #: config_devices_units.py:141 mycodo_flask/forms/forms_method.py:67
 msgid "Frequency"
@@ -137,7 +137,7 @@ msgstr "Licht"
 
 #: config_devices_units.py:173
 msgid "Magnetic Flux Density"
-msgstr ""
+msgstr "Magnetische Fluxdichtheid"
 
 #: config_devices_units.py:177
 msgid "Moisture"
@@ -165,19 +165,19 @@ msgstr "PID D-waarde"
 
 #: config_devices_units.py:213
 msgid "Power"
-msgstr ""
+msgstr "Vermogen"
 
 #: config_devices_units.py:217
 msgid "Apparent Power"
-msgstr ""
+msgstr "Schijnbaar vermogen"
 
 #: config_devices_units.py:221
 msgid "Power Factor"
-msgstr ""
+msgstr "Vermogensfactor"
 
 #: config_devices_units.py:225
 msgid "Reactive Power"
-msgstr ""
+msgstr "Reactief vermogen"
 
 #: config_devices_units.py:229
 msgid "Pressure"
@@ -201,7 +201,7 @@ msgstr "Weerstand"
 
 #: config_devices_units.py:249
 msgid "Rotation"
-msgstr ""
+msgstr "Rotatie"
 
 #: config_devices_units.py:253
 msgid "Revolutions"
@@ -209,7 +209,7 @@ msgstr "Revolutions"
 
 #: config_devices_units.py:257
 msgid "Salinity"
-msgstr ""
+msgstr "Zoutgehalte"
 
 #: config_devices_units.py:261 mycodo_flask/forms/forms_camera.py:67
 msgid "Saturation"
@@ -236,7 +236,7 @@ msgstr "Specifieke enthalpie"
 
 #: config_devices_units.py:281
 msgid "Specific Gravity"
-msgstr ""
+msgstr "Specifieke zwaartekracht"
 
 #: config_devices_units.py:285
 msgid "Specific Volume"
@@ -244,7 +244,7 @@ msgstr "Specifiek volume"
 
 #: config_devices_units.py:289
 msgid "Speed"
-msgstr ""
+msgstr "Snelheid"
 
 #: config_devices_units.py:293
 msgid "Temperature"
@@ -252,7 +252,7 @@ msgstr "Temperatuur"
 
 #: config_devices_units.py:297
 msgid "Total Dissolved Solids"
-msgstr ""
+msgstr "Totaal opgeloste vaste stoffen"
 
 #: config_devices_units.py:301 config_devices_units.py:325
 #: config_devices_units.py:478
@@ -295,7 +295,7 @@ msgstr "amp"
 
 #: config_devices_units.py:340
 msgid "Bearing"
-msgstr ""
+msgstr "Lager"
 
 #: config_devices_units.py:346
 msgid "Celsius"
@@ -327,7 +327,7 @@ msgstr "Decimale"
 
 #: config_devices_units.py:367
 msgid "Degree"
-msgstr ""
+msgstr "Graad"
 
 #: config_devices_units.py:370
 msgid "8-Bit Color"
@@ -399,7 +399,7 @@ msgstr "kilopascal"
 
 #: config_devices_units.py:421
 msgid "Kilowatt-hour"
-msgstr ""
+msgstr "Kilowattuur"
 
 #: config_devices_units.py:424
 msgid "Liter"
@@ -427,11 +427,11 @@ msgstr "Meter"
 
 #: config_devices_units.py:442
 msgid "Meters per second"
-msgstr ""
+msgstr "Meters per seconde"
 
 #: config_devices_units.py:445
 msgid "Meters per second per second"
-msgstr ""
+msgstr "Meters per seconde per seconde"
 
 #: config_devices_units.py:448
 msgid "Milligram per Liter"
@@ -499,7 +499,7 @@ msgstr "Delen per miljoen"
 
 #: config_devices_units.py:502
 msgid "Parts per thousand"
-msgstr ""
+msgstr "Delen per duizend"
 
 #: config_devices_units.py:505
 msgid "Pounds per square inch"
@@ -515,7 +515,7 @@ msgstr "Tweede"
 
 #: config_devices_units.py:517
 msgid "Steps"
-msgstr ""
+msgstr "Stappen"
 
 #: config_devices_units.py:520
 msgid "Microgram per cubic meter"
@@ -695,7 +695,7 @@ msgstr "naar beneden"
 #: config_translations.py:67
 #: mycodo_flask/templates/pages/data_options/input_options.html:27
 msgid "Duplicate"
-msgstr ""
+msgstr "Duplicaat"
 
 #: config_translations.py:71 config_translations.py:423
 #: mycodo_flask/forms/forms_input.py:153
@@ -896,7 +896,7 @@ msgstr "Pin"
 
 #: config_translations.py:141
 msgid "Publish"
-msgstr ""
+msgstr "Publiceren"
 
 #: config_translations.py:143
 msgid "PWM"
@@ -1008,7 +1008,7 @@ msgstr "Op gang brengen"
 
 #: config_translations.py:187
 msgid "Unlock"
-msgstr ""
+msgstr "Ontgrendelen"
 
 #: config_translations.py:189
 msgid "Up"
@@ -1032,7 +1032,7 @@ msgstr "Gebruiker"
 #: config_translations.py:310 inputs/mycodo_test_input_save_value.py:72
 #: mycodo_flask/templates/user_templates/widget_template_widget_indicator_js.html:60
 msgid "Value"
-msgstr ""
+msgstr "Waarde"
 
 #: config_translations.py:197 config_translations.py:313
 #: config_translations.py:405 inputs/anyleaf_orp.py:52
@@ -1152,15 +1152,15 @@ msgstr "FTDI-apparaat"
 
 #: config_translations.py:257
 msgid "The FTDI device connected to the input/output/etc."
-msgstr ""
+msgstr "Het FTDI-apparaat dat is aangesloten op de ingang/uitgang/etc."
 
 #: config_translations.py:262 outputs/pump_grove_motor_driver_v1_3.py:132
 msgid "Flow Rate Method"
-msgstr ""
+msgstr "Methode voor het debiet"
 
 #: config_translations.py:263 outputs/pump_grove_motor_driver_v1_3.py:133
 msgid "The flow rate to use when pumping a volume"
-msgstr ""
+msgstr "Het debiet dat moet worden gebruikt bij het pompen van een volume"
 
 #: config_translations.py:265
 msgid "Host"
@@ -1197,11 +1197,11 @@ msgstr "Keer de schaal om"
 
 #: config_translations.py:280
 msgid "Execute as User"
-msgstr ""
+msgstr "Uitvoeren als gebruiker"
 
 #: config_translations.py:281 outputs/pwm_shell.py:69
 msgid "The user to execute the command"
-msgstr ""
+msgstr "De gebruiker die de opdracht moet uitvoeren"
 
 #: config_translations.py:283
 msgid "Log Level: Debug"
@@ -1263,6 +1263,8 @@ msgstr "Uit Commando"
 #: config_translations.py:302 outputs/on_off_wireless_rpi_rf.py:78
 msgid "Command to execute when the output is instructed to turn off"
 msgstr ""
+"Commando om uit te voeren wanneer de uitgang wordt geïnstrueerd om uit te"
+" schakelen"
 
 #: config_translations.py:304 outputs/on_off_gpio.py:91
 #: outputs/on_off_gpio_sysfs.py:87
@@ -1285,6 +1287,8 @@ msgstr "Op commando"
 #: config_translations.py:320 outputs/on_off_wireless_rpi_rf.py:70
 msgid "Command to execute when the output is instructed to turn on"
 msgstr ""
+"Commando om uit te voeren wanneer de uitgang opdracht krijgt om aan te "
+"gaan"
 
 #: config_translations.py:323 functions/average_last_multiple.py:68
 #: functions/average_past_single.py:68 functions/backup_rsync.py:74
@@ -1376,7 +1380,7 @@ msgstr "PWM-commando"
 
 #: config_translations.py:358 outputs/pwm_shell.py:62
 msgid "Command to execute to set the PWM duty cycle (%)"
-msgstr ""
+msgstr "Uit te voeren commando om de PWM duty cycle in te stellen (%)"
 
 #: config_translations.py:361
 msgid "The Hertz to output the PWM signal (0 - 70,000)"
@@ -1429,7 +1433,7 @@ msgstr "Proeftijd"
 
 #: config_translations.py:382
 msgid "The duration of time to sample"
-msgstr ""
+msgstr "De tijdsduur van de bemonstering"
 
 #: config_translations.py:384
 msgid "Unscaled Unit Min"
@@ -1681,7 +1685,7 @@ msgstr "In leven houden"
 #: mycodo_flask/forms/forms_settings.py:104 outputs/on_off_mqtt.py:161
 #: outputs/value_mqtt.py:113
 msgid "Username"
-msgstr ""
+msgstr "Gebruikersnaam"
 
 #: actions/output_on_off.py:26
 #, fuzzy
@@ -1720,11 +1724,11 @@ msgstr "aanwas"
 
 #: actions/output_value.py:25
 msgid "Send a value to the Output."
-msgstr ""
+msgstr "Stuur een waarde naar de uitgang."
 
 #: actions/output_volume.py:25
 msgid "Instruct the Output to dispense a volume."
-msgstr ""
+msgstr "Geef de uitgang opdracht een volume af te geven."
 
 #: actions/pause_actions.py:24
 msgid "Set a delay between executing Actions when self.run_all_actions() is used."
@@ -1819,11 +1823,11 @@ msgstr "Start het systeem opnieuw"
 
 #: functions/bang_bang.py:45 functions/bang_bang_on_off.py:44
 msgid "Select a measurement the selected output will affect"
-msgstr ""
+msgstr "Selecteer een meting waarop de geselecteerde uitgang van invloed zal zijn"
 
 #: functions/bang_bang.py:56
 msgid "Select an output to control that will affect the measurement"
-msgstr ""
+msgstr "Selecteer een uitgang om te regelen die de meting zal beïnvloeden"
 
 #: functions/bang_bang.py:64 functions/bang_bang_on_off.py:74
 msgid "The desired setpoint"
@@ -1832,11 +1836,11 @@ msgstr ""
 #: functions/bang_bang.py:72 functions/bang_bang_on_off.py:82
 #: functions/bang_bang_pwm.py:69
 msgid "Hysteresis"
-msgstr ""
+msgstr "Hysterese"
 
 #: functions/bang_bang.py:73 functions/bang_bang_on_off.py:83
 msgid "The amount above and below the setpoint that defines the control band"
-msgstr ""
+msgstr "De hoeveelheid boven en onder het setpoint die de regelband bepaalt"
 
 #: functions/equation_multi.py:110 mycodo_flask/forms/forms_settings.py:276
 #: mycodo_flask/forms/forms_settings.py:284
@@ -1849,15 +1853,15 @@ msgstr "Vergelijking"
 #: functions/function_spacer.py:23 inputs/input_spacer.py:18
 #: outputs/output_spacer.py:26
 msgid "Color"
-msgstr ""
+msgstr "Kleur"
 
 #: functions/humidity_wet_dry_bulb.py:62
 msgid "Wet/Dry-Bulb"
-msgstr ""
+msgstr "Natte/droge bol"
 
 #: functions/pid_autotune.py:88
 msgid "Period"
-msgstr ""
+msgstr "Periode"
 
 #: functions/pid_autotune.py:106
 msgid "Noise Band"
@@ -1887,7 +1891,7 @@ msgstr ""
 #: inputs/atlas_do.py:77 inputs/atlas_ec.py:80 inputs/atlas_ec.py:89
 #: inputs/atlas_orp.py:67 inputs/atlas_orp.py:76
 msgid "Temperature Compensation"
-msgstr ""
+msgstr "Temperatuurcompensatie"
 
 #: inputs/ads1115_analog_ph_ec.py:139 inputs/ads1256_analog_ph_ec.py:223
 #: inputs/anyleaf_ph.py:63 inputs/atlas_do.py:69 inputs/atlas_ec.py:81
@@ -1899,7 +1903,7 @@ msgstr "Kies een maat voor temperatuurcompensatie"
 #: inputs/anyleaf_ph.py:71 inputs/atlas_do.py:77 inputs/atlas_ec.py:89
 #: inputs/atlas_orp.py:76
 msgid "Max Age"
-msgstr ""
+msgstr "Maximum leeftijd"
 
 #: inputs/ads1256.py:86 inputs/ads1256_analog_ph_ec.py:348
 msgid "Set the calibration method to perform during Input activation"
@@ -1909,17 +1913,17 @@ msgstr ""
 
 #: inputs/adxl34x.py:74 inputs/vl53l1x.py:62
 msgid "Range"
-msgstr ""
+msgstr "Bereik"
 
 #: inputs/anyleaf_orp.py:52 inputs/anyleaf_orp.py:59 inputs/anyleaf_orp.py:71
 #: inputs/anyleaf_orp.py:78 inputs/atlas_orp.py:97 inputs/atlas_pt1000.py:82
 #: inputs/atlas_rgb.py:142
 msgid "Calibrate"
-msgstr ""
+msgstr "Kalibreer"
 
 #: inputs/anyleaf_orp.py:52 inputs/anyleaf_orp.py:59
 msgid "Internal"
-msgstr ""
+msgstr "Intern"
 
 #: inputs/anyleaf_orp.py:59
 msgid "ORP"
@@ -1953,7 +1957,7 @@ msgstr ""
 #: inputs/atlas_pt1000.py:62 inputs/atlas_rgb.py:153 inputs/chirp.py:62
 #: inputs/vl53l0x.py:76 outputs/pump_atlas_ezo_pmp.py:155
 msgid "The new I2C to set the device to"
-msgstr ""
+msgstr "De nieuwe I2C om het apparaat in te stellen op"
 
 #: inputs/atlas_co2.py:104 inputs/atlas_do.py:119 inputs/atlas_ec.py:173
 #: inputs/atlas_flow.py:220 inputs/atlas_humidity.py:90 inputs/atlas_o2.py:156
@@ -1962,7 +1966,7 @@ msgstr ""
 #: inputs/vl53l0x.py:81 outputs/pump_atlas_ezo_pmp.py:160
 #: outputs/pump_grove_motor_driver_v1_0.py:176
 msgid "Set I2C Address"
-msgstr ""
+msgstr "I2C-adres instellen"
 
 #: inputs/atlas_flow.py:170
 msgid "Internal Resistor"
@@ -1971,12 +1975,12 @@ msgstr "interne Weerstand"
 #: inputs/atlas_humidity.py:65 inputs/atlas_o2.py:95
 #: inputs/atlas_pressure.py:56
 msgid "Always On"
-msgstr ""
+msgstr "Altijd aan"
 
 #: inputs/atlas_humidity.py:66 inputs/atlas_o2.py:96
 #: inputs/atlas_pressure.py:57
 msgid "Always Off"
-msgstr ""
+msgstr "Altijd uit"
 
 #: inputs/atlas_humidity.py:67 inputs/atlas_o2.py:97
 #: inputs/atlas_pressure.py:58
@@ -1987,11 +1991,11 @@ msgstr "Pre tijdens meten"
 #: inputs/atlas_humidity.py:69 inputs/atlas_o2.py:99
 #: inputs/atlas_pressure.py:60
 msgid "LED Mode"
-msgstr ""
+msgstr "LED-modus"
 
 #: inputs/atlas_pressure.py:61
 msgid "When to turn the LED on"
-msgstr ""
+msgstr "Wanneer de LED aanzetten"
 
 #: inputs/ds18b20.py:82 inputs/htu21d_circuitpython.py:64
 #: inputs/scd30_circuitpython.py:124 inputs/sht31d_circuitpython.py:63
@@ -2001,7 +2005,7 @@ msgstr "Temperatuur"
 
 #: inputs/hall_flow.py:51
 msgid "Pulses per Liter"
-msgstr ""
+msgstr "Impulsen per Liter"
 
 #: inputs/linux_command.py:50
 msgid "Command Timeout"
@@ -2014,7 +2018,7 @@ msgstr "De huidige directory van de shell-omgeving."
 
 #: inputs/mqtt_paho.py:111 inputs/mqtt_paho_json.py:127
 msgid "Username for connecting to the server"
-msgstr ""
+msgstr "Gebruikersnaam om verbinding te maken met de server"
 
 #: inputs/mycodo_test_input_save_value.py:65
 #, fuzzy
@@ -2032,12 +2036,12 @@ msgstr "IP adres"
 
 #: inputs/th1x.py:76
 msgid "Sensor Name"
-msgstr ""
+msgstr "Sensornaam"
 
 #: inputs/weather_openweathermap_onecall.py:86
 #: inputs/weather_openweathermap_weather.py:67
 msgid "API Key"
-msgstr ""
+msgstr "API Sleutel"
 
 #: inputs/weather_openweathermap_onecall.py:94
 #: mycodo_flask/forms/forms_trigger.py:32
@@ -2051,11 +2055,11 @@ msgstr "Lengtegraad (decimaal)"
 
 #: inputs/weather_openweathermap_onecall.py:167
 msgid "Time"
-msgstr ""
+msgstr "Tijd"
 
 #: inputs/weather_openweathermap_weather.py:75
 msgid "City"
-msgstr ""
+msgstr "Stad"
 
 #: mycodo_flask/app.py:229
 msgid "Please log in to access this page"
@@ -2110,22 +2114,20 @@ msgid "Passwords do not match. Please try again."
 msgstr "Wachtwoorden komen niet overeen. Probeer het opnieuw."
 
 #: mycodo_flask/routes_authentication.py:79
-#, fuzzy
 msgid ""
 "Invalid username. Must be between 3 and 64 characters and only contain "
 "letters and numbers."
 msgstr ""
-"Ongeldige gebruikersnaam. Moet tussen de 2 en 64 tekens bevatten en mag "
-"alleen letters en cijfers bevatten."
+"Ongeldige gebruikersnaam. Moet tussen 3 en 64 karakters zijn en alleen "
+"letters en cijfers bevatten."
 
 #: mycodo_flask/routes_authentication.py:85
-#, fuzzy
 msgid ""
 "Invalid password. Must be between 4 and 64 characters and only contain "
 "letters and numbers."
 msgstr ""
-"Ongeldige gebruikersnaam. Moet tussen de 2 en 64 tekens bevatten en mag "
-"alleen letters en cijfers bevatten."
+"Ongeldig wachtwoord. Moet tussen 4 en 64 karakters zijn en alleen letters"
+" en cijfers bevatten."
 
 #: mycodo_flask/routes_authentication.py:121
 #, python-format
@@ -2194,7 +2196,7 @@ msgstr ""
 
 #: mycodo_flask/routes_password_reset.py:135
 msgid "Code expired or invalid"
-msgstr ""
+msgstr "Code verlopen of ongeldig"
 
 #: mycodo_flask/forms/forms_authentication.py:36
 #: mycodo_flask/forms/forms_authentication.py:37
@@ -2212,7 +2214,7 @@ msgstr ""
 
 #: mycodo_flask/forms/forms_authentication.py:67
 msgid "Save Reset Code to File"
-msgstr ""
+msgstr "Resetcode opslaan in bestand"
 
 #: mycodo_flask/forms/forms_authentication.py:68
 msgid "Email Reset Code"
@@ -2220,11 +2222,11 @@ msgstr ""
 
 #: mycodo_flask/forms/forms_authentication.py:74
 msgid "Submit"
-msgstr ""
+msgstr "Indienen"
 
 #: mycodo_flask/forms/forms_authentication.py:87
 msgid "Change Password"
-msgstr ""
+msgstr "Wijzig Wachtwoord"
 
 #: mycodo_flask/forms/forms_authentication.py:97
 msgid "Domain or IP Address"
@@ -2351,7 +2353,7 @@ msgstr "Hide Laatste Timelapse"
 
 #: mycodo_flask/forms/forms_camera.py:86
 msgid "Show Preview"
-msgstr ""
+msgstr "Show Voorbeschouwing"
 
 #: mycodo_flask/forms/forms_camera.py:87
 #, fuzzy
@@ -2428,7 +2430,7 @@ msgstr ""
 
 #: mycodo_flask/forms/forms_camera.py:120
 msgid "Image Set"
-msgstr ""
+msgstr "Beeldreeks"
 
 #: mycodo_flask/forms/forms_camera.py:121
 msgid "Codec"
@@ -2449,11 +2451,11 @@ msgstr "Import-invoermodule"
 
 #: mycodo_flask/forms/forms_conditional.py:30
 msgid "Initialize Python Code"
-msgstr ""
+msgstr "Python-code initialiseren"
 
 #: mycodo_flask/forms/forms_conditional.py:31
 msgid "Run Python Code"
-msgstr ""
+msgstr "Python-code uitvoeren"
 
 #: mycodo_flask/forms/forms_conditional.py:32
 msgid "Status Python Code"
@@ -2636,7 +2638,7 @@ msgstr "Upgrade Mycodo naar volgende belangrijke versie"
 
 #: mycodo_flask/forms/forms_misc.py:114
 msgid "Download Backup"
-msgstr ""
+msgstr "Back-up downloaden"
 
 #: mycodo_flask/forms/forms_misc.py:115
 msgid "Create Backup"
@@ -2797,7 +2799,7 @@ msgstr "Landingspagina"
 
 #: mycodo_flask/forms/forms_settings.py:90
 msgid "Index Page"
-msgstr ""
+msgstr "Index Pagina"
 
 #: mycodo_flask/forms/forms_settings.py:91
 #: mycodo_flask/forms/forms_settings.py:352
@@ -3047,7 +3049,7 @@ msgstr "Instellingen bewerken"
 #: mycodo_flask/templates/forgot_password.html:26
 #: mycodo_flask/templates/reset_password.html:26
 msgid "Reset Password"
-msgstr ""
+msgstr "Reset Wachtwoord"
 
 #: mycodo_flask/forms/forms_settings.py:305
 msgid "Add Role"
@@ -3285,19 +3287,20 @@ msgid ""
 "This appears to be a new Mycodo install. Please create an administrator "
 "user. Read and accept the agreement to begin."
 msgstr ""
+"Dit lijkt een nieuwe Mycodo-installatie te zijn. Maak een administrator "
+"gebruiker aan. Lees en accepteer de overeenkomst om te beginnen."
 
 #: mycodo_flask/templates/create_admin.html:67
 msgid "Login information is stored locally"
 msgstr "Aanmeldingsgegevens worden lokaal opgeslagen"
 
 #: mycodo_flask/templates/create_admin.html:68
-#, fuzzy
 msgid ""
 "Usernames must be 3 to 64 characters, passwords >3 characters, and "
 "contain only letters and numbers"
 msgstr ""
-"Ongeldige gebruikersnaam. Moet tussen de 2 en 64 tekens bevatten en mag "
-"alleen letters en cijfers bevatten."
+"Gebruikersnamen moeten 3 tot 64 tekens lang zijn, wachtwoorden >3 tekens,"
+" en alleen letters en cijfers bevatten"
 
 #: mycodo_flask/templates/flash_messages.html:20
 msgid "Info"
@@ -3458,7 +3461,7 @@ msgstr "changelog"
 
 #: mycodo_flask/templates/layout.html:248
 msgid "Donate"
-msgstr ""
+msgstr "Doneer"
 
 #: mycodo_flask/templates/layout.html:255
 #: mycodo_flask/templates/pages/dashboard_entry.html:26
@@ -3546,9 +3549,8 @@ msgid "Log In"
 msgstr ""
 
 #: mycodo_flask/templates/login_keypad.html:64
-#, fuzzy
 msgid "Password Login"
-msgstr "Wachtwoord"
+msgstr "Wachtwoord Inloggen"
 
 #: mycodo_flask/templates/login_password.html:41
 msgid "Remember me"
@@ -3874,14 +3876,12 @@ msgstr ""
 " één te selecteren"
 
 #: mycodo_flask/templates/pages/info.html:14
-#, fuzzy
 msgid "Mycodo Version"
-msgstr "Mycodo-versie:"
+msgstr "Mycodo-versie"
 
 #: mycodo_flask/templates/pages/info.html:15
-#, fuzzy
 msgid "Python Version"
-msgstr "Python-versie:"
+msgstr "Python-versie"
 
 #: mycodo_flask/templates/pages/info.html:16
 msgid "Database Version"
@@ -4091,9 +4091,8 @@ msgstr ""
 
 #: mycodo_flask/templates/pages/usage.html:41
 #: mycodo_flask/templates/pages/usage.html:96
-#, fuzzy
 msgid "Select a measurement with the unit"
-msgstr "Selecteer een meting met het apparaat:"
+msgstr "Selecteer een meting met het apparaat"
 
 #: mycodo_flask/templates/pages/usage.html:41
 #: mycodo_flask/templates/pages/usage.html:96
@@ -5473,8 +5472,9 @@ msgstr ""
 msgid "Set to None to disable."
 msgstr "Zet op 0 om uit te schakelen."
 
-#: outputs/on_off_gpio.py:59 outputs/on_off_wireless_rpi_rf.py:62
-#: outputs/pump_gpio.py:85 outputs/pwm_gpio.py:84
+#: outputs/on_off_gpio.py:59 outputs/on_off_gpio_sysfs.py:55
+#: outputs/on_off_wireless_rpi_rf.py:62 outputs/pump_gpio.py:85
+#: outputs/pwm_gpio.py:84
 msgid "The pin to control the state of"
 msgstr ""
 
@@ -5491,10 +5491,6 @@ msgstr ""
 #: outputs/pwm_shell.py:130
 msgid "Trigger Functions at Startup"
 msgstr ""
-
-#: outputs/on_off_gpio_sysfs.py:54
-msgid "GPIO Pin (BCM)"
-msgstr "GPIO-pin (BCM)"
 
 #: outputs/on_off_kasa_rgb_bulbs.py:104 outputs/on_off_kasa_rgb_bulbs.py:127
 #: outputs/on_off_kasa_rgb_bulbs.py:150 outputs/on_off_kasa_rgb_bulbs.py:173

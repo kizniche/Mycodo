@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Mycodo1 8.11.0\n"
 "Report-Msgid-Bugs-To: mycodo@kylegabriel.com\n"
-"POT-Creation-Date: 2022-09-10 11:38-0400\n"
+"POT-Creation-Date: 2022-09-10 11:53-0400\n"
 "PO-Revision-Date: 2021-11-23 17:53+0000\n"
 "Last-Translator: Kyle Gabriel <kyletgabriel@gmail.com>\n"
 "Language: nb\n"
@@ -21,7 +21,7 @@ msgstr ""
 
 #: config_devices_units.py:13
 msgid "Acceleration"
-msgstr ""
+msgstr "Akselerasjon"
 
 #: config_devices_units.py:29
 msgid "ADC"
@@ -33,7 +33,7 @@ msgstr "Høyde"
 
 #: config_devices_units.py:37
 msgid "Angle"
-msgstr ""
+msgstr "Vinkel"
 
 #: config_devices_units.py:41
 msgid "Battery"
@@ -1677,7 +1677,7 @@ msgstr "Holde i live"
 #: mycodo_flask/forms/forms_settings.py:104 outputs/on_off_mqtt.py:161
 #: outputs/value_mqtt.py:113
 msgid "Username"
-msgstr ""
+msgstr "brukernavn"
 
 #: actions/output_on_off.py:26
 #, fuzzy
@@ -2113,13 +2113,12 @@ msgstr ""
 "bokstaver og tall."
 
 #: mycodo_flask/routes_authentication.py:85
-#, fuzzy
 msgid ""
 "Invalid password. Must be between 4 and 64 characters and only contain "
 "letters and numbers."
 msgstr ""
-"Ugyldig brukernavn. Må være mellom 2 og 64 tegn og inneholder bare "
-"bokstaver og tall."
+"Ugyldig passord. Må være mellom 4 og 64 tegn og kun inneholde bokstaver "
+"og tall."
 
 #: mycodo_flask/routes_authentication.py:121
 #, python-format
@@ -2214,11 +2213,11 @@ msgstr ""
 
 #: mycodo_flask/forms/forms_authentication.py:74
 msgid "Submit"
-msgstr ""
+msgstr "Sende inn"
 
 #: mycodo_flask/forms/forms_authentication.py:87
 msgid "Change Password"
-msgstr ""
+msgstr "Bytt passord"
 
 #: mycodo_flask/forms/forms_authentication.py:97
 msgid "Domain or IP Address"
@@ -3041,7 +3040,7 @@ msgstr "Endre innstillinger"
 #: mycodo_flask/templates/forgot_password.html:26
 #: mycodo_flask/templates/reset_password.html:26
 msgid "Reset Password"
-msgstr ""
+msgstr "Tilbakestille passord"
 
 #: mycodo_flask/forms/forms_settings.py:305
 msgid "Add Role"
@@ -3279,19 +3278,20 @@ msgid ""
 "This appears to be a new Mycodo install. Please create an administrator "
 "user. Read and accept the agreement to begin."
 msgstr ""
+"Dette ser ut til å være en ny Mycodo-installasjon. Opprett en "
+"administratorbruker. Les og godta avtalen for å begynne."
 
 #: mycodo_flask/templates/create_admin.html:67
 msgid "Login information is stored locally"
 msgstr "Innloggingsinformasjon lagres lokalt"
 
 #: mycodo_flask/templates/create_admin.html:68
-#, fuzzy
 msgid ""
 "Usernames must be 3 to 64 characters, passwords >3 characters, and "
 "contain only letters and numbers"
 msgstr ""
-"Ugyldig brukernavn. Må være mellom 2 og 64 tegn og inneholder bare "
-"bokstaver og tall."
+"Brukernavn må bestå av 3 til 64 tegn, passord >3 tegn, og kun inneholde "
+"bokstaver og tall"
 
 #: mycodo_flask/templates/flash_messages.html:20
 msgid "Info"
@@ -3452,7 +3452,7 @@ msgstr "endrings~~POS=TRUNC"
 
 #: mycodo_flask/templates/layout.html:248
 msgid "Donate"
-msgstr ""
+msgstr "Donere"
 
 #: mycodo_flask/templates/layout.html:255
 #: mycodo_flask/templates/pages/dashboard_entry.html:26
@@ -3855,14 +3855,12 @@ msgstr ""
 "mer enn ett"
 
 #: mycodo_flask/templates/pages/info.html:14
-#, fuzzy
 msgid "Mycodo Version"
-msgstr "Mycodo Versjon:"
+msgstr "Mycodo Versjon"
 
 #: mycodo_flask/templates/pages/info.html:15
-#, fuzzy
 msgid "Python Version"
-msgstr "Python Versjon:"
+msgstr "Python Versjon"
 
 #: mycodo_flask/templates/pages/info.html:16
 msgid "Database Version"
@@ -4070,9 +4068,8 @@ msgstr ""
 
 #: mycodo_flask/templates/pages/usage.html:41
 #: mycodo_flask/templates/pages/usage.html:96
-#, fuzzy
 msgid "Select a measurement with the unit"
-msgstr "Velg en måling med enheten:"
+msgstr "Velg en måling med enheten"
 
 #: mycodo_flask/templates/pages/usage.html:41
 #: mycodo_flask/templates/pages/usage.html:96
@@ -5425,8 +5422,9 @@ msgstr ""
 msgid "Set to None to disable."
 msgstr "Sett til 0 for å deaktivere."
 
-#: outputs/on_off_gpio.py:59 outputs/on_off_wireless_rpi_rf.py:62
-#: outputs/pump_gpio.py:85 outputs/pwm_gpio.py:84
+#: outputs/on_off_gpio.py:59 outputs/on_off_gpio_sysfs.py:55
+#: outputs/on_off_wireless_rpi_rf.py:62 outputs/pump_gpio.py:85
+#: outputs/pwm_gpio.py:84
 msgid "The pin to control the state of"
 msgstr ""
 
@@ -5443,10 +5441,6 @@ msgstr ""
 #: outputs/pwm_shell.py:130
 msgid "Trigger Functions at Startup"
 msgstr ""
-
-#: outputs/on_off_gpio_sysfs.py:54
-msgid "GPIO Pin (BCM)"
-msgstr "GPIO Pin (BCM)"
 
 #: outputs/on_off_kasa_rgb_bulbs.py:104 outputs/on_off_kasa_rgb_bulbs.py:127
 #: outputs/on_off_kasa_rgb_bulbs.py:150 outputs/on_off_kasa_rgb_bulbs.py:173
