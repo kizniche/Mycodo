@@ -236,7 +236,11 @@ If you would like to improve the translations, you can make changes at `http://t
 English
 ~~~~~~~
 
-The native language used in the software.
+Mycodo is an automated monitoring and regulation system that was built to run on the Raspberry Pi (versions Zero, 1, 2, 3, and 4).
+
+Originally developed for cultivating edible mushrooms, Mycodo has grown to do much more, including growing plants, culturing microorganisms, maintaining animal environments (laboratory honey bee apiary, young mammal and snake egg incubation, aquariums, herptariums), fermenting and curing tobacco, fermenting and aging foods (beer, cheese, tempeh), cooking food (sous-vide), and more.
+
+The system comprises a backend (daemon) and a frontend (web server). The backend acquires measurements from sensors and devices, and coordinates a diverse set of responses to those measurements, including the ability to modulate outputs (relays, PWM, wireless outlets), regulate environmental conditions with electrical devices under PID control (steady regulation or changing over time), schedule timers, capture photos and stream video, trigger actions when measurements meet certain conditions (modulate relays, execute commands, notify by email, etc.), and more. The frontend is a web interface that enables easy navigation and configuration from any browser-enabled device.
 
 Dutch
 ~~~~~
@@ -497,7 +501,11 @@ navigering och konfiguration från alla webbläsaraktiverade enheter.
 Turkish
 ~~~~~~~
 
-Düzenlenecektir.
+Mycodo, Raspberry Pi (Sıfır, 1, 2, 3 ve 4 sürümleri) üzerinde çalışmak üzere oluşturulmuş otomatik bir izleme ve düzenleme sistemidir.
+
+Başlangıçta yenilebilir mantarların yetiştirilmesi için geliştirilen Mycodo, bitki yetiştirme, mikroorganizmaların kültürlenmesi, hayvan ortamlarının korunması (laboratuar bal arısı arı kovanı, genç memeli ve yılan yumurtası kuluçka, akvaryumlar, herptaryumlar), tütünün fermente edilmesi ve kürlenmesi, fermente ve eskitme yiyecekleri (bira, peynir, tempeh), yemek pişirme (sous-vide) ve daha fazlası.
+
+Sistem bir arka uç (arka plan programı) ve bir ön uçtan (web sunucusu) oluşur. Arka uç, sensörlerden ve cihazlardan ölçümler alır ve çıkışları modüle etme (röleler, PWM, kablosuz çıkışlar), çevresel koşulları PID kontrolü altında elektrikli cihazlarla düzenleme (sürekli düzenleme veya değiştirme) dahil olmak üzere bu ölçümlere verilen çeşitli yanıtları koordine eder. zaman), zamanlayıcıları programlayın, fotoğraf çekin ve video akışı yapın, ölçümler belirli koşulları karşıladığında eylemleri tetikleyin (röleleri modüle edin, komutları yürütün, e-posta ile bilgilendir vb.) ve daha fazlasını yapın. Ön uç, tarayıcı özellikli herhangi bir cihazdan kolay gezinme ve yapılandırma sağlayan bir web arayüzüdür.
 
 Chinese
 ~~~~~~~
