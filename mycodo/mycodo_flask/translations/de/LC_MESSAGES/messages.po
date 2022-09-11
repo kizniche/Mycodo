@@ -2,22 +2,22 @@
 # Copyright (C) 2022 Kyle T. Gabriel
 # This file is distributed under the same license as the Mycodo project.
 # FIRST AUTHOR <EMAIL@ADDRESS>, 2022.
-# Kyle Gabriel <business@kylegabriel.com>, 2022.
+#
 msgid ""
 msgstr ""
 "Project-Id-Version: Mycodo1 8.11.0\n"
 "Report-Msgid-Bugs-To: mycodo@kylegabriel.com\n"
-"POT-Creation-Date: 2022-09-10 11:53-0400\n"
+"POT-Creation-Date: 2022-09-10 20:38-0400\n"
 "PO-Revision-Date: 2022-09-10 22:12+0000\n"
 "Last-Translator: Kyle Gabriel <business@kylegabriel.com>\n"
-"Language-Team: German <http://translate.kylegabriel.com:8080/projects/mycodo/"
-"translations/de/>\n"
 "Language: de\n"
+"Language-Team: German "
+"<http://translate.kylegabriel.com:8080/projects/mycodo/translations/de/>"
+"\n"
+"Plural-Forms: nplurals=2; plural=n != 1\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 4.14\n"
 "Generated-By: Babel 2.9.1\n"
 
 #: config_devices_units.py:13
@@ -1689,8 +1689,7 @@ msgstr "Benutzername"
 
 #: actions/output_on_off.py:26
 msgid "Turn an On/Off Output On, Off, or On for a duration."
-msgstr ""
-"Schalten Sie einen Ausgangskanal AUS, AN oder AN für eine gewisse Dauer."
+msgstr "Schalten Sie einen Ausgangskanal AUS, AN oder AN für eine gewisse Dauer."
 
 #: actions/output_on_off.py:52
 msgid "State"
@@ -2105,8 +2104,8 @@ msgid ""
 "Invalid username. Must be between 3 and 64 characters and only contain "
 "letters and numbers."
 msgstr ""
-"Ungültiger Benutzername. Muss zwischen 3 und 64 Zeichen lang sein und darf "
-"nur Buchstaben und Zahlen enthalten."
+"Ungültiger Benutzername. Muss zwischen 3 und 64 Zeichen lang sein und "
+"darf nur Buchstaben und Zahlen enthalten."
 
 #: mycodo_flask/routes_authentication.py:85
 msgid ""
@@ -3279,8 +3278,8 @@ msgid ""
 "Usernames must be 3 to 64 characters, passwords >3 characters, and "
 "contain only letters and numbers"
 msgstr ""
-"Benutzernamen müssen aus 3 bis 64 Zeichen bestehen, Passwörter aus mehr als "
-"3 Zeichen und dürfen nur Buchstaben und Zahlen enthalten"
+"Benutzernamen müssen aus 3 bis 64 Zeichen bestehen, Passwörter aus mehr "
+"als 3 Zeichen und dürfen nur Buchstaben und Zahlen enthalten"
 
 #: mycodo_flask/templates/flash_messages.html:20
 msgid "Info"
@@ -3751,9 +3750,9 @@ msgid ""
 "it using the Raspberry Pi configuration or with the command 'sudo raspi-"
 "config'"
 msgstr ""
-"Die Himbeer-Pi-Kamera-Unterstützung scheint nicht aktiviert zu sein. Bitte "
-"aktivieren Sie es mit der Raspberry Pi-Konfiguration oder mit dem Befehl "
-"'sudo raspi-config'"
+"Die Himbeer-Pi-Kamera-Unterstützung scheint nicht aktiviert zu sein. "
+"Bitte aktivieren Sie es mit der Raspberry Pi-Konfiguration oder mit dem "
+"Befehl 'sudo raspi-config'"
 
 #: mycodo_flask/templates/pages/camera.html:206
 #: mycodo_flask/templates/pages/camera.html:210
@@ -4527,9 +4526,9 @@ msgid ""
 "The minimum value required for the Lower Output to activate. If the value"
 " is below this value, the Lower Output will not turn on."
 msgstr ""
-"Der Mindestwert, der erforderlich ist, damit der untere Ausgang aktiviert "
-"wird. Wenn der Wert unter diesem Wert liegt, wird der untere Ausgang nicht "
-"aktiviert."
+"Der Mindestwert, der erforderlich ist, damit der untere Ausgang aktiviert"
+" wird. Wenn der Wert unter diesem Wert liegt, wird der untere Ausgang "
+"nicht aktiviert."
 
 #: mycodo_flask/templates/pages/function_options/pid_options/output_value_lower.html:11
 msgid ""
@@ -4547,8 +4546,8 @@ msgid ""
 " is below this value, the Raise Output will not turn on."
 msgstr ""
 "Der Mindestwert, der erforderlich ist, damit der Ausgang \"Anheben\" "
-"aktiviert wird. Liegt der Wert unter diesem Wert, wird der Ausgang \"Anheben"
-"\" nicht aktiviert."
+"aktiviert wird. Liegt der Wert unter diesem Wert, wird der Ausgang "
+"\"Anheben\" nicht aktiviert."
 
 #: mycodo_flask/templates/pages/function_options/pid_options/output_value_raise.html:11
 msgid ""
@@ -4566,8 +4565,8 @@ msgid ""
 "volume is below this value, the Lower Output will not turn on."
 msgstr ""
 "Die Mindestlautstärke, die erforderlich ist, damit der untere Ausgang "
-"aktiviert wird. Wenn die Lautstärke unter diesem Wert liegt, wird der untere "
-"Ausgang nicht aktiviert."
+"aktiviert wird. Wenn die Lautstärke unter diesem Wert liegt, wird der "
+"untere Ausgang nicht aktiviert."
 
 #: mycodo_flask/templates/pages/function_options/pid_options/output_volume_lower.html:11
 msgid ""
@@ -4584,9 +4583,9 @@ msgid ""
 "The minimum volume required for the Raise Output to activate. If the "
 "volume is below this value, the Raise Output will not turn on."
 msgstr ""
-"Die Mindestlautstärke, die erforderlich ist, damit der Ausgang \"Erhöhen\" "
-"aktiviert wird. Liegt die Lautstärke unter diesem Wert, wird der Ausgang "
-"\"Erhöhen\" nicht aktiviert."
+"Die Mindestlautstärke, die erforderlich ist, damit der Ausgang "
+"\"Erhöhen\" aktiviert wird. Liegt die Lautstärke unter diesem Wert, wird "
+"der Ausgang \"Erhöhen\" nicht aktiviert."
 
 #: mycodo_flask/templates/pages/function_options/pid_options/output_volume_raise.html:11
 msgid ""
@@ -5373,8 +5372,8 @@ msgid ""
 "Cannot activate PID controller if the associated Input controller is "
 "inactive"
 msgstr ""
-"PID-Regler kann nicht aktiviert werden, wenn der zugehörige Eingangsregler "
-"nicht aktiv ist"
+"PID-Regler kann nicht aktiviert werden, wenn der zugehörige "
+"Eingangsregler nicht aktiv ist"
 
 #: mycodo_flask/utils/utils_pid.py:379
 msgid ""
@@ -5632,32 +5631,21 @@ msgid "Select a measurement to display"
 msgstr "Wählen Sie eine Messung zur Anzeige aus"
 
 #: widgets/widget_graph_synchronous.py:375
-msgid "Select Input measurements to display"
-msgstr "Wählen Sie die anzuzeigenden Eingangsmessungen"
-
 #: widgets/widget_graph_synchronous.py:385
-msgid "Select Function measurements to display"
-msgstr "Wählen Sie Funktion Messungen anzeigen"
-
 #: widgets/widget_graph_synchronous.py:395
-msgid "Select Output measurements to display"
-msgstr "Wählen Sie die anzuzeigenden Ausgangsmessungen"
+#: widgets/widget_graph_synchronous.py:405
+#: widgets/widget_graph_synchronous.py:415
+#, fuzzy
+msgid "Select measurements to display"
+msgstr "Wählen Sie eine Messung zur Anzeige aus"
 
 #: widgets/widget_graph_synchronous.py:404
 msgid "PIDs"
 msgstr "PISs"
 
-#: widgets/widget_graph_synchronous.py:405
-msgid "Select PID measurements to display"
-msgstr "PID-Messungen zur Anzeige auswählen"
-
 #: widgets/widget_graph_synchronous.py:414
 msgid "Note Tags"
 msgstr "Beachten Sie Tags"
-
-#: widgets/widget_graph_synchronous.py:415
-msgid "Select Note Tags measurements to display"
-msgstr "Wählen Sie die anzuzeigenden Messungen der Notiz-Tags"
 
 #: widgets/widget_measurement.py:110
 msgid "Show Unit"
@@ -5819,3 +5807,4 @@ msgstr "Python-Code (Auffrischen)"
 #: widgets/widget_python_code.py:212
 msgid "Python code to execute every dashboard/widget refresh"
 msgstr "Python-Code zur Ausführung bei jeder Aktualisierung des Dashboards/Widgets"
+

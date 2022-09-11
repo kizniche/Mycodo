@@ -231,7 +231,7 @@ Languages
 
 By default, mycodo will display the default language set by your browser. You may also force a language in the settings at ``[Gear Icon] -> Configure -> General -> Language``
 
-If you would like to improve the translations, you can make changes at `http://translate.kylegabriel.com <http://translate.kylegabriel.com:8080/engage/mycodo/>`__, submit a pull request with an amended .po file from ~/Mycodo/mycodo/mycodo_flask/translations/, or start a `New Issue <https://github.com/kizniche/Mycodo/issues/new>`__ detailing the corrections.
+If you would like to contribute to translations, you can do so at `http://translate.kylegabriel.com <http://translate.kylegabriel.com:8080/engage/mycodo/>`__. Please read [How To Contribute to Language Translations in Mycodo](https://forum.radicaldiy.com/t/how-to-contribute-to-language-translations-in-mycodo/1162/2) for more information.
 
 English
 ~~~~~~~

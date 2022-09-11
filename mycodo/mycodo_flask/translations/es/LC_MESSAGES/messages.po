@@ -2,22 +2,22 @@
 # Copyright (C) 2022 Kyle T. Gabriel
 # This file is distributed under the same license as the Mycodo project.
 # FIRST AUTHOR <EMAIL@ADDRESS>, 2022.
-# Kyle Gabriel <business@kylegabriel.com>, 2022.
+#
 msgid ""
 msgstr ""
 "Project-Id-Version: Mycodo VERSION\n"
 "Report-Msgid-Bugs-To: mycodo@kylegabriel.com\n"
-"POT-Creation-Date: 2022-09-10 11:53-0400\n"
+"POT-Creation-Date: 2022-09-10 20:38-0400\n"
 "PO-Revision-Date: 2022-09-10 22:12+0000\n"
 "Last-Translator: Kyle Gabriel <business@kylegabriel.com>\n"
-"Language-Team: Spanish <http://translate.kylegabriel.com:8080/projects/"
-"mycodo/translations/es/>\n"
 "Language: es\n"
+"Language-Team: Spanish "
+"<http://translate.kylegabriel.com:8080/projects/mycodo/translations/es/>"
+"\n"
+"Plural-Forms: nplurals=2; plural=n != 1\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 4.14\n"
 "Generated-By: Babel 2.9.1\n"
 
 #: config_devices_units.py:13
@@ -2097,8 +2097,8 @@ msgid ""
 "Invalid username. Must be between 3 and 64 characters and only contain "
 "letters and numbers."
 msgstr ""
-"Nombre de usuario inválido. Debe tener entre 3 y 64 caracteres y contener "
-"sólo letras y números."
+"Nombre de usuario inválido. Debe tener entre 3 y 64 caracteres y contener"
+" sólo letras y números."
 
 #: mycodo_flask/routes_authentication.py:85
 msgid ""
@@ -4527,8 +4527,8 @@ msgid ""
 "The minimum value required for the Lower Output to activate. If the value"
 " is below this value, the Lower Output will not turn on."
 msgstr ""
-"El valor mínimo requerido para que la Salida Inferior se active. Si el valor "
-"es inferior a este valor, la salida inferior no se activará."
+"El valor mínimo requerido para que la Salida Inferior se active. Si el "
+"valor es inferior a este valor, la salida inferior no se activará."
 
 #: mycodo_flask/templates/pages/function_options/pid_options/output_value_lower.html:11
 msgid ""
@@ -4545,8 +4545,8 @@ msgid ""
 "The minimum value required for the Raise Output to activate. If the value"
 " is below this value, the Raise Output will not turn on."
 msgstr ""
-"El valor mínimo requerido para que la Salida de Elevación se active. Si el "
-"valor es inferior a este valor, la salida de elevación no se activará."
+"El valor mínimo requerido para que la Salida de Elevación se active. Si "
+"el valor es inferior a este valor, la salida de elevación no se activará."
 
 #: mycodo_flask/templates/pages/function_options/pid_options/output_value_raise.html:11
 msgid ""
@@ -5618,32 +5618,21 @@ msgid "Select a measurement to display"
 msgstr "Seleccione una medida para mostrar"
 
 #: widgets/widget_graph_synchronous.py:375
-msgid "Select Input measurements to display"
-msgstr "Seleccione Mediciones de entrada para mostrar"
-
 #: widgets/widget_graph_synchronous.py:385
-msgid "Select Function measurements to display"
-msgstr "Seleccione las mediciones de la función para mostrar"
-
 #: widgets/widget_graph_synchronous.py:395
-msgid "Select Output measurements to display"
-msgstr "Seleccione Mediciones de salida para mostrar"
+#: widgets/widget_graph_synchronous.py:405
+#: widgets/widget_graph_synchronous.py:415
+#, fuzzy
+msgid "Select measurements to display"
+msgstr "Seleccione una medida para mostrar"
 
 #: widgets/widget_graph_synchronous.py:404
 msgid "PIDs"
 msgstr "PIDs"
 
-#: widgets/widget_graph_synchronous.py:405
-msgid "Select PID measurements to display"
-msgstr "Seleccione las mediciones PID que se mostrarán"
-
 #: widgets/widget_graph_synchronous.py:414
 msgid "Note Tags"
 msgstr "Etiquetas de nota"
-
-#: widgets/widget_graph_synchronous.py:415
-msgid "Select Note Tags measurements to display"
-msgstr "Seleccione las medidas de las etiquetas de las notas para mostrarlas"
 
 #: widgets/widget_measurement.py:110
 msgid "Show Unit"
@@ -5803,3 +5792,4 @@ msgstr "Código Python (Actualizar)"
 #: widgets/widget_python_code.py:212
 msgid "Python code to execute every dashboard/widget refresh"
 msgstr "Código Python para ejecutar cada actualización del panel/widget"
+

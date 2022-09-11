@@ -2,22 +2,22 @@
 # Copyright (C) 2022 Kyle T. Gabriel
 # This file is distributed under the same license as the Mycodo project.
 # FIRST AUTHOR <EMAIL@ADDRESS>, 2022.
-# Kyle Gabriel <business@kylegabriel.com>, 2022.
+#
 msgid ""
 msgstr ""
 "Project-Id-Version: Mycodo1 8.11.0\n"
 "Report-Msgid-Bugs-To: mycodo@kylegabriel.com\n"
-"POT-Creation-Date: 2022-09-10 11:53-0400\n"
+"POT-Creation-Date: 2022-09-10 20:38-0400\n"
 "PO-Revision-Date: 2022-09-11 00:36+0000\n"
 "Last-Translator: Kyle Gabriel <business@kylegabriel.com>\n"
-"Language-Team: Dutch <http://translate.kylegabriel.com:8080/projects/mycodo/"
-"translations/nl/>\n"
 "Language: nl\n"
+"Language-Team: Dutch "
+"<http://translate.kylegabriel.com:8080/projects/mycodo/translations/nl/>"
+"\n"
+"Plural-Forms: nplurals=2; plural=n != 1\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 4.14\n"
 "Generated-By: Babel 2.9.1\n"
 
 #: config_devices_units.py:13
@@ -3729,7 +3729,8 @@ msgstr "Het interval dat foto's zullen worden verkregen"
 #: mycodo_flask/templates/pages/camera.html:177
 msgid "How long to run before stopping. Set 0 to run forever."
 msgstr ""
-"Hoe lang moet het lopen voordat het stopt. Stel 0 in om eeuwig door te gaan."
+"Hoe lang moet het lopen voordat het stopt. Stel 0 in om eeuwig door te "
+"gaan."
 
 #: mycodo_flask/templates/pages/camera.html:201
 msgid ""
@@ -3833,11 +3834,11 @@ msgid ""
 "example, this could be using a PID Controller to create a feedback loop "
 "with a temperature sensor and heater in order to regulate temperature."
 msgstr ""
-"Functies voeren complexe taken uit, waarbij vaak een of meer <a href=\"/"
-"input\">Inputs</a> worden gekoppeld aan <a href=\"/output\">Outputs</a>. Dit "
-"kan bijvoorbeeld het gebruik van een PID-controller zijn om een "
-"terugkoppellus te creëren met een temperatuursensor en verwarming om de "
-"temperatuur te regelen."
+"Functies voeren complexe taken uit, waarbij vaak een of meer <a "
+"href=\"/input\">Inputs</a> worden gekoppeld aan <a "
+"href=\"/output\">Outputs</a>. Dit kan bijvoorbeeld het gebruik van een "
+"PID-controller zijn om een terugkoppellus te creëren met een "
+"temperatuursensor en verwarming om de temperatuur te regelen."
 
 #: mycodo_flask/templates/pages/graph-async.html:18
 msgid "Asynchronous Graph"
@@ -3946,8 +3947,7 @@ msgstr "Terug naar Method Management"
 
 #: mycodo_flask/templates/pages/method-build.html:90
 msgid "Methods invoked to calculate the value of this method"
-msgstr ""
-"Methoden die worden aangeroepen om de waarde van deze methode te berekenen"
+msgstr "Methoden die worden aangeroepen om de waarde van deze methode te berekenen"
 
 #: mycodo_flask/templates/pages/method-list.html:23
 msgid ""
@@ -4452,8 +4452,8 @@ msgid ""
 "will turn on for this set duration. 0 is disabled."
 msgstr ""
 "De maximale duur (in seconden) die de Lower Output per periode mag "
-"ingeschakeld zijn. Indien een inschakelduur boven deze waarde ligt, zal de "
-"Lower Output gedurende deze ingestelde duur ingeschakeld zijn. 0 is "
+"ingeschakeld zijn. Indien een inschakelduur boven deze waarde ligt, zal "
+"de Lower Output gedurende deze ingestelde duur ingeschakeld zijn. 0 is "
 "uitgeschakeld."
 
 #: mycodo_flask/templates/pages/function_options/pid_options/output_on_off_lower.html:17
@@ -4477,9 +4477,10 @@ msgid ""
 "for, per period. If an On duration is above this value, the Raise Output "
 "will turn on for this set duration. 0 is disabled."
 msgstr ""
-"De maximale duur (in seconden) die de Afstempeling Uitgang per periode aan "
-"mag staan. Als een Aan-duur boven deze waarde ligt, zal de Afstempeling "
-"uitgang voor deze ingestelde duur aan gaan. 0 is uitgeschakeld."
+"De maximale duur (in seconden) die de Afstempeling Uitgang per periode "
+"aan mag staan. Als een Aan-duur boven deze waarde ligt, zal de "
+"Afstempeling uitgang voor deze ingestelde duur aan gaan. 0 is "
+"uitgeschakeld."
 
 #: mycodo_flask/templates/pages/function_options/pid_options/output_pwm_lower.html:5
 #: mycodo_flask/templates/pages/function_options/pid_options/output_pwm_raise.html:5
@@ -4523,17 +4524,18 @@ msgid ""
 "If a value is above this value, the Lower Output will turn on for this "
 "amount. 0 is disabled."
 msgstr ""
-"De maximale waarde die de lagere uitgang per periode mag inschakelen. Als "
-"een waarde boven deze waarde ligt, zal de Lower Output voor deze hoeveelheid "
-"ingeschakeld zijn. 0 is uitgeschakeld."
+"De maximale waarde die de lagere uitgang per periode mag inschakelen. Als"
+" een waarde boven deze waarde ligt, zal de Lower Output voor deze "
+"hoeveelheid ingeschakeld zijn. 0 is uitgeschakeld."
 
 #: mycodo_flask/templates/pages/function_options/pid_options/output_value_raise.html:5
 msgid ""
 "The minimum value required for the Raise Output to activate. If the value"
 " is below this value, the Raise Output will not turn on."
 msgstr ""
-"De minimumwaarde die nodig is om de hefuitgang te activeren. Als de waarde "
-"lager is dan deze waarde, wordt de uitgang \"Raise\" niet ingeschakeld."
+"De minimumwaarde die nodig is om de hefuitgang te activeren. Als de "
+"waarde lager is dan deze waarde, wordt de uitgang \"Raise\" niet "
+"ingeschakeld."
 
 #: mycodo_flask/templates/pages/function_options/pid_options/output_value_raise.html:11
 msgid ""
@@ -4541,8 +4543,8 @@ msgid ""
 "If a value is above this value, the Raise Output will turn on for this "
 "amount. 0 is disabled."
 msgstr ""
-"De maximum waarde voor de Raise Output om aan te staan, per periode. Als een "
-"waarde boven deze waarde ligt, zal de Raise Output voor dit bedrag "
+"De maximum waarde voor de Raise Output om aan te staan, per periode. Als "
+"een waarde boven deze waarde ligt, zal de Raise Output voor dit bedrag "
 "ingeschakeld zijn. 0 is uitgeschakeld."
 
 #: mycodo_flask/templates/pages/function_options/pid_options/output_volume_lower.html:5
@@ -4550,8 +4552,8 @@ msgid ""
 "The minimum volume required for the Lower Output to activate. If the "
 "volume is below this value, the Lower Output will not turn on."
 msgstr ""
-"Het minimumvolume dat nodig is om de lagere uitgang te activeren. Als het "
-"volume lager is dan deze waarde, zal de lagere uitgang niet worden "
+"Het minimumvolume dat nodig is om de lagere uitgang te activeren. Als het"
+" volume lager is dan deze waarde, zal de lagere uitgang niet worden "
 "ingeschakeld."
 
 #: mycodo_flask/templates/pages/function_options/pid_options/output_volume_lower.html:11
@@ -4560,17 +4562,18 @@ msgid ""
 " If a volume is above this value, the Lower Output will turn on for this "
 "amount. 0 is disabled."
 msgstr ""
-"Het maximaal toegestane volume voor de lagere uitgang per periode. Als een "
-"volume boven deze waarde ligt, zal de lagere output voor deze hoeveelheid "
-"worden ingeschakeld. 0 is uitgeschakeld."
+"Het maximaal toegestane volume voor de lagere uitgang per periode. Als "
+"een volume boven deze waarde ligt, zal de lagere output voor deze "
+"hoeveelheid worden ingeschakeld. 0 is uitgeschakeld."
 
 #: mycodo_flask/templates/pages/function_options/pid_options/output_volume_raise.html:5
 msgid ""
 "The minimum volume required for the Raise Output to activate. If the "
 "volume is below this value, the Raise Output will not turn on."
 msgstr ""
-"Het minimumvolume dat nodig is om de uitgang \"Raise\" te activeren. Als het "
-"volume lager is dan deze waarde, wordt de liftuitgang niet ingeschakeld."
+"Het minimumvolume dat nodig is om de uitgang \"Raise\" te activeren. Als "
+"het volume lager is dan deze waarde, wordt de liftuitgang niet "
+"ingeschakeld."
 
 #: mycodo_flask/templates/pages/function_options/pid_options/output_volume_raise.html:11
 msgid ""
@@ -5349,8 +5352,8 @@ msgid ""
 "Cannot activate PID controller if the associated Input controller is "
 "inactive"
 msgstr ""
-"Kan PID-regelaar niet activeren als de bijbehorende ingangsregelaar inactief "
-"is"
+"Kan PID-regelaar niet activeren als de bijbehorende ingangsregelaar "
+"inactief is"
 
 #: mycodo_flask/utils/utils_pid.py:379
 msgid ""
@@ -5485,14 +5488,14 @@ msgstr "Uit Laadvermogen"
 #: outputs/on_off_python.py:191
 msgid "Python code to execute when the output is instructed to turn on"
 msgstr ""
-"Python code om uit te voeren wanneer de uitgang wordt geïnstrueerd om aan te "
-"gaan"
+"Python code om uit te voeren wanneer de uitgang wordt geïnstrueerd om aan"
+" te gaan"
 
 #: outputs/on_off_python.py:203
 msgid "Python code to execute when the output is instructed to turn off"
 msgstr ""
-"Python code om uit te voeren wanneer de uitgang wordt geïnstrueerd om uit te "
-"schakelen"
+"Python code om uit te voeren wanneer de uitgang wordt geïnstrueerd om uit"
+" te schakelen"
 
 #: outputs/on_off_python.py:215 outputs/on_off_wireless_rpi_rf.py:113
 #: outputs/pwm_shell.py:82
@@ -5508,8 +5511,8 @@ msgstr "Stel de status in wanneer Mycodo afsluit"
 #: outputs/pwm_shell.py:131
 msgid "Whether to trigger functions when the output switches at startup"
 msgstr ""
-"Of functies moeten worden geactiveerd wanneer de uitgang bij het opstarten "
-"wordt geschakeld"
+"Of functies moeten worden geactiveerd wanneer de uitgang bij het "
+"opstarten wordt geschakeld"
 
 #: outputs/on_off_python.py:249 outputs/on_off_wireless_rpi_rf.py:147
 #: outputs/pwm_shell.py:146
@@ -5527,7 +5530,8 @@ msgstr "Draadloze pulslengte"
 #: outputs/on_off_wireless_rpi_rf.py:139 outputs/pwm_shell.py:138
 msgid "Always send the commad if instructed, regardless of the current state"
 msgstr ""
-"Stuur altijd de commad als dat wordt opgedragen, ongeacht de huidige status"
+"Stuur altijd de commad als dat wordt opgedragen, ongeacht de huidige "
+"status"
 
 #: outputs/output_spacer.py:9
 msgid "Spacer"
@@ -5607,32 +5611,21 @@ msgid "Select a measurement to display"
 msgstr "Selecteer een meting om weer te geven"
 
 #: widgets/widget_graph_synchronous.py:375
-msgid "Select Input measurements to display"
-msgstr "Selecteer Input metingen om weer te geven"
-
 #: widgets/widget_graph_synchronous.py:385
-msgid "Select Function measurements to display"
-msgstr "Selecteer Functie metingen om weer te geven"
-
 #: widgets/widget_graph_synchronous.py:395
-msgid "Select Output measurements to display"
-msgstr ""
+#: widgets/widget_graph_synchronous.py:405
+#: widgets/widget_graph_synchronous.py:415
+#, fuzzy
+msgid "Select measurements to display"
+msgstr "Selecteer een meting om weer te geven"
 
 #: widgets/widget_graph_synchronous.py:404
 msgid "PIDs"
 msgstr "PID"
 
-#: widgets/widget_graph_synchronous.py:405
-msgid "Select PID measurements to display"
-msgstr ""
-
 #: widgets/widget_graph_synchronous.py:414
 msgid "Note Tags"
 msgstr "Opmerking Tags"
-
-#: widgets/widget_graph_synchronous.py:415
-msgid "Select Note Tags measurements to display"
-msgstr ""
 
 #: widgets/widget_measurement.py:110
 msgid "Show Unit"
@@ -5791,3 +5784,4 @@ msgstr ""
 #: widgets/widget_python_code.py:212
 msgid "Python code to execute every dashboard/widget refresh"
 msgstr ""
+

@@ -372,7 +372,7 @@ WIDGET_INFORMATION = {
                 'Input'
             ],
             'name': lazy_gettext('Inputs'),
-            'phrase': lazy_gettext('Select Input measurements to display')
+            'phrase': lazy_gettext('Select measurements to display')
         },
         {
             'id': 'measurements_function',
@@ -382,7 +382,7 @@ WIDGET_INFORMATION = {
                 'Function'
             ],
             'name': lazy_gettext('Function'),
-            'phrase': lazy_gettext('Select Function measurements to display')
+            'phrase': lazy_gettext('Select measurements to display')
         },
         {
             'id': 'measurements_output',
@@ -392,7 +392,7 @@ WIDGET_INFORMATION = {
                 'Output'
             ],
             'name': lazy_gettext('Outputs'),
-            'phrase': lazy_gettext('Select Output measurements to display')
+            'phrase': lazy_gettext('Select measurements to display')
         },
         {
             'id': 'measurements_pid',
@@ -402,7 +402,7 @@ WIDGET_INFORMATION = {
                 'PID'
             ],
             'name': lazy_gettext('PIDs'),
-            'phrase': lazy_gettext('Select PID measurements to display')
+            'phrase': lazy_gettext('Select measurements to display')
         },
         {
             'id': 'measurements_note_tag',
@@ -412,7 +412,7 @@ WIDGET_INFORMATION = {
                 'Tag'
             ],
             'name': lazy_gettext('Note Tags'),
-            'phrase': lazy_gettext('Select Note Tags measurements to display')
+            'phrase': lazy_gettext('Select measurements to display')
         },
         {
             'type': 'message',

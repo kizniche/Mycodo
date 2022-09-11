@@ -2,22 +2,22 @@
 # Copyright (C) 2022 Kyle T. Gabriel
 # This file is distributed under the same license as the Mycodo project.
 # FIRST AUTHOR <EMAIL@ADDRESS>, 2022.
-# Kyle Gabriel <business@kylegabriel.com>, 2022.
+#
 msgid ""
 msgstr ""
 "Project-Id-Version: Mycodo1 8.11.0\n"
 "Report-Msgid-Bugs-To: mycodo@kylegabriel.com\n"
-"POT-Creation-Date: 2022-09-10 11:53-0400\n"
+"POT-Creation-Date: 2022-09-10 20:38-0400\n"
 "PO-Revision-Date: 2022-09-10 22:12+0000\n"
 "Last-Translator: Kyle Gabriel <business@kylegabriel.com>\n"
-"Language-Team: Norwegian Bokmål <http://translate.kylegabriel.com:8080/"
-"projects/mycodo/translations/nb_NO/>\n"
 "Language: nb\n"
+"Language-Team: Norwegian Bokmål "
+"<http://translate.kylegabriel.com:8080/projects/mycodo/translations/nb_NO/>"
+"\n"
+"Plural-Forms: nplurals=2; plural=n != 1\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 4.14\n"
 "Generated-By: Babel 2.9.1\n"
 
 #: config_devices_units.py:13
@@ -2109,8 +2109,8 @@ msgid ""
 "Invalid username. Must be between 3 and 64 characters and only contain "
 "letters and numbers."
 msgstr ""
-"Ugyldig brukernavn. Må være mellom 3 og 64 tegn og kun inneholde bokstaver "
-"og tall."
+"Ugyldig brukernavn. Må være mellom 3 og 64 tegn og kun inneholde "
+"bokstaver og tall."
 
 #: mycodo_flask/routes_authentication.py:85
 msgid ""
@@ -5577,32 +5577,21 @@ msgid "Select a measurement to display"
 msgstr ""
 
 #: widgets/widget_graph_synchronous.py:375
-msgid "Select Input measurements to display"
-msgstr ""
-
 #: widgets/widget_graph_synchronous.py:385
-msgid "Select Function measurements to display"
-msgstr ""
-
 #: widgets/widget_graph_synchronous.py:395
-msgid "Select Output measurements to display"
-msgstr ""
+#: widgets/widget_graph_synchronous.py:405
+#: widgets/widget_graph_synchronous.py:415
+#, fuzzy
+msgid "Select measurements to display"
+msgstr "Målingene som skal registreres"
 
 #: widgets/widget_graph_synchronous.py:404
 msgid "PIDs"
 msgstr "PIDs"
 
-#: widgets/widget_graph_synchronous.py:405
-msgid "Select PID measurements to display"
-msgstr ""
-
 #: widgets/widget_graph_synchronous.py:414
 msgid "Note Tags"
 msgstr "Merketiketter"
-
-#: widgets/widget_graph_synchronous.py:415
-msgid "Select Note Tags measurements to display"
-msgstr ""
 
 #: widgets/widget_measurement.py:110
 msgid "Show Unit"
@@ -5761,3 +5750,4 @@ msgstr ""
 #: widgets/widget_python_code.py:212
 msgid "Python code to execute every dashboard/widget refresh"
 msgstr ""
+

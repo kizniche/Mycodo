@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Mycodo1 8.11.0\n"
 "Report-Msgid-Bugs-To: mycodo@kylegabriel.com\n"
-"POT-Creation-Date: 2022-09-10 11:53-0400\n"
+"POT-Creation-Date: 2022-09-10 20:38-0400\n"
 "PO-Revision-Date: 2022-09-07 23:14+0000\n"
 "Last-Translator: Kyle Gabriel <kyletgabriel@gmail.com>\n"
 "Language: ru\n"
@@ -5606,32 +5606,21 @@ msgid "Select a measurement to display"
 msgstr ""
 
 #: widgets/widget_graph_synchronous.py:375
-msgid "Select Input measurements to display"
-msgstr ""
-
 #: widgets/widget_graph_synchronous.py:385
-msgid "Select Function measurements to display"
-msgstr ""
-
 #: widgets/widget_graph_synchronous.py:395
-msgid "Select Output measurements to display"
-msgstr ""
+#: widgets/widget_graph_synchronous.py:405
+#: widgets/widget_graph_synchronous.py:415
+#, fuzzy
+msgid "Select measurements to display"
+msgstr "Измерения для записи"
 
 #: widgets/widget_graph_synchronous.py:404
 msgid "PIDs"
 msgstr "ИДП"
 
-#: widgets/widget_graph_synchronous.py:405
-msgid "Select PID measurements to display"
-msgstr ""
-
 #: widgets/widget_graph_synchronous.py:414
 msgid "Note Tags"
 msgstr "Примечание Теги"
-
-#: widgets/widget_graph_synchronous.py:415
-msgid "Select Note Tags measurements to display"
-msgstr ""
 
 #: widgets/widget_measurement.py:110
 msgid "Show Unit"

@@ -2,22 +2,22 @@
 # Copyright (C) 2022 Kyle T. Gabriel
 # This file is distributed under the same license as the Mycodo project.
 # FIRST AUTHOR <EMAIL@ADDRESS>, 2022.
-# Kyle Gabriel <business@kylegabriel.com>, 2022.
+#
 msgid ""
 msgstr ""
 "Project-Id-Version: Mycodo 8.14.0\n"
 "Report-Msgid-Bugs-To: mycodo@kylegabriel.com\n"
-"POT-Creation-Date: 2022-09-10 11:53-0400\n"
+"POT-Creation-Date: 2022-09-10 20:38-0400\n"
 "PO-Revision-Date: 2022-09-10 22:12+0000\n"
 "Last-Translator: Kyle Gabriel <business@kylegabriel.com>\n"
-"Language-Team: Turkish <http://translate.kylegabriel.com:8080/projects/"
-"mycodo/translations/tr/>\n"
 "Language: tr\n"
+"Language-Team: Turkish "
+"<http://translate.kylegabriel.com:8080/projects/mycodo/translations/tr/>"
+"\n"
+"Plural-Forms: nplurals=1; plural=0\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=1; plural=0;\n"
-"X-Generator: Weblate 4.14\n"
 "Generated-By: Babel 2.9.1\n"
 
 #: config_devices_units.py:13
@@ -5137,8 +5137,8 @@ msgid ""
 "Invalid user name. Must be between 2 and 64 characters and only contain "
 "letters and numbers."
 msgstr ""
-"Geçersiz kullanıcı adı. 2 ile 64 karakter arasında olmalı ve yalnızca harf "
-"ve rakam içermelidir."
+"Geçersiz kullanıcı adı. 2 ile 64 karakter arasında olmalı ve yalnızca "
+"harf ve rakam içermelidir."
 
 #: mycodo_flask/utils/utils_settings.py:193
 msgid "Another user already has that email address."
@@ -5351,31 +5351,20 @@ msgid "Select a measurement to display"
 msgstr ""
 
 #: widgets/widget_graph_synchronous.py:375
-msgid "Select Input measurements to display"
-msgstr ""
-
 #: widgets/widget_graph_synchronous.py:385
-msgid "Select Function measurements to display"
-msgstr ""
-
 #: widgets/widget_graph_synchronous.py:395
-msgid "Select Output measurements to display"
-msgstr ""
+#: widgets/widget_graph_synchronous.py:405
+#: widgets/widget_graph_synchronous.py:415
+#, fuzzy
+msgid "Select measurements to display"
+msgstr "Birim ile bir ölçüm seçin"
 
 #: widgets/widget_graph_synchronous.py:404
 msgid "PIDs"
 msgstr ""
 
-#: widgets/widget_graph_synchronous.py:405
-msgid "Select PID measurements to display"
-msgstr ""
-
 #: widgets/widget_graph_synchronous.py:414
 msgid "Note Tags"
-msgstr ""
-
-#: widgets/widget_graph_synchronous.py:415
-msgid "Select Note Tags measurements to display"
 msgstr ""
 
 #: widgets/widget_measurement.py:110
@@ -5534,3 +5523,4 @@ msgstr ""
 #: widgets/widget_python_code.py:212
 msgid "Python code to execute every dashboard/widget refresh"
 msgstr ""
+

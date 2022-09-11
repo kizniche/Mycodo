@@ -2,22 +2,22 @@
 # Copyright (C) 2022 Kyle T. Gabriel
 # This file is distributed under the same license as the Mycodo project.
 # FIRST AUTHOR <EMAIL@ADDRESS>, 2022.
-# Kyle Gabriel <business@kylegabriel.com>, 2022.
+#
 msgid ""
 msgstr ""
 "Project-Id-Version: Mycodo1 8.11.0\n"
 "Report-Msgid-Bugs-To: mycodo@kylegabriel.com\n"
-"POT-Creation-Date: 2022-09-10 11:53-0400\n"
+"POT-Creation-Date: 2022-09-10 20:38-0400\n"
 "PO-Revision-Date: 2022-09-10 22:12+0000\n"
 "Last-Translator: Kyle Gabriel <business@kylegabriel.com>\n"
-"Language-Team: Italian <http://translate.kylegabriel.com:8080/projects/"
-"mycodo/translations/it/>\n"
 "Language: it\n"
+"Language-Team: Italian "
+"<http://translate.kylegabriel.com:8080/projects/mycodo/translations/it/>"
+"\n"
+"Plural-Forms: nplurals=2; plural=n != 1\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 4.14\n"
 "Generated-By: Babel 2.9.1\n"
 
 #: config_devices_units.py:13
@@ -3276,8 +3276,8 @@ msgid ""
 "Usernames must be 3 to 64 characters, passwords >3 characters, and "
 "contain only letters and numbers"
 msgstr ""
-"I nomi utente devono essere da 3 a 64 caratteri, le password >3 caratteri e "
-"contenere solo lettere e numeri"
+"I nomi utente devono essere da 3 a 64 caratteri, le password >3 caratteri"
+" e contenere solo lettere e numeri"
 
 #: mycodo_flask/templates/flash_messages.html:20
 msgid "Info"
@@ -4524,8 +4524,8 @@ msgid ""
 "The minimum value required for the Lower Output to activate. If the value"
 " is below this value, the Lower Output will not turn on."
 msgstr ""
-"Il valore minimo richiesto per l'attivazione dell'uscita inferiore. Se il "
-"valore è inferiore a questo, l'uscita inferiore non si attiverà."
+"Il valore minimo richiesto per l'attivazione dell'uscita inferiore. Se il"
+" valore è inferiore a questo, l'uscita inferiore non si attiverà."
 
 #: mycodo_flask/templates/pages/function_options/pid_options/output_value_lower.html:11
 msgid ""
@@ -4542,9 +4542,9 @@ msgid ""
 "The minimum value required for the Raise Output to activate. If the value"
 " is below this value, the Raise Output will not turn on."
 msgstr ""
-"Il valore minimo richiesto per l'attivazione dell'uscita di sollevamento. Se "
-"il valore è inferiore a questo valore, l'uscita di sollevamento non si "
-"attiverà."
+"Il valore minimo richiesto per l'attivazione dell'uscita di sollevamento."
+" Se il valore è inferiore a questo valore, l'uscita di sollevamento non "
+"si attiverà."
 
 #: mycodo_flask/templates/pages/function_options/pid_options/output_value_raise.html:11
 msgid ""
@@ -4561,8 +4561,8 @@ msgid ""
 "The minimum volume required for the Lower Output to activate. If the "
 "volume is below this value, the Lower Output will not turn on."
 msgstr ""
-"Il volume minimo richiesto per l'attivazione dell'uscita inferiore. Se il "
-"volume è inferiore a questo valore, l'uscita inferiore non si attiverà."
+"Il volume minimo richiesto per l'attivazione dell'uscita inferiore. Se il"
+" volume è inferiore a questo valore, l'uscita inferiore non si attiverà."
 
 #: mycodo_flask/templates/pages/function_options/pid_options/output_volume_lower.html:11
 msgid ""
@@ -4579,9 +4579,9 @@ msgid ""
 "The minimum volume required for the Raise Output to activate. If the "
 "volume is below this value, the Raise Output will not turn on."
 msgstr ""
-"Il volume minimo richiesto per l'attivazione dell'uscita di sollevamento. Se "
-"il volume è inferiore a questo valore, l'uscita di sollevamento non si "
-"attiverà."
+"Il volume minimo richiesto per l'attivazione dell'uscita di sollevamento."
+" Se il volume è inferiore a questo valore, l'uscita di sollevamento non "
+"si attiverà."
 
 #: mycodo_flask/templates/pages/function_options/pid_options/output_volume_raise.html:11
 msgid ""
@@ -5356,8 +5356,8 @@ msgid ""
 "Cannot activate PID controller if the associated Input controller is "
 "inactive"
 msgstr ""
-"Non è possibile attivare il controllore PID se il controllore di ingresso "
-"associato è inattivo"
+"Non è possibile attivare il controllore PID se il controllore di ingresso"
+" associato è inattivo"
 
 #: mycodo_flask/utils/utils_pid.py:379
 msgid ""
@@ -5609,32 +5609,21 @@ msgid "Select a measurement to display"
 msgstr "Selezionare una misura da visualizzare"
 
 #: widgets/widget_graph_synchronous.py:375
-msgid "Select Input measurements to display"
-msgstr "Selezionare le misure di ingresso da visualizzare"
-
 #: widgets/widget_graph_synchronous.py:385
-msgid "Select Function measurements to display"
-msgstr "Selezionare le misure di funzione da visualizzare"
-
 #: widgets/widget_graph_synchronous.py:395
-msgid "Select Output measurements to display"
-msgstr "Selezionare le misure di uscita da visualizzare"
+#: widgets/widget_graph_synchronous.py:405
+#: widgets/widget_graph_synchronous.py:415
+#, fuzzy
+msgid "Select measurements to display"
+msgstr "Selezionare una misura da visualizzare"
 
 #: widgets/widget_graph_synchronous.py:404
 msgid "PIDs"
 msgstr "PID"
 
-#: widgets/widget_graph_synchronous.py:405
-msgid "Select PID measurements to display"
-msgstr "Selezionare le misure PID da visualizzare"
-
 #: widgets/widget_graph_synchronous.py:414
 msgid "Note Tags"
 msgstr "Note tag"
-
-#: widgets/widget_graph_synchronous.py:415
-msgid "Select Note Tags measurements to display"
-msgstr "Selezionare le misure dei tag delle note da visualizzare"
 
 #: widgets/widget_measurement.py:110
 msgid "Show Unit"
@@ -5794,3 +5783,4 @@ msgstr "Codice Python (aggiornamento)"
 #: widgets/widget_python_code.py:212
 msgid "Python code to execute every dashboard/widget refresh"
 msgstr "Codice Python da eseguire ad ogni aggiornamento di dashboard/widget"
+
