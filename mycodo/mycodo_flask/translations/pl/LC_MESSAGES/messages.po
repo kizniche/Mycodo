@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: Mycodo1 8.11.0\n"
 "Report-Msgid-Bugs-To: mycodo@kylegabriel.com\n"
 "POT-Creation-Date: 2022-09-10 11:53-0400\n"
-"PO-Revision-Date: 2022-09-10 22:12+0000\n"
+"PO-Revision-Date: 2022-09-11 00:36+0000\n"
 "Last-Translator: Kyle Gabriel <business@kylegabriel.com>\n"
 "Language-Team: Polish <http://translate.kylegabriel.com:8080/projects/mycodo/"
 "translations/pl/>\n"
@@ -1328,8 +1328,8 @@ msgid ""
 "If a Pre Output is selected, set the duration (seconds) to turn the Pre "
 "Output on for before every measurement is acquired."
 msgstr ""
-"Jeżeli zostało wybrane 'Włączenie wyjście przed pomiarem'możesz ustalić "
-"czas (w sekundach) na jak długo te wejście włączyć"
+"Jeśli wybrano wyjście wstępne, ustaw czas (w sekundach), przez jaki wyjście "
+"wstępne ma być włączone przed każdym pomiarem."
 
 #: config_translations.py:345
 msgid "Pre During Measure"
@@ -1476,7 +1476,7 @@ msgstr "Wybierz typ zmienności oczekiwanej"
 
 #: config_translations.py:403
 msgid "Select the type of setpoint tracking"
-msgstr "Tu możesz ustawić, żeby wartość oczekiwana zmieniała się z upływem czasu."
+msgstr "Wybór rodzaju śledzenia wartości zadanej"
 
 #: config_translations.py:406
 msgid "The input voltage to the sensor"
@@ -2594,7 +2594,7 @@ msgstr "View Log"
 
 #: mycodo_flask/forms/forms_misc.py:104
 msgid "Upgrade Mycodo"
-msgstr "Upgrade Mycodo"
+msgstr "Aktualizacja Mycodo"
 
 #: mycodo_flask/forms/forms_misc.py:105
 msgid "Upgrade Mycodo to Next Major Version"
@@ -3087,7 +3087,7 @@ msgstr "Włącz SPI"
 
 #: mycodo_flask/forms/forms_settings.py:410
 msgid "Disable SPI"
-msgstr "Disable SPI"
+msgstr "Wyłączenie SPI"
 
 #: mycodo_flask/forms/forms_settings.py:411
 msgid "Enable SSH"
