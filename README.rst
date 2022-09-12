@@ -15,9 +15,9 @@ Mycodo is open source software for the Raspberry Pi that couples inputs and outp
 Quick Install
 -------------
 
-Prerequisites: Debian-based Linux Operating system (apt).
+Prerequisites: Debian-based Linux operating system (apt).
 
-Recommended: Single Board Computer with General-Purpose Input-Output (GPIO) Pins.
+Recommended: Single board computer (SBC) with General-Purpose Input-Output (GPIO) pins.
 
 Install Command:
 
@@ -140,16 +140,22 @@ Install Mycodo
 Prerequisites
 ~~~~~~~~~~~~~
 
+Required:
+
+- Debian-based operating system
+- An active internet connection
+
+Recommended:
+
 -  `Raspberry Pi <https://www.raspberrypi.org>`__ single-board computer (any version: Zero, 1, 2, 3, or 4)
 -  `Raspberry Pi Operating System <https://www.raspberrypi.org/downloads/raspberry-pi-os/>`__ flashed to a micro SD card
--  An active internet connection
 
-Mycodo has been tested to work with Raspberry Pi OS Lite (2020-05-27), and also the Desktop version if using Mycodo version => 8.6.0.
+Mycodo has been tested to work with Raspberry Pi OS Lite and Desktop, both 32-bit and 64-bit.
 
 Install Command
 ~~~~~~~~~~~~~~~
 
-Once you have the Raspberry Pi booted into the Raspberry Pi OS with an internet connection, run the following command in a terminal to initiate the Mycodo install:
+Once you have the Raspberry Pi booted, log in and run the following command in a terminal to initiate the Mycodo install:
 
 .. code:: bash
 
@@ -161,11 +167,25 @@ Install Notes
 
 Make sure the install script finishes without errors. A log of the output will be created at ``~/Mycodo/install/setup.log``.
 
-If the install is successful, the web user interface should be accessible by navigating a web browser to ``https://127.0.0.1/``, replacing ``127.0.0.1`` with your Raspberry Pi's IP address. Upon your first visit, you will be prompted to create an admin user before being redirected to the login page. Once logged in, check that the time is correct at the top left of the page. Incorrect time can cause a number of issues with measurement storage and retrieval, among others. Also ensure the host name and version number at the top left of the page is green, indicating the daemon is running. Red indicates the daemon is inactive or unresponsive. Last, ensure any java-blocking plugins of your browser are disabled for all parts of the web interface to function properly.
+If the install is successful, the web user interface should be accessible by navigating a web browser to ``https://127.0.0.1/``, replacing ``127.0.0.1`` with the IP address of the computer you installed on. Upon your first visit, you will be prompted to create an admin user before being redirected to the login page. Once logged in, check that the time is correct at the top left of the page. Incorrect time can cause a number of issues with measurement storage and retrieval in a time-series database. Also ensure the host name and version number at the top left of the page is green, indicating the daemon is running. If it's red, it indicates the daemon is inactive or unresponsive. Last, ensure any java-blocking plugins of your browser are disabled for all parts of the web interface to function properly.
 
 If you receive an error during the install that you believe is preventing your system from operating, please `create an issue <https://github.com/kizniche/Mycodo/issues>`__ with the install log attached. If you would first like to attempt to diagnose the issue yourself, see `Diagnosing Issues <#diagnosing-issues>`__.
 
-A minimal set of anonymous usage statistics are collected to help improve development. No identifying information is saved from the information that is collected and it is only used to improve Mycodo. No other sources will have access to this information. The data collected is mainly what and how many features are used, and other similar information. The data that's collected can be viewed from the 'View collected statistics' link in the ``Settings -> General`` page. There is an opt out option on the General Settings page.
+A minimal set of anonymous usage statistics are collected to help improve development. No identifying information is saved from the information that is collected and it is only used to improve Mycodo. No one other than the development team will have access to this information and it will never be sold. The data collected is mainly what and how many features are used, and other similar information. The data that's collected can be viewed from the 'View collected statistics' link in the ``Settings -> General`` page. There is an opt out option on the General Settings page if you want to turn this functionality off.
+
+Docker
+~~~~~~
+
+Docker support is experimental, but if you want to try it, you can use the following commands after you install docker-compose:
+
+.. code:: bash
+
+    cd Mycodo/docker && docker-compose up --build
+
+
+After verifying it builds properly and runs without errors, you can run docker in the background by running ``docker-compose up --build -d`` instead of ``docker-compose up --build``
+
+There is a `Docker Issue (#637) <https://github.com/kizniche/Mycodo/issues/637>`__ on github for those that wish to help with development.
 
 REST API
 --------
@@ -195,11 +215,11 @@ All supported Inputs, Outputs, and other devices can be found under the `Support
 Custom Inputs, Outputs, Functions and Actions
 ---------------------------------------------
 
-Mycodo supports importing custom Input, Output, Function and Action modules. you can find more information about each in the manual under `Custom Inputs <https://kizniche.github.io/Mycodo/Inputs/#custom-inputs>`__, `Custom Outputs <https://kizniche.github.io/Mycodo/Outputs/#custom-outputs>`__, `Custom Functions <https://kizniche.github.io/Mycodo/Functions/#custom-functions>`__ and `Custom Actions <https://kizniche.github.io/Mycodo/Functions/#custom-actions>`__.
+Mycodo supports importing custom Input, Output, Function, Action, and Widget modules. you can find more information about each in the manual under `Custom Inputs <https://kizniche.github.io/Mycodo/Inputs/#custom-inputs>`__, `Custom Outputs <https://kizniche.github.io/Mycodo/Outputs/#custom-outputs>`__, `Custom Functions <https://kizniche.github.io/Mycodo/Functions/#custom-functions>`__, `Custom Actions <https://kizniche.github.io/Mycodo/Functions/#custom-actions>`__, and `Custom Widgets <https://kizniche.github.io/Mycodo/Data-Viewing/#custom-widgets>`__.
 
-If you would like to add to the list of supported Inputs, Outputs, Functions, and Actions, submit a pull request with the module you created or start a `New Issue <https://github.com/kizniche/Mycodo/issues/new?assignees=&labels=&template=feature-request.md&title=>`__.
+If you would like to add to the list of supported Inputs, Outputs, Functions, Actions, and Widgets, submit a pull request with the module you created or start a `New Issue <https://github.com/kizniche/Mycodo/issues/new?assignees=&labels=&template=feature-request.md&title=>`__.
 
-Additionally, I have another github repository devoted to custom Inputs, Outputs, Functions, and Actions that do not necessarily fit with the built-in set and are not included by default with Mycodo, but can be imported. These can be found at `kizniche/Mycodo-custom <https://github.com/kizniche/Mycodo-custom>`__.
+Additionally, I have another github repository devoted to custom Inputs, Outputs, Functions, Actions, and Widgets that do not necessarily fit with the built-in set and are not included by default with Mycodo, but can be imported. These can be found at `kizniche/Mycodo-custom <https://github.com/kizniche/Mycodo-custom>`__.
 
 Links
 -----
