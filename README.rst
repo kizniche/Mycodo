@@ -9,6 +9,25 @@ Mycodo is open source software for the Raspberry Pi that couples inputs and outp
 
 |Build Status| |Codacy Badge| |Translation Badge| |DOI|
 
+.. contents:: Table of Contents
+   :depth: 1
+
+Quick Install
+-------------
+
+Prerequisites: Debian-based Linux Operating system (apt).
+
+Recommended: Single Board Computer with General-Purpose Input-Output (GPIO) Pins.
+
+Install Command:
+
+.. code:: bash
+
+    curl -L https://kizniche.github.io/Mycodo/install | bash
+
+
+See the `Install Mycodo <#install-mycodo>`__ section for more details.
+
 Support
 -------
 
@@ -44,16 +63,11 @@ Donate
 
 I have always made Mycodo free and I don't intend on changing that. However, if you find Mycodo useful and would like to support its continued development, please consider becoming a sponsor at `github.com/sponsors/kizniche <https://github.com/sponsors/kizniche>`__ or donate at `kylegabriel.com/donate <https://kylegabriel.com/donate>`__.
 
---------------
-
-.. contents:: Table of Contents
-   :depth: 1
-
 Features
 --------
 
--  `Inputs <https://kizniche.github.io/Mycodo/Inputs/>`__ that record measurements from sensors, GPIO pin states, analog-to-digital converters, and more (or create your own `Custom Inputs <#custom-inputs>`__). See all `Supported Inputs <https://kizniche.github.io/Mycodo/Supported-Inputs-By-Measurement/>`__.
--  `Outputs <https://kizniche.github.io/Mycodo/Outputs/>`__ that perform actions such as switching GPIO pins high/low, generating PWM signals, executing shell scripts and Python code, and more (or create your own `Custom Outputs <#custom-outputs>`__). See all `Supported Outputs <https://kizniche.github.io/Mycodo/Supported-Outputs/>`__.
+-  `Inputs <https://kizniche.github.io/Mycodo/Inputs/>`__ that record measurements from sensors, GPIO pin states, analog-to-digital converters, and more (or create your own `Custom Inputs <https://kizniche.github.io/Mycodo/Inputs/#custom-inputs>`__). See all `Supported Inputs <https://kizniche.github.io/Mycodo/Supported-Inputs-By-Measurement/>`__.
+-  `Outputs <https://kizniche.github.io/Mycodo/Outputs/>`__ that perform actions such as switching GPIO pins high/low, generating PWM signals, executing shell scripts and Python code, and more (or create your own `Custom Outputs <https://kizniche.github.io/Mycodo/Outputs/#custom-outputs>`__). See all `Supported Outputs <https://kizniche.github.io/Mycodo/Supported-Outputs/>`__.
 -  `Functions <https://kizniche.github.io/Mycodo/Functions/>`__ that perform tasks, such as coupling Inputs and Outputs in interesting ways, such as `PID <https://kizniche.github.io/Mycodo/Functions/#pid-controller>`__, `Conditional <https://kizniche.github.io/Mycodo/Functions/#conditional>`__, `Trigger <https://kizniche.github.io/Mycodo/Functions/#trigger>`__, to name a few (or create your own `Custom Functions <https://kizniche.github.io/Mycodo/Functions/#custom-functions>`__). See all `Supported Functions <https://kizniche.github.io/Mycodo/Supported-Functions/>`__.
 -  `Web Interface <https://kizniche.github.io/Mycodo/About/#web-interface>`__ for securely accessing Mycodo using a web browser on your local network or anywhere in the world with an internet connection, to view and configure the system, which includes several light and dark themes.
 -  `Dashboards <https://kizniche.github.io/Mycodo/Data-Viewing/#dashboard>`__ that display configurable widgets, including interactive live and historical graphs, gauges, output state indicators, measurements, and more (or create your own `Custom Widgets <https://kizniche.github.io/Mycodo/Widgets/#custom-widgets>`__). See all `Supported Widgets <https://kizniche.github.io/Mycodo/Supported-Widgets/>`__.
@@ -77,8 +91,8 @@ Uses
 
 Originally developed to cultivate edible mushrooms, Mycodo has evolved to do much more. Here are a few things that have been done with Mycodo:
 
-My projects
-~~~~~~~~~~~
+Projects by Kyle Gabriel (core developer)
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 -  `Mushroom Cultivation Automation <https://kylegabriel.com/projects/2021/09/mushroom-cultivation-automation.html>`__ (`Archive <https://archive.is/HUtdp>`__)
 -  `Hydroponic System Automation <https://kylegabriel.com/projects/2020/06/automated-hydroponic-system-build.html>`__ (`Archive <http://archive.is/mB2zc>`__)
@@ -90,8 +104,8 @@ My projects
 -  `Cooking sous-vide <https://hackaday.io/project/11997-mycodo-environmental-regulation-system/log/45733-sous-vide-pid-tuning-and-the-unexpected-electrical-fire>`__ (`Archive <http://archive.is/Mx52U>`__)
 -  `Maintaining a light schedule and regulating humidity <https://fieldstation.kennesaw.edu/summer-days-2020.php#2020_07_16_gabriel_chestnut>`__, ramping from 90 % to 50 % over a 4 week period to acclimatize micropropagated American chestnut plantlets from laboratory to ambient outdoor conditions (`Archive <http://archive.is/Jp60P>`__)
 
-Featured
-~~~~~~~~
+Featured Projects
+~~~~~~~~~~~~~~~~~
 
 .. image:: https://kylegabriel.com/projects/wp-content/uploads/sites/3/2021/09/MushroomCultivation_512x288.jpg
    :target: https://www.youtube.com/watch?v=z41Wy5ZF4O8
@@ -99,7 +113,7 @@ Featured
 .. image:: https://kylegabriel.com/projects/wp-content/uploads/sites/3/2020/07/VID_PROJ_HYDRO_512x288.jpg
    :target: https://www.youtube.com/watch?v=nyqykZK2Ev4
 
-Projects of others
+Projects by Others
 ~~~~~~~~~~~~~~~~~~
 
 -  Maintaining aquatic systems (e.g. fish, hydroponic, aquaponic)
@@ -132,8 +146,8 @@ Prerequisites
 
 Mycodo has been tested to work with Raspberry Pi OS Lite (2020-05-27), and also the Desktop version if using Mycodo version => 8.6.0.
 
-Install
-~~~~~~~
+Install Command
+~~~~~~~~~~~~~~~
 
 Once you have the Raspberry Pi booted into the Raspberry Pi OS with an internet connection, run the following command in a terminal to initiate the Mycodo install:
 
@@ -190,11 +204,13 @@ Additionally, I have another github repository devoted to custom Inputs, Outputs
 Links
 -----
 
-Thanks for using and supporting Mycodo, however depending where you found this documentation, you may not have the latest version or it may have been altered, if not obtained through an official distribution site. You should be able to find the latest version on github or my web site at the following links.
+Thanks for using and supporting Mycodo, however depending where you found this documentation, you may not have the latest version or it may have been altered, if not obtained through an official distribution site. You should be able to find the latest version on github.
 
 https://github.com/kizniche/Mycodo
 
 https://KyleGabriel.com
+
+https://RadicalDIY.com
 
 License
 -------
@@ -229,9 +245,9 @@ Languages
    `Turkish <#turkish>`__,
    `Chinese <#chinese>`__.
 
-By default, mycodo will display the default language set by your browser. You may also force a language in the settings at ``[Gear Icon] -> Configure -> General -> Language``
+The install script will prompt you to select a language. This will be the set language when you first open the web user interface. You may change this at a later time on the settings page at ``[Gear Icon] -> Configure -> General -> Language``.
 
-If you would like to contribute to translations, you can do so at `http://translate.kylegabriel.com <http://translate.kylegabriel.com:8080/engage/mycodo/>`__. Please read [How To Contribute to Language Translations in Mycodo](https://forum.radicaldiy.com/t/how-to-contribute-to-language-translations-in-mycodo/1162/2) for more information.
+If you would like to contribute to the translations, you can do so at `http://translate.kylegabriel.com <http://translate.kylegabriel.com:8080/engage/mycodo/>`__. Please read [How To Contribute to Language Translations in Mycodo](https://forum.radicaldiy.com/t/how-to-contribute-to-language-translations-in-mycodo/1162/2) for more information.
 
 English
 ~~~~~~~
@@ -533,6 +549,8 @@ Mycodo最初设计用于种植可食用的蘑菇，已经发展到能够做更�
 Thanks
 ------
 
+Mycodo is made possible, in part, by the many fine open source libraries, below.
+
 -  `Alembic <https://alembic.sqlalchemy.org>`__
 -  `Argparse <https://pypi.org/project/argparse>`__
 -  `Bcrypt <https://pypi.org/project/bcrypt>`__
@@ -549,6 +567,7 @@ Thanks
 -  `Flask_Limiter <https://pypi.org/project/flask_limiter>`__
 -  `Flask_Login <https://pypi.org/project/flask_login>`__
 -  `Flask_Marshmallow <https://pypi.org/project/flask_marshmallow>`__
+-  `Flask_Profiler <https://github.com/muatik/flask-profiler>`__
 -  `Flask_RESTX <https://pypi.org/project/flask_restx>`__
 -  `Flask_Session <https://pypi.org/project/flask_session>`__
 -  `Flask_SQLAlchemy <https://pypi.org/project/flask_sqlalchemy>`__
@@ -559,11 +578,15 @@ Thanks
 -  `gridstack.js <https://github.com/gridstack/gridstack.js>`__
 -  `Gunicorn <https://gunicorn.org>`__
 -  `Highcharts <https://www.highcharts.com>`__
+-  `importlib_metadata <https://github.com/python/importlib_metadata>`__
 -  `InfluxDB <https://github.com/influxdata/influxdb>`__
+-  `influxdb (1.x cl1ent) <https://github.com/influxdata/influxdb-python>`__
+-  `influxdb_client (2.x client) <https://github.com/influxdata/influxdb-client-python>`__
 -  `jQuery <https://jquery.com>`__
 -  `Marshmallow_SQLAlchemy <https://pypi.org/project/marshmallow_sqlalchemy>`__
 -  `Pyro5 <https://github.com/irmen/Pyro5>`__
 -  `SQLAlchemy <https://www.sqlalchemy.org>`__
 -  `SQLite <https://www.sqlite.org>`__
 -  `toastr <https://github.com/CodeSeven/toastr>`__
+-  `Werkzeug <https://palletsprojects.com/p/werkzeug/>`__
 -  `WTForms <https://pypi.org/project/wtforms>`__
