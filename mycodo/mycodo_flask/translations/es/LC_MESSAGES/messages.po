@@ -988,9 +988,8 @@ msgid "Save Order"
 msgstr "Guardar orden"
 
 #: config_translations.py:167
-#, fuzzy
 msgid "Scale"
-msgstr "Pascal"
+msgstr "Escala"
 
 #: config_translations.py:169 config_translations.py:384
 msgid "Unscaled Unit Min"
@@ -1184,10 +1183,9 @@ msgstr "Convertir la medida a una unidad diferente"
 msgid "click to copy to the clipboard"
 msgstr "clic para copiar al portapapeles"
 
-#: config_translations.py:253 config_translations.py:256
-#, fuzzy
+#: config_translations.py:256
 msgid "Time to wait until failure"
-msgstr "Tiempo (segundos) para esperar hasta el fallo"
+msgstr "Tiempo de espera hasta el fracaso"
 
 #: actions/output_pwm.py:49 actions/output_ramp_pwm.py:51
 #: actions/output_ramp_pwm.py:60 config_translations.py:256
@@ -1250,10 +1248,9 @@ msgstr "El caudal a utilizar cuando se bombea un volumen"
 msgid "Host"
 msgstr "Host"
 
-#: config_translations.py:277 config_translations.py:280
-#, fuzzy
+#: config_translations.py:280
 msgid "Host or IP address"
-msgstr "Dominion o Dirección IP"
+msgstr "Host o dirección IP"
 
 #: config_translations.py:279
 #: mycodo_flask/templates/pages/data_options/input_options.html:43
@@ -1373,33 +1370,9 @@ msgstr "En estado"
 msgid "What state triggers the output to turn on? High or Low?"
 msgstr "¿Qué estado activa el relé para encenderse, Alto o Bajo?"
 
-#: config_translations.py:325 functions/average_last_multiple.py:68
-#: functions/average_past_single.py:68 functions/backup_rsync.py:74
-#: functions/bang_bang.py:94 functions/bang_bang_on_off.py:105
-#: functions/bang_bang_pwm.py:92 functions/difference.py:65
-#: functions/display_generic_lcd_16x2_i2c.py:226
-#: functions/display_generic_lcd_20x4_i2c.py:211
-#: functions/display_grove_lcd_16x2_i2c.py:228
-#: functions/display_ssd1306_oled_128x32_i2c.py:195
-#: functions/display_ssd1306_oled_128x32_i2c_2lines.py:195
-#: functions/display_ssd1306_oled_128x32_spi.py:194
-#: functions/display_ssd1306_oled_128x32_spi_2lines.py:194
-#: functions/display_ssd1306_oled_128x64_i2c.py:195
-#: functions/display_ssd1306_oled_128x64_i2c_4lines.py:195
-#: functions/display_ssd1306_oled_128x64_spi.py:194
-#: functions/display_ssd1306_oled_128x64_spi_4lines.py:194
-#: functions/display_ssd1309_oled_128x64_i2c.py:197 functions/equation.py:65
-#: functions/equation_multi.py:65
-#: functions/examples/custom_function_multiple_channels.py:74
-#: functions/examples/custom_function_simple_loop_with_status.py:59
-#: functions/humidity_wet_dry_bulb.py:80 functions/redundancy.py:64
-#: functions/regulate_ph_ec.py:180 functions/statistics_last_multiple.py:102
-#: functions/statistics_past_single.py:101 functions/sum_last_multiple.py:69
-#: functions/sum_past_single.py:69 functions/verification.py:64
 #: config_translations.py:328
-#, fuzzy
 msgid "The duration between measurements or actions"
-msgstr "La duración (segundos) entre las mediciones o acciones"
+msgstr "La duración entre medidas o acciones"
 
 #: actions/mqtt_publish.py:47 actions/mqtt_publish_input.py:52
 #: config_translations.py:339 mycodo_flask/forms/forms_settings.py:102
@@ -1413,14 +1386,13 @@ msgstr "Puerto"
 msgid "Host port number"
 msgstr "Número de puerto de host"
 
-#: config_translations.py:343 config_translations.py:346
-#, fuzzy
+#: config_translations.py:346
 msgid ""
 "If a Pre Output is selected, set the duration to turn the Pre Output on for "
 "before every measurement is acquired."
 msgstr ""
-"Si se selecciona una salida previa, configure la duración (segundos) para "
-"activar la salida previa antes de adquirir cada medida."
+"Si se selecciona una salida previa, establezca la duración de la activación "
+"de la salida previa antes de adquirir cada medición."
 
 #: config_translations.py:347 config_translations.py:350
 #: config_translations.py:345
@@ -1483,10 +1455,9 @@ msgstr ""
 msgid "Reference Resistance"
 msgstr "Resistencia de referencia"
 
-#: config_translations.py:366 config_translations.py:369
-#, fuzzy
+#: config_translations.py:369
 msgid "Duration to wait between acquiring new measurements"
-msgstr "Segundos a esperar antes de adquirir una nueva valores."
+msgstr "Tiempo de espera entre la adquisición de nuevas mediciones"
 
 #: config_translations.py:369 config_translations.py:372
 #: config_translations.py:375 config_translations.py:373
@@ -1557,17 +1528,9 @@ msgstr "Valor de apagado"
 msgid "The output value to set when Mycodo shuts down"
 msgstr "El valor de salida de set cuando Mycodo Cierra"
 
-#: config_translations.py:393 functions/average_last_multiple.py:76
-#: functions/average_past_single.py:76 functions/backup_rsync.py:82
-#: functions/examples/custom_function_simple_loop_with_status.py:67
-#: functions/humidity_wet_dry_bulb.py:88 functions/regulate_ph_ec.py:188
-#: functions/sum_last_multiple.py:77 functions/sum_past_single.py:77
-#: functions/vapor_pressure_deficit.py:75
-#: mycodo_flask/templates/pages/function_options/conditional_options.html:82
 #: config_translations.py:396
-#, fuzzy
 msgid "The duration to wait before the first operation"
-msgstr "La duración (segundos) a esperar antes de la primera operación"
+msgstr "El tiempo de espera antes de la primera operación"
 
 #: config_translations.py:395 outputs/pwm_gpio.py:104
 #: outputs/pwm_pca9685.py:133 outputs/pwm_python.py:235 outputs/pwm_shell.py:89
@@ -1629,18 +1592,16 @@ msgid "Edge detection: low to high (rising), high to low (falling), or both"
 msgstr ""
 "Detección de bordes: baja a alta (subida), alta a baja (caída), o ambas"
 
-#: config_translations.py:408 config_translations.py:411
-#, fuzzy
+#: config_translations.py:411
 msgid "The amount of time to bounce the input signal"
-msgstr "La cantidad de tiempo (milisegundos) para rebotar la señal de entrada"
+msgstr "La cantidad de tiempo para rebotar la señal de entrada"
 
-#: config_translations.py:411 config_translations.py:414
-#, fuzzy
+#: config_translations.py:414
 msgid ""
 "Wait a period of time after the first edge detection to begin detecting again"
 msgstr ""
-"Espere un período de tiempo (segundos) después de la primera detección de "
-"borde para comenzar a detectar de nuevo"
+"Esperar un período de tiempo después de la primera detección de bordes para "
+"comenzar a detectar de nuevo"
 
 #: config_translations.py:413 config_translations.py:416
 #: config_translations.py:432
@@ -1652,10 +1613,9 @@ msgstr "Tipo de sonda RTD"
 msgid "The type of thermocouple connected"
 msgstr "El tipo de termopar conectado"
 
-#: config_translations.py:416 config_translations.py:419
-#, fuzzy
+#: config_translations.py:419
 msgid "Times to Check"
-msgstr "Número de veces para comprobar"
+msgstr "Tiempos de verificación"
 
 #: config_translations.py:417 config_translations.py:420
 #: config_translations.py:436
@@ -5549,11 +5509,8 @@ msgid "Pulse Length"
 msgstr "Longitud de Pulso"
 
 #: outputs/on_off_wireless_rpi_rf.py:139
-#, fuzzy
 msgid "Always send the command, regardless of the current state"
-msgstr ""
-"Enviar siempre el comando si se le indica, independientemente del estado "
-"actual"
+msgstr "Enviar siempre la orden, independientemente del estado actual"
 
 #: outputs/output_spacer.py:9
 msgid "Spacer"
@@ -5815,9 +5772,8 @@ msgid "O2"
 msgstr "Oxígeno"
 
 #: config_translations.py:237
-#, fuzzy
 msgid "Current Draw (Amps)"
-msgstr "Corriente (amperios)"
+msgstr "Consumo de corriente (amperios)"
 
 #: functions/average_last_multiple.py:68 functions/average_past_single.py:68
 #: functions/backup_rsync.py:74 functions/bang_bang.py:94
