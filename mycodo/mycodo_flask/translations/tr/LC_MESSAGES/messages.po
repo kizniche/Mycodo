@@ -2,21 +2,22 @@
 # Copyright (C) 2022 Kyle T. Gabriel
 # This file is distributed under the same license as the Mycodo project.
 # FIRST AUTHOR <EMAIL@ADDRESS>, 2022.
-#
+# Kyle Gabriel <business@kylegabriel.com>, 2022.
 msgid ""
 msgstr ""
 "Project-Id-Version: Mycodo 8.14.0\n"
 "Report-Msgid-Bugs-To: mycodo@kylegabriel.com\n"
 "POT-Creation-Date: 2022-09-11 21:58-0400\n"
-"PO-Revision-Date: 2022-09-10 22:12+0000\n"
+"PO-Revision-Date: 2022-09-12 22:24+0000\n"
 "Last-Translator: Kyle Gabriel <business@kylegabriel.com>\n"
-"Language: tr\n"
 "Language-Team: Turkish <http://translate.kylegabriel.com:8080/projects/"
 "mycodo/translations/tr/>\n"
-"Plural-Forms: nplurals=1; plural=0\n"
+"Language: tr\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
+"X-Generator: Weblate 4.14\n"
 "Generated-By: Babel 2.9.1\n"
 
 #: config_devices_units.py:13
@@ -49,7 +50,7 @@ msgstr "Parlaklık"
 
 #: config_devices_units.py:53
 msgid "Carbon Dioxide"
-msgstr ""
+msgstr "Karbondioksit"
 
 #: config_devices_units.py:97
 msgid "Dewpoint"
@@ -147,7 +148,7 @@ msgstr "Nem"
 
 #: config_devices_units.py:181
 msgid "Oxygen"
-msgstr ""
+msgstr "Oksijen"
 
 #: config_devices_units.py:185
 msgid "Oxidation Reduction Potential"
@@ -577,11 +578,11 @@ msgstr "Ortalama"
 
 #: config_translations.py:25 config_translations.py:226
 msgid "Bluetooth Adapter (hci[X])"
-msgstr ""
+msgstr "Bluetooth Adaptörü (hci[X])"
 
 #: config_translations.py:27 config_translations.py:223
 msgid "Bluetooth MAC (XX:XX:XX:XX:XX:XX)"
-msgstr ""
+msgstr "Bluetooth MAC (XX:XX:XX:XX:XX)"
 
 #: config_translations.py:29 config_translations.py:25
 msgid "Bus"
@@ -773,7 +774,7 @@ msgstr ""
 
 #: config_translations.py:97 config_translations.py:271
 msgid "I2C Address"
-msgstr ""
+msgstr "I2C Adresi"
 
 #: config_translations.py:91
 msgid "Indicator"
@@ -970,11 +971,11 @@ msgstr "Kaydet"
 
 #: config_translations.py:165 config_translations.py:157
 msgid "Save Order"
-msgstr ""
+msgstr "Sipariş Kaydet"
 
 #: config_translations.py:167
 msgid "Scale"
-msgstr ""
+msgstr "Ölçek"
 
 #: config_translations.py:169 config_translations.py:384
 msgid "Unscaled Unit Min"
@@ -1000,11 +1001,11 @@ msgstr ""
 #: mycodo_flask/templates/pages/function_options/pid_options.html:305
 #: config_translations.py:159
 msgid "Select One"
-msgstr ""
+msgstr "Birini Seçin"
 
 #: config_translations.py:179 config_translations.py:399
 msgid "Sensitivity"
-msgstr ""
+msgstr "Hassasiyet"
 
 #: config_translations.py:183 config_translations.py:163
 msgid "Settings"
@@ -1016,16 +1017,16 @@ msgstr "Ayarlar"
 #: mycodo_flask/templates/pages/function_options/conditional_options/measurement_past_sum.html:2
 #: config_translations.py:165
 msgid "Single"
-msgstr ""
+msgstr "Tek kişilik"
 
 #: config_translations.py:187 config_translations.py:167
 msgid "Stops"
-msgstr ""
+msgstr "Duraklar"
 
 #: config_translations.py:189 mycodo_flask/templates/flash_messages.html:7
 #: config_translations.py:169
 msgid "Success"
-msgstr ""
+msgstr "Başarı"
 
 #: config_translations.py:191
 #: mycodo_flask/templates/pages/function_options/conditional_options/measurement_past_sum.html:2
@@ -1039,34 +1040,34 @@ msgstr "Sistem"
 
 #: config_translations.py:195 config_translations.py:175
 msgid "Tag"
-msgstr ""
+msgstr "Etiket"
 
 #: config_translations.py:197 config_translations.py:177
 msgid "Text"
-msgstr ""
+msgstr "Metin"
 
 #: config_translations.py:199 mycodo_flask/forms/forms_settings.py:345
 #: mycodo_flask/forms/forms_settings.py:351
 #: mycodo_flask/forms/forms_settings.py:391
 #: mycodo_flask/templates/layout.html:301 config_translations.py:179
 msgid "Theme"
-msgstr ""
+msgstr "Tema"
 
 #: config_translations.py:201 config_translations.py:181
 msgid "Time-lapse"
-msgstr ""
+msgstr "Hızlandırılmış"
 
 #: config_translations.py:203 config_translations.py:183
 msgid "Timer"
-msgstr ""
+msgstr "Zamanlayıcı"
 
 #: config_translations.py:205 config_translations.py:185
 msgid "Trigger"
-msgstr ""
+msgstr "Tetikleyici"
 
 #: config_translations.py:207 config_translations.py:187
 msgid "Unlock"
-msgstr ""
+msgstr "Kilidi aç"
 
 #: config_translations.py:209 config_translations.py:189
 msgid "Up"
@@ -1078,14 +1079,14 @@ msgstr "Yukarı"
 #: mycodo_flask/forms/forms_settings.py:207
 #: mycodo_flask/forms/forms_settings.py:221 config_translations.py:191
 msgid "Upload"
-msgstr ""
+msgstr "Yükle"
 
 #: actions/command_bash.py:32 config_translations.py:213
 #: config_translations.py:282 inputs/linux_command.py:58
 #: outputs/on_off_shell.py:67 outputs/pwm_python.py:214 outputs/pwm_shell.py:68
 #: config_translations.py:285 config_translations.py:193
 msgid "User"
-msgstr ""
+msgstr "Kullanıcı"
 
 #: actions/output_value.py:47 config_translations.py:215
 #: config_translations.py:315 inputs/mycodo_test_input_save_value.py:72
@@ -1093,7 +1094,7 @@ msgstr ""
 #: config_translations.py:318 config_translations.py:195
 #: config_translations.py:310
 msgid "Value"
-msgstr ""
+msgstr "Değer"
 
 #: config_translations.py:217 config_translations.py:318
 #: config_translations.py:386 inputs/anyleaf_orp.py:52
@@ -1101,27 +1102,27 @@ msgstr ""
 #: config_translations.py:389 config_translations.py:197
 #: config_translations.py:313 config_translations.py:405
 msgid "Voltage"
-msgstr ""
+msgstr "Gerilim"
 
 #: config_translations.py:221 config_translations.py:201
 msgid "Widget"
-msgstr ""
+msgstr "Widget"
 
 #: config_translations.py:225 config_translations.py:205
 msgid "1-Wire Device ID"
-msgstr ""
+msgstr "1-Wire Cihaz Kimliği"
 
 #: config_translations.py:228 inputs/as7262.py:83
 #: mycodo_flask/forms/forms_camera.py:63 config_translations.py:208
 msgid "Gain"
-msgstr ""
+msgstr "Kazanç"
 
 #: config_translations.py:231 config_translations.py:368
 #: config_translations.py:371 config_translations.py:374
 #: config_translations.py:211 config_translations.py:372
 #: config_translations.py:375
 msgid "Resolution"
-msgstr ""
+msgstr "Çözünürlük"
 
 #: config_translations.py:234 config_translations.py:214
 msgid "Sample Speed"
@@ -1140,36 +1141,36 @@ msgstr ""
 #: actions/command_bash.py:40 config_translations.py:240
 #: config_translations.py:243 config_translations.py:229
 msgid "Command"
-msgstr ""
+msgstr "Komuta"
 
 #: config_translations.py:241 config_translations.py:244
 #: config_translations.py:230
 msgid "The command to be executed"
-msgstr ""
+msgstr "Yürütülecek komut"
 
 #: config_translations.py:244 config_translations.py:247
 #: config_translations.py:233
 msgid "Select the unit of the measurement to be stored in the database"
-msgstr ""
+msgstr "Veritabanında saklanacak ölçüm birimini seçin"
 
 #: config_translations.py:246 config_translations.py:249
 #: config_translations.py:235
 msgid "Convert to Unit"
-msgstr ""
+msgstr "Birime Dönüştür"
 
 #: config_translations.py:247 config_translations.py:250
 #: config_translations.py:236
 msgid "Convert the measurement to a different unit"
-msgstr ""
+msgstr "Ölçümü farklı bir birime dönüştürme"
 
 #: config_translations.py:250 config_translations.py:253
 #: config_translations.py:239
 msgid "click to copy to the clipboard"
-msgstr ""
+msgstr "panoya kopyalamak için tıklayın"
 
 #: config_translations.py:253 config_translations.py:256
 msgid "Time to wait until failure"
-msgstr ""
+msgstr "Başarısızlığa kadar bekleme zamanı"
 
 #: actions/output_pwm.py:49 actions/output_ramp_pwm.py:51
 #: actions/output_ramp_pwm.py:60 config_translations.py:256
