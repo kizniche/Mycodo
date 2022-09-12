@@ -21,6 +21,10 @@ TRANSLATIONS = {
         'title': lazy_gettext('Alert')},
     'average': {
         'title': lazy_gettext('Average')},
+    'bt_adapter': {
+        'title': lazy_gettext('Bluetooth Adapter (hci[X])')},
+    'bt_location': {
+        'title': lazy_gettext('Bluetooth MAC (XX:XX:XX:XX:XX:XX)')},
     'bus': {
         'title': lazy_gettext('Bus')},
     'calibration': {
@@ -87,6 +91,10 @@ TRANSLATIONS = {
         'title': lazy_gettext('General')},
     'hold': {
         'title': lazy_gettext('Hold')},
+    'i2c_bus': {
+        'title': lazy_gettext('I2C Bus')},
+    'i2c_location': {
+        'title': lazy_gettext('I2C Address')},
     'indicator': {
         'title': lazy_gettext('Indicator')},
     'invert': {
@@ -155,8 +163,20 @@ TRANSLATIONS = {
         'title': lazy_gettext('Save')},
     'save_order': {
         'title': lazy_gettext('Save Order')},
+    'scale': {
+        'title': lazy_gettext('Scale')},
+    'scale_from_min': {
+        'title': lazy_gettext('Unscaled Unit Min')},
+    'scale_from_max': {
+        'title': lazy_gettext('Unscaled Unit Max')},
+    'scale_to_min': {
+        'title': lazy_gettext('Rescaled Unit Min')},
+    'scale_to_max': {
+        'title': lazy_gettext('Rescaled Unit Max')},
     'select_one': {
         'title': lazy_gettext('Select One')},
+    'sensitivity': {
+        'title': lazy_gettext('Sensitivity')},
     'setpoint': {
         'title': lazy_gettext('Setpoint')},
     'settings': {
@@ -214,17 +234,11 @@ TRANSLATIONS = {
         'title': lazy_gettext('Sample Speed'),
         'phrase': None},
     'amps': {
-        'title': lazy_gettext('Current Draw (amps)'),
+        'title': lazy_gettext('Current Draw (Amps)'),
         'phrase': None},
     'baud_rate': {
         'title': lazy_gettext('Baud Rate'),
         'phrase': lazy_gettext('The UART baud rate')},
-    'bt_location': {
-        'title': lazy_gettext('Bluetooth MAC (XX:XX:XX:XX:XX:XX)'),
-        'phrase': None},
-    'bt_adapter': {
-        'title': lazy_gettext('Bluetooth Adapter (hci[X])'),
-        'phrase': None},
     'cmd_command': {
         'title': lazy_gettext('Command'),
         'phrase': lazy_gettext('The command to be executed')},
@@ -238,8 +252,8 @@ TRANSLATIONS = {
         'title': None,
         'phrase': lazy_gettext('click to copy to the clipboard')},
     'deadline': {
-        'title': lazy_gettext('Deadline'),
-        'phrase': lazy_gettext('Time (seconds) to wait until failure')},
+        'title': f"{lazy_gettext('Deadline') ({lazy_gettext('Seconds')})}",
+        'phrase': lazy_gettext('Time to wait until failure')},
     'duty_cycle': {
         'title': lazy_gettext('Duty Cycle'),
         'phrase': lazy_gettext('Duty cycle for the PWM (percent, 0.0 - 100.0)')},
@@ -263,21 +277,12 @@ TRANSLATIONS = {
         'phrase': lazy_gettext('The flow rate to use when pumping a volume')},
     'host': {
         'title': lazy_gettext('Host'),
-        'phrase': lazy_gettext('Host address or IP')},
-    'i2c_bus': {
-        'title': lazy_gettext('I2C Bus'),
-        'phrase': None},
-    'i2c_location': {
-        'title': lazy_gettext('I2C Address'),
-        'phrase': None},
+        'phrase': lazy_gettext('Host or IP address')},
     'interface': {
         'title': lazy_gettext('Interface'),
         'phrase': lazy_gettext('The interface used to communicate')},
-    'invert_scale': {
-        'title': lazy_gettext('Invert Scale'),
-        'phrase': lazy_gettext('Invert the scale')},
     'linux_command_user': {
-        'title': lazy_gettext('Execute as User'),
+        'title': lazy_gettext('User'),
         'phrase': lazy_gettext('The user to execute the command')},
     'log_level_debug': {
         'title': lazy_gettext('Log Level: Debug'),
@@ -300,6 +305,9 @@ TRANSLATIONS = {
     'off_command': {
         'title': lazy_gettext('Off Command'),
         'phrase': lazy_gettext('Command to execute when the output is instructed to turn off')},
+    'on_command': {
+        'title': lazy_gettext('On Command'),
+        'phrase': lazy_gettext('Command to execute when the output is instructed to turn on')},
     'on_state': {
         'title': lazy_gettext('On State'),
         'phrase': lazy_gettext('What state triggers the output to turn on? High or Low?')},
@@ -315,12 +323,9 @@ TRANSLATIONS = {
     'output_amount_volume': {
         'title': lazy_gettext('Volume'),
         'phrase': f"{lazy_gettext('Send to output controller')}: {lazy_gettext('Volume')}"},
-    'on_command': {
-        'title': lazy_gettext('On Command'),
-        'phrase': lazy_gettext('Command to execute when the output is instructed to turn on')},
     'period': {
         'title': f"{lazy_gettext('Period')} ({lazy_gettext('Seconds')})",
-        'phrase': lazy_gettext('The duration (seconds) between measurements or actions')},
+        'phrase': lazy_gettext('The duration between measurements or actions')},
     'pin_clock': {
         'title': f"{lazy_gettext('Pin')}: {lazy_gettext('Clock')}",
         'phrase': f"{lazy_gettext('GPIO (using BCM numbering)')}: {lazy_gettext('Pin')}: {lazy_gettext('Clock')}"},
@@ -337,9 +342,9 @@ TRANSLATIONS = {
         'title': lazy_gettext('Port'),
         'phrase': lazy_gettext('Host port number')},
     'pre_output_duration': {
-        'title': lazy_gettext('Pre Out Duration'),
+        'title': f"{lazy_gettext('Pre Out Duration')} ({lazy_gettext('Seconds')})",
         'phrase': lazy_gettext(
-            'If a Pre Output is selected, set the duration (seconds) to turn '
+            'If a Pre Output is selected, set the duration to turn '
             'the Pre Output on for before every measurement is acquired.')},
     'pre_output_during_measure': {
         'title': lazy_gettext('Pre During Measure'),
@@ -347,12 +352,6 @@ TRANSLATIONS = {
     'pre_output_id': {
         'title': lazy_gettext('Pre Output'),
         'phrase': lazy_gettext('Turn the selected output on before taking every measurement')},
-    'protocol': {
-        'title': lazy_gettext('Protocol'),
-        'phrase': lazy_gettext('Wireless 433 MHz protocol')},
-    'pulse_length': {
-        'title': lazy_gettext('Pulse Length'),
-        'phrase': lazy_gettext('Wireless 433 MHz pulse length')},
     'pwm_command': {
         'title': lazy_gettext('PWM Command'),
         'phrase': lazy_gettext('Command to execute to set the PWM duty cycle (%)')},
@@ -367,7 +366,7 @@ TRANSLATIONS = {
         'phrase': f"{lazy_gettext('Reference Resistance')} ({lazy_gettext('Ohm')})"},
     'refresh_duration': {
         'title': f"{lazy_gettext('Refresh')} ({lazy_gettext('Seconds')})",
-        'phrase': lazy_gettext('Number of seconds to wait between acquiring any new measurements.')},
+        'phrase': lazy_gettext('Duration to wait between acquiring new measurements')},
     'resolution': {
         'title': lazy_gettext('Resolution'),
         'phrase': lazy_gettext('Measurement resolution')},
@@ -380,24 +379,9 @@ TRANSLATIONS = {
     'sample_time': {
         'title': lazy_gettext('Sample Time'),
         'phrase': lazy_gettext('The duration of time to sample')},
-    'scale_from_min': {
-        'title': lazy_gettext('Unscaled Unit Min'),
-        'phrase': lazy_gettext('Unscaled minimum unit')},
-    'scale_from_max': {
-        'title': lazy_gettext('Unscaled Unit Max'),
-        'phrase': lazy_gettext('Unscaled maximum unit')},
-    'scale_to_min': {
-        'title': lazy_gettext('Rescaled Unit Min'),
-        'phrase': lazy_gettext('Rescaled minimum unit')},
-    'scale_to_max': {
-        'title': lazy_gettext('Rescaled Unit Max'),
-        'phrase': lazy_gettext('Rescaled maximum unit')},
     'select_measurement_unit': {
         'title': lazy_gettext('Measurement Unit'),
         'phrase': lazy_gettext('Select the measurement and unit to store this measurement in the database')},
-    'sensitivity': {
-        'title': lazy_gettext('Sensitivity'),
-        'phrase': lazy_gettext('Measurement sensitivity')},
     'setpoint_tracking_type': {
         'title': lazy_gettext('Setpoint Tracking Type'),
         'phrase': lazy_gettext('Select the type of setpoint tracking')},
@@ -408,8 +392,8 @@ TRANSLATIONS = {
         'title': lazy_gettext('Shutdown Value'),
         'phrase': lazy_gettext('The output value to set when Mycodo shuts down')},
     'start_offset': {
-        'title': lazy_gettext('Start Offset (seconds)'),
-        'phrase': lazy_gettext('The duration (seconds) to wait before the first operation')},
+        'title': f"{lazy_gettext('Start Offset')} ({lazy_gettext('Seconds')})",
+        'phrase': lazy_gettext('The duration to wait before the first operation')},
     'startup_value': {
         'title': lazy_gettext('Startup Value'),
         'phrase': lazy_gettext('The output value to set when Mycodo starts up')},
@@ -423,16 +407,16 @@ TRANSLATIONS = {
         'title': lazy_gettext('Edge'),
         'phrase': lazy_gettext('Edge detection: low to high (rising), high to low (falling), or both')},
     'switch_bouncetime': {
-        'title': lazy_gettext('Bounce Time (ms)'),
-        'phrase': lazy_gettext('The amount of time (miliseconds) to bounce the input signal')},
+        'title': f"{lazy_gettext('Bounce Time')} ({lazy_gettext('milliseconds')})",
+        'phrase': lazy_gettext('The amount of time to bounce the input signal')},
     'switch_reset_period': {
-        'title': lazy_gettext('Reset Period'),
-        'phrase': lazy_gettext('Wait a period of time (seconds) after the first edge detection to begin detecting again')},
+        'title': f"{lazy_gettext('Reset Period')} ({lazy_gettext('Seconds')})",
+        'phrase': lazy_gettext('Wait a period of time after the first edge detection to begin detecting again')},
     'thermocouple_type': {
         'title': lazy_gettext('RTD Probe Type'),
         'phrase': lazy_gettext('The type of thermocouple connected')},
     'times_check': {
-        'title': lazy_gettext('Times Check'),
+        'title': lazy_gettext('Times to Check'),
         'phrase': lazy_gettext('Number of times to check')},
     'trigger_functions_at_start': {
         'title': lazy_gettext('Trigger at Startup'),

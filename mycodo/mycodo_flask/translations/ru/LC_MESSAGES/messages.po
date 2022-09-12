@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Mycodo1 8.11.0\n"
 "Report-Msgid-Bugs-To: mycodo@kylegabriel.com\n"
-"POT-Creation-Date: 2022-09-10 20:38-0400\n"
+"POT-Creation-Date: 2022-09-11 21:00-0400\n"
 "PO-Revision-Date: 2022-09-07 23:14+0000\n"
 "Last-Translator: Kyle Gabriel <kyletgabriel@gmail.com>\n"
 "Language: ru\n"
@@ -71,15 +71,15 @@ msgstr "диск"
 msgid "Dissolved Oxygen"
 msgstr "Растворенный кислород"
 
-#: config_devices_units.py:113 config_translations.py:69
-#: config_translations.py:307 mycodo_flask/templates/pages/usage.html:230
+#: config_devices_units.py:113 config_translations.py:73
+#: config_translations.py:315 mycodo_flask/templates/pages/usage.html:230
 #: mycodo_flask/templates/pages/usage.html:265
 msgid "Duration"
 msgstr "Продолжительность"
 
 #: actions/output_pwm.py:48 actions/output_ramp_pwm.py:50
 #: actions/output_ramp_pwm.py:59 actions/output_ramp_pwm.py:68
-#: config_devices_units.py:117 config_translations.py:244
+#: config_devices_units.py:117 config_translations.py:258
 msgid "Duty Cycle"
 msgstr "Рабочий цикл"
 
@@ -217,7 +217,7 @@ msgid "Saturation"
 msgstr "насыщение"
 
 #: actions/pid_setpoint.py:49 config_devices_units.py:265
-#: config_devices_units.py:514 config_translations.py:161
+#: config_devices_units.py:514 config_translations.py:181
 #: functions/bang_bang.py:63 functions/bang_bang_on_off.py:73
 #: functions/bang_bang_pwm.py:60 functions/pid_autotune.py:97
 msgid "Setpoint"
@@ -273,7 +273,7 @@ msgid "VOC"
 msgstr "VOC"
 
 #: actions/output_volume.py:48 config_devices_units.py:317
-#: config_translations.py:199 config_translations.py:316
+#: config_translations.py:219 config_translations.py:324
 msgid "Volume"
 msgstr "объем"
 
@@ -572,45 +572,54 @@ msgid "Average"
 msgstr "В среднем"
 
 #: config_translations.py:25
+#, fuzzy
+msgid "Bluetooth Adapter (hci[X])"
+msgstr "BT адаптер (hci [X])"
+
+#: config_translations.py:27
+msgid "Bluetooth MAC (XX:XX:XX:XX:XX:XX)"
+msgstr ""
+
+#: config_translations.py:29
 msgid "Bus"
 msgstr "автобус"
 
-#: config_translations.py:27 inputs/ads1256.py:85
+#: config_translations.py:31 inputs/ads1256.py:85
 #: inputs/ads1256_analog_ph_ec.py:347
 msgid "Calibration"
 msgstr "калибровка"
 
-#: config_translations.py:29
+#: config_translations.py:33
 msgid "Calculate"
 msgstr "Рассчитать"
 
 #: actions/camera_timelapse_pause.py:38 actions/camera_timelapse_resume.py:38
-#: actions/photo.py:36 actions/photo_email.py:40 config_translations.py:31
+#: actions/photo.py:36 actions/photo_email.py:40 config_translations.py:35
 #: mycodo_flask/templates/layout.html:216
 #: mycodo_flask/templates/pages/camera.html:5 widgets/widget_camera.py:165
 msgid "Camera"
 msgstr "камера"
 
-#: config_translations.py:33
+#: config_translations.py:37
 msgid "Cancel"
 msgstr "отменить"
 
-#: config_translations.py:35
+#: config_translations.py:39
 msgid "Clear"
 msgstr "Очистить"
 
-#: config_translations.py:37
+#: config_translations.py:41
 #: mycodo_flask/templates/pages/data_options/input_options.html:112
 #: mycodo_flask/templates/pages/function_options/custom_function_options.html:116
 #: mycodo_flask/templates/pages/output_options.html:91
 msgid "Commands"
 msgstr "Команды"
 
-#: config_translations.py:39
+#: config_translations.py:43
 msgid "Completed"
 msgstr "Завершенный"
 
-#: config_translations.py:41
+#: config_translations.py:45
 msgid "Conditional"
 msgstr "условный"
 
@@ -621,15 +630,15 @@ msgstr "условный"
 #: actions/led_neopixel_change_color.py:36 actions/pid_method.py:41
 #: actions/pid_pause.py:40 actions/pid_resume.py:40 actions/pid_setpoint.py:41
 #: actions/pid_setpoint_lower.py:40 actions/pid_setpoint_raise.py:40
-#: config_translations.py:43
+#: config_translations.py:47
 msgid "Controller"
 msgstr "контроллер"
 
-#: config_translations.py:45 mycodo_flask/templates/tools/notes.html:73
+#: config_translations.py:49 mycodo_flask/templates/tools/notes.html:73
 msgid "Create"
 msgstr "Создайте"
 
-#: config_translations.py:47 mycodo_flask/templates/layout-settings.html:34
+#: config_translations.py:51 mycodo_flask/templates/layout-settings.html:34
 #: mycodo_flask/templates/layout-settings.html:35
 #: mycodo_flask/templates/layout-settings.html:36
 #: mycodo_flask/templates/layout-settings.html:37
@@ -640,16 +649,16 @@ msgstr "Создайте"
 msgid "Custom"
 msgstr "изготовленный на заказ"
 
-#: config_translations.py:49 mycodo_flask/templates/settings/general.html:102
+#: config_translations.py:53 mycodo_flask/templates/settings/general.html:102
 #: mycodo_flask/templates/settings/general.html:113
 msgid "Dashboard"
 msgstr "Панель управления"
 
-#: config_translations.py:51 mycodo_flask/templates/layout.html:189
+#: config_translations.py:55 mycodo_flask/templates/layout.html:189
 msgid "Data"
 msgstr "Данные"
 
-#: config_translations.py:53
+#: config_translations.py:57
 #: mycodo_flask/templates/pages/data_options/input_entry.html:40
 #: mycodo_flask/templates/pages/function_options/conditional_entry.html:27
 #: mycodo_flask/templates/pages/function_options/custom_function_entry.html:40
@@ -658,11 +667,11 @@ msgstr "Данные"
 msgid "Deactivate"
 msgstr "дезактивировать"
 
-#: config_translations.py:55
+#: config_translations.py:59
 msgid "Default"
 msgstr "По умолчанию"
 
-#: config_translations.py:57 mycodo_flask/templates/pages/actions.html:35
+#: config_translations.py:61 mycodo_flask/templates/pages/actions.html:35
 #: mycodo_flask/templates/pages/data_options/input_options.html:24
 #: mycodo_flask/templates/pages/function_options/conditional_condition.html:12
 #: mycodo_flask/templates/pages/function_options/conditional_options.html:15
@@ -674,43 +683,43 @@ msgstr "По умолчанию"
 msgid "Delete"
 msgstr "Удалить"
 
-#: config_translations.py:59 mycodo_flask/forms/forms_camera.py:24
+#: config_translations.py:63 mycodo_flask/forms/forms_camera.py:24
 msgid "Device"
 msgstr "устройство"
 
-#: config_translations.py:61
+#: config_translations.py:65
 msgid "Diagnostic"
 msgstr "диагностика"
 
 #: actions/display_backlight_color.py:37 actions/display_backlight_off.py:37
 #: actions/display_backlight_on.py:37 actions/display_flash_off.py:37
-#: actions/display_flash_on.py:37 config_translations.py:63
+#: actions/display_flash_on.py:37 config_translations.py:67
 msgid "Display"
 msgstr "дисплей"
 
-#: config_translations.py:65
+#: config_translations.py:69
 msgid "Down"
 msgstr "вниз"
 
-#: config_translations.py:67
+#: config_translations.py:71
 #: mycodo_flask/templates/pages/data_options/input_options.html:27
 msgid "Duplicate"
 msgstr "Дублировать"
 
-#: config_translations.py:71 config_translations.py:423
+#: config_translations.py:75 config_translations.py:407
 #: mycodo_flask/forms/forms_input.py:153
 msgid "Edge"
 msgstr "край"
 
-#: config_translations.py:73 mycodo_flask/templates/pages/method-list.html:76
+#: config_translations.py:77 mycodo_flask/templates/pages/method-list.html:76
 msgid "Edit"
 msgstr "редактировать"
 
-#: config_translations.py:75
+#: config_translations.py:79
 msgid "E-Mail"
 msgstr "Эл. почта"
 
-#: config_translations.py:77 mycodo_flask/templates/layout.html:219
+#: config_translations.py:81 mycodo_flask/templates/layout.html:219
 #: mycodo_flask/templates/pages/usage.html:3
 #: mycodo_flask/templates/pages/usage.html:5
 #: mycodo_flask/templates/pages/usage.html:30
@@ -718,44 +727,52 @@ msgstr "Эл. почта"
 msgid "Energy Usage"
 msgstr "Использование энергии"
 
-#: config_translations.py:79 mycodo_flask/templates/flash_messages.html:46
+#: config_translations.py:83 mycodo_flask/templates/flash_messages.html:46
 #: mycodo_flask/templates/user_templates/widget_template_widget_measurement_js.html:49
 #: mycodo_flask/templates/user_templates/widget_template_widget_output_js.html:58
 #: mycodo_flask/templates/user_templates/widget_template_widget_output_pwm_slider_js.html:73
 msgid "Error"
 msgstr "ошибка"
 
-#: config_translations.py:81
+#: config_translations.py:85
 msgid "Export"
 msgstr "экспорт"
 
-#: config_translations.py:83
+#: config_translations.py:87
 msgid "Fail"
 msgstr "Провал"
 
-#: config_translations.py:85 mycodo_flask/templates/pages/function.html:56
+#: config_translations.py:89 mycodo_flask/templates/pages/function.html:56
 #: widgets/widget_function_status.py:54 widgets/widget_graph_synchronous.py:384
 msgid "Function"
 msgstr "функция"
 
-#: config_translations.py:87 mycodo_flask/templates/layout-settings.html:33
+#: config_translations.py:91 mycodo_flask/templates/layout-settings.html:33
 msgid "General"
 msgstr "Генеральная"
 
-#: config_translations.py:89 mycodo_flask/forms/forms_pid.py:111
+#: config_translations.py:93 mycodo_flask/forms/forms_pid.py:111
 #: mycodo_flask/templates/pages/function_options/pid_entry.html:43
 msgid "Hold"
 msgstr "Держать"
 
-#: config_translations.py:91
+#: config_translations.py:95
+msgid "I2C Bus"
+msgstr "Шина I2C"
+
+#: config_translations.py:97
+msgid "I2C Address"
+msgstr "Адрес I2C"
+
+#: config_translations.py:99
 msgid "Indicator"
 msgstr "Индикатор"
 
-#: config_translations.py:93
+#: config_translations.py:101
 msgid "Invert"
 msgstr "инвертировать"
 
-#: config_translations.py:95 mycodo_flask/templates/tools/notes.html:138
+#: config_translations.py:103 mycodo_flask/templates/tools/notes.html:138
 #: mycodo_flask/utils/utils_notes.py:453
 #: mycodo_flask/utils/utils_settings.py:472
 #: mycodo_flask/utils/utils_settings.py:567
@@ -770,42 +787,42 @@ msgstr "инвертировать"
 msgid "Import"
 msgstr "Импортировать"
 
-#: config_translations.py:97 mycodo_flask/templates/layout-remote.html:50
+#: config_translations.py:105 mycodo_flask/templates/layout-remote.html:50
 #: mycodo_flask/templates/pages/function_options/pid_options.html:273
 msgid "Input"
 msgstr "вход"
 
-#: config_translations.py:99
+#: config_translations.py:107
 msgid "Invalid"
 msgstr "Недействительным"
 
-#: config_translations.py:101
+#: config_translations.py:109
 #: mycodo_flask/templates/pages/function_options/conditional_options/measurement.html:2
 msgid "Last"
 msgstr "Последний"
 
-#: config_translations.py:103
+#: config_translations.py:111
 msgid "LCD"
 msgstr "LCD"
 
-#: config_translations.py:105
+#: config_translations.py:113
 msgid "Line"
 msgstr "Линия"
 
-#: config_translations.py:107
+#: config_translations.py:115
 msgid "Lock"
 msgstr "Заблокировать"
 
-#: config_translations.py:109
+#: config_translations.py:117
 msgid "Login"
 msgstr "Авторизоваться"
 
-#: config_translations.py:111
+#: config_translations.py:119
 msgid "Math"
 msgstr "математический"
 
 #: actions/examples/example_action_for_input.py:35
-#: actions/mqtt_publish_input.py:36 config_translations.py:113
+#: actions/mqtt_publish_input.py:36 config_translations.py:121
 #: functions/average_past_single.py:86 functions/bang_bang.py:44
 #: functions/bang_bang_on_off.py:43 functions/bang_bang_pwm.py:41
 #: functions/pid_autotune.py:68 inputs/ads1115_analog_ph_ec.py:138
@@ -823,49 +840,49 @@ msgstr "математический"
 msgid "Measurement"
 msgstr "измерение"
 
-#: actions/pid_method.py:51 config_translations.py:115
+#: actions/pid_method.py:51 config_translations.py:123
 #: mycodo_flask/routes_method.py:225
 #: mycodo_flask/templates/pages/function_options/pid_options.html:272
 #: mycodo_flask/templates/pages/method-list.html:41
 msgid "Method"
 msgstr "метод"
 
-#: config_translations.py:117
+#: config_translations.py:125
 msgid "Modify"
 msgstr "изменять"
 
-#: config_translations.py:119
+#: config_translations.py:127
 #: mycodo_flask/templates/pages/function_options/conditional_options/measurement_dict.html:2
 msgid "Multiple"
 msgstr "множественный"
 
-#: config_translations.py:121
+#: config_translations.py:129
 msgid "None Available"
 msgstr "Нет доступных"
 
-#: actions/create_note.py:54 config_translations.py:123
+#: actions/create_note.py:54 config_translations.py:131
 msgid "Note"
 msgstr "Заметка"
 
-#: config_translations.py:125
+#: config_translations.py:133
 #: mycodo_flask/templates/user_templates/widget_template_widget_indicator_js.html:24
 #: outputs/on_off_kasa_rgb_bulbs.py:228
 msgid "Off"
 msgstr "от"
 
-#: config_translations.py:127
+#: config_translations.py:135
 #: mycodo_flask/templates/user_templates/widget_template_widget_indicator_js.html:22
 #: outputs/on_off_kasa_rgb_bulbs.py:212
 msgid "On"
 msgstr "На"
 
-#: config_translations.py:129 functions/bang_bang.py:55
+#: config_translations.py:137 functions/bang_bang.py:55
 #: functions/bang_bang_pwm.py:52 functions/pid_autotune.py:79
 #: widgets/widget_output.py:52 widgets/widget_output_pwm_slider.py:52
 msgid "Output"
 msgstr "Вывод"
 
-#: config_translations.py:131
+#: config_translations.py:139
 #: mycodo_flask/templates/pages/function_options/conditional_options/measurement_dict.html:2
 #: mycodo_flask/templates/pages/function_options/conditional_options/measurement_past_average.html:28
 #: mycodo_flask/templates/pages/function_options/conditional_options/measurement_past_sum.html:2
@@ -873,57 +890,57 @@ msgid "Past"
 msgstr "Прошлый"
 
 #: actions/mqtt_publish.py:116 actions/mqtt_publish_input.py:100
-#: config_translations.py:133 inputs/mqtt_paho.py:118
+#: config_translations.py:141 inputs/mqtt_paho.py:118
 #: inputs/mqtt_paho_json.py:134 mycodo_flask/forms/forms_settings.py:105
 #: mycodo_flask/templates/settings/users.html:111 outputs/on_off_mqtt.py:169
 #: outputs/value_mqtt.py:121
 msgid "Password"
 msgstr "пароль"
 
-#: config_translations.py:135 mycodo_flask/forms/forms_pid.py:112
+#: config_translations.py:143 mycodo_flask/forms/forms_pid.py:112
 #: mycodo_flask/templates/pages/function_options/pid_entry.html:40
 msgid "Pause"
 msgstr "Пауза"
 
-#: config_translations.py:137
+#: config_translations.py:145
 msgid "PID"
 msgstr "PID"
 
-#: config_translations.py:139
+#: config_translations.py:147
 msgid "Pin"
 msgstr "Штырь"
 
-#: config_translations.py:141
+#: config_translations.py:149
 msgid "Publish"
 msgstr "Опубликовать"
 
-#: config_translations.py:143
+#: config_translations.py:151
 msgid "PWM"
 msgstr "PWM"
 
-#: config_translations.py:145
+#: config_translations.py:153
 msgid "Ramp"
 msgstr "Уклон"
 
-#: config_translations.py:147
+#: config_translations.py:155
 msgid "Rename"
 msgstr "переименовывать"
 
-#: config_translations.py:149
+#: config_translations.py:157
 msgid "Reorder"
 msgstr "Изменение порядка"
 
-#: config_translations.py:151
+#: config_translations.py:159
 #: mycodo_flask/templates/user_templates/widget_template_widget_graph_synchronous_title_bar.html:11
 msgid "Reset"
 msgstr "Сброс"
 
-#: config_translations.py:153 mycodo_flask/forms/forms_pid.py:113
+#: config_translations.py:161 mycodo_flask/forms/forms_pid.py:113
 #: mycodo_flask/templates/pages/function_options/pid_entry.html:37
 msgid "Resume"
 msgstr "Продолжить"
 
-#: config_translations.py:155 mycodo_flask/forms/forms_settings.py:312
+#: config_translations.py:163 mycodo_flask/forms/forms_settings.py:312
 #: mycodo_flask/templates/pages/actions.html:30
 #: mycodo_flask/templates/pages/data_options/input_options.html:21
 #: mycodo_flask/templates/pages/function_options/conditional_condition.html:9
@@ -936,11 +953,32 @@ msgstr "Продолжить"
 msgid "Save"
 msgstr "Сохранить"
 
-#: config_translations.py:157
+#: config_translations.py:165
 msgid "Save Order"
 msgstr "Сохранить заказ"
 
-#: config_translations.py:159
+#: config_translations.py:167
+#, fuzzy
+msgid "Scale"
+msgstr "паскаль"
+
+#: config_translations.py:169
+msgid "Unscaled Unit Min"
+msgstr "Не масштабированная единица мин"
+
+#: config_translations.py:171
+msgid "Unscaled Unit Max"
+msgstr "Не масштабированный модуль Макс"
+
+#: config_translations.py:173
+msgid "Rescaled Unit Min"
+msgstr "Масштабированная единица мин"
+
+#: config_translations.py:175
+msgid "Rescaled Unit Max"
+msgstr "Масштабированная единица измерения"
+
+#: config_translations.py:177
 #: mycodo_flask/templates/pages/form_options/FTDI.html:23
 #: mycodo_flask/templates/pages/function_options/pid_options.html:183
 #: mycodo_flask/templates/pages/function_options/pid_options.html:235
@@ -949,70 +987,74 @@ msgstr "Сохранить заказ"
 msgid "Select One"
 msgstr "Выбери один"
 
-#: config_translations.py:163
+#: config_translations.py:179
+msgid "Sensitivity"
+msgstr "чувствительность"
+
+#: config_translations.py:183
 msgid "Settings"
 msgstr "настройки"
 
-#: config_translations.py:165
+#: config_translations.py:185
 #: mycodo_flask/templates/pages/function_options/conditional_options/measurement.html:2
 #: mycodo_flask/templates/pages/function_options/conditional_options/measurement_past_average.html:28
 #: mycodo_flask/templates/pages/function_options/conditional_options/measurement_past_sum.html:2
 msgid "Single"
 msgstr "Один"
 
-#: config_translations.py:167
+#: config_translations.py:187
 msgid "Stops"
 msgstr "Остановки"
 
-#: config_translations.py:169 mycodo_flask/templates/flash_messages.html:7
+#: config_translations.py:189 mycodo_flask/templates/flash_messages.html:7
 msgid "Success"
 msgstr "успех"
 
-#: config_translations.py:171
+#: config_translations.py:191
 #: mycodo_flask/templates/pages/function_options/conditional_options/measurement_past_sum.html:2
 msgid "Sum"
 msgstr "Сумма"
 
-#: config_translations.py:173
+#: config_translations.py:193
 msgid "System"
 msgstr "система"
 
-#: config_translations.py:175
+#: config_translations.py:195
 msgid "Tag"
 msgstr "Тег"
 
-#: config_translations.py:177
+#: config_translations.py:197
 msgid "Text"
 msgstr "Текст"
 
-#: config_translations.py:179 mycodo_flask/forms/forms_settings.py:345
+#: config_translations.py:199 mycodo_flask/forms/forms_settings.py:345
 #: mycodo_flask/forms/forms_settings.py:351
 #: mycodo_flask/forms/forms_settings.py:391
 #: mycodo_flask/templates/layout.html:301
 msgid "Theme"
 msgstr "тема"
 
-#: config_translations.py:181
+#: config_translations.py:201
 msgid "Time-lapse"
 msgstr "Промежуток времени"
 
-#: config_translations.py:183
+#: config_translations.py:203
 msgid "Timer"
 msgstr "таймер"
 
-#: config_translations.py:185
+#: config_translations.py:205
 msgid "Trigger"
 msgstr "Курок"
 
-#: config_translations.py:187
+#: config_translations.py:207
 msgid "Unlock"
 msgstr "Разблокировать"
 
-#: config_translations.py:189
+#: config_translations.py:209
 msgid "Up"
 msgstr "вверх"
 
-#: config_translations.py:191 mycodo_flask/forms/forms_settings.py:165
+#: config_translations.py:211 mycodo_flask/forms/forms_settings.py:165
 #: mycodo_flask/forms/forms_settings.py:179
 #: mycodo_flask/forms/forms_settings.py:193
 #: mycodo_flask/forms/forms_settings.py:207
@@ -1020,113 +1062,102 @@ msgstr "вверх"
 msgid "Upload"
 msgstr "Загрузить"
 
-#: actions/command_bash.py:32 config_translations.py:193
-#: inputs/linux_command.py:58 outputs/on_off_shell.py:67
-#: outputs/pwm_python.py:214 outputs/pwm_shell.py:68
+#: actions/command_bash.py:32 config_translations.py:213
+#: config_translations.py:285 inputs/linux_command.py:58
+#: outputs/on_off_shell.py:67 outputs/pwm_python.py:214 outputs/pwm_shell.py:68
 msgid "User"
 msgstr "пользователь"
 
-#: actions/output_value.py:47 config_translations.py:195
-#: config_translations.py:310 inputs/mycodo_test_input_save_value.py:72
+#: actions/output_value.py:47 config_translations.py:215
+#: config_translations.py:318 inputs/mycodo_test_input_save_value.py:72
 #: mycodo_flask/templates/user_templates/widget_template_widget_indicator_js.html:60
 msgid "Value"
 msgstr "Значение"
 
-#: config_translations.py:197 config_translations.py:313
-#: config_translations.py:405 inputs/anyleaf_orp.py:52
+#: config_translations.py:217 config_translations.py:321
+#: config_translations.py:389 inputs/anyleaf_orp.py:52
 #: mycodo_flask/forms/forms_settings.py:112
 msgid "Voltage"
 msgstr "напряжение"
 
-#: config_translations.py:201
+#: config_translations.py:221
 msgid "Widget"
 msgstr "Виджет"
 
-#: config_translations.py:205
+#: config_translations.py:225
 msgid "1-Wire Device ID"
 msgstr "1-Wire идентификатор устройства"
 
-#: config_translations.py:208 inputs/as7262.py:83
+#: config_translations.py:228 inputs/as7262.py:83
 #: mycodo_flask/forms/forms_camera.py:63
 msgid "Gain"
 msgstr "Усиление"
 
-#: config_translations.py:211 config_translations.py:372
-#: config_translations.py:375
+#: config_translations.py:231 config_translations.py:371
+#: config_translations.py:374
 msgid "Resolution"
 msgstr "разрешение"
 
-#: config_translations.py:214
+#: config_translations.py:234
 msgid "Sample Speed"
 msgstr "Скорость образца"
 
-#: config_translations.py:217
-msgid "Current Draw (amps)"
+#: config_translations.py:237
+#, fuzzy
+msgid "Current Draw (Amps)"
 msgstr "Текущий ток (усилители)"
 
-#: config_translations.py:220
+#: config_translations.py:240
 msgid "Baud Rate"
 msgstr "Скорость передачи"
 
-#: config_translations.py:221
+#: config_translations.py:241
 msgid "The UART baud rate"
 msgstr "Скорость передачи данных UART"
 
-#: config_translations.py:223
-msgid "Bluetooth MAC (XX:XX:XX:XX:XX:XX)"
-msgstr ""
-
-#: config_translations.py:226
-#, fuzzy
-msgid "Bluetooth Adapter (hci[X])"
-msgstr "BT адаптер (hci [X])"
-
-#: actions/command_bash.py:40 config_translations.py:229
+#: actions/command_bash.py:40 config_translations.py:243
 msgid "Command"
 msgstr "команда"
 
-#: config_translations.py:230
+#: config_translations.py:244
 msgid "The command to be executed"
 msgstr "Команда для выполнения"
 
-#: config_translations.py:233
+#: config_translations.py:247
 msgid "Select the unit of the measurement to be stored in the database"
 msgstr "Выберите единицу измерения, которое будет храниться в базе данных"
 
-#: config_translations.py:235
+#: config_translations.py:249
 msgid "Convert to Unit"
 msgstr "Преобразовать в Единицу"
 
-#: config_translations.py:236
+#: config_translations.py:250
 msgid "Convert the measurement to a different unit"
 msgstr "Преобразовать измерение в другую единицу"
 
-#: config_translations.py:239
+#: config_translations.py:253
 msgid "click to copy to the clipboard"
 msgstr "нажмите, чтобы скопировать в буфер обмена"
 
-#: config_translations.py:241
-msgid "Deadline"
-msgstr "Крайний срок"
-
-#: config_translations.py:242
-msgid "Time (seconds) to wait until failure"
+#: config_translations.py:256
+#, fuzzy
+msgid "Time to wait until failure"
 msgstr "Время (в секундах) ожидания до отказа"
 
 #: actions/output_pwm.py:49 actions/output_ramp_pwm.py:51
-#: actions/output_ramp_pwm.py:60 config_translations.py:245
+#: actions/output_ramp_pwm.py:60 config_translations.py:259
 msgid "Duty cycle for the PWM (percent, 0.0 - 100.0)"
 msgstr "Рабочий цикл для ШИМ (в процентах, 0,0 - 100,0)"
 
-#: config_translations.py:250
+#: config_translations.py:264
 msgid "Name Font Size (em)"
 msgstr "Имя Размер шрифта (эм)"
 
-#: config_translations.py:251
+#: config_translations.py:265
 msgid "The font size of the Name text"
 msgstr "Размер шрифта текста Имя"
 
-#: config_translations.py:253 outputs/on_off_kasa_hs300.py:126
+#: config_translations.py:267 outputs/on_off_kasa_hs300.py:126
 #: outputs/on_off_kasa_hs300_0_4_2.py:139 outputs/on_off_kasa_kp303.py:126
 #: outputs/on_off_kasa_kp303_0_4_2.py:139 outputs/on_off_kasa_plugs.py:128
 #: outputs/on_off_kasa_rgb_bulbs.py:297 outputs/on_off_mqtt.py:138
@@ -1137,104 +1168,88 @@ msgstr "Размер шрифта текста Имя"
 msgid "Force Command"
 msgstr "Команда Force"
 
-#: config_translations.py:254 outputs/on_off_python.py:241
+#: config_translations.py:268 outputs/on_off_python.py:241
+#: outputs/pwm_shell.py:138
 msgid "Always send the command if instructed, regardless of the current state"
 msgstr "Всегда отправлять команду, если указание, независимо от текущего состояния"
 
-#: config_translations.py:256
+#: config_translations.py:270
 msgid "FTDI Device"
 msgstr "Устройство FTDI"
 
-#: config_translations.py:257
+#: config_translations.py:271
 msgid "The FTDI device connected to the input/output/etc."
 msgstr "Устройство FTDI, подключенное к входу/выходу/и т.д."
 
-#: config_translations.py:262 outputs/pump_grove_motor_driver_v1_3.py:132
+#: config_translations.py:276 outputs/pump_grove_motor_driver_v1_3.py:132
 msgid "Flow Rate Method"
 msgstr "Способ измерения потока"
 
-#: config_translations.py:263 outputs/pump_grove_motor_driver_v1_3.py:133
+#: config_translations.py:277 outputs/pump_grove_motor_driver_v1_3.py:133
 msgid "The flow rate to use when pumping a volume"
 msgstr "Скорость потока, используемая при перекачивании объема"
 
-#: config_translations.py:265
+#: config_translations.py:279
 msgid "Host"
 msgstr "хозяин"
 
-#: config_translations.py:266
-msgid "Host address or IP"
-msgstr "Адрес хоста или IP"
+#: config_translations.py:280
+#, fuzzy
+msgid "Host or IP address"
+msgstr "Домен или IP-адрес"
 
-#: config_translations.py:268
-msgid "I2C Bus"
-msgstr "Шина I2C"
-
-#: config_translations.py:271
-msgid "I2C Address"
-msgstr "Адрес I2C"
-
-#: config_translations.py:274
+#: config_translations.py:282
 #: mycodo_flask/templates/pages/data_options/input_options.html:43
 msgid "Interface"
 msgstr "Интерфейс"
 
-#: config_translations.py:275
+#: config_translations.py:283
 msgid "The interface used to communicate"
 msgstr "Интерфейс, используемый для общения"
 
-#: config_translations.py:277
-msgid "Invert Scale"
-msgstr "Инвертировать шкалу"
-
-#: config_translations.py:278
-msgid "Invert the scale"
-msgstr "Инвертировать шкалу"
-
-#: config_translations.py:280
-msgid "Execute as User"
-msgstr "Выполнить от имени пользователя"
-
-#: config_translations.py:281 outputs/pwm_shell.py:69
+#: actions/command_bash.py:33 config_translations.py:286
+#: inputs/linux_command.py:59 outputs/on_off_shell.py:68
+#: outputs/pwm_python.py:215 outputs/pwm_shell.py:69
 msgid "The user to execute the command"
 msgstr "Пользователь для выполнения команды"
 
-#: config_translations.py:283
+#: config_translations.py:288
 msgid "Log Level: Debug"
 msgstr "Уровень журнала: Debug"
 
-#: config_translations.py:284
+#: config_translations.py:289
 msgid "Show debug lines in the Daemon Log"
 msgstr "Показать отладочные строки в Daemon Вход"
 
-#: config_translations.py:287
+#: config_translations.py:292
 msgid "The maximum allowable measurement age"
 msgstr "Максимально допустимый возраст измерения"
 
-#: config_translations.py:289
+#: config_translations.py:294
 msgid "Unit Measurement"
 msgstr "Измерение единицы измерения"
 
-#: config_translations.py:290
+#: config_translations.py:295
 msgid "Select a unit for the stored value"
 msgstr "Выберите единицу для сохраненного значения"
 
-#: config_translations.py:292
+#: config_translations.py:297
 msgid "Measurements Enabled"
 msgstr "Измерения включены"
 
-#: config_translations.py:293
+#: config_translations.py:298
 msgid "The measurements to record"
 msgstr "Измерения для записи"
 
-#: config_translations.py:295
+#: config_translations.py:300
 msgid "Message Includes Code"
 msgstr "Сообщение содержит код"
 
-#: config_translations.py:296
+#: config_translations.py:301
 msgid "Include the code in the message variable"
 msgstr "Включите код в переменных сообщениях"
 
-#: actions/create_note.py:46 config_translations.py:298
+#: actions/create_note.py:46 config_translations.py:303
 #: mycodo_flask/templates/pages/function_options/custom_function_options.html:37
 #: mycodo_flask/templates/pages/function_options/function_options.html:31
 #: mycodo_flask/templates/pages/usage.html:205
@@ -1246,20 +1261,29 @@ msgstr "Включите код в переменных сообщениях"
 msgid "Name"
 msgstr "имя"
 
-#: config_translations.py:299
+#: config_translations.py:304
 msgid "A name to distinguish this from others"
 msgstr "Имя, чтобы отличить это от других"
 
-#: config_translations.py:301 outputs/on_off_python.py:202
+#: config_translations.py:306 outputs/on_off_python.py:202
 #: outputs/on_off_shell.py:60 outputs/on_off_wireless_rpi_rf.py:77
 msgid "Off Command"
 msgstr "Выключить команду"
 
-#: config_translations.py:302 outputs/on_off_wireless_rpi_rf.py:78
+#: config_translations.py:307 outputs/on_off_wireless_rpi_rf.py:78
 msgid "Command to execute when the output is instructed to turn off"
 msgstr "Команда для выполнения, когда выход получает указание отключиться"
 
-#: config_translations.py:304 outputs/on_off_gpio.py:91
+#: config_translations.py:309 outputs/on_off_python.py:190
+#: outputs/on_off_shell.py:51 outputs/on_off_wireless_rpi_rf.py:69
+msgid "On Command"
+msgstr "По команде"
+
+#: config_translations.py:310 outputs/on_off_wireless_rpi_rf.py:70
+msgid "Command to execute when the output is instructed to turn on"
+msgstr "Команда для выполнения, когда выход получает указание включиться"
+
+#: config_translations.py:312 outputs/on_off_gpio.py:91
 #: outputs/on_off_gpio_sysfs.py:87
 #: outputs/on_off_grove_multichannel_relay.py:163
 #: outputs/on_off_mcp23017.py:100 outputs/on_off_pcf8574.py:99
@@ -1268,73 +1292,40 @@ msgstr "Команда для выполнения, когда выход пол
 msgid "On State"
 msgstr "Спусковой крючок"
 
-#: config_translations.py:305
+#: config_translations.py:313
 msgid "What state triggers the output to turn on? High or Low?"
 msgstr "Какое состояние запускает вывод? Высокий или низкий?"
 
-#: config_translations.py:319 outputs/on_off_python.py:190
-#: outputs/on_off_shell.py:51 outputs/on_off_wireless_rpi_rf.py:69
-msgid "On Command"
-msgstr "По команде"
-
-#: config_translations.py:320 outputs/on_off_wireless_rpi_rf.py:70
-msgid "Command to execute when the output is instructed to turn on"
-msgstr "Команда для выполнения, когда выход получает указание включиться"
-
-#: config_translations.py:323 functions/average_last_multiple.py:68
-#: functions/average_past_single.py:68 functions/backup_rsync.py:74
-#: functions/bang_bang.py:94 functions/bang_bang_on_off.py:105
-#: functions/bang_bang_pwm.py:92 functions/difference.py:65
-#: functions/display_generic_lcd_16x2_i2c.py:226
-#: functions/display_generic_lcd_20x4_i2c.py:211
-#: functions/display_grove_lcd_16x2_i2c.py:228
-#: functions/display_ssd1306_oled_128x32_i2c.py:195
-#: functions/display_ssd1306_oled_128x32_i2c_2lines.py:195
-#: functions/display_ssd1306_oled_128x32_spi.py:194
-#: functions/display_ssd1306_oled_128x32_spi_2lines.py:194
-#: functions/display_ssd1306_oled_128x64_i2c.py:195
-#: functions/display_ssd1306_oled_128x64_i2c_4lines.py:195
-#: functions/display_ssd1306_oled_128x64_spi.py:194
-#: functions/display_ssd1306_oled_128x64_spi_4lines.py:194
-#: functions/display_ssd1309_oled_128x64_i2c.py:197 functions/equation.py:65
-#: functions/equation_multi.py:65
-#: functions/examples/custom_function_multiple_channels.py:74
-#: functions/examples/custom_function_simple_loop_with_status.py:59
-#: functions/humidity_wet_dry_bulb.py:80 functions/redundancy.py:64
-#: functions/regulate_ph_ec.py:180 functions/statistics_last_multiple.py:102
-#: functions/statistics_past_single.py:101 functions/sum_last_multiple.py:69
-#: functions/sum_past_single.py:69 functions/verification.py:64
-msgid "The duration (seconds) between measurements or actions"
+#: config_translations.py:328
+#, fuzzy
+msgid "The duration between measurements or actions"
 msgstr "Длительность (в секундах) между измерениями или действиями"
 
 #: actions/mqtt_publish.py:47 actions/mqtt_publish_input.py:52
-#: config_translations.py:337 mycodo_flask/forms/forms_settings.py:102
+#: config_translations.py:342 mycodo_flask/forms/forms_settings.py:102
 #: outputs/on_off_mqtt.py:66 outputs/value_mqtt.py:65
 msgid "Port"
 msgstr "порт"
 
-#: config_translations.py:338
+#: config_translations.py:343
 msgid "Host port number"
 msgstr "Номер порта хоста"
 
-#: config_translations.py:340
-msgid "Pre Out Duration"
-msgstr "Предварительная продолжительность"
-
-#: config_translations.py:341
+#: config_translations.py:346
+#, fuzzy
 msgid ""
-"If a Pre Output is selected, set the duration (seconds) to turn the Pre "
-"Output on for before every measurement is acquired."
+"If a Pre Output is selected, set the duration to turn the Pre Output on "
+"for before every measurement is acquired."
 msgstr ""
 "Если выбран предварительный выход, установите продолжительность "
 "(секунды), чтобы включить предварительный выход, прежде чем каждое "
 "измерение будет получено."
 
-#: config_translations.py:345
+#: config_translations.py:350
 msgid "Pre During Measure"
 msgstr "Предварительно во время измерения"
 
-#: config_translations.py:346
+#: config_translations.py:351
 msgid ""
 "Check to turn the output off after (opposed to before) the measurement is"
 " complete"
@@ -1342,50 +1333,34 @@ msgstr ""
 "Проверьте, чтобы отключить выход после (в отличие от ранее) измерения "
 "завершено"
 
-#: config_translations.py:348
+#: config_translations.py:353
 msgid "Pre Output"
 msgstr "Предварительный выход"
 
-#: config_translations.py:349
+#: config_translations.py:354
 msgid "Turn the selected output on before taking every measurement"
 msgstr "Перед выполнением каждого измерения поверните выбранный выход"
 
-#: config_translations.py:351 outputs/on_off_wireless_rpi_rf.py:91
-msgid "Protocol"
-msgstr "протокол"
-
-#: config_translations.py:352
-msgid "Wireless 433 MHz protocol"
-msgstr "Беспроводной протокол 433 МГц"
-
-#: config_translations.py:354 outputs/on_off_wireless_rpi_rf.py:100
-msgid "Pulse Length"
-msgstr "Длительность импульса"
-
-#: config_translations.py:355
-msgid "Wireless 433 MHz pulse length"
-msgstr "Беспроволочная длина импульса 433 МГц"
-
-#: config_translations.py:357
+#: config_translations.py:356
 msgid "PWM Command"
 msgstr "Команда PWM"
 
-#: config_translations.py:358 outputs/pwm_shell.py:62
+#: config_translations.py:357 outputs/pwm_shell.py:62
 msgid "Command to execute to set the PWM duty cycle (%)"
 msgstr "Команда для выполнения для установки рабочего цикла ШИМ (%)"
 
-#: config_translations.py:361
+#: config_translations.py:360
 msgid "The Hertz to output the PWM signal (0 - 70,000)"
 msgstr "Hertz для вывода сигнала ШИМ (0 - 70 000)"
 
-#: config_translations.py:363 mycodo_flask/forms/forms_camera.py:23
+#: config_translations.py:362 mycodo_flask/forms/forms_camera.py:23
 #: mycodo_flask/templates/pages/data_options/input_options.html:55
 #: mycodo_flask/templates/pages/function_options/custom_function_options.html:49
 #: mycodo_flask/templates/pages/output_options.html:34 outputs/pwm_gpio.py:135
 msgid "Library"
 msgstr "Библиотека"
 
-#: config_translations.py:364
+#: config_translations.py:363
 msgid ""
 "Which method to produce the PWM signal (hardware pins can produce higher "
 "frequencies)"
@@ -1393,126 +1368,82 @@ msgstr ""
 "Какой метод для получения сигнала ШИМ (аппаратные выводы могут создавать "
 "более высокие частоты)"
 
-#: config_translations.py:366
+#: config_translations.py:365
 msgid "Reference Resistance"
 msgstr "Сопротивление"
 
-#: config_translations.py:370
-msgid "Number of seconds to wait between acquiring any new measurements."
+#: config_translations.py:369
+#, fuzzy
+msgid "Duration to wait between acquiring new measurements"
 msgstr "Количество секунд ожидания между любыми новыми измерениями."
 
-#: config_translations.py:373 config_translations.py:376
+#: config_translations.py:372 config_translations.py:375
 msgid "Measurement resolution"
 msgstr "Разрешение измерения"
 
-#: config_translations.py:378
+#: config_translations.py:377
 msgid "Pulses Per Rev"
 msgstr "Импульсы Per Rev"
 
-#: config_translations.py:379
+#: config_translations.py:378
 msgid ""
 "The number of pulses per revolution to calculate revolutions per minute "
 "(RPM)"
 msgstr "Количество импульсов на оборот для расчета оборотов в минуту (RPM)"
 
-#: config_translations.py:381
+#: config_translations.py:380
 msgid "Sample Time"
 msgstr "Время выборки"
 
-#: config_translations.py:382
+#: config_translations.py:381
 msgid "The duration of time to sample"
 msgstr "Продолжительность времени для выборки"
 
-#: config_translations.py:384
-msgid "Unscaled Unit Min"
-msgstr "Не масштабированная единица мин"
-
-#: config_translations.py:385
-msgid "Unscaled minimum unit"
-msgstr "Немасштабированная минимальная единица"
-
-#: config_translations.py:387
-msgid "Unscaled Unit Max"
-msgstr "Не масштабированный модуль Макс"
-
-#: config_translations.py:388
-msgid "Unscaled maximum unit"
-msgstr "Немасштабированная максимальная единица"
-
-#: config_translations.py:390
-msgid "Rescaled Unit Min"
-msgstr "Масштабированная единица мин"
-
-#: config_translations.py:391
-msgid "Rescaled minimum unit"
-msgstr "Пересчитанная минимальная единица"
-
-#: config_translations.py:393
-msgid "Rescaled Unit Max"
-msgstr "Масштабированная единица измерения"
-
-#: config_translations.py:394
-msgid "Rescaled maximum unit"
-msgstr "Пересчитанная максимальная единица"
-
-#: config_translations.py:396
+#: config_translations.py:383
 msgid "Measurement Unit"
 msgstr "Измерительное устройство"
 
-#: config_translations.py:397
+#: config_translations.py:384
 msgid "Select the measurement and unit to store this measurement in the database"
 msgstr "Выберите измерение и единицу измерения, чтобы сохранить в базе данных"
 
-#: config_translations.py:399
-msgid "Sensitivity"
-msgstr "чувствительность"
-
-#: config_translations.py:400
-msgid "Measurement sensitivity"
-msgstr "Чувствительность измерения"
-
-#: config_translations.py:402
+#: config_translations.py:386
 msgid "Setpoint Tracking Type"
 msgstr "Заданное значение Тип слежения"
 
-#: config_translations.py:403
+#: config_translations.py:387
 msgid "Select the type of setpoint tracking"
 msgstr "Выберите тип уставки слежения"
 
-#: config_translations.py:406
+#: config_translations.py:390
 msgid "The input voltage to the sensor"
 msgstr "Входное напряжение на датчик"
 
-#: config_translations.py:408 outputs/pwm_gpio.py:124
+#: config_translations.py:392 outputs/pwm_gpio.py:124
 #: outputs/pwm_pca9685.py:154 outputs/pwm_python.py:255
 #: outputs/pwm_shell.py:109
 msgid "Shutdown Value"
 msgstr "Shutdown Значение"
 
-#: config_translations.py:409
+#: config_translations.py:393
 msgid "The output value to set when Mycodo shuts down"
 msgstr "Выходное значение для набора, когда Mycodo выключается"
 
-#: config_translations.py:411 mycodo_flask/forms/forms_conditional.py:44
-#: mycodo_flask/forms/forms_trigger.py:50
-msgid "Start Offset (seconds)"
-msgstr "Начало смещения (в секундах)"
-
-#: config_translations.py:412
-#: mycodo_flask/templates/pages/function_options/conditional_options.html:82
-msgid "The duration (seconds) to wait before the first operation"
+#: config_translations.py:396
+#, fuzzy
+msgid "The duration to wait before the first operation"
 msgstr "Продолжительность (в секундах) ожидания перед первой операцией"
 
-#: config_translations.py:414 outputs/pwm_gpio.py:104
+#: config_translations.py:398 outputs/pwm_gpio.py:104
 #: outputs/pwm_pca9685.py:133 outputs/pwm_python.py:235 outputs/pwm_shell.py:89
 msgid "Startup Value"
 msgstr "Startup Значение"
 
-#: config_translations.py:415
+#: config_translations.py:399
 msgid "The output value to set when Mycodo starts up"
 msgstr "Выходное значение, чтобы установить, когда Mycodo запускается"
 
-#: config_translations.py:417 outputs/on_off_gpio.py:80
+#: config_translations.py:401 outputs/on_off_gpio.py:80
 #: outputs/on_off_gpio_sysfs.py:76
 #: outputs/on_off_grove_multichannel_relay.py:152
 #: outputs/on_off_kasa_hs300.py:112 outputs/on_off_kasa_hs300_0_4_2.py:125
@@ -1528,11 +1459,11 @@ msgstr "Выходное значение, чтобы установить, ко
 msgid "Shutdown State"
 msgstr "Shutdown государство"
 
-#: config_translations.py:418
+#: config_translations.py:402
 msgid "When Mycodo shuts down, set the output state"
 msgstr "Когда Mycodo выключается, установите выходное состояние"
 
-#: config_translations.py:420 outputs/on_off_gpio.py:69
+#: config_translations.py:404 outputs/on_off_gpio.py:69
 #: outputs/on_off_gpio_sysfs.py:65
 #: outputs/on_off_grove_multichannel_relay.py:141
 #: outputs/on_off_kasa_hs300.py:100 outputs/on_off_kasa_hs300_0_4_2.py:113
@@ -1547,73 +1478,68 @@ msgstr "Когда Mycodo выключается, установите выхо�
 msgid "Startup State"
 msgstr "Начальное состояние"
 
-#: config_translations.py:421
+#: config_translations.py:405
 msgid "When Mycodo starts, set the output state"
 msgstr "Когда Mycodo запускается, установите выходное состояние"
 
-#: config_translations.py:424
+#: config_translations.py:408
 msgid "Edge detection: low to high (rising), high to low (falling), or both"
 msgstr ""
 "Обнаружение кромок: от низкого до высокого (повышение), от высокого до "
 "низкого (падение) или от обоих"
 
-#: config_translations.py:426 mycodo_flask/forms/forms_input.py:155
-msgid "Bounce Time (ms)"
-msgstr "Время отказов (мс)"
-
-#: config_translations.py:427
-msgid "The amount of time (miliseconds) to bounce the input signal"
+#: config_translations.py:411
+#, fuzzy
+msgid "The amount of time to bounce the input signal"
 msgstr "Время (милисекунды) для отскока входного сигнала"
 
-#: config_translations.py:429 mycodo_flask/forms/forms_input.py:157
-msgid "Reset Period"
-msgstr "Период сброса"
-
-#: config_translations.py:430
+#: config_translations.py:414
+#, fuzzy
 msgid ""
-"Wait a period of time (seconds) after the first edge detection to begin "
-"detecting again"
+"Wait a period of time after the first edge detection to begin detecting "
+"again"
 msgstr ""
 "Подождите некоторое время (секунды) после обнаружения первого края, чтобы"
 " снова начать обнаружение"
 
-#: config_translations.py:432
+#: config_translations.py:416
 msgid "RTD Probe Type"
 msgstr "Тип зонда RTD"
 
-#: config_translations.py:433
+#: config_translations.py:417
 msgid "The type of thermocouple connected"
 msgstr "Тип подключенной термопары"
 
-#: config_translations.py:435
-msgid "Times Check"
-msgstr "Проверка времени"
+#: config_translations.py:419
+#, fuzzy
+msgid "Times to Check"
+msgstr "Количество раз проверить"
 
-#: config_translations.py:436
+#: config_translations.py:420
 msgid "Number of times to check"
 msgstr "Количество раз проверить"
 
-#: config_translations.py:438
+#: config_translations.py:422
 msgid "Trigger at Startup"
 msgstr "Триггер при запуске"
 
-#: config_translations.py:439
+#: config_translations.py:423
 msgid "Whether or not to trigger Functions when Mycodo starts"
 msgstr "Нужно ли запускать функции при запуске Mycodo"
 
-#: config_translations.py:441
+#: config_translations.py:425
 msgid "UART Device"
 msgstr "Устройство UART"
 
-#: config_translations.py:442
+#: config_translations.py:426
 msgid "The UART device location (e.g. /dev/ttyUSB1)"
 msgstr "Расположение устройства UART (например, / dev / ttyUSB1)"
 
-#: config_translations.py:444
+#: config_translations.py:428
 msgid "Weighting"
 msgstr "утяжеление"
 
-#: config_translations.py:445
+#: config_translations.py:429
 msgid ""
 "The weighting of the previous measurement on the current measurement. "
 "Range: 0.0 - 1.0. Used for smoothing measurements. 0.0 means no "
@@ -1623,7 +1549,7 @@ msgstr ""
 " Используется для сглаживания измерений. 0.0 означает отсутствие "
 "взвешивания."
 
-#: config_translations.py:452 config_translations.py:455
+#: config_translations.py:436 config_translations.py:439
 msgid "Never allow duty cycle to go below Min."
 msgstr "Никогда не позволяют скважность идти ниже Мин."
 
@@ -1768,6 +1694,31 @@ msgstr "Повышение заданного значения"
 #: actions/webhook.py:15
 msgid "Webhook"
 msgstr "Вебхук"
+
+#: functions/average_last_multiple.py:68 functions/average_past_single.py:68
+#: functions/backup_rsync.py:74 functions/bang_bang.py:94
+#: functions/bang_bang_on_off.py:105 functions/bang_bang_pwm.py:92
+#: functions/difference.py:65 functions/display_generic_lcd_16x2_i2c.py:226
+#: functions/display_generic_lcd_20x4_i2c.py:211
+#: functions/display_grove_lcd_16x2_i2c.py:228
+#: functions/display_ssd1306_oled_128x32_i2c.py:195
+#: functions/display_ssd1306_oled_128x32_i2c_2lines.py:195
+#: functions/display_ssd1306_oled_128x32_spi.py:194
+#: functions/display_ssd1306_oled_128x32_spi_2lines.py:194
+#: functions/display_ssd1306_oled_128x64_i2c.py:195
+#: functions/display_ssd1306_oled_128x64_i2c_4lines.py:195
+#: functions/display_ssd1306_oled_128x64_spi.py:194
+#: functions/display_ssd1306_oled_128x64_spi_4lines.py:194
+#: functions/display_ssd1309_oled_128x64_i2c.py:197 functions/equation.py:65
+#: functions/equation_multi.py:65
+#: functions/examples/custom_function_multiple_channels.py:74
+#: functions/examples/custom_function_simple_loop_with_status.py:59
+#: functions/humidity_wet_dry_bulb.py:80 functions/redundancy.py:64
+#: functions/regulate_ph_ec.py:180 functions/statistics_last_multiple.py:102
+#: functions/statistics_past_single.py:101 functions/sum_last_multiple.py:69
+#: functions/sum_past_single.py:69 functions/verification.py:64
+msgid "The duration (seconds) between measurements or actions"
+msgstr "Длительность (в секундах) между измерениями или действиями"
 
 #: functions/average_last_multiple.py:84 functions/average_past_single.py:95
 #: functions/difference.py:84 functions/difference.py:103
@@ -2447,6 +2398,11 @@ msgstr ""
 msgid "Refractory Period (seconds)"
 msgstr "Рефрактерного периода (в секундах)"
 
+#: mycodo_flask/forms/forms_conditional.py:44
+#: mycodo_flask/forms/forms_trigger.py:50
+msgid "Start Offset (seconds)"
+msgstr "Начало смещения (в секундах)"
+
 #: mycodo_flask/forms/forms_conditional.py:47
 #, fuzzy
 msgid "Timeout (seconds)"
@@ -2488,6 +2444,14 @@ msgstr "Выходная мощность"
 #: mycodo_flask/forms/forms_input.py:110
 msgid "Calibration Measurement"
 msgstr "Калибровочное измерение"
+
+#: mycodo_flask/forms/forms_input.py:155
+msgid "Bounce Time (ms)"
+msgstr "Время отказов (мс)"
+
+#: mycodo_flask/forms/forms_input.py:157
+msgid "Reset Period"
+msgstr "Период сброса"
 
 #: mycodo_flask/forms/forms_input.py:189
 #: mycodo_flask/templates/pages/data_options/input_options.html:116
@@ -4219,6 +4183,10 @@ msgstr "Перезапуск"
 msgid "The duration between checking whether the conditional is true"
 msgstr "Продолжительность проверки между истинным условием"
 
+#: mycodo_flask/templates/pages/function_options/conditional_options.html:82
+msgid "The duration (seconds) to wait before the first operation"
+msgstr "Продолжительность (в секундах) ожидания перед первой операцией"
+
 #: mycodo_flask/templates/pages/function_options/conditional_options.html:88
 #, fuzzy
 msgid "The timeout (seconds) for the execution of the Run Python Code"
@@ -5515,17 +5483,18 @@ msgstr ""
 msgid "The current draw of the device being controlled"
 msgstr ""
 
-#: outputs/on_off_wireless_rpi_rf.py:92
-msgid "Wireless protocol"
-msgstr ""
+#: outputs/on_off_wireless_rpi_rf.py:91
+msgid "Protocol"
+msgstr "протокол"
 
-#: outputs/on_off_wireless_rpi_rf.py:101
-msgid "Wireless pulse length"
-msgstr ""
+#: outputs/on_off_wireless_rpi_rf.py:100
+msgid "Pulse Length"
+msgstr "Длительность импульса"
 
-#: outputs/on_off_wireless_rpi_rf.py:139 outputs/pwm_shell.py:138
-msgid "Always send the commad if instructed, regardless of the current state"
-msgstr ""
+#: outputs/on_off_wireless_rpi_rf.py:139
+#, fuzzy
+msgid "Always send the command, regardless of the current state"
+msgstr "Всегда отправлять команду, если указание, независимо от текущего состояния"
 
 #: outputs/output_spacer.py:9
 msgid "Spacer"

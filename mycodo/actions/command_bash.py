@@ -30,7 +30,7 @@ ACTION_INFORMATION = {
             'default_value': 'mycodo',
             'required': True,
             'name': lazy_gettext('User'),
-            'phrase': 'The user to execute the command'
+            'phrase': lazy_gettext('The user to execute the command')
         },
         {
             'id': 'command',

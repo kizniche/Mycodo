@@ -65,7 +65,7 @@ OUTPUT_INFORMATION = {
             'type': 'text',
             'default_value': 'mycodo',
             'name': lazy_gettext('User'),
-            'phrase': 'The user to execute the command'
+            'phrase': lazy_gettext('The user to execute the command')
         },
         {
             'id': 'state_startup',

@@ -77,13 +77,13 @@
   <div class="col-auto">
     <label class="control-label" for="measurement_scale_from_min_{{each_measurement.unique_id}}">{{dict_translation['scale_from_min']['title']}}</label>
     <div>
-      <input class="form-control" id="measurement_scale_from_min_{{each_measurement.unique_id}}" name="measurement_scale_from_min_{{each_measurement.unique_id}}" step="any" title="{{dict_translation['scale_from_min']['phrase']}}" type="number" value="{{each_measurement.scale_from_min}}">
+      <input class="form-control" id="measurement_scale_from_min_{{each_measurement.unique_id}}" name="measurement_scale_from_min_{{each_measurement.unique_id}}" step="any" type="number" value="{{each_measurement.scale_from_min}}">
     </div>
   </div>
   <div class="col-auto">
     <label class="control-label" for="measurement_scale_from_max_{{each_measurement.unique_id}}">{{dict_translation['scale_from_max']['title']}}</label>
     <div>
-      <input class="form-control" id="measurement_scale_from_max_{{each_measurement.unique_id}}" name="measurement_scale_from_max_{{each_measurement.unique_id}}" step="any" title="{{dict_translation['scale_from_max']['phrase']}}" type="number" value="{{each_measurement.scale_from_max}}">
+      <input class="form-control" id="measurement_scale_from_max_{{each_measurement.unique_id}}" name="measurement_scale_from_max_{{each_measurement.unique_id}}" step="any" type="number" value="{{each_measurement.scale_from_max}}">
     </div>
   </div>
     <div class="col-auto">
@@ -98,13 +98,13 @@
   <div class="col-auto">
     <label class="control-label" for="measurement_scale_to_min_{{each_measurement.unique_id}}">{{dict_translation['scale_to_min']['title']}}</label>
     <div>
-      <input class="form-control" id="measurement_scale_to_min_{{each_measurement.unique_id}}" name="measurement_scale_to_min_{{each_measurement.unique_id}}" step="any" title="{{dict_translation['scale_to_min']['phrase']}}" type="number" value="{{each_measurement.scale_to_min}}">
+      <input class="form-control" id="measurement_scale_to_min_{{each_measurement.unique_id}}" name="measurement_scale_to_min_{{each_measurement.unique_id}}" step="any" type="number" value="{{each_measurement.scale_to_min}}">
     </div>
   </div>
   <div class="col-auto">
     <label class="control-label" for="measurement_scale_to_max_{{each_measurement.unique_id}}">{{dict_translation['scale_to_max']['title']}}</label>
     <div>
-      <input class="form-control" id="measurement_scale_to_max_{{each_measurement.unique_id}}" name="measurement_scale_to_max_{{each_measurement.unique_id}}" step="any" title="{{dict_translation['scale_to_max']['phrase']}}" type="number" value="{{each_measurement.scale_to_max}}">
+      <input class="form-control" id="measurement_scale_to_max_{{each_measurement.unique_id}}" name="measurement_scale_to_max_{{each_measurement.unique_id}}" step="any" type="number" value="{{each_measurement.scale_to_max}}">
     </div>
   </div>
   <div class="col-auto">
@@ -125,9 +125,9 @@
     </div>
   </div>
   <div class="col-auto">
-    <label class="control-label" for="measurement_invert_scale_{{each_measurement.unique_id}}">{{dict_translation['invert_scale']['title']}}</label>
+    <label class="control-label" for="measurement_invert_scale_{{each_measurement.unique_id}}">{{dict_translation['invert']['title']}}: {{dict_translation['scale']['title']}}</label>
     <div class="input-group-text">
-      <input id="measurement_invert_scale_{{each_measurement.unique_id}}" name="measurement_invert_scale_{{each_measurement.unique_id}}" type="checkbox" title="{{dict_translation['invert_scale']['phrase']}}" value="y"{% if each_measurement.invert_scale %} checked{% endif %}>
+      <input id="measurement_invert_scale_{{each_measurement.unique_id}}" name="measurement_invert_scale_{{each_measurement.unique_id}}" type="checkbox" value="y"{% if each_measurement.invert_scale %} checked{% endif %}>
     </div>
   </div>
 

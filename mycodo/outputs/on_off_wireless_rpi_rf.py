@@ -89,7 +89,7 @@ OUTPUT_INFORMATION = {
                 (5, '5'),
             ],
             'name': lazy_gettext('Protocol'),
-            'phrase': lazy_gettext('Wireless protocol')
+            'phrase': ''
         },
         {
             'id': 'pulse_length',
@@ -98,7 +98,7 @@ OUTPUT_INFORMATION = {
             'required': True,
             'constraints_pass': constraints_pass_positive_value,
             'name': lazy_gettext('Pulse Length'),
-            'phrase': lazy_gettext('Wireless pulse length')
+            'phrase': ''
         },
         {
             'id': 'state_startup',
@@ -136,7 +136,7 @@ OUTPUT_INFORMATION = {
             'type': 'bool',
             'default_value': False,
             'name': lazy_gettext('Force Command'),
-            'phrase': lazy_gettext('Always send the commad if instructed, regardless of the current state')
+            'phrase': lazy_gettext('Always send the command, regardless of the current state')
         },
         {
             'id': 'amps',
