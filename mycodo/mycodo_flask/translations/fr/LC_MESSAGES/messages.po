@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: Mycodo VERSION\n"
 "Report-Msgid-Bugs-To: mycodo@kylegabriel.com\n"
 "POT-Creation-Date: 2022-09-11 21:58-0400\n"
-"PO-Revision-Date: 2022-09-12 02:06+0000\n"
+"PO-Revision-Date: 2022-09-12 22:24+0000\n"
 "Last-Translator: Kyle Gabriel <business@kylegabriel.com>\n"
 "Language-Team: French <http://translate.kylegabriel.com:8080/projects/mycodo/"
 "translations/fr/>\n"
@@ -5881,7 +5881,7 @@ msgstr "Taux d'échantillonnage conditionnel (secondes)"
 
 #: mycodo_flask/forms/forms_settings.py:142
 msgid "Function Sample Rate (seconds)"
-msgstr "Période d'échantillonage (secondes)"
+msgstr "Période d'échantillonnage (secondes)"
 
 #: mycodo_flask/forms/forms_settings.py:145
 msgid "Input Sample Rate (seconds)"
@@ -5922,7 +5922,7 @@ msgstr "Temps (en secondes) à attendre jusqu'à l'échec"
 
 #: config_translations.py:266
 msgid "Host address or IP"
-msgstr "Adresse d'hôte ou IP"
+msgstr "Adresse de l'hôte ou IP"
 
 #: config_translations.py:277
 msgid "Invert Scale"
@@ -5930,11 +5930,11 @@ msgstr "Inverser l'échelle"
 
 #: config_translations.py:278
 msgid "Invert the scale"
-msgstr "Inverser la balance"
+msgstr "Inverser l'échelle"
 
 #: config_translations.py:280
 msgid "Execute as User"
-msgstr "Executer en tant qu'Utilisateur"
+msgstr "Exécuter en tant qu'Utilisateur"
 
 #: config_translations.py:340
 msgid "Pre Out Duration"
@@ -6009,4 +6009,5 @@ msgstr "Longueur d'impulsion sans fil"
 #: outputs/on_off_wireless_rpi_rf.py:139 outputs/pwm_shell.py:138
 msgid "Always send the commad if instructed, regardless of the current state"
 msgstr ""
-"Toujours envoyer le commad si on le lui demande, quel que soit l'état actuel"
+"Toujours envoyer la commande si on le lui demande, quel que soit l'état "
+"actuel"
