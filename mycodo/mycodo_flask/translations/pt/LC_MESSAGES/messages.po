@@ -49,7 +49,7 @@ msgstr "Brilho"
 
 #: config_devices_units.py:53
 msgid "Carbon Dioxide"
-msgstr ""
+msgstr "Dióxido de Carbono"
 
 #: config_devices_units.py:97
 msgid "Dewpoint"
@@ -147,7 +147,7 @@ msgstr "Umidade"
 
 #: config_devices_units.py:181
 msgid "Oxygen"
-msgstr ""
+msgstr "Oxigénio"
 
 #: config_devices_units.py:185
 msgid "Oxidation Reduction Potential"
@@ -1809,11 +1809,8 @@ msgstr "Webhook"
 #: widgets/widget_indicator.py:65 widgets/widget_measurement.py:65
 #: widgets/widget_output.py:61 widgets/widget_output_pwm_slider.py:61
 #: widgets/widget_pid.py:254
-#, fuzzy
 msgid "The maximum age of the measurement to use"
-msgstr ""
-"A idade máxima (segundos) de medição a utilizar para a compensação de "
-"temperatura"
+msgstr "A idade máxima da medição a utilizar"
 
 #: functions/bang_bang.py:45 functions/bang_bang_on_off.py:44
 msgid "Select a measurement the selected output will affect"
