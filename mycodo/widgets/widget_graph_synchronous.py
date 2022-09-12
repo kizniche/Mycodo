@@ -269,7 +269,7 @@ WIDGET_INFORMATION = {
             'type': 'float',
             'default_value': 90.0,
             'constraints_pass': constraints_pass_positive_value,
-            'name': 'Refresh (seconds)',
+            'name': 'Refresh (Seconds)',
             'phrase': 'The period of time between refreshing the widget'
         },
         {

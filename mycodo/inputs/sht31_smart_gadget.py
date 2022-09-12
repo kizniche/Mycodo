@@ -111,8 +111,8 @@ INPUT_INFORMATION = {
             'default_value': 600,
             'required': True,
             'constraints_pass': constraints_pass_logging_interval,
-            'name': 'Set Logging Interval',
-            'phrase': 'Set the logging interval (seconds) the device will store measurements on its internal memory.'
+            'name': 'Set Logging Interval (Seconds)',
+            'phrase': 'Set the logging interval the device will store measurements on its internal memory.'
         }
     ]
 }

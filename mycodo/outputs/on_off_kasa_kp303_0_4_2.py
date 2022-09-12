@@ -78,8 +78,8 @@ OUTPUT_INFORMATION = {
             'default_value': 300,
             'constraints_pass': constraints_pass_positive_or_zero_value,
             'required': True,
-            'name': 'Status Update (seconds)',
-            'phrase': 'The period (seconds) between checking if connected and output states. 0 disables.'
+            'name': 'Status Update (Seconds)',
+            'phrase': 'The period between checking if connected and output states. 0 disables.'
         },
         {
             'id': 'asyncio_rpc_port',

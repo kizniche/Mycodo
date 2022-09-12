@@ -29,7 +29,7 @@ class Camera(FlaskForm):
     resume_timelapse = SubmitField(lazy_gettext('Resume Timelapse'))
     stop_timelapse = SubmitField(lazy_gettext('Stop Timelapse'))
     timelapse_interval = DecimalField(
-        lazy_gettext('Interval (seconds)'),
+        f"{lazy_gettext('Interval')} ({lazy_gettext('Seconds')})",
         validators=[validators.NumberRange(
             min=0,
             message=lazy_gettext('Photo Interval must be a positive value')
@@ -37,7 +37,7 @@ class Camera(FlaskForm):
         widget=NumberInput(step='any')
     )
     timelapse_runtime_sec = DecimalField(
-        lazy_gettext('Run Time (seconds)'),
+        f"{lazy_gettext('Run Time')} ({lazy_gettext('Seconds')})",
         validators=[validators.NumberRange(
             min=0,
             message=lazy_gettext('Total Run Time must be a positive value')

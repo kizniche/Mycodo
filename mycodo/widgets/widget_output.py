@@ -36,7 +36,7 @@ WIDGET_INFORMATION = {
     'widget_library': '',
     'no_class': True,
 
-    'message': 'Displays and allows control of an output channel. All output options and measurements for the selected channel will be displayed. E.g. pumps will have seconds on and volume as measurements, and can be turned on for a duration (seconds) or amount (volume). If NO DATA or TOO OLD is displayed, the Max Age is not sufficiently long enough to find a current measurement.',
+    'message': 'Displays and allows control of an output channel. All output options and measurements for the selected channel will be displayed. E.g. pumps will have seconds on and volume as measurements, and can be turned on for a duration (Seconds) or amount (Volume). If NO DATA or TOO OLD is displayed, the Max Age is not sufficiently long enough to find a current measurement.',
 
     'widget_width': 5,
     'widget_height': 7,
@@ -57,15 +57,15 @@ WIDGET_INFORMATION = {
             'type': 'integer',
             'default_value': 3600,
             'constraints_pass': constraints_pass_positive_value,
-            'name': f"{lazy_gettext('Max Age')}: {lazy_gettext('Measurement')}",
-            'phrase': lazy_gettext('The maximum age (seconds) of the measurement to use')
+            'name': f"{lazy_gettext('Max Age')} ({lazy_gettext('Seconds')})",
+            'phrase': lazy_gettext('The maximum age of the measurement to use')
         },
         {
             'id': 'refresh_seconds',
             'type': 'float',
             'default_value': 30.0,
             'constraints_pass': constraints_pass_positive_value,
-            'name': 'Widget Refresh (seconds)',
+            'name': 'Widget Refresh (Seconds)',
             'phrase': 'The period of time between refreshing the widget'
         },
         {
@@ -206,7 +206,7 @@ WIDGET_INFORMATION = {
 
     <div class="row small-gutters">
       <div class="col-auto">
-        <input class="form-control-sm" id="sec_on_amt_{{each_widget.unique_id}}_{{device_id}}_{{channel_id}}" name="sec_on_amt_{{each_widget.unique_id}}_{{device_id}}_{{channel_id}}" title="Turn this output on for this duration (seconds)" type="number" step="any" value="">
+        <input class="form-control-sm" id="sec_on_amt_{{each_widget.unique_id}}_{{device_id}}_{{channel_id}}" name="sec_on_amt_{{each_widget.unique_id}}_{{device_id}}_{{channel_id}}" title="Turn this output on for this duration (Seconds)" type="number" step="any" value="">
       </div>
       <div class="col-auto">
         <input class="btn btn-sm btn-primary sec_on_amt" id="turn_on" name="{{each_widget.unique_id}}/{{device_id}}/{{channel_id}}/on/sec/" type="button" value="{{_('Seconds On')}}">

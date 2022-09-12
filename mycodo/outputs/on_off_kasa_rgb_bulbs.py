@@ -87,8 +87,8 @@ OUTPUT_INFORMATION = {
             'id': 'brightness_transition_ms',
             'type': 'integer',
             'default_value': '0',
-            'name': f"Transition ({lazy_gettext('milliseconds')})",
-            'phrase': 'The hsv transition period, in milliseconds'
+            'name': f"Transition ({lazy_gettext('Milliseconds')})",
+            'phrase': 'The hsv transition period'
         },
         {
             'id': 'brightness',
@@ -110,8 +110,8 @@ OUTPUT_INFORMATION = {
             'id': 'hue_transition_ms',
             'type': 'integer',
             'default_value': '0',
-            'name': f"Transition ({lazy_gettext('milliseconds')})",
-            'phrase': 'The hsv transition period, in milliseconds'
+            'name': f"Transition ({lazy_gettext('Millisecond')})",
+            'phrase': 'The hsv transition period'
         },
         {
             'id': 'hue',
@@ -133,8 +133,8 @@ OUTPUT_INFORMATION = {
             'id': 'saturation_transition_ms',
             'type': 'integer',
             'default_value': '0',
-            'name': f"Transition ({lazy_gettext('milliseconds')})",
-            'phrase': 'The hsv transition period, in milliseconds'
+            'name': f"Transition ({lazy_gettext('Millisecond')})",
+            'phrase': 'The hsv transition period'
         },
         {
             'id': 'saturation',
@@ -156,8 +156,8 @@ OUTPUT_INFORMATION = {
             'id': 'color_temperature_transition_ms',
             'type': 'integer',
             'default_value': '0',
-            'name': f"Transition ({lazy_gettext('milliseconds')})",
-            'phrase': 'The hsv transition period, in milliseconds'
+            'name': f"Transition ({lazy_gettext('Millisecond')})",
+            'phrase': 'The hsv transition period'
         },
         {
             'id': 'color_temperature',
@@ -179,8 +179,8 @@ OUTPUT_INFORMATION = {
             'id': 'hsv_transition_ms',
             'type': 'integer',
             'default_value': '0',
-            'name': f"Transition ({lazy_gettext('milliseconds')})",
-            'phrase': 'The hsv transition period, in milliseconds'
+            'name': f"Transition ({lazy_gettext('Millisecond')})",
+            'phrase': 'The hsv transition period'
         },
         {
             'id': 'hsv',
@@ -202,8 +202,8 @@ OUTPUT_INFORMATION = {
             'id': 'on_transition_ms',
             'type': 'integer',
             'default_value': '1000',
-            'name': f"Transition ({lazy_gettext('milliseconds')})",
-            'phrase': 'The transition period, in milliseconds'
+            'name': f"Transition ({lazy_gettext('Millisecond')})",
+            'phrase': 'The transition period'
         },
         {
             'id': 'turn_on',
@@ -218,8 +218,8 @@ OUTPUT_INFORMATION = {
             'id': 'off_transition_ms',
             'type': 'integer',
             'default_value': '1000',
-            'name': f"Transition ({lazy_gettext('milliseconds')})",
-            'phrase': 'The transition period, in milliseconds'
+            'name': f"Transition ({lazy_gettext('Millisecond')})",
+            'phrase': 'The transition period'
         },
         {
             'id': 'turn_off',
@@ -244,8 +244,8 @@ OUTPUT_INFORMATION = {
             'default_value': 300,
             'constraints_pass': constraints_pass_positive_or_zero_value,
             'required': True,
-            'name': 'Status Update (seconds)',
-            'phrase': 'The period (seconds) between checking if connected and output states. 0 disables.'
+            'name': 'Status Update (Seconds)',
+            'phrase': 'The period between checking if connected and output states. 0 disables.'
         },
         {
             'id': 'asyncio_rpc_port',

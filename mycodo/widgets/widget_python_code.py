@@ -158,7 +158,7 @@ WIDGET_INFORMATION = {
             'type': 'float',
             'default_value': 60,
             'constraints_pass': constraints_pass_positive_value,
-            'name': 'Loop Period (seconds)',
+            'name': 'Loop Period (Seconds)',
             'phrase': 'The period of time between executing loop code'
         },
         {
@@ -166,7 +166,7 @@ WIDGET_INFORMATION = {
             'type': 'float',
             'default_value': 30.0,
             'constraints_pass': constraints_pass_positive_value,
-            'name': 'Widget Refresh (seconds)',
+            'name': 'Widget Refresh (Seconds)',
             'phrase': 'The period of time between refreshing the widget'
         },
         {

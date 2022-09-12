@@ -114,7 +114,7 @@ OUTPUT_INFORMATION = {
             'id': 'rainbow_speed_s',
             'type': 'float',
             'default_value': 0.01,
-            'name': "Rainbow Speed (seconds)",
+            'name': "Rainbow Speed (Seconds)",
             'phrase': 'The speed to change colors in Rainbow Mode'
         },
         {

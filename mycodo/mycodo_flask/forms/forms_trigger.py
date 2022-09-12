@@ -47,7 +47,7 @@ class Trigger(FlaskForm):
     period = DecimalField(
         f"{lazy_gettext('Period')} ({lazy_gettext('Seconds')})", widget=NumberInput(step='any'))
     timer_start_offset = IntegerField(
-        lazy_gettext('Start Offset (seconds)'), widget=NumberInput())
+        f"{lazy_gettext('Start Offset')} ({lazy_gettext('Second')})", widget=NumberInput())
     timer_start_time = StringField(lazy_gettext('Start Time (HH:MM)'))
     timer_end_time = StringField(lazy_gettext('End Time (HH:MM)'))
 
@@ -60,6 +60,6 @@ class Trigger(FlaskForm):
     unique_id_2 = StringField(lazy_gettext('If ID 2'))
     output_state = StringField(lazy_gettext('If State'))
     output_duration = DecimalField(
-        lazy_gettext('If Duration (seconds)'), widget=NumberInput(step='any'))
+        f"{lazy_gettext('If Duration')} ({lazy_gettext('Second')})", widget=NumberInput(step='any'))
     output_duty_cycle = DecimalField(
         lazy_gettext('If Duty Cycle (%%)'), widget=NumberInput(step='any'))

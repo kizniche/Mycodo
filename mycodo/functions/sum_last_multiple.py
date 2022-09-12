@@ -66,15 +66,15 @@ FUNCTION_INFORMATION = {
             'required': True,
             'constraints_pass': constraints_pass_positive_value,
             'name': f"{lazy_gettext('Period')} ({lazy_gettext('Seconds')})",
-            'phrase': lazy_gettext('The duration (seconds) between measurements or actions')
+            'phrase': lazy_gettext('The duration between measurements or actions')
         },
         {
             'id': 'start_offset',
             'type': 'integer',
             'default_value': 10,
             'required': True,
-            'name': 'Start Offset',
-            'phrase': 'The duration (seconds) to wait before the first operation'
+            'name': f"{lazy_gettext('Start Offset')} ({lazy_gettext('Seconds')})",
+            'phrase': lazy_gettext('The duration to wait before the first operation')
         },
         {
             'id': 'max_measure_age',
@@ -82,7 +82,7 @@ FUNCTION_INFORMATION = {
             'default_value': 360,
             'required': True,
             'name': f"{lazy_gettext('Max Age')} ({lazy_gettext('Seconds')})",
-            'phrase': lazy_gettext('The maximum age (seconds) of the measurement to use')
+            'phrase': lazy_gettext('The maximum age of the measurement to use')
         },
         {
             'id': 'select_measurement',

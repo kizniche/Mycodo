@@ -71,15 +71,15 @@ FUNCTION_INFORMATION = {
             'required': True,
             'constraints_pass': constraints_pass_positive_value,
             'name': f"{lazy_gettext('Period')} ({lazy_gettext('Seconds')})",
-            'phrase': lazy_gettext('The duration (seconds) between measurements or actions')
+            'phrase': lazy_gettext('The duration between measurements or actions')
         },
         {
             'id': 'start_offset',
             'type': 'integer',
             'default_value': 300,
             'required': True,
-            'name': 'Start Offset',
-            'phrase': 'The duration (seconds) to wait before the first operation'
+            'name': f"{lazy_gettext('Start Offset')} ({lazy_gettext('Seconds')})",
+            'phrase': lazy_gettext('The duration to wait before the first operation')
         },
         {
             'id': 'local_user',
@@ -119,8 +119,8 @@ FUNCTION_INFORMATION = {
             'default_value': 3600,
             'required': True,
             'constraints_pass': constraints_pass_positive_value,
-            'name': 'Rsync Timeout',
-            'phrase': 'How long to allow rsync to complete (seconds)'
+            'name': 'Rsync Timeout (Seconds)',
+            'phrase': 'How long to allow rsync to complete'
         },
         {
             'id': 'local_backup_path',

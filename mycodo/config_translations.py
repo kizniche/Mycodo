@@ -233,9 +233,6 @@ TRANSLATIONS = {
     'adc_sample_speed': {
         'title': lazy_gettext('Sample Speed'),
         'phrase': None},
-    'amps': {
-        'title': lazy_gettext('Current Draw (Amps)'),
-        'phrase': None},
     'baud_rate': {
         'title': lazy_gettext('Baud Rate'),
         'phrase': lazy_gettext('The UART baud rate')},

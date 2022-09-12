@@ -67,15 +67,15 @@ INPUT_INFORMATION = {
             'type': 'bool',
             'default_value': False,
             'name': 'Enable Heater',
-            'phrase': 'Enable heater to evaporate condensation. Turn on heater x seconds every y measurements.'
+            'phrase': 'Enable heater to evaporate condensation. Turn on heater x seconds every y measurements'
         },
         {
             'id': 'heater_seconds',
             'type': 'float',
             'default_value': 1.0,
             'constraints_pass': constraints_pass_positive_value,
-            'name': 'Heater On Seconds',
-            'phrase': 'How long to turn the heater on (seconds).'
+            'name': 'Heater On Seconds (Seconds)',
+            'phrase': 'How long to turn the heater on'
         },
         {
             'id': 'heater_measurements',
@@ -83,7 +83,7 @@ INPUT_INFORMATION = {
             'default_value': 10,
             'constraints_pass': constraints_pass_positive_value,
             'name': 'Heater On Period',
-            'phrase': 'After how many measurements to turn the heater on. This will repeat.'
+            'phrase': 'After how many measurements to turn the heater on. This will repeat'
         }
     ]
 }

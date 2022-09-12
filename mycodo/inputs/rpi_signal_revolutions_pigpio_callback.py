@@ -58,7 +58,7 @@ INPUT_INFORMATION = {
             'default_value': 5.0,
             'required': True,
             'constraints_pass': constraints_pass_positive_value,
-            'name': f"{TRANSLATIONS['sample_time']['title']} ({lazy_gettext('seconds')})",
+            'name': f"{TRANSLATIONS['sample_time']['title']} ({lazy_gettext('Seconds')})",
             'phrase': TRANSLATIONS['sample_time']['phrase']
         },
         {

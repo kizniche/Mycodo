@@ -176,16 +176,16 @@ FUNCTION_INFORMATION = {
             'default_value': 300,
             'required': True,
             'constraints_pass': constraints_pass_positive_value,
-            'name': f"{lazy_gettext('Period')} ({lazy_gettext('Seconds')})",
-            'phrase': lazy_gettext('The duration (seconds) between measurements or actions')
+            'name': f"{lazy_gettext('Period')} ({lazy_gettext('Second')})",
+            'phrase': lazy_gettext('The duration between measurements or actions')
         },
         {
             'id': 'start_offset',
             'type': 'integer',
             'default_value': 10,
             'required': True,
-            'name': 'Start Offset',
-            'phrase': 'The duration (seconds) to wait before the first operation'
+            'name': f"{lazy_gettext('Start Offset')} ({lazy_gettext('Second')})",
+            'phrase': lazy_gettext('The duration to wait before the first operation')
         },
         {
             'id': 'period_status',
@@ -215,8 +215,8 @@ FUNCTION_INFORMATION = {
             'type': 'integer',
             'default_value': 360,
             'required': True,
-            'name': f"pH {lazy_gettext('Max Age')}",
-            'phrase': lazy_gettext('The maximum age (seconds) of the measurement to use')
+            'name': f"{lazy_gettext('pH')}: {lazy_gettext('Max Age')} ({lazy_gettext('Second')})",
+            'phrase': lazy_gettext('The maximum age of the measurement to use')
         },
         {
             'type': 'new_line'
@@ -237,8 +237,8 @@ FUNCTION_INFORMATION = {
             'type': 'integer',
             'default_value': 360,
             'required': True,
-            'name': f"EC {lazy_gettext('Max Age')}",
-            'phrase': lazy_gettext('The maximum age (seconds) of the measurement to use')
+            'name': f"{lazy_gettext('Electrical Conductivity')}: {lazy_gettext('Max Age')} ({lazy_gettext('Second')})",
+            'phrase': lazy_gettext('The maximum age of the measurement to use')
         },
         {
             'type': 'message',

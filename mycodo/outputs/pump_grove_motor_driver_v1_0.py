@@ -152,8 +152,8 @@ OUTPUT_INFORMATION = {
             'type': 'float',
             'default_value': 1.0,
             'constraints_pass': constraints_pass_positive_value,
-            'name': 'Minimum On (sec/min)',
-            'phrase': 'The minimum duration (seconds) the pump turns on for every 60 second period (only used for Specify Flow Rate mode).'
+            'name': 'Minimum On (Seconds)',
+            'phrase': 'The minimum duration the pump turns on for every 60 second period (only used for Specify Flow Rate mode).'
         }
     ],
 

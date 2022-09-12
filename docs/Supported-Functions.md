@@ -7,7 +7,7 @@ Supported Functions are listed below.
 
 This function acquires the last measurement of those that are selected, averages them, then stores the resulting value as the selected measurement and unit.
 <table><thead><tr class="header"><th>Option</th><th>Type</th><th>Description</th></tr></thead><tbody><tr><td>Period (seconds)</td><td>Decimal
-- Default Value: 60</td><td>The duration (seconds) between measurements or actions</td></tr><tr><td>Start Offset</td><td>Integer
+- Default Value: 60</td><td>The duration between measurements or actions</td></tr><tr><td>Start Offset</td><td>Integer
 - Default Value: 10</td><td>The duration (seconds) to wait before the first operation</td></tr><tr><td>Max Age</td><td>Integer
 - Default Value: 360</td><td>The maximum age (seconds) of the measurement to use</td></tr><tr><td>Measurement</td></td><td>Measurement to replace "x" in the equation</td></tr></tbody></table>
 
@@ -16,7 +16,7 @@ This function acquires the last measurement of those that are selected, averages
 
 This function acquires the past measurements (within Max Age) for the selected measurement, averages them, then stores the resulting value as the selected measurement and unit.
 <table><thead><tr class="header"><th>Option</th><th>Type</th><th>Description</th></tr></thead><tbody><tr><td>Period (seconds)</td><td>Decimal
-- Default Value: 60</td><td>The duration (seconds) between measurements or actions</td></tr><tr><td>Start Offset</td><td>Integer
+- Default Value: 60</td><td>The duration between measurements or actions</td></tr><tr><td>Start Offset</td><td>Integer
 - Default Value: 10</td><td>The duration (seconds) to wait before the first operation</td></tr><tr><td>Measurement</td><td>Select Measurement (Input, Function)</td><td>Measurement to replace "x" in the equation</td></tr><tr><td>Max Age</td><td>Integer
 - Default Value: 360</td><td>The maximum age (seconds) of the measurement to use</td></tr></tbody></table>
 
@@ -26,7 +26,7 @@ This function acquires the past measurements (within Max Age) for the selected m
 
 This function will use rsync to back up assets on this system to a remote system. Your remote system needs to have an SSH server running and rsync installed. This system will need rsync installed and be able to access your remote system via SSH keyfile (login without a password). You can do this by creating an SSH key on this system running Mycodo with "ssh-keygen" (leave the password field empty), then run "ssh-copy-id -i ~/.ssh/id_rsa.pub pi@REMOTE_HOST_IP" to transfer your public SSH key to your remote system (changing pi and REMOTE_HOST_IP to the appropriate user and host of your remote system). You can test if this worked by trying to connect to your remote system with "ssh pi@REMOTE_HOST_IP" and you should log in without being asked for a password. Be careful not to set the Period too low, which could cause the function to begin running before the previous operation(s) complete. Therefore, it is recommended to set a relatively long Period (greater than 10 minutes). The default Period is 15 days. Note that the Period will reset if the system or the Mycodo daemon restarts and the Function will run, generating new settings and measurement archives that will be synced. There are two common ways to use this Function: 1) A short period (1 hour), only have Backup Camera Directories enabled, and use the Backup Settings Now and Backup Measurements Now buttons manually to perform a backup, and 2) A long period (15 days), only have Backup Settings and Backup Measurements enabled. You can even create two of these Functions with one set up to perform long-Period settings and measurement backups and the other set up to perform short-Period camera backups.
 <table><thead><tr class="header"><th>Option</th><th>Type</th><th>Description</th></tr></thead><tbody><tr><td>Period (seconds)</td><td>Decimal
-- Default Value: 1296000</td><td>The duration (seconds) between measurements or actions</td></tr><tr><td>Start Offset</td><td>Integer
+- Default Value: 1296000</td><td>The duration between measurements or actions</td></tr><tr><td>Start Offset</td><td>Integer
 - Default Value: 300</td><td>The duration (seconds) to wait before the first operation</td></tr><tr><td>Local User</td><td>Text
 - Default Value: pi</td><td>The user on this system that will run rsync</td></tr><tr><td>Remote User</td><td>Text
 - Default Value: pi</td><td>The user to log in to the remote host</td></tr><tr><td>Remote Host</td><td>Text
@@ -45,7 +45,7 @@ A simple bang-bang control for controlling one output from one input. Select an 
 <table><thead><tr class="header"><th>Option</th><th>Type</th><th>Description</th></tr></thead><tbody><tr><td>Measurement</td><td>Select Measurement (Input, Function)</td><td>Select a measurement the selected output will affect</td></tr><tr><td>Output</td><td>Select Device, Measurement, and Channel (Output)</td><td>Select an output to control that will affect the measurement</td></tr><tr><td>Setpoint</td><td>Decimal
 - Default Value: 50</td><td>The desired setpoint</td></tr><tr><td>Hysteresis</td><td>Decimal
 - Default Value: 1</td><td>The amount above and below the setpoint that defines the control band</td></tr><tr><td>Direction</td><td>Select(Options: [<strong>Raise</strong> | Lower] (Default in <strong>bold</strong>)</td><td>Raise means the measurement will increase when the control is on (heating). Lower means the measurement will decrease when the output is on (cooling)</td></tr><tr><td>Period (seconds)</td><td>Decimal
-- Default Value: 5</td><td>The duration (seconds) between measurements or actions</td></tr></tbody></table>
+- Default Value: 5</td><td>The duration between measurements or actions</td></tr></tbody></table>
 
 ### Bang-Bang Hysteretic (On/Off) (Raise/Lower/Both)
 
@@ -54,7 +54,7 @@ A simple bang-bang control for controlling one or two outputs from one input. Se
 <table><thead><tr class="header"><th>Option</th><th>Type</th><th>Description</th></tr></thead><tbody><tr><td>Measurement</td><td>Select Measurement (Input, Function)</td><td>Select a measurement the selected output will affect</td></tr><tr><td>Output (Raise)</td><td>Select Device, Measurement, and Channel (Output)</td><td>Select an output to control that will raise the measurement</td></tr><tr><td>Output (Lower)</td><td>Select Device, Measurement, and Channel (Output)</td><td>Select an output to control that will lower the measurement</td></tr><tr><td>Setpoint</td><td>Decimal
 - Default Value: 50</td><td>The desired setpoint</td></tr><tr><td>Hysteresis</td><td>Decimal
 - Default Value: 1</td><td>The amount above and below the setpoint that defines the control band</td></tr><tr><td>Direction</td><td>Select(Options: [Raise | Lower | <strong>Both</strong>] (Default in <strong>bold</strong>)</td><td>Raise means the measurement will increase when the control is on (heating). Lower means the measurement will decrease when the output is on (cooling)</td></tr><tr><td>Period (seconds)</td><td>Decimal
-- Default Value: 5</td><td>The duration (seconds) between measurements or actions</td></tr></tbody></table>
+- Default Value: 5</td><td>The duration between measurements or actions</td></tr></tbody></table>
 
 ### Bang-Bang Hysteretic (PWM) (Raise/Lower/Both)
 
@@ -63,7 +63,7 @@ A simple bang-bang control for controlling one PWM output from one input. Select
 <table><thead><tr class="header"><th>Option</th><th>Type</th><th>Description</th></tr></thead><tbody><tr><td>Measurement</td><td>Select Measurement (Input, Function)</td><td>Select a measurement the selected output will affect</td></tr><tr><td>Output</td><td>Select Device, Measurement, and Channel (Output)</td><td>Select an output to control that will affect the measurement</td></tr><tr><td>Setpoint</td><td>Decimal
 - Default Value: 50</td><td>The desired setpoint</td></tr><tr><td>Hysteresis</td><td>Decimal
 - Default Value: 1</td><td>The amount above and below the setpoint that defines the control band</td></tr><tr><td>Direction</td><td>Select(Options: [Raise | Lower | <strong>Both</strong>] (Default in <strong>bold</strong>)</td><td>Raise means the measurement will increase when the control is on (heating). Lower means the measurement will decrease when the output is on (cooling)</td></tr><tr><td>Period (seconds)</td><td>Decimal
-- Default Value: 5</td><td>The duration (seconds) between measurements or actions</td></tr><tr><td>Duty Cycle (increase)</td><td>Decimal
+- Default Value: 5</td><td>The duration between measurements or actions</td></tr><tr><td>Duty Cycle (increase)</td><td>Decimal
 - Default Value: 90</td><td>The duty cycle to increase the measurement</td></tr><tr><td>Duty Cycle (maintain)</td><td>Decimal
 - Default Value: 55</td><td>The duty cycle to maintain the measurement</td></tr><tr><td>Duty Cycle (decrease)</td><td>Decimal
 - Default Value: 20</td><td>The duty cycle to decrease the measurement</td></tr><tr><td>Duty Cycle (shutdown)</td><td>Decimal</td><td>The duty cycle to set when the function shuts down</td></tr></tbody></table>
@@ -73,7 +73,7 @@ A simple bang-bang control for controlling one PWM output from one input. Select
 
 This function acquires 2 measurements, calculates the difference, and stores the resulting value as the selected measurement and unit.
 <table><thead><tr class="header"><th>Option</th><th>Type</th><th>Description</th></tr></thead><tbody><tr><td>Period (seconds)</td><td>Decimal
-- Default Value: 60</td><td>The duration (seconds) between measurements or actions</td></tr><tr><td>Measurement A</td><td>Select Measurement (Input, Function)</td><td></td></tr><tr><td>Measurement A Max Age</td><td>Integer
+- Default Value: 60</td><td>The duration between measurements or actions</td></tr><tr><td>Measurement A</td><td>Select Measurement (Input, Function)</td><td></td></tr><tr><td>Measurement A Max Age</td><td>Integer
 - Default Value: 360</td><td>The maximum age (seconds) of the measurement to use</td></tr><tr><td>Measurement B</td><td>Select Measurement (Input, Function)</td><td></td></tr><tr><td>Measurement B Max Age</td><td>Integer
 - Default Value: 360</td><td>The maximum age (seconds) of the measurement to use</td></tr><tr><td>Reverse Order</td><td>Boolean</td><td>Reverse the order in the calculation</td></tr><tr><td>Absolute Difference</td><td>Boolean</td><td>Return the absolute value of the difference</td></tr></tbody></table>
 
@@ -83,7 +83,7 @@ This function acquires 2 measurements, calculates the difference, and stores the
 
 This Function outputs to a generic 16x2 LCD display via I2C. Since this display can show 2 lines at a time, channels are added in sets of 2 when Number of Line Sets is modified. Every Period, the LCD will refresh and display the next set of lines. Therefore, the first 2 lines that are displayed are channels 0 and 1, then 2 and 3, and so on. After all channels have been displayed, it will cycle back to the beginning.
 <table><thead><tr class="header"><th>Option</th><th>Type</th><th>Description</th></tr></thead><tbody><tr><td>Period (seconds)</td><td>Decimal
-- Default Value: 10</td><td>The duration (seconds) between measurements or actions</td></tr><tr><td>I2C Address</td><td>Text
+- Default Value: 10</td><td>The duration between measurements or actions</td></tr><tr><td>I2C Address</td><td>Text
 - Default Value: 0x20</td><td>The I2C address of the device</td></tr><tr><td>I2C Bus</td><td>Integer
 - Default Value: 1</td><td>The I2C bus the device is connected to</td></tr><tr><td>Number of Line Sets</td><td>Integer
 - Default Value: 1</td><td>How many sets of lines to cycle on the LCD</td></tr><tr><td colspan="3">Channel Options</td></tr><tr><td>Line Display Type</td><td>Select</td><td>What to display on the line</td></tr><tr><td>Measurement</td><td>Select Measurement (Input, Function, Output, PID)</td><td>Measurement to display on the line</td></tr><tr><td>Measurement Max Age</td><td>Decimal
@@ -98,7 +98,7 @@ This Function outputs to a generic 16x2 LCD display via I2C. Since this display 
 
 This Function outputs to a generic 20x4 LCD display via I2C. Since this display can show 4 lines at a time, channels are added in sets of 4 when Number of Line Sets is modified. Every Period, the LCD will refresh and display the next set of lines. Therefore, the first 4 lines that are displayed are channels 0, 1, 2, and 3, then 4, 5, 6, and 7, and so on. After all channels have been displayed, it will cycle back to the beginning.
 <table><thead><tr class="header"><th>Option</th><th>Type</th><th>Description</th></tr></thead><tbody><tr><td>Period (seconds)</td><td>Decimal
-- Default Value: 10</td><td>The duration (seconds) between measurements or actions</td></tr><tr><td>I2C Address</td><td>Text
+- Default Value: 10</td><td>The duration between measurements or actions</td></tr><tr><td>I2C Address</td><td>Text
 - Default Value: 0x20</td><td>The I2C address of the device</td></tr><tr><td>I2C Bus</td><td>Integer
 - Default Value: 1</td><td>The I2C bus the device is connected to</td></tr><tr><td>Number of Line Sets</td><td>Integer
 - Default Value: 1</td><td>How many sets of lines to cycle on the LCD</td></tr><tr><td colspan="3">Channel Options</td></tr><tr><td>Line Display Type</td><td>Select</td><td>What to display on the line</td></tr><tr><td>Measurement</td><td>Select Measurement (Input, Function, Output, PID)</td><td>Measurement to display on the line</td></tr><tr><td>Max Age</td><td>Decimal
@@ -113,7 +113,7 @@ This Function outputs to a generic 20x4 LCD display via I2C. Since this display 
 
 This Function outputs to the Grove 16x2 LCD display via I2C. Since this display can show 2 lines at a time, channels are added in sets of 2 when Number of Line Sets is modified. Every Period, the LCD will refresh and display the next set of lines. Therefore, the first 2 lines that are displayed are channels 0 and 1, then 2 and 3, and so on. After all channels have been displayed, it will cycle back to the beginning.
 <table><thead><tr class="header"><th>Option</th><th>Type</th><th>Description</th></tr></thead><tbody><tr><td>Period (seconds)</td><td>Decimal
-- Default Value: 10</td><td>The duration (seconds) between measurements or actions</td></tr><tr><td>I2C Address</td><td>Text
+- Default Value: 10</td><td>The duration between measurements or actions</td></tr><tr><td>I2C Address</td><td>Text
 - Default Value: 0x3e</td><td>The I2C address of the device</td></tr><tr><td>I2C Bus</td><td>Integer
 - Default Value: 1</td><td>The I2C bus the device is connected to</td></tr><tr><td>Backlight I2C Address</td><td>Text
 - Default Value: 0x62</td><td>I2C address to control the backlight</td></tr><tr><td>Number of Line Sets</td><td>Integer
@@ -133,7 +133,7 @@ This Function outputs to the Grove 16x2 LCD display via I2C. Since this display 
 
 This Function outputs to a 128x32 SSD1306 OLED display via I2C. This display Function will show 2 lines at a time, so channels are added in sets of 2 when Number of Line Sets is modified. Every Period, the LCD will refresh and display the next set of lines. Therefore, the first set of lines that are displayed are channels 0 - 1, then 2 - 3, and so on. After all channels have been displayed, it will cycle back to the beginning.
 <table><thead><tr class="header"><th>Option</th><th>Type</th><th>Description</th></tr></thead><tbody><tr><td>Period (seconds)</td><td>Decimal
-- Default Value: 10</td><td>The duration (seconds) between measurements or actions</td></tr><tr><td>I2C Address</td><td>Text
+- Default Value: 10</td><td>The duration between measurements or actions</td></tr><tr><td>I2C Address</td><td>Text
 - Default Value: 0x3c</td><td>The I2C address of the device</td></tr><tr><td>I2C Bus</td><td>Integer
 - Default Value: 1</td><td>The I2C bus the device is connected to</td></tr><tr><td>Number of Line Sets</td><td>Integer
 - Default Value: 1</td><td>How many sets of lines to cycle on the LCD</td></tr><tr><td>Reset Pin</td><td>Integer
@@ -152,7 +152,7 @@ This Function outputs to a 128x32 SSD1306 OLED display via I2C. This display Fun
 
 This Function outputs to a 128x32 SSD1306 OLED display via SPI. This display Function will show 2 lines at a time, so channels are added in sets of 2 when Number of Line Sets is modified. Every Period, the LCD will refresh and display the next set of lines. Therefore, the first set of lines that are displayed are channels 0 - 1, then 2 - 3, and so on. After all channels have been displayed, it will cycle back to the beginning.
 <table><thead><tr class="header"><th>Option</th><th>Type</th><th>Description</th></tr></thead><tbody><tr><td>Period (seconds)</td><td>Decimal
-- Default Value: 10</td><td>The duration (seconds) between measurements or actions</td></tr><tr><td>Number of Line Sets</td><td>Integer
+- Default Value: 10</td><td>The duration between measurements or actions</td></tr><tr><td>Number of Line Sets</td><td>Integer
 - Default Value: 1</td><td>How many sets of lines to cycle on the LCD</td></tr><tr><td>SPI Device</td><td>Integer</td><td>The SPI device</td></tr><tr><td>SPI Bus</td><td>Integer</td><td>The SPI bus</td></tr><tr><td>DC Pin</td><td>Integer
 - Default Value: 16</td><td>The pin (BCM numbering) connected to DC of the display</td></tr><tr><td>Reset Pin</td><td>Integer
 - Default Value: 19</td><td>The pin (BCM numbering) connected to RST of the display</td></tr><tr><td>CS Pin</td><td>Integer
@@ -171,7 +171,7 @@ This Function outputs to a 128x32 SSD1306 OLED display via SPI. This display Fun
 
 This Function outputs to a 128x32 SSD1306 OLED display via I2C. This display Function will show 4 lines at a time, so channels are added in sets of 4 when Number of Line Sets is modified. Every Period, the LCD will refresh and display the next set of lines. Therefore, the first set of lines that are displayed are channels 0 - 3, then 4 - 7, and so on. After all channels have been displayed, it will cycle back to the beginning.
 <table><thead><tr class="header"><th>Option</th><th>Type</th><th>Description</th></tr></thead><tbody><tr><td>Period (seconds)</td><td>Decimal
-- Default Value: 10</td><td>The duration (seconds) between measurements or actions</td></tr><tr><td>I2C Address</td><td>Text
+- Default Value: 10</td><td>The duration between measurements or actions</td></tr><tr><td>I2C Address</td><td>Text
 - Default Value: 0x3c</td><td>The I2C address of the device</td></tr><tr><td>I2C Bus</td><td>Integer
 - Default Value: 1</td><td>The I2C bus the device is connected to</td></tr><tr><td>Number of Line Sets</td><td>Integer
 - Default Value: 1</td><td>How many sets of lines to cycle on the LCD</td></tr><tr><td>Reset Pin</td><td>Integer
@@ -190,7 +190,7 @@ This Function outputs to a 128x32 SSD1306 OLED display via I2C. This display Fun
 
 This Function outputs to a 128x32 SSD1306 OLED display via SPI. This display Function will show 4 lines at a time, so channels are added in sets of 4 when Number of Line Sets is modified. Every Period, the LCD will refresh and display the next set of lines. Therefore, the first set of lines that are displayed are channels 0 - 3, then 4 - 7, and so on. After all channels have been displayed, it will cycle back to the beginning.
 <table><thead><tr class="header"><th>Option</th><th>Type</th><th>Description</th></tr></thead><tbody><tr><td>Period (seconds)</td><td>Decimal
-- Default Value: 10</td><td>The duration (seconds) between measurements or actions</td></tr><tr><td>Number of Line Sets</td><td>Integer
+- Default Value: 10</td><td>The duration between measurements or actions</td></tr><tr><td>Number of Line Sets</td><td>Integer
 - Default Value: 1</td><td>How many sets of lines to cycle on the LCD</td></tr><tr><td>SPI Device</td><td>Integer</td><td>The SPI device</td></tr><tr><td>SPI Bus</td><td>Integer</td><td>The SPI bus</td></tr><tr><td>DC Pin</td><td>Integer
 - Default Value: 16</td><td>The pin (BCM numbering) connected to DC of the display</td></tr><tr><td>Reset Pin</td><td>Integer
 - Default Value: 19</td><td>The pin (BCM numbering) connected to RST of the display</td></tr><tr><td>CS Pin</td><td>Integer
@@ -210,7 +210,7 @@ This Function outputs to a 128x32 SSD1306 OLED display via SPI. This display Fun
 
 This Function outputs to a 128x64 SSD1306 OLED display via I2C. This display Function will show 4 lines at a time, so channels are added in sets of 4 when Number of Line Sets is modified. Every Period, the LCD will refresh and display the next set of lines. Therefore, the first set of lines that are displayed are channels 0 - 3, then 4 - 7, and so on. After all channels have been displayed, it will cycle back to the beginning.
 <table><thead><tr class="header"><th>Option</th><th>Type</th><th>Description</th></tr></thead><tbody><tr><td>Period (seconds)</td><td>Decimal
-- Default Value: 10</td><td>The duration (seconds) between measurements or actions</td></tr><tr><td>I2C Address</td><td>Text
+- Default Value: 10</td><td>The duration between measurements or actions</td></tr><tr><td>I2C Address</td><td>Text
 - Default Value: 0x3c</td><td>The I2C address of the device</td></tr><tr><td>I2C Bus</td><td>Integer
 - Default Value: 1</td><td>The I2C bus the device is connected to</td></tr><tr><td>Number of Line Sets</td><td>Integer
 - Default Value: 1</td><td>How many sets of lines to cycle on the LCD</td></tr><tr><td>Reset Pin</td><td>Integer
@@ -229,7 +229,7 @@ This Function outputs to a 128x64 SSD1306 OLED display via I2C. This display Fun
 
 This Function outputs to a 128x64 SSD1306 OLED display via SPI. This display Function will show 4 lines at a time, so channels are added in sets of 4 when Number of Line Sets is modified. Every Period, the LCD will refresh and display the next set of lines. Therefore, the first set of lines that are displayed are channels 0 - 3, then 4 - 7, and so on. After all channels have been displayed, it will cycle back to the beginning.
 <table><thead><tr class="header"><th>Option</th><th>Type</th><th>Description</th></tr></thead><tbody><tr><td>Period (seconds)</td><td>Decimal
-- Default Value: 10</td><td>The duration (seconds) between measurements or actions</td></tr><tr><td>Number of Line Sets</td><td>Integer
+- Default Value: 10</td><td>The duration between measurements or actions</td></tr><tr><td>Number of Line Sets</td><td>Integer
 - Default Value: 1</td><td>How many sets of lines to cycle on the LCD</td></tr><tr><td>SPI Device</td><td>Integer</td><td>The SPI device</td></tr><tr><td>SPI Bus</td><td>Integer</td><td>The SPI bus</td></tr><tr><td>DC Pin</td><td>Integer
 - Default Value: 16</td><td>The pin (BCM numbering) connected to DC of the display</td></tr><tr><td>Reset Pin</td><td>Integer
 - Default Value: 19</td><td>The pin (BCM numbering) connected to RST of the display</td></tr><tr><td>CS Pin</td><td>Integer
@@ -248,7 +248,7 @@ This Function outputs to a 128x64 SSD1306 OLED display via SPI. This display Fun
 
 This Function outputs to a 128x64 SSD1306 OLED display via I2C. This display Function will show 8 lines at a time, so channels are added in sets of 8 when Number of Line Sets is modified. Every Period, the LCD will refresh and display the next set of lines. Therefore, the first set of lines that are displayed are channels 0 - 7, then 8 - 15, and so on. After all channels have been displayed, it will cycle back to the beginning.
 <table><thead><tr class="header"><th>Option</th><th>Type</th><th>Description</th></tr></thead><tbody><tr><td>Period (seconds)</td><td>Decimal
-- Default Value: 10</td><td>The duration (seconds) between measurements or actions</td></tr><tr><td>I2C Address</td><td>Text
+- Default Value: 10</td><td>The duration between measurements or actions</td></tr><tr><td>I2C Address</td><td>Text
 - Default Value: 0x3c</td><td>The I2C address of the device</td></tr><tr><td>I2C Bus</td><td>Integer
 - Default Value: 1</td><td>The I2C bus the device is connected to</td></tr><tr><td>Number of Line Sets</td><td>Integer
 - Default Value: 1</td><td>How many sets of lines to cycle on the LCD</td></tr><tr><td>Reset Pin</td><td>Integer
@@ -267,7 +267,7 @@ This Function outputs to a 128x64 SSD1306 OLED display via I2C. This display Fun
 
 This Function outputs to a 128x64 SSD1306 OLED display via SPI. This display Function will show 8 lines at a time, so channels are added in sets of 8 when Number of Line Sets is modified. Every Period, the LCD will refresh and display the next set of lines. Therefore, the first set of lines that are displayed are channels 0 - 7, then 8 - 15, and so on. After all channels have been displayed, it will cycle back to the beginning.
 <table><thead><tr class="header"><th>Option</th><th>Type</th><th>Description</th></tr></thead><tbody><tr><td>Period (seconds)</td><td>Decimal
-- Default Value: 10</td><td>The duration (seconds) between measurements or actions</td></tr><tr><td>Number of Line Sets</td><td>Integer
+- Default Value: 10</td><td>The duration between measurements or actions</td></tr><tr><td>Number of Line Sets</td><td>Integer
 - Default Value: 1</td><td>How many sets of lines to cycle on the LCD</td></tr><tr><td>SPI Device</td><td>Integer</td><td>The SPI device</td></tr><tr><td>SPI Bus</td><td>Integer</td><td>The SPI bus</td></tr><tr><td>DC Pin</td><td>Integer
 - Default Value: 16</td><td>The pin (BCM numbering) connected to DC of the display</td></tr><tr><td>Reset Pin</td><td>Integer
 - Default Value: 19</td><td>The pin (BCM numbering) connected to RST of the display</td></tr><tr><td>CS Pin</td><td>Integer
@@ -286,7 +286,7 @@ This Function outputs to a 128x64 SSD1306 OLED display via SPI. This display Fun
 
 This Function outputs to a 128x64 SSD1309 OLED display via I2C. This display Function will show 8 lines at a time, so channels are added in sets of 8 when Number of Line Sets is modified. Every Period, the LCD will refresh and display the next set of lines. Therefore, the first set of lines that are displayed are channels 0 - 7, then 8 - 15, and so on. After all channels have been displayed, it will cycle back to the beginning.
 <table><thead><tr class="header"><th>Option</th><th>Type</th><th>Description</th></tr></thead><tbody><tr><td>Period (seconds)</td><td>Decimal
-- Default Value: 10</td><td>The duration (seconds) between measurements or actions</td></tr><tr><td>I2C Address</td><td>Text
+- Default Value: 10</td><td>The duration between measurements or actions</td></tr><tr><td>I2C Address</td><td>Text
 - Default Value: 0x3c</td><td>The I2C address of the device</td></tr><tr><td>I2C Bus</td><td>Integer
 - Default Value: 1</td><td>The I2C bus the device is connected to</td></tr><tr><td>Number of Line Sets</td><td>Integer
 - Default Value: 1</td><td>How many sets of lines to cycle on the LCD</td></tr><tr><td>Reset Pin</td><td>Integer
@@ -301,7 +301,7 @@ This Function outputs to a 128x64 SSD1309 OLED display via I2C. This display Fun
 
 This function acquires two measurements and uses them within a user-set equation and stores the resulting value as the selected measurement and unit.
 <table><thead><tr class="header"><th>Option</th><th>Type</th><th>Description</th></tr></thead><tbody><tr><td>Period (seconds)</td><td>Decimal
-- Default Value: 60</td><td>The duration (seconds) between measurements or actions</td></tr><tr><td>Measurement A</td><td>Select Measurement (Input, Function)</td><td>Measurement to replace a</td></tr><tr><td>Measurement A Max Age</td><td>Integer
+- Default Value: 60</td><td>The duration between measurements or actions</td></tr><tr><td>Measurement A</td><td>Select Measurement (Input, Function)</td><td>Measurement to replace a</td></tr><tr><td>Measurement A Max Age</td><td>Integer
 - Default Value: 360</td><td>The maximum age (seconds) of the measurement to use</td></tr><tr><td>Measurement B</td><td>Select Measurement (Input, Function)</td><td>Measurement to replace b</td></tr><tr><td>Measurement B Max Age</td><td>Integer
 - Default Value: 360</td><td>The maximum age (seconds) of the measurement to use</td></tr><tr><td>Equation</td><td>Text
 - Default Value: a*(2+b)</td><td>Equation using measurements a and b</td></tr></tbody></table>
@@ -311,7 +311,7 @@ This function acquires two measurements and uses them within a user-set equation
 
 This function acquires a measurement and uses it within a user-set equation and stores the resulting value as the selected measurement and unit.
 <table><thead><tr class="header"><th>Option</th><th>Type</th><th>Description</th></tr></thead><tbody><tr><td>Period (seconds)</td><td>Decimal
-- Default Value: 60</td><td>The duration (seconds) between measurements or actions</td></tr><tr><td>Measurement</td><td>Select Measurement (Input, Function)</td><td>Measurement to replace "x" in the equation</td></tr><tr><td>Max Age</td><td>Integer
+- Default Value: 60</td><td>The duration between measurements or actions</td></tr><tr><td>Measurement</td><td>Select Measurement (Input, Function)</td><td>Measurement to replace "x" in the equation</td></tr><tr><td>Max Age</td><td>Integer
 - Default Value: 360</td><td>The maximum age (seconds) of the measurement to use</td></tr><tr><td>Equation</td><td>Text
 - Default Value: x*5+2</td><td>Equation using the measurement</td></tr></tbody></table>
 
@@ -320,7 +320,7 @@ This function acquires a measurement and uses it within a user-set equation and 
 
 This function calculates the humidity based on wet and dry bulb temperature measurements.
 <table><thead><tr class="header"><th>Option</th><th>Type</th><th>Description</th></tr></thead><tbody><tr><td>Measurements Enabled</td><td>Multi-Select</td><td>The measurements to record</td></tr><tr><td>Period (seconds)</td><td>Decimal
-- Default Value: 60</td><td>The duration (seconds) between measurements or actions</td></tr><tr><td>Start Offset</td><td>Integer
+- Default Value: 60</td><td>The duration between measurements or actions</td></tr><tr><td>Start Offset</td><td>Integer
 - Default Value: 10</td><td>The duration (seconds) to wait before the first operation</td></tr><tr><td>Dry Bulb Temperature</td><td>Select Measurement (Input, Function)</td><td>Dry Bulb temperature measurement</td></tr><tr><td>Dry Bulb Max Age</td><td>Integer
 - Default Value: 360</td><td>The maximum age (seconds) of the measurement to use</td></tr><tr><td>Wet Bulb Temperature</td><td>Select Measurement (Input, Function)</td><td>Wet Bulb temperature measurement</td></tr><tr><td>Wet Bulb Max Age</td><td>Integer
 - Default Value: 360</td><td>The maximum age (seconds) of the measurement to use</td></tr><tr><td>Pressure</td><td>Select Measurement (Input, Function)</td><td>Pressure measurement</td></tr><tr><td>Pressure Max Age</td><td>Integer
@@ -341,7 +341,7 @@ This function will attempt to perform a PID controller autotune. That is, an out
 
 This function stores the first available measurement. This is useful if you have multiple sensors that you want to serve as backups in case one stops working, you can set them up in the order of importance. This function will check if a measurement exits, starting with the first measurement. If it doesn't, the next is checked, until a measurement is found. Once a measurement is found, it is stored in the database with the user-set measurement and unit. The output of this function can be used as an input throughout Mycodo. If you need more than 3 measurements to be checked, you can string multiple Redundancy Functions by creating a second Function and setting the first Function's output as the second Function's input.
 <table><thead><tr class="header"><th>Option</th><th>Type</th><th>Description</th></tr></thead><tbody><tr><td>Period (seconds)</td><td>Decimal
-- Default Value: 60</td><td>The duration (seconds) between measurements or actions</td></tr><tr><td>Measurement A</td><td>Select Measurement (Input, Function)</td><td>Measurement to replace a</td></tr><tr><td>Measurement A Max Age</td><td>Integer
+- Default Value: 60</td><td>The duration between measurements or actions</td></tr><tr><td>Measurement A</td><td>Select Measurement (Input, Function)</td><td>Measurement to replace a</td></tr><tr><td>Measurement A Max Age</td><td>Integer
 - Default Value: 360</td><td>The maximum age (seconds) of the measurement to use</td></tr><tr><td>Measurement B</td><td>Select Measurement (Input, Function)</td><td>Measurement to replace b</td></tr><tr><td>Measurement B Max Age</td><td>Integer
 - Default Value: 360</td><td>The maximum age (seconds) of the measurement to use</td></tr><tr><td>Measurement C</td><td>Select Measurement (Input, Function)</td><td>Measurement to replace C</td></tr><tr><td>Measurement C Max Age</td><td>Integer
 - Default Value: 360</td><td>The maximum age (seconds) of the measurement to use</td></tr></tbody></table>
@@ -358,7 +358,7 @@ A spacer to organize Functions.
 
 This function acquires multiple measurements, calculates statistics, and stores the resulting values as the selected unit.
 <table><thead><tr class="header"><th>Option</th><th>Type</th><th>Description</th></tr></thead><tbody><tr><td>Measurements Enabled</td><td>Multi-Select</td><td>The measurements to record</td></tr><tr><td>Period (seconds)</td><td>Decimal
-- Default Value: 60</td><td>The duration (seconds) between measurements or actions</td></tr><tr><td>Max Age</td><td>Integer
+- Default Value: 60</td><td>The duration between measurements or actions</td></tr><tr><td>Max Age</td><td>Integer
 - Default Value: 360</td><td>The maximum age (seconds) of the measurement to use</td></tr><tr><td>Measurement</td></td><td>Measurements to perform statistics on</td></tr><tr><td>Halt on Missing Measurement</td><td>Boolean</td><td>Don't calculate statistics if >= 1 measurement is not found within Max Age</td></tr></tbody></table>
 
 ### Statistics (Past, Single)
@@ -366,7 +366,7 @@ This function acquires multiple measurements, calculates statistics, and stores 
 
 This function acquires multiple values from a single measurement, calculates statistics, and stores the resulting values as the selected unit.
 <table><thead><tr class="header"><th>Option</th><th>Type</th><th>Description</th></tr></thead><tbody><tr><td>Measurements Enabled</td><td>Multi-Select</td><td>The measurements to record</td></tr><tr><td>Period (seconds)</td><td>Decimal
-- Default Value: 60</td><td>The duration (seconds) between measurements or actions</td></tr><tr><td>Max Age</td><td>Integer
+- Default Value: 60</td><td>The duration between measurements or actions</td></tr><tr><td>Max Age</td><td>Integer
 - Default Value: 360</td><td>The maximum age (seconds) of the measurement to use</td></tr><tr><td>Measurement</td><td>Select Measurement (Input, Function)</td><td>Measurement to perform statistics on</td></tr></tbody></table>
 
 ### Sum (Last, Multiple)
@@ -374,7 +374,7 @@ This function acquires multiple values from a single measurement, calculates sta
 
 This function acquires the last measurement of those that are selected, sums them, then stores the resulting value as the selected measurement and unit.
 <table><thead><tr class="header"><th>Option</th><th>Type</th><th>Description</th></tr></thead><tbody><tr><td>Period (seconds)</td><td>Decimal
-- Default Value: 60</td><td>The duration (seconds) between measurements or actions</td></tr><tr><td>Start Offset</td><td>Integer
+- Default Value: 60</td><td>The duration between measurements or actions</td></tr><tr><td>Start Offset</td><td>Integer
 - Default Value: 10</td><td>The duration (seconds) to wait before the first operation</td></tr><tr><td>Max Age</td><td>Integer
 - Default Value: 360</td><td>The maximum age (seconds) of the measurement to use</td></tr><tr><td>Measurement</td></td><td>Measurement to replace "x" in the equation</td></tr></tbody></table>
 
@@ -383,7 +383,7 @@ This function acquires the last measurement of those that are selected, sums the
 
 This function acquires the past measurements (within Max Age) for the selected measurement, sums them, then stores the resulting value as the selected measurement and unit.
 <table><thead><tr class="header"><th>Option</th><th>Type</th><th>Description</th></tr></thead><tbody><tr><td>Period (seconds)</td><td>Decimal
-- Default Value: 60</td><td>The duration (seconds) between measurements or actions</td></tr><tr><td>Start Offset</td><td>Integer
+- Default Value: 60</td><td>The duration between measurements or actions</td></tr><tr><td>Start Offset</td><td>Integer
 - Default Value: 10</td><td>The duration (seconds) to wait before the first operation</td></tr><tr><td>Measurement</td><td>Select Measurement (Input, Function)</td><td>Measurement to replace "x" in the equation</td></tr><tr><td>Max Age</td><td>Integer
 - Default Value: 360</td><td>The maximum age (seconds) of the measurement to use</td></tr></tbody></table>
 
@@ -392,7 +392,7 @@ This function acquires the past measurements (within Max Age) for the selected m
 
 This function calculates the vapor pressure deficit based on leaf temperature and humidity.
 <table><thead><tr class="header"><th>Option</th><th>Type</th><th>Description</th></tr></thead><tbody><tr><td>Period (seconds)</td><td>Decimal
-- Default Value: 60</td><td>The duration (seconds) between measurements or actions</td></tr><tr><td>Start Offset</td><td>Integer
+- Default Value: 60</td><td>The duration between measurements or actions</td></tr><tr><td>Start Offset</td><td>Integer
 - Default Value: 10</td><td>The duration (seconds) to wait before the first operation</td></tr><tr><td>Temperature</td><td>Select Measurement (Input, Function)</td><td>Temperature measurement</td></tr><tr><td>Temperature Max Age</td><td>Integer
 - Default Value: 360</td><td>The maximum age (seconds) of the measurement to use</td></tr><tr><td>Humidity</td><td>Select Measurement (Input, Function)</td><td>Humidity measurement</td></tr><tr><td>Humidity Max Age</td><td>Integer
 - Default Value: 360</td><td>The maximum age (seconds) of the measurement to use</td></tr></tbody></table>
@@ -402,7 +402,7 @@ This function calculates the vapor pressure deficit based on leaf temperature an
 
 This function acquires 2 measurements, calculates the difference, and if the difference is not larger than the set threshold, the Measurement A value is stored. This enables verifying one sensor's measurement with another sensor's measurement. Only when they are both in agreement is a measurement stored. This stored measurement can be used in functions such as Conditional Functions that will notify the user if no measurement is available to indicate there may be an issue with a sensor.
 <table><thead><tr class="header"><th>Option</th><th>Type</th><th>Description</th></tr></thead><tbody><tr><td>Period (seconds)</td><td>Decimal
-- Default Value: 60</td><td>The duration (seconds) between measurements or actions</td></tr><tr><td>Measurement A</td><td>Select Measurement (Input, Function)</td><td>Measurement A</td></tr><tr><td>Measurement A Max Age</td><td>Integer
+- Default Value: 60</td><td>The duration between measurements or actions</td></tr><tr><td>Measurement A</td><td>Select Measurement (Input, Function)</td><td>Measurement A</td></tr><tr><td>Measurement A Max Age</td><td>Integer
 - Default Value: 360</td><td>The maximum age (seconds) of the measurement to use</td></tr><tr><td>Measurement B</td><td>Select Measurement (Input, Function)</td><td>Measurement B</td></tr><tr><td>Measurement A Max Age</td><td>Integer
 - Default Value: 360</td><td>The maximum age (seconds) of the measurement to use</td></tr><tr><td>Maximum Difference</td><td>Decimal
 - Default Value: 10.0</td><td>The maximum allowed difference between the measurements</td></tr></tbody></table>

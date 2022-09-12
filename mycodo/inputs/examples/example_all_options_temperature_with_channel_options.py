@@ -236,8 +236,8 @@ INPUT_INFORMATION = {
             'type': 'float',
             'default_value': 5.0,
             'constraints_pass': constraints_pass_fan_seconds,
-            'name': 'Fan On Duration',
-            'phrase': 'How long to turn the fan on (seconds) before acquiring measurements'
+            'name': 'Fan On Duration (Seconds)',
+            'phrase': 'How long to turn the fan on before acquiring measurements'
         },
 
         {  # This message will be displayed on a new line

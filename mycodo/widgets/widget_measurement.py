@@ -61,15 +61,15 @@ WIDGET_INFORMATION = {
             'default_value': 120,
             'required': True,
             'constraints_pass': constraints_pass_positive_value,
-            'name': f"{lazy_gettext('Max Age')}: {lazy_gettext('Measurement')}",
-            'phrase': lazy_gettext('The maximum age (seconds) of the measurement to use')
+            'name': f"{lazy_gettext('Max Age')} ({lazy_gettext('Seconds')})",
+            'phrase': lazy_gettext('The maximum age of the measurement to use')
         },
         {
             'id': 'refresh_seconds',
             'type': 'float',
             'default_value': 30.0,
             'constraints_pass': constraints_pass_positive_value,
-            'name': 'Widget Refresh (seconds)',
+            'name': 'Widget Refresh (Seconds)',
             'phrase': 'The period of time between refreshing the widget'
         },
         {

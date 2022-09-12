@@ -50,7 +50,7 @@ MEASUREMENTS = {
         'meas': 'brightness',
         'units': ['percent']},
     'co2': {
-        'name': lazy_gettext('CO2'),
+        'name': lazy_gettext('Carbon Dioxide'),
         'meas': 'co2',
         'units': ['ppm', 'ppb', 'percent']},
     'color_red': {
@@ -178,7 +178,7 @@ MEASUREMENTS = {
         'meas': 'moisture',
         'units': ['none']},
     'o2': {
-        'name': lazy_gettext('O2'),
+        'name': lazy_gettext('Oxygen'),
         'meas': 'o2',
         'units': ['ppt', 'ppm', 'ppb', 'percent']},
     'oxidation_reduction_potential': {

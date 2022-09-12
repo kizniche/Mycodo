@@ -77,15 +77,15 @@ FUNCTION_INFORMATION = {
             'required': True,
             'constraints_pass': constraints_pass_positive_value,
             'name': f"{lazy_gettext('Period')} ({lazy_gettext('Seconds')})",
-            'phrase': lazy_gettext('The duration (seconds) between measurements or actions')
+            'phrase': lazy_gettext('The duration between measurements or actions')
         },
         {
             'id': 'start_offset',
             'type': 'integer',
             'default_value': 10,
             'required': True,
-            'name': 'Start Offset',
-            'phrase': 'The duration (seconds) to wait before the first operation'
+            'name': f"{lazy_gettext('Start Offset')} ({lazy_gettext('Seconds')})",
+            'phrase': lazy_gettext('The duration to wait before the first operation')
         },
         {
             'id': 'select_measurement_temp_dry_c',
@@ -104,8 +104,8 @@ FUNCTION_INFORMATION = {
             'type': 'integer',
             'default_value': 360,
             'required': False,
-            'name': f"{lazy_gettext('Max Age')}: {lazy_gettext('Dry Bulb')}",
-            'phrase': lazy_gettext('The maximum age (seconds) of the measurement to use')
+            'name': f"{lazy_gettext('Dry Bulb')}: {lazy_gettext('Max Age')} ({lazy_gettext('Seconds')})",
+            'phrase': lazy_gettext('The maximum age of the measurement to use')
         },
         {
             'id': 'select_measurement_temp_wet_c',
@@ -124,8 +124,8 @@ FUNCTION_INFORMATION = {
             'type': 'integer',
             'default_value': 360,
             'required': False,
-            'name': f"{lazy_gettext('Max Age')}: {lazy_gettext('Wet Bulb')}",
-            'phrase': lazy_gettext('The maximum age (seconds) of the measurement to use')
+            'name': f"{lazy_gettext('Wet Bulb')}: {lazy_gettext('Max Age')} ({lazy_gettext('Seconds')})",
+            'phrase': lazy_gettext('The maximum age of the measurement to use')
         },
         {
             'id': 'select_measurement_pressure_pa',
@@ -144,8 +144,8 @@ FUNCTION_INFORMATION = {
             'type': 'integer',
             'default_value': 360,
             'required': False,
-            'name': f"{lazy_gettext('Max Age')}: {lazy_gettext('Pressure')}",
-            'phrase': lazy_gettext('The maximum age (seconds) of the measurement to use')
+            'name': f"{lazy_gettext('Pressure')}: {lazy_gettext('Max Age')} ({lazy_gettext('Seconds')})",
+            'phrase': lazy_gettext('The maximum age of the measurement to use')
         }
     ]
 }

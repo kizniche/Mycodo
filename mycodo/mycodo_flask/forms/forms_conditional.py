@@ -38,13 +38,13 @@ class Conditional(FlaskForm):
     message_include_code = BooleanField(
         TRANSLATIONS['message_include_code']['title'])
     refractory_period = DecimalField(
-        lazy_gettext('Refractory Period (seconds)'),
+        f"{lazy_gettext('Refractory Period')} ({lazy_gettext('Seconds')})",
         widget=NumberInput(step='any'))
     start_offset = DecimalField(
-        lazy_gettext('Start Offset (seconds)'),
+        f"{lazy_gettext('Start Offset')} ({lazy_gettext('Seconds')})",
         widget=NumberInput(step='any'))
     pyro_timeout = DecimalField(
-        lazy_gettext('Timeout (seconds)'),
+        f"{lazy_gettext('Timeout')} ({lazy_gettext('Second')})",
         widget=NumberInput(step='any'))
     condition_type = SelectField(
         choices=[('', TRANSLATIONS['select_one']['title'])] + CONDITIONAL_CONDITIONS)

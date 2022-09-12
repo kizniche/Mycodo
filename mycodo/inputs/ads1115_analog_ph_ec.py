@@ -144,8 +144,8 @@ INPUT_INFORMATION = {
             'default_value': 120,
             'required': True,
             'constraints_pass': constraints_pass_positive_value,
-            'name': "{}: {}".format(lazy_gettext('Temperature Compensation'), lazy_gettext('Max Age')),
-            'phrase': lazy_gettext('The maximum age (seconds) of the measurement to use')
+            'name': f"{lazy_gettext('Temperature Compensation')}: {lazy_gettext('Max Age')} ({lazy_gettext('Seconds')})",
+            'phrase': lazy_gettext('The maximum age of the measurement to use')
         },
         {
             'type': 'message',

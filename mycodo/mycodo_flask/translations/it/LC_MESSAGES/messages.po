@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Mycodo1 8.11.0\n"
 "Report-Msgid-Bugs-To: mycodo@kylegabriel.com\n"
-"POT-Creation-Date: 2022-09-11 21:00-0400\n"
+"POT-Creation-Date: 2022-09-11 21:52-0400\n"
 "PO-Revision-Date: 2022-09-10 22:12+0000\n"
 "Last-Translator: Kyle Gabriel <business@kylegabriel.com>\n"
 "Language: it\n"
@@ -49,8 +49,8 @@ msgid "Brightness"
 msgstr "Luminosità"
 
 #: config_devices_units.py:53
-msgid "CO2"
-msgstr "CO2"
+msgid "Carbon Dioxide"
+msgstr ""
 
 #: config_devices_units.py:97
 msgid "Dewpoint"
@@ -72,14 +72,14 @@ msgid "Dissolved Oxygen"
 msgstr "Ossigeno dissolto"
 
 #: config_devices_units.py:113 config_translations.py:73
-#: config_translations.py:315 mycodo_flask/templates/pages/usage.html:230
+#: config_translations.py:312 mycodo_flask/templates/pages/usage.html:230
 #: mycodo_flask/templates/pages/usage.html:265
 msgid "Duration"
 msgstr "Durata"
 
 #: actions/output_pwm.py:48 actions/output_ramp_pwm.py:50
 #: actions/output_ramp_pwm.py:59 actions/output_ramp_pwm.py:68
-#: config_devices_units.py:117 config_translations.py:258
+#: config_devices_units.py:117 config_translations.py:255
 msgid "Duty Cycle"
 msgstr "Ciclo di lavoro"
 
@@ -145,8 +145,8 @@ msgid "Moisture"
 msgstr "Umidità"
 
 #: config_devices_units.py:181
-msgid "O2"
-msgstr "Ossigeno"
+msgid "Oxygen"
+msgstr ""
 
 #: config_devices_units.py:185
 msgid "Oxidation Reduction Potential"
@@ -273,7 +273,7 @@ msgid "VOC"
 msgstr "VOC"
 
 #: actions/output_volume.py:48 config_devices_units.py:317
-#: config_translations.py:219 config_translations.py:324
+#: config_translations.py:219 config_translations.py:321
 msgid "Volume"
 msgstr "Volume"
 
@@ -705,7 +705,7 @@ msgstr "Giù"
 msgid "Duplicate"
 msgstr "Duplica"
 
-#: config_translations.py:75 config_translations.py:407
+#: config_translations.py:75 config_translations.py:404
 #: mycodo_flask/forms/forms_input.py:153
 msgid "Edge"
 msgstr "Bordo"
@@ -1062,19 +1062,19 @@ msgid "Upload"
 msgstr "Caricare"
 
 #: actions/command_bash.py:32 config_translations.py:213
-#: config_translations.py:285 inputs/linux_command.py:58
+#: config_translations.py:282 inputs/linux_command.py:58
 #: outputs/on_off_shell.py:67 outputs/pwm_python.py:214 outputs/pwm_shell.py:68
 msgid "User"
 msgstr "Utente"
 
 #: actions/output_value.py:47 config_translations.py:215
-#: config_translations.py:318 inputs/mycodo_test_input_save_value.py:72
+#: config_translations.py:315 inputs/mycodo_test_input_save_value.py:72
 #: mycodo_flask/templates/user_templates/widget_template_widget_indicator_js.html:60
 msgid "Value"
 msgstr "Valore"
 
-#: config_translations.py:217 config_translations.py:321
-#: config_translations.py:389 inputs/anyleaf_orp.py:52
+#: config_translations.py:217 config_translations.py:318
+#: config_translations.py:386 inputs/anyleaf_orp.py:52
 #: mycodo_flask/forms/forms_settings.py:112
 msgid "Voltage"
 msgstr "Voltaggio"
@@ -1092,8 +1092,8 @@ msgstr "ID dispositivo a 1 filo"
 msgid "Gain"
 msgstr "Guadagno"
 
-#: config_translations.py:231 config_translations.py:371
-#: config_translations.py:374
+#: config_translations.py:231 config_translations.py:368
+#: config_translations.py:371
 msgid "Resolution"
 msgstr "Risoluzione"
 
@@ -1102,61 +1102,56 @@ msgid "Sample Speed"
 msgstr "Velocità di esempio"
 
 #: config_translations.py:237
-#, fuzzy
-msgid "Current Draw (Amps)"
-msgstr "Corrente attuale (ampli)"
-
-#: config_translations.py:240
 msgid "Baud Rate"
 msgstr "Velocità di trasmissione"
 
-#: config_translations.py:241
+#: config_translations.py:238
 msgid "The UART baud rate"
 msgstr "Il baud rate UART"
 
-#: actions/command_bash.py:40 config_translations.py:243
+#: actions/command_bash.py:40 config_translations.py:240
 msgid "Command"
 msgstr "Comando"
 
-#: config_translations.py:244
+#: config_translations.py:241
 msgid "The command to be executed"
 msgstr "Il comando da eseguire"
 
-#: config_translations.py:247
+#: config_translations.py:244
 msgid "Select the unit of the measurement to be stored in the database"
 msgstr "Selezionare l'unità della misura da memorizzare nel database"
 
-#: config_translations.py:249
+#: config_translations.py:246
 msgid "Convert to Unit"
 msgstr "Converti in unità"
 
-#: config_translations.py:250
+#: config_translations.py:247
 msgid "Convert the measurement to a different unit"
 msgstr "Converti la misura in un'unità diversa"
 
-#: config_translations.py:253
+#: config_translations.py:250
 msgid "click to copy to the clipboard"
 msgstr "fare clic per copiare negli appunti"
 
-#: config_translations.py:256
+#: config_translations.py:253
 #, fuzzy
 msgid "Time to wait until failure"
 msgstr "Tempo (secondi) per attendere fino al fallimento"
 
 #: actions/output_pwm.py:49 actions/output_ramp_pwm.py:51
-#: actions/output_ramp_pwm.py:60 config_translations.py:259
+#: actions/output_ramp_pwm.py:60 config_translations.py:256
 msgid "Duty cycle for the PWM (percent, 0.0 - 100.0)"
 msgstr "Ciclo di lavoro per il PWM (percentuale, 0.0 - 100.0)"
 
-#: config_translations.py:264
+#: config_translations.py:261
 msgid "Name Font Size (em)"
 msgstr "Nome Font Size (em)"
 
-#: config_translations.py:265
+#: config_translations.py:262
 msgid "The font size of the Name text"
 msgstr "La dimensione del carattere del testo Nome"
 
-#: config_translations.py:267 outputs/on_off_kasa_hs300.py:126
+#: config_translations.py:264 outputs/on_off_kasa_hs300.py:126
 #: outputs/on_off_kasa_hs300_0_4_2.py:139 outputs/on_off_kasa_kp303.py:126
 #: outputs/on_off_kasa_kp303_0_4_2.py:139 outputs/on_off_kasa_plugs.py:128
 #: outputs/on_off_kasa_rgb_bulbs.py:297 outputs/on_off_mqtt.py:138
@@ -1167,90 +1162,90 @@ msgstr "La dimensione del carattere del testo Nome"
 msgid "Force Command"
 msgstr "force Command"
 
-#: config_translations.py:268 outputs/on_off_python.py:241
+#: config_translations.py:265 outputs/on_off_python.py:241
 #: outputs/pwm_shell.py:138
 msgid "Always send the command if instructed, regardless of the current state"
 msgstr ""
 "Invia sempre il comando se richiesto, indipendentemente dallo stato "
 "corrente"
 
-#: config_translations.py:270
+#: config_translations.py:267
 msgid "FTDI Device"
 msgstr "Dispositivo FTDI"
 
-#: config_translations.py:271
+#: config_translations.py:268
 msgid "The FTDI device connected to the input/output/etc."
 msgstr "Il dispositivo FTDI collegato all'input/output/etc."
 
-#: config_translations.py:276 outputs/pump_grove_motor_driver_v1_3.py:132
+#: config_translations.py:273 outputs/pump_grove_motor_driver_v1_3.py:132
 msgid "Flow Rate Method"
 msgstr "Metodo della Portata"
 
-#: config_translations.py:277 outputs/pump_grove_motor_driver_v1_3.py:133
+#: config_translations.py:274 outputs/pump_grove_motor_driver_v1_3.py:133
 msgid "The flow rate to use when pumping a volume"
 msgstr "La portata da usare quando si sta pompando un volume"
 
-#: config_translations.py:279
+#: config_translations.py:276
 msgid "Host"
 msgstr "Ospite"
 
-#: config_translations.py:280
+#: config_translations.py:277
 #, fuzzy
 msgid "Host or IP address"
 msgstr "Dominio o indirizzo IP"
 
-#: config_translations.py:282
+#: config_translations.py:279
 #: mycodo_flask/templates/pages/data_options/input_options.html:43
 msgid "Interface"
 msgstr "Interfaccia"
 
-#: config_translations.py:283
+#: config_translations.py:280
 msgid "The interface used to communicate"
 msgstr "L'interfaccia utilizzata per comunicare"
 
-#: actions/command_bash.py:33 config_translations.py:286
+#: actions/command_bash.py:33 config_translations.py:283
 #: inputs/linux_command.py:59 outputs/on_off_shell.py:68
 #: outputs/pwm_python.py:215 outputs/pwm_shell.py:69
 msgid "The user to execute the command"
 msgstr "L'utente per eseguire il comando"
 
-#: config_translations.py:288
+#: config_translations.py:285
 msgid "Log Level: Debug"
 msgstr "Log Level: Debug"
 
-#: config_translations.py:289
+#: config_translations.py:286
 msgid "Show debug lines in the Daemon Log"
 msgstr "Mostra linee di debug nel registro Daemon"
 
-#: config_translations.py:292
+#: config_translations.py:289
 msgid "The maximum allowable measurement age"
 msgstr "L'età massima consentita per la misurazione"
 
-#: config_translations.py:294
+#: config_translations.py:291
 msgid "Unit Measurement"
 msgstr "Misura dell'unità"
 
-#: config_translations.py:295
+#: config_translations.py:292
 msgid "Select a unit for the stored value"
 msgstr "Seleziona un'unità per il valore memorizzato"
 
-#: config_translations.py:297
+#: config_translations.py:294
 msgid "Measurements Enabled"
 msgstr "Misure abilitate"
 
-#: config_translations.py:298
+#: config_translations.py:295
 msgid "The measurements to record"
 msgstr "Le misurazioni da registrare"
 
-#: config_translations.py:300
+#: config_translations.py:297
 msgid "Message Includes Code"
 msgstr "Messaggio include il codice"
 
-#: config_translations.py:301
+#: config_translations.py:298
 msgid "Include the code in the message variable"
 msgstr "Includere il codice nella variabile messaggio"
 
-#: actions/create_note.py:46 config_translations.py:303
+#: actions/create_note.py:46 config_translations.py:300
 #: mycodo_flask/templates/pages/function_options/custom_function_options.html:37
 #: mycodo_flask/templates/pages/function_options/function_options.html:31
 #: mycodo_flask/templates/pages/usage.html:205
@@ -1262,29 +1257,29 @@ msgstr "Includere il codice nella variabile messaggio"
 msgid "Name"
 msgstr "Nome"
 
-#: config_translations.py:304
+#: config_translations.py:301
 msgid "A name to distinguish this from others"
 msgstr "Un nome per distinguerlo dagli altri"
 
-#: config_translations.py:306 outputs/on_off_python.py:202
+#: config_translations.py:303 outputs/on_off_python.py:202
 #: outputs/on_off_shell.py:60 outputs/on_off_wireless_rpi_rf.py:77
 msgid "Off Command"
 msgstr "Comando Off"
 
-#: config_translations.py:307 outputs/on_off_wireless_rpi_rf.py:78
+#: config_translations.py:304 outputs/on_off_wireless_rpi_rf.py:78
 msgid "Command to execute when the output is instructed to turn off"
 msgstr "Il comando da eseguire quando l'output viene spento"
 
-#: config_translations.py:309 outputs/on_off_python.py:190
+#: config_translations.py:306 outputs/on_off_python.py:190
 #: outputs/on_off_shell.py:51 outputs/on_off_wireless_rpi_rf.py:69
 msgid "On Command"
 msgstr "A comando"
 
-#: config_translations.py:310 outputs/on_off_wireless_rpi_rf.py:70
+#: config_translations.py:307 outputs/on_off_wireless_rpi_rf.py:70
 msgid "Command to execute when the output is instructed to turn on"
 msgstr "Il comando da eseguire quando l'ouput viene acceso"
 
-#: config_translations.py:312 outputs/on_off_gpio.py:91
+#: config_translations.py:309 outputs/on_off_gpio.py:91
 #: outputs/on_off_gpio_sysfs.py:87
 #: outputs/on_off_grove_multichannel_relay.py:163
 #: outputs/on_off_mcp23017.py:100 outputs/on_off_pcf8574.py:99
@@ -1293,26 +1288,48 @@ msgstr "Il comando da eseguire quando l'ouput viene acceso"
 msgid "On State"
 msgstr "Stato on"
 
-#: config_translations.py:313
+#: config_translations.py:310
 msgid "What state triggers the output to turn on? High or Low?"
 msgstr "Quale stato attiva l'uscita per l'accensione? Alto o basso?"
 
-#: config_translations.py:328
+#: config_translations.py:325 functions/average_last_multiple.py:68
+#: functions/average_past_single.py:68 functions/backup_rsync.py:74
+#: functions/bang_bang.py:94 functions/bang_bang_on_off.py:105
+#: functions/bang_bang_pwm.py:92 functions/difference.py:65
+#: functions/display_generic_lcd_16x2_i2c.py:226
+#: functions/display_generic_lcd_20x4_i2c.py:211
+#: functions/display_grove_lcd_16x2_i2c.py:228
+#: functions/display_ssd1306_oled_128x32_i2c.py:195
+#: functions/display_ssd1306_oled_128x32_i2c_2lines.py:195
+#: functions/display_ssd1306_oled_128x32_spi.py:194
+#: functions/display_ssd1306_oled_128x32_spi_2lines.py:194
+#: functions/display_ssd1306_oled_128x64_i2c.py:195
+#: functions/display_ssd1306_oled_128x64_i2c_4lines.py:195
+#: functions/display_ssd1306_oled_128x64_spi.py:194
+#: functions/display_ssd1306_oled_128x64_spi_4lines.py:194
+#: functions/display_ssd1309_oled_128x64_i2c.py:197 functions/equation.py:65
+#: functions/equation_multi.py:65
+#: functions/examples/custom_function_multiple_channels.py:74
+#: functions/examples/custom_function_simple_loop_with_status.py:59
+#: functions/humidity_wet_dry_bulb.py:80 functions/redundancy.py:64
+#: functions/regulate_ph_ec.py:180 functions/statistics_last_multiple.py:102
+#: functions/statistics_past_single.py:101 functions/sum_last_multiple.py:69
+#: functions/sum_past_single.py:69 functions/verification.py:64
 #, fuzzy
 msgid "The duration between measurements or actions"
 msgstr "La durata (secondi) tra le misure o azioni"
 
 #: actions/mqtt_publish.py:47 actions/mqtt_publish_input.py:52
-#: config_translations.py:342 mycodo_flask/forms/forms_settings.py:102
+#: config_translations.py:339 mycodo_flask/forms/forms_settings.py:102
 #: outputs/on_off_mqtt.py:66 outputs/value_mqtt.py:65
 msgid "Port"
 msgstr "Porta"
 
-#: config_translations.py:343
+#: config_translations.py:340
 msgid "Host port number"
 msgstr "Numero di porta host"
 
-#: config_translations.py:346
+#: config_translations.py:343
 #, fuzzy
 msgid ""
 "If a Pre Output is selected, set the duration to turn the Pre Output on "
@@ -1321,11 +1338,11 @@ msgstr ""
 "Se è selezionata un'uscita pre, impostare la durata (secondi) in cui "
 "attivare la preuscita prima che venga acquisita ogni misurazione."
 
-#: config_translations.py:350
+#: config_translations.py:347
 msgid "Pre During Measure"
 msgstr "Pre durante la misurazione"
 
-#: config_translations.py:351
+#: config_translations.py:348
 msgid ""
 "Check to turn the output off after (opposed to before) the measurement is"
 " complete"
@@ -1333,34 +1350,34 @@ msgstr ""
 "Controllare di spegnere l'uscita dopo (contrariamente a prima) la "
 "misurazione è completa"
 
-#: config_translations.py:353
+#: config_translations.py:350
 msgid "Pre Output"
 msgstr "Pre Output"
 
-#: config_translations.py:354
+#: config_translations.py:351
 msgid "Turn the selected output on before taking every measurement"
 msgstr "Attiva l'uscita selezionata prima di prendere ogni misura"
 
-#: config_translations.py:356
+#: config_translations.py:353
 msgid "PWM Command"
 msgstr "Comando PWM"
 
-#: config_translations.py:357 outputs/pwm_shell.py:62
+#: config_translations.py:354 outputs/pwm_shell.py:62
 msgid "Command to execute to set the PWM duty cycle (%)"
 msgstr "Il comando da eseguire per impostare il ciclo di lavoro PWM (%)"
 
-#: config_translations.py:360
+#: config_translations.py:357
 msgid "The Hertz to output the PWM signal (0 - 70,000)"
 msgstr "L'Hertz emette il segnale PWM (0 - 70.000)"
 
-#: config_translations.py:362 mycodo_flask/forms/forms_camera.py:23
+#: config_translations.py:359 mycodo_flask/forms/forms_camera.py:23
 #: mycodo_flask/templates/pages/data_options/input_options.html:55
 #: mycodo_flask/templates/pages/function_options/custom_function_options.html:49
 #: mycodo_flask/templates/pages/output_options.html:34 outputs/pwm_gpio.py:135
 msgid "Library"
 msgstr "Biblioteca"
 
-#: config_translations.py:363
+#: config_translations.py:360
 msgid ""
 "Which method to produce the PWM signal (hardware pins can produce higher "
 "frequencies)"
@@ -1368,84 +1385,90 @@ msgstr ""
 "Quale metodo per produrre il segnale PWM (i pin hardware possono produrre"
 " frequenze più alte)"
 
-#: config_translations.py:365
+#: config_translations.py:362
 msgid "Reference Resistance"
 msgstr "Resistenza di riferimento"
 
-#: config_translations.py:369
+#: config_translations.py:366
 #, fuzzy
 msgid "Duration to wait between acquiring new measurements"
 msgstr "Numero di secondi da attendere tra l'acquisizione di nuove misurazioni."
 
-#: config_translations.py:372 config_translations.py:375
+#: config_translations.py:369 config_translations.py:372
 msgid "Measurement resolution"
 msgstr "Risoluzione delle misure"
 
-#: config_translations.py:377
+#: config_translations.py:374
 msgid "Pulses Per Rev"
 msgstr "Impulsi per Rev"
 
-#: config_translations.py:378
+#: config_translations.py:375
 msgid ""
 "The number of pulses per revolution to calculate revolutions per minute "
 "(RPM)"
 msgstr "Il numero di impulsi per giro per calcolare i giri al minuto (RPM)"
 
-#: config_translations.py:380
+#: config_translations.py:377
 msgid "Sample Time"
 msgstr "Tempo di campionamento"
 
-#: config_translations.py:381
+#: config_translations.py:378
 msgid "The duration of time to sample"
 msgstr "La durata del tempo di campionamento"
 
-#: config_translations.py:383
+#: config_translations.py:380
 msgid "Measurement Unit"
 msgstr "Unità di misura"
 
-#: config_translations.py:384
+#: config_translations.py:381
 msgid "Select the measurement and unit to store this measurement in the database"
 msgstr ""
 "Selezionare la misura e l'unità per memorizzare questa misurazione nel "
 "database"
 
-#: config_translations.py:386
+#: config_translations.py:383
 msgid "Setpoint Tracking Type"
 msgstr "Setpoint tipo di monitoraggio"
 
-#: config_translations.py:387
+#: config_translations.py:384
 msgid "Select the type of setpoint tracking"
 msgstr "Selezionare il tipo di Inseguimento"
 
-#: config_translations.py:390
+#: config_translations.py:387
 msgid "The input voltage to the sensor"
 msgstr "La tensione di ingresso al sensore"
 
-#: config_translations.py:392 outputs/pwm_gpio.py:124
+#: config_translations.py:389 outputs/pwm_gpio.py:124
 #: outputs/pwm_pca9685.py:154 outputs/pwm_python.py:255
 #: outputs/pwm_shell.py:109
 msgid "Shutdown Value"
 msgstr "shutdown Valore"
 
-#: config_translations.py:393
+#: config_translations.py:390
 msgid "The output value to set when Mycodo shuts down"
 msgstr "Il valore di uscita di set quando Mycodo chiude verso il basso"
 
-#: config_translations.py:396
+#: config_translations.py:393 functions/average_last_multiple.py:76
+#: functions/average_past_single.py:76 functions/backup_rsync.py:82
+#: functions/examples/custom_function_simple_loop_with_status.py:67
+#: functions/humidity_wet_dry_bulb.py:88 functions/regulate_ph_ec.py:188
+#: functions/sum_last_multiple.py:77 functions/sum_past_single.py:77
+#: functions/vapor_pressure_deficit.py:75
+#: mycodo_flask/templates/pages/function_options/conditional_options.html:82
 #, fuzzy
 msgid "The duration to wait before the first operation"
 msgstr "La durata (secondi) da attendere prima della prima operazione"
 
-#: config_translations.py:398 outputs/pwm_gpio.py:104
+#: config_translations.py:395 outputs/pwm_gpio.py:104
 #: outputs/pwm_pca9685.py:133 outputs/pwm_python.py:235 outputs/pwm_shell.py:89
 msgid "Startup Value"
 msgstr "Valore di avvio"
 
-#: config_translations.py:399
+#: config_translations.py:396
 msgid "The output value to set when Mycodo starts up"
 msgstr "Il valore di uscita di set quando Mycodo avvia"
 
-#: config_translations.py:401 outputs/on_off_gpio.py:80
+#: config_translations.py:398 outputs/on_off_gpio.py:80
 #: outputs/on_off_gpio_sysfs.py:76
 #: outputs/on_off_grove_multichannel_relay.py:152
 #: outputs/on_off_kasa_hs300.py:112 outputs/on_off_kasa_hs300_0_4_2.py:125
@@ -1461,11 +1484,11 @@ msgstr "Il valore di uscita di set quando Mycodo avvia"
 msgid "Shutdown State"
 msgstr "Stato shutdown"
 
-#: config_translations.py:402
+#: config_translations.py:399
 msgid "When Mycodo shuts down, set the output state"
 msgstr "Quando Mycodo si spegne, impostare lo stato di uscita"
 
-#: config_translations.py:404 outputs/on_off_gpio.py:69
+#: config_translations.py:401 outputs/on_off_gpio.py:69
 #: outputs/on_off_gpio_sysfs.py:65
 #: outputs/on_off_grove_multichannel_relay.py:141
 #: outputs/on_off_kasa_hs300.py:100 outputs/on_off_kasa_hs300_0_4_2.py:113
@@ -1480,24 +1503,24 @@ msgstr "Quando Mycodo si spegne, impostare lo stato di uscita"
 msgid "Startup State"
 msgstr "Stato di avvio"
 
-#: config_translations.py:405
+#: config_translations.py:402
 msgid "When Mycodo starts, set the output state"
 msgstr "All'avvio di Mycodo, impostare lo stato dell'uscita"
 
-#: config_translations.py:408
+#: config_translations.py:405
 msgid "Edge detection: low to high (rising), high to low (falling), or both"
 msgstr ""
 "Rilevamento dei bordi: da basso ad alto (crescente), da alto a basso (in "
 "calo) o entrambi"
 
-#: config_translations.py:411
+#: config_translations.py:408
 #, fuzzy
 msgid "The amount of time to bounce the input signal"
 msgstr ""
 "La quantità di tempo (in millisecondi) per far rimbalzare il segnale di "
 "input"
 
-#: config_translations.py:414
+#: config_translations.py:411
 #, fuzzy
 msgid ""
 "Wait a period of time after the first edge detection to begin detecting "
@@ -1506,44 +1529,44 @@ msgstr ""
 "Attendere un intervallo di tempo (secondi) dopo il rilevamento del primo "
 "fronte per iniziare di nuovo a rilevare"
 
-#: config_translations.py:416
+#: config_translations.py:413
 msgid "RTD Probe Type"
 msgstr "Tipo sonda RTD"
 
-#: config_translations.py:417
+#: config_translations.py:414
 msgid "The type of thermocouple connected"
 msgstr "Il tipo di termocoppia collegato"
 
-#: config_translations.py:419
+#: config_translations.py:416
 #, fuzzy
 msgid "Times to Check"
 msgstr "Numero di volte da verificare"
 
-#: config_translations.py:420
+#: config_translations.py:417
 msgid "Number of times to check"
 msgstr "Numero di volte da verificare"
 
-#: config_translations.py:422
+#: config_translations.py:419
 msgid "Trigger at Startup"
 msgstr "Trigger all'avvio"
 
-#: config_translations.py:423
+#: config_translations.py:420
 msgid "Whether or not to trigger Functions when Mycodo starts"
 msgstr "Se attivare o meno le funzioni all'avvio di Mycodo"
 
-#: config_translations.py:425
+#: config_translations.py:422
 msgid "UART Device"
 msgstr "Dispositivo UART"
 
-#: config_translations.py:426
+#: config_translations.py:423
 msgid "The UART device location (e.g. /dev/ttyUSB1)"
 msgstr "La posizione del dispositivo UART (ad es. / Dev / ttyUSB1)"
 
-#: config_translations.py:428
+#: config_translations.py:425
 msgid "Weighting"
 msgstr "ponderazione"
 
-#: config_translations.py:429
+#: config_translations.py:426
 msgid ""
 "The weighting of the previous measurement on the current measurement. "
 "Range: 0.0 - 1.0. Used for smoothing measurements. 0.0 means no "
@@ -1553,7 +1576,7 @@ msgstr ""
 "Intervallo: 0.0 - 1.0. Utilizzato per le misure di livellamento. 0,0 "
 "significa nessuna ponderazione."
 
-#: config_translations.py:436 config_translations.py:439
+#: config_translations.py:433 config_translations.py:436
 msgid "Never allow duty cycle to go below Min."
 msgstr "Non permettere ciclo di lavoro di andare sotto min."
 
@@ -1692,31 +1715,6 @@ msgstr "Sollevare setpoint"
 msgid "Webhook"
 msgstr "Webhook"
 
-#: functions/average_last_multiple.py:68 functions/average_past_single.py:68
-#: functions/backup_rsync.py:74 functions/bang_bang.py:94
-#: functions/bang_bang_on_off.py:105 functions/bang_bang_pwm.py:92
-#: functions/difference.py:65 functions/display_generic_lcd_16x2_i2c.py:226
-#: functions/display_generic_lcd_20x4_i2c.py:211
-#: functions/display_grove_lcd_16x2_i2c.py:228
-#: functions/display_ssd1306_oled_128x32_i2c.py:195
-#: functions/display_ssd1306_oled_128x32_i2c_2lines.py:195
-#: functions/display_ssd1306_oled_128x32_spi.py:194
-#: functions/display_ssd1306_oled_128x32_spi_2lines.py:194
-#: functions/display_ssd1306_oled_128x64_i2c.py:195
-#: functions/display_ssd1306_oled_128x64_i2c_4lines.py:195
-#: functions/display_ssd1306_oled_128x64_spi.py:194
-#: functions/display_ssd1306_oled_128x64_spi_4lines.py:194
-#: functions/display_ssd1309_oled_128x64_i2c.py:197 functions/equation.py:65
-#: functions/equation_multi.py:65
-#: functions/examples/custom_function_multiple_channels.py:74
-#: functions/examples/custom_function_simple_loop_with_status.py:59
-#: functions/humidity_wet_dry_bulb.py:80 functions/redundancy.py:64
-#: functions/regulate_ph_ec.py:180 functions/statistics_last_multiple.py:102
-#: functions/statistics_past_single.py:101 functions/sum_last_multiple.py:69
-#: functions/sum_past_single.py:69 functions/verification.py:64
-msgid "The duration (seconds) between measurements or actions"
-msgstr "La durata (secondi) tra le misure o azioni"
-
 #: functions/average_last_multiple.py:84 functions/average_past_single.py:95
 #: functions/difference.py:84 functions/difference.py:103
 #: functions/display_generic_lcd_16x2_i2c.py:292
@@ -1749,12 +1747,9 @@ msgstr "La durata (secondi) tra le misure o azioni"
 #: widgets/widget_indicator.py:65 widgets/widget_measurement.py:65
 #: widgets/widget_output.py:61 widgets/widget_output_pwm_slider.py:61
 #: widgets/widget_pid.py:254
-msgid "The maximum age (seconds) of the measurement to use"
+#, fuzzy
+msgid "The maximum age of the measurement to use"
 msgstr "L'età massima (secondi) della misura da utilizzare"
-
-#: functions/average_past_single.py:75
-msgid "Start Offset"
-msgstr "Compensazione dell'avvio"
 
 #: functions/bang_bang.py:45 functions/bang_bang_on_off.py:44
 msgid "Select a measurement the selected output will affect"
@@ -1822,11 +1817,9 @@ msgstr ""
 "Il numero di volte per misurare ciascun canale. Una media delle "
 "misurazioni verrà memorizzato."
 
-#: inputs/ads1115_analog_ph_ec.py:138 inputs/ads1115_analog_ph_ec.py:147
-#: inputs/ads1256_analog_ph_ec.py:222 inputs/ads1256_analog_ph_ec.py:231
-#: inputs/anyleaf_ph.py:62 inputs/anyleaf_ph.py:71 inputs/atlas_do.py:68
-#: inputs/atlas_do.py:77 inputs/atlas_ec.py:80 inputs/atlas_ec.py:89
-#: inputs/atlas_orp.py:67 inputs/atlas_orp.py:76
+#: inputs/ads1115_analog_ph_ec.py:138 inputs/ads1256_analog_ph_ec.py:222
+#: inputs/anyleaf_ph.py:62 inputs/atlas_do.py:68 inputs/atlas_ec.py:80
+#: inputs/atlas_orp.py:67
 msgid "Temperature Compensation"
 msgstr "Compensazione della temperatura"
 
@@ -1835,12 +1828,6 @@ msgstr "Compensazione della temperatura"
 #: inputs/atlas_o2.py:70 inputs/atlas_orp.py:68 inputs/atlas_ph.py:72
 msgid "Select a measurement for temperature compensation"
 msgstr "Selezionare una misura per la compensazione della temperatura"
-
-#: inputs/ads1115_analog_ph_ec.py:147 inputs/ads1256_analog_ph_ec.py:231
-#: inputs/anyleaf_ph.py:71 inputs/atlas_do.py:77 inputs/atlas_ec.py:89
-#: inputs/atlas_orp.py:76
-msgid "Max Age"
-msgstr "Massima età"
 
 #: inputs/ads1256.py:86 inputs/ads1256_analog_ph_ec.py:348
 msgid "Set the calibration method to perform during Input activation"
@@ -2200,17 +2187,9 @@ msgstr "Riprendi Time lapse"
 msgid "Stop Timelapse"
 msgstr "Ferma Timelapse"
 
-#: mycodo_flask/forms/forms_camera.py:32
-msgid "Interval (seconds)"
-msgstr "Intervallo (secondi)"
-
 #: mycodo_flask/forms/forms_camera.py:35
 msgid "Photo Interval must be a positive value"
 msgstr "Photo Interval deve essere un valore positivo"
-
-#: mycodo_flask/forms/forms_camera.py:40
-msgid "Run Time (seconds)"
-msgstr "Run Time (secondi)"
 
 #: mycodo_flask/forms/forms_camera.py:43
 msgid "Total Run Time must be a positive value"
@@ -2395,19 +2374,6 @@ msgstr "Eseguire il codice Python"
 msgid "Status Python Code"
 msgstr "Stato Codice Python"
 
-#: mycodo_flask/forms/forms_conditional.py:41
-msgid "Refractory Period (seconds)"
-msgstr "Periodo refrattario (secondi)"
-
-#: mycodo_flask/forms/forms_conditional.py:44
-#: mycodo_flask/forms/forms_trigger.py:50
-msgid "Start Offset (seconds)"
-msgstr "Start Offset (secondi)"
-
-#: mycodo_flask/forms/forms_conditional.py:47
-msgid "Timeout (seconds)"
-msgstr "Timeout (secondi)"
-
 #: mycodo_flask/forms/forms_custom_controller.py:26
 #: mycodo_flask/forms/forms_input.py:101
 msgid "Number of Measurements"
@@ -2481,10 +2447,6 @@ msgstr "Setpoint di avvio"
 #: mycodo_flask/forms/forms_method.py:55
 msgid "End Setpoint (optional)"
 msgstr "Setpoint di fine (opzionale)"
-
-#: mycodo_flask/forms/forms_method.py:61 mycodo_flask/forms/forms_method.py:122
-msgid "Duration to End (seconds)"
-msgstr "Durata alla fine (secondi)"
 
 #: mycodo_flask/forms/forms_method.py:64
 msgid "Amplitude"
@@ -2849,30 +2811,6 @@ msgstr "Test Port internet"
 msgid "Internet Test Timeout"
 msgstr "Timeout di prova Internet"
 
-#: mycodo_flask/forms/forms_settings.py:139
-msgid "Conditional Sample Rate (seconds)"
-msgstr "Frequenza di campionamento condizionale (secondi)"
-
-#: mycodo_flask/forms/forms_settings.py:142
-msgid "Function Sample Rate (seconds)"
-msgstr "Frequenza di Campionamento della Funzione (secondi)"
-
-#: mycodo_flask/forms/forms_settings.py:145
-msgid "Input Sample Rate (seconds)"
-msgstr "Frequenza di campionamento in ingresso (secondi)"
-
-#: mycodo_flask/forms/forms_settings.py:148
-msgid "Output Sample Rate (seconds)"
-msgstr "Frequenza di campionamento in uscita (secondi)"
-
-#: mycodo_flask/forms/forms_settings.py:151
-msgid "PID Sample Rate (seconds)"
-msgstr "Frequenza di campionamento PID (secondi)"
-
-#: mycodo_flask/forms/forms_settings.py:154
-msgid "Widget Sample Rate (seconds)"
-msgstr "Frequenza di Campionamento del Widget (secondi)"
-
 #: mycodo_flask/forms/forms_settings.py:166
 msgid "Import Controller Module"
 msgstr "Controller Module Import"
@@ -3199,10 +3137,6 @@ msgstr "Se ID 2"
 #: mycodo_flask/forms/forms_trigger.py:61
 msgid "If State"
 msgstr "Se stato"
-
-#: mycodo_flask/forms/forms_trigger.py:63
-msgid "If Duration (seconds)"
-msgstr "Se Durata (secondi)"
 
 #: mycodo_flask/forms/forms_trigger.py:65
 #, python-format
@@ -4183,10 +4117,6 @@ msgstr "Stato"
 #: mycodo_flask/templates/pages/function_options/trigger_options/timer_daily_time_span.html:26
 msgid "The duration between checking whether the conditional is true"
 msgstr "La durata tra il controllo se il condizionale è vero"
-
-#: mycodo_flask/templates/pages/function_options/conditional_options.html:82
-msgid "The duration (seconds) to wait before the first operation"
-msgstr "La durata (secondi) da attendere prima della prima operazione"
 
 #: mycodo_flask/templates/pages/function_options/conditional_options.html:88
 msgid "The timeout (seconds) for the execution of the Run Python Code"

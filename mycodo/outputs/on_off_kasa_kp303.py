@@ -74,8 +74,8 @@ OUTPUT_INFORMATION = {
             'default_value': 60,
             'constraints_pass': constraints_pass_positive_value,
             'required': True,
-            'name': 'Status Update (Sec)',
-            'phrase': 'The period (seconds) between checking if connected and output states.'
+            'name': 'Status Update (Seconds)',
+            'phrase': 'The period between checking if connected and output states.'
         }
     ],
 
