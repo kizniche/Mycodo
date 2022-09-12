@@ -2,21 +2,22 @@
 # Copyright (C) 2022 Kyle T. Gabriel
 # This file is distributed under the same license as the Mycodo project.
 # FIRST AUTHOR <EMAIL@ADDRESS>, 2022.
-#
+# Kyle Gabriel <business@kylegabriel.com>, 2022.
 msgid ""
 msgstr ""
 "Project-Id-Version: Mycodo1 8.11.0\n"
 "Report-Msgid-Bugs-To: mycodo@kylegabriel.com\n"
 "POT-Creation-Date: 2022-09-11 21:58-0400\n"
-"PO-Revision-Date: 2022-09-11 00:36+0000\n"
+"PO-Revision-Date: 2022-09-12 02:06+0000\n"
 "Last-Translator: Kyle Gabriel <business@kylegabriel.com>\n"
-"Language: nl\n"
 "Language-Team: Dutch <http://translate.kylegabriel.com:8080/projects/mycodo/"
 "translations/nl/>\n"
-"Plural-Forms: nplurals=2; plural=n != 1\n"
+"Language: nl\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=n != 1;\n"
+"X-Generator: Weblate 4.14\n"
 "Generated-By: Babel 2.9.1\n"
 
 #: config_devices_units.py:13
@@ -49,7 +50,7 @@ msgstr "Helderheid"
 
 #: config_devices_units.py:53
 msgid "Carbon Dioxide"
-msgstr ""
+msgstr "Koolstofdioxide"
 
 #: config_devices_units.py:97
 msgid "Dewpoint"
@@ -147,7 +148,7 @@ msgstr "Vochtigheid"
 
 #: config_devices_units.py:181
 msgid "Oxygen"
-msgstr ""
+msgstr "Zuurstof"
 
 #: config_devices_units.py:185
 msgid "Oxidation Reduction Potential"
@@ -1830,11 +1831,8 @@ msgstr "Webhook"
 #: widgets/widget_indicator.py:65 widgets/widget_measurement.py:65
 #: widgets/widget_output.py:61 widgets/widget_output_pwm_slider.py:61
 #: widgets/widget_pid.py:254
-#, fuzzy
 msgid "The maximum age of the measurement to use"
-msgstr ""
-"De maximum leeftijd (seconden) van de meting te gebruiken voor "
-"temperatuurcompensatie"
+msgstr "De maximale leeftijd van de meting die moet worden gebruikt"
 
 #: functions/bang_bang.py:45 functions/bang_bang_on_off.py:44
 msgid "Select a measurement the selected output will affect"
