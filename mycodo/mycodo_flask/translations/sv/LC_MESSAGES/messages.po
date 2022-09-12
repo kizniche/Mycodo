@@ -2,21 +2,22 @@
 # Copyright (C) 2022 Kyle T. Gabriel
 # This file is distributed under the same license as the Mycodo project.
 # FIRST AUTHOR <EMAIL@ADDRESS>, 2022.
-#
+# Kyle Gabriel <business@kylegabriel.com>, 2022.
 msgid ""
 msgstr ""
 "Project-Id-Version: Mycodo1 8.11.0\n"
 "Report-Msgid-Bugs-To: mycodo@kylegabriel.com\n"
 "POT-Creation-Date: 2022-09-11 21:58-0400\n"
-"PO-Revision-Date: 2022-03-10 06:00+0000\n"
-"Last-Translator: Jonas Harnesk <jonas@harnesk.net>\n"
-"Language: sv\n"
+"PO-Revision-Date: 2022-09-12 02:06+0000\n"
+"Last-Translator: Kyle Gabriel <business@kylegabriel.com>\n"
 "Language-Team: Swedish <http://translate.kylegabriel.com:8080/projects/"
-"mycodo/master/sv/>\n"
-"Plural-Forms: nplurals=2; plural=n != 1\n"
+"mycodo/translations/sv/>\n"
+"Language: sv\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=n != 1;\n"
+"X-Generator: Weblate 4.14\n"
 "Generated-By: Babel 2.9.1\n"
 
 #: config_devices_units.py:13
@@ -49,7 +50,7 @@ msgstr "ljusstyrka"
 
 #: config_devices_units.py:53
 msgid "Carbon Dioxide"
-msgstr ""
+msgstr "Koldioxid"
 
 #: config_devices_units.py:97
 msgid "Dewpoint"
@@ -147,7 +148,7 @@ msgstr "Fukt"
 
 #: config_devices_units.py:181
 msgid "Oxygen"
-msgstr ""
+msgstr "Syre"
 
 #: config_devices_units.py:185
 msgid "Oxidation Reduction Potential"
@@ -576,9 +577,8 @@ msgid "Average"
 msgstr "Medel"
 
 #: config_translations.py:25 config_translations.py:226
-#, fuzzy
 msgid "Bluetooth Adapter (hci[X])"
-msgstr "BT-adapter (hci [X])"
+msgstr "Bluetooth-adapter (hci[X])"
 
 #: config_translations.py:223
 msgid "Bluetooth MAC (XX:XX:XX:XX:XX:XX)"
@@ -618,9 +618,8 @@ msgstr "Klar"
 #: mycodo_flask/templates/pages/function_options/custom_function_options.html:116
 #: mycodo_flask/templates/pages/output_options.html:91
 #: config_translations.py:37
-#, fuzzy
 msgid "Commands"
-msgstr "Kommando"
+msgstr "Kommandon"
 
 #: config_translations.py:43 config_translations.py:39
 msgid "Completed"
@@ -778,11 +777,11 @@ msgstr "Håll"
 
 #: config_translations.py:95 config_translations.py:268
 msgid "I2C Bus"
-msgstr ""
+msgstr "I2C-buss"
 
 #: config_translations.py:97 config_translations.py:271
 msgid "I2C Address"
-msgstr ""
+msgstr "I2C-adress"
 
 #: config_translations.py:99 config_translations.py:91
 msgid "Indicator"
@@ -832,9 +831,8 @@ msgid "Line"
 msgstr "Linje"
 
 #: config_translations.py:115 config_translations.py:107
-#, fuzzy
 msgid "Lock"
-msgstr "Klocka Pin"
+msgstr "Lås"
 
 #: config_translations.py:117 config_translations.py:109
 msgid "Login"
@@ -990,9 +988,8 @@ msgid "Save Order"
 msgstr "Spara beställning"
 
 #: config_translations.py:167
-#, fuzzy
 msgid "Scale"
-msgstr "Pascal"
+msgstr "Skala"
 
 #: config_translations.py:169 config_translations.py:384
 msgid "Unscaled Unit Min"
@@ -1071,9 +1068,8 @@ msgid "Theme"
 msgstr "Tema"
 
 #: config_translations.py:201 config_translations.py:181
-#, fuzzy
 msgid "Time-lapse"
-msgstr "Stoppa Timelapse"
+msgstr "Tidsförlopp"
 
 #: config_translations.py:203 config_translations.py:183
 msgid "Timer"
@@ -1161,9 +1157,8 @@ msgstr "Kommando"
 
 #: config_translations.py:241 config_translations.py:244
 #: config_translations.py:230
-#, fuzzy
 msgid "The command to be executed"
-msgstr "Python 3-koden som ska utföras"
+msgstr "Det kommando som ska utföras"
 
 #: config_translations.py:244 config_translations.py:247
 #: config_translations.py:233
@@ -1186,9 +1181,8 @@ msgid "click to copy to the clipboard"
 msgstr "klicka för att kopiera till Urklipp"
 
 #: config_translations.py:253 config_translations.py:256
-#, fuzzy
 msgid "Time to wait until failure"
-msgstr "Tid (sekunder) för att vänta tills fel"
+msgstr "Dags att vänta tills misslyckandet inträffar"
 
 #: actions/output_pwm.py:49 actions/output_ramp_pwm.py:51
 #: actions/output_ramp_pwm.py:60 config_translations.py:256
@@ -1247,9 +1241,8 @@ msgid "Host"
 msgstr "Värd"
 
 #: config_translations.py:277 config_translations.py:280
-#, fuzzy
 msgid "Host or IP address"
-msgstr "Domän eller IP-adress"
+msgstr "Värd eller IP-adress"
 
 #: config_translations.py:279
 #: mycodo_flask/templates/pages/data_options/input_options.html:43
@@ -1267,7 +1260,7 @@ msgstr "Gränssnittet användes för att kommunicera"
 #: outputs/pwm_python.py:215 outputs/pwm_shell.py:69 config_translations.py:286
 #: config_translations.py:281
 msgid "The user to execute the command"
-msgstr ""
+msgstr "Användaren som ska utföra kommandot"
 
 #: config_translations.py:285 config_translations.py:288
 #: config_translations.py:283
@@ -1341,7 +1334,7 @@ msgstr "Av komando"
 #: config_translations.py:304 outputs/on_off_wireless_rpi_rf.py:78
 #: config_translations.py:307 config_translations.py:302
 msgid "Command to execute when the output is instructed to turn off"
-msgstr ""
+msgstr "Kommando som ska utföras när utgången instrueras att stängas av"
 
 #: config_translations.py:306 outputs/on_off_python.py:190
 #: outputs/on_off_shell.py:51 outputs/on_off_wireless_rpi_rf.py:69
