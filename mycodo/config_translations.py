@@ -249,7 +249,7 @@ TRANSLATIONS = {
         'title': None,
         'phrase': lazy_gettext('click to copy to the clipboard')},
     'deadline': {
-        'title': f"{lazy_gettext('Deadline') ({lazy_gettext('Seconds')})}",
+        'title': f"{lazy_gettext('Deadline')} ({lazy_gettext('Seconds')})",
         'phrase': lazy_gettext('Time to wait until failure')},
     'duty_cycle': {
         'title': lazy_gettext('Duty Cycle'),
