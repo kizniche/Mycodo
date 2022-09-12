@@ -114,21 +114,21 @@ def generate_controller_doc(out_file, each_data):
         out_file.write(
             f"<tr><td>I<sup>2</sup>C Address</td>"
             f"<td>Text</td>"
-            f"<td>{TRANSLATIONS['i2c_location']['phrase']}</td></tr>")
+            f"<td>The address of the I<sup>2</sup>C device.</td></tr>")
         out_file.write(
             f"<tr><td>I<sup>2</sup>C Bus</td>"
             f"<td>Integer</td>"
-            f"<td>{TRANSLATIONS['i2c_bus']['phrase']}</td></tr>")
+            f"<td>The Bus the I<sup>2</sup>C device is connected.</td></tr>")
 
     if 'options_enabled' in each_data and 'bt_location' in each_data['options_enabled']:
         out_file.write(
             f"<tr><td>{TRANSLATIONS['bt_location']['title']}</td>"
             f"<td>Text</td>"
-            f"<td>{TRANSLATIONS['bt_location']['phrase']}</td></tr>")
+            f"<td>The Hci location of the Bluetooth device.</td></tr>")
         out_file.write(
             f"<tr><td>{TRANSLATIONS['bt_adapter']['title']}</td>"
             f"<td>Text</td>"
-            f"<td>{TRANSLATIONS['bt_adapter']['phrase']}</td></tr>")
+            f"<td>The adapter of the Bluetooth device.</td></tr>")
 
     if 'options_enabled' in each_data and 'ftdi_location' in each_data['options_enabled']:
         out_file.write(

@@ -3,13 +3,13 @@
 <div class="col-auto">
   <label class="control-label">{{dict_translation['bt_location']['title']}}</label>
   <div>
-    {{form.location(class_='form-control', value=each_device.location, **{'title': dict_translation['bt_location']['phrase']})}}
+    {{form.location(class_='form-control', value=each_device.location)}}
   </div>
 </div>
 <div class="col-auto">
   {{form.bt_adapter.label(class_='control-label')}}
   <div>
-    {{form.bt_adapter(class_='form-control', value=each_device.bt_adapter, **{'title': dict_translation['bt_adapter']['title']})}}
+    {{form.bt_adapter(class_='form-control', value=each_device.bt_adapter)}}
   </div>
 </div>
 

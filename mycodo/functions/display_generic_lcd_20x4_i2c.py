@@ -216,7 +216,7 @@ FUNCTION_INFORMATION = {
             'default_value': '0x20',
             'required': True,
             'name': TRANSLATIONS['i2c_location']['title'],
-            'phrase': TRANSLATIONS['i2c_location']['phrase']
+            'phrase': ''
         },
         {
             'id': 'i2c_bus',
@@ -224,7 +224,7 @@ FUNCTION_INFORMATION = {
             'default_value': 1,
             'required': True,
             'name': TRANSLATIONS['i2c_bus']['title'],
-            'phrase': TRANSLATIONS['i2c_bus']['phrase']
+            'phrase': ''
         },
         {
             'id': 'number_line_sets',
