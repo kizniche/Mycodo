@@ -91,7 +91,7 @@ channels_dict = {
 # Output information
 OUTPUT_INFORMATION = {
     'output_name_unique': 'Grove_Multichannel_Relay',
-    'output_name': f"{lazy_gettext('On/Off')}: Grove Multichannel Relay (4- or 8-Channel board)",
+    'output_name': "{}: Grove Multichannel Relay (4- or 8-Channel board)".format(lazy_gettext('On/Off')),
     'output_manufacturer': 'Grove',
     'output_library': 'smbus2',
     'measurements_dict': measurements_dict,
@@ -175,7 +175,7 @@ OUTPUT_INFORMATION = {
             'type': 'float',
             'default_value': 0.0,
             'required': True,
-            'name': f"{lazy_gettext('Current')} ({lazy_gettext('Amps')})",
+            'name': "{} ({})".format(lazy_gettext('Current'), lazy_gettext('Amps')),
             'phrase': 'The current draw of the device being controlled'
         }
     ]

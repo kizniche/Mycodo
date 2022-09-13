@@ -63,7 +63,7 @@ FUNCTION_INFORMATION = {
             'default_value': 60,
             'required': True,
             'constraints_pass': constraints_pass_positive_value,
-            'name': f"{lazy_gettext('Period')} ({lazy_gettext('Seconds')})",
+            'name': "{} ({})".format(lazy_gettext('Period'), lazy_gettext('Seconds')),
             'phrase': 'The duration between measurements or actions'
         },
         {
@@ -71,7 +71,7 @@ FUNCTION_INFORMATION = {
             'type': 'integer',
             'default_value': 10,
             'required': True,
-            'name': f"{lazy_gettext('Start Offset')} ({lazy_gettext('Seconds')})",
+            'name': "{} ({})".format(lazy_gettext('Start Offset'), lazy_gettext('Seconds')),
             'phrase': lazy_gettext('The duration to wait before the first operation')
         },
         {
@@ -91,7 +91,7 @@ FUNCTION_INFORMATION = {
             'type': 'integer',
             'default_value': 360,
             'required': False,
-            'name': f"{lazy_gettext('Temperature')}: {lazy_gettext('Max Age')} ({lazy_gettext('Seconds')})",
+            'name': "{}: {} ({})".format(lazy_gettext('Temperature'), lazy_gettext('Max Age'), lazy_gettext('Seconds')),
             'phrase': lazy_gettext('The maximum age of the measurement to use')
         },
         {
@@ -111,7 +111,7 @@ FUNCTION_INFORMATION = {
             'type': 'integer',
             'default_value': 360,
             'required': False,
-            'name': f"{lazy_gettext('Humidity')}: {lazy_gettext('Max Age')} ({lazy_gettext('Seconds')})",
+            'name': "{}: {} ({})".format(lazy_gettext('Humidity'), lazy_gettext('Max Age'), lazy_gettext('Seconds')),
             'phrase': lazy_gettext('The maximum age of the measurement to use')
         }
     ]

@@ -61,7 +61,7 @@ FUNCTION_INFORMATION = {
             'default_value': 60,
             'required': True,
             'constraints_pass': constraints_pass_positive_value,
-            'name': f"{lazy_gettext('Period')} ({lazy_gettext('Seconds')})",
+            'name': "{} ({})".format(lazy_gettext('Period'), lazy_gettext('Seconds')),
             'phrase': lazy_gettext('The duration between measurements or actions')
         },
         {
@@ -80,7 +80,7 @@ FUNCTION_INFORMATION = {
             'type': 'integer',
             'default_value': 360,
             'required': True,
-            'name': f"{lazy_gettext('Max Age')} ({lazy_gettext('Seconds')})",
+            'name': "{} ({})".format(lazy_gettext('Max Age'), lazy_gettext('Seconds')),
             'phrase': lazy_gettext('The maximum age of the measurement to use')
         },
         {

@@ -29,7 +29,7 @@ channels_dict = {
 # Output information
 OUTPUT_INFORMATION = {
     'output_name_unique': 'output_neopixel_rgb',
-    'output_name': f"{lazy_gettext('On/Off')}: Neopixel (WS2812) RGB Strip with Raspberry Pi",
+    'output_name': "{}: Neopixel (WS2812) RGB Strip with Raspberry Pi".format(lazy_gettext('On/Off')),
     'output_manufacturer': 'Worldsemi',
     'input_library': 'adafruit-circuitpython-neopixel',
     'measurements_dict': measurements_dict,

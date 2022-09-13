@@ -11,7 +11,7 @@ from mycodo.utils.database import db_retrieve_table_daemon
 
 ACTION_INFORMATION = {
     'name_unique': 'display_flash_on',
-    'name': f"{TRANSLATIONS['display']['title']}: {lazy_gettext('Flashing')}: {lazy_gettext('On')}",
+    'name': "{}: {}: {}".format(TRANSLATIONS['display']['title'], lazy_gettext('Flashing'), lazy_gettext('On')),
     'library': None,
     'manufacturer': 'Mycodo',
     'application': ['functions'],

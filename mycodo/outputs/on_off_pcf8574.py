@@ -28,7 +28,7 @@ for each_channel in range(8):
 # Output information
 OUTPUT_INFORMATION = {
     'output_name_unique': 'PCF8574',
-    'output_name': f"{lazy_gettext('On/Off')}: PCF8574 8-Channel {lazy_gettext('I/O Expander')}",
+    'output_name': "{}: PCF8574 8-Channel {}".format(lazy_gettext('On/Off'), lazy_gettext('I/O Expander')),
     'output_manufacturer': 'Texas Instruments',
     'output_library': 'smbus2',
     'measurements_dict': measurements_dict,
@@ -111,7 +111,7 @@ OUTPUT_INFORMATION = {
             'type': 'float',
             'default_value': 0.0,
             'required': True,
-            'name': f"{lazy_gettext('Current')} ({lazy_gettext('Amps')})",
+            'name': "{} ({})".format(lazy_gettext('Current'), lazy_gettext('Amps')),
             'phrase': 'The current draw of the device being controlled'
         }
     ]

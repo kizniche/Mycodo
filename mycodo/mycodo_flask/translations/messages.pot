@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Mycodo 8.14.2\n"
 "Report-Msgid-Bugs-To: mycodo@kylegabriel.com\n"
-"POT-Creation-Date: 2022-09-12 18:29-0400\n"
+"POT-Creation-Date: 2022-09-12 20:10-0400\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -17,7 +17,8 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Generated-By: Babel 2.9.1\n"
 
-#: config_devices_units.py:13
+#: config_devices_units.py:13 config_devices_units.py:17
+#: config_devices_units.py:21 config_devices_units.py:25
 msgid "Acceleration"
 msgstr ""
 
@@ -41,12 +42,50 @@ msgstr ""
 msgid "Boolean"
 msgstr ""
 
-#: config_devices_units.py:49 mycodo_flask/forms/forms_camera.py:57
+#: actions/led_kasa_bulb_change_color.py:60 config_devices_units.py:49
+#: mycodo_flask/forms/forms_camera.py:57 outputs/on_off_kasa_rgb_bulbs.py:97
 msgid "Brightness"
 msgstr ""
 
 #: config_devices_units.py:53
 msgid "Carbon Dioxide"
+msgstr ""
+
+#: actions/display_backlight_color.py:14 config_devices_units.py:57
+#: config_devices_units.py:61 config_devices_units.py:65
+#: config_devices_units.py:73 config_devices_units.py:77
+#: config_devices_units.py:81 functions/function_spacer.py:23
+#: inputs/input_spacer.py:18 outputs/output_spacer.py:26
+msgid "Color"
+msgstr ""
+
+#: config_devices_units.py:57
+msgid "Red"
+msgstr ""
+
+#: config_devices_units.py:61
+msgid "Green"
+msgstr ""
+
+#: config_devices_units.py:65
+msgid "Blue"
+msgstr ""
+
+#: config_devices_units.py:69 outputs/on_off_kasa_rgb_bulbs.py:166
+msgid "Color Temperature"
+msgstr ""
+
+#: config_devices_units.py:85 config_devices_units.py:89
+#: config_devices_units.py:93 config_devices_units.py:361
+msgid "CPU Load"
+msgstr ""
+
+#: config_devices_units.py:85 config_devices_units.py:451
+msgid "Minute"
+msgstr ""
+
+#: config_devices_units.py:89 config_devices_units.py:93
+msgid "Minutes"
 msgstr ""
 
 #: config_devices_units.py:97
@@ -68,8 +107,12 @@ msgstr ""
 msgid "Dissolved Oxygen"
 msgstr ""
 
-#: config_devices_units.py:113 config_translations.py:73
-#: config_translations.py:312 mycodo_flask/templates/pages/usage.html:230
+#: actions/output_on_off.py:61 actions/output_ramp_pwm.py:77
+#: actions/pause_actions.py:35 config_devices_units.py:113
+#: config_translations.py:73 config_translations.py:312
+#: config_translations.py:313 mycodo_flask/forms/forms_method.py:58
+#: mycodo_flask/forms/forms_method.py:119
+#: mycodo_flask/templates/pages/usage.html:230
 #: mycodo_flask/templates/pages/usage.html:265
 msgid "Duration"
 msgstr ""
@@ -84,7 +127,7 @@ msgstr ""
 msgid "GPIO Edge"
 msgstr ""
 
-#: config_devices_units.py:125
+#: config_devices_units.py:125 functions/regulate_ph_ec.py:240
 msgid "Electrical Conductivity"
 msgstr ""
 
@@ -100,7 +143,8 @@ msgstr ""
 msgid "Energy"
 msgstr ""
 
-#: config_devices_units.py:141 mycodo_flask/forms/forms_method.py:67
+#: config_devices_units.py:141 config_translations.py:356
+#: mycodo_flask/forms/forms_method.py:67
 msgid "Frequency"
 msgstr ""
 
@@ -109,11 +153,13 @@ msgstr ""
 msgid "GPIO State"
 msgstr ""
 
-#: config_devices_units.py:149 mycodo_flask/forms/forms_camera.py:65
+#: actions/led_kasa_bulb_change_color.py:44 config_devices_units.py:149
+#: mycodo_flask/forms/forms_camera.py:65 outputs/on_off_kasa_rgb_bulbs.py:120
 msgid "Hue"
 msgstr ""
 
 #: config_devices_units.py:153 functions/humidity_wet_dry_bulb.py:62
+#: functions/vapor_pressure_deficit.py:114
 msgid "Humidity"
 msgstr ""
 
@@ -177,7 +223,7 @@ msgstr ""
 msgid "Reactive Power"
 msgstr ""
 
-#: config_devices_units.py:229
+#: config_devices_units.py:229 functions/humidity_wet_dry_bulb.py:147
 msgid "Pressure"
 msgstr ""
 
@@ -209,14 +255,17 @@ msgstr ""
 msgid "Salinity"
 msgstr ""
 
-#: config_devices_units.py:261 mycodo_flask/forms/forms_camera.py:67
+#: actions/led_kasa_bulb_change_color.py:52 config_devices_units.py:261
+#: mycodo_flask/forms/forms_camera.py:67 outputs/on_off_kasa_rgb_bulbs.py:143
 msgid "Saturation"
 msgstr ""
 
-#: actions/pid_setpoint.py:49 config_devices_units.py:265
-#: config_devices_units.py:514 config_translations.py:181
-#: functions/bang_bang.py:63 functions/bang_bang_on_off.py:73
-#: functions/bang_bang_pwm.py:60 functions/pid_autotune.py:97
+#: actions/pid_setpoint.py:17 actions/pid_setpoint.py:49
+#: actions/pid_setpoint_lower.py:17 actions/pid_setpoint_raise.py:17
+#: config_devices_units.py:265 config_devices_units.py:514
+#: config_translations.py:181 functions/bang_bang.py:63
+#: functions/bang_bang_on_off.py:73 functions/bang_bang_pwm.py:60
+#: functions/pid_autotune.py:97
 msgid "Setpoint"
 msgstr ""
 
@@ -244,7 +293,8 @@ msgstr ""
 msgid "Speed"
 msgstr ""
 
-#: config_devices_units.py:293
+#: config_devices_units.py:293 functions/vapor_pressure_deficit.py:94
+#: inputs/atlas_pt1000.py:76
 msgid "Temperature"
 msgstr ""
 
@@ -269,8 +319,11 @@ msgstr ""
 msgid "VOC"
 msgstr ""
 
-#: actions/output_volume.py:48 config_devices_units.py:317
-#: config_translations.py:219 config_translations.py:321
+#: actions/clear_total_volume.py:13 actions/output_volume.py:48
+#: config_devices_units.py:317 config_translations.py:219
+#: config_translations.py:321 config_translations.py:322
+#: inputs/atlas_flow.py:204 inputs/hall_flow.py:61 outputs/pump_pca9685.py:145
+#: outputs/pump_pca9685_l298n.py:134
 msgid "Volume"
 msgstr ""
 
@@ -315,15 +368,12 @@ msgstr ""
 msgid "Counts per minute"
 msgstr ""
 
-#: config_devices_units.py:361
-msgid "CPU Load"
-msgstr ""
-
 #: config_devices_units.py:364
 msgid "Decimal"
 msgstr ""
 
-#: config_devices_units.py:367
+#: actions/led_kasa_bulb_change_color.py:44 config_devices_units.py:367
+#: outputs/on_off_kasa_rgb_bulbs.py:120
 msgid "Degree"
 msgstr ""
 
@@ -359,7 +409,7 @@ msgstr ""
 msgid "Hectopascals"
 msgstr ""
 
-#: config_devices_units.py:394
+#: config_devices_units.py:394 config_translations.py:356
 msgid "Hertz"
 msgstr ""
 
@@ -367,7 +417,7 @@ msgstr ""
 msgid "Infrared"
 msgstr ""
 
-#: config_devices_units.py:400
+#: config_devices_units.py:400 outputs/on_off_kasa_rgb_bulbs.py:166
 msgid "Kelvin"
 msgstr ""
 
@@ -395,7 +445,8 @@ msgstr ""
 msgid "Kilopascal"
 msgstr ""
 
-#: config_devices_units.py:421
+#: actions/clear_total_kWh.py:13 config_devices_units.py:421
+#: inputs/kasa_energy_meter.py:77
 msgid "Kilowatt-hour"
 msgstr ""
 
@@ -435,10 +486,6 @@ msgstr ""
 msgid "Milligram per Liter"
 msgstr ""
 
-#: config_devices_units.py:451
-msgid "Minute"
-msgstr ""
-
 #: config_devices_units.py:454
 msgid "Milliamp"
 msgstr ""
@@ -471,7 +518,7 @@ msgstr ""
 msgid "Megabyte"
 msgstr ""
 
-#: config_devices_units.py:481
+#: config_devices_units.py:481 config_translations.py:363
 msgid "Ohm"
 msgstr ""
 
@@ -479,7 +526,9 @@ msgstr ""
 msgid "Pascal"
 msgstr ""
 
-#: config_devices_units.py:487
+#: actions/led_kasa_bulb_change_color.py:52
+#: actions/led_kasa_bulb_change_color.py:60 config_devices_units.py:487
+#: outputs/on_off_kasa_rgb_bulbs.py:97 outputs/on_off_kasa_rgb_bulbs.py:143
 msgid "Percent"
 msgstr ""
 
@@ -615,7 +664,7 @@ msgstr ""
 msgid "Completed"
 msgstr ""
 
-#: config_translations.py:45
+#: config_translations.py:45 mycodo_flask/forms/forms_settings.py:139
 msgid "Conditional"
 msgstr ""
 
@@ -738,7 +787,8 @@ msgstr ""
 msgid "Fail"
 msgstr ""
 
-#: config_translations.py:89 mycodo_flask/templates/pages/function.html:56
+#: config_translations.py:89 mycodo_flask/forms/forms_settings.py:142
+#: mycodo_flask/templates/pages/function.html:56
 #: widgets/widget_function_status.py:54 widgets/widget_graph_synchronous.py:384
 msgid "Function"
 msgstr ""
@@ -783,7 +833,9 @@ msgstr ""
 msgid "Import"
 msgstr ""
 
-#: config_translations.py:105 mycodo_flask/templates/layout-remote.html:50
+#: actions/input_force_measurements.py:13 config_translations.py:105
+#: mycodo_flask/forms/forms_settings.py:145
+#: mycodo_flask/templates/layout-remote.html:50
 #: mycodo_flask/templates/pages/function_options/pid_options.html:273
 msgid "Input"
 msgstr ""
@@ -818,12 +870,19 @@ msgid "Math"
 msgstr ""
 
 #: actions/examples/example_action_for_input.py:35
-#: actions/mqtt_publish_input.py:36 config_translations.py:121
-#: functions/average_past_single.py:86 functions/bang_bang.py:44
-#: functions/bang_bang_on_off.py:43 functions/bang_bang_pwm.py:41
-#: functions/pid_autotune.py:68 inputs/ads1115_analog_ph_ec.py:138
-#: inputs/ads1256_analog_ph_ec.py:222 inputs/anyleaf_ph.py:62
-#: inputs/atlas_do.py:68 inputs/atlas_ec.py:80 inputs/atlas_orp.py:67
+#: actions/mqtt_publish_input.py:13 actions/mqtt_publish_input.py:36
+#: config_translations.py:121 functions/average_past_single.py:86
+#: functions/bang_bang.py:44 functions/bang_bang_on_off.py:43
+#: functions/bang_bang_pwm.py:41 functions/difference.py:75
+#: functions/difference.py:83 functions/difference.py:94
+#: functions/difference.py:102 functions/equation_multi.py:75
+#: functions/equation_multi.py:83 functions/equation_multi.py:94
+#: functions/equation_multi.py:102 functions/pid_autotune.py:68
+#: functions/verification.py:74 functions/verification.py:82
+#: functions/verification.py:93 functions/verification.py:101
+#: inputs/ads1115_analog_ph_ec.py:138 inputs/ads1256_analog_ph_ec.py:222
+#: inputs/anyleaf_ph.py:62 inputs/atlas_do.py:68 inputs/atlas_ec.py:80
+#: inputs/atlas_o2.py:69 inputs/atlas_orp.py:67 inputs/atlas_ph.py:71
 #: mycodo_flask/forms/forms_misc.py:27 mycodo_flask/forms/forms_misc.py:35
 #: mycodo_flask/templates/pages/function_options/conditional_options/measurement.html:2
 #: mycodo_flask/templates/pages/function_options/conditional_options/measurement_dict.html:2
@@ -860,12 +919,14 @@ msgstr ""
 msgid "Note"
 msgstr ""
 
+#: actions/display_backlight_off.py:14 actions/display_flash_off.py:14
 #: config_translations.py:133
 #: mycodo_flask/templates/user_templates/widget_template_widget_indicator_js.html:24
 #: outputs/on_off_kasa_rgb_bulbs.py:228
 msgid "Off"
 msgstr ""
 
+#: actions/display_backlight_on.py:14 actions/display_flash_on.py:14
 #: config_translations.py:135
 #: mycodo_flask/templates/user_templates/widget_template_widget_indicator_js.html:22
 #: outputs/on_off_kasa_rgb_bulbs.py:212
@@ -874,7 +935,9 @@ msgstr ""
 
 #: config_translations.py:137 functions/bang_bang.py:55
 #: functions/bang_bang_pwm.py:52 functions/pid_autotune.py:79
-#: widgets/widget_output.py:52 widgets/widget_output_pwm_slider.py:52
+#: mycodo_flask/forms/forms_pid.py:101 mycodo_flask/forms/forms_pid.py:103
+#: mycodo_flask/forms/forms_settings.py:148 widgets/widget_output.py:52
+#: widgets/widget_output_pwm_slider.py:52
 msgid "Output"
 msgstr ""
 
@@ -898,19 +961,29 @@ msgstr ""
 msgid "Pause"
 msgstr ""
 
-#: config_translations.py:145
+#: config_translations.py:145 mycodo_flask/forms/forms_settings.py:151
 msgid "PID"
 msgstr ""
 
-#: config_translations.py:147
+#: config_translations.py:147 config_translations.py:270
+#: config_translations.py:327 config_translations.py:328
+#: config_translations.py:330 config_translations.py:331
+#: config_translations.py:333 config_translations.py:334
+#: config_translations.py:336 config_translations.py:337
+#: inputs/rpi_signal_revolutions_pigpio_callback.py:52
+#: mycodo_flask/forms/forms_conditional.py:69 outputs/on_off_gpio.py:58
+#: outputs/on_off_gpio_sysfs.py:54 outputs/on_off_wireless_rpi_rf.py:61
+#: outputs/pump_gpio.py:84 outputs/pwm_gpio.py:83
 msgid "Pin"
 msgstr ""
 
+#: actions/mqtt_publish.py:12 actions/mqtt_publish_input.py:13
 #: config_translations.py:149
 msgid "Publish"
 msgstr ""
 
-#: config_translations.py:151
+#: config_translations.py:151 outputs/pwm_gpio.py:38 outputs/pwm_pca9685.py:57
+#: outputs/pwm_python.py:159 outputs/pwm_shell.py:37
 msgid "PWM"
 msgstr ""
 
@@ -1064,18 +1137,20 @@ msgid "User"
 msgstr ""
 
 #: actions/output_value.py:47 config_translations.py:215
-#: config_translations.py:315 inputs/mycodo_test_input_save_value.py:72
+#: config_translations.py:315 config_translations.py:316
+#: inputs/mycodo_test_input_save_value.py:72
 #: mycodo_flask/templates/user_templates/widget_template_widget_indicator_js.html:60
+#: outputs/value_mqtt.py:32
 msgid "Value"
 msgstr ""
 
 #: config_translations.py:217 config_translations.py:318
-#: config_translations.py:386 inputs/anyleaf_orp.py:52
-#: mycodo_flask/forms/forms_settings.py:112
+#: config_translations.py:319 config_translations.py:386
+#: inputs/anyleaf_orp.py:52 mycodo_flask/forms/forms_settings.py:112
 msgid "Voltage"
 msgstr ""
 
-#: config_translations.py:221
+#: config_translations.py:221 mycodo_flask/forms/forms_settings.py:154
 msgid "Widget"
 msgstr ""
 
@@ -1129,6 +1204,96 @@ msgstr ""
 msgid "click to copy to the clipboard"
 msgstr ""
 
+#: config_translations.py:252
+msgid "Deadline"
+msgstr ""
+
+#: actions/output_on_off.py:61 actions/output_ramp_pwm.py:77
+#: actions/pause_actions.py:35 config_translations.py:252
+#: config_translations.py:288 config_translations.py:324
+#: config_translations.py:342 config_translations.py:365
+#: config_translations.py:392 config_translations.py:410
+#: functions/average_last_multiple.py:67 functions/average_last_multiple.py:75
+#: functions/average_last_multiple.py:83 functions/average_past_single.py:67
+#: functions/average_past_single.py:75 functions/average_past_single.py:94
+#: functions/backup_rsync.py:73 functions/backup_rsync.py:81
+#: functions/bang_bang.py:93 functions/bang_bang_on_off.py:104
+#: functions/bang_bang_pwm.py:91 functions/difference.py:64
+#: functions/difference.py:83 functions/difference.py:102
+#: functions/display_generic_lcd_16x2_i2c.py:225
+#: functions/display_generic_lcd_16x2_i2c.py:291
+#: functions/display_generic_lcd_20x4_i2c.py:210
+#: functions/display_generic_lcd_20x4_i2c.py:276
+#: functions/display_grove_lcd_16x2_i2c.py:227
+#: functions/display_grove_lcd_16x2_i2c.py:325
+#: functions/display_ssd1306_oled_128x32_i2c.py:194
+#: functions/display_ssd1306_oled_128x32_i2c.py:300
+#: functions/display_ssd1306_oled_128x32_i2c_2lines.py:194
+#: functions/display_ssd1306_oled_128x32_i2c_2lines.py:300
+#: functions/display_ssd1306_oled_128x32_spi.py:193
+#: functions/display_ssd1306_oled_128x32_spi.py:323
+#: functions/display_ssd1306_oled_128x32_spi_2lines.py:193
+#: functions/display_ssd1306_oled_128x32_spi_2lines.py:315
+#: functions/display_ssd1306_oled_128x64_i2c.py:194
+#: functions/display_ssd1306_oled_128x64_i2c.py:300
+#: functions/display_ssd1306_oled_128x64_i2c_4lines.py:194
+#: functions/display_ssd1306_oled_128x64_i2c_4lines.py:300
+#: functions/display_ssd1306_oled_128x64_spi.py:193
+#: functions/display_ssd1306_oled_128x64_spi.py:315
+#: functions/display_ssd1306_oled_128x64_spi_4lines.py:193
+#: functions/display_ssd1306_oled_128x64_spi_4lines.py:315
+#: functions/display_ssd1309_oled_128x64_i2c.py:196
+#: functions/display_ssd1309_oled_128x64_i2c.py:270 functions/equation.py:64
+#: functions/equation.py:83 functions/equation_multi.py:64
+#: functions/equation_multi.py:83 functions/equation_multi.py:102
+#: functions/examples/custom_function_multiple_channels.py:73
+#: functions/examples/custom_function_simple_loop_with_status.py:58
+#: functions/examples/custom_function_simple_loop_with_status.py:66
+#: functions/humidity_wet_dry_bulb.py:79 functions/humidity_wet_dry_bulb.py:87
+#: functions/humidity_wet_dry_bulb.py:107
+#: functions/humidity_wet_dry_bulb.py:127
+#: functions/humidity_wet_dry_bulb.py:147 functions/redundancy.py:63
+#: functions/regulate_ph_ec.py:179 functions/regulate_ph_ec.py:187
+#: functions/regulate_ph_ec.py:218 functions/regulate_ph_ec.py:240
+#: functions/statistics_last_multiple.py:101
+#: functions/statistics_last_multiple.py:109
+#: functions/statistics_past_single.py:100
+#: functions/statistics_past_single.py:108 functions/sum_last_multiple.py:68
+#: functions/sum_last_multiple.py:76 functions/sum_last_multiple.py:84
+#: functions/sum_past_single.py:68 functions/sum_past_single.py:76
+#: functions/sum_past_single.py:95 functions/vapor_pressure_deficit.py:66
+#: functions/vapor_pressure_deficit.py:74
+#: functions/vapor_pressure_deficit.py:94
+#: functions/vapor_pressure_deficit.py:114 functions/verification.py:63
+#: functions/verification.py:82 functions/verification.py:101
+#: inputs/ads1115_analog_ph_ec.py:147 inputs/ads1256_analog_ph_ec.py:231
+#: inputs/anyleaf_ph.py:71 inputs/atlas_do.py:77 inputs/atlas_ec.py:89
+#: inputs/atlas_o2.py:78 inputs/atlas_orp.py:76 inputs/atlas_ph.py:80
+#: inputs/rpi_signal_revolutions_pigpio_callback.py:61
+#: mycodo_flask/forms/forms_camera.py:32 mycodo_flask/forms/forms_camera.py:40
+#: mycodo_flask/forms/forms_conditional.py:34
+#: mycodo_flask/forms/forms_conditional.py:41
+#: mycodo_flask/forms/forms_conditional.py:44
+#: mycodo_flask/forms/forms_conditional.py:47
+#: mycodo_flask/forms/forms_method.py:58 mycodo_flask/forms/forms_method.py:61
+#: mycodo_flask/forms/forms_method.py:119
+#: mycodo_flask/forms/forms_method.py:122 mycodo_flask/forms/forms_pid.py:108
+#: mycodo_flask/forms/forms_settings.py:139
+#: mycodo_flask/forms/forms_settings.py:142
+#: mycodo_flask/forms/forms_settings.py:145
+#: mycodo_flask/forms/forms_settings.py:148
+#: mycodo_flask/forms/forms_settings.py:151
+#: mycodo_flask/forms/forms_settings.py:154
+#: mycodo_flask/forms/forms_trigger.py:48
+#: mycodo_flask/forms/forms_trigger.py:50
+#: mycodo_flask/forms/forms_trigger.py:63 widgets/widget_camera.py:186
+#: widgets/widget_gauge_angular.py:162 widgets/widget_gauge_solid.py:184
+#: widgets/widget_indicator.py:64 widgets/widget_measurement.py:64
+#: widgets/widget_output.py:60 widgets/widget_output_pwm_slider.py:60
+#: widgets/widget_pid.py:253
+msgid "Seconds"
+msgstr ""
+
 #: config_translations.py:253
 msgid "Time to wait until failure"
 msgstr ""
@@ -1136,6 +1301,14 @@ msgstr ""
 #: actions/output_pwm.py:49 actions/output_ramp_pwm.py:51
 #: actions/output_ramp_pwm.py:60 config_translations.py:256
 msgid "Duty cycle for the PWM (percent, 0.0 - 100.0)"
+msgstr ""
+
+#: config_translations.py:258 outputs/pump_gpio.py:130
+msgid "Desired Flow Rate"
+msgstr ""
+
+#: config_translations.py:258 outputs/pump_gpio.py:130
+msgid "ml/min"
 msgstr ""
 
 #: config_translations.py:261
@@ -1168,6 +1341,20 @@ msgstr ""
 
 #: config_translations.py:268
 msgid "The FTDI device connected to the input/output/etc."
+msgstr ""
+
+#: config_translations.py:270
+#: inputs/rpi_signal_revolutions_pigpio_callback.py:52
+#: mycodo_flask/forms/forms_conditional.py:69 outputs/on_off_gpio.py:58
+#: outputs/on_off_gpio_sysfs.py:54 outputs/on_off_wireless_rpi_rf.py:61
+#: outputs/pump_gpio.py:84 outputs/pwm_gpio.py:83
+msgid "GPIO"
+msgstr ""
+
+#: config_translations.py:271 config_translations.py:328
+#: config_translations.py:331 config_translations.py:334
+#: config_translations.py:337
+msgid "GPIO (using BCM numbering)"
 msgstr ""
 
 #: config_translations.py:273 outputs/pump_grove_motor_driver_v1_3.py:132
@@ -1207,6 +1394,40 @@ msgstr ""
 
 #: config_translations.py:286
 msgid "Show debug lines in the Daemon Log"
+msgstr ""
+
+#: config_translations.py:288 functions/average_last_multiple.py:83
+#: functions/average_past_single.py:94 functions/difference.py:83
+#: functions/difference.py:102 functions/display_generic_lcd_16x2_i2c.py:291
+#: functions/display_generic_lcd_20x4_i2c.py:276
+#: functions/display_grove_lcd_16x2_i2c.py:325
+#: functions/display_ssd1306_oled_128x32_i2c.py:300
+#: functions/display_ssd1306_oled_128x32_i2c_2lines.py:300
+#: functions/display_ssd1306_oled_128x32_spi.py:323
+#: functions/display_ssd1306_oled_128x32_spi_2lines.py:315
+#: functions/display_ssd1306_oled_128x64_i2c.py:300
+#: functions/display_ssd1306_oled_128x64_i2c_4lines.py:300
+#: functions/display_ssd1306_oled_128x64_spi.py:315
+#: functions/display_ssd1306_oled_128x64_spi_4lines.py:315
+#: functions/display_ssd1309_oled_128x64_i2c.py:270 functions/equation.py:83
+#: functions/equation_multi.py:83 functions/equation_multi.py:102
+#: functions/humidity_wet_dry_bulb.py:107
+#: functions/humidity_wet_dry_bulb.py:127
+#: functions/humidity_wet_dry_bulb.py:147 functions/regulate_ph_ec.py:218
+#: functions/regulate_ph_ec.py:240 functions/statistics_last_multiple.py:109
+#: functions/statistics_past_single.py:108 functions/sum_last_multiple.py:84
+#: functions/sum_past_single.py:95 functions/vapor_pressure_deficit.py:94
+#: functions/vapor_pressure_deficit.py:114 functions/verification.py:82
+#: functions/verification.py:101 inputs/ads1115_analog_ph_ec.py:147
+#: inputs/ads1256_analog_ph_ec.py:231 inputs/anyleaf_ph.py:71
+#: inputs/atlas_do.py:77 inputs/atlas_ec.py:89 inputs/atlas_o2.py:78
+#: inputs/atlas_orp.py:76 inputs/atlas_ph.py:80
+#: mycodo_flask/forms/forms_pid.py:108 widgets/widget_camera.py:186
+#: widgets/widget_gauge_angular.py:162 widgets/widget_gauge_solid.py:184
+#: widgets/widget_indicator.py:64 widgets/widget_measurement.py:64
+#: widgets/widget_output.py:60 widgets/widget_output_pwm_slider.py:60
+#: widgets/widget_pid.py:253
+msgid "Max Age"
 msgstr ""
 
 #: config_translations.py:289
@@ -1284,6 +1505,40 @@ msgstr ""
 msgid "What state triggers the output to turn on? High or Low?"
 msgstr ""
 
+#: config_translations.py:313 config_translations.py:316
+#: config_translations.py:319 config_translations.py:322
+msgid "Send to output controller"
+msgstr ""
+
+#: config_translations.py:324 functions/average_last_multiple.py:67
+#: functions/average_past_single.py:67 functions/backup_rsync.py:73
+#: functions/bang_bang.py:93 functions/bang_bang_on_off.py:104
+#: functions/bang_bang_pwm.py:91 functions/difference.py:64
+#: functions/display_generic_lcd_16x2_i2c.py:225
+#: functions/display_generic_lcd_20x4_i2c.py:210
+#: functions/display_grove_lcd_16x2_i2c.py:227
+#: functions/display_ssd1306_oled_128x32_i2c.py:194
+#: functions/display_ssd1306_oled_128x32_i2c_2lines.py:194
+#: functions/display_ssd1306_oled_128x32_spi.py:193
+#: functions/display_ssd1306_oled_128x32_spi_2lines.py:193
+#: functions/display_ssd1306_oled_128x64_i2c.py:194
+#: functions/display_ssd1306_oled_128x64_i2c_4lines.py:194
+#: functions/display_ssd1306_oled_128x64_spi.py:193
+#: functions/display_ssd1306_oled_128x64_spi_4lines.py:193
+#: functions/display_ssd1309_oled_128x64_i2c.py:196 functions/equation.py:64
+#: functions/equation_multi.py:64
+#: functions/examples/custom_function_multiple_channels.py:73
+#: functions/examples/custom_function_simple_loop_with_status.py:58
+#: functions/humidity_wet_dry_bulb.py:79 functions/pid_autotune.py:88
+#: functions/redundancy.py:63 functions/regulate_ph_ec.py:179
+#: functions/statistics_last_multiple.py:101
+#: functions/statistics_past_single.py:100 functions/sum_last_multiple.py:68
+#: functions/sum_past_single.py:68 functions/vapor_pressure_deficit.py:66
+#: functions/verification.py:63 mycodo_flask/forms/forms_conditional.py:34
+#: mycodo_flask/forms/forms_trigger.py:48
+msgid "Period"
+msgstr ""
+
 #: config_translations.py:325 functions/average_last_multiple.py:68
 #: functions/average_past_single.py:68 functions/backup_rsync.py:74
 #: functions/bang_bang.py:94 functions/bang_bang_on_off.py:105
@@ -1310,6 +1565,22 @@ msgstr ""
 msgid "The duration between measurements or actions"
 msgstr ""
 
+#: config_translations.py:327 config_translations.py:328
+msgid "Clock"
+msgstr ""
+
+#: config_translations.py:330 config_translations.py:331
+msgid "Cable Select"
+msgstr ""
+
+#: config_translations.py:333 config_translations.py:334
+msgid "MISO"
+msgstr ""
+
+#: config_translations.py:336 config_translations.py:337
+msgid "MOSI"
+msgstr ""
+
 #: actions/mqtt_publish.py:47 actions/mqtt_publish_input.py:52
 #: config_translations.py:339 mycodo_flask/forms/forms_settings.py:102
 #: outputs/on_off_mqtt.py:66 outputs/value_mqtt.py:65
@@ -1318,6 +1589,10 @@ msgstr ""
 
 #: config_translations.py:340
 msgid "Host port number"
+msgstr ""
+
+#: config_translations.py:342
+msgid "Pre Out Duration"
 msgstr ""
 
 #: config_translations.py:343
@@ -1369,8 +1644,12 @@ msgid ""
 "frequencies)"
 msgstr ""
 
-#: config_translations.py:362
+#: config_translations.py:362 config_translations.py:363
 msgid "Reference Resistance"
+msgstr ""
+
+#: config_translations.py:365
+msgid "Refresh"
 msgstr ""
 
 #: config_translations.py:366
@@ -1427,6 +1706,17 @@ msgstr ""
 
 #: config_translations.py:390
 msgid "The output value to set when Mycodo shuts down"
+msgstr ""
+
+#: config_translations.py:392 functions/average_last_multiple.py:75
+#: functions/average_past_single.py:75 functions/backup_rsync.py:81
+#: functions/examples/custom_function_simple_loop_with_status.py:66
+#: functions/humidity_wet_dry_bulb.py:87 functions/regulate_ph_ec.py:187
+#: functions/sum_last_multiple.py:76 functions/sum_past_single.py:76
+#: functions/vapor_pressure_deficit.py:74
+#: mycodo_flask/forms/forms_conditional.py:44
+#: mycodo_flask/forms/forms_trigger.py:50
+msgid "Start Offset"
 msgstr ""
 
 #: config_translations.py:393 functions/average_last_multiple.py:76
@@ -1491,8 +1781,23 @@ msgstr ""
 msgid "Edge detection: low to high (rising), high to low (falling), or both"
 msgstr ""
 
+#: config_translations.py:407
+msgid "Bounce Time"
+msgstr ""
+
+#: config_translations.py:407 outputs/on_off_kasa_rgb_bulbs.py:90
+#: outputs/on_off_kasa_rgb_bulbs.py:113 outputs/on_off_kasa_rgb_bulbs.py:136
+#: outputs/on_off_kasa_rgb_bulbs.py:159 outputs/on_off_kasa_rgb_bulbs.py:182
+#: outputs/on_off_kasa_rgb_bulbs.py:205 outputs/on_off_kasa_rgb_bulbs.py:221
+msgid "Milliseconds"
+msgstr ""
+
 #: config_translations.py:408
 msgid "The amount of time to bounce the input signal"
+msgstr ""
+
+#: config_translations.py:410 mycodo_flask/forms/forms_input.py:157
+msgid "Reset Period"
 msgstr ""
 
 #: config_translations.py:411
@@ -1544,8 +1849,47 @@ msgid ""
 "weighting."
 msgstr ""
 
+#: config_translations.py:432 config_translations.py:435
+msgid "Always Min"
+msgstr ""
+
+#: actions/pid_setpoint_raise.py:17 config_translations.py:432
+#: mycodo_flask/forms/forms_pid.py:34 mycodo_flask/forms/forms_pid.py:101
+#: mycodo_flask/forms/forms_pid.py:102 mycodo_flask/forms/forms_pid.py:118
+#: mycodo_flask/forms/forms_pid.py:126 mycodo_flask/forms/forms_pid.py:134
+#: mycodo_flask/forms/forms_pid.py:172 mycodo_flask/forms/forms_pid.py:176
+#: mycodo_flask/forms/forms_pid.py:194 mycodo_flask/forms/forms_pid.py:202
+#: mycodo_flask/forms/forms_pid.py:232 mycodo_flask/forms/forms_pid.py:240
+msgid "Raise"
+msgstr ""
+
 #: config_translations.py:433 config_translations.py:436
 msgid "Never allow duty cycle to go below Min."
+msgstr ""
+
+#: actions/pid_setpoint_lower.py:17 config_translations.py:435
+#: mycodo_flask/forms/forms_pid.py:35 mycodo_flask/forms/forms_pid.py:103
+#: mycodo_flask/forms/forms_pid.py:104 mycodo_flask/forms/forms_pid.py:145
+#: mycodo_flask/forms/forms_pid.py:153 mycodo_flask/forms/forms_pid.py:161
+#: mycodo_flask/forms/forms_pid.py:183 mycodo_flask/forms/forms_pid.py:187
+#: mycodo_flask/forms/forms_pid.py:213 mycodo_flask/forms/forms_pid.py:221
+#: mycodo_flask/forms/forms_pid.py:253 mycodo_flask/forms/forms_pid.py:261
+msgid "Lower"
+msgstr ""
+
+#: actions/clear_total_kWh.py:13 actions/clear_total_volume.py:13
+msgid "Flow Meter"
+msgstr ""
+
+#: actions/clear_total_kWh.py:13 actions/clear_total_volume.py:13
+#: inputs/atlas_flow.py:204 inputs/hall_flow.py:61
+#: inputs/kasa_energy_meter.py:77 outputs/pump_pca9685.py:145
+#: outputs/pump_pca9685_l298n.py:134
+msgid "Clear Total"
+msgstr ""
+
+#: actions/command_bash.py:11
+msgid "Execute"
 msgstr ""
 
 #: actions/command_bash.py:21
@@ -1571,6 +1915,19 @@ msgstr ""
 #: actions/create_note.py:38 mycodo_flask/forms/forms_notes.py:47
 #: mycodo_flask/templates/tools/notes.html:16
 msgid "Tags"
+msgstr ""
+
+#: actions/display_backlight_color.py:14 actions/display_backlight_off.py:14
+#: actions/display_backlight_on.py:14
+msgid "Backlight"
+msgstr ""
+
+#: actions/display_flash_off.py:14 actions/display_flash_on.py:14
+msgid "Flashing"
+msgstr ""
+
+#: actions/input_force_measurements.py:13
+msgid "Force Measurements"
 msgstr ""
 
 #: actions/input_force_measurements.py:23
@@ -1639,8 +1996,16 @@ msgstr ""
 msgid "Set a delay between executing Actions when self.run_all_actions() is used."
 msgstr ""
 
+#: actions/photo.py:13
+msgid "Capture Photo"
+msgstr ""
+
 #: actions/photo.py:23
 msgid "Capture a photo with the selected Camera."
+msgstr ""
+
+#: actions/pid_method.py:18
+msgid "Set Method"
 msgstr ""
 
 #: actions/pid_method.py:28
@@ -1653,6 +2018,13 @@ msgstr ""
 
 #: actions/pid_resume.py:27
 msgid "Resume a PID."
+msgstr ""
+
+#: actions/pid_setpoint.py:17 outputs/on_off_kasa_rgb_bulbs.py:104
+#: outputs/on_off_kasa_rgb_bulbs.py:127 outputs/on_off_kasa_rgb_bulbs.py:150
+#: outputs/on_off_kasa_rgb_bulbs.py:173 outputs/on_off_kasa_rgb_bulbs.py:196
+#: outputs/on_off_neopixel_rgb.py:75 outputs/on_off_neopixel_rgb_spi.py:75
+msgid "Set"
 msgstr ""
 
 #: actions/pid_setpoint.py:27
@@ -1673,6 +2045,14 @@ msgstr ""
 
 #: actions/pid_setpoint_raise.py:48
 msgid "Raise Setpoint"
+msgstr ""
+
+#: actions/system_restart.py:13
+msgid "Restart"
+msgstr ""
+
+#: actions/system_shutdown.py:13
+msgid "Shutdown"
 msgstr ""
 
 #: actions/webhook.py:15
@@ -1743,17 +2123,16 @@ msgstr ""
 msgid "Equation"
 msgstr ""
 
-#: functions/function_spacer.py:23 inputs/input_spacer.py:18
-#: outputs/output_spacer.py:26
-msgid "Color"
-msgstr ""
-
 #: functions/humidity_wet_dry_bulb.py:62
 msgid "Wet/Dry-Bulb"
 msgstr ""
 
-#: functions/pid_autotune.py:88
-msgid "Period"
+#: functions/humidity_wet_dry_bulb.py:107
+msgid "Dry Bulb"
+msgstr ""
+
+#: functions/humidity_wet_dry_bulb.py:127
+msgid "Wet Bulb"
 msgstr ""
 
 #: functions/pid_autotune.py:106
@@ -1762,6 +2141,10 @@ msgstr ""
 
 #: functions/pid_autotune.py:115
 msgid "Outstep"
+msgstr ""
+
+#: functions/regulate_ph_ec.py:218
+msgid "pH"
 msgstr ""
 
 #: inputs/ads1015_circuitpython.py:80 inputs/ads1115_circuitpython.py:81
@@ -1776,9 +2159,13 @@ msgid ""
 "measurements will be stored."
 msgstr ""
 
-#: inputs/ads1115_analog_ph_ec.py:138 inputs/ads1256_analog_ph_ec.py:222
-#: inputs/anyleaf_ph.py:62 inputs/atlas_do.py:68 inputs/atlas_ec.py:80
-#: inputs/atlas_orp.py:67
+#: inputs/ads1115_analog_ph_ec.py:138 inputs/ads1115_analog_ph_ec.py:147
+#: inputs/ads1256_analog_ph_ec.py:222 inputs/ads1256_analog_ph_ec.py:231
+#: inputs/anyleaf_ph.py:62 inputs/anyleaf_ph.py:71 inputs/atlas_do.py:68
+#: inputs/atlas_do.py:77 inputs/atlas_ec.py:80 inputs/atlas_ec.py:89
+#: inputs/atlas_o2.py:69 inputs/atlas_o2.py:78 inputs/atlas_o2.py:87
+#: inputs/atlas_orp.py:67 inputs/atlas_orp.py:76 inputs/atlas_ph.py:71
+#: inputs/atlas_ph.py:80
 msgid "Temperature Compensation"
 msgstr ""
 
@@ -1873,6 +2260,10 @@ msgstr ""
 msgid "LED Mode"
 msgstr ""
 
+#: inputs/atlas_o2.py:87
+msgid "Manual"
+msgstr ""
+
 #: inputs/atlas_pressure.py:61
 msgid "When to turn the LED on"
 msgstr ""
@@ -1904,6 +2295,13 @@ msgstr ""
 
 #: inputs/mycodo_test_input_save_value.py:79
 msgid "Store Measurement"
+msgstr ""
+
+#: inputs/rpi_signal_revolutions_pigpio_callback.py:52
+#: mycodo_flask/forms/forms_conditional.py:69 outputs/on_off_gpio.py:58
+#: outputs/on_off_gpio_sysfs.py:54 outputs/on_off_wireless_rpi_rf.py:61
+#: outputs/pump_gpio.py:84 outputs/pwm_gpio.py:83
+msgid "BCM"
 msgstr ""
 
 #: inputs/th1x.py:68 inputs/th1x_am2301.py:67 inputs/th1x_ds18b20.py:53
@@ -2128,8 +2526,16 @@ msgstr ""
 msgid "Stop Timelapse"
 msgstr ""
 
+#: mycodo_flask/forms/forms_camera.py:32
+msgid "Interval"
+msgstr ""
+
 #: mycodo_flask/forms/forms_camera.py:35
 msgid "Photo Interval must be a positive value"
+msgstr ""
+
+#: mycodo_flask/forms/forms_camera.py:40
+msgid "Run Time"
 msgstr ""
 
 #: mycodo_flask/forms/forms_camera.py:43
@@ -2315,6 +2721,14 @@ msgstr ""
 msgid "Status Python Code"
 msgstr ""
 
+#: mycodo_flask/forms/forms_conditional.py:41
+msgid "Refractory Period"
+msgstr ""
+
+#: mycodo_flask/forms/forms_conditional.py:47
+msgid "Timeout"
+msgstr ""
+
 #: mycodo_flask/forms/forms_custom_controller.py:26
 #: mycodo_flask/forms/forms_input.py:101
 msgid "Number of Measurements"
@@ -2356,10 +2770,6 @@ msgstr ""
 msgid "Bounce Time (ms)"
 msgstr ""
 
-#: mycodo_flask/forms/forms_input.py:157
-msgid "Reset Period"
-msgstr ""
-
 #: mycodo_flask/forms/forms_input.py:189
 #: mycodo_flask/templates/pages/data_options/input_options.html:116
 msgid "Acquire Measurements Now"
@@ -2387,6 +2797,10 @@ msgstr ""
 
 #: mycodo_flask/forms/forms_method.py:55
 msgid "End Setpoint (optional)"
+msgstr ""
+
+#: mycodo_flask/forms/forms_method.py:61 mycodo_flask/forms/forms_method.py:122
+msgid "Duration to End"
 msgstr ""
 
 #: mycodo_flask/forms/forms_method.py:64
@@ -2549,14 +2963,6 @@ msgstr ""
 msgid "Turn On"
 msgstr ""
 
-#: mycodo_flask/forms/forms_pid.py:34
-msgid "Raise"
-msgstr ""
-
-#: mycodo_flask/forms/forms_pid.py:35
-msgid "Lower"
-msgstr ""
-
 #: mycodo_flask/forms/forms_pid.py:36
 #: mycodo_flask/templates/pages/function_options/trigger_options/edge.html:27
 msgid "Both"
@@ -2592,6 +2998,51 @@ msgstr ""
 
 #: mycodo_flask/forms/forms_pid.py:99
 msgid "Integrator Max"
+msgstr ""
+
+#: mycodo_flask/forms/forms_pid.py:102 mycodo_flask/forms/forms_pid.py:104
+#: mycodo_flask/templates/pages/actions.html:18
+#: mycodo_flask/templates/pages/data_options/input_options.html:299
+#: mycodo_flask/templates/pages/function_options/conditional_options.html:147
+#: mycodo_flask/templates/pages/function_options/function_options.html:64
+#: mycodo_flask/templates/pages/function_options/trigger_options.html:80
+msgid "Action"
+msgstr ""
+
+#: mycodo_flask/forms/forms_pid.py:118 mycodo_flask/forms/forms_pid.py:145
+msgid "Min On Duration"
+msgstr ""
+
+#: mycodo_flask/forms/forms_pid.py:126 mycodo_flask/forms/forms_pid.py:153
+msgid "Max On Duration"
+msgstr ""
+
+#: mycodo_flask/forms/forms_pid.py:134 mycodo_flask/forms/forms_pid.py:161
+msgid "Min Off Duration"
+msgstr ""
+
+#: mycodo_flask/forms/forms_pid.py:172 mycodo_flask/forms/forms_pid.py:183
+msgid "Min Amount"
+msgstr ""
+
+#: mycodo_flask/forms/forms_pid.py:176 mycodo_flask/forms/forms_pid.py:187
+msgid "Max Amount"
+msgstr ""
+
+#: mycodo_flask/forms/forms_pid.py:194 mycodo_flask/forms/forms_pid.py:213
+msgid "Min On Amount"
+msgstr ""
+
+#: mycodo_flask/forms/forms_pid.py:202 mycodo_flask/forms/forms_pid.py:221
+msgid "Max On Amount"
+msgstr ""
+
+#: mycodo_flask/forms/forms_pid.py:232 mycodo_flask/forms/forms_pid.py:253
+msgid "Min Duty Cycle"
+msgstr ""
+
+#: mycodo_flask/forms/forms_pid.py:240 mycodo_flask/forms/forms_pid.py:261
+msgid "Max Duty Cycle"
 msgstr ""
 
 #: mycodo_flask/forms/forms_settings.py:32
@@ -2750,6 +3201,15 @@ msgstr ""
 
 #: mycodo_flask/forms/forms_settings.py:136
 msgid "Internet Test Timeout"
+msgstr ""
+
+#: mycodo_flask/forms/forms_settings.py:139
+#: mycodo_flask/forms/forms_settings.py:142
+#: mycodo_flask/forms/forms_settings.py:145
+#: mycodo_flask/forms/forms_settings.py:148
+#: mycodo_flask/forms/forms_settings.py:151
+#: mycodo_flask/forms/forms_settings.py:154
+msgid "Sample Rate"
 msgstr ""
 
 #: mycodo_flask/forms/forms_settings.py:166
@@ -3079,7 +3539,11 @@ msgstr ""
 msgid "If State"
 msgstr ""
 
-#: mycodo_flask/forms/forms_trigger.py:65
+#: mycodo_flask/forms/forms_trigger.py:63
+msgid "If Duration"
+msgstr ""
+
+#: mycodo_flask/forms/forms_trigger.py:66
 #, python-format
 msgid "If Duty Cycle (%%)"
 msgstr ""
@@ -3496,14 +3960,6 @@ msgstr ""
 msgid "latest"
 msgstr ""
 
-#: mycodo_flask/templates/pages/actions.html:18
-#: mycodo_flask/templates/pages/data_options/input_options.html:299
-#: mycodo_flask/templates/pages/function_options/conditional_options.html:147
-#: mycodo_flask/templates/pages/function_options/function_options.html:64
-#: mycodo_flask/templates/pages/function_options/trigger_options.html:80
-msgid "Action"
-msgstr ""
-
 #: mycodo_flask/templates/pages/actions.html:35
 #: mycodo_flask/templates/pages/data_options/input_options.html:24
 #: mycodo_flask/templates/pages/function_options/conditional_condition.html:12
@@ -3841,7 +4297,20 @@ msgid "Select a measurement with the unit"
 msgstr ""
 
 #: mycodo_flask/templates/pages/usage.html:41
-#: mycodo_flask/templates/pages/usage.html:96
+#: mycodo_flask/templates/pages/usage.html:96 outputs/on_off_gpio.py:106
+#: outputs/on_off_gpio_sysfs.py:102
+#: outputs/on_off_grove_multichannel_relay.py:178
+#: outputs/on_off_kasa_hs300.py:134 outputs/on_off_kasa_hs300_0_4_2.py:147
+#: outputs/on_off_kasa_kp303.py:134 outputs/on_off_kasa_kp303_0_4_2.py:147
+#: outputs/on_off_kasa_plugs.py:136 outputs/on_off_kasa_rgb_bulbs.py:305
+#: outputs/on_off_mcp23017.py:115 outputs/on_off_mqtt.py:146
+#: outputs/on_off_pcf8574.py:114 outputs/on_off_pcf8575.py:114
+#: outputs/on_off_python.py:248 outputs/on_off_shell.py:113
+#: outputs/on_off_wireless_rpi_rf.py:146 outputs/pump_atlas_ezo_pmp.py:101
+#: outputs/pump_gpio.py:138 outputs/pump_mcp23017.py:138
+#: outputs/pump_pcf8574.py:140 outputs/pwm_gpio.py:173
+#: outputs/pwm_pca9685.py:183 outputs/pwm_python.py:291
+#: outputs/pwm_shell.py:145
 msgid "Amps"
 msgstr ""
 
@@ -3985,7 +4454,7 @@ msgid "The duration between checking whether the conditional is true"
 msgstr ""
 
 #: mycodo_flask/templates/pages/function_options/conditional_options.html:88
-msgid "The timeout (seconds) for the execution of the Run Python Code"
+msgid "The timeout for the execution of the Run Python Code"
 msgstr ""
 
 #: mycodo_flask/templates/pages/function_options/conditional_options.html:108
@@ -5052,12 +5521,51 @@ msgid ""
 "successful."
 msgstr ""
 
+#: outputs/dac_mcp4728.py:60
+msgid "Digital-to-Analog Converter"
+msgstr ""
+
+#: outputs/motor_stepper_bipolar_generic.py:35
+#: outputs/motor_stepper_uln2003.py:33
+msgid "Motor"
+msgstr ""
+
+#: outputs/motor_stepper_bipolar_generic.py:35
+#: outputs/motor_stepper_uln2003.py:33
+msgid "Stepper Motor"
+msgstr ""
+
+#: outputs/motor_stepper_bipolar_generic.py:35
+msgid "Bipolar"
+msgstr ""
+
+#: outputs/motor_stepper_bipolar_generic.py:35
+msgid "Generic"
+msgstr ""
+
 #: outputs/motor_stepper_bipolar_generic.py:98
 #: outputs/motor_stepper_bipolar_generic.py:108
 #: outputs/motor_stepper_bipolar_generic.py:160
 #: outputs/motor_stepper_bipolar_generic.py:170
 #: outputs/motor_stepper_bipolar_generic.py:180
 msgid "Set to None to disable."
+msgstr ""
+
+#: outputs/motor_stepper_uln2003.py:33
+msgid "Unipolar"
+msgstr ""
+
+#: outputs/on_off_gpio.py:30 outputs/on_off_gpio_sysfs.py:30
+#: outputs/on_off_grove_multichannel_relay.py:94
+#: outputs/on_off_kasa_hs300.py:38 outputs/on_off_kasa_hs300_0_4_2.py:42
+#: outputs/on_off_kasa_kp303.py:38 outputs/on_off_kasa_kp303_0_4_2.py:42
+#: outputs/on_off_kasa_plugs.py:39 outputs/on_off_kasa_rgb_bulbs.py:58
+#: outputs/on_off_mcp23017.py:31 outputs/on_off_mqtt.py:29
+#: outputs/on_off_neopixel_rgb.py:32 outputs/on_off_neopixel_rgb_spi.py:32
+#: outputs/on_off_pcf8574.py:31 outputs/on_off_pcf8575.py:31
+#: outputs/on_off_python.py:160 outputs/on_off_shell.py:30
+#: outputs/on_off_wireless_rpi_rf.py:31
+msgid "On/Off"
 msgstr ""
 
 #: outputs/on_off_gpio.py:59 outputs/on_off_gpio_sysfs.py:55
@@ -5080,11 +5588,26 @@ msgstr ""
 msgid "Trigger Functions at Startup"
 msgstr ""
 
-#: outputs/on_off_kasa_rgb_bulbs.py:104 outputs/on_off_kasa_rgb_bulbs.py:127
-#: outputs/on_off_kasa_rgb_bulbs.py:150 outputs/on_off_kasa_rgb_bulbs.py:173
-#: outputs/on_off_kasa_rgb_bulbs.py:196 outputs/on_off_neopixel_rgb.py:75
-#: outputs/on_off_neopixel_rgb_spi.py:75
-msgid "Set"
+#: outputs/on_off_gpio.py:106 outputs/on_off_gpio_sysfs.py:102
+#: outputs/on_off_grove_multichannel_relay.py:178
+#: outputs/on_off_kasa_hs300.py:134 outputs/on_off_kasa_hs300_0_4_2.py:147
+#: outputs/on_off_kasa_kp303.py:134 outputs/on_off_kasa_kp303_0_4_2.py:147
+#: outputs/on_off_kasa_plugs.py:136 outputs/on_off_kasa_rgb_bulbs.py:305
+#: outputs/on_off_mcp23017.py:115 outputs/on_off_mqtt.py:146
+#: outputs/on_off_pcf8574.py:114 outputs/on_off_pcf8575.py:114
+#: outputs/on_off_python.py:248 outputs/on_off_shell.py:113
+#: outputs/on_off_wireless_rpi_rf.py:146 outputs/pump_atlas_ezo_pmp.py:101
+#: outputs/pump_gpio.py:138 outputs/pump_mcp23017.py:138
+#: outputs/pump_pcf8574.py:140 outputs/pwm_gpio.py:173
+#: outputs/pwm_pca9685.py:183 outputs/pwm_python.py:291
+#: outputs/pwm_shell.py:145
+msgid "Current"
+msgstr ""
+
+#: outputs/on_off_mcp23017.py:31 outputs/on_off_pcf8574.py:31
+#: outputs/on_off_pcf8575.py:31 outputs/pump_mcp23017.py:50
+#: outputs/pump_pcf8574.py:50
+msgid "I/O Expander"
 msgstr ""
 
 #: outputs/on_off_mqtt.py:99
@@ -5123,6 +5646,10 @@ msgstr ""
 msgid "The current draw of the device being controlled"
 msgstr ""
 
+#: outputs/on_off_wireless_rpi_rf.py:31
+msgid "Wireless"
+msgstr ""
+
 #: outputs/on_off_wireless_rpi_rf.py:91
 msgid "Protocol"
 msgstr ""
@@ -5139,6 +5666,18 @@ msgstr ""
 msgid "Spacer"
 msgstr ""
 
+#: outputs/potentiometer_ds3502.py:30
+msgid "Digital Potentiometer"
+msgstr ""
+
+#: outputs/pump_atlas_ezo_pmp.py:42 outputs/pump_gpio.py:48
+#: outputs/pump_grove_motor_driver_v1_0.py:68
+#: outputs/pump_grove_motor_driver_v1_3.py:69 outputs/pump_l298n.py:56
+#: outputs/pump_mcp23017.py:50 outputs/pump_pca9685.py:67
+#: outputs/pump_pca9685_l298n.py:67 outputs/pump_pcf8574.py:50
+msgid "Peristaltic Pump"
+msgstr ""
+
 #: outputs/pump_pca9685.py:156 outputs/pump_pca9685_l298n.py:145
 #: outputs/pwm_gpio.py:144 outputs/pwm_pca9685.py:101
 msgid "Frequency (Hertz)"
@@ -5152,6 +5691,10 @@ msgstr ""
 #: outputs/pwm_gpio.py:158 outputs/pwm_pca9685.py:168 outputs/pwm_python.py:269
 #: outputs/pwm_shell.py:123
 msgid "Invert Stored Signal"
+msgstr ""
+
+#: outputs/pwm_pca9685.py:57
+msgid "LED Controller"
 msgstr ""
 
 #: outputs/pwm_shell.py:61

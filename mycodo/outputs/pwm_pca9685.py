@@ -54,7 +54,7 @@ channels_dict = {
 # Output information
 OUTPUT_INFORMATION = {
     'output_name_unique': 'pwm_pca9685',
-    'output_name': f"{lazy_gettext('PWM')}: PCA9685 16-Channel {lazy_gettext('LED Controller')}",
+    'output_name': "{}: PCA9685 16-Channel {}".format(lazy_gettext('PWM'), lazy_gettext('LED Controller')),
     'output_manufacturer': 'NXP Semiconductors',
     'output_library': 'adafruit-pca9685',
     'measurements_dict': measurements_dict,
@@ -180,7 +180,7 @@ OUTPUT_INFORMATION = {
             'type': 'float',
             'default_value': 0.0,
             'required': True,
-            'name': f"{lazy_gettext('Current')} ({lazy_gettext('Amps')})",
+            'name': "{} ({})".format(lazy_gettext('Current'), lazy_gettext('Amps')),
             'phrase': 'The current draw of the device being controlled'
         }
     ]

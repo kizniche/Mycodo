@@ -10,7 +10,7 @@ from mycodo.utils.utils import random_alphanumeric
 
 ACTION_INFORMATION = {
     'name_unique': 'mqtt_publish_input',
-    'name': f"MQTT: {lazy_gettext('Publish')}: {lazy_gettext('Measurement')}",
+    'name': "MQTT: {}: {}".format(lazy_gettext('Publish'), lazy_gettext('Measurement')),
     'library': None,
     'manufacturer': 'Mycodo',
     'application': ['inputs'],

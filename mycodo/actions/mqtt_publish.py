@@ -9,7 +9,7 @@ from mycodo.utils.utils import random_alphanumeric
 
 ACTION_INFORMATION = {
     'name_unique': 'mqtt_publish',
-    'name': f"MQTT: {lazy_gettext('Publish')}",
+    'name': "MQTT: {}".format(lazy_gettext('Publish')),
     'library': None,
     'manufacturer': 'Mycodo',
     'application': ['functions'],

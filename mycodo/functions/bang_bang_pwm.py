@@ -88,7 +88,7 @@ FUNCTION_INFORMATION = {
             'default_value': 5,
             'required': True,
             'constraints_pass': constraints_pass_positive_value,
-            'name': f"{lazy_gettext('Period')} ({lazy_gettext('Seconds')})",
+            'name': "{} ({})".format(lazy_gettext('Period'), lazy_gettext('Seconds')),
             'phrase': lazy_gettext('The duration between measurements or actions')
         },
         {

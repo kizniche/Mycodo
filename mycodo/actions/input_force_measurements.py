@@ -10,7 +10,7 @@ from mycodo.utils.database import db_retrieve_table_daemon
 
 ACTION_INFORMATION = {
     'name_unique': 'input_force_measurements',
-    'name': f"{lazy_gettext('Input')}: {lazy_gettext('Force Measurements')}",
+    'name': "{}: {}:".format(lazy_gettext('Input'), lazy_gettext('Force Measurements')),
     'library': None,
     'manufacturer': 'Mycodo',
     'application': ['functions'],

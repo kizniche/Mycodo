@@ -35,7 +35,7 @@ channels_dict = {
 # Output information
 OUTPUT_INFORMATION = {
     'output_name_unique': 'pwm',
-    'output_name': f"{lazy_gettext('PWM')}: Raspberry Pi GPIO",
+    'output_name': "{}: Raspberry Pi GPIO".format(lazy_gettext('PWM')),
     'output_library': 'pigpio',
     'measurements_dict': measurements_dict,
     'channels_dict': channels_dict,
@@ -80,7 +80,7 @@ OUTPUT_INFORMATION = {
             'default_value': None,
             'required': False,
             'constraints_pass': constraints_pass_positive_or_zero_value,
-            'name': f"{lazy_gettext('Pin')}: {lazy_gettext('GPIO')} ({lazy_gettext('BCM')})",
+            'name': "{}: {} ({})".format(lazy_gettext('Pin'), lazy_gettext('GPIO'), lazy_gettext('BCM')),
             'phrase': lazy_gettext('The pin to control the state of')
         },
         {
@@ -170,7 +170,7 @@ OUTPUT_INFORMATION = {
             'type': 'float',
             'default_value': 0.0,
             'required': True,
-            'name': f'{lazy_gettext("Current")} ({lazy_gettext("Amps")})',
+            'name': "{} ({})".format(lazy_gettext('Current'), lazy_gettext('Amps')),
             'phrase': 'The current draw of the device being controlled'
         }
     ]

@@ -74,7 +74,7 @@ INPUT_INFORMATION = {
         {
             'id': 'clear_total_kwh',
             'type': 'button',
-            'name': f"{lazy_gettext('Clear Total')}: kWh"
+            'name': "{}: {}".format(lazy_gettext('Clear Total'), lazy_gettext('Kilowatt-hour'))
         }
     ],
 

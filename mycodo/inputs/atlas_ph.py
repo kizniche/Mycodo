@@ -68,7 +68,7 @@ INPUT_INFORMATION = {
                 'Input',
                 'Function'
             ],
-            'name': f"{lazy_gettext('Temperature Compensation')}: {lazy_gettext('Measurement')}",
+            'name': "{}: {}".format(lazy_gettext('Temperature Compensation'), lazy_gettext('Measurement')),
             'phrase': lazy_gettext('Select a measurement for temperature compensation')
         },
         {
@@ -77,7 +77,7 @@ INPUT_INFORMATION = {
             'default_value': 120,
             'required': True,
             'constraints_pass': constraints_pass_positive_value,
-            'name': f"{lazy_gettext('Temperature Compensation')}: {lazy_gettext('Max Age')} ({lazy_gettext('Seconds')})",
+            'name': "{}: {} ({})".format(lazy_gettext('Temperature Compensation'), lazy_gettext('Max Age'), lazy_gettext('Seconds')),
             'phrase': lazy_gettext('The maximum age of the measurement to use')
         }
     ],

@@ -49,7 +49,7 @@ INPUT_INFORMATION = {
             'default_value': None,
             'required': False,
             'constraints_pass': constraints_pass_positive_or_zero_value,
-            'name': f"{lazy_gettext('Pin')}: {lazy_gettext('GPIO')} ({lazy_gettext('BCM')})",
+            'name': "{}: {} ({})".format(lazy_gettext('Pin'), lazy_gettext('GPIO'), lazy_gettext('BCM')),
             'phrase': 'The pin to measure pulses from'
         },
         {
@@ -58,7 +58,7 @@ INPUT_INFORMATION = {
             'default_value': 5.0,
             'required': True,
             'constraints_pass': constraints_pass_positive_value,
-            'name': f"{TRANSLATIONS['sample_time']['title']} ({lazy_gettext('Seconds')})",
+            'name': "{} ({})".format(TRANSLATIONS['sample_time']['title'], lazy_gettext('Seconds')),
             'phrase': TRANSLATIONS['sample_time']['phrase']
         },
         {

@@ -29,7 +29,7 @@ channels_dict = {
 
 OUTPUT_INFORMATION = {
     'output_name_unique': 'MQTT_PAHO_VALUE',
-    'output_name': f"{lazy_gettext('Value')}: MQTT Publish",
+    'output_name': "{}: MQTT Publish".format(lazy_gettext('Value')),
     'output_library': 'paho-mqtt',
     'output_manufacturer': 'Mycodo',
     'measurements_dict': measurements_dict,

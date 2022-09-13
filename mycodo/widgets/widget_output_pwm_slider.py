@@ -57,7 +57,7 @@ WIDGET_INFORMATION = {
             'type': 'integer',
             'default_value': 3600,
             'constraints_pass': constraints_pass_positive_value,
-            'name': f"{lazy_gettext('Max Age')} ({lazy_gettext('Seconds')})",
+            'name': "{} ({})".format(lazy_gettext('Max Age'), lazy_gettext('Seconds')),
             'phrase': lazy_gettext('The maximum age of the measurement to use')
         },
         {

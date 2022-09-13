@@ -32,7 +32,7 @@ ACTION_INFORMATION = {
             'default_value': 0.0,
             'required': True,
             'constraints_pass': constraints_pass_positive_value,
-            'name': f"{lazy_gettext('Duration')} ({lazy_gettext('Seconds')})",
+            'name': "{} ({})".format(lazy_gettext('Duration'), lazy_gettext('Seconds')),
             'phrase': 'The duration to pause'
         }
     ]

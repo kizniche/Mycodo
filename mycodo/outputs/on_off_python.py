@@ -157,7 +157,7 @@ channels_dict = {
 # Output information
 OUTPUT_INFORMATION = {
     'output_name_unique': 'python',
-    'output_name': f"{lazy_gettext('On/Off')}: Python Code",
+    'output_name': "{}: Python Code".format(lazy_gettext('On/Off')),
     'measurements_dict': measurements_dict,
     'channels_dict': channels_dict,
     'execute_at_modification': execute_at_modification,
@@ -245,7 +245,7 @@ self.logger.info(log_string)""",
             'type': 'float',
             'default_value': 0.0,
             'required': True,
-            'name': f'{lazy_gettext("Current")} ({lazy_gettext("Amps")})',
+            'name': "{} ({})".format(lazy_gettext('Current'), lazy_gettext('Amps')),
             'phrase': lazy_gettext('The current draw of the device being controlled')
         }
     ]

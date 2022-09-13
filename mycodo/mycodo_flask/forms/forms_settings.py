@@ -136,22 +136,22 @@ class SettingsGeneral(FlaskForm):
         lazy_gettext('Internet Test Timeout'), widget=NumberInput())
 
     sample_rate_controller_conditional = DecimalField(
-        f"{lazy_gettext('Sample Rate')} ({lazy_gettext('Second')}): {lazy_gettext('Conditional')}",
+        "{} ({}): ()".format(lazy_gettext('Sample Rate'), lazy_gettext('Seconds'), lazy_gettext('Conditional')),
         widget=NumberInput(step='any'))
     sample_rate_controller_function = DecimalField(
-        f"{lazy_gettext('Sample Rate')} ({lazy_gettext('Second')}): {lazy_gettext('Function')}",
+        "{} ({}): ()".format(lazy_gettext('Sample Rate'), lazy_gettext('Seconds'), lazy_gettext('Function')),
         widget=NumberInput(step='any'))
     sample_rate_controller_input = DecimalField(
-        f"{lazy_gettext('Sample Rate')} ({lazy_gettext('Second')}): {lazy_gettext('Input')}",
+        "{} ({}): ()".format(lazy_gettext('Sample Rate'), lazy_gettext('Seconds'), lazy_gettext('Input')),
         widget=NumberInput(step='any'))
     sample_rate_controller_output = DecimalField(
-        f"{lazy_gettext('Sample Rate')} ({lazy_gettext('Second')}): {lazy_gettext('Output')}",
+        "{} ({}): ()".format(lazy_gettext('Sample Rate'), lazy_gettext('Seconds'), lazy_gettext('Output')),
         widget=NumberInput(step='any'))
     sample_rate_controller_pid = DecimalField(
-        f"{lazy_gettext('Sample Rate')} ({lazy_gettext('Second')}): {lazy_gettext('PID')}",
+        "{} ({}): ()".format(lazy_gettext('Sample Rate'), lazy_gettext('Seconds'), lazy_gettext('PID')),
         widget=NumberInput(step='any'))
     sample_rate_controller_widget = DecimalField(
-        f"{lazy_gettext('Sample Rate')} ({lazy_gettext('Second')}): {lazy_gettext('Widget')}",
+        "{} ({}): ()".format(lazy_gettext('Sample Rate'), lazy_gettext('Seconds'), lazy_gettext('Widget')),
         widget=NumberInput(step='any'))
 
     settings_general_save = SubmitField(TRANSLATIONS['save']['title'])

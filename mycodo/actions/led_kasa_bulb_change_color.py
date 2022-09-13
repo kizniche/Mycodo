@@ -41,7 +41,7 @@ ACTION_INFORMATION = {
             'type': 'integer',
             'default_value': 0,
             'required': True,
-            'name': f"{lazy_gettext('Hue')} ({lazy_gettext('degree')})",
+            'name': "{} ({})".format(lazy_gettext('Hue'), lazy_gettext('Degree')),
             'phrase': 'The hue to set, in degrees (0 - 360)'
         },
         {
@@ -49,7 +49,7 @@ ACTION_INFORMATION = {
             'type': 'integer',
             'default_value': 50,
             'required': True,
-            'name': f"{lazy_gettext('Saturation')} ({lazy_gettext('percent')})",
+            'name': "{} ({})".format(lazy_gettext('Saturation'), lazy_gettext('Percent')),
             'phrase': 'The saturation to set, in percent (0 - 100)'
         },
         {
@@ -57,7 +57,7 @@ ACTION_INFORMATION = {
             'type': 'integer',
             'default_value': 50,
             'required': True,
-            'name': f"{lazy_gettext('Brightness')} ({lazy_gettext('percent')})",
+            'name': "{} ({})".format(lazy_gettext('Brightness'), lazy_gettext('Percent')),
             'phrase': 'The brightness to set, in percent (0 - 100)'
         },
     ]

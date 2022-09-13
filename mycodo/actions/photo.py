@@ -10,7 +10,7 @@ from mycodo.utils.database import db_retrieve_table_daemon
 
 ACTION_INFORMATION = {
     'name_unique': 'photo',
-    'name': f"{TRANSLATIONS['camera']['title']}: {lazy_gettext('Capture Photo')}",
+    'name': "{}: {}".format(TRANSLATIONS['camera']['title'], lazy_gettext('Capture Photo')),
     'library': None,
     'manufacturer': 'Mycodo',
     'application': ['functions'],

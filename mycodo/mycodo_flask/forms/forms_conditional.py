@@ -31,20 +31,20 @@ class Conditional(FlaskForm):
     conditional_statement = StringField(lazy_gettext('Run Python Code'))
     conditional_status = StringField(lazy_gettext('Status Python Code'))
     period = DecimalField(
-        f"{lazy_gettext('Period')} ({lazy_gettext('Seconds')})",
+        "{} ({})".format(lazy_gettext('Period'), lazy_gettext('Seconds')),
         widget=NumberInput(step='any'))
     log_level_debug = BooleanField(
         TRANSLATIONS['log_level_debug']['title'])
     message_include_code = BooleanField(
         TRANSLATIONS['message_include_code']['title'])
     refractory_period = DecimalField(
-        f"{lazy_gettext('Refractory Period')} ({lazy_gettext('Seconds')})",
+        "{} ({})".format(lazy_gettext('Refractory Period'), lazy_gettext('Seconds')),
         widget=NumberInput(step='any'))
     start_offset = DecimalField(
-        f"{lazy_gettext('Start Offset')} ({lazy_gettext('Seconds')})",
+        "{} ({})".format(lazy_gettext('Start Offset'), lazy_gettext('Seconds')),
         widget=NumberInput(step='any'))
     pyro_timeout = DecimalField(
-        f"{lazy_gettext('Timeout')} ({lazy_gettext('Second')})",
+        "{} ({})".format(lazy_gettext('Timeout'), lazy_gettext('Seconds')),
         widget=NumberInput(step='any'))
     condition_type = SelectField(
         choices=[('', TRANSLATIONS['select_one']['title'])] + CONDITIONAL_CONDITIONS)
@@ -66,7 +66,8 @@ class ConditionalConditions(FlaskForm):
 
     # GPIO State
     gpio_pin = IntegerField(
-        f"{lazy_gettext('Pin')}: {lazy_gettext('GPIO')} ({lazy_gettext('BCM')})", widget=NumberInput())
+        "{}: {} ({})".format(lazy_gettext('Pin'), lazy_gettext('GPIO'), lazy_gettext('BCM')),
+        widget=NumberInput())
 
     output_id = StringField(TRANSLATIONS['output']['title'])
     controller_id = StringField(TRANSLATIONS['controller']['title'])

@@ -36,7 +36,7 @@ channels_dict = {
 # Output information
 OUTPUT_INFORMATION = {
     'output_name_unique': 'output_kasa_plugs',
-    'output_name': f"{lazy_gettext('On/Off')}: Kasa WiFi Power Plug",
+    'output_name': "{}: Kasa WiFi Power Plug".format(lazy_gettext('On/Off')),
     'output_manufacturer': 'TP-Link',
     'input_library': 'python-kasa',
     'measurements_dict': measurements_dict,
@@ -133,7 +133,7 @@ OUTPUT_INFORMATION = {
             'type': 'float',
             'default_value': 0.0,
             'required': True,
-            'name': f"{lazy_gettext('Current')} ({lazy_gettext('Amps')})",
+            'name': "{} ({})".format(lazy_gettext('Current'), lazy_gettext('Amps')),
             'phrase': 'The current draw of the device being controlled'
         }
     ]

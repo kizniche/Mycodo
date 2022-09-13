@@ -26,7 +26,7 @@ channels_dict = {
 
 OUTPUT_INFORMATION = {
     'output_name_unique': 'MQTT_PAHO',
-    'output_name': f"{lazy_gettext('On/Off')}: MQTT Publish",
+    'output_name': "{}: MQTT Publish".format(lazy_gettext('On/Off')),
     'output_manufacturer': 'Mycodo',
     'output_library': 'paho-mqtt',
     'measurements_dict': measurements_dict,
@@ -143,7 +143,7 @@ OUTPUT_INFORMATION = {
             'type': 'float',
             'default_value': 0.0,
             'required': True,
-            'name': f"{lazy_gettext('Current')} ({lazy_gettext('Amps')})",
+            'name': "{} ({})".format(lazy_gettext('Current'), lazy_gettext('Amps')),
             'phrase': 'The current draw of the device being controlled'
         },
         {

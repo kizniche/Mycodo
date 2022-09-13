@@ -8,7 +8,7 @@ from mycodo.utils.system_pi import cmd_output
 
 ACTION_INFORMATION = {
     'name_unique': 'command',
-    'name': f"{lazy_gettext('Execute')}: Bash/Shell Command",
+    'name': "{}: Bash/Shell Command".format(lazy_gettext('Execute')),
     'library': None,
     'manufacturer': 'Mycodo',
     'application': ['functions'],

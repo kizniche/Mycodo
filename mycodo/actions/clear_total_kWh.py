@@ -10,7 +10,7 @@ from mycodo.utils.database import db_retrieve_table_daemon
 
 ACTION_INFORMATION = {
     'name_unique': 'clear_total_kwh',
-    'name': f"{lazy_gettext('Flow Meter')}: {lazy_gettext('Clear Total')}: kWh",
+    'name': "{}: {} ({})".format(lazy_gettext('Flow Meter'), lazy_gettext('Clear Total'), lazy_gettext('Kilowatt-hour')),
     'library': None,
     'manufacturer': 'Mycodo',
     'application': ['functions'],

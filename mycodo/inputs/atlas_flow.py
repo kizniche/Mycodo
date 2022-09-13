@@ -201,7 +201,7 @@ INPUT_INFORMATION = {
         {
             'id': 'clear_total_volume',
             'type': 'button',
-            'name': f"{lazy_gettext('Clear Total')}: {lazy_gettext('Volume')}"
+            'name': "{}: {}".format(lazy_gettext('Clear Total'), lazy_gettext('Volume'))
         },
         {
             'type': 'message',

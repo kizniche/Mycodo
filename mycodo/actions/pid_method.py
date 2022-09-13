@@ -15,7 +15,7 @@ from mycodo.utils.database import db_retrieve_table_daemon
 
 ACTION_INFORMATION = {
     'name_unique': 'method_pid',
-    'name': f"{TRANSLATIONS['pid']['title']}: {lazy_gettext('Set Method')}",
+    'name': "{}: {}".format(TRANSLATIONS['pid']['title'], lazy_gettext('Set Method')),
     'library': None,
     'manufacturer': 'Mycodo',
     'application': ['functions'],

@@ -34,7 +34,7 @@ channels_dict = {
 # Output information
 OUTPUT_INFORMATION = {
     'output_name_unique': 'command_pwm',
-    'output_name': f"{lazy_gettext('PWM')}: Shell Script",
+    'output_name': "{}: Shell Script".format(lazy_gettext('PWM')),
     'output_library': 'subprocess.Popen',
     'measurements_dict': measurements_dict,
     'channels_dict': channels_dict,
@@ -142,7 +142,7 @@ OUTPUT_INFORMATION = {
             'type': 'float',
             'default_value': 0.0,
             'required': True,
-            'name': f'{lazy_gettext("Current")} ({lazy_gettext("Amps")})',
+            'name': "{} ({})".format(lazy_gettext('Current'), lazy_gettext('Amps')),
             'phrase': lazy_gettext('The current draw of the device being controlled')
         }
     ]

@@ -61,7 +61,7 @@ FUNCTION_INFORMATION = {
             'default_value': 60,
             'required': True,
             'constraints_pass': constraints_pass_positive_value,
-            'name': f"{lazy_gettext('Period')} ({lazy_gettext('Seconds')})",
+            'name': "{} ({})".format(lazy_gettext('Period'), lazy_gettext('Seconds')),
             'phrase': lazy_gettext('The duration between measurements or actions')
         },
         {
@@ -72,7 +72,7 @@ FUNCTION_INFORMATION = {
                 'Input',
                 'Function'
             ],
-            'name': f'{lazy_gettext("Measurement")}: A',
+            'name': '{}: A'.format(lazy_gettext("Measurement")),
             'phrase': 'Measurement to replace a'
         },
         {
@@ -80,7 +80,7 @@ FUNCTION_INFORMATION = {
             'type': 'integer',
             'default_value': 360,
             'required': True,
-            'name': f'{lazy_gettext("Measurement")} A: {lazy_gettext("Max Age")} ({lazy_gettext("Second")})',
+            'name': "{} A: {} ({})".format(lazy_gettext("Measurement"), lazy_gettext("Max Age"), lazy_gettext("Seconds")),
             'phrase': lazy_gettext('The maximum age of the measurement to use')
         },
         {
@@ -91,7 +91,7 @@ FUNCTION_INFORMATION = {
                 'Input',
                 'Function'
             ],
-            'name': f'{lazy_gettext("Measurement")}: B',
+            'name': '{}: B'.format(lazy_gettext("Measurement")),
             'phrase': 'Measurement to replace b'
         },
         {
@@ -99,7 +99,7 @@ FUNCTION_INFORMATION = {
             'type': 'integer',
             'default_value': 360,
             'required': True,
-            'name': f'{lazy_gettext("Measurement")} A: {lazy_gettext("Max Age")} ({lazy_gettext("Second")})',
+            'name': "{} B: {} ({})".format(lazy_gettext("Measurement"), lazy_gettext("Max Age"), lazy_gettext("Seconds")),
             'phrase': lazy_gettext('The maximum age of the measurement to use')
         },
         {

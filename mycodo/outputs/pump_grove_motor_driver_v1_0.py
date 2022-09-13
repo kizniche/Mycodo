@@ -65,7 +65,7 @@ channels_dict = {
 # Output information
 OUTPUT_INFORMATION = {
     'output_name_unique': 'grove_i2c_motor_driver_v1_0',
-    'output_name': f"{lazy_gettext('Peristaltic Pump')}: Grove I2C Motor Driver (TB6612FNG, Board v1.0)",
+    'output_name': "{}: Grove I2C Motor Driver (TB6612FNG, Board v1.0)".format(lazy_gettext('Peristaltic Pump')),
     'output_manufacturer': 'Grove',
     'output_library': 'smbus2',
     'measurements_dict': measurements_dict,

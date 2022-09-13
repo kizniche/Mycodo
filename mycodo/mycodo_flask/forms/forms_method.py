@@ -55,10 +55,10 @@ class MethodAdd(FlaskForm):
         lazy_gettext('End Setpoint (optional)'),
         widget=NumberInput(step='any'))
     duration = DecimalField(
-        f"{lazy_gettext('Duration')} ({lazy_gettext('Seconds')})",
+        "{} ({})".format(lazy_gettext('Duration'), lazy_gettext('Seconds')),
         widget=NumberInput(step='any'))
     duration_end = DecimalField(
-        f"{lazy_gettext('Duration to End')} ({lazy_gettext('Seconds')})",
+        "{} ({})".format(lazy_gettext('Duration to End'), lazy_gettext('Seconds')),
         widget=NumberInput(step='any'))
     amplitude = DecimalField(
         lazy_gettext('Amplitude'),
@@ -116,10 +116,10 @@ class MethodMod(FlaskForm):
         lazy_gettext('Time YYYY-MM-DD HH:MM:SS'),
         render_kw={"placeholder": "YYYY-MM-DD HH:MM:SS"})
     duration = DecimalField(
-        f"{lazy_gettext('Duration')} ({lazy_gettext('Second')})",
+        "{} ({})".format(lazy_gettext('Duration'), lazy_gettext('Seconds')),
         widget=NumberInput(step='any'))
     duration_end = DecimalField(
-        f"{lazy_gettext('Duration to End')} ({lazy_gettext('Second')})",
+        "{} ({})".format(lazy_gettext('Duration to End'), lazy_gettext('Seconds')),
         widget=NumberInput(step='any'))
     setpoint_start = DecimalField(
         lazy_gettext('Start Setpoint'),

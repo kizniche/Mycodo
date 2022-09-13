@@ -10,7 +10,7 @@ from mycodo.utils.database import db_retrieve_table_daemon
 
 ACTION_INFORMATION = {
     'name_unique': 'system_shutdown',
-    'name': f"{TRANSLATIONS['system']['title']}: {lazy_gettext('Shutdown')}",
+    'name': "{}: {}".format(TRANSLATIONS['system']['title'], lazy_gettext('Shutdown')),
     'library': None,
     'manufacturer': 'Mycodo',
     'application': ['functions'],

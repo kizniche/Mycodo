@@ -73,7 +73,7 @@ INPUT_INFORMATION = {
             'id': 'calibrate_temp_c',
             'type': 'float',
             'default_value': 100.0,
-            'name': f"{lazy_gettext('Temperature')} (°C)",
+            'name': "{} (°C)".format(lazy_gettext('Temperature')),
             'phrase': 'Temperature for single point calibration'
         },
         {
