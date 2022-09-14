@@ -158,7 +158,7 @@ WIDGET_INFORMATION = {
             'type': 'float',
             'default_value': 60,
             'constraints_pass': constraints_pass_positive_value,
-            'name': 'Loop Period (Seconds)',
+            'name': 'Loop Period ({})'.format(lazy_gettext("Seconds")),
             'phrase': 'The period of time between executing loop code'
         },
         {
@@ -166,7 +166,7 @@ WIDGET_INFORMATION = {
             'type': 'float',
             'default_value': 30.0,
             'constraints_pass': constraints_pass_positive_value,
-            'name': 'Widget Refresh (Seconds)',
+            'name': '{} ({})'.format(lazy_gettext("Refresh"), lazy_gettext("Seconds")),
             'phrase': 'The period of time between refreshing the widget'
         },
         {
@@ -208,7 +208,7 @@ self.stored_value = current_value""",
 
 return self.return_string""",
             'required': True,
-            'name': lazy_gettext('Python Code (Refresh)'),
+            'name': lazy_gettext('Python Code (On Refresh)'),
             'phrase': lazy_gettext('Python code to execute every dashboard/widget refresh')
         },
     ],

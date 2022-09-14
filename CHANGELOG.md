@@ -5,6 +5,7 @@
  - Add Function: Regulate pH and Electrical Conductivity
  - Add Input: MCP3008 (adafruit-circuitpython-mcp3xxx library)
  - Add Input: On/Off Output State
+ - Add Widget: Activate/Deactivate Controller
  - Add ability to set each Graph Widget series type to either Line or Column
  - Add Temperature Calibration for Atlas Scientific PT-1000 Input
  - Add language selection to installer
