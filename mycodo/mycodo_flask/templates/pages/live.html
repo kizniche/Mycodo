@@ -164,7 +164,7 @@
           <div>
             <b><span id="{{measure_string}}-value">0.0</span>
 
-          {%- if dict_units[dict_measure_units[each_meas.unique_id]]['unit'] -%}
+          {%- if dict_measure_units[each_meas.unique_id] in dict_units and dict_units[dict_measure_units[each_meas.unique_id]]['unit'] -%}
             {{' ' + dict_units[dict_measure_units[each_meas.unique_id]]['unit']}}
           {%- endif -%}</b>
 

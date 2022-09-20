@@ -16,6 +16,7 @@
  - Fix Python Code Input logging Exceptions in the Daemon Log
  - Fix inability to execute Function Commands
  - Fix get_custom_option() not returning the latest value
+ - Fix potential Missing Attribute error on Live page
 
 ### Miscellaneous
 

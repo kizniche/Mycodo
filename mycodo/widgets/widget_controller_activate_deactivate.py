@@ -106,7 +106,7 @@ WIDGET_INFORMATION = {
     'widget_library': '',
     'no_class': True,
 
-    'message': 'Activate/Deactivate a Controller (Inputs and Functions). For manipulating a PID Controller, use the PID Widget.',
+    'message': 'Activate/Deactivate a Controller (Inputs and Functions). For manipulating a PID Controller, use the PID Controller Widget.',
 
     'widget_width': 4,
     'widget_height': 6,
