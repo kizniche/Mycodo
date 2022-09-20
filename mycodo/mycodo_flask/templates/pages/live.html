@@ -168,10 +168,9 @@
             {{' ' + dict_units[dict_measure_units[each_meas.unique_id]]['unit']}}
           {%- endif -%}</b>
 
-          {%- if dict_measure_measurements[each_meas.unique_id] in dict_measurements and
-                 dict_measurements[dict_measure_measurements[each_meas.unique_id]]['name'] -%}
+          {%- if dict_measure_measurements[each_meas.unique_id] in dict_measurements and dict_measurements[dict_measure_measurements[each_meas.unique_id]]['name'] -%}
             {{' (' + dict_measurements[dict_measure_measurements[each_meas.unique_id]]['name'] + ') '}}
-          {%- elif dict_units[dict_measure_units[each_meas.unique_id]]['name'] -%}
+          {%- elif dict_measure_units[each_meas.unique_id] in dict_units and dict_units[dict_measure_units[each_meas.unique_id]]['name'] -%}
             {{' (' + dict_units[dict_measure_units[each_meas.unique_id]]['name'] + ') '}}
           {%- endif -%}
 
