@@ -22,7 +22,7 @@ INFLUXDB1_VERSION="1.8.10"
 INFLUXDB2_VERSION="2.2.0"
 
 VIRTUALENV_VERSION="20.14.1"
-SETUPTOOLS_VERSION="62.1.0"  # Also set version in install/requirements.txt
+SETUPTOOLS_VERSION="65.4.0"  # Also set version in install/requirements.txt
 
 # Required apt packages. This has been tested with Raspbian for the
 # Raspberry Pi and Ubuntu, it should work with most Debian-based systems.

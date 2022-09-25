@@ -22,6 +22,7 @@
 ### Miscellaneous
 
  - Make Function Status errors appear in the Function Status area of the UI
+ - Update Python libraries
 
 
 ## 8.14.2 (2022-08-20)
