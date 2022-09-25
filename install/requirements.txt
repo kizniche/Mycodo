@@ -11,7 +11,7 @@ Flask_Accept==0.0.6
 Flask_Babel==2.0.0
 Flask_Compress==1.13
 Flask_Limiter==2.6.3
-Flask_Login==0.6.2
+Flask_Login==0.6.1
 Flask_Marshmallow==0.14.0
 #Flask_Profiler==1.8.1  # only use (uncomment and enable in config) when profiling
 Flask_RESTX==0.5.1  # 25/9/2022: waiting for release to fix issue with latest Werkzeug version
@@ -31,5 +31,5 @@ python-dateutil==2.8.2
 requests==2.28.1
 setuptools==65.4.0  # Also set version in mycodo/scripts/upgrade_commands.sh
 SQLAlchemy==1.4.41
-Werkzeug==2.0.*
+Werkzeug==2.0.3
 WTForms==3.0.1
