@@ -164,6 +164,7 @@ class InputModule(AbstractInput):
 
         self.is_measuring = False
         self.is_calibrating = False
+        self.bad_checksum = 0
 
         if not testing:
             self.setup_custom_options(INPUT_INFORMATION["custom_options"], input_dev)
@@ -391,11 +392,16 @@ class InputModule(AbstractInput):
             self.logger.error(f"Response has incorrect length '{resp}'")
         elif self.checksum(resp) != resp[8]:
             self.logger.error("Bad checksum")
+            self.bad_checksum += 1
+            if self.bad_checksum >= 2:
+                self.bad_checksum = 0
+                self.initialize()
         else:
             high = resp[2]
             low = resp[3]
             co2 = (high * 256) + low
             self.logger.debug(f"Read measurement via UART: {co2}")
+            self.bad_checksum = 0
             return co2
 
         return None
