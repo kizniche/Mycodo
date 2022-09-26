@@ -80,10 +80,8 @@ class InputModule(AbstractInput):
 
         self.return_dict = copy.deepcopy(measurements_dict)
 
-        temp_c = temp_c = convert_from_x_to_y_unit('F', 'C', self.sensor.temperature)
-
         if self.is_enabled(0):
-            self.value_set(0, temp_c)
+            self.value_set(0, self.sensor.temperature)
 
         if self.is_enabled(1):
             self.value_set(1, self.sensor.relative_humidity)
