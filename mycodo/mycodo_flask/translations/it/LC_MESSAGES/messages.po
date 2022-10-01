@@ -2,22 +2,22 @@
 # Copyright (C) 2022 Kyle T. Gabriel
 # This file is distributed under the same license as the Mycodo project.
 # FIRST AUTHOR <EMAIL@ADDRESS>, 2022.
-#
+# Kyle Gabriel <business@kylegabriel.com>, 2022.
 msgid ""
 msgstr ""
 "Project-Id-Version: Mycodo1 8.11.0\n"
 "Report-Msgid-Bugs-To: mycodo@kylegabriel.com\n"
 "POT-Creation-Date: 2022-10-01 16:35-0400\n"
-"PO-Revision-Date: 2022-09-15 01:01+0000\n"
+"PO-Revision-Date: 2022-10-01 21:22+0000\n"
 "Last-Translator: Kyle Gabriel <business@kylegabriel.com>\n"
+"Language-Team: Italian <http://translate.kylegabriel.com:8080/projects/"
+"mycodo/translations/it/>\n"
 "Language: it\n"
-"Language-Team: Italian "
-"<http://translate.kylegabriel.com:8080/projects/mycodo/translations/it/>"
-"\n"
-"Plural-Forms: nplurals=2; plural=n != 1\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=n != 1;\n"
+"X-Generator: Weblate 4.14\n"
 "Generated-By: Babel 2.9.1\n"
 
 #: config_devices_units.py:13 config_devices_units.py:17
@@ -1895,7 +1895,7 @@ msgstr "Inferiore"
 
 #: config_translations_docs.py:11
 msgid "Mycodo Environmental Monitoring and Regulation System"
-msgstr ""
+msgstr "Sistema di monitoraggio e regolazione ambientale Mycodo"
 
 #: config_translations_docs.py:12
 msgid ""
@@ -1904,6 +1904,10 @@ msgid ""
 "computers (SBCs). It couples inputs and outputs in interesting ways to "
 "sense and manipulate the environment."
 msgstr ""
+"Mycodo è un software open source progettato per funzionare su [Raspberry "
+"Pi](https://en.wikipedia.org/wiki/Raspberry_Pi) e altri computer a scheda "
+"singola (SBC). Accoppia ingressi e uscite in modi interessanti per percepire "
+"e manipolare l'ambiente."
 
 #: config_translations_docs.py:14
 #, fuzzy
@@ -1915,6 +1919,9 @@ msgid ""
 "See the [README](https://github.com/kizniche/Mycodo#uses) for features, "
 "projects using Mycodo, screenshots, and other information."
 msgstr ""
+"Si veda il [README](https://github.com/kizniche/Mycodo#uses) per le "
+"caratteristiche, i progetti che utilizzano Mycodo, gli screenshot e altre "
+"informazioni."
 
 #: config_translations_docs.py:16
 msgid ""
@@ -1925,21 +1932,23 @@ msgstr ""
 
 #: config_translations_docs.py:18
 msgid "Prerequisites"
-msgstr ""
+msgstr "Prerequisiti"
 
 #: config_translations_docs.py:19
 msgid ""
 "Single-board computer (Recommended: [Raspberry "
 "Pi](https://www.raspberrypi.org/), any version: Zero, 1, 2, 3, or 4)"
 msgstr ""
+"Computer a scheda singola (consigliato: [Raspberry Pi](https://www."
+"raspberrypi.org/), qualsiasi versione: Zero, 1, 2, 3 o 4)"
 
 #: config_translations_docs.py:20
 msgid "Debian-based operating system"
-msgstr ""
+msgstr "Sistema operativo basato su Debian"
 
 #: config_translations_docs.py:21
 msgid "An active internet connection"
-msgstr ""
+msgstr "Una connessione internet attiva"
 
 #: config_translations_docs.py:23
 #: mycodo_flask/templates/admin/dependencies_install.html:21
@@ -1951,12 +1960,16 @@ msgid ""
 "Once booted and logged in, run the following command to initiate the "
 "Mycodo install:"
 msgstr ""
+"Una volta avviato e collegato, eseguire il seguente comando per avviare "
+"l'installazione di Mycodo:"
 
 #: config_translations_docs.py:25
 msgid ""
 "After installation, open a web browser to the SBC's IP address and you "
 "will be prompted to create an Admin user and login."
 msgstr ""
+"Dopo l'installazione, aprire un browser web all'indirizzo IP dell'SBC e "
+"verrà richiesto di creare un utente amministratore e di effettuare il login."
 
 #: config_translations_docs.py:27
 #, fuzzy
@@ -1969,7 +1982,7 @@ msgstr "Forum di discussione"
 
 #: config_translations_docs.py:29
 msgid "Frequently Asked Questions"
-msgstr ""
+msgstr "Domande frequenti"
 
 #: config_translations_docs.py:31 mycodo_flask/templates/layout.html:248
 msgid "Donate"
@@ -1977,7 +1990,7 @@ msgstr "Dona"
 
 #: config_translations_docs.py:32
 msgid "Become a Sponsor"
-msgstr ""
+msgstr "Diventare sponsor"
 
 #: config_translations_docs.py:33
 #, fuzzy
@@ -1990,6 +2003,9 @@ msgid ""
 "that was built to run on single-board computers, specifically the "
 "[Raspberry Pi](https://en.wikipedia.org/wiki/Raspberry_Pi)."
 msgstr ""
+"Mycodo è un sistema open-source di monitoraggio e regolazione ambientale "
+"costruito per funzionare su computer a scheda singola, in particolare il ["
+"Raspberry Pi](https://en.wikipedia.org/wiki/Raspberry_Pi)."
 
 #: config_translations_docs.py:38
 msgid ""
@@ -2005,6 +2021,18 @@ msgid ""
 "conditions, and more. The frontend hosts a web interface that enables "
 "viewing and configuration from any browser-enabled device."
 msgstr ""
+"Originariamente sviluppato per la coltivazione di funghi commestibili, "
+"Mycodo è cresciuto per fare molto di più. Il sistema è composto da due "
+"parti, un backend (demone) e un frontend (server web). Il backend esegue "
+"compiti quali l'acquisizione di misure da sensori e dispositivi e il "
+"coordinamento di una serie di risposte a tali misure, tra cui la capacità di "
+"modulare le uscite (commutare relè, generare segnali PWM, azionare pompe, "
+"commutare prese wireless, pubblicare/sottoscrivere a MQTT, tra le altre cose)"
+", regolare le condizioni ambientali con il controllo PID, programmare timer, "
+"catturare foto e trasmettere video, attivare azioni quando le misure "
+"soddisfano determinate condizioni e altro ancora. Il frontend ospita "
+"un'interfaccia web che consente la visualizzazione e la configurazione da "
+"qualsiasi dispositivo abilitato al browser."
 
 #: config_translations_docs.py:39
 msgid ""
@@ -2013,6 +2041,10 @@ msgid ""
 "environmental conditions of a physical space, while others capture "
 "motion-activated or time-lapse photography, among other uses."
 msgstr ""
+"Mycodo può essere utilizzato in diversi modi. Alcuni utenti si limitano a "
+"memorizzare le misure dei sensori per monitorare le condizioni a distanza, "
+"altri regolano le condizioni ambientali di uno spazio fisico, altri ancora "
+"scattano fotografie in movimento o in time-lapse, tra gli altri usi."
 
 #: config_translations_docs.py:40
 msgid ""
@@ -2022,6 +2054,11 @@ msgid ""
 "commands, or math equations, making this a very dynamic system for "
 "acquiring and generating data."
 msgstr ""
+"I controllori di ingresso acquisiscono le misure e le memorizzano nel "
+"database delle serie temporali InfluxDB. Le misure provengono in genere da "
+"sensori, ma possono anche essere configurate per utilizzare il valore di "
+"ritorno di comandi Linux Bash o Python, o equazioni matematiche, rendendo "
+"questo sistema molto dinamico per l'acquisizione e la generazione di dati."
 
 #: config_translations_docs.py:41
 msgid ""
@@ -2032,6 +2069,12 @@ msgid ""
 " modulated (PWM) signals, controlling peristaltic pumps, MQTT publishing,"
 " and more."
 msgstr ""
+"I controllori di uscita producono modifiche ai pin di ingresso/uscita "
+"generale (GPIO) o possono essere configurati per eseguire comandi Linux Bash "
+"o Python, consentendo una varietà di usi potenziali. Esistono diversi tipi "
+"di uscite: semplice commutazione dei pin GPIO (ALTO/BASSO), generazione di "
+"segnali modulati a larghezza di impulso (PWM), controllo di pompe "
+"peristaltiche, pubblicazione MQTT e altro ancora."
 
 #: config_translations_docs.py:42
 msgid ""
@@ -2045,6 +2088,17 @@ msgid ""
 "beverage fermentation or curing, and cooking food ([sous-"
 "vide](https://en.wikipedia.org/wiki/Sous-vide)), to name a few."
 msgstr ""
+"Quando gli ingressi e le uscite sono combinati, i controllori di funzione "
+"possono essere utilizzati per creare anelli di retroazione che utilizzano il "
+"dispositivo di uscita per modulare una condizione ambientale misurata "
+"dall'ingresso. Alcuni ingressi possono essere abbinati a determinate uscite "
+"per creare una serie di applicazioni di controllo e regolazione diverse. "
+"Oltre alla semplice regolazione, i metodi possono essere utilizzati per "
+"creare un setpoint variabile nel tempo, consentendo di realizzare "
+"applicazioni come i termociclatori, i forni a rifusione, la simulazione "
+"ambientale per i terrari, la fermentazione o la stagionatura di alimenti e "
+"bevande e la cottura di cibi ([sous-vide](https://en.wikipedia.org/wiki/Sous-"
+"vide)), per citarne alcune."
 
 #: config_translations_docs.py:43
 msgid ""
@@ -2052,6 +2106,9 @@ msgid ""
 " according to durations of time, or the sunrise/sunset at a specific "
 "latitude and longitude."
 msgstr ""
+"I trigger possono essere impostati per attivare eventi in base a date e "
+"orari specifici, in base alla durata del tempo o all'alba/tramonto a una "
+"specifica latitudine e longitudine."
 
 #: config_translations_docs.py:44
 msgid ""
@@ -2062,6 +2119,13 @@ msgid ""
 "translation or would like to add another language, this can be done at "
 "[https://translate.kylegabriel.com](http://translate.kylegabriel.com:8080/engage/mycodo/)."
 msgstr ""
+"Mycodo è stato tradotto in diverse lingue. Per impostazione predefinita, la "
+"lingua del browser determina la lingua da utilizzare, ma può essere "
+"sovrascritta nelle Impostazioni generali, nella pagina `[Icona ingranaggio] -"
+"> Configura -> Generale`. Se si riscontra un problema e si desidera "
+"correggere una traduzione o aggiungere un'altra lingua, è possibile farlo "
+"all'indirizzo [https://translate.kylegabriel.com](http://translate."
+"kylegabriel.com:8080/engage/mycodo/)."
 
 #: config_translations_docs.py:48 mycodo_flask/templates/layout.html:191
 #: mycodo_flask/templates/pages/live.html:3
@@ -2080,6 +2144,12 @@ msgid ""
 "correctly and activated. Data will be automatically updated on the page "
 "from the measurement database."
 msgstr ""
+"La pagina `Misure in tempo reale` è la prima pagina che l'utente vede dopo "
+"aver effettuato l'accesso a Mycodo. Mostra le misure correnti acquisite dai "
+"controllori di ingresso e di funzione. Se non viene visualizzato nulla nella "
+"pagina `Live`, accertarsi che un controllore di ingresso o di funzione sia "
+"configurato correttamente e attivato. I dati saranno aggiornati "
+"automaticamente sulla pagina dal database delle misure."
 
 #: config_translations_docs.py:51 mycodo_flask/templates/layout.html:192
 #: mycodo_flask/templates/pages/graph-async.html:3
@@ -2111,6 +2181,24 @@ msgid ""
 "until a new zoom level is selected, at which time only another ~50kb is "
 "downloaded."
 msgstr ""
+"Una visualizzazione grafica dei dati utile per visualizzare insiemi di dati "
+"che coprono periodi di tempo relativamente lunghi (settimane/mesi/anni), che "
+"potrebbero essere molto impegnativi in termini di dati e di processore se "
+"visualizzati come grafico sincrono. Selezionando un intervallo di tempo, i "
+"dati verranno caricati da quell'intervallo, se esistente. La prima "
+"visualizzazione sarà quella dell'intero set di dati selezionato. Per ogni "
+"vista/zoom, verranno caricati 700 punti di dati. Se sono stati registrati "
+"più di 700 punti di dati per l'intervallo di tempo selezionato, verranno "
+"creati 700 punti da una media dei punti di quell'intervallo di tempo. In "
+"questo modo è possibile utilizzare una quantità di dati molto inferiore per "
+"navigare in un set di dati di grandi dimensioni. Ad esempio, 4 mesi di dati "
+"potrebbero essere 10 megabyte se venissero scaricati tutti. Tuttavia, quando "
+"si visualizza un arco di tempo di 4 mesi, non è possibile vedere tutti i "
+"punti dati di quei 10 megabyte e l'aggregazione dei punti è inevitabile. Con "
+"il caricamento asincrono dei dati, si scarica solo ciò che si vede. Quindi, "
+"invece di scaricare 10 megabyte a ogni caricamento del grafico, verranno "
+"scaricati solo ~50kb fino a quando non viene selezionato un nuovo livello di "
+"zoom, a quel punto verranno scaricati solo altri ~50kb."
 
 #: config_translations_docs.py:55
 msgid ""
@@ -2126,6 +2214,9 @@ msgid ""
 "dashboards can be created as well as locked to prevent changing the "
 "arrangement."
 msgstr ""
+"Il cruscotto può essere utilizzato sia per visualizzare i dati che per "
+"manipolare il sistema, grazie ai numerosi widget disponibili. È possibile "
+"creare più cruscotti e bloccarli per evitare di modificarne la disposizione."
 
 #: config_translations_docs.py:60
 #: mycodo_flask/templates/layout-settings.html:38
@@ -2141,6 +2232,13 @@ msgid ""
 "dragging and dropping. For a full list of supported Widgets, see "
 "[Supported Widgets](Supported-Widgets.md)."
 msgstr ""
+"I widget sono elementi della Dashboard che possono essere utilizzati in vari "
+"modi, ad esempio per visualizzare i dati (grafici, indicatori, indicatori, "
+"ecc.) o per interagire con il sistema (manipolare le uscite, modificare il "
+"ciclo di lavoro PWM, interrogare o modificare un database, ecc.) I widget "
+"possono essere facilmente riorganizzati e ridimensionati trascinandoli. Per "
+"un elenco completo dei widget supportati, vedere [Widget supportati] "
+"(Supported-Widgets.md)."
 
 #: config_translations_docs.py:63
 msgid "Custom Widgets"
@@ -6466,4 +6564,3 @@ msgstr "Codice Python (aggiornamento)"
 #: widgets/widget_python_code.py:212
 msgid "Python code to execute every dashboard/widget refresh"
 msgstr "Codice Python da eseguire ad ogni aggiornamento di dashboard/widget"
-
