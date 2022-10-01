@@ -43,7 +43,7 @@ INPUT_INFORMATION = {
     'options_disabled': ['interface'],
 
     'dependencies_module': [
-        ('pip-pypi', 'sii1145', 'SI1145==1.0.2')
+        ('pip-pypi', 'SI1145', 'SI1145==1.0.2')
     ],
 
     'interfaces': ['I2C'],
