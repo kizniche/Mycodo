@@ -52,13 +52,13 @@ plugins:
 
   - minify:
       minify_html: true
-#  - with-pdf:
-#      custom_template_path: docs/custom_pdf
-#      cover_title: Mycodo
-#      cover_subtitle: Environmental monitoring and regulation system
-#      cover_logo: images/logo.png
-#      copyright: Copyright © 2022
-#      output_path: ../docs/mycodo-manual.pdf
+  - with-pdf:
+      custom_template_path: docs/custom_pdf
+      cover_title: Mycodo
+      cover_subtitle: Environmental monitoring and regulation system
+      cover_logo: images/logo.png
+      copyright: Copyright © 2022
+      output_path: ../docs/mycodo-manual.pdf
 
 theme:
   name: material
