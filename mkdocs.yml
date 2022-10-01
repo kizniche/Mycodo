@@ -9,7 +9,7 @@ plugins:
   - search:
   - i18n:
       default_language: 'en'
-      add_lang_links: False
+#      add_lang_links: False  # option staged to be merged for mkdocs-i18n, hides language links at top of all pages
       languages:
         en: "English"
         de: "Deutsche"
