@@ -2,22 +2,22 @@
 # Copyright (C) 2022 Kyle T. Gabriel
 # This file is distributed under the same license as the Mycodo project.
 # FIRST AUTHOR <EMAIL@ADDRESS>, 2022.
-#
+# Kyle Gabriel <business@kylegabriel.com>, 2022.
 msgid ""
 msgstr ""
 "Project-Id-Version: Mycodo 8.14.2\n"
 "Report-Msgid-Bugs-To: mycodo@kylegabriel.com\n"
 "POT-Creation-Date: 2022-10-01 16:35-0400\n"
-"PO-Revision-Date: 2022-09-22 16:58+0000\n"
+"PO-Revision-Date: 2022-10-01 21:23+0000\n"
 "Last-Translator: Kyle Gabriel <business@kylegabriel.com>\n"
+"Language-Team: Indonesian <http://translate.kylegabriel.com:8080/projects/"
+"mycodo/translations/id/>\n"
 "Language: id\n"
-"Language-Team: Indonesian "
-"<http://translate.kylegabriel.com:8080/projects/mycodo/translations/id/>"
-"\n"
-"Plural-Forms: nplurals=1; plural=0\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
+"X-Generator: Weblate 4.14\n"
 "Generated-By: Babel 2.9.1\n"
 
 #: config_devices_units.py:13 config_devices_units.py:17
@@ -1878,7 +1878,7 @@ msgstr ""
 
 #: config_translations_docs.py:11
 msgid "Mycodo Environmental Monitoring and Regulation System"
-msgstr ""
+msgstr "Sistem Pemantauan dan Regulasi Lingkungan Mycodo"
 
 #: config_translations_docs.py:12
 msgid ""
@@ -1887,6 +1887,10 @@ msgid ""
 "computers (SBCs). It couples inputs and outputs in interesting ways to "
 "sense and manipulate the environment."
 msgstr ""
+"Mycodo adalah perangkat lunak sumber terbuka yang dirancang untuk dijalankan "
+"pada [Raspberry Pi] (https://en.wikipedia.org/wiki/Raspberry_Pi) dan "
+"komputer papan tunggal lainnya (SBC). Mycodo memasangkan input dan output "
+"dengan cara yang menarik untuk merasakan dan memanipulasi lingkungan."
 
 #: config_translations_docs.py:14
 #, fuzzy
@@ -1898,6 +1902,8 @@ msgid ""
 "See the [README](https://github.com/kizniche/Mycodo#uses) for features, "
 "projects using Mycodo, screenshots, and other information."
 msgstr ""
+"Lihat [README](https://github.com/kizniche/Mycodo#uses) untuk fitur-fitur, "
+"proyek-proyek yang menggunakan Mycodo, screenshot, dan informasi lainnya."
 
 #: config_translations_docs.py:16
 msgid ""
@@ -1908,38 +1914,44 @@ msgstr ""
 
 #: config_translations_docs.py:18
 msgid "Prerequisites"
-msgstr ""
+msgstr "Prasyarat"
 
 #: config_translations_docs.py:19
 msgid ""
 "Single-board computer (Recommended: [Raspberry "
 "Pi](https://www.raspberrypi.org/), any version: Zero, 1, 2, 3, or 4)"
 msgstr ""
+"Komputer papan tunggal (Direkomendasikan: [Raspberry Pi] (https://www."
+"raspberrypi.org/), versi apa pun: Nol, 1, 2, 3, atau 4)"
 
 #: config_translations_docs.py:20
 msgid "Debian-based operating system"
-msgstr ""
+msgstr "Sistem operasi berbasis Debian"
 
 #: config_translations_docs.py:21
 msgid "An active internet connection"
-msgstr ""
+msgstr "Koneksi internet yang aktif"
 
 #: config_translations_docs.py:23
 #: mycodo_flask/templates/admin/dependencies_install.html:21
 msgid "Install"
-msgstr ""
+msgstr "Pasang"
 
 #: config_translations_docs.py:24
 msgid ""
 "Once booted and logged in, run the following command to initiate the "
 "Mycodo install:"
 msgstr ""
+"Setelah di-boot dan masuk, jalankan perintah berikut untuk memulai instalasi "
+"Mycodo:"
 
 #: config_translations_docs.py:25
 msgid ""
 "After installation, open a web browser to the SBC's IP address and you "
 "will be prompted to create an Admin user and login."
 msgstr ""
+"Setelah instalasi, buka browser web ke alamat IP SBC dan Anda akan diminta "
+"untuk membuat pengguna Admin dan login."
 
 #: config_translations_docs.py:27
 #, fuzzy
@@ -1952,19 +1964,19 @@ msgstr ""
 
 #: config_translations_docs.py:29
 msgid "Frequently Asked Questions"
-msgstr ""
+msgstr "Pertanyaan yang Sering Diajukan"
 
 #: config_translations_docs.py:31 mycodo_flask/templates/layout.html:248
 msgid "Donate"
-msgstr ""
+msgstr "Donasi"
 
 #: config_translations_docs.py:32
 msgid "Become a Sponsor"
-msgstr ""
+msgstr "Menjadi Sponsor"
 
 #: config_translations_docs.py:33
 msgid "Other Methods"
-msgstr ""
+msgstr "Metode Lain"
 
 #: config_translations_docs.py:37
 msgid ""
@@ -1972,6 +1984,9 @@ msgid ""
 "that was built to run on single-board computers, specifically the "
 "[Raspberry Pi](https://en.wikipedia.org/wiki/Raspberry_Pi)."
 msgstr ""
+"Mycodo adalah sistem pemantauan dan pengaturan lingkungan bersumber terbuka "
+"yang dibangun untuk dijalankan pada komputer papan tunggal, khususnya ["
+"Raspberry Pi] (https://en.wikipedia.org/wiki/Raspberry_Pi)."
 
 #: config_translations_docs.py:38
 msgid ""
@@ -1987,6 +2002,18 @@ msgid ""
 "conditions, and more. The frontend hosts a web interface that enables "
 "viewing and configuration from any browser-enabled device."
 msgstr ""
+"Awalnya dikembangkan untuk membudidayakan jamur yang dapat dimakan, Mycodo "
+"telah berkembang untuk melakukan lebih banyak lagi. Sistem ini terdiri atas "
+"dua bagian, backend (daemon) dan frontend (server web). Backend melakukan "
+"tugas-tugas seperti memperoleh pengukuran dari sensor dan perangkat dan "
+"mengoordinasikan beragam respons terhadap pengukuran tersebut, termasuk "
+"kemampuan untuk memodulasi output (mengganti relay, menghasilkan sinyal PWM, "
+"mengoperasikan pompa, mengganti outlet nirkabel, menerbitkan / berlangganan "
+"MQTT, antara lain), mengatur kondisi lingkungan dengan kontrol PID, "
+"menjadwalkan pengatur waktu, mengambil foto dan streaming video, memicu "
+"tindakan ketika pengukuran memenuhi kondisi tertentu, dan banyak lagi. "
+"Frontend menjadi tuan rumah antarmuka web yang memungkinkan tampilan dan "
+"konfigurasi dari perangkat berkemampuan browser apa pun."
 
 #: config_translations_docs.py:39
 msgid ""
@@ -1995,6 +2022,11 @@ msgid ""
 "environmental conditions of a physical space, while others capture "
 "motion-activated or time-lapse photography, among other uses."
 msgstr ""
+"Ada sejumlah kegunaan berbeda untuk Mycodo. Beberapa pengguna hanya "
+"menyimpan pengukuran sensor untuk memantau kondisi dari jarak jauh, yang "
+"lain mengatur kondisi lingkungan ruang fisik, sementara yang lain menangkap "
+"fotografi yang diaktifkan gerakan atau selang waktu, di antara kegunaan "
+"lainnya."
 
 #: config_translations_docs.py:40
 msgid ""
@@ -2004,6 +2036,11 @@ msgid ""
 "commands, or math equations, making this a very dynamic system for "
 "acquiring and generating data."
 msgstr ""
+"Pengontrol input memperoleh pengukuran dan menyimpannya dalam basis data "
+"deret waktu InfluxDB. Pengukuran biasanya berasal dari sensor, tetapi juga "
+"dapat dikonfigurasi untuk menggunakan nilai balik dari perintah Linux Bash "
+"atau Python, atau persamaan matematika, menjadikannya sistem yang sangat "
+"dinamis untuk memperoleh dan menghasilkan data."
 
 #: config_translations_docs.py:41
 msgid ""
@@ -2014,6 +2051,12 @@ msgid ""
 " modulated (PWM) signals, controlling peristaltic pumps, MQTT publishing,"
 " and more."
 msgstr ""
+"Pengontrol output menghasilkan perubahan pada pin input/output umum (GPIO) "
+"atau dapat dikonfigurasi untuk menjalankan perintah Linux Bash atau Python, "
+"memungkinkan berbagai potensi penggunaan. Ada beberapa jenis output yang "
+"berbeda: peralihan sederhana pin GPIO (HIGH/LOW), menghasilkan sinyal pulse-"
+"width modulated (PWM), mengendalikan pompa peristaltik, penerbitan MQTT, dan "
+"banyak lagi."
 
 #: config_translations_docs.py:42
 msgid ""
@@ -2027,6 +2070,15 @@ msgid ""
 "beverage fermentation or curing, and cooking food ([sous-"
 "vide](https://en.wikipedia.org/wiki/Sous-vide)), to name a few."
 msgstr ""
+"Ketika Input dan Output digabungkan, Pengontrol fungsi dapat digunakan untuk "
+"membuat loop umpan balik yang menggunakan perangkat Output untuk memodulasi "
+"kondisi lingkungan yang diukur Input. Input tertentu dapat digabungkan "
+"dengan Output tertentu untuk membuat berbagai aplikasi kontrol dan regulasi "
+"yang berbeda. Di luar regulasi sederhana, Metode dapat digunakan untuk "
+"membuat setpoint yang berubah dari waktu ke waktu, memungkinkan hal-hal "
+"seperti thermal cyclers, oven reflow, simulasi lingkungan untuk terarium, "
+"fermentasi atau pengawetan makanan dan minuman, dan memasak makanan ([sous-"
+"vide] (https://en.wikipedia.org/wiki/Sous-vide)), untuk beberapa nama."
 
 #: config_translations_docs.py:43
 msgid ""
@@ -2034,6 +2086,9 @@ msgid ""
 " according to durations of time, or the sunrise/sunset at a specific "
 "latitude and longitude."
 msgstr ""
+"Pemicu bisa ditetapkan untuk mengaktifkan peristiwa berdasarkan tanggal dan "
+"waktu tertentu, menurut durasi waktu, atau matahari terbit/terbenam pada "
+"garis lintang dan garis bujur tertentu."
 
 #: config_translations_docs.py:44
 msgid ""
@@ -2044,6 +2099,12 @@ msgid ""
 "translation or would like to add another language, this can be done at "
 "[https://translate.kylegabriel.com](http://translate.kylegabriel.com:8080/engage/mycodo/)."
 msgstr ""
+"Mycodo telah diterjemahkan ke beberapa bahasa. Secara default, bahasa "
+"browser akan menentukan bahasa mana yang digunakan, tetapi dapat diganti di "
+"Pengaturan Umum, pada `[Ikon Roda Gigi] -> Konfigurasi -> Halaman Umum`. "
+"Jika Anda menemukan masalah dan ingin mengoreksi terjemahan atau ingin "
+"menambahkan bahasa lain, hal ini dapat dilakukan di [https://translate."
+"kylegabriel.com](http://translate.kylegabriel.com:8080/engage/mycodo/)."
 
 #: config_translations_docs.py:48 mycodo_flask/templates/layout.html:191
 #: mycodo_flask/templates/pages/live.html:3
@@ -2062,6 +2123,12 @@ msgid ""
 "correctly and activated. Data will be automatically updated on the page "
 "from the measurement database."
 msgstr ""
+"Halaman `Pengukuran Langsung` adalah halaman pertama yang dilihat pengguna "
+"setelah masuk ke Mycodo. Ini akan menampilkan pengukuran saat ini yang "
+"diperoleh dari pengontrol Input dan Fungsi. Jika tidak ada yang ditampilkan "
+"pada halaman `Live`, pastikan pengontrol Input atau Fungsi dikonfigurasi "
+"dengan benar dan diaktifkan. Data akan secara otomatis diperbarui pada "
+"halaman dari database pengukuran."
 
 #: config_translations_docs.py:51 mycodo_flask/templates/layout.html:192
 #: mycodo_flask/templates/pages/graph-async.html:3
@@ -2092,6 +2159,22 @@ msgid ""
 "until a new zoom level is selected, at which time only another ~50kb is "
 "downloaded."
 msgstr ""
+"Tampilan data grafis yang berguna untuk melihat kumpulan data yang mencakup "
+"periode waktu yang relatif lama (minggu/bulan/tahun), yang bisa jadi sangat "
+"intensif data dan prosesor untuk dilihat sebagai Grafik Sinkron. Pilih "
+"kerangka waktu dan data akan dimuat dari rentang waktu tersebut, jika ada. "
+"Tampilan pertama adalah seluruh kumpulan data yang dipilih. Untuk setiap "
+"tampilan/zoom, 700 titik data akan dimuat. Jika terdapat lebih dari 700 "
+"titik data yang direkam untuk rentang waktu yang dipilih, 700 titik akan "
+"dibuat dari rata-rata titik dalam rentang waktu tersebut. Hal ini "
+"memungkinkan data yang jauh lebih sedikit digunakan untuk menavigasi "
+"kumpulan data yang besar. Misalnya, data 4 bulan mungkin 10 megabyte jika "
+"semuanya diunduh. Namun, ketika melihat rentang waktu 4 bulan, tidak mungkin "
+"untuk melihat setiap titik data dari 10 megabyte itu, dan pengumpulan titik-"
+"titik tidak dapat dihindari. Dengan pemuatan data secara asinkron, Anda "
+"hanya mengunduh apa yang Anda lihat. Jadi, alih-alih mengunduh 10 megabyte "
+"setiap pemuatan grafik, hanya ~50kb yang akan diunduh hingga tingkat zoom "
+"baru dipilih, dan pada saat itu hanya ~50kb lagi yang diunduh."
 
 #: config_translations_docs.py:55
 msgid ""
@@ -2107,6 +2190,9 @@ msgid ""
 "dashboards can be created as well as locked to prevent changing the "
 "arrangement."
 msgstr ""
+"Dasbor dapat digunakan untuk melihat data dan memanipulasi sistem, berkat "
+"banyaknya widget dasbor yang tersedia. Beberapa dasbor dapat dibuat serta "
+"dikunci untuk mencegah perubahan pengaturan."
 
 #: config_translations_docs.py:60
 #: mycodo_flask/templates/layout-settings.html:38
@@ -2122,6 +2208,12 @@ msgid ""
 "dragging and dropping. For a full list of supported Widgets, see "
 "[Supported Widgets](Supported-Widgets.md)."
 msgstr ""
+"Widget adalah elemen pada Dasbor yang memiliki sejumlah kegunaan, seperti "
+"melihat data (grafik, indikator, pengukur, dll.) atau berinteraksi dengan "
+"sistem (memanipulasi output, mengubah siklus tugas PWM, menanyakan atau "
+"memodifikasi database, dll.). Widget dapat dengan mudah diatur ulang dan "
+"diubah ukurannya dengan menyeret dan menjatuhkan. Untuk daftar lengkap "
+"Widget yang didukung, lihat [Supported Widgets] (Supported-Widgets.md)."
 
 #: config_translations_docs.py:63
 msgid "Custom Widgets"
@@ -6186,4 +6278,3 @@ msgstr ""
 #: widgets/widget_python_code.py:212
 msgid "Python code to execute every dashboard/widget refresh"
 msgstr ""
-
