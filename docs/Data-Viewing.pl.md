@@ -21,7 +21,7 @@ Dashboard może służyć zarówno do przeglądania danych, jak i do manipulowan
 
 ## widgety
 
-Widżety to elementy na pulpicie nawigacyjnym, które mają wiele zastosowań, takich jak wyświetlanie danych (wykresy, wskaźniki, mierniki itp.) lub interakcja z systemem (manipulowanie wyjściami, zmiana cyklu pracy PWM, odpytywanie lub modyfikowanie bazy danych itp.) Widżety można łatwo zmieniać układ i rozmiar poprzez przeciąganie i upuszczanie. Pełna lista obsługiwanych Widżetów znajduje się w [Obsługiwane Widżety](Obsługiwane-Widżety.md).
+Widżety to elementy na pulpicie nawigacyjnym, które mają wiele zastosowań, takich jak wyświetlanie danych (wykresy, wskaźniki, mierniki itp.) lub interakcja z systemem (manipulowanie wyjściami, zmiana cyklu pracy PWM, odpytywanie lub modyfikowanie bazy danych itp.) Widżety można łatwo zmieniać układ i rozmiar poprzez przeciąganie i upuszczanie. Pełna lista obsługiwanych Widżetów znajduje się w [Obsługiwane Widżety](Supported-Widgets.md).
 
 ### Custom Widgets
 

@@ -21,7 +21,7 @@ O tablier pode ser utilizado tanto para visualizar dados como para manipular o s
 
 ## Widgets
 
-Os Widgets são elementos do Painel que têm várias utilizações, tais como visualizar dados (gráficos, indicadores, medidores, etc.) ou interagir com o sistema (manipular saídas, alterar o ciclo de funcionamento do PWM, consultar ou modificar uma base de dados, etc.). Os widgets podem ser facilmente rearranjados e redimensionados por arrastar e largar. Para uma lista completa de Widgets suportados, ver [Supported Widgets](Supported Widgets.md).
+Os Widgets são elementos do Painel que têm várias utilizações, tais como visualizar dados (gráficos, indicadores, medidores, etc.) ou interagir com o sistema (manipular saídas, alterar o ciclo de funcionamento do PWM, consultar ou modificar uma base de dados, etc.). Os widgets podem ser facilmente rearranjados e redimensionados por arrastar e largar. Para uma lista completa de Widgets suportados, ver [Supported Widgets](Supported-Widgets.md).
 
 ### Custom Widgets
 

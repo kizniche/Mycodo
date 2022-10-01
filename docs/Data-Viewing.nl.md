@@ -21,7 +21,7 @@ Het dashboard kan zowel worden gebruikt om gegevens te bekijken als om het syste
 
 ## Widgets
 
-Widgets zijn elementen op het Dashboard die een aantal toepassingen hebben, zoals het bekijken van gegevens (grafieken, indicatoren, meters, enz.) of interactie met het systeem (uitgangen manipuleren, PWM duty cycle wijzigen, een database opvragen of wijzigen, enz.) Widgets kunnen gemakkelijk worden herschikt en van grootte veranderd door ze te verslepen. Voor een volledige lijst van ondersteunde Widgets, zie [Ondersteunde Widgets](Ondersteunde-Widgets.md).
+Widgets zijn elementen op het Dashboard die een aantal toepassingen hebben, zoals het bekijken van gegevens (grafieken, indicatoren, meters, enz.) of interactie met het systeem (uitgangen manipuleren, PWM duty cycle wijzigen, een database opvragen of wijzigen, enz.) Widgets kunnen gemakkelijk worden herschikt en van grootte veranderd door ze te verslepen. Voor een volledige lijst van ondersteunde Widgets, zie [Ondersteunde Widgets](Supported-Widgets.md).
 
 ### Custom Widgets
 
