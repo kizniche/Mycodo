@@ -2,13 +2,13 @@
 
 Page\: `Data -> Live Measurements`
 
-The `Live Measurements` page is the first page a user sees after logging in to Mycodo. It will display the current measurements being acquired from Input and Function controllers. If there is nothing displayed on the `Live` page, ensure an Input or Function controller is both configured correctly and activated. Data will be automatically updated on the page from the measurement database.
+La página `Mediciones en vivo` es la primera página que ve un usuario después de iniciar sesión en Mycodo. En ella se muestran las mediciones actuales que se están adquiriendo de los controladores de Entrada y Función. Si no se muestra nada en la página `Live`, asegúrese de que un controlador de Entrada o Función está configurado correctamente y activado. Los datos se actualizarán automáticamente en la página desde la base de datos de mediciones.
 
 ## Asíncrono
 
 Page\: `Datos -> Asíncrono`
 
-A graphical data display that is useful for viewing data sets spanning relatively long periods of time (weeks/months/years), which could be very data- and processor-intensive to view as a Synchronous Graph. Select a time frame and data will be loaded from that time span, if it exists. The first view will be of the entire selected data set. For every view/zoom, 700 data points will be loaded. If there are more than 700 data points recorded for the time span selected, 700 points will be created from an averaging of the points in that time span. This enables much less data to be used to navigate a large data set. For instance, 4 months of data may be 10 megabytes if all of it were downloaded. However, when viewing a 4 month span, it's not possible to see every data point of that 10 megabytes, and aggregating of points is inevitable. With asynchronous loading of data, you only download what you see. So, instead of downloading 10 megabytes every graph load, only ~50kb will be downloaded until a new zoom level is selected, at which time only another ~50kb is downloaded.
+Una visualización gráfica de datos que resulta útil para ver conjuntos de datos que abarcan periodos de tiempo relativamente largos (semanas/meses/años), cuya visualización en forma de gráfico sincrónico podría requerir muchos datos y un gran número de procesadores. Seleccione un periodo de tiempo y se cargarán los datos de ese periodo, si existen. La primera vista será de todo el conjunto de datos seleccionado. Para cada vista/zoom, se cargarán 700 puntos de datos. Si hay más de 700 puntos de datos registrados para el lapso de tiempo seleccionado, se crearán 700 puntos a partir de un promedio de los puntos de ese lapso de tiempo. Esto permite utilizar muchos menos datos para navegar por un conjunto de datos grande. Por ejemplo, 4 meses de datos pueden ser 10 megabytes si se descargan todos. Sin embargo, al visualizar un lapso de 4 meses, no es posible ver todos los puntos de datos de esos 10 megabytes, y la agregación de puntos es inevitable. Con la carga asíncrona de datos, sólo se descarga lo que se ve. Así, en lugar de descargar 10 megabytes cada vez que se carga el gráfico, sólo se descargarán ~50kb hasta que se seleccione un nuevo nivel de zoom, momento en el que sólo se descargarán otros ~50kb.
 
 !!! note
     Graphs require measurements, therefore at least one Input/Output/Function/etc. needs to be added and activated in order to display data.
@@ -17,11 +17,11 @@ A graphical data display that is useful for viewing data sets spanning relativel
 
 Page\: `Datos -> Tablero`
 
-The dashboard can be used for both viewing data and manipulating the system, thanks to the numerous dashboard widgets available. Multiple dashboards can be created as well as locked to prevent changing the arrangement.
+El cuadro de mandos puede utilizarse tanto para ver los datos como para manipular el sistema, gracias a los numerosos widgets del cuadro de mandos disponibles. Se pueden crear múltiples cuadros de mando, así como bloquearlos para evitar que se modifique su disposición.
 
 ## Widgets
 
-Widgets are elements on the Dashboard that have a number of uses, such as viewing data (charts, indicators, gauges, etc.) or interacting with the system (manipulate outputs, change PWM duty cycle, querying or modifying a database, etc.). Widgets can be easily rearranged and resized by dragging and dropping. For a full list of supported Widgets, see [Supported Widgets](Supported-Widgets.md).
+Los widgets son elementos del cuadro de mandos que tienen una serie de usos, como la visualización de datos (gráficos, indicadores, medidores, etc.) o la interacción con el sistema (manipular salidas, cambiar el ciclo de trabajo PWM, consultar o modificar una base de datos, etc.). Los widgets se pueden reorganizar y cambiar de tamaño fácilmente arrastrando y soltando. Para obtener una lista completa de los widgets admitidos, consulte [Widgets admitidos](Supported-Widgets.md).
 
 ### Custom Widgets
 

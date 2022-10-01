@@ -1,30 +1,30 @@
 description: Documentation for Mycodo, an open source environmental monitoring and regulation system.
 
-## Mycodo Environmental Monitoring and Regulation System
+## Mycodo Çevresel İzleme ve Düzenleme Sistemi
 
-Mycodo is open source software designed to run on the [Raspberry Pi](https://en.wikipedia.org/wiki/Raspberry_Pi) and other single-board computers (SBCs). It couples inputs and outputs in interesting ways to sense and manipulate the environment.
+Mycodo, [Raspberry Pi] (https://en.wikipedia.org/wiki/Raspberry_Pi) ve diğer tek kartlı bilgisayarlarda (SBC'ler) çalışmak üzere tasarlanmış açık kaynaklı bir yazılımdır. Çevreyi algılamak ve manipüle etmek için giriş ve çıkışları ilginç şekillerde birleştirir.
 
 ### Information
 
-See the [README](https://github.com/kizniche/Mycodo#uses) for features, projects using Mycodo, screenshots, and other information.
+Özellikler, Mycodo kullanan projeler, ekran görüntüleri ve diğer bilgiler için [README](https://github.com/kizniche/Mycodo#uses) adresine bakın.
 
 This manual is also [available as a PDF](https://kizniche.github.io/Mycodo/mycodo-manual.pdf) for offline reading.
 
-### Prerequisites
+### Ön Koşullar
 
-*   Single-board computer (Recommended: [Raspberry Pi](https://www.raspberrypi.org/), any version: Zero, 1, 2, 3, or 4)
-*   Debian-based operating system
-*   An active internet connection
+*   Tek kartlı bilgisayar (Önerilen: [Raspberry Pi](https://www.raspberrypi.org/), herhangi bir sürüm: Sıfır, 1, 2, 3 veya 4)
+*   Debian tabanlı işletim sistemi
+*   Aktif bir internet bağlantısı
 
-### Install
+### Kurulum
 
-Once booted and logged in, run the following command to initiate the Mycodo install:
+Önyükleme yapıldıktan ve oturum açıldıktan sonra, Mycodo yüklemesini başlatmak için aşağıdaki komutu çalıştırın:
 
 ```bash
 curl -L https://kizniche.github.io/Mycodo/install | bash
 ```
 
-After installation, open a web browser to the SBC's IP address and you will be prompted to create an Admin user and login.
+Kurulumdan sonra, SBC'nin IP adresine bir web tarayıcısı açın ve bir Yönetici kullanıcısı oluşturup oturum açmanız istenecektir.
 
 ```
 https://127.0.0.1
@@ -36,11 +36,11 @@ https://127.0.0.1
 *   [Mycodo Wiki](https://github.com/kizniche/Mycodo/wiki)
 *   [Mycodo API](https://kizniche.github.io/Mycodo/mycodo-api.html)
 *   [Discussion Forum](https://forum.radicaldiy.com)
-*   [Frequently Asked Questions](https://forum.radicaldiy.com/docs?category=23&tags=mycodo)
+*   [Sıkça Sorulan Sorular](https://forum.radicaldiy.com/docs?category=23&tags=mycodo)
 *   [Mycodo Support](https://play.google.com/store/apps/details?id=com.mycodo.mycododocs) (Android App)
 
 ### Bağış Yapın
 
-Become a Sponsor: [github.com/sponsors/kizniche](https://github.com/sponsors/kizniche)
+Sponsor Olun: [github.com/sponsors/kizniche](https://github.com/sponsors/kizniche)
 
 Other Methods: [KyleGabriel.com/donate](https://kylegabriel.com/donate)

@@ -2,13 +2,13 @@
 
 Page\: `Data -> Live Measurements`
 
-The `Live Measurements` page is the first page a user sees after logging in to Mycodo. It will display the current measurements being acquired from Input and Function controllers. If there is nothing displayed on the `Live` page, ensure an Input or Function controller is both configured correctly and activated. Data will be automatically updated on the page from the measurement database.
+Страница `Live Measurements` - это первая страница, которую видит пользователь после входа в Mycodo. На ней отображаются текущие измерения, получаемые от входных и функциональных контроллеров. Если на странице `Live` ничего не отображается, убедитесь, что входной или функциональный контроллер настроен правильно и активирован. Данные будут автоматически обновляться на этой странице из базы данных измерений.
 
 ## асинхронный
 
 Page\: `Данные -> асинхронный`
 
-A graphical data display that is useful for viewing data sets spanning relatively long periods of time (weeks/months/years), which could be very data- and processor-intensive to view as a Synchronous Graph. Select a time frame and data will be loaded from that time span, if it exists. The first view will be of the entire selected data set. For every view/zoom, 700 data points will be loaded. If there are more than 700 data points recorded for the time span selected, 700 points will be created from an averaging of the points in that time span. This enables much less data to be used to navigate a large data set. For instance, 4 months of data may be 10 megabytes if all of it were downloaded. However, when viewing a 4 month span, it's not possible to see every data point of that 10 megabytes, and aggregating of points is inevitable. With asynchronous loading of data, you only download what you see. So, instead of downloading 10 megabytes every graph load, only ~50kb will be downloaded until a new zoom level is selected, at which time only another ~50kb is downloaded.
+Графическое отображение данных, полезное для просмотра наборов данных, охватывающих относительно длительные периоды времени (недели/месяцы/годы), просмотр которых в виде синхронного графика может потребовать больших затрат данных и процессора. Выберите временной интервал, и данные будут загружены из этого временного интервала, если он существует. Первый просмотр будет всего выбранного набора данных. Для каждого вида/масштаба будет загружено 700 точек данных. Если для выбранного временного интервала записано более 700 точек данных, 700 точек будут созданы на основе усреднения точек этого временного интервала. Это позволяет использовать гораздо меньше данных для навигации по большому набору данных. Например, данные за 4 месяца могут занимать 10 мегабайт, если загрузить их все. Однако при просмотре данных за 4 месяца невозможно увидеть каждую точку данных из этих 10 мегабайт, и объединение точек неизбежно. При асинхронной загрузке данных вы загружаете только то, что видите. Таким образом, вместо загрузки 10 мегабайт при каждой загрузке графика, будет загружаться только ~50 кб, пока не будет выбран новый уровень масштабирования, и тогда будет загружено еще ~50 кб.
 
 !!! note
     Graphs require measurements, therefore at least one Input/Output/Function/etc. needs to be added and activated in order to display data.
@@ -17,11 +17,11 @@ A graphical data display that is useful for viewing data sets spanning relativel
 
 Page\: `Данные -> Панель управления`
 
-The dashboard can be used for both viewing data and manipulating the system, thanks to the numerous dashboard widgets available. Multiple dashboards can be created as well as locked to prevent changing the arrangement.
+Приборная панель может использоваться как для просмотра данных, так и для манипулирования системой благодаря многочисленным виджетам приборной панели. Можно создать несколько приборных панелей, а также заблокировать их для предотвращения изменения расположения.
 
 ## Widgets
 
-Widgets are elements on the Dashboard that have a number of uses, such as viewing data (charts, indicators, gauges, etc.) or interacting with the system (manipulate outputs, change PWM duty cycle, querying or modifying a database, etc.). Widgets can be easily rearranged and resized by dragging and dropping. For a full list of supported Widgets, see [Supported Widgets](Supported-Widgets.md).
+Виджеты - это элементы приборной панели, которые могут использоваться для просмотра данных (графики, индикаторы, датчики и т.д.) или взаимодействия с системой (манипулирование выходами, изменение рабочего цикла ШИМ, запрос или изменение базы данных и т.д.). Виджеты можно легко переставлять и изменять их размер путем перетаскивания. Полный список поддерживаемых виджетов см. в [Supported Widgets](Supported-Widgets.md).
 
 ### Custom Widgets
 

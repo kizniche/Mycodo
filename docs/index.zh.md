@@ -1,30 +1,30 @@
 description: Documentation for Mycodo, an open source environmental monitoring and regulation system.
 
-## Mycodo Environmental Monitoring and Regulation System
+## Mycodo环境监测和监管系统
 
-Mycodo is open source software designed to run on the [Raspberry Pi](https://en.wikipedia.org/wiki/Raspberry_Pi) and other single-board computers (SBCs). It couples inputs and outputs in interesting ways to sense and manipulate the environment.
+Mycodo是开源软件，旨在运行在[树莓派](https://en.wikipedia.org/wiki/Raspberry_Pi)和其他单板计算机(SBC)上。它以有趣的方式将输入和输出耦合起来，以感知和操纵环境。
 
 ### Information
 
-See the [README](https://github.com/kizniche/Mycodo#uses) for features, projects using Mycodo, screenshots, and other information.
+有关功能、使用Mycodo的项目、屏幕截图和其他信息，请参见[README](https://github.com/kizniche/Mycodo#uses)。
 
 This manual is also [available as a PDF](https://kizniche.github.io/Mycodo/mycodo-manual.pdf) for offline reading.
 
-### Prerequisites
+### 先决条件
 
-*   Single-board computer (Recommended: [Raspberry Pi](https://www.raspberrypi.org/), any version: Zero, 1, 2, 3, or 4)
-*   Debian-based operating system
-*   An active internet connection
+*   单板计算机（推荐。[Raspberry Pi](https://www.raspberrypi.org/)，任何版本。零，1，2，3，或4)
+*   基于Debian的操作系统
+*   一个活跃的互联网连接
 
-### Install
+### 安装
 
-Once booted and logged in, run the following command to initiate the Mycodo install:
+启动并登录后，运行以下命令，启动Mycodo安装。
 
 ```bash
 curl -L https://kizniche.github.io/Mycodo/install | bash
 ```
 
-After installation, open a web browser to the SBC's IP address and you will be prompted to create an Admin user and login.
+安装后，打开Web浏览器到SBC的IP地址，会提示你创建一个管理员用户并登录。
 
 ```
 https://127.0.0.1
@@ -36,11 +36,11 @@ https://127.0.0.1
 *   [Mycodo Wiki](https://github.com/kizniche/Mycodo/wiki)
 *   [Mycodo API](https://kizniche.github.io/Mycodo/mycodo-api.html)
 *   [论坛](https://forum.radicaldiy.com)
-*   [Frequently Asked Questions](https://forum.radicaldiy.com/docs?category=23&tags=mycodo)
+*   [常见问题](https://forum.radicaldiy.com/docs?category=23&tags=mycodo)
 *   [Mycodo Support](https://play.google.com/store/apps/details?id=com.mycodo.mycododocs) (Android App)
 
 ### 捐赠
 
-Become a Sponsor: [github.com/sponsors/kizniche](https://github.com/sponsors/kizniche)
+成为赞助商: [github.com/sponsors/kizniche](https://github.com/sponsors/kizniche)
 
 Other Methods: [KyleGabriel.com/donate](https://kylegabriel.com/donate)

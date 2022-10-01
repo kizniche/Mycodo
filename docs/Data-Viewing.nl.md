@@ -2,13 +2,13 @@
 
 Page\: `Data -> Live Measurements`
 
-The `Live Measurements` page is the first page a user sees after logging in to Mycodo. It will display the current measurements being acquired from Input and Function controllers. If there is nothing displayed on the `Live` page, ensure an Input or Function controller is both configured correctly and activated. Data will be automatically updated on the page from the measurement database.
+De `Live Measurements` pagina is de eerste pagina die een gebruiker ziet na het inloggen op Mycodo. Het toont de huidige metingen die worden verkregen van ingangs- en functiecontrollers. Als er niets wordt weergegeven op de `Live`-pagina, zorg er dan voor dat een ingangs- of functiecontroller correct is geconfigureerd en geactiveerd. Gegevens worden automatisch bijgewerkt op de pagina vanuit de meetdatabase.
 
 ## Asynchroon
 
 Page\: `Gegevens -> Asynchroon`
 
-A graphical data display that is useful for viewing data sets spanning relatively long periods of time (weeks/months/years), which could be very data- and processor-intensive to view as a Synchronous Graph. Select a time frame and data will be loaded from that time span, if it exists. The first view will be of the entire selected data set. For every view/zoom, 700 data points will be loaded. If there are more than 700 data points recorded for the time span selected, 700 points will be created from an averaging of the points in that time span. This enables much less data to be used to navigate a large data set. For instance, 4 months of data may be 10 megabytes if all of it were downloaded. However, when viewing a 4 month span, it's not possible to see every data point of that 10 megabytes, and aggregating of points is inevitable. With asynchronous loading of data, you only download what you see. So, instead of downloading 10 megabytes every graph load, only ~50kb will be downloaded until a new zoom level is selected, at which time only another ~50kb is downloaded.
+Een grafische weergave van gegevens die nuttig is voor het bekijken van gegevensreeksen over relatief lange perioden (weken/maanden/jaren), die zeer gegevens- en processorintensief zouden kunnen zijn om te bekijken als een synchrone grafiek. Selecteer een tijdspanne en de gegevens worden geladen van die tijdspanne, als die bestaat. De eerste weergave betreft de gehele geselecteerde gegevensreeks. Voor elke weergave/zoom worden 700 datapunten geladen. Als er meer dan 700 datapunten zijn opgenomen voor de geselecteerde tijdspanne, worden 700 punten gecreëerd uit een gemiddelde van de punten in die tijdspanne. Hierdoor kunnen veel minder gegevens worden gebruikt om door een grote dataset te navigeren. Bijvoorbeeld, 4 maanden gegevens kunnen 10 megabytes zijn als ze allemaal werden gedownload. Bij het bekijken van een periode van 4 maanden is het echter niet mogelijk elk gegevenspunt van die 10 megabyte te zien, en is het samenvoegen van punten onvermijdelijk. Met asynchroon laden van gegevens downloadt u alleen wat u ziet. Dus in plaats van 10 megabyte te downloaden bij elke grafieklading, wordt slechts ~50kb gedownload tot een nieuw zoomniveau wordt geselecteerd, waarna nog eens ~50kb wordt gedownload.
 
 !!! note
     Graphs require measurements, therefore at least one Input/Output/Function/etc. needs to be added and activated in order to display data.
@@ -17,11 +17,11 @@ A graphical data display that is useful for viewing data sets spanning relativel
 
 Page\: `Gegevens -> Dashboard`
 
-The dashboard can be used for both viewing data and manipulating the system, thanks to the numerous dashboard widgets available. Multiple dashboards can be created as well as locked to prevent changing the arrangement.
+Het dashboard kan zowel worden gebruikt om gegevens te bekijken als om het systeem te manipuleren, dankzij de talrijke beschikbare dashboardwidgets. Er kunnen meerdere dashboards worden aangemaakt en vergrendeld om de indeling niet te wijzigen.
 
 ## Widgets
 
-Widgets are elements on the Dashboard that have a number of uses, such as viewing data (charts, indicators, gauges, etc.) or interacting with the system (manipulate outputs, change PWM duty cycle, querying or modifying a database, etc.). Widgets can be easily rearranged and resized by dragging and dropping. For a full list of supported Widgets, see [Supported Widgets](Supported-Widgets.md).
+Widgets zijn elementen op het Dashboard die een aantal toepassingen hebben, zoals het bekijken van gegevens (grafieken, indicatoren, meters, enz.) of interactie met het systeem (uitgangen manipuleren, PWM duty cycle wijzigen, een database opvragen of wijzigen, enz.) Widgets kunnen gemakkelijk worden herschikt en van grootte veranderd door ze te verslepen. Voor een volledige lijst van ondersteunde Widgets, zie [Ondersteunde Widgets](Ondersteunde-Widgets.md).
 
 ### Custom Widgets
 

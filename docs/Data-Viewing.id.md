@@ -2,13 +2,13 @@
 
 Page\: `Data -> Live Measurements`
 
-The `Live Measurements` page is the first page a user sees after logging in to Mycodo. It will display the current measurements being acquired from Input and Function controllers. If there is nothing displayed on the `Live` page, ensure an Input or Function controller is both configured correctly and activated. Data will be automatically updated on the page from the measurement database.
+Halaman `Pengukuran Langsung` adalah halaman pertama yang dilihat pengguna setelah masuk ke Mycodo. Ini akan menampilkan pengukuran saat ini yang diperoleh dari pengontrol Input dan Fungsi. Jika tidak ada yang ditampilkan pada halaman `Live`, pastikan pengontrol Input atau Fungsi dikonfigurasi dengan benar dan diaktifkan. Data akan secara otomatis diperbarui pada halaman dari database pengukuran.
 
 ## Asynchronous Graphs
 
 Page\: `data -> Asynchronous Graphs`
 
-A graphical data display that is useful for viewing data sets spanning relatively long periods of time (weeks/months/years), which could be very data- and processor-intensive to view as a Synchronous Graph. Select a time frame and data will be loaded from that time span, if it exists. The first view will be of the entire selected data set. For every view/zoom, 700 data points will be loaded. If there are more than 700 data points recorded for the time span selected, 700 points will be created from an averaging of the points in that time span. This enables much less data to be used to navigate a large data set. For instance, 4 months of data may be 10 megabytes if all of it were downloaded. However, when viewing a 4 month span, it's not possible to see every data point of that 10 megabytes, and aggregating of points is inevitable. With asynchronous loading of data, you only download what you see. So, instead of downloading 10 megabytes every graph load, only ~50kb will be downloaded until a new zoom level is selected, at which time only another ~50kb is downloaded.
+Tampilan data grafis yang berguna untuk melihat kumpulan data yang mencakup periode waktu yang relatif lama (minggu/bulan/tahun), yang bisa jadi sangat intensif data dan prosesor untuk dilihat sebagai Grafik Sinkron. Pilih kerangka waktu dan data akan dimuat dari rentang waktu tersebut, jika ada. Tampilan pertama adalah seluruh kumpulan data yang dipilih. Untuk setiap tampilan/zoom, 700 titik data akan dimuat. Jika terdapat lebih dari 700 titik data yang direkam untuk rentang waktu yang dipilih, 700 titik akan dibuat dari rata-rata titik dalam rentang waktu tersebut. Hal ini memungkinkan data yang jauh lebih sedikit digunakan untuk menavigasi kumpulan data yang besar. Misalnya, data 4 bulan mungkin 10 megabyte jika semuanya diunduh. Namun, ketika melihat rentang waktu 4 bulan, tidak mungkin untuk melihat setiap titik data dari 10 megabyte itu, dan pengumpulan titik-titik tidak dapat dihindari. Dengan pemuatan data secara asinkron, Anda hanya mengunduh apa yang Anda lihat. Jadi, alih-alih mengunduh 10 megabyte setiap pemuatan grafik, hanya ~50kb yang akan diunduh hingga tingkat zoom baru dipilih, dan pada saat itu hanya ~50kb lagi yang diunduh.
 
 !!! note
     Graphs require measurements, therefore at least one Input/Output/Function/etc. needs to be added and activated in order to display data.
@@ -17,11 +17,11 @@ A graphical data display that is useful for viewing data sets spanning relativel
 
 Page\: `data -> Dasbor`
 
-The dashboard can be used for both viewing data and manipulating the system, thanks to the numerous dashboard widgets available. Multiple dashboards can be created as well as locked to prevent changing the arrangement.
+Dasbor dapat digunakan untuk melihat data dan memanipulasi sistem, berkat banyaknya widget dasbor yang tersedia. Beberapa dasbor dapat dibuat serta dikunci untuk mencegah perubahan pengaturan.
 
 ## Widgets
 
-Widgets are elements on the Dashboard that have a number of uses, such as viewing data (charts, indicators, gauges, etc.) or interacting with the system (manipulate outputs, change PWM duty cycle, querying or modifying a database, etc.). Widgets can be easily rearranged and resized by dragging and dropping. For a full list of supported Widgets, see [Supported Widgets](Supported-Widgets.md).
+Widget adalah elemen pada Dasbor yang memiliki sejumlah kegunaan, seperti melihat data (grafik, indikator, pengukur, dll.) atau berinteraksi dengan sistem (memanipulasi output, mengubah siklus tugas PWM, menanyakan atau memodifikasi database, dll.). Widget dapat dengan mudah diatur ulang dan diubah ukurannya dengan menyeret dan menjatuhkan. Untuk daftar lengkap Widget yang didukung, lihat [Supported Widgets] (Supported-Widgets.md).
 
 ### Custom Widgets
 

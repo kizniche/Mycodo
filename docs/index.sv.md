@@ -1,30 +1,30 @@
 description: Documentation for Mycodo, an open source environmental monitoring and regulation system.
 
-## Mycodo Environmental Monitoring and Regulation System
+## System för miljöövervakning och miljöreglering av Mycodo
 
-Mycodo is open source software designed to run on the [Raspberry Pi](https://en.wikipedia.org/wiki/Raspberry_Pi) and other single-board computers (SBCs). It couples inputs and outputs in interesting ways to sense and manipulate the environment.
+Mycodo är en programvara med öppen källkod som är utformad för att köras på [Raspberry Pi] (https://en.wikipedia.org/wiki/Raspberry_Pi) och andra enbordsdatorer (SBC). Den kopplar ihop in- och utgångar på intressanta sätt för att känna av och manipulera miljön.
 
 ### Information
 
-See the [README](https://github.com/kizniche/Mycodo#uses) for features, projects using Mycodo, screenshots, and other information.
+Se [README] (https://github.com/kizniche/Mycodo#uses) för funktioner, projekt som använder Mycodo, skärmdumpar och annan information.
 
 This manual is also [available as a PDF](https://kizniche.github.io/Mycodo/mycodo-manual.pdf) for offline reading.
 
-### Prerequisites
+### Förutsättningar
 
-*   Single-board computer (Recommended: [Raspberry Pi](https://www.raspberrypi.org/), any version: Zero, 1, 2, 3, or 4)
-*   Debian-based operating system
-*   An active internet connection
+*   Enbordsdator (Rekommenderas: [Raspberry Pi] (https://www.raspberrypi.org/), vilken version som helst: Zero, 1, 2, 3 eller 4)
+*   Debianbaserat operativsystem
+*   En aktiv internetanslutning
 
-### Install
+### Installera
 
-Once booted and logged in, run the following command to initiate the Mycodo install:
+När du har startat upp och loggat in kör du följande kommando för att påbörja Mycodo-installationen:
 
 ```bash
 curl -L https://kizniche.github.io/Mycodo/install | bash
 ```
 
-After installation, open a web browser to the SBC's IP address and you will be prompted to create an Admin user and login.
+Efter installationen öppnar du en webbläsare till SBC:s IP-adress och du kommer att uppmanas att skapa en administratörsanvändare och logga in.
 
 ```
 https://127.0.0.1
@@ -36,11 +36,11 @@ https://127.0.0.1
 *   [Mycodo Wiki](https://github.com/kizniche/Mycodo/wiki)
 *   [Mycodo API](https://kizniche.github.io/Mycodo/mycodo-api.html)
 *   [Diskussionsforum](https://forum.radicaldiy.com)
-*   [Frequently Asked Questions](https://forum.radicaldiy.com/docs?category=23&tags=mycodo)
+*   [Ofta ställda frågor](https://forum.radicaldiy.com/docs?category=23&tags=mycodo)
 *   [Mycodo Support](https://play.google.com/store/apps/details?id=com.mycodo.mycododocs) (Android App)
 
 ### Donera
 
-Become a Sponsor: [github.com/sponsors/kizniche](https://github.com/sponsors/kizniche)
+Bli en sponsor: [github.com/sponsors/kizniche](https://github.com/sponsors/kizniche)
 
 Other Methods: [KyleGabriel.com/donate](https://kylegabriel.com/donate)

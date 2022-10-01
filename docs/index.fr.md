@@ -1,30 +1,30 @@
 description: Documentation for Mycodo, an open source environmental monitoring and regulation system.
 
-## Mycodo Environmental Monitoring and Regulation System
+## Système de surveillance et de régulation environnementale Mycodo
 
-Mycodo is open source software designed to run on the [Raspberry Pi](https://en.wikipedia.org/wiki/Raspberry_Pi) and other single-board computers (SBCs). It couples inputs and outputs in interesting ways to sense and manipulate the environment.
+Mycodo est un logiciel open source conçu pour fonctionner sur le [Raspberry Pi] (https://en.wikipedia.org/wiki/Raspberry_Pi) et d'autres ordinateurs monocartes (SBC). Il couple les entrées et les sorties de manière intéressante pour détecter et manipuler l'environnement.
 
 ### Information
 
-See the [README](https://github.com/kizniche/Mycodo#uses) for features, projects using Mycodo, screenshots, and other information.
+Voir le [README](https://github.com/kizniche/Mycodo#uses) pour les fonctionnalités, les projets utilisant Mycodo, les captures d'écran et d'autres informations.
 
 This manual is also [available as a PDF](https://kizniche.github.io/Mycodo/mycodo-manual.pdf) for offline reading.
 
-### Prerequisites
+### Conditions préalables
 
-*   Single-board computer (Recommended: [Raspberry Pi](https://www.raspberrypi.org/), any version: Zero, 1, 2, 3, or 4)
-*   Debian-based operating system
-*   An active internet connection
+*   Ordinateur monocarte (recommandé : [Raspberry Pi](https://www.raspberrypi.org/), toute version : Zero, 1, 2, 3, ou 4)
+*   Système d'exploitation basé sur Debian
+*   Une connexion internet active
 
 ### Installer
 
-Once booted and logged in, run the following command to initiate the Mycodo install:
+Une fois démarré et connecté, exécutez la commande suivante pour lancer l'installation de Mycodo :
 
 ```bash
 curl -L https://kizniche.github.io/Mycodo/install | bash
 ```
 
-After installation, open a web browser to the SBC's IP address and you will be prompted to create an Admin user and login.
+Après l'installation, ouvrez un navigateur Web sur l'adresse IP du SBC et vous serez invité à créer un utilisateur Admin et à vous connecter.
 
 ```
 https://127.0.0.1
@@ -36,11 +36,11 @@ https://127.0.0.1
 *   [Mycodo Wiki](https://github.com/kizniche/Mycodo/wiki)
 *   [Mycodo API](https://kizniche.github.io/Mycodo/mycodo-api.html)
 *   [Forum de discussion](https://forum.radicaldiy.com)
-*   [Frequently Asked Questions](https://forum.radicaldiy.com/docs?category=23&tags=mycodo)
+*   [Questions fréquemment posées](https://forum.radicaldiy.com/docs?category=23&tags=mycodo)
 *   [Mycodo Support](https://play.google.com/store/apps/details?id=com.mycodo.mycododocs) (Android App)
 
 ### Faire un don
 
-Become a Sponsor: [github.com/sponsors/kizniche](https://github.com/sponsors/kizniche)
+Devenir un sponsor: [github.com/sponsors/kizniche](https://github.com/sponsors/kizniche)
 
 Other Methods: [KyleGabriel.com/donate](https://kylegabriel.com/donate)

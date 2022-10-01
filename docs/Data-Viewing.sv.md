@@ -2,13 +2,13 @@
 
 Page\: `Data -> Live Measurements`
 
-The `Live Measurements` page is the first page a user sees after logging in to Mycodo. It will display the current measurements being acquired from Input and Function controllers. If there is nothing displayed on the `Live` page, ensure an Input or Function controller is both configured correctly and activated. Data will be automatically updated on the page from the measurement database.
+Sidan `Live Measurements` är den första sidan som en användare ser efter att ha loggat in på Mycodo. Den visar de aktuella mätningar som erhålls från styrenheter för ingång och funktion. Om det inte visas något på sidan `Live` ska du se till att en ingångs- eller funktionsregulator är både korrekt konfigurerad och aktiverad. Data kommer automatiskt att uppdateras på sidan från mätningsdatabasen.
 
 ## Asynchronous Graphs
 
 Page\: `Data -> Asynchronous Graphs`
 
-A graphical data display that is useful for viewing data sets spanning relatively long periods of time (weeks/months/years), which could be very data- and processor-intensive to view as a Synchronous Graph. Select a time frame and data will be loaded from that time span, if it exists. The first view will be of the entire selected data set. For every view/zoom, 700 data points will be loaded. If there are more than 700 data points recorded for the time span selected, 700 points will be created from an averaging of the points in that time span. This enables much less data to be used to navigate a large data set. For instance, 4 months of data may be 10 megabytes if all of it were downloaded. However, when viewing a 4 month span, it's not possible to see every data point of that 10 megabytes, and aggregating of points is inevitable. With asynchronous loading of data, you only download what you see. So, instead of downloading 10 megabytes every graph load, only ~50kb will be downloaded until a new zoom level is selected, at which time only another ~50kb is downloaded.
+En grafisk datavisning som är användbar för att visa datamängder som sträcker sig över relativt långa tidsperioder (veckor/månader/år), vilket kan vara mycket data- och processorkrävande att visa som en synkron graf. Välj en tidsram och data kommer att laddas från den tidsperioden, om den finns. Den första visningen kommer att vara av hela den valda datamängden. För varje vy/zoom kommer 700 datapunkter att laddas. Om det finns fler än 700 datapunkter registrerade för det valda tidsspannet kommer 700 punkter att skapas genom en genomsnittlig beräkning av punkterna i det tidsspannet. På så sätt kan mycket mindre data användas för att navigera i en stor datamängd. Exempelvis kan 4 månaders data vara 10 megabyte om alla data laddas ner. När man tittar på en 4-månadersperiod är det dock inte möjligt att se varje datapunkt i de 10 megabyte, och aggregering av punkter är oundviklig. Med asynkron laddning av data hämtar du bara det du ser. Så i stället för att ladda ner 10 megabyte varje gång grafen laddas, laddas endast ~50 kb ner tills en ny zoomnivå väljs, varvid endast ytterligare ~50 kb laddas ner.
 
 !!! note
     Graphs require measurements, therefore at least one Input/Output/Function/etc. needs to be added and activated in order to display data.
@@ -17,11 +17,11 @@ A graphical data display that is useful for viewing data sets spanning relativel
 
 Page\: `Data -> instrumentbräda`
 
-The dashboard can be used for both viewing data and manipulating the system, thanks to the numerous dashboard widgets available. Multiple dashboards can be created as well as locked to prevent changing the arrangement.
+Instrumentpanelen kan användas både för att visa data och för att manipulera systemet, tack vare de många widgetar som finns tillgängliga. Flera instrumentpaneler kan skapas och låsas för att förhindra att arrangemanget ändras.
 
 ## Widgets
 
-Widgets are elements on the Dashboard that have a number of uses, such as viewing data (charts, indicators, gauges, etc.) or interacting with the system (manipulate outputs, change PWM duty cycle, querying or modifying a database, etc.). Widgets can be easily rearranged and resized by dragging and dropping. For a full list of supported Widgets, see [Supported Widgets](Supported-Widgets.md).
+Widgets är element på instrumentpanelen som kan användas på olika sätt, t.ex. för att visa data (diagram, indikatorer, mätare osv.) eller för att interagera med systemet (manipulera utgångar, ändra PWM-tjänstgöringscykel, fråga eller ändra en databas osv.). Widgetar kan enkelt omorganiseras och ändras i storlek genom att dra och släppa dem. För en fullständig lista över widgets som stöds, se [Supported Widgets] (Supported-Widgets.md).
 
 ### Custom Widgets
 

@@ -2,13 +2,13 @@
 
 Page\: `Data -> Live Measurements`
 
-The `Live Measurements` page is the first page a user sees after logging in to Mycodo. It will display the current measurements being acquired from Input and Function controllers. If there is nothing displayed on the `Live` page, ensure an Input or Function controller is both configured correctly and activated. Data will be automatically updated on the page from the measurement database.
+实时测量 "页面是用户登录Mycodo后看到的第一个页面。它将显示当前从输入和功能控制器获得的测量结果。如果 "实时 "页面上没有显示，请确保输入或功能控制器配置正确并被激活。数据将从测量数据库中自动更新到该页面上。
 
 ## 异步
 
 Page\: `数据 -> 异步`
 
-A graphical data display that is useful for viewing data sets spanning relatively long periods of time (weeks/months/years), which could be very data- and processor-intensive to view as a Synchronous Graph. Select a time frame and data will be loaded from that time span, if it exists. The first view will be of the entire selected data set. For every view/zoom, 700 data points will be loaded. If there are more than 700 data points recorded for the time span selected, 700 points will be created from an averaging of the points in that time span. This enables much less data to be used to navigate a large data set. For instance, 4 months of data may be 10 megabytes if all of it were downloaded. However, when viewing a 4 month span, it's not possible to see every data point of that 10 megabytes, and aggregating of points is inevitable. With asynchronous loading of data, you only download what you see. So, instead of downloading 10 megabytes every graph load, only ~50kb will be downloaded until a new zoom level is selected, at which time only another ~50kb is downloaded.
+一种图形化的数据显示，对于查看跨度相对较长的时间段（周/月/年）的数据集很有用，如果以同步图的形式查看，可能会非常耗费数据和处理器。选择一个时间框架，如果存在的话，数据将从该时间段加载。第一个视图将是整个选定的数据集。对于每个视图/缩放，700个数据点将被加载。如果所选的时间跨度有超过700个数据点，700个点将从该时间跨度的点的平均数中产生。这样就可以用少得多的数据来浏览一个大的数据集。例如，如果全部下载，4个月的数据可能是10兆字节。然而，当查看4个月的时间跨度时，不可能看到这10兆字节的每一个数据点，点的聚集是不可避免的。通过数据的异步加载，你只下载你所看到的东西。因此，每次加载图表都要下载10兆字节的数据，而在选择新的缩放级别之前，只下载约50kb的数据，这时又只下载约50kb的数据。
 
 !!! note
     Graphs require measurements, therefore at least one Input/Output/Function/etc. needs to be added and activated in order to display data.
@@ -17,11 +17,11 @@ A graphical data display that is useful for viewing data sets spanning relativel
 
 Page\: `数据 -> 仪表板`
 
-The dashboard can be used for both viewing data and manipulating the system, thanks to the numerous dashboard widgets available. Multiple dashboards can be created as well as locked to prevent changing the arrangement.
+由于有许多仪表盘部件可用，仪表盘既可用于查看数据，也可用于操纵系统。可以创建多个仪表盘，也可以锁定以防止改变安排。
 
 ## Widgets
 
-Widgets are elements on the Dashboard that have a number of uses, such as viewing data (charts, indicators, gauges, etc.) or interacting with the system (manipulate outputs, change PWM duty cycle, querying or modifying a database, etc.). Widgets can be easily rearranged and resized by dragging and dropping. For a full list of supported Widgets, see [Supported Widgets](Supported-Widgets.md).
+部件是仪表板上的元素，有多种用途，如查看数据（图表、指标、仪表等）或与系统互动（操纵输出、改变PWM占空比、查询或修改数据库等）。小工具可以通过拖放轻松地重新安排和调整大小。关于支持的Widgets的完整列表，见[支持的Widgets]（Supported-Widgets.md）。
 
 ### Custom Widgets
 

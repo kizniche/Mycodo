@@ -2,13 +2,13 @@
 
 Page\: `Data -> Live Measurements`
 
-The `Live Measurements` page is the first page a user sees after logging in to Mycodo. It will display the current measurements being acquired from Input and Function controllers. If there is nothing displayed on the `Live` page, ensure an Input or Function controller is both configured correctly and activated. Data will be automatically updated on the page from the measurement database.
+Canlı Ölçümler sayfası, bir kullanıcının Mycodo'ya giriş yaptıktan sonra gördüğü ilk sayfadır. Giriş ve Fonksiyon kontrolörlerinden alınan mevcut ölçümleri görüntüler. Canlı` sayfasında hiçbir şey görüntülenmiyorsa, bir Giriş veya Fonksiyon kontrolörünün hem doğru yapılandırıldığından hem de etkinleştirildiğinden emin olun. Veriler ölçüm veritabanından otomatik olarak sayfada güncellenecektir.
 
 ## Asynchronous Graphs
 
 Page\: `Veri -> Asynchronous Graphs`
 
-A graphical data display that is useful for viewing data sets spanning relatively long periods of time (weeks/months/years), which could be very data- and processor-intensive to view as a Synchronous Graph. Select a time frame and data will be loaded from that time span, if it exists. The first view will be of the entire selected data set. For every view/zoom, 700 data points will be loaded. If there are more than 700 data points recorded for the time span selected, 700 points will be created from an averaging of the points in that time span. This enables much less data to be used to navigate a large data set. For instance, 4 months of data may be 10 megabytes if all of it were downloaded. However, when viewing a 4 month span, it's not possible to see every data point of that 10 megabytes, and aggregating of points is inevitable. With asynchronous loading of data, you only download what you see. So, instead of downloading 10 megabytes every graph load, only ~50kb will be downloaded until a new zoom level is selected, at which time only another ~50kb is downloaded.
+Senkron Grafik olarak görüntülemek için çok veri ve işlemci yoğun olabilecek nispeten uzun zaman dilimlerini (haftalar/aylar/yıllar) kapsayan veri kümelerini görüntülemek için yararlı olan bir grafik veri ekranı. Bir zaman dilimi seçtiğinizde, eğer varsa, o zaman aralığındaki veriler yüklenecektir. İlk görünüm seçilen veri setinin tamamına ait olacaktır. Her görünüm/yakınlaştırma için 700 veri noktası yüklenecektir. Seçilen zaman aralığı için 700'den fazla veri noktası kaydedilmişse, 700 nokta o zaman aralığındaki noktaların ortalamasından oluşturulacaktır. Bu, büyük bir veri setinde gezinmek için çok daha az verinin kullanılmasını sağlar. Örneğin, 4 aylık verinin tamamı indirilirse 10 megabayt olabilir. Ancak, 4 aylık bir süreyi görüntülerken, bu 10 megabaytın her veri noktasını görmek mümkün değildir ve noktaların toplanması kaçınılmazdır. Eşzamansız veri yüklemesi ile yalnızca gördüğünüz kadarını indirirsiniz. Böylece, her grafik yüklemesinde 10 megabayt indirmek yerine, yeni bir yakınlaştırma seviyesi seçilene kadar yalnızca ~50kb indirilir ve bu sırada yalnızca ~50kb daha indirilir.
 
 !!! note
     Graphs require measurements, therefore at least one Input/Output/Function/etc. needs to be added and activated in order to display data.
@@ -17,11 +17,11 @@ A graphical data display that is useful for viewing data sets spanning relativel
 
 Page\: `Veri -> Gösterge Tablosu`
 
-The dashboard can be used for both viewing data and manipulating the system, thanks to the numerous dashboard widgets available. Multiple dashboards can be created as well as locked to prevent changing the arrangement.
+Gösterge paneli, mevcut çok sayıda gösterge paneli widget'ı sayesinde hem verileri görüntülemek hem de sistemi manipüle etmek için kullanılabilir. Birden fazla gösterge tablosu oluşturulabilir ve düzenlemenin değiştirilmesini önlemek için kilitlenebilir.
 
 ## Widgets
 
-Widgets are elements on the Dashboard that have a number of uses, such as viewing data (charts, indicators, gauges, etc.) or interacting with the system (manipulate outputs, change PWM duty cycle, querying or modifying a database, etc.). Widgets can be easily rearranged and resized by dragging and dropping. For a full list of supported Widgets, see [Supported Widgets](Supported-Widgets.md).
+Pencere öğeleri, Gösterge Tablosunda veri görüntüleme (grafikler, göstergeler, göstergeler, vb.) veya sistemle etkileşim (çıkışları manipüle etme, PWM görev döngüsünü değiştirme, bir veritabanını sorgulama veya değiştirme, vb.) Pencere öğeleri sürüklenip bırakılarak kolayca yeniden düzenlenebilir ve yeniden boyutlandırılabilir. Desteklenen Pencere Araçlarının tam listesi için [Desteklenen Pencere Araçları] (Supported-Widgets.md) bölümüne bakın.
 
 ### Custom Widgets
 

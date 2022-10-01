@@ -2,13 +2,13 @@
 
 Page\: `Data -> Live Measurements`
 
-The `Live Measurements` page is the first page a user sees after logging in to Mycodo. It will display the current measurements being acquired from Input and Function controllers. If there is nothing displayed on the `Live` page, ensure an Input or Function controller is both configured correctly and activated. Data will be automatically updated on the page from the measurement database.
+Strona `Pomiary na żywo` jest pierwszą stroną, którą widzi użytkownik po zalogowaniu się do Mycodo. Wyświetla ona aktualne pomiary uzyskane z kontrolerów wejścia i funkcji. Jeśli nic nie jest wyświetlane na stronie `Live`, upewnij się, że kontroler wejścia lub funkcji jest poprawnie skonfigurowany i aktywowany. Dane będą automatycznie aktualizowane na stronie z bazy danych pomiarów.
 
 ## Wykresy asynchroniczne
 
 Page\: `Dane -> Wykresy asynchroniczne`
 
-A graphical data display that is useful for viewing data sets spanning relatively long periods of time (weeks/months/years), which could be very data- and processor-intensive to view as a Synchronous Graph. Select a time frame and data will be loaded from that time span, if it exists. The first view will be of the entire selected data set. For every view/zoom, 700 data points will be loaded. If there are more than 700 data points recorded for the time span selected, 700 points will be created from an averaging of the points in that time span. This enables much less data to be used to navigate a large data set. For instance, 4 months of data may be 10 megabytes if all of it were downloaded. However, when viewing a 4 month span, it's not possible to see every data point of that 10 megabytes, and aggregating of points is inevitable. With asynchronous loading of data, you only download what you see. So, instead of downloading 10 megabytes every graph load, only ~50kb will be downloaded until a new zoom level is selected, at which time only another ~50kb is downloaded.
+Graficzne wyświetlanie danych przydatne do przeglądania zestawów danych obejmujących stosunkowo długie okresy czasu (tygodnie/miesiące/roki), których wyświetlanie w postaci wykresu synchronicznego mogłoby wymagać dużej ilości danych i procesora. Po wybraniu przedziału czasowego zostaną wczytane dane z tego przedziału, jeśli istnieje. Pierwszy widok będzie dotyczył całego wybranego zestawu danych. Dla każdego widoku/powiększenia zostanie załadowanych 700 punktów danych. Jeśli dla wybranego przedziału czasowego zarejestrowano więcej niż 700 punktów danych, 700 punktów zostanie utworzonych z uśrednienia punktów w tym przedziale czasowym. Umożliwia to wykorzystanie znacznie mniejszej ilości danych do nawigacji po dużym zbiorze danych. Na przykład, 4 miesiące danych mogą mieć rozmiar 10 megabajtów, jeśli wszystkie zostaną pobrane. Jednak podczas przeglądania 4-miesięcznego okresu nie jest możliwe zobaczenie każdego punktu danych z tych 10 megabajtów, a agregacja punktów jest nieunikniona. Przy asynchronicznym ładowaniu danych, pobierasz tylko to, co widzisz. Tak więc, zamiast pobierać 10 megabajtów przy każdym ładowaniu wykresu, tylko ~50kb zostanie pobrane do momentu wybrania nowego poziomu powiększenia, w którym to momencie pobierane jest tylko kolejne ~50kb.
 
 !!! note
     Graphs require measurements, therefore at least one Input/Output/Function/etc. needs to be added and activated in order to display data.
@@ -17,11 +17,11 @@ A graphical data display that is useful for viewing data sets spanning relativel
 
 Page\: `Dane -> Pulpit`
 
-The dashboard can be used for both viewing data and manipulating the system, thanks to the numerous dashboard widgets available. Multiple dashboards can be created as well as locked to prevent changing the arrangement.
+Dashboard może służyć zarówno do przeglądania danych, jak i do manipulowania systemem, dzięki licznym dostępnym widżetom dashboardowym. Można tworzyć wiele dashboardów, jak również zablokować je, aby uniemożliwić zmianę układu.
 
 ## widgety
 
-Widgets are elements on the Dashboard that have a number of uses, such as viewing data (charts, indicators, gauges, etc.) or interacting with the system (manipulate outputs, change PWM duty cycle, querying or modifying a database, etc.). Widgets can be easily rearranged and resized by dragging and dropping. For a full list of supported Widgets, see [Supported Widgets](Supported-Widgets.md).
+Widżety to elementy na pulpicie nawigacyjnym, które mają wiele zastosowań, takich jak wyświetlanie danych (wykresy, wskaźniki, mierniki itp.) lub interakcja z systemem (manipulowanie wyjściami, zmiana cyklu pracy PWM, odpytywanie lub modyfikowanie bazy danych itp.) Widżety można łatwo zmieniać układ i rozmiar poprzez przeciąganie i upuszczanie. Pełna lista obsługiwanych Widżetów znajduje się w [Obsługiwane Widżety](Obsługiwane-Widżety.md).
 
 ### Custom Widgets
 
