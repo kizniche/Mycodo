@@ -60,8 +60,6 @@ if __name__ == "__main__":
     ]
 
     with open(save_path, 'w') as out_file:
-        out_file.write("Actions allow certain Functions to influence other parts of Mycodo and the computer system.\n\n")
-        out_file.write("Supported Actions are listed below.\n\n")
         for each_list in list_actions:
             if not each_list[0]:
                 continue

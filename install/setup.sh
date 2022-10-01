@@ -55,7 +55,7 @@ LANGUAGE=$(whiptail --title "Mycodo Installer" \
                   "fr": "Français (French)" \
                   "it": "Italiano (Italian)" \
                   "nl": "Nederlands (Dutch)" \
-                  "nb": "Norsk (Norwegian)" \
+                  "nn": "Norsk (Norwegian)" \
                   "pl": "Polski (Polish)" \
                   "pt": "Português (Portuguese)" \
                   "ru": "русский язык (Russian)" \

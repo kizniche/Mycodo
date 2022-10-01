@@ -64,7 +64,7 @@ class ExportSettings(FlaskForm):
 
 
 class ImportSettings(FlaskForm):
-    settings_import_file = FileField(TRANSLATIONS['upload']['title'])
+    settings_import_file = FileField()
     settings_import_upload = SubmitField(lazy_gettext('Import Settings'))
 
 
@@ -73,7 +73,7 @@ class ExportInfluxdb(FlaskForm):
 
 
 class ImportInfluxdb(FlaskForm):
-    influxdb_import_file = FileField(TRANSLATIONS['upload']['title'])
+    influxdb_import_file = FileField()
     influxdb_import_upload = SubmitField(lazy_gettext('Import Influxdb'))
 
 

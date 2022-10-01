@@ -2,22 +2,22 @@
 # Copyright (C) 2022 Kyle T. Gabriel
 # This file is distributed under the same license as the Mycodo project.
 # FIRST AUTHOR <EMAIL@ADDRESS>, 2022.
-#
+# Kyle Gabriel <business@kylegabriel.com>, 2022.
 msgid ""
 msgstr ""
 "Project-Id-Version: Mycodo1 8.11.0\n"
 "Report-Msgid-Bugs-To: mycodo@kylegabriel.com\n"
 "POT-Creation-Date: 2022-09-12 20:10-0400\n"
-"PO-Revision-Date: 2022-09-12 02:06+0000\n"
+"PO-Revision-Date: 2022-09-15 01:01+0000\n"
 "Last-Translator: Kyle Gabriel <business@kylegabriel.com>\n"
+"Language-Team: Italian <http://translate.kylegabriel.com:8080/projects/"
+"mycodo/translations/it/>\n"
 "Language: it\n"
-"Language-Team: Italian "
-"<http://translate.kylegabriel.com:8080/projects/mycodo/translations/it/>"
-"\n"
-"Plural-Forms: nplurals=2; plural=n != 1\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=n != 1;\n"
+"X-Generator: Weblate 4.14\n"
 "Generated-By: Babel 2.9.1\n"
 
 #: config_devices_units.py:13 config_devices_units.py:17
@@ -64,22 +64,19 @@ msgstr "Colore"
 
 #: config_devices_units.py:57
 msgid "Red"
-msgstr ""
+msgstr "Rosso"
 
 #: config_devices_units.py:61
-#, fuzzy
 msgid "Green"
-msgstr "Grado"
+msgstr "Verde"
 
 #: config_devices_units.py:65
-#, fuzzy
 msgid "Blue"
-msgstr "Valore"
+msgstr "Blu"
 
 #: config_devices_units.py:69 outputs/on_off_kasa_rgb_bulbs.py:166
-#, fuzzy
 msgid "Color Temperature"
-msgstr "Temperatura"
+msgstr "Temperatura del colore"
 
 #: config_devices_units.py:85 config_devices_units.py:89
 #: config_devices_units.py:93 config_devices_units.py:361
@@ -91,9 +88,8 @@ msgid "Minute"
 msgstr "minuto"
 
 #: config_devices_units.py:89 config_devices_units.py:93
-#, fuzzy
 msgid "Minutes"
-msgstr "minuto"
+msgstr "minuti"
 
 #: config_devices_units.py:97
 msgid "Dewpoint"
@@ -1213,7 +1209,7 @@ msgstr "fare clic per copiare negli appunti"
 
 #: config_translations.py:252
 msgid "Deadline"
-msgstr ""
+msgstr "Scadenza"
 
 #: actions/output_on_off.py:61 actions/output_ramp_pwm.py:77
 #: actions/pause_actions.py:35 config_translations.py:252
@@ -1298,9 +1294,8 @@ msgstr ""
 #: widgets/widget_indicator.py:64 widgets/widget_measurement.py:64
 #: widgets/widget_output.py:60 widgets/widget_output_pwm_slider.py:60
 #: widgets/widget_pid.py:253
-#, fuzzy
 msgid "Seconds"
-msgstr "Secondo"
+msgstr "Secondi"
 
 #: config_translations.py:253
 msgid "Time to wait until failure"
@@ -1313,11 +1308,11 @@ msgstr "Ciclo di lavoro per il PWM (percentuale, 0.0 - 100.0)"
 
 #: config_translations.py:258 outputs/pump_gpio.py:130
 msgid "Desired Flow Rate"
-msgstr ""
+msgstr "Portata desiderata"
 
 #: config_translations.py:258 outputs/pump_gpio.py:130
 msgid "ml/min"
-msgstr ""
+msgstr "ml/min"
 
 #: config_translations.py:261
 msgid "Name Font Size (em)"
@@ -1359,13 +1354,13 @@ msgstr "Il dispositivo FTDI collegato all'input/output/etc."
 #: outputs/on_off_gpio_sysfs.py:54 outputs/on_off_wireless_rpi_rf.py:61
 #: outputs/pump_gpio.py:84 outputs/pwm_gpio.py:83
 msgid "GPIO"
-msgstr ""
+msgstr "GPIO"
 
 #: config_translations.py:271 config_translations.py:328
 #: config_translations.py:331 config_translations.py:334
 #: config_translations.py:337
 msgid "GPIO (using BCM numbering)"
-msgstr ""
+msgstr "GPIO (utilizzando la numerazione BCM)"
 
 #: config_translations.py:273 outputs/pump_grove_motor_driver_v1_3.py:132
 msgid "Flow Rate Method"
@@ -1437,9 +1432,8 @@ msgstr "Mostra linee di debug nel registro Daemon"
 #: widgets/widget_indicator.py:64 widgets/widget_measurement.py:64
 #: widgets/widget_output.py:60 widgets/widget_output_pwm_slider.py:60
 #: widgets/widget_pid.py:253
-#, fuzzy
 msgid "Max Age"
-msgstr "Gestire"
+msgstr "Età massima"
 
 #: config_translations.py:289
 msgid "The maximum allowable measurement age"
@@ -1519,7 +1513,7 @@ msgstr "Quale stato attiva l'uscita per l'accensione? Alto o basso?"
 #: config_translations.py:313 config_translations.py:316
 #: config_translations.py:319 config_translations.py:322
 msgid "Send to output controller"
-msgstr ""
+msgstr "Inviare al controllore di uscita"
 
 #: config_translations.py:324 functions/average_last_multiple.py:67
 #: functions/average_past_single.py:67 functions/backup_rsync.py:73
@@ -1577,21 +1571,20 @@ msgid "The duration between measurements or actions"
 msgstr "La durata tra le misure o le azioni"
 
 #: config_translations.py:327 config_translations.py:328
-#, fuzzy
 msgid "Clock"
-msgstr "Sblocca"
+msgstr "Orologio"
 
 #: config_translations.py:330 config_translations.py:331
 msgid "Cable Select"
-msgstr ""
+msgstr "Selezione del cavo"
 
 #: config_translations.py:333 config_translations.py:334
 msgid "MISO"
-msgstr ""
+msgstr "MISO"
 
 #: config_translations.py:336 config_translations.py:337
 msgid "MOSI"
-msgstr ""
+msgstr "MOSI"
 
 #: actions/mqtt_publish.py:47 actions/mqtt_publish_input.py:52
 #: config_translations.py:339 mycodo_flask/forms/forms_settings.py:102
@@ -1604,9 +1597,8 @@ msgid "Host port number"
 msgstr "Numero di porta host"
 
 #: config_translations.py:342
-#, fuzzy
 msgid "Pre Out Duration"
-msgstr "nessuna durata"
+msgstr "Durata della preuscita"
 
 #: config_translations.py:343
 msgid ""
@@ -1668,9 +1660,8 @@ msgid "Reference Resistance"
 msgstr "Resistenza di riferimento"
 
 #: config_translations.py:365
-#, fuzzy
 msgid "Refresh"
-msgstr "Preferenze"
+msgstr "Aggiornare"
 
 #: config_translations.py:366
 msgid "Duration to wait between acquiring new measurements"
@@ -1738,9 +1729,8 @@ msgstr "Il valore di uscita di set quando Mycodo chiude verso il basso"
 #: functions/vapor_pressure_deficit.py:74
 #: mycodo_flask/forms/forms_conditional.py:44
 #: mycodo_flask/forms/forms_trigger.py:50
-#, fuzzy
 msgid "Start Offset"
-msgstr "Riavvia il sistema"
+msgstr "Offset iniziale"
 
 #: config_translations.py:393 functions/average_last_multiple.py:76
 #: functions/average_past_single.py:76 functions/backup_rsync.py:82
@@ -1807,17 +1797,15 @@ msgstr ""
 "calo) o entrambi"
 
 #: config_translations.py:407
-#, fuzzy
 msgid "Bounce Time"
-msgstr "Tempo di rimbalzo (ms)"
+msgstr "Tempo di rimbalzo"
 
 #: config_translations.py:407 outputs/on_off_kasa_rgb_bulbs.py:90
 #: outputs/on_off_kasa_rgb_bulbs.py:113 outputs/on_off_kasa_rgb_bulbs.py:136
 #: outputs/on_off_kasa_rgb_bulbs.py:159 outputs/on_off_kasa_rgb_bulbs.py:182
 #: outputs/on_off_kasa_rgb_bulbs.py:205 outputs/on_off_kasa_rgb_bulbs.py:221
-#, fuzzy
 msgid "Milliseconds"
-msgstr "microsecondo"
+msgstr "Millisecondi"
 
 #: config_translations.py:408
 msgid "The amount of time to bounce the input signal"
@@ -1882,9 +1870,8 @@ msgstr ""
 "significa nessuna ponderazione."
 
 #: config_translations.py:432 config_translations.py:435
-#, fuzzy
 msgid "Always Min"
-msgstr "Sempre Acceso"
+msgstr "Sempre Min"
 
 #: actions/pid_setpoint_raise.py:17 config_translations.py:432
 #: mycodo_flask/forms/forms_pid.py:34 mycodo_flask/forms/forms_pid.py:101
@@ -1911,21 +1898,19 @@ msgid "Lower"
 msgstr "Inferiore"
 
 #: actions/clear_total_kWh.py:13 actions/clear_total_volume.py:13
-#, fuzzy
 msgid "Flow Meter"
-msgstr "Millimetro"
+msgstr "Misuratore di flusso"
 
 #: actions/clear_total_kWh.py:13 actions/clear_total_volume.py:13
 #: inputs/atlas_flow.py:204 inputs/hall_flow.py:61
 #: inputs/kasa_energy_meter.py:77 outputs/pump_pca9685.py:145
 #: outputs/pump_pca9685_l298n.py:134
 msgid "Clear Total"
-msgstr ""
+msgstr "Totale chiaro"
 
 #: actions/command_bash.py:11
-#, fuzzy
 msgid "Execute"
-msgstr "Elimina"
+msgstr "Eseguire"
 
 #: actions/command_bash.py:21
 msgid "Execute a Linux bash shell command."
@@ -1955,16 +1940,15 @@ msgstr "tag"
 #: actions/display_backlight_color.py:14 actions/display_backlight_off.py:14
 #: actions/display_backlight_on.py:14
 msgid "Backlight"
-msgstr ""
+msgstr "Retroilluminazione"
 
 #: actions/display_flash_off.py:14 actions/display_flash_on.py:14
 msgid "Flashing"
-msgstr ""
+msgstr "Lampeggiante"
 
 #: actions/input_force_measurements.py:13
-#, fuzzy
 msgid "Force Measurements"
-msgstr "Misura del negozio"
+msgstr "Misure di forza"
 
 #: actions/input_force_measurements.py:23
 msgid "Force measurements to be conducted for an input"
@@ -2037,18 +2021,16 @@ msgstr ""
 "self.run_all_actions ()."
 
 #: actions/photo.py:13
-#, fuzzy
 msgid "Capture Photo"
-msgstr "Cattura ancora"
+msgstr "Cattura foto"
 
 #: actions/photo.py:23
 msgid "Capture a photo with the selected Camera."
 msgstr "Catturare una foto con la telecamera selezionata."
 
 #: actions/pid_method.py:18
-#, fuzzy
 msgid "Set Method"
-msgstr "Reimposta Metodo"
+msgstr "Metodo di impostazione"
 
 #: actions/pid_method.py:28
 msgid "Select a method to set the PID to use."
@@ -2090,14 +2072,12 @@ msgid "Raise Setpoint"
 msgstr "Sollevare setpoint"
 
 #: actions/system_restart.py:13
-#, fuzzy
 msgid "Restart"
-msgstr "Inizio"
+msgstr "Riavvio"
 
 #: actions/system_shutdown.py:13
-#, fuzzy
 msgid "Shutdown"
-msgstr "shutdown Valore"
+msgstr "Spegnimento"
 
 #: actions/webhook.py:15
 msgid "Webhook"
@@ -2175,11 +2155,11 @@ msgstr "Bulbo Umido/Secco"
 
 #: functions/humidity_wet_dry_bulb.py:107
 msgid "Dry Bulb"
-msgstr ""
+msgstr "Lampadina a secco"
 
 #: functions/humidity_wet_dry_bulb.py:127
 msgid "Wet Bulb"
-msgstr ""
+msgstr "Lampadina bagnata"
 
 #: functions/pid_autotune.py:106
 msgid "Noise Band"
@@ -2191,7 +2171,7 @@ msgstr "Outstep"
 
 #: functions/regulate_ph_ec.py:218
 msgid "pH"
-msgstr ""
+msgstr "pH"
 
 #: inputs/ads1015_circuitpython.py:80 inputs/ads1115_circuitpython.py:81
 #: inputs/ads1x15.py:81 inputs/ina219x.py:154
@@ -2312,7 +2292,7 @@ msgstr "Modalità LED"
 
 #: inputs/atlas_o2.py:87
 msgid "Manual"
-msgstr ""
+msgstr "Manuale"
 
 #: inputs/atlas_pressure.py:61
 msgid "When to turn the LED on"
@@ -2352,7 +2332,7 @@ msgstr "Misura del negozio"
 #: outputs/on_off_gpio_sysfs.py:54 outputs/on_off_wireless_rpi_rf.py:61
 #: outputs/pump_gpio.py:84 outputs/pwm_gpio.py:83
 msgid "BCM"
-msgstr ""
+msgstr "BCM"
 
 #: inputs/th1x.py:68 inputs/th1x_am2301.py:67 inputs/th1x_ds18b20.py:53
 msgid "IP Address"
@@ -2593,9 +2573,8 @@ msgid "Stop Timelapse"
 msgstr "Ferma Timelapse"
 
 #: mycodo_flask/forms/forms_camera.py:32
-#, fuzzy
 msgid "Interval"
-msgstr "Interno"
+msgstr "Intervallo"
 
 #: mycodo_flask/forms/forms_camera.py:35
 msgid "Photo Interval must be a positive value"
@@ -2603,7 +2582,7 @@ msgstr "Photo Interval deve essere un valore positivo"
 
 #: mycodo_flask/forms/forms_camera.py:40
 msgid "Run Time"
-msgstr ""
+msgstr "Tempo di esecuzione"
 
 #: mycodo_flask/forms/forms_camera.py:43
 msgid "Total Run Time must be a positive value"
@@ -2790,12 +2769,11 @@ msgstr "Stato Codice Python"
 
 #: mycodo_flask/forms/forms_conditional.py:41
 msgid "Refractory Period"
-msgstr ""
+msgstr "Periodo refrattario"
 
 #: mycodo_flask/forms/forms_conditional.py:47
-#, fuzzy
 msgid "Timeout"
-msgstr "Pyro Timeout"
+msgstr "Timeout"
 
 #: mycodo_flask/forms/forms_custom_controller.py:26
 #: mycodo_flask/forms/forms_input.py:101
@@ -2868,9 +2846,8 @@ msgid "End Setpoint (optional)"
 msgstr "Setpoint di fine (opzionale)"
 
 #: mycodo_flask/forms/forms_method.py:61 mycodo_flask/forms/forms_method.py:122
-#, fuzzy
 msgid "Duration to End"
-msgstr "nessuna durata"
+msgstr "Durata fino alla fine"
 
 #: mycodo_flask/forms/forms_method.py:64
 msgid "Amplitude"
@@ -3079,45 +3056,40 @@ msgid "Action"
 msgstr "Azione"
 
 #: mycodo_flask/forms/forms_pid.py:118 mycodo_flask/forms/forms_pid.py:145
-#, fuzzy
 msgid "Min On Duration"
-msgstr "nessuna durata"
+msgstr "Durata minima di accensione"
 
 #: mycodo_flask/forms/forms_pid.py:126 mycodo_flask/forms/forms_pid.py:153
-#, fuzzy
 msgid "Max On Duration"
-msgstr "qualsiasi durata"
+msgstr "Durata massima di accensione"
 
 #: mycodo_flask/forms/forms_pid.py:134 mycodo_flask/forms/forms_pid.py:161
-#, fuzzy
 msgid "Min Off Duration"
-msgstr "nessuna durata"
+msgstr "Durata minima di spegnimento"
 
 #: mycodo_flask/forms/forms_pid.py:172 mycodo_flask/forms/forms_pid.py:183
 msgid "Min Amount"
-msgstr ""
+msgstr "Importo minimo"
 
 #: mycodo_flask/forms/forms_pid.py:176 mycodo_flask/forms/forms_pid.py:187
 msgid "Max Amount"
-msgstr ""
+msgstr "Importo massimo"
 
 #: mycodo_flask/forms/forms_pid.py:194 mycodo_flask/forms/forms_pid.py:213
 msgid "Min On Amount"
-msgstr ""
+msgstr "Importo min. su"
 
 #: mycodo_flask/forms/forms_pid.py:202 mycodo_flask/forms/forms_pid.py:221
 msgid "Max On Amount"
-msgstr ""
+msgstr "Importo massimo di attivazione"
 
 #: mycodo_flask/forms/forms_pid.py:232 mycodo_flask/forms/forms_pid.py:253
-#, fuzzy
 msgid "Min Duty Cycle"
-msgstr "Ciclo di lavoro"
+msgstr "Ciclo di lavoro minimo"
 
 #: mycodo_flask/forms/forms_pid.py:240 mycodo_flask/forms/forms_pid.py:261
-#, fuzzy
 msgid "Max Duty Cycle"
-msgstr "Ciclo di lavoro"
+msgstr "Ciclo di lavoro massimo"
 
 #: mycodo_flask/forms/forms_settings.py:32
 #: mycodo_flask/forms/forms_settings.py:33
@@ -3283,9 +3255,8 @@ msgstr "Timeout di prova Internet"
 #: mycodo_flask/forms/forms_settings.py:148
 #: mycodo_flask/forms/forms_settings.py:151
 #: mycodo_flask/forms/forms_settings.py:154
-#, fuzzy
 msgid "Sample Rate"
-msgstr "Temperatura"
+msgstr "Frequenza di campionamento"
 
 #: mycodo_flask/forms/forms_settings.py:166
 msgid "Import Controller Module"
@@ -3615,9 +3586,8 @@ msgid "If State"
 msgstr "Se stato"
 
 #: mycodo_flask/forms/forms_trigger.py:63
-#, fuzzy
 msgid "If Duration"
-msgstr "nessuna durata"
+msgstr "Se la durata"
 
 #: mycodo_flask/forms/forms_trigger.py:66
 #, python-format
@@ -4605,9 +4575,8 @@ msgid "The duration between checking whether the conditional is true"
 msgstr "La durata tra il controllo se il condizionale è vero"
 
 #: mycodo_flask/templates/pages/function_options/conditional_options.html:88
-#, fuzzy
 msgid "The timeout for the execution of the Run Python Code"
-msgstr "Il timeout (in secondi) per l'esecuzione del codice Run Python"
+msgstr "Il timeout per l'esecuzione del comando Esegui codice Python"
 
 #: mycodo_flask/templates/pages/function_options/conditional_options.html:108
 msgid "Conditions"
@@ -5833,26 +5802,25 @@ msgstr ""
 
 #: outputs/dac_mcp4728.py:60
 msgid "Digital-to-Analog Converter"
-msgstr ""
+msgstr "Convertitore digitale-analogico"
 
 #: outputs/motor_stepper_bipolar_generic.py:35
 #: outputs/motor_stepper_uln2003.py:33
-#, fuzzy
 msgid "Motor"
-msgstr "Colore"
+msgstr "Motore"
 
 #: outputs/motor_stepper_bipolar_generic.py:35
 #: outputs/motor_stepper_uln2003.py:33
 msgid "Stepper Motor"
-msgstr ""
+msgstr "Motore passo-passo"
 
 #: outputs/motor_stepper_bipolar_generic.py:35
 msgid "Bipolar"
-msgstr ""
+msgstr "Bipolare"
 
 #: outputs/motor_stepper_bipolar_generic.py:35
 msgid "Generic"
-msgstr ""
+msgstr "Generico"
 
 #: outputs/motor_stepper_bipolar_generic.py:98
 #: outputs/motor_stepper_bipolar_generic.py:108
@@ -5864,7 +5832,7 @@ msgstr "Impostare su Nessuno per disabilitare."
 
 #: outputs/motor_stepper_uln2003.py:33
 msgid "Unipolar"
-msgstr ""
+msgstr "Unipolare"
 
 #: outputs/on_off_gpio.py:30 outputs/on_off_gpio_sysfs.py:30
 #: outputs/on_off_grove_multichannel_relay.py:94
@@ -5877,7 +5845,7 @@ msgstr ""
 #: outputs/on_off_python.py:160 outputs/on_off_shell.py:30
 #: outputs/on_off_wireless_rpi_rf.py:31
 msgid "On/Off"
-msgstr ""
+msgstr "Acceso/Spento"
 
 #: outputs/on_off_gpio.py:59 outputs/on_off_gpio_sysfs.py:55
 #: outputs/on_off_wireless_rpi_rf.py:62 outputs/pump_gpio.py:85
@@ -5912,15 +5880,14 @@ msgstr "Funzioni di attivazione all'avvio"
 #: outputs/pump_pcf8574.py:140 outputs/pwm_gpio.py:173
 #: outputs/pwm_pca9685.py:183 outputs/pwm_python.py:291
 #: outputs/pwm_shell.py:145
-#, fuzzy
 msgid "Current"
-msgstr "attuale"
+msgstr "Attuale"
 
 #: outputs/on_off_mcp23017.py:31 outputs/on_off_pcf8574.py:31
 #: outputs/on_off_pcf8575.py:31 outputs/pump_mcp23017.py:50
 #: outputs/pump_pcf8574.py:50
 msgid "I/O Expander"
-msgstr ""
+msgstr "Espansore I/O"
 
 #: outputs/on_off_mqtt.py:99
 msgid "On Payload"
@@ -5959,9 +5926,8 @@ msgid "The current draw of the device being controlled"
 msgstr "L'assorbimento di corrente del dispositivo controllato"
 
 #: outputs/on_off_wireless_rpi_rf.py:31
-#, fuzzy
 msgid "Wireless"
-msgstr "senza unità"
+msgstr "Senza fili"
 
 #: outputs/on_off_wireless_rpi_rf.py:91
 msgid "Protocol"
@@ -5981,7 +5947,7 @@ msgstr "distanziatore"
 
 #: outputs/potentiometer_ds3502.py:30
 msgid "Digital Potentiometer"
-msgstr ""
+msgstr "Potenziometro digitale"
 
 #: outputs/pump_atlas_ezo_pmp.py:42 outputs/pump_gpio.py:48
 #: outputs/pump_grove_motor_driver_v1_0.py:68
@@ -5989,7 +5955,7 @@ msgstr ""
 #: outputs/pump_mcp23017.py:50 outputs/pump_pca9685.py:67
 #: outputs/pump_pca9685_l298n.py:67 outputs/pump_pcf8574.py:50
 msgid "Peristaltic Pump"
-msgstr ""
+msgstr "Pompa peristaltica"
 
 #: outputs/pump_pca9685.py:156 outputs/pump_pca9685_l298n.py:145
 #: outputs/pwm_gpio.py:144 outputs/pwm_pca9685.py:101
@@ -6007,9 +5973,8 @@ msgid "Invert Stored Signal"
 msgstr "Invertire il segnale memorizzato"
 
 #: outputs/pwm_pca9685.py:57
-#, fuzzy
 msgid "LED Controller"
-msgstr "controllore"
+msgstr "Controllore LED"
 
 #: outputs/pwm_shell.py:61
 msgid "Bash Command"
@@ -6243,4 +6208,3 @@ msgstr "Codice Python (aggiornamento)"
 #: widgets/widget_python_code.py:212
 msgid "Python code to execute every dashboard/widget refresh"
 msgstr "Codice Python da eseguire ad ogni aggiornamento di dashboard/widget"
-

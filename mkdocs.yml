@@ -4,26 +4,65 @@ site_author: Kyle T. Gabriel
 site_description: Mycodo Documentation
 repo_name: 'kizniche/Mycodo'
 repo_url: 'https://github.com/kizniche/Mycodo'
-extra:
-    version: 8.14.0
 
 plugins:
   - search:
-      lang:
-        - en
+  - i18n:
+      default_language: 'en'
+      add_lang_links: False
+      languages:
+        en: "English"
+        de: "Deutsche"
+        es: "Español"
+        fr: "Français"
+        id: "Bahasa Indonesia"
+        it: "Italiano"
+        nl: "Nederlands"
+        nn: "Norsk"
+        pl: "Polski"
+        pt: "Português"
+        ru: "русский язык"
+        sr: "српски"
+        sv: "Svenska"
+        tr: "Türkçe"
+        zh: "中文"
+      no_translation:
+        en: "This page isn't translated to English."
+        de: "Deze pagina is niet vertaald naar het Duits."
+        es: "Esta página no está traducida al castellano."
+        fr: "Cette page n'est pas traduite en français."
+        id: "Halaman ini tidak diterjemahkan ke bahasa Indonesia."
+        it: "Questa pagina non è tradotta in italiano."
+        nl: ""
+        nn: "Denne siden er ikke oversatt til norsk."
+        pl: "Ta strona nie jest przetłumaczona na język polski."
+        pt: "Esta página não está traduzida para o português."
+        ru: "Эта страница не переведена на русский язык."
+        sr: "Ова страница није преведена на српски."
+        sv: "Denna sida är inte översatt till svenska."
+        tr: "Bu sayfa Türkçe'ye çevrilmemiştir."
+        zh: "此页面未翻译成中文."
+      translate_nav:
+        en:
+          Usage: "Usage"
+          Supported Devices: "Supported Devices"
+        es:
+          Usage: "Uso"
+          Supported Devices: "Dispositivos Soportados"
+
   - minify:
       minify_html: true
-  - with-pdf:
-      custom_template_path: docs/custom_pdf
-      cover_title: Mycodo
-      cover_subtitle: Environmental monitoring and regulation system
-      cover_logo: images/logo.png
-      copyright: Copyright © 2022
-      output_path: ../docs/mycodo-manual.pdf
+#  - with-pdf:
+#      custom_template_path: docs/custom_pdf
+#      cover_title: Mycodo
+#      cover_subtitle: Environmental monitoring and regulation system
+#      cover_logo: images/logo.png
+#      copyright: Copyright © 2022
+#      output_path: ../docs/mycodo-manual.pdf
 
 theme:
   name: material
-  language: 'en'
+  language: en
   logo: images/favicon.png
   favicon: images/favicon.png
   features:
@@ -61,10 +100,51 @@ markdown_extensions:
 
 nav:
   - Home: index.md
-  - About.md
-  - Frequently Asked Questions: Frequently-Asked-Questions.md
+  - Home: index.de.md
+  - Hogar: index.es.md
+  - Home: index.fr.md
+  - Home: index.id.md
+  - Home: index.it.md
+  - Home: index.nn.md
+  - Home: index.nl.md
+  - Home: index.pl.md
+  - Home: index.pt.md
+  - Home: index.ru.md
+  - Home: index.sr.md
+  - Home: index.sv.md
+  - Home: index.tr.md
+  - Home: index.zh.md
+  - About: About.md
+  - About: About.de.md
+  - Sobre: About.es.md
+  - About: About.fr.md
+  - About: About.id.md
+  - About: About.it.md
+  - About: About.nn.md
+  - About: About.nl.md
+  - About: About.pl.md
+  - About: About.pt.md
+  - About: About.ru.md
+  - About: About.sr.md
+  - About: About.sv.md
+  - About: About.tr.md
+  - About: About.zh.md
   - Usage:
     - Data Viewing: Data-Viewing.md
+    - Data Viewing: Data-Viewing.de.md
+    - Data Viewing: Data-Viewing.es.md
+    - Data Viewing: Data-Viewing.fr.md
+    - Data Viewing: Data-Viewing.id.md
+    - Data Viewing: Data-Viewing.it.md
+    - Data Viewing: Data-Viewing.nn.md
+    - Data Viewing: Data-Viewing.nl.md
+    - Data Viewing: Data-Viewing.pl.md
+    - Data Viewing: Data-Viewing.pt.md
+    - Data Viewing: Data-Viewing.ru.md
+    - Data Viewing: Data-Viewing.sr.md
+    - Data Viewing: Data-Viewing.sv.md
+    - Data Viewing: Data-Viewing.tr.md
+    - Data Viewing: Data-Viewing.zh.md
     - Inputs.md
     - Outputs.md
     - Functions.md
@@ -97,4 +177,52 @@ nav:
     - Mycodo Client: Mycodo-Client.md
     - API.md
   - Troubleshooting.md
-  - Translations.md
+
+extra:
+  version: 8.14.0
+  alternate:
+    - name: English
+      link: ""
+      lang: en
+    - name: Deutsche
+      link: index.de/
+      lang: de
+    - name: Español
+      link: index.es/
+      lang: es
+    - name: Français
+      link: index.fr/
+      lang: fr
+    - name: Bahasa Indonesia
+      link: index.id/
+      lang: id
+    - name: Italiano
+      link: index.it/
+      lang: it
+    - name: Nederlands
+      link: index.nl/
+      lang: nl
+    - name: Norsk
+      link: index.nn/
+      lang: nn
+    - name: Polski
+      link: index.pl/
+      lang: pl
+    - name: Português
+      link: index.pt/
+      lang: pt
+    - name: русский язык
+      link: index.ru/
+      lang: ru
+    - name: српски
+      link: index.sr/
+      lang: sr
+    - name: Svenska
+      link: index.sv/
+      lang: sv
+    - name: Türkçe
+      link: index.tr/
+      lang: tr
+    - name: 中文
+      link: index.zh/
+      lang: zh

@@ -10,6 +10,7 @@
  - Add Temperature Calibration for Atlas Scientific PT-1000 Input
  - Add language selection to installer
  - Add Turkish Translation
+ - Make Docs Translatable (https://kizniche.github.io/Mycodo/)
 
 ### Bugfixes
 

@@ -1,5 +1,3 @@
-Supported Inputs are listed below.
-
 ## Built-In Inputs (System)
 
 ### Linux: Bash Command

@@ -1,7 +1,3 @@
-Actions allow certain Functions to influence other parts of Mycodo and the computer system.
-
-Supported Actions are listed below.
-
 ## Built-In Actions (System)
 
 ### Actions: Pause

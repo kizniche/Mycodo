@@ -2,22 +2,22 @@
 # Copyright (C) 2022 Kyle T. Gabriel
 # This file is distributed under the same license as the Mycodo project.
 # FIRST AUTHOR <EMAIL@ADDRESS>, 2022.
-#
+# Kyle Gabriel <business@kylegabriel.com>, 2022.
 msgid ""
 msgstr ""
 "Project-Id-Version: Mycodo1 8.11.0\n"
 "Report-Msgid-Bugs-To: mycodo@kylegabriel.com\n"
 "POT-Creation-Date: 2022-09-12 20:10-0400\n"
-"PO-Revision-Date: 2022-09-12 02:06+0000\n"
+"PO-Revision-Date: 2022-09-22 16:58+0000\n"
 "Last-Translator: Kyle Gabriel <business@kylegabriel.com>\n"
+"Language-Team: Swedish <http://translate.kylegabriel.com:8080/projects/"
+"mycodo/translations/sv/>\n"
 "Language: sv\n"
-"Language-Team: Swedish "
-"<http://translate.kylegabriel.com:8080/projects/mycodo/translations/sv/>"
-"\n"
-"Plural-Forms: nplurals=2; plural=n != 1\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=n != 1;\n"
+"X-Generator: Weblate 4.14\n"
 "Generated-By: Babel 2.9.1\n"
 
 #: config_devices_units.py:13 config_devices_units.py:17
@@ -60,26 +60,23 @@ msgstr "Koldioxid"
 #: config_devices_units.py:81 functions/function_spacer.py:23
 #: inputs/input_spacer.py:18 outputs/output_spacer.py:26
 msgid "Color"
-msgstr ""
+msgstr "Färg"
 
 #: config_devices_units.py:57
 msgid "Red"
-msgstr ""
+msgstr "Röd"
 
 #: config_devices_units.py:61
-#, fuzzy
 msgid "Green"
-msgstr "Examen"
+msgstr "Grön"
 
 #: config_devices_units.py:65
-#, fuzzy
 msgid "Blue"
-msgstr "Värde"
+msgstr "Blå"
 
 #: config_devices_units.py:69 outputs/on_off_kasa_rgb_bulbs.py:166
-#, fuzzy
 msgid "Color Temperature"
-msgstr "Temperatur"
+msgstr "Färgtemperatur"
 
 #: config_devices_units.py:85 config_devices_units.py:89
 #: config_devices_units.py:93 config_devices_units.py:361
@@ -91,9 +88,8 @@ msgid "Minute"
 msgstr "Minut"
 
 #: config_devices_units.py:89 config_devices_units.py:93
-#, fuzzy
 msgid "Minutes"
-msgstr "Minut"
+msgstr "Protokoll"
 
 #: config_devices_units.py:97
 msgid "Dewpoint"
@@ -1213,7 +1209,7 @@ msgstr "klicka för att kopiera till Urklipp"
 
 #: config_translations.py:252
 msgid "Deadline"
-msgstr ""
+msgstr "Sista ansökningsdag"
 
 #: actions/output_on_off.py:61 actions/output_ramp_pwm.py:77
 #: actions/pause_actions.py:35 config_translations.py:252
@@ -1298,9 +1294,8 @@ msgstr ""
 #: widgets/widget_indicator.py:64 widgets/widget_measurement.py:64
 #: widgets/widget_output.py:60 widgets/widget_output_pwm_slider.py:60
 #: widgets/widget_pid.py:253
-#, fuzzy
 msgid "Seconds"
-msgstr "Andra"
+msgstr "Sekunder"
 
 #: config_translations.py:253
 msgid "Time to wait until failure"
@@ -1313,11 +1308,11 @@ msgstr "Driftscykel för PWM (procent, 0,0 - 100,0)"
 
 #: config_translations.py:258 outputs/pump_gpio.py:130
 msgid "Desired Flow Rate"
-msgstr ""
+msgstr "Önskad flödeshastighet"
 
 #: config_translations.py:258 outputs/pump_gpio.py:130
 msgid "ml/min"
-msgstr ""
+msgstr "ml/min"
 
 #: config_translations.py:261
 msgid "Name Font Size (em)"
@@ -1357,13 +1352,13 @@ msgstr "FTDI-enheten som är ansluten till ingång/utgång/etc."
 #: outputs/on_off_gpio_sysfs.py:54 outputs/on_off_wireless_rpi_rf.py:61
 #: outputs/pump_gpio.py:84 outputs/pwm_gpio.py:83
 msgid "GPIO"
-msgstr ""
+msgstr "GPIO"
 
 #: config_translations.py:271 config_translations.py:328
 #: config_translations.py:331 config_translations.py:334
 #: config_translations.py:337
 msgid "GPIO (using BCM numbering)"
-msgstr ""
+msgstr "GPIO (med BCM-numrering)"
 
 #: config_translations.py:273 outputs/pump_grove_motor_driver_v1_3.py:132
 msgid "Flow Rate Method"
@@ -1435,9 +1430,8 @@ msgstr "Visa felsöknings linjer i Daemon Log"
 #: widgets/widget_indicator.py:64 widgets/widget_measurement.py:64
 #: widgets/widget_output.py:60 widgets/widget_output_pwm_slider.py:60
 #: widgets/widget_pid.py:253
-#, fuzzy
 msgid "Max Age"
-msgstr "Hantera"
+msgstr "Högsta ålder"
 
 #: config_translations.py:289
 msgid "The maximum allowable measurement age"
@@ -1499,7 +1493,7 @@ msgstr "På kommando"
 
 #: config_translations.py:307 outputs/on_off_wireless_rpi_rf.py:70
 msgid "Command to execute when the output is instructed to turn on"
-msgstr ""
+msgstr "Kommando som ska utföras när utgången instrueras att slås på."
 
 #: config_translations.py:309 outputs/on_off_gpio.py:91
 #: outputs/on_off_gpio_sysfs.py:87
@@ -1517,7 +1511,7 @@ msgstr "Vilket tillstånd utlöses för att sätta på? Hög eller låg?"
 #: config_translations.py:313 config_translations.py:316
 #: config_translations.py:319 config_translations.py:322
 msgid "Send to output controller"
-msgstr ""
+msgstr "Skicka till utmatningsstyrning"
 
 #: config_translations.py:324 functions/average_last_multiple.py:67
 #: functions/average_past_single.py:67 functions/backup_rsync.py:73
@@ -1546,7 +1540,7 @@ msgstr ""
 #: functions/verification.py:63 mycodo_flask/forms/forms_conditional.py:34
 #: mycodo_flask/forms/forms_trigger.py:48
 msgid "Period"
-msgstr ""
+msgstr "Period"
 
 #: config_translations.py:325 functions/average_last_multiple.py:68
 #: functions/average_past_single.py:68 functions/backup_rsync.py:74
@@ -1571,26 +1565,24 @@ msgstr ""
 #: functions/regulate_ph_ec.py:180 functions/statistics_last_multiple.py:102
 #: functions/statistics_past_single.py:101 functions/sum_last_multiple.py:69
 #: functions/sum_past_single.py:69 functions/verification.py:64
-#, fuzzy
 msgid "The duration between measurements or actions"
-msgstr "Varaktighet (sekunder) mellan mätningarna eller åtgärder"
+msgstr "Varaktigheten mellan mätningar eller åtgärder."
 
 #: config_translations.py:327 config_translations.py:328
-#, fuzzy
 msgid "Clock"
-msgstr "Lås upp"
+msgstr "Klockan"
 
 #: config_translations.py:330 config_translations.py:331
 msgid "Cable Select"
-msgstr ""
+msgstr "Kabelval"
 
 #: config_translations.py:333 config_translations.py:334
 msgid "MISO"
-msgstr ""
+msgstr "MISO"
 
 #: config_translations.py:336 config_translations.py:337
 msgid "MOSI"
-msgstr ""
+msgstr "MOSI"
 
 #: actions/mqtt_publish.py:47 actions/mqtt_publish_input.py:52
 #: config_translations.py:339 mycodo_flask/forms/forms_settings.py:102
@@ -1603,18 +1595,16 @@ msgid "Host port number"
 msgstr "Värd port nummer"
 
 #: config_translations.py:342
-#, fuzzy
 msgid "Pre Out Duration"
-msgstr "ingen varaktighet"
+msgstr "Pre Out Varaktighet"
 
 #: config_translations.py:343
-#, fuzzy
 msgid ""
 "If a Pre Output is selected, set the duration to turn the Pre Output on "
 "for before every measurement is acquired."
 msgstr ""
-"Om en Pre Output har valts, ställa in varaktigheten (sekunder) för att "
-"slå på Pre Output innan varje mätning förvärvas."
+"Om en förutgång har valts, ställ in hur länge förutgången ska vara på innan "
+"varje mätning registreras."
 
 #: config_translations.py:347
 msgid "Pre During Measure"
@@ -1642,7 +1632,7 @@ msgstr "PWM-kommando"
 
 #: config_translations.py:354 outputs/pwm_shell.py:62
 msgid "Command to execute to set the PWM duty cycle (%)"
-msgstr ""
+msgstr "Kommando som ska utföras för att ställa in PWM-tjänstgöringsgraden (%)"
 
 #: config_translations.py:357
 msgid "The Hertz to output the PWM signal (0 - 70,000)"
@@ -1669,7 +1659,7 @@ msgstr "Referensresistens"
 
 #: config_translations.py:365
 msgid "Refresh"
-msgstr ""
+msgstr "Uppdatera"
 
 #: config_translations.py:366
 #, fuzzy
@@ -1696,7 +1686,7 @@ msgstr "Provtid"
 
 #: config_translations.py:378
 msgid "The duration of time to sample"
-msgstr ""
+msgstr "Tidsåtgång för provtagning"
 
 #: config_translations.py:380
 msgid "Measurement Unit"
@@ -1736,9 +1726,8 @@ msgstr "Produktionen värde för att ange när Mycodo stängs ner"
 #: functions/vapor_pressure_deficit.py:74
 #: mycodo_flask/forms/forms_conditional.py:44
 #: mycodo_flask/forms/forms_trigger.py:50
-#, fuzzy
 msgid "Start Offset"
-msgstr "Starta om systemet"
+msgstr "Startförskjutning"
 
 #: config_translations.py:393 functions/average_last_multiple.py:76
 #: functions/average_past_single.py:76 functions/backup_rsync.py:82
@@ -1747,9 +1736,8 @@ msgstr "Starta om systemet"
 #: functions/sum_last_multiple.py:77 functions/sum_past_single.py:77
 #: functions/vapor_pressure_deficit.py:75
 #: mycodo_flask/templates/pages/function_options/conditional_options.html:82
-#, fuzzy
 msgid "The duration to wait before the first operation"
-msgstr "Varaktigheten (sekunder) att vänta innan den första operationen"
+msgstr "Den tid som ska vänta innan den första operationen utförs"
 
 #: config_translations.py:395 outputs/pwm_gpio.py:104
 #: outputs/pwm_pca9685.py:133 outputs/pwm_python.py:235 outputs/pwm_shell.py:89
@@ -1806,35 +1794,31 @@ msgstr ""
 "båda"
 
 #: config_translations.py:407
-#, fuzzy
 msgid "Bounce Time"
-msgstr "Bounce Time (ms)"
+msgstr "Hoppa tid"
 
 #: config_translations.py:407 outputs/on_off_kasa_rgb_bulbs.py:90
 #: outputs/on_off_kasa_rgb_bulbs.py:113 outputs/on_off_kasa_rgb_bulbs.py:136
 #: outputs/on_off_kasa_rgb_bulbs.py:159 outputs/on_off_kasa_rgb_bulbs.py:182
 #: outputs/on_off_kasa_rgb_bulbs.py:205 outputs/on_off_kasa_rgb_bulbs.py:221
-#, fuzzy
 msgid "Milliseconds"
-msgstr "mikro"
+msgstr "Millisekunder"
 
 #: config_translations.py:408
-#, fuzzy
 msgid "The amount of time to bounce the input signal"
-msgstr "Mängden tid (milisekunder) för att studsa insignalen"
+msgstr "Den tid som behövs för att studsa den ingående signalen"
 
 #: config_translations.py:410 mycodo_flask/forms/forms_input.py:157
 msgid "Reset Period"
 msgstr "Återställningsperiod"
 
 #: config_translations.py:411
-#, fuzzy
 msgid ""
 "Wait a period of time after the first edge detection to begin detecting "
 "again"
 msgstr ""
-"Vänta en tid (sekunder) efter det att den första kanten upptäcktes för "
-"att börja upptäcka igen"
+"Vänta en tidsperiod efter den första kantdetekteringen för att börja "
+"detektera igen"
 
 #: config_translations.py:413
 msgid "RTD Probe Type"
@@ -1845,9 +1829,8 @@ msgid "The type of thermocouple connected"
 msgstr "Typ av termoelement anslutet"
 
 #: config_translations.py:416
-#, fuzzy
 msgid "Times to Check"
-msgstr "Antal gånger att kontrollera"
+msgstr "Tidpunkter för kontroll"
 
 #: config_translations.py:417
 msgid "Number of times to check"
@@ -1884,7 +1867,7 @@ msgstr ""
 
 #: config_translations.py:432 config_translations.py:435
 msgid "Always Min"
-msgstr ""
+msgstr "Alltid Min"
 
 #: actions/pid_setpoint_raise.py:17 config_translations.py:432
 #: mycodo_flask/forms/forms_pid.py:34 mycodo_flask/forms/forms_pid.py:101
@@ -1911,26 +1894,23 @@ msgid "Lower"
 msgstr "Lägre"
 
 #: actions/clear_total_kWh.py:13 actions/clear_total_volume.py:13
-#, fuzzy
 msgid "Flow Meter"
-msgstr "Millimeter"
+msgstr "Flödesmätare"
 
 #: actions/clear_total_kWh.py:13 actions/clear_total_volume.py:13
 #: inputs/atlas_flow.py:204 inputs/hall_flow.py:61
 #: inputs/kasa_energy_meter.py:77 outputs/pump_pca9685.py:145
 #: outputs/pump_pca9685_l298n.py:134
 msgid "Clear Total"
-msgstr ""
+msgstr "Klar totalsumma"
 
 #: actions/command_bash.py:11
-#, fuzzy
 msgid "Execute"
-msgstr "Radera"
+msgstr "Utför"
 
 #: actions/command_bash.py:21
-#, fuzzy
 msgid "Execute a Linux bash shell command."
-msgstr "Utför en Linux skalkommando."
+msgstr "Utför ett Linux bash-skalkommando."
 
 #: actions/controller_activate.py:27
 msgid "Activate a controller."
@@ -1941,9 +1921,8 @@ msgid "Deactivate a controller."
 msgstr "Deaktivera en styrenhet."
 
 #: actions/create_log_line.py:13
-#, fuzzy
 msgid "Create a log line in the daemon log."
-msgstr "Visa felsöknings linjer i Daemon Log"
+msgstr "Skapa en logglinje i daemonloggen."
 
 #: actions/create_note.py:17
 msgid "Create a note with the selected Tag."
@@ -1957,16 +1936,15 @@ msgstr "Tags"
 #: actions/display_backlight_color.py:14 actions/display_backlight_off.py:14
 #: actions/display_backlight_on.py:14
 msgid "Backlight"
-msgstr ""
+msgstr "Bakgrundsbelysning"
 
 #: actions/display_flash_off.py:14 actions/display_flash_on.py:14
 msgid "Flashing"
-msgstr ""
+msgstr "Blinkande"
 
 #: actions/input_force_measurements.py:13
-#, fuzzy
 msgid "Force Measurements"
-msgstr "Force Mätningar"
+msgstr "Kraftmätningar"
 
 #: actions/input_force_measurements.py:23
 msgid "Force measurements to be conducted for an input"
@@ -1993,27 +1971,24 @@ msgid "Username"
 msgstr "Användarnamn"
 
 #: actions/output_on_off.py:26
-#, fuzzy
 msgid "Turn an On/Off Output On, Off, or On for a duration."
-msgstr "Stäng en Output Off, On, eller på eller varaktighet."
+msgstr "Slå en On/Off-utgång på, av eller på under en viss tid."
 
 #: actions/output_on_off.py:52
 msgid "State"
 msgstr "Stat"
 
 #: actions/output_pwm.py:25
-#, fuzzy
 msgid "Set a PWM Output to set a duty cycle."
-msgstr "Ställ en utgång till en PWM duty cycle."
+msgstr "Ställ in en PWM-utgång för att ställa in en arbetscykel."
 
 #: actions/output_ramp_pwm.py:27
-#, fuzzy
 msgid ""
 "Ramp a PWM Output from one duty cycle to another duty cycle over a period"
 " of time."
 msgstr ""
-"Ramp en utgång från en arbetscykel till en annan arbetscykel under en "
-"tidsperiod."
+"Ramp en PWM-utgång från en arbetscykel till en annan arbetscykel under en "
+"viss tidsperiod."
 
 #: actions/output_ramp_pwm.py:50
 msgid "Start"
@@ -2029,11 +2004,11 @@ msgstr "Ökning"
 
 #: actions/output_value.py:25
 msgid "Send a value to the Output."
-msgstr ""
+msgstr "Skicka ett värde till utgången."
 
 #: actions/output_volume.py:25
 msgid "Instruct the Output to dispense a volume."
-msgstr ""
+msgstr "Instruera Output att ge en volym."
 
 #: actions/pause_actions.py:24
 msgid "Set a delay between executing Actions when self.run_all_actions() is used."
@@ -2042,18 +2017,16 @@ msgstr ""
 "self.run_all_actions () används."
 
 #: actions/photo.py:13
-#, fuzzy
 msgid "Capture Photo"
-msgstr "Fånga fortfarande"
+msgstr "Fånga foto"
 
 #: actions/photo.py:23
 msgid "Capture a photo with the selected Camera."
 msgstr "Ta ett foto med den valda kameran."
 
 #: actions/pid_method.py:18
-#, fuzzy
 msgid "Set Method"
-msgstr "Återställningsperiod"
+msgstr "Ange metod"
 
 #: actions/pid_method.py:28
 msgid "Select a method to set the PID to use."
@@ -2071,45 +2044,40 @@ msgstr "Återuppta en PID."
 #: outputs/on_off_kasa_rgb_bulbs.py:127 outputs/on_off_kasa_rgb_bulbs.py:150
 #: outputs/on_off_kasa_rgb_bulbs.py:173 outputs/on_off_kasa_rgb_bulbs.py:196
 #: outputs/on_off_neopixel_rgb.py:75 outputs/on_off_neopixel_rgb_spi.py:75
-#, fuzzy
 msgid "Set"
-msgstr "Återställa"
+msgstr "Ställ in"
 
 #: actions/pid_setpoint.py:27
 msgid "Set the Setpoint of a PID."
 msgstr "Ställ Börvärde en PID."
 
 #: actions/pid_setpoint_lower.py:27
-#, fuzzy
 msgid "Lower the Setpoint of a PID."
-msgstr "Ställ Börvärde en PID."
+msgstr "Sänka börvärdet för en PID."
 
 #: actions/pid_setpoint_lower.py:48
 msgid "Lower Setpoint"
 msgstr "lägre Börvärde"
 
 #: actions/pid_setpoint_raise.py:27
-#, fuzzy
 msgid "Raise the Setpoint of a PID."
-msgstr "Ställ Börvärde en PID."
+msgstr "Höja börvärdet för en PID."
 
 #: actions/pid_setpoint_raise.py:48
 msgid "Raise Setpoint"
 msgstr "Höj Börvärde"
 
 #: actions/system_restart.py:13
-#, fuzzy
 msgid "Restart"
-msgstr "Start"
+msgstr "Starta om"
 
 #: actions/system_shutdown.py:13
-#, fuzzy
 msgid "Shutdown"
-msgstr "avstängning Värde"
+msgstr "Avstängning"
 
 #: actions/webhook.py:15
 msgid "Webhook"
-msgstr ""
+msgstr "Webhook"
 
 #: functions/average_last_multiple.py:84 functions/average_past_single.py:95
 #: functions/difference.py:84 functions/difference.py:103
@@ -2143,32 +2111,29 @@ msgstr ""
 #: widgets/widget_indicator.py:65 widgets/widget_measurement.py:65
 #: widgets/widget_output.py:61 widgets/widget_output_pwm_slider.py:61
 #: widgets/widget_pid.py:254
-#, fuzzy
 msgid "The maximum age of the measurement to use"
-msgstr ""
-"Den maximala ålder (sekunder) av mätningen som ska användas för "
-"temperaturkompensation"
+msgstr "Högsta ålder för den mätning som ska användas"
 
 #: functions/bang_bang.py:45 functions/bang_bang_on_off.py:44
 msgid "Select a measurement the selected output will affect"
-msgstr ""
+msgstr "Välj en mätning som den valda utgången ska påverka"
 
 #: functions/bang_bang.py:56
 msgid "Select an output to control that will affect the measurement"
-msgstr ""
+msgstr "Välj en utgång som ska styras och som påverkar mätningen"
 
 #: functions/bang_bang.py:64 functions/bang_bang_on_off.py:74
 msgid "The desired setpoint"
-msgstr ""
+msgstr "Det önskade börvärdet"
 
 #: functions/bang_bang.py:72 functions/bang_bang_on_off.py:82
 #: functions/bang_bang_pwm.py:69
 msgid "Hysteresis"
-msgstr ""
+msgstr "Hysterese"
 
 #: functions/bang_bang.py:73 functions/bang_bang_on_off.py:83
 msgid "The amount above and below the setpoint that defines the control band"
-msgstr ""
+msgstr "Det belopp över och under börvärdet som definierar kontrollbandet"
 
 #: functions/equation_multi.py:110 mycodo_flask/forms/forms_settings.py:276
 #: mycodo_flask/forms/forms_settings.py:284
@@ -2180,15 +2145,15 @@ msgstr "Ekvation"
 
 #: functions/humidity_wet_dry_bulb.py:62
 msgid "Wet/Dry-Bulb"
-msgstr ""
+msgstr "Våt/torr-lampa"
 
 #: functions/humidity_wet_dry_bulb.py:107
 msgid "Dry Bulb"
-msgstr ""
+msgstr "Torr glödlampa"
 
 #: functions/humidity_wet_dry_bulb.py:127
 msgid "Wet Bulb"
-msgstr ""
+msgstr "Våt glödlampa"
 
 #: functions/pid_autotune.py:106
 msgid "Noise Band"
@@ -2200,7 +2165,7 @@ msgstr "Outstep"
 
 #: functions/regulate_ph_ec.py:218
 msgid "pH"
-msgstr ""
+msgstr "pH"
 
 #: inputs/ads1015_circuitpython.py:80 inputs/ads1115_circuitpython.py:81
 #: inputs/ads1x15.py:81 inputs/ina219x.py:154
@@ -2224,7 +2189,7 @@ msgstr ""
 #: inputs/atlas_orp.py:67 inputs/atlas_orp.py:76 inputs/atlas_ph.py:71
 #: inputs/atlas_ph.py:80
 msgid "Temperature Compensation"
-msgstr ""
+msgstr "Temperaturkompensation"
 
 #: inputs/ads1115_analog_ph_ec.py:139 inputs/ads1256_analog_ph_ec.py:223
 #: inputs/anyleaf_ph.py:63 inputs/atlas_do.py:69 inputs/atlas_ec.py:81
@@ -2238,21 +2203,21 @@ msgstr "Ställ in kalibreringsmetoden för att utföra under Input-aktivering"
 
 #: inputs/adxl34x.py:74 inputs/vl53l1x.py:62
 msgid "Range"
-msgstr ""
+msgstr "Utbud"
 
 #: inputs/anyleaf_orp.py:52 inputs/anyleaf_orp.py:59 inputs/anyleaf_orp.py:71
 #: inputs/anyleaf_orp.py:78 inputs/atlas_orp.py:97 inputs/atlas_pt1000.py:82
 #: inputs/atlas_rgb.py:142
 msgid "Calibrate"
-msgstr ""
+msgstr "Kalibrera"
 
 #: inputs/anyleaf_orp.py:52 inputs/anyleaf_orp.py:59
 msgid "Internal"
-msgstr ""
+msgstr "Internt"
 
 #: inputs/anyleaf_orp.py:59
 msgid "ORP"
-msgstr ""
+msgstr "ORP"
 
 #: inputs/anyleaf_orp.py:71
 msgid "Buffer ORP"
@@ -6230,4 +6195,3 @@ msgstr ""
 #: widgets/widget_python_code.py:212
 msgid "Python code to execute every dashboard/widget refresh"
 msgstr ""
-

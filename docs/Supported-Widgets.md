@@ -1,5 +1,3 @@
-Supported Widget devices are listed below.
-
 ## Built-In Widgets
 
 ### Camera

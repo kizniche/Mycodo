@@ -136,22 +136,22 @@ class SettingsGeneral(FlaskForm):
         lazy_gettext('Internet Test Timeout'), widget=NumberInput())
 
     sample_rate_controller_conditional = DecimalField(
-        "{} ({}): ()".format(lazy_gettext('Sample Rate'), lazy_gettext('Seconds'), lazy_gettext('Conditional')),
+        "{} ({}): {}".format(lazy_gettext('Sample Rate'), lazy_gettext('Seconds'), lazy_gettext('Conditional')),
         widget=NumberInput(step='any'))
     sample_rate_controller_function = DecimalField(
-        "{} ({}): ()".format(lazy_gettext('Sample Rate'), lazy_gettext('Seconds'), lazy_gettext('Function')),
+        "{} ({}): {}".format(lazy_gettext('Sample Rate'), lazy_gettext('Seconds'), lazy_gettext('Function')),
         widget=NumberInput(step='any'))
     sample_rate_controller_input = DecimalField(
-        "{} ({}): ()".format(lazy_gettext('Sample Rate'), lazy_gettext('Seconds'), lazy_gettext('Input')),
+        "{} ({}): {}".format(lazy_gettext('Sample Rate'), lazy_gettext('Seconds'), lazy_gettext('Input')),
         widget=NumberInput(step='any'))
     sample_rate_controller_output = DecimalField(
-        "{} ({}): ()".format(lazy_gettext('Sample Rate'), lazy_gettext('Seconds'), lazy_gettext('Output')),
+        "{} ({}): {}".format(lazy_gettext('Sample Rate'), lazy_gettext('Seconds'), lazy_gettext('Output')),
         widget=NumberInput(step='any'))
     sample_rate_controller_pid = DecimalField(
-        "{} ({}): ()".format(lazy_gettext('Sample Rate'), lazy_gettext('Seconds'), lazy_gettext('PID')),
+        "{} ({}): {}".format(lazy_gettext('Sample Rate'), lazy_gettext('Seconds'), lazy_gettext('PID')),
         widget=NumberInput(step='any'))
     sample_rate_controller_widget = DecimalField(
-        "{} ({}): ()".format(lazy_gettext('Sample Rate'), lazy_gettext('Seconds'), lazy_gettext('Widget')),
+        "{} ({}): {}".format(lazy_gettext('Sample Rate'), lazy_gettext('Seconds'), lazy_gettext('Widget')),
         widget=NumberInput(step='any'))
 
     settings_general_save = SubmitField(TRANSLATIONS['save']['title'])
@@ -162,7 +162,7 @@ class SettingsGeneral(FlaskForm):
 #
 
 class Controller(FlaskForm):
-    import_controller_file = FileField(lazy_gettext('Upload'))
+    import_controller_file = FileField()
     import_controller_upload = SubmitField(lazy_gettext('Import Controller Module'))
 
 
@@ -176,7 +176,7 @@ class ControllerDel(FlaskForm):
 #
 
 class Action(FlaskForm):
-    import_action_file = FileField(lazy_gettext('Upload'))
+    import_action_file = FileField()
     import_action_upload = SubmitField(lazy_gettext('Import Action Module'))
 
 
@@ -190,7 +190,7 @@ class ActionDel(FlaskForm):
 #
 
 class Input(FlaskForm):
-    import_input_file = FileField(lazy_gettext('Upload'))
+    import_input_file = FileField()
     import_input_upload = SubmitField(lazy_gettext('Import Input Module'))
 
 
@@ -204,7 +204,7 @@ class InputDel(FlaskForm):
 #
 
 class Output(FlaskForm):
-    import_output_file = FileField(lazy_gettext('Upload'))
+    import_output_file = FileField()
     import_output_upload = SubmitField(lazy_gettext('Import Output Module'))
 
 
@@ -218,7 +218,7 @@ class OutputDel(FlaskForm):
 #
 
 class Widget(FlaskForm):
-    import_widget_file = FileField(lazy_gettext('Upload'))
+    import_widget_file = FileField()
     import_widget_upload = SubmitField(lazy_gettext('Import Widget Module'))
 
 

@@ -46,7 +46,6 @@ if __name__ == "__main__":
     ]
 
     with open(save_path, 'w') as out_file:
-        out_file.write("Supported Functions are listed below.\n\n")
         for each_list in list_functions:
             out_file.write("## {}\n\n".format(each_list[1]))
 

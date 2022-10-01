@@ -2,22 +2,23 @@
 # Copyright (C) 2022 Kyle T. Gabriel
 # This file is distributed under the same license as the Mycodo project.
 # FIRST AUTHOR <EMAIL@ADDRESS>, 2022.
-#
+# Gabrielus wang <1256388069@qq.com>, 2022.
+# Kyle Gabriel <business@kylegabriel.com>, 2022.
 msgid ""
 msgstr ""
 "Project-Id-Version: Mycodo1 8.11.0\n"
 "Report-Msgid-Bugs-To: mycodo@kylegabriel.com\n"
 "POT-Creation-Date: 2022-09-12 20:10-0400\n"
-"PO-Revision-Date: 2022-09-12 02:06+0000\n"
+"PO-Revision-Date: 2022-09-28 00:58+0000\n"
 "Last-Translator: Kyle Gabriel <business@kylegabriel.com>\n"
+"Language-Team: Chinese (Simplified) <http://translate.kylegabriel.com:8080/"
+"projects/mycodo/translations/zh_Hans/>\n"
 "Language: zh\n"
-"Language-Team: Chinese (Simplified) "
-"<http://translate.kylegabriel.com:8080/projects/mycodo/translations/zh_Hans/>"
-"\n"
-"Plural-Forms: nplurals=1; plural=0\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
+"X-Generator: Weblate 4.14\n"
 "Generated-By: Babel 2.9.1\n"
 
 #: config_devices_units.py:13 config_devices_units.py:17
@@ -52,7 +53,7 @@ msgstr "亮度"
 
 #: config_devices_units.py:53
 msgid "Carbon Dioxide"
-msgstr ""
+msgstr "二氧化碳"
 
 #: actions/display_backlight_color.py:14 config_devices_units.py:57
 #: config_devices_units.py:61 config_devices_units.py:65
@@ -60,26 +61,23 @@ msgstr ""
 #: config_devices_units.py:81 functions/function_spacer.py:23
 #: inputs/input_spacer.py:18 outputs/output_spacer.py:26
 msgid "Color"
-msgstr ""
+msgstr "颜色"
 
 #: config_devices_units.py:57
 msgid "Red"
-msgstr ""
+msgstr "红"
 
 #: config_devices_units.py:61
-#, fuzzy
 msgid "Green"
-msgstr "学位"
+msgstr "绿"
 
 #: config_devices_units.py:65
-#, fuzzy
 msgid "Blue"
-msgstr "体积"
+msgstr "蓝"
 
 #: config_devices_units.py:69 outputs/on_off_kasa_rgb_bulbs.py:166
-#, fuzzy
 msgid "Color Temperature"
-msgstr "温度"
+msgstr "色温"
 
 #: config_devices_units.py:85 config_devices_units.py:89
 #: config_devices_units.py:93 config_devices_units.py:361
@@ -91,7 +89,6 @@ msgid "Minute"
 msgstr "分钟"
 
 #: config_devices_units.py:89 config_devices_units.py:93
-#, fuzzy
 msgid "Minutes"
 msgstr "分钟"
 
@@ -196,7 +193,7 @@ msgstr "湿气"
 
 #: config_devices_units.py:181
 msgid "Oxygen"
-msgstr ""
+msgstr "氧气"
 
 #: config_devices_units.py:185
 msgid "Oxidation Reduction Potential"
@@ -316,7 +313,7 @@ msgstr "无单位"
 
 #: config_devices_units.py:305
 msgid "Vapor Pressure Deficit"
-msgstr "蒸汽压力不足"
+msgstr "蒸汽压不足"
 
 #: config_devices_units.py:309
 msgid "Version"
@@ -382,7 +379,7 @@ msgstr "十进制"
 #: actions/led_kasa_bulb_change_color.py:44 config_devices_units.py:367
 #: outputs/on_off_kasa_rgb_bulbs.py:120
 msgid "Degree"
-msgstr "学位"
+msgstr "度"
 
 #: config_devices_units.py:370
 msgid "8-Bit Color"
@@ -390,11 +387,11 @@ msgstr "8位色彩"
 
 #: config_devices_units.py:373
 msgid "Fahrenheit"
-msgstr "飞轮海"
+msgstr "华氏度"
 
 #: config_devices_units.py:376
 msgid "Foot"
-msgstr "脚丫子"
+msgstr "英寸"
 
 #: config_devices_units.py:379
 msgid "Full"
@@ -406,7 +403,7 @@ msgstr "G力"
 
 #: config_devices_units.py:385
 msgid "Gigabyte"
-msgstr "技嘉"
+msgstr "吉比特"
 
 #: config_devices_units.py:388
 msgid "Hour"
@@ -442,7 +439,7 @@ msgstr "千赫"
 
 #: config_devices_units.py:412
 msgid "Kilojoule per kilogram"
-msgstr "Kilojoule每公斤"
+msgstr "千焦尔每公斤"
 
 #: config_devices_units.py:415
 msgid "Knot"
@@ -569,7 +566,7 @@ msgstr "第二"
 
 #: config_devices_units.py:517
 msgid "Steps"
-msgstr "阶梯"
+msgstr "步骤"
 
 #: config_devices_units.py:520
 msgid "Microgram per cubic meter"
@@ -577,7 +574,7 @@ msgstr "每立方米的微克数"
 
 #: config_devices_units.py:523
 msgid "Microtesla"
-msgstr ""
+msgstr "微特斯拉"
 
 #: config_devices_units.py:532
 msgid "Volt"
@@ -585,7 +582,7 @@ msgstr "伏特"
 
 #: config_devices_units.py:535
 msgid "Watt"
-msgstr ""
+msgstr "瓦"
 
 #: config_translations.py:15 mycodo_flask/templates/layout-settings.html:37
 #: mycodo_flask/templates/pages/data_options/input_options.html:289
@@ -625,13 +622,12 @@ msgid "Average"
 msgstr "平均"
 
 #: config_translations.py:25
-#, fuzzy
 msgid "Bluetooth Adapter (hci[X])"
-msgstr "BT适配器（hci [X]）"
+msgstr "蓝牙适配器（hci [X]）"
 
 #: config_translations.py:27
 msgid "Bluetooth MAC (XX:XX:XX:XX:XX:XX)"
-msgstr ""
+msgstr "蓝牙 MAC地址（XX:XX:XX:XX:XX:XX)"
 
 #: config_translations.py:29
 msgid "Bus"
@@ -686,7 +682,7 @@ msgstr "条件"
 #: actions/pid_setpoint_lower.py:40 actions/pid_setpoint_raise.py:40
 #: config_translations.py:47
 msgid "Controller"
-msgstr "调节器"
+msgstr "控制器"
 
 #: config_translations.py:49 mycodo_flask/templates/tools/notes.html:73
 msgid "Create"
@@ -701,7 +697,7 @@ msgstr "创建"
 #: mycodo_flask/templates/settings/measurement.html:185
 #: mycodo_flask/templates/settings/measurement.html:231
 msgid "Custom"
-msgstr "习惯"
+msgstr "自定义"
 
 #: config_translations.py:53 mycodo_flask/templates/settings/general.html:102
 #: mycodo_flask/templates/settings/general.html:113
@@ -758,7 +754,7 @@ msgstr "下"
 #: config_translations.py:71
 #: mycodo_flask/templates/pages/data_options/input_options.html:27
 msgid "Duplicate"
-msgstr ""
+msgstr "副本"
 
 #: config_translations.py:75 config_translations.py:404
 #: mycodo_flask/forms/forms_input.py:153
@@ -813,11 +809,11 @@ msgstr "保持"
 
 #: config_translations.py:95
 msgid "I2C Bus"
-msgstr ""
+msgstr "i2c总线"
 
 #: config_translations.py:97
 msgid "I2C Address"
-msgstr ""
+msgstr "I2C地址"
 
 #: config_translations.py:99
 msgid "Indicator"
@@ -860,16 +856,15 @@ msgstr "持续"
 
 #: config_translations.py:111
 msgid "LCD"
-msgstr "液晶显示"
+msgstr "液晶显示屏"
 
 #: config_translations.py:113
 msgid "Line"
 msgstr "线"
 
 #: config_translations.py:115
-#, fuzzy
 msgid "Lock"
-msgstr "时钟针"
+msgstr "锁"
 
 #: config_translations.py:117
 msgid "Login"
@@ -934,14 +929,14 @@ msgstr "注意"
 #: mycodo_flask/templates/user_templates/widget_template_widget_indicator_js.html:24
 #: outputs/on_off_kasa_rgb_bulbs.py:228
 msgid "Off"
-msgstr "离"
+msgstr "关闭"
 
 #: actions/display_backlight_on.py:14 actions/display_flash_on.py:14
 #: config_translations.py:135
 #: mycodo_flask/templates/user_templates/widget_template_widget_indicator_js.html:22
 #: outputs/on_off_kasa_rgb_bulbs.py:212
 msgid "On"
-msgstr "上"
+msgstr "打开"
 
 #: config_translations.py:137 functions/bang_bang.py:55
 #: functions/bang_bang_pwm.py:52 functions/pid_autotune.py:79
@@ -949,14 +944,14 @@ msgstr "上"
 #: mycodo_flask/forms/forms_settings.py:148 widgets/widget_output.py:52
 #: widgets/widget_output_pwm_slider.py:52
 msgid "Output"
-msgstr "产量"
+msgstr "输出"
 
 #: config_translations.py:139
 #: mycodo_flask/templates/pages/function_options/conditional_options/measurement_dict.html:2
 #: mycodo_flask/templates/pages/function_options/conditional_options/measurement_past_average.html:28
 #: mycodo_flask/templates/pages/function_options/conditional_options/measurement_past_sum.html:2
 msgid "Past"
-msgstr "过去"
+msgstr "通过"
 
 #: actions/mqtt_publish.py:116 actions/mqtt_publish_input.py:100
 #: config_translations.py:141 inputs/mqtt_paho.py:118
@@ -985,12 +980,12 @@ msgstr "PID"
 #: outputs/on_off_gpio_sysfs.py:54 outputs/on_off_wireless_rpi_rf.py:61
 #: outputs/pump_gpio.py:84 outputs/pwm_gpio.py:83
 msgid "Pin"
-msgstr "销"
+msgstr "针脚"
 
 #: actions/mqtt_publish.py:12 actions/mqtt_publish_input.py:13
 #: config_translations.py:149
 msgid "Publish"
-msgstr ""
+msgstr "发布"
 
 #: config_translations.py:151 outputs/pwm_gpio.py:38 outputs/pwm_pca9685.py:57
 #: outputs/pwm_python.py:159 outputs/pwm_shell.py:37
@@ -1037,9 +1032,8 @@ msgid "Save Order"
 msgstr "保存订单"
 
 #: config_translations.py:167
-#, fuzzy
 msgid "Scale"
-msgstr "帕斯卡尔"
+msgstr "尺寸"
 
 #: config_translations.py:169
 msgid "Unscaled Unit Min"
@@ -1114,9 +1108,8 @@ msgid "Theme"
 msgstr "主题"
 
 #: config_translations.py:201
-#, fuzzy
 msgid "Time-lapse"
-msgstr "停止尕"
+msgstr "超时"
 
 #: config_translations.py:203
 msgid "Timer"
@@ -1128,7 +1121,7 @@ msgstr "触发"
 
 #: config_translations.py:207
 msgid "Unlock"
-msgstr ""
+msgstr "解锁"
 
 #: config_translations.py:209
 msgid "Up"
@@ -1154,7 +1147,7 @@ msgstr "用户"
 #: mycodo_flask/templates/user_templates/widget_template_widget_indicator_js.html:60
 #: outputs/value_mqtt.py:32
 msgid "Value"
-msgstr ""
+msgstr "值"
 
 #: config_translations.py:217 config_translations.py:318
 #: config_translations.py:319 config_translations.py:386
@@ -1197,7 +1190,6 @@ msgid "Command"
 msgstr "命令"
 
 #: config_translations.py:241
-#, fuzzy
 msgid "The command to be executed"
 msgstr "要执行的Python 3代码"
 
@@ -1219,7 +1211,7 @@ msgstr "点击复制到剪贴板"
 
 #: config_translations.py:252
 msgid "Deadline"
-msgstr ""
+msgstr "期限"
 
 #: actions/output_on_off.py:61 actions/output_ramp_pwm.py:77
 #: actions/pause_actions.py:35 config_translations.py:252
@@ -1304,7 +1296,6 @@ msgstr ""
 #: widgets/widget_indicator.py:64 widgets/widget_measurement.py:64
 #: widgets/widget_output.py:60 widgets/widget_output_pwm_slider.py:60
 #: widgets/widget_pid.py:253
-#, fuzzy
 msgid "Seconds"
 msgstr "第二"
 
@@ -1320,11 +1311,11 @@ msgstr "PWM的占空比（百分比，0.0 - 100.0）"
 
 #: config_translations.py:258 outputs/pump_gpio.py:130
 msgid "Desired Flow Rate"
-msgstr ""
+msgstr "流量需求"
 
 #: config_translations.py:258 outputs/pump_gpio.py:130
 msgid "ml/min"
-msgstr ""
+msgstr "毫升每分钟"
 
 #: config_translations.py:261
 msgid "Name Font Size (em)"
@@ -1356,7 +1347,7 @@ msgstr "FTDI设备"
 
 #: config_translations.py:268
 msgid "The FTDI device connected to the input/output/etc."
-msgstr ""
+msgstr "连接到输入/输出/等的 FTDI 设备"
 
 #: config_translations.py:270
 #: inputs/rpi_signal_revolutions_pigpio_callback.py:52
@@ -1364,28 +1355,27 @@ msgstr ""
 #: outputs/on_off_gpio_sysfs.py:54 outputs/on_off_wireless_rpi_rf.py:61
 #: outputs/pump_gpio.py:84 outputs/pwm_gpio.py:83
 msgid "GPIO"
-msgstr ""
+msgstr "GPIO"
 
 #: config_translations.py:271 config_translations.py:328
 #: config_translations.py:331 config_translations.py:334
 #: config_translations.py:337
 msgid "GPIO (using BCM numbering)"
-msgstr ""
+msgstr "GPIO（使用博通自带顺序）"
 
 #: config_translations.py:273 outputs/pump_grove_motor_driver_v1_3.py:132
 msgid "Flow Rate Method"
-msgstr ""
+msgstr "流速模式"
 
 #: config_translations.py:274 outputs/pump_grove_motor_driver_v1_3.py:133
 msgid "The flow rate to use when pumping a volume"
-msgstr ""
+msgstr "基于抽水量的流速模式"
 
 #: config_translations.py:276
 msgid "Host"
 msgstr "主办"
 
 #: config_translations.py:277
-#, fuzzy
 msgid "Host or IP address"
 msgstr "域或IP地址"
 
@@ -1402,7 +1392,7 @@ msgstr "用于通信的接口"
 #: inputs/linux_command.py:59 outputs/on_off_shell.py:68
 #: outputs/pwm_python.py:215 outputs/pwm_shell.py:69
 msgid "The user to execute the command"
-msgstr ""
+msgstr "执行命令的用户"
 
 #: config_translations.py:285
 msgid "Log Level: Debug"
@@ -1443,17 +1433,16 @@ msgstr "显示在守护程序日志调试线"
 #: widgets/widget_indicator.py:64 widgets/widget_measurement.py:64
 #: widgets/widget_output.py:60 widgets/widget_output_pwm_slider.py:60
 #: widgets/widget_pid.py:253
-#, fuzzy
 msgid "Max Age"
-msgstr "管理"
+msgstr "最长时间"
 
 #: config_translations.py:289
 msgid "The maximum allowable measurement age"
-msgstr "最大允许测量年龄"
+msgstr "最大允许测量时间"
 
 #: config_translations.py:291
 msgid "Unit Measurement"
-msgstr "单位测量"
+msgstr "单位计量"
 
 #: config_translations.py:292
 msgid "Select a unit for the stored value"
@@ -1498,16 +1487,16 @@ msgstr "关闭命令"
 
 #: config_translations.py:304 outputs/on_off_wireless_rpi_rf.py:78
 msgid "Command to execute when the output is instructed to turn off"
-msgstr ""
+msgstr "指示关闭输出时执行的命令"
 
 #: config_translations.py:306 outputs/on_off_python.py:190
 #: outputs/on_off_shell.py:51 outputs/on_off_wireless_rpi_rf.py:69
 msgid "On Command"
-msgstr "在命令"
+msgstr "按命令"
 
 #: config_translations.py:307 outputs/on_off_wireless_rpi_rf.py:70
 msgid "Command to execute when the output is instructed to turn on"
-msgstr ""
+msgstr "指示输出打开时执行的命令"
 
 #: config_translations.py:309 outputs/on_off_gpio.py:91
 #: outputs/on_off_gpio_sysfs.py:87
@@ -1525,7 +1514,7 @@ msgstr "什么状态触发输出打开？高还是低？"
 #: config_translations.py:313 config_translations.py:316
 #: config_translations.py:319 config_translations.py:322
 msgid "Send to output controller"
-msgstr ""
+msgstr "发送到输出控制器"
 
 #: config_translations.py:324 functions/average_last_multiple.py:67
 #: functions/average_past_single.py:67 functions/backup_rsync.py:73
@@ -1554,7 +1543,7 @@ msgstr ""
 #: functions/verification.py:63 mycodo_flask/forms/forms_conditional.py:34
 #: mycodo_flask/forms/forms_trigger.py:48
 msgid "Period"
-msgstr ""
+msgstr "租期"
 
 #: config_translations.py:325 functions/average_last_multiple.py:68
 #: functions/average_past_single.py:68 functions/backup_rsync.py:74
@@ -1579,26 +1568,24 @@ msgstr ""
 #: functions/regulate_ph_ec.py:180 functions/statistics_last_multiple.py:102
 #: functions/statistics_past_single.py:101 functions/sum_last_multiple.py:69
 #: functions/sum_past_single.py:69 functions/verification.py:64
-#, fuzzy
 msgid "The duration between measurements or actions"
-msgstr "测量或动作之间的持续时间（秒）"
+msgstr ""
 
 #: config_translations.py:327 config_translations.py:328
-#, fuzzy
 msgid "Clock"
-msgstr "时钟针"
+msgstr "时钟"
 
 #: config_translations.py:330 config_translations.py:331
 msgid "Cable Select"
-msgstr ""
+msgstr "通道选择"
 
 #: config_translations.py:333 config_translations.py:334
 msgid "MISO"
-msgstr ""
+msgstr "MISO"
 
 #: config_translations.py:336 config_translations.py:337
 msgid "MOSI"
-msgstr ""
+msgstr "MOSI"
 
 #: actions/mqtt_publish.py:47 actions/mqtt_publish_input.py:52
 #: config_translations.py:339 mycodo_flask/forms/forms_settings.py:102
@@ -1646,7 +1633,7 @@ msgstr "PWM命令"
 
 #: config_translations.py:354 outputs/pwm_shell.py:62
 msgid "Command to execute to set the PWM duty cycle (%)"
-msgstr ""
+msgstr "用于设置 PWM 占空比 (%) 的命令"
 
 #: config_translations.py:357
 msgid "The Hertz to output the PWM signal (0 - 70,000)"
@@ -1671,7 +1658,7 @@ msgstr "参考电阻"
 
 #: config_translations.py:365
 msgid "Refresh"
-msgstr ""
+msgstr "刷新"
 
 #: config_translations.py:366
 msgid "Duration to wait between acquiring new measurements"
@@ -1737,9 +1724,8 @@ msgstr "产值集时Mycodo关闭"
 #: functions/vapor_pressure_deficit.py:74
 #: mycodo_flask/forms/forms_conditional.py:44
 #: mycodo_flask/forms/forms_trigger.py:50
-#, fuzzy
 msgid "Start Offset"
-msgstr "重启系统"
+msgstr "开始 使用补偿"
 
 #: config_translations.py:393 functions/average_last_multiple.py:76
 #: functions/average_past_single.py:76 functions/backup_rsync.py:82
@@ -1879,7 +1865,7 @@ msgstr "前一次测量对当前测量的加权。范围：0.0 - 1.0。用于平
 
 #: config_translations.py:432 config_translations.py:435
 msgid "Always Min"
-msgstr ""
+msgstr "总是最小"
 
 #: actions/pid_setpoint_raise.py:17 config_translations.py:432
 #: mycodo_flask/forms/forms_pid.py:34 mycodo_flask/forms/forms_pid.py:101
@@ -1906,21 +1892,19 @@ msgid "Lower"
 msgstr "降低"
 
 #: actions/clear_total_kWh.py:13 actions/clear_total_volume.py:13
-#, fuzzy
 msgid "Flow Meter"
-msgstr "毫米"
+msgstr "流量计"
 
 #: actions/clear_total_kWh.py:13 actions/clear_total_volume.py:13
 #: inputs/atlas_flow.py:204 inputs/hall_flow.py:61
 #: inputs/kasa_energy_meter.py:77 outputs/pump_pca9685.py:145
 #: outputs/pump_pca9685_l298n.py:134
 msgid "Clear Total"
-msgstr ""
+msgstr "净总计"
 
 #: actions/command_bash.py:11
-#, fuzzy
 msgid "Execute"
-msgstr "删除"
+msgstr "执行"
 
 #: actions/command_bash.py:21
 #, fuzzy
@@ -1951,11 +1935,11 @@ msgstr "标签"
 #: actions/display_backlight_color.py:14 actions/display_backlight_off.py:14
 #: actions/display_backlight_on.py:14
 msgid "Backlight"
-msgstr ""
+msgstr "背光灯"
 
 #: actions/display_flash_off.py:14 actions/display_flash_on.py:14
 msgid "Flashing"
-msgstr ""
+msgstr "闪存"
 
 #: actions/input_force_measurements.py:13
 #, fuzzy
@@ -2021,20 +2005,19 @@ msgstr "增量"
 
 #: actions/output_value.py:25
 msgid "Send a value to the Output."
-msgstr ""
+msgstr "发送一个输出值"
 
 #: actions/output_volume.py:25
 msgid "Instruct the Output to dispense a volume."
-msgstr ""
+msgstr "指示输出分配一个体积。"
 
 #: actions/pause_actions.py:24
 msgid "Set a delay between executing Actions when self.run_all_actions() is used."
 msgstr "self.run_all_actions（）用于当执行设置操作之间的延迟。"
 
 #: actions/photo.py:13
-#, fuzzy
 msgid "Capture Photo"
-msgstr "捕获仍然"
+msgstr "捕获照片"
 
 #: actions/photo.py:23
 msgid "Capture a photo with the selected Camera."
@@ -2088,18 +2071,16 @@ msgid "Raise Setpoint"
 msgstr "提高设定值"
 
 #: actions/system_restart.py:13
-#, fuzzy
 msgid "Restart"
-msgstr "开始"
+msgstr "重启"
 
 #: actions/system_shutdown.py:13
-#, fuzzy
 msgid "Shutdown"
-msgstr "关闭值"
+msgstr "关闭"
 
 #: actions/webhook.py:15
 msgid "Webhook"
-msgstr ""
+msgstr "Webhook"
 
 #: functions/average_last_multiple.py:84 functions/average_past_single.py:95
 #: functions/difference.py:84 functions/difference.py:103
@@ -2133,13 +2114,12 @@ msgstr ""
 #: widgets/widget_indicator.py:65 widgets/widget_measurement.py:65
 #: widgets/widget_output.py:61 widgets/widget_output_pwm_slider.py:61
 #: widgets/widget_pid.py:254
-#, fuzzy
 msgid "The maximum age of the measurement to use"
-msgstr "测量的最大年龄（秒），以用于温度补偿"
+msgstr "测量的最大时长（秒），以用于温度补偿"
 
 #: functions/bang_bang.py:45 functions/bang_bang_on_off.py:44
 msgid "Select a measurement the selected output will affect"
-msgstr ""
+msgstr "选择所选输出将影响的测量"
 
 #: functions/bang_bang.py:56
 msgid "Select an output to control that will affect the measurement"
@@ -2152,7 +2132,7 @@ msgstr ""
 #: functions/bang_bang.py:72 functions/bang_bang_on_off.py:82
 #: functions/bang_bang_pwm.py:69
 msgid "Hysteresis"
-msgstr ""
+msgstr "滞后"
 
 #: functions/bang_bang.py:73 functions/bang_bang_on_off.py:83
 msgid "The amount above and below the setpoint that defines the control band"
@@ -2172,11 +2152,11 @@ msgstr ""
 
 #: functions/humidity_wet_dry_bulb.py:107
 msgid "Dry Bulb"
-msgstr ""
+msgstr "干燥"
 
 #: functions/humidity_wet_dry_bulb.py:127
 msgid "Wet Bulb"
-msgstr ""
+msgstr "潮湿"
 
 #: functions/pid_autotune.py:106
 msgid "Noise Band"
@@ -2188,7 +2168,7 @@ msgstr "Outstep"
 
 #: functions/regulate_ph_ec.py:218
 msgid "pH"
-msgstr ""
+msgstr "酸碱度"
 
 #: inputs/ads1015_circuitpython.py:80 inputs/ads1115_circuitpython.py:81
 #: inputs/ads1x15.py:81 inputs/ina219x.py:154
@@ -2224,34 +2204,34 @@ msgstr "设置校准方法以在输入激活期间执行"
 
 #: inputs/adxl34x.py:74 inputs/vl53l1x.py:62
 msgid "Range"
-msgstr ""
+msgstr "范围"
 
 #: inputs/anyleaf_orp.py:52 inputs/anyleaf_orp.py:59 inputs/anyleaf_orp.py:71
 #: inputs/anyleaf_orp.py:78 inputs/atlas_orp.py:97 inputs/atlas_pt1000.py:82
 #: inputs/atlas_rgb.py:142
 msgid "Calibrate"
-msgstr ""
+msgstr "校准"
 
 #: inputs/anyleaf_orp.py:52 inputs/anyleaf_orp.py:59
 msgid "Internal"
-msgstr ""
+msgstr "内置"
 
 #: inputs/anyleaf_orp.py:59
 msgid "ORP"
-msgstr ""
+msgstr "ORP"
 
 #: inputs/anyleaf_orp.py:71
 msgid "Buffer ORP"
-msgstr ""
+msgstr "ORP缓存"
 
 #: inputs/anyleaf_orp.py:71
 msgid "mV"
-msgstr ""
+msgstr "毫伏"
 
 #: inputs/atlas_co2.py:87 inputs/atlas_do.py:103 inputs/atlas_o2.py:140
 #: inputs/atlas_orp.py:103 inputs/atlas_ph.py:110
 msgid "Clear Calibration"
-msgstr "清除校准"
+msgstr "清除校准结果"
 
 #: inputs/atlas_co2.py:97 inputs/atlas_do.py:113 inputs/atlas_ec.py:167
 #: inputs/atlas_flow.py:214 inputs/atlas_humidity.py:84 inputs/atlas_o2.py:150
@@ -2260,7 +2240,7 @@ msgstr "清除校准"
 #: inputs/vl53l0x.py:75 outputs/pump_atlas_ezo_pmp.py:154
 #: outputs/pump_grove_motor_driver_v1_0.py:170
 msgid "New I2C Address"
-msgstr ""
+msgstr "New I2C Address"
 
 #: inputs/atlas_co2.py:98 inputs/atlas_do.py:114 inputs/atlas_ec.py:168
 #: inputs/atlas_flow.py:215 inputs/atlas_humidity.py:85 inputs/atlas_o2.py:151
@@ -6036,4 +6016,3 @@ msgstr ""
 #: widgets/widget_python_code.py:212
 msgid "Python code to execute every dashboard/widget refresh"
 msgstr ""
-

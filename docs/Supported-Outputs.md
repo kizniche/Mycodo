@@ -1,5 +1,3 @@
-Supported Outputs are listed below.
-
 ## Built-In Outputs (System)
 
 ### On/Off: MQTT Publish

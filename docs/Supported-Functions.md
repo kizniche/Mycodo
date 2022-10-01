@@ -1,5 +1,3 @@
-Supported Functions are listed below.
-
 ## Built-In Functions
 
 ### Average (Last, Multiple)
