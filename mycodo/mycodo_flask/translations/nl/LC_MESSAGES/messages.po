@@ -2,22 +2,22 @@
 # Copyright (C) 2022 Kyle T. Gabriel
 # This file is distributed under the same license as the Mycodo project.
 # FIRST AUTHOR <EMAIL@ADDRESS>, 2022.
-#
+# Kyle Gabriel <business@kylegabriel.com>, 2022.
 msgid ""
 msgstr ""
 "Project-Id-Version: Mycodo1 8.11.0\n"
 "Report-Msgid-Bugs-To: mycodo@kylegabriel.com\n"
 "POT-Creation-Date: 2022-10-01 16:35-0400\n"
-"PO-Revision-Date: 2022-09-13 00:54+0000\n"
+"PO-Revision-Date: 2022-10-01 21:22+0000\n"
 "Last-Translator: Kyle Gabriel <business@kylegabriel.com>\n"
+"Language-Team: Dutch <http://translate.kylegabriel.com:8080/projects/mycodo/"
+"translations/nl/>\n"
 "Language: nl\n"
-"Language-Team: Dutch "
-"<http://translate.kylegabriel.com:8080/projects/mycodo/translations/nl/>"
-"\n"
-"Plural-Forms: nplurals=2; plural=n != 1\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=n != 1;\n"
+"X-Generator: Weblate 4.14\n"
 "Generated-By: Babel 2.9.1\n"
 
 #: config_devices_units.py:13 config_devices_units.py:17
@@ -1897,7 +1897,7 @@ msgstr "Lager"
 
 #: config_translations_docs.py:11
 msgid "Mycodo Environmental Monitoring and Regulation System"
-msgstr ""
+msgstr "Mycodo Milieubewakings- en regelsysteem"
 
 #: config_translations_docs.py:12
 msgid ""
@@ -1906,6 +1906,10 @@ msgid ""
 "computers (SBCs). It couples inputs and outputs in interesting ways to "
 "sense and manipulate the environment."
 msgstr ""
+"Mycodo is open source software ontworpen om te draaien op de [Raspberry "
+"Pi](https://en.wikipedia.org/wiki/Raspberry_Pi) en andere single-board "
+"computers (SBC's). Het koppelt inputs en outputs op interessante manieren om "
+"de omgeving aan te voelen en te manipuleren."
 
 #: config_translations_docs.py:14
 #, fuzzy
@@ -1917,6 +1921,8 @@ msgid ""
 "See the [README](https://github.com/kizniche/Mycodo#uses) for features, "
 "projects using Mycodo, screenshots, and other information."
 msgstr ""
+"Zie de [README](https://github.com/kizniche/Mycodo#uses) voor functies, "
+"projecten die Mycodo gebruiken, schermafbeeldingen en andere informatie."
 
 #: config_translations_docs.py:16
 msgid ""
@@ -1927,21 +1933,23 @@ msgstr ""
 
 #: config_translations_docs.py:18
 msgid "Prerequisites"
-msgstr ""
+msgstr "Voorwaarden"
 
 #: config_translations_docs.py:19
 msgid ""
 "Single-board computer (Recommended: [Raspberry "
 "Pi](https://www.raspberrypi.org/), any version: Zero, 1, 2, 3, or 4)"
 msgstr ""
+"Single-board computer (Aanbevolen: [Raspberry Pi](https://www.raspberrypi."
+"org/), elke versie: Nul, 1, 2, 3, of 4)"
 
 #: config_translations_docs.py:20
 msgid "Debian-based operating system"
-msgstr ""
+msgstr "Op Debian gebaseerd besturingssysteem"
 
 #: config_translations_docs.py:21
 msgid "An active internet connection"
-msgstr ""
+msgstr "Een actieve internetverbinding"
 
 #: config_translations_docs.py:23
 #: mycodo_flask/templates/admin/dependencies_install.html:21
@@ -1953,12 +1961,16 @@ msgid ""
 "Once booted and logged in, run the following command to initiate the "
 "Mycodo install:"
 msgstr ""
+"Eenmaal opgestart en ingelogd, voer het volgende commando uit om de Mycodo "
+"installatie te starten:"
 
 #: config_translations_docs.py:25
 msgid ""
 "After installation, open a web browser to the SBC's IP address and you "
 "will be prompted to create an Admin user and login."
 msgstr ""
+"Open na de installatie een webbrowser naar het IP-adres van de SBC en u "
+"wordt gevraagd een admin-gebruiker aan te maken en in te loggen."
 
 #: config_translations_docs.py:27
 #, fuzzy
@@ -1971,7 +1983,7 @@ msgstr "Discussieforum"
 
 #: config_translations_docs.py:29
 msgid "Frequently Asked Questions"
-msgstr ""
+msgstr "Vaak gestelde vragen"
 
 #: config_translations_docs.py:31 mycodo_flask/templates/layout.html:248
 msgid "Donate"
@@ -1979,7 +1991,7 @@ msgstr "Doneer"
 
 #: config_translations_docs.py:32
 msgid "Become a Sponsor"
-msgstr ""
+msgstr "Sponsor worden"
 
 #: config_translations_docs.py:33
 #, fuzzy
@@ -1992,6 +2004,9 @@ msgid ""
 "that was built to run on single-board computers, specifically the "
 "[Raspberry Pi](https://en.wikipedia.org/wiki/Raspberry_Pi)."
 msgstr ""
+"Mycodo is een open-source milieubewakings- en regelsysteem dat is gebouwd om "
+"te draaien op single-board computers, met name de [Raspberry Pi](https://en."
+"wikipedia.org/wiki/Raspberry_Pi)."
 
 #: config_translations_docs.py:38
 msgid ""
@@ -2007,6 +2022,18 @@ msgid ""
 "conditions, and more. The frontend hosts a web interface that enables "
 "viewing and configuration from any browser-enabled device."
 msgstr ""
+"Mycodo is oorspronkelijk ontwikkeld voor het kweken van eetbare "
+"paddenstoelen, maar is uitgegroeid tot veel meer. Het systeem bestaat uit "
+"twee delen, een backend (daemon) en een frontend (webserver). De backend "
+"voert taken uit zoals het verzamelen van metingen van sensoren en apparaten "
+"en het coördineren van een diverse reeks reacties op die metingen, waaronder "
+"de mogelijkheid om uitgangen te moduleren (relais schakelen, PWM-signalen "
+"genereren, pompen bedienen, draadloze stopcontacten schakelen, publiceren/"
+"aanmelden voor MQTT, enzovoort), omgevingscondities regelen met PID-"
+"regeling, timers plannen, foto's en video's vastleggen, acties activeren "
+"wanneer metingen aan bepaalde voorwaarden voldoen, en nog veel meer. De "
+"frontend bevat een webinterface die weergave en configuratie vanaf elk "
+"apparaat met een browser mogelijk maakt."
 
 #: config_translations_docs.py:39
 msgid ""
@@ -2015,6 +2042,11 @@ msgid ""
 "environmental conditions of a physical space, while others capture "
 "motion-activated or time-lapse photography, among other uses."
 msgstr ""
+"Mycodo wordt op verschillende manieren gebruikt. Sommige gebruikers slaan "
+"gewoon sensormetingen op om de omstandigheden op afstand te controleren, "
+"anderen regelen de omgevingscondities van een fysieke ruimte, en weer "
+"anderen leggen onder meer bewegingsgeactiveerde of time-lapse fotografie "
+"vast."
 
 #: config_translations_docs.py:40
 msgid ""
@@ -2024,6 +2056,11 @@ msgid ""
 "commands, or math equations, making this a very dynamic system for "
 "acquiring and generating data."
 msgstr ""
+"Input controllers verwerven metingen en slaan deze op in de InfluxDB "
+"tijdreeksdatabase. Metingen komen meestal van sensoren, maar kunnen ook "
+"worden geconfigureerd om de retourwaarde van Linux Bash of Python "
+"commando's, of wiskundige vergelijkingen te gebruiken, waardoor dit een zeer "
+"dynamisch systeem is voor het verwerven en genereren van gegevens."
 
 #: config_translations_docs.py:41
 msgid ""
@@ -2034,6 +2071,13 @@ msgid ""
 " modulated (PWM) signals, controlling peristaltic pumps, MQTT publishing,"
 " and more."
 msgstr ""
+"Output controllers produceren veranderingen aan de algemene input/output "
+"(GPIO) pinnen of kunnen worden geconfigureerd om Linux Bash of Python "
+"commando's uit te voeren, waardoor een verscheidenheid aan mogelijke "
+"toepassingen mogelijk is. Er zijn een paar verschillende soorten uitgangen: "
+"eenvoudig schakelen van GPIO-pinnen (HIGH/LOW), genereren van "
+"pulsbreedtegemoduleerde (PWM) signalen, aansturen van slangenpompen, MQTT-"
+"publicatie, en meer."
 
 #: config_translations_docs.py:42
 msgid ""
@@ -2047,6 +2091,16 @@ msgid ""
 "beverage fermentation or curing, and cooking food ([sous-"
 "vide](https://en.wikipedia.org/wiki/Sous-vide)), to name a few."
 msgstr ""
+"Wanneer ingangen en uitgangen worden gecombineerd, kunnen functieregelaars "
+"worden gebruikt om terugkoppellussen te creëren die de uitgang gebruiken om "
+"een door de ingang gemeten omgevingsconditie te moduleren. Bepaalde ingangen "
+"kunnen aan bepaalde uitgangen worden gekoppeld om een verscheidenheid van "
+"verschillende regel- en toezichttoepassingen te creëren. Naast eenvoudige "
+"regeling kunnen methoden worden gebruikt om een in de tijd veranderend "
+"instelpunt te creëren, waardoor bijvoorbeeld thermische cyclers, reflow-"
+"ovens, omgevingssimulatie voor terraria, fermentatie of uitharding van "
+"voedsel en dranken, en het koken van voedsel ([sous-vide] (https://en."
+"wikipedia.org/wiki/Sous-vide)) mogelijk worden."
 
 #: config_translations_docs.py:43
 msgid ""
@@ -2054,6 +2108,9 @@ msgid ""
 " according to durations of time, or the sunrise/sunset at a specific "
 "latitude and longitude."
 msgstr ""
+"Triggers kunnen worden ingesteld om gebeurtenissen te activeren op basis van "
+"specifieke data en tijden, volgens tijdsduur, of de zonsopgang/ondergang op "
+"een specifieke breedte- en lengtegraad."
 
 #: config_translations_docs.py:44
 msgid ""
@@ -2064,6 +2121,12 @@ msgid ""
 "translation or would like to add another language, this can be done at "
 "[https://translate.kylegabriel.com](http://translate.kylegabriel.com:8080/engage/mycodo/)."
 msgstr ""
+"Mycodo is vertaald naar verschillende talen. Standaard zal de taal van de "
+"browser bepalen welke taal wordt gebruikt, maar kan worden overruled in de "
+"Algemene Instellingen, op de `[Gear Icon] -> Configuratie -> Algemeen` "
+"pagina. Als je een probleem vindt en een vertaling wilt corrigeren of een "
+"andere taal wilt toevoegen, dan kan dit via [https://translate.kylegabriel."
+"com](http://translate.kylegabriel.com:8080/engage/mycodo/)."
 
 #: config_translations_docs.py:48 mycodo_flask/templates/layout.html:191
 #: mycodo_flask/templates/pages/live.html:3
@@ -2082,6 +2145,12 @@ msgid ""
 "correctly and activated. Data will be automatically updated on the page "
 "from the measurement database."
 msgstr ""
+"De `Live Measurements` pagina is de eerste pagina die een gebruiker ziet na "
+"het inloggen op Mycodo. Het toont de huidige metingen die worden verkregen "
+"van ingangs- en functiecontrollers. Als er niets wordt weergegeven op de "
+"`Live`-pagina, zorg er dan voor dat een ingangs- of functiecontroller "
+"correct is geconfigureerd en geactiveerd. Gegevens worden automatisch "
+"bijgewerkt op de pagina vanuit de meetdatabase."
 
 #: config_translations_docs.py:51 mycodo_flask/templates/layout.html:192
 #: mycodo_flask/templates/pages/graph-async.html:3
@@ -2113,6 +2182,23 @@ msgid ""
 "until a new zoom level is selected, at which time only another ~50kb is "
 "downloaded."
 msgstr ""
+"Een grafische weergave van gegevens die nuttig is voor het bekijken van "
+"gegevensreeksen over relatief lange perioden (weken/maanden/jaren), die zeer "
+"gegevens- en processorintensief zouden kunnen zijn om te bekijken als een "
+"synchrone grafiek. Selecteer een tijdspanne en de gegevens worden geladen "
+"van die tijdspanne, als die bestaat. De eerste weergave betreft de gehele "
+"geselecteerde gegevensreeks. Voor elke weergave/zoom worden 700 datapunten "
+"geladen. Als er meer dan 700 datapunten zijn opgenomen voor de geselecteerde "
+"tijdspanne, worden 700 punten gecreëerd uit een gemiddelde van de punten in "
+"die tijdspanne. Hierdoor kunnen veel minder gegevens worden gebruikt om door "
+"een grote dataset te navigeren. Bijvoorbeeld, 4 maanden gegevens kunnen 10 "
+"megabytes zijn als ze allemaal werden gedownload. Bij het bekijken van een "
+"periode van 4 maanden is het echter niet mogelijk elk gegevenspunt van die "
+"10 megabyte te zien, en is het samenvoegen van punten onvermijdelijk. Met "
+"asynchroon laden van gegevens downloadt u alleen wat u ziet. Dus in plaats "
+"van 10 megabyte te downloaden bij elke grafieklading, wordt slechts ~50kb "
+"gedownload tot een nieuw zoomniveau wordt geselecteerd, waarna nog eens ~"
+"50kb wordt gedownload."
 
 #: config_translations_docs.py:55
 msgid ""
@@ -2128,6 +2214,10 @@ msgid ""
 "dashboards can be created as well as locked to prevent changing the "
 "arrangement."
 msgstr ""
+"Het dashboard kan zowel worden gebruikt om gegevens te bekijken als om het "
+"systeem te manipuleren, dankzij de talrijke beschikbare dashboardwidgets. Er "
+"kunnen meerdere dashboards worden aangemaakt en vergrendeld om de indeling "
+"niet te wijzigen."
 
 #: config_translations_docs.py:60
 #: mycodo_flask/templates/layout-settings.html:38
@@ -2143,6 +2233,13 @@ msgid ""
 "dragging and dropping. For a full list of supported Widgets, see "
 "[Supported Widgets](Supported-Widgets.md)."
 msgstr ""
+"Widgets zijn elementen op het Dashboard die een aantal toepassingen hebben, "
+"zoals het bekijken van gegevens (grafieken, indicatoren, meters, enz.) of "
+"interactie met het systeem (uitgangen manipuleren, PWM duty cycle wijzigen, "
+"een database opvragen of wijzigen, enz.) Widgets kunnen gemakkelijk worden "
+"herschikt en van grootte veranderd door ze te verslepen. Voor een volledige "
+"lijst van ondersteunde Widgets, zie [Ondersteunde Widgets](Ondersteunde-"
+"Widgets.md)."
 
 #: config_translations_docs.py:63
 msgid "Custom Widgets"
@@ -6467,4 +6564,3 @@ msgstr "Python Code (Vernieuwen)"
 #: widgets/widget_python_code.py:212
 msgid "Python code to execute every dashboard/widget refresh"
 msgstr "Python code om elke dashboard/widget verversing uit te voeren"
-
