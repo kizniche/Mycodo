@@ -2,22 +2,22 @@
 # Copyright (C) 2022 Kyle T. Gabriel
 # This file is distributed under the same license as the Mycodo project.
 # FIRST AUTHOR <EMAIL@ADDRESS>, 2022.
-#
+# Kyle Gabriel <business@kylegabriel.com>, 2022.
 msgid ""
 msgstr ""
 "Project-Id-Version: Mycodo 8.14.0\n"
 "Report-Msgid-Bugs-To: mycodo@kylegabriel.com\n"
 "POT-Creation-Date: 2022-10-01 16:35-0400\n"
-"PO-Revision-Date: 2022-09-12 22:24+0000\n"
+"PO-Revision-Date: 2022-10-01 21:23+0000\n"
 "Last-Translator: Kyle Gabriel <business@kylegabriel.com>\n"
+"Language-Team: Turkish <http://translate.kylegabriel.com:8080/projects/"
+"mycodo/translations/tr/>\n"
 "Language: tr\n"
-"Language-Team: Turkish "
-"<http://translate.kylegabriel.com:8080/projects/mycodo/translations/tr/>"
-"\n"
-"Plural-Forms: nplurals=1; plural=0\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
+"X-Generator: Weblate 4.14\n"
 "Generated-By: Babel 2.9.1\n"
 
 #: config_devices_units.py:13 config_devices_units.py:17
@@ -1887,7 +1887,7 @@ msgstr ""
 
 #: config_translations_docs.py:11
 msgid "Mycodo Environmental Monitoring and Regulation System"
-msgstr ""
+msgstr "Mycodo Çevresel İzleme ve Düzenleme Sistemi"
 
 #: config_translations_docs.py:12
 msgid ""
@@ -1896,6 +1896,10 @@ msgid ""
 "computers (SBCs). It couples inputs and outputs in interesting ways to "
 "sense and manipulate the environment."
 msgstr ""
+"Mycodo, [Raspberry Pi] (https://en.wikipedia.org/wiki/Raspberry_Pi) ve diğer "
+"tek kartlı bilgisayarlarda (SBC'ler) çalışmak üzere tasarlanmış açık "
+"kaynaklı bir yazılımdır. Çevreyi algılamak ve manipüle etmek için giriş ve "
+"çıkışları ilginç şekillerde birleştirir."
 
 #: config_translations_docs.py:14
 #, fuzzy
@@ -1907,6 +1911,8 @@ msgid ""
 "See the [README](https://github.com/kizniche/Mycodo#uses) for features, "
 "projects using Mycodo, screenshots, and other information."
 msgstr ""
+"Özellikler, Mycodo kullanan projeler, ekran görüntüleri ve diğer bilgiler "
+"için [README](https://github.com/kizniche/Mycodo#uses) adresine bakın."
 
 #: config_translations_docs.py:16
 msgid ""
@@ -1917,38 +1923,44 @@ msgstr ""
 
 #: config_translations_docs.py:18
 msgid "Prerequisites"
-msgstr ""
+msgstr "Ön Koşullar"
 
 #: config_translations_docs.py:19
 msgid ""
 "Single-board computer (Recommended: [Raspberry "
 "Pi](https://www.raspberrypi.org/), any version: Zero, 1, 2, 3, or 4)"
 msgstr ""
+"Tek kartlı bilgisayar (Önerilen: [Raspberry Pi](https://www.raspberrypi.org/)"
+", herhangi bir sürüm: Sıfır, 1, 2, 3 veya 4)"
 
 #: config_translations_docs.py:20
 msgid "Debian-based operating system"
-msgstr ""
+msgstr "Debian tabanlı işletim sistemi"
 
 #: config_translations_docs.py:21
 msgid "An active internet connection"
-msgstr ""
+msgstr "Aktif bir internet bağlantısı"
 
 #: config_translations_docs.py:23
 #: mycodo_flask/templates/admin/dependencies_install.html:21
 msgid "Install"
-msgstr ""
+msgstr "Kurulum"
 
 #: config_translations_docs.py:24
 msgid ""
 "Once booted and logged in, run the following command to initiate the "
 "Mycodo install:"
 msgstr ""
+"Önyükleme yapıldıktan ve oturum açıldıktan sonra, Mycodo yüklemesini "
+"başlatmak için aşağıdaki komutu çalıştırın:"
 
 #: config_translations_docs.py:25
 msgid ""
 "After installation, open a web browser to the SBC's IP address and you "
 "will be prompted to create an Admin user and login."
 msgstr ""
+"Kurulumdan sonra, SBC'nin IP adresine bir web tarayıcısı açın ve bir "
+"Yönetici kullanıcısı oluşturup oturum açmanız istenecektir."
 
 #: config_translations_docs.py:27
 #, fuzzy
@@ -1961,7 +1973,7 @@ msgstr ""
 
 #: config_translations_docs.py:29
 msgid "Frequently Asked Questions"
-msgstr ""
+msgstr "Sıkça Sorulan Sorular"
 
 #: config_translations_docs.py:31 mycodo_flask/templates/layout.html:248
 msgid "Donate"
@@ -1969,7 +1981,7 @@ msgstr "Bağış Yapın"
 
 #: config_translations_docs.py:32
 msgid "Become a Sponsor"
-msgstr ""
+msgstr "Sponsor Olun"
 
 #: config_translations_docs.py:33
 #, fuzzy
@@ -1982,6 +1994,9 @@ msgid ""
 "that was built to run on single-board computers, specifically the "
 "[Raspberry Pi](https://en.wikipedia.org/wiki/Raspberry_Pi)."
 msgstr ""
+"Mycodo, tek kartlı bilgisayarlarda, özellikle de [Raspberry Pi] (https://en."
+"wikipedia.org/wiki/Raspberry_Pi) üzerinde çalışmak üzere inşa edilmiş açık "
+"kaynaklı bir çevresel izleme ve düzenleme sistemidir."
 
 #: config_translations_docs.py:38
 msgid ""
@@ -1997,6 +2012,18 @@ msgid ""
 "conditions, and more. The frontend hosts a web interface that enables "
 "viewing and configuration from any browser-enabled device."
 msgstr ""
+"Başlangıçta yenilebilir mantar yetiştirmek için geliştirilen Mycodo, çok "
+"daha fazlasını yapmak için büyüdü. Sistem, bir arka uç (daemon) ve bir ön uç "
+"(web sunucusu) olmak üzere iki bölümden oluşmaktadır. Arka uç, sensörlerden "
+"ve cihazlardan ölçümler almak ve bu ölçümlere verilen, çıkışları modüle etme "
+"(röleleri değiştirme, PWM sinyalleri üretme, pompaları çalıştırma, kablosuz "
+"çıkışları değiştirme, MQTT'ye yayınlama/abone olma ve diğerleri), PID "
+"kontrolü ile çevresel koşulları düzenleme, zamanlayıcıları zamanlama, "
+"fotoğraf çekme ve video akışı, ölçümler belirli koşulları karşıladığında "
+"eylemleri tetikleme ve daha fazlası dahil olmak üzere çeşitli yanıtları "
+"koordine etme gibi görevleri yerine getirir. Ön uç, tarayıcı özellikli "
+"herhangi bir cihazdan görüntüleme ve yapılandırma sağlayan bir web arayüzü "
+"barındırır."
 
 #: config_translations_docs.py:39
 msgid ""
@@ -2005,6 +2032,11 @@ msgid ""
 "environmental conditions of a physical space, while others capture "
 "motion-activated or time-lapse photography, among other uses."
 msgstr ""
+"Mycodo'nun çok sayıda farklı kullanım alanı vardır. Bazı kullanıcılar "
+"koşulları uzaktan izlemek için sensör ölçümlerini depolarken, diğerleri "
+"fiziksel bir alanın çevresel koşullarını düzenliyor, diğerleri ise diğer "
+"kullanımların yanı sıra hareketle etkinleştirilen veya hızlandırılmış "
+"fotoğraf çekiyor."
 
 #: config_translations_docs.py:40
 msgid ""
@@ -2014,6 +2046,11 @@ msgid ""
 "commands, or math equations, making this a very dynamic system for "
 "acquiring and generating data."
 msgstr ""
+"Giriş denetleyicileri ölçümleri alır ve bunları InfluxDB zaman serisi "
+"veritabanında depolar. Ölçümler genellikle sensörlerden gelir, ancak Linux "
+"Bash veya Python komutlarının veya matematik denklemlerinin dönüş değerini "
+"kullanmak üzere de yapılandırılabilir, bu da bunu veri elde etmek ve üretmek "
+"için çok dinamik bir sistem haline getirir."
 
 #: config_translations_docs.py:41
 msgid ""
@@ -2024,6 +2061,12 @@ msgid ""
 " modulated (PWM) signals, controlling peristaltic pumps, MQTT publishing,"
 " and more."
 msgstr ""
+"Çıkış denetleyicileri genel giriş/çıkış (GPIO) pinlerinde değişiklikler "
+"üretir veya Linux Bash veya Python komutlarını yürütecek şekilde "
+"yapılandırılarak çeşitli potansiyel kullanımlara olanak sağlar. Birkaç "
+"farklı çıkış türü vardır: GPIO pinlerinin basit anahtarlanması (YÜKSEK/DÜŞÜK)"
+", darbe genişliği modülasyonlu (PWM) sinyaller üretme, peristaltik pompaları "
+"kontrol etme, MQTT yayınlama ve daha fazlası."
 
 #: config_translations_docs.py:42
 msgid ""
@@ -2037,6 +2080,15 @@ msgid ""
 "beverage fermentation or curing, and cooking food ([sous-"
 "vide](https://en.wikipedia.org/wiki/Sous-vide)), to name a few."
 msgstr ""
+"Girişler ve Çıkışlar birleştirildiğinde, Fonksiyon kontrolörleri, Girişin "
+"ölçtüğü bir çevresel koşulu modüle etmek için Çıkış cihazını kullanan geri "
+"besleme döngüleri oluşturmak için kullanılabilir. Çeşitli farklı kontrol ve "
+"düzenleme uygulamaları oluşturmak için belirli Girişler belirli Çıkışlarla "
+"birleştirilebilir. Basit düzenlemenin ötesinde, Yöntemler zaman içinde "
+"değişen bir ayar noktası oluşturmak için kullanılabilir, bu da termal "
+"döngüler, yeniden akış fırınları, teraryumlar için çevresel simülasyon, "
+"yiyecek ve içecek fermantasyonu veya kürleme ve yiyecek pişirme ([sous-vide] "
+"(https://en.wikipedia.org/wiki/Sous-vide)) gibi şeyleri mümkün kılar."
 
 #: config_translations_docs.py:43
 msgid ""
@@ -2044,6 +2096,9 @@ msgid ""
 " according to durations of time, or the sunrise/sunset at a specific "
 "latitude and longitude."
 msgstr ""
+"Tetikleyiciler, belirli tarih ve saatlere, zaman sürelerine veya belirli bir "
+"enlem ve boylamda güneşin doğuşuna/ batışına göre olayları etkinleştirmek "
+"üzere ayarlanabilir."
 
 #: config_translations_docs.py:44
 msgid ""
@@ -2054,6 +2109,12 @@ msgid ""
 "translation or would like to add another language, this can be done at "
 "[https://translate.kylegabriel.com](http://translate.kylegabriel.com:8080/engage/mycodo/)."
 msgstr ""
+"Mycodo çeşitli dillere çevrilmiştir. Varsayılan olarak, tarayıcının dili "
+"hangi dilin kullanılacağını belirleyecektir, ancak `[Dişli Simgesi] -> "
+"Yapılandır -> Genel` sayfasındaki Genel Ayarlar'da geçersiz kılınabilir. Bir "
+"sorunla karşılaşırsanız ve bir çeviriyi düzeltmek ya da başka bir dil "
+"eklemek isterseniz, bunu [https://translate.kylegabriel.com](http://translate"
+".kylegabriel.com:8080/engage/mycodo/) adresinden yapabilirsiniz."
 
 #: config_translations_docs.py:48 mycodo_flask/templates/layout.html:191
 #: mycodo_flask/templates/pages/live.html:3
@@ -2072,6 +2133,12 @@ msgid ""
 "correctly and activated. Data will be automatically updated on the page "
 "from the measurement database."
 msgstr ""
+"Canlı Ölçümler sayfası, bir kullanıcının Mycodo'ya giriş yaptıktan sonra "
+"gördüğü ilk sayfadır. Giriş ve Fonksiyon kontrolörlerinden alınan mevcut "
+"ölçümleri görüntüler. Canlı` sayfasında hiçbir şey görüntülenmiyorsa, bir "
+"Giriş veya Fonksiyon kontrolörünün hem doğru yapılandırıldığından hem de "
+"etkinleştirildiğinden emin olun. Veriler ölçüm veritabanından otomatik "
+"olarak sayfada güncellenecektir."
 
 #: config_translations_docs.py:51 mycodo_flask/templates/layout.html:192
 #: mycodo_flask/templates/pages/graph-async.html:3
@@ -2103,6 +2170,22 @@ msgid ""
 "until a new zoom level is selected, at which time only another ~50kb is "
 "downloaded."
 msgstr ""
+"Senkron Grafik olarak görüntülemek için çok veri ve işlemci yoğun olabilecek "
+"nispeten uzun zaman dilimlerini (haftalar/aylar/yıllar) kapsayan veri "
+"kümelerini görüntülemek için yararlı olan bir grafik veri ekranı. Bir zaman "
+"dilimi seçtiğinizde, eğer varsa, o zaman aralığındaki veriler yüklenecektir. "
+"İlk görünüm seçilen veri setinin tamamına ait olacaktır. Her görünüm/"
+"yakınlaştırma için 700 veri noktası yüklenecektir. Seçilen zaman aralığı "
+"için 700'den fazla veri noktası kaydedilmişse, 700 nokta o zaman "
+"aralığındaki noktaların ortalamasından oluşturulacaktır. Bu, büyük bir veri "
+"setinde gezinmek için çok daha az verinin kullanılmasını sağlar. Örneğin, 4 "
+"aylık verinin tamamı indirilirse 10 megabayt olabilir. Ancak, 4 aylık bir "
+"süreyi görüntülerken, bu 10 megabaytın her veri noktasını görmek mümkün "
+"değildir ve noktaların toplanması kaçınılmazdır. Eşzamansız veri yüklemesi "
+"ile yalnızca gördüğünüz kadarını indirirsiniz. Böylece, her grafik "
+"yüklemesinde 10 megabayt indirmek yerine, yeni bir yakınlaştırma seviyesi "
+"seçilene kadar yalnızca ~50kb indirilir ve bu sırada yalnızca ~50kb daha "
+"indirilir."
 
 #: config_translations_docs.py:55
 msgid ""
@@ -2118,6 +2201,10 @@ msgid ""
 "dashboards can be created as well as locked to prevent changing the "
 "arrangement."
 msgstr ""
+"Gösterge paneli, mevcut çok sayıda gösterge paneli widget'ı sayesinde hem "
+"verileri görüntülemek hem de sistemi manipüle etmek için kullanılabilir. "
+"Birden fazla gösterge tablosu oluşturulabilir ve düzenlemenin "
+"değiştirilmesini önlemek için kilitlenebilir."
 
 #: config_translations_docs.py:60
 #: mycodo_flask/templates/layout-settings.html:38
@@ -2133,6 +2220,13 @@ msgid ""
 "dragging and dropping. For a full list of supported Widgets, see "
 "[Supported Widgets](Supported-Widgets.md)."
 msgstr ""
+"Pencere öğeleri, Gösterge Tablosunda veri görüntüleme (grafikler, "
+"göstergeler, göstergeler, vb.) veya sistemle etkileşim (çıkışları manipüle "
+"etme, PWM görev döngüsünü değiştirme, bir veritabanını sorgulama veya "
+"değiştirme, vb.) Pencere öğeleri sürüklenip bırakılarak kolayca yeniden "
+"düzenlenebilir ve yeniden boyutlandırılabilir. Desteklenen Pencere "
+"Araçlarının tam listesi için [Desteklenen Pencere Araçları] (Supported-"
+"Widgets.md) bölümüne bakın."
 
 #: config_translations_docs.py:63
 msgid "Custom Widgets"
@@ -6236,4 +6330,3 @@ msgstr ""
 #: widgets/widget_python_code.py:212
 msgid "Python code to execute every dashboard/widget refresh"
 msgstr ""
-
