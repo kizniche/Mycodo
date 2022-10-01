@@ -264,7 +264,7 @@ Languages
    `Spanish <https://kizniche.github.io/Mycodo/index.es/>`__,
    `Swedish <https://kizniche.github.io/Mycodo/index.sv/>`__,
    `Turkish <https://kizniche.github.io/Mycodo/index.tr/>`__,
-   `Chinese <#https://kizniche.github.io/Mycodo/index.zh/>`__.
+   `Chinese <https://kizniche.github.io/Mycodo/index.zh/>`__.
 
 The install script will prompt you to select a language. This will be the set language when you first open the web user interface. You may change this at a later time on the settings page at ``[Gear Icon] -> Configure -> General -> Language``.
 
