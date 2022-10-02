@@ -134,6 +134,14 @@ def extension_babel(app):
         except AttributeError:
             pass
 
+        # No user logged in, check session for language
+        try:
+            from flask import session
+            if session.get("language") and session['language'] in LANGUAGES:
+                return session['language']
+        except:
+            pass
+
         # Find user-selected language in Mycodo/.language
         try:
             lang_path = os.path.join(INSTALL_DIRECTORY, ".language")

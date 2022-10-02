@@ -26,57 +26,91 @@
 
   {% if not dismiss_notification %}
 
-  <form method="post" action="/create_admin">
-    <div class="row justify-content-center">
-      <div class="col-12" style="max-width: 40em;">
-        <p style="padding: 1em 0; text-align: center; font-size: 2em; font-weight: bold;">
-          Welcome to Mycodo
-        </p>
+  <div class="row justify-content-center">
+    <div class="col-12" style="max-width: 40em;">
 
-        <p>
-          {{_("This appears to be a new Mycodo install. Please create an administrator user. Read and accept the agreement to begin.")}}</p>
+      <p style="padding: 1em 0 0.1em 0; text-align: center; font-size: 2em; font-weight: bold;">{{_('Welcome to Mycodo')}}</p>
+      <h4 class="form-signin-heading" style="text-align: center;">{{host}}</h4>
 
-        <p style="padding: 1em 0; text-align: center; font-size: 1.2em; font-weight: bold;">
-          NO WARRANTY NOTICE
-        </p>
+      <p>
+        <form method="post" action="/create_admin">
+          <div class="input-group mb-3">
+            <div class="input-group-prepend">
+              <label class="input-group-text" for="inputGroupSelect01">{{_('Language')}}</label>
+            </div>
+            <select onchange="this.form.submit()" class="custom-select" id="inputGroupSelect01" name="language">
+              {% for each_lang, each_name in languages.items() %}
+                <option value="{{each_lang}}"{% if language == each_lang %} selected{% endif %}>{{each_name}}</option>
+              {% endfor %}
+            </select>
+          </div>
+        </form>
+      </p>
 
-        <p>
-          Mycodo is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
-          <br/>
-          Mycodo is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
-          <br/>
-          You should have received a copy of the GNU General Public License along with Mycodo. If not, see &lt;<a href="http://www.gnu.org/licenses/" target="_blank">http://www.gnu.org/licenses/</a>&gt;.
-          <br/>&nbsp;<br/>
-          Mycodo also collects anonymous usage statistics to aid with development of new features. This is used to determine what features are used most often, when systems run poorly, and other aspects that should improve reliability, performance, and new features. You can opt-out at any time from the Admin Configuration panel, after you log in.
-        </p>
-        <p>
-          <input type="hidden" name="form-name" value="acknowledge">
+      <p>
+        {{_("This appears to be a new Mycodo install. Please create an administrator user. Read and accept the agreement to begin.")}}</p>
+
+      <p style="padding: 1em 0; text-align: center; font-size: 1.2em; font-weight: bold;">
+        {{_('NO WARRANTY NOTICE')}}
+      </p>
+
+      <p>
+        {{_('Mycodo is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version. Mycodo is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details. You should have received a copy of the GNU General Public License along with Mycodo. If not, see <a href="http://www.gnu.org/licenses/" target="_blank">http://www.gnu.org/licenses/</a>.')}}
+        <br/>&nbsp;<br/>
+        {{_('Mycodo collects anonymous usage statistics to aid with development. You can opt-out at any time from the Configuration page, after you log in.')}}
+      </p>
+
+      <p>
+        <form method="post" action="/create_admin">
           {{form_notice.csrf_token}}
           {{form_notice.acknowledge(class_='form-control btn btn-primary btn-sm')}}
-        </p>
-      </div>
+        </form>
+      </p>
+
     </div>
-  </form>
+  </div>
 
   {% else %}
 
-  <form id='create_admin_form' class="form-signin" name="create_admin" action="/create_admin" method="POST">
-    <input type="hidden" name="form-name" value="create_admin">
-    <h2 class="form-signin-heading">Mycodo</h2>
-    <h3 class="form-signin-heading">{{_('Create Admin')}}</h3>
-    <h6 style="text-align: center;">{{_('Login information is stored locally')}}</h6>
-    <h6 style="text-align: center;">{{_('Usernames must be 3 to 64 characters, passwords >3 characters, and contain only letters and numbers')}}</h6>
-    {{form_create_admin.hidden_tag()}}
-    {{form_create_admin.username.label(class_='sr-only')}}
-    {{form_create_admin.username(class_='form-control', autofocus=true)}}
-    {{form_create_admin.email.label(class_='sr-only')}}
-    {{form_create_admin.email(class_='form-control')}}
-    {{form_create_admin.password.label(class_='sr-only')}}
-    {{form_create_admin.password(class_='form-control')}}
-    {{form_create_admin.password_repeat.label(class_='sr-only')}}
-    {{form_create_admin.password_repeat(class_='form-control')}}
-    <button class="btn btn-lg btn-primary btn-block" type="submit">{{_('Create Admin')}}</button>
-  </form>
+  <div class="row justify-content-center">
+    <div class="col-12" style="max-width: 30em;">
+
+      <h2 class="form-signin-heading" style="text-align: center;">Mycodo</h2>
+      <h4 class="form-signin-heading" style="text-align: center;">{{host}}</h4>
+      <h3 class="form-signin-heading" style="text-align: center;">{{_('Create Admin')}}</h3>
+
+      <form method="post" action="/create_admin">
+        <div class="input-group mb-3">
+          <div class="input-group-prepend">
+            <label class="input-group-text" for="inputGroupSelect01">{{_('Language')}}</label>
+          </div>
+          <select onchange="this.form.submit()" class="custom-select" id="inputGroupSelect01" name="language">
+            {% for each_lang, each_name in languages.items() %}
+              <option value="{{each_lang}}"{% if language == each_lang %} selected{% endif %}>{{each_name}}</option>
+            {% endfor %}
+          </select>
+        </div>
+      </form>
+
+      <h6 style="text-align: center;">{{_('Login information is stored locally')}}</h6>
+      <h6 style="text-align: center;">{{_('Usernames must be 3 to 64 characters, passwords >3 characters, and contain only letters and numbers')}}</h6>
+
+      <form id='create_admin_form' class="form-signin" name="create_admin" action="/create_admin" method="POST">
+        <input type="hidden" name="form-name" value="create_admin">
+        {{form_create_admin.hidden_tag()}}
+        {{form_create_admin.username.label(class_='sr-only')}}
+        {{form_create_admin.username(class_='form-control', autofocus=true)}}
+        {{form_create_admin.email.label(class_='sr-only')}}
+        {{form_create_admin.email(class_='form-control')}}
+        {{form_create_admin.password.label(class_='sr-only')}}
+        {{form_create_admin.password(class_='form-control')}}
+        {{form_create_admin.password_repeat.label(class_='sr-only')}}
+        {{form_create_admin.password_repeat(class_='form-control')}}
+        <button class="btn btn-lg btn-primary btn-block" type="submit">{{_('Create Admin')}}</button>
+      </form>
+
+    </div>
+  </div>
 
   {% endif %}
 

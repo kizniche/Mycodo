@@ -31,6 +31,7 @@ from mycodo.databases.models import Misc
 from mycodo.databases.models import Role
 from mycodo.databases.models import User
 from mycodo.mycodo_flask.extensions import db
+from mycodo.mycodo_flask.forms import forms_settings
 from mycodo.mycodo_flask.forms import forms_authentication
 from mycodo.mycodo_flask.utils import utils_general
 from mycodo.utils.utils import test_password
@@ -61,13 +62,32 @@ def create_admin():
 
     form_create_admin = forms_authentication.CreateAdmin()
     form_notice = forms_authentication.InstallNotice()
+    form_language = forms_settings.LanguageSelect()
+
+    language = None
+
+    # Find user-selected language in Mycodo/.language
+    try:
+        lang_path = os.path.join(INSTALL_DIRECTORY, ".language")
+        if os.path.exists(lang_path):
+            with open(lang_path) as f:
+                language_read = f.read().split(":")[0]
+                if language and language in LANGUAGES:
+                    language = language_read
+    except:
+        pass
+
+    if session.get('language'):
+        language = session['language']
 
     if request.method == 'POST':
-        form_name = request.form['form-name']
-        if form_name == 'acknowledge':
+        if form_notice.acknowledge.data:
             mod_misc = Misc.query.first()
             mod_misc.dismiss_notification = 1
             db.session.commit()
+        elif form_language.language.data:
+            session['language'] = form_language.language.data
+            language = form_language.language.data
         elif form_create_admin.validate():
             username = form_create_admin.username.data.lower()
             error = False
@@ -92,7 +112,11 @@ def create_admin():
                                        dict_translation=TRANSLATIONS,
                                        dismiss_notification=1,
                                        form_create_admin=form_create_admin,
-                                       form_notice=form_notice)
+                                       form_language=form_language,
+                                       form_notice=form_notice,
+                                       host=socket.gethostname(),
+                                       language=language,
+                                       languages=LANGUAGES)
 
             new_user = User()
             new_user.name = username
@@ -135,7 +159,11 @@ def create_admin():
                            dict_translation=TRANSLATIONS,
                            dismiss_notification=dismiss_notification,
                            form_create_admin=form_create_admin,
-                           form_notice=form_notice)
+                           form_language=form_language,
+                           form_notice=form_notice,
+                           host=socket.gethostname(),
+                           language=language,
+                           languages=LANGUAGES)
 
 
 @blueprint.route('/login', methods=('GET', 'POST'))
