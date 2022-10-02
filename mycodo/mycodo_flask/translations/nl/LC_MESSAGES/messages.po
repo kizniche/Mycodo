@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: Mycodo1 8.11.0\n"
 "Report-Msgid-Bugs-To: mycodo@kylegabriel.com\n"
 "POT-Creation-Date: 2022-10-01 16:35-0400\n"
-"PO-Revision-Date: 2022-10-01 21:39+0000\n"
+"PO-Revision-Date: 2022-10-02 03:14+0000\n"
 "Last-Translator: Kyle Gabriel <business@kylegabriel.com>\n"
 "Language-Team: Dutch <http://translate.kylegabriel.com:8080/projects/mycodo/"
 "translations/nl/>\n"
@@ -1912,9 +1912,8 @@ msgstr ""
 "de omgeving aan te voelen en te manipuleren."
 
 #: config_translations_docs.py:14
-#, fuzzy
 msgid "Information"
-msgstr "geen duur"
+msgstr "Informatie"
 
 #: config_translations_docs.py:15
 msgid ""
@@ -1930,6 +1929,8 @@ msgid ""
 "PDF](https://kizniche.github.io/Mycodo/mycodo-manual.pdf) for offline "
 "reading."
 msgstr ""
+"Deze handleiding is ook [beschikbaar als PDF](https://kizniche.github.io/"
+"Mycodo/mycodo-manual.pdf) voor offline lezen."
 
 #: config_translations_docs.py:18
 msgid "Prerequisites"
@@ -1973,9 +1974,8 @@ msgstr ""
 "wordt gevraagd een admin-gebruiker aan te maken en in te loggen."
 
 #: config_translations_docs.py:27
-#, fuzzy
 msgid "Support"
-msgstr "Importeren"
+msgstr "Ondersteuning"
 
 #: config_translations_docs.py:28 mycodo_flask/templates/layout.html:244
 msgid "Discussion Forum"
@@ -1994,9 +1994,8 @@ msgid "Become a Sponsor"
 msgstr "Sponsor worden"
 
 #: config_translations_docs.py:33
-#, fuzzy
 msgid "Other Methods"
-msgstr "Opgeslagen methoden"
+msgstr "Andere methoden"
 
 #: config_translations_docs.py:37
 msgid ""
@@ -2159,9 +2158,8 @@ msgid "Asynchronous Graphs"
 msgstr "Asynchroon"
 
 #: config_translations_docs.py:52
-#, fuzzy
 msgid "Page"
-msgstr "Bereik"
+msgstr "Pagina"
 
 #: config_translations_docs.py:54
 msgid ""
@@ -2206,6 +2204,8 @@ msgid ""
 "Input/Output/Function/etc. needs to be added and activated in order to "
 "display data."
 msgstr ""
+"Grafieken vereisen metingen, daarom moet ten minste één ingang/uitgang/"
+"functie/etc. worden toegevoegd en geactiveerd om gegevens weer te geven."
 
 #: config_translations_docs.py:58
 msgid ""
@@ -2243,7 +2243,7 @@ msgstr ""
 
 #: config_translations_docs.py:63
 msgid "Custom Widgets"
-msgstr ""
+msgstr "Aangepaste Widgets"
 
 #: config_translations_docs.py:64
 msgid ""
@@ -2252,6 +2252,12 @@ msgid ""
 "on the `[Gear Icon] -> Configure -> Custom Widgets` page. After import, "
 "they will be available to use on the `Setup -> Widget` page."
 msgstr ""
+"Er is een systeem voor het importeren van aangepaste Widgets in Mycodo "
+"waarmee door gebruikers gemaakte Widgets in het Mycodo-systeem kunnen worden "
+"gebruikt. Aangepaste Widgets kunnen worden geüpload op de pagina "
+"`[Versnellingspictogram] -> Configuratie -> Aangepaste Widgets`. Na het "
+"importeren zijn ze beschikbaar voor gebruik op de pagina `Instellen -> "
+"Widget`."
 
 #: config_translations_docs.py:65
 msgid ""
@@ -2260,6 +2266,10 @@ msgid ""
 "=feature-request.md&title=New%20Module) or pull request, and it may be "
 "included in the built-in set."
 msgstr ""
+"Als je een werkende module ontwikkelt, overweeg dan [een nieuw GitHub issue "
+"aanmaken](https://github.com/kizniche/Mycodo/issues/"
+"new?assignees=&labels=&template=feature-request.md&title=New%20Module) of "
+"een pull request, en het kan worden opgenomen in de ingebouwde set."
 
 #: config_translations_docs.py:66
 msgid ""
@@ -2269,6 +2279,12 @@ msgid ""
 "Widgets in the directory "
 "[Mycodo/mycodo/widgets/examples](https://github.com/kizniche/Mycodo/tree/master/mycodo/widgets/examples)."
 msgstr ""
+"Open een van de ingebouwde Widget-modules in de directory [Mycodo/mycodo/"
+"widgets](https://github.com/kizniche/Mycodo/tree/master/mycodo/widgets/) "
+"voor voorbeelden van de juiste opmaak. Er zijn ook voorbeelden van "
+"aangepaste Widgets in de map [Mycodo/mycodo/widgets/"
+"voorbeelden](https://github.com/kizniche/Mycodo/tree/master/mycodo/widgets/"
+"examples)."
 
 #: config_translations_docs.py:67
 msgid ""
@@ -2277,6 +2293,11 @@ msgid ""
 " address this, and follow the following brief structure of the dashboard "
 "page that would be generated with multiple widgets being displayed."
 msgstr ""
+"Het maken van een aangepaste widgetmodule vereist vaak specifieke plaatsing "
+"en uitvoering van Javascript. In elke module werden verschillende variabelen "
+"gemaakt om dit aan te pakken, en de volgende korte structuur te volgen van "
+"de dashboardpagina die zou worden gegenereerd met meerdere widgets die "
+"worden weergegeven."
 
 #: actions/clear_total_kWh.py:13 actions/clear_total_volume.py:13
 msgid "Flow Meter"
@@ -6379,7 +6400,7 @@ msgstr "Toon de tijdstempel op de widget"
 
 #: widgets/widget_controller_activate_deactivate.py:132
 msgid "Select the Controller to Activate or Deactivate"
-msgstr ""
+msgstr "Selecteer de te activeren of te deactiveren regelaar"
 
 #: widgets/widget_function_status.py:55
 msgid "Select a Function to display the status of"
