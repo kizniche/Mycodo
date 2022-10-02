@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: Mycodo1 8.11.0\n"
 "Report-Msgid-Bugs-To: mycodo@kylegabriel.com\n"
 "POT-Creation-Date: 2022-10-01 16:35-0400\n"
-"PO-Revision-Date: 2022-10-02 05:07+0000\n"
+"PO-Revision-Date: 2022-10-03 20:58+0000\n"
 "Last-Translator: Kyle Gabriel <business@kylegabriel.com>\n"
 "Language-Team: Swedish <http://translate.kylegabriel.com:8080/projects/"
 "mycodo/translations/sv/>\n"
@@ -1658,9 +1658,8 @@ msgid "Refresh"
 msgstr "Uppdatera"
 
 #: config_translations.py:361
-#, fuzzy
 msgid "Duration to wait between acquiring new measurements"
-msgstr "Antal sekunder att vänta mellan att förvärva nya mätningar."
+msgstr "Väntetid mellan nya mätningar"
 
 #: config_translations.py:364 config_translations.py:367
 msgid "Measurement resolution"
@@ -1906,9 +1905,8 @@ msgstr ""
 "för att känna av och manipulera miljön."
 
 #: config_translations_docs.py:14
-#, fuzzy
 msgid "Information"
-msgstr "ingen varaktighet"
+msgstr "Information"
 
 #: config_translations_docs.py:15
 msgid ""
@@ -1924,6 +1922,8 @@ msgid ""
 "PDF](https://kizniche.github.io/Mycodo/mycodo-manual.pdf) for offline "
 "reading."
 msgstr ""
+"Den här handboken finns också [tillgänglig som PDF] (https://kizniche.github."
+"io/Mycodo/mycodo-manual.pdf) för att läsas offline."
 
 #: config_translations_docs.py:18
 msgid "Prerequisites"
@@ -1967,9 +1967,8 @@ msgstr ""
 "kommer att uppmanas att skapa en administratörsanvändare och logga in."
 
 #: config_translations_docs.py:27
-#, fuzzy
 msgid "Support"
-msgstr "Importera"
+msgstr "Stöd"
 
 #: config_translations_docs.py:28 mycodo_flask/templates/layout.html:244
 msgid "Discussion Forum"
@@ -1988,9 +1987,8 @@ msgid "Become a Sponsor"
 msgstr "Bli en sponsor"
 
 #: config_translations_docs.py:33
-#, fuzzy
 msgid "Other Methods"
-msgstr "Sparade metoder"
+msgstr "Andra metoder"
 
 #: config_translations_docs.py:37
 msgid ""
@@ -2149,9 +2147,8 @@ msgid "Asynchronous Graphs"
 msgstr "Asynchronous Graphs"
 
 #: config_translations_docs.py:52
-#, fuzzy
 msgid "Page"
-msgstr "Utbud"
+msgstr "Sidan"
 
 #: config_translations_docs.py:54
 msgid ""
@@ -2195,6 +2192,8 @@ msgid ""
 "Input/Output/Function/etc. needs to be added and activated in order to "
 "display data."
 msgstr ""
+"Grafer kräver mätningar, därför måste minst en ingång/utgång/funktion/etc. "
+"läggas till och aktiveras för att data ska kunna visas."
 
 #: config_translations_docs.py:58
 msgid ""
@@ -2211,7 +2210,7 @@ msgstr ""
 #: config_translations_docs.py:60
 #: mycodo_flask/templates/layout-settings.html:38
 msgid "Widgets"
-msgstr ""
+msgstr "Widgets"
 
 #: config_translations_docs.py:61
 msgid ""
@@ -2231,7 +2230,7 @@ msgstr ""
 
 #: config_translations_docs.py:63
 msgid "Custom Widgets"
-msgstr ""
+msgstr "Anpassade widgetar"
 
 #: config_translations_docs.py:64
 msgid ""
@@ -2240,6 +2239,11 @@ msgid ""
 "on the `[Gear Icon] -> Configure -> Custom Widgets` page. After import, "
 "they will be available to use on the `Setup -> Widget` page."
 msgstr ""
+"Det finns ett importsystem för anpassade widgetar i Mycodo som gör det "
+"möjligt att använda användarskapade widgetar i Mycodo-systemet. Anpassade "
+"widgetar kan laddas upp på sidan `[Gear Icon] -> Configure -> Custom Widgets`"
+". Efter import kommer de att vara tillgängliga för användning på sidan `"
+"Setup -> Widget`."
 
 #: config_translations_docs.py:65
 msgid ""
@@ -2248,6 +2252,10 @@ msgid ""
 "=feature-request.md&title=New%20Module) or pull request, and it may be "
 "included in the built-in set."
 msgstr ""
+"Om du utvecklar en fungerande modul kan du överväga att [skapa ett nytt "
+"GitHub-ärende] (https://github.com/kizniche/Mycodo/issues/"
+"new?assignees=&labels=&template=feature-request.md&title=New%20Module) eller "
+"en pull request, så att den kan inkluderas i den inbyggda uppsättningen."
 
 #: config_translations_docs.py:66
 msgid ""
@@ -2257,6 +2265,12 @@ msgid ""
 "Widgets in the directory "
 "[Mycodo/mycodo/widgets/examples](https://github.com/kizniche/Mycodo/tree/master/mycodo/widgets/examples)."
 msgstr ""
+"Öppna någon av de inbyggda widgetmoduler som finns i katalogen [Mycodo/"
+"mycodo/widgets] (https://github.com/kizniche/Mycodo/tree/master/mycodo/"
+"widgets/) för att få exempel på korrekt formatering. Det finns också exempel "
+"på anpassade widgets i katalogen [Mycodo/mycodo/widgets/"
+"examples](https://github.com/kizniche/Mycodo/tree/master/mycodo/widgets/"
+"examples)."
 
 #: config_translations_docs.py:67
 msgid ""
@@ -2265,6 +2279,10 @@ msgid ""
 " address this, and follow the following brief structure of the dashboard "
 "page that would be generated with multiple widgets being displayed."
 msgstr ""
+"För att skapa en anpassad widgetmodul krävs ofta en specifik placering och "
+"utförande av Javascript. Flera variabler skapades i varje modul för att lösa "
+"detta och följer följande korta struktur för den instrumentbrädsida som "
+"skulle genereras när flera widgetar visas."
 
 #: actions/clear_total_kWh.py:13 actions/clear_total_volume.py:13
 msgid "Flow Meter"
@@ -2594,11 +2612,11 @@ msgstr "ORP"
 
 #: inputs/anyleaf_orp.py:71
 msgid "Buffer ORP"
-msgstr ""
+msgstr "Buffert ORP"
 
 #: inputs/anyleaf_orp.py:71
 msgid "mV"
-msgstr ""
+msgstr "mV"
 
 #: inputs/atlas_co2.py:87 inputs/atlas_do.py:103 inputs/atlas_o2.py:140
 #: inputs/atlas_orp.py:103 inputs/atlas_ph.py:110
@@ -2612,7 +2630,7 @@ msgstr "Klar kalibrering"
 #: inputs/vl53l0x.py:75 outputs/pump_atlas_ezo_pmp.py:154
 #: outputs/pump_grove_motor_driver_v1_0.py:170
 msgid "New I2C Address"
-msgstr ""
+msgstr "Ny I2C-adress"
 
 #: inputs/atlas_co2.py:98 inputs/atlas_do.py:114 inputs/atlas_ec.py:168
 #: inputs/atlas_flow.py:215 inputs/atlas_humidity.py:85 inputs/atlas_o2.py:151
@@ -2620,7 +2638,7 @@ msgstr ""
 #: inputs/atlas_pt1000.py:62 inputs/atlas_rgb.py:153 inputs/chirp.py:62
 #: inputs/vl53l0x.py:76 outputs/pump_atlas_ezo_pmp.py:155
 msgid "The new I2C to set the device to"
-msgstr ""
+msgstr "Den nya I2C för att ställa in enheten på"
 
 #: inputs/atlas_co2.py:104 inputs/atlas_do.py:119 inputs/atlas_ec.py:173
 #: inputs/atlas_flow.py:220 inputs/atlas_humidity.py:90 inputs/atlas_o2.py:156
@@ -2629,7 +2647,7 @@ msgstr ""
 #: inputs/vl53l0x.py:81 outputs/pump_atlas_ezo_pmp.py:160
 #: outputs/pump_grove_motor_driver_v1_0.py:176
 msgid "Set I2C Address"
-msgstr ""
+msgstr "Ställ in I2C-adress"
 
 #: inputs/atlas_flow.py:170
 msgid "Internal Resistor"
@@ -2638,41 +2656,39 @@ msgstr "internt motstånd"
 #: inputs/atlas_humidity.py:65 inputs/atlas_o2.py:95
 #: inputs/atlas_pressure.py:56
 msgid "Always On"
-msgstr ""
+msgstr "Alltid på"
 
 #: inputs/atlas_humidity.py:66 inputs/atlas_o2.py:96
 #: inputs/atlas_pressure.py:57
 msgid "Always Off"
-msgstr ""
+msgstr "Alltid avstängd"
 
 #: inputs/atlas_humidity.py:67 inputs/atlas_o2.py:97
 #: inputs/atlas_pressure.py:58
-#, fuzzy
 msgid "Only On During Measure"
-msgstr "Pre under åtgärd"
+msgstr "Endast på under mätning"
 
 #: inputs/atlas_humidity.py:69 inputs/atlas_o2.py:99
 #: inputs/atlas_pressure.py:60
 msgid "LED Mode"
-msgstr ""
+msgstr "LED-läge"
 
 #: inputs/atlas_o2.py:87
 msgid "Manual"
-msgstr ""
+msgstr "Manuell"
 
 #: inputs/atlas_pressure.py:61
 msgid "When to turn the LED on"
-msgstr ""
+msgstr "När ska lysdioden slås på"
 
 #: inputs/ds18b20.py:82 inputs/htu21d_circuitpython.py:64
 #: inputs/scd30_circuitpython.py:124 inputs/sht31d_circuitpython.py:63
-#, fuzzy
 msgid "Temperature Offset"
-msgstr "Temperatur"
+msgstr "Temperaturförskjutning"
 
 #: inputs/hall_flow.py:51
 msgid "Pulses per Liter"
-msgstr ""
+msgstr "Pulser per liter"
 
 #: inputs/linux_command.py:50
 msgid "Command Timeout"
@@ -2687,21 +2703,19 @@ msgid "Username for connecting to the server"
 msgstr "Användarnamn för anslutning till servern"
 
 #: inputs/mycodo_test_input_save_value.py:65
-#, fuzzy
 msgid "Channel"
-msgstr "Visa Channel"
+msgstr "Kanal"
 
 #: inputs/mycodo_test_input_save_value.py:79
-#, fuzzy
 msgid "Store Measurement"
-msgstr "Force Mätningar"
+msgstr "Mätning av butiker"
 
 #: inputs/rpi_signal_revolutions_pigpio_callback.py:52
 #: mycodo_flask/forms/forms_conditional.py:69 outputs/on_off_gpio.py:58
 #: outputs/on_off_gpio_sysfs.py:54 outputs/on_off_wireless_rpi_rf.py:61
 #: outputs/pump_gpio.py:84 outputs/pwm_gpio.py:83
 msgid "BCM"
-msgstr ""
+msgstr "BCM"
 
 #: inputs/th1x.py:68 inputs/th1x_am2301.py:67 inputs/th1x_ds18b20.py:53
 msgid "IP Address"
@@ -2709,12 +2723,12 @@ msgstr "IP-adress"
 
 #: inputs/th1x.py:76
 msgid "Sensor Name"
-msgstr ""
+msgstr "Sensorns namn"
 
 #: inputs/weather_openweathermap_onecall.py:86
 #: inputs/weather_openweathermap_weather.py:67
 msgid "API Key"
-msgstr ""
+msgstr "API-nyckel"
 
 #: inputs/weather_openweathermap_onecall.py:94
 #: mycodo_flask/forms/forms_trigger.py:32
@@ -2728,11 +2742,11 @@ msgstr "Längd (decimal)"
 
 #: inputs/weather_openweathermap_onecall.py:167
 msgid "Time"
-msgstr ""
+msgstr "Tid"
 
 #: inputs/weather_openweathermap_weather.py:75
 msgid "City"
-msgstr ""
+msgstr "Staden"
 
 #: mycodo_flask/app.py:229
 msgid "Please log in to access this page"
@@ -2869,7 +2883,7 @@ msgstr ""
 
 #: mycodo_flask/routes_password_reset.py:135
 msgid "Code expired or invalid"
-msgstr ""
+msgstr "Koden har gått ut eller är ogiltig"
 
 #: mycodo_flask/forms/forms_authentication.py:36
 #: mycodo_flask/forms/forms_authentication.py:37
@@ -2883,15 +2897,15 @@ msgstr "Repetera lösenord"
 
 #: mycodo_flask/forms/forms_authentication.py:65
 msgid "Reset Method"
-msgstr ""
+msgstr "Återställningsmetod"
 
 #: mycodo_flask/forms/forms_authentication.py:67
 msgid "Save Reset Code to File"
-msgstr ""
+msgstr "Spara återställningskoden i en fil"
 
 #: mycodo_flask/forms/forms_authentication.py:68
 msgid "Email Reset Code"
-msgstr ""
+msgstr "Kod för återställning av e-post"
 
 #: mycodo_flask/forms/forms_authentication.py:74
 msgid "Submit"
@@ -2938,9 +2952,8 @@ msgid "Stop Timelapse"
 msgstr "Stoppa Timelapse"
 
 #: mycodo_flask/forms/forms_camera.py:32
-#, fuzzy
 msgid "Interval"
-msgstr "Allmän"
+msgstr "Intervall"
 
 #: mycodo_flask/forms/forms_camera.py:35
 msgid "Photo Interval must be a positive value"
@@ -2948,7 +2961,7 @@ msgstr "Fotointervall måste vara ett positivt värde"
 
 #: mycodo_flask/forms/forms_camera.py:40
 msgid "Run Time"
-msgstr ""
+msgstr "Körtid"
 
 #: mycodo_flask/forms/forms_camera.py:43
 msgid "Total Run Time must be a positive value"
@@ -3027,7 +3040,7 @@ msgstr "Hide Senast Timelapse"
 
 #: mycodo_flask/forms/forms_camera.py:86
 msgid "Show Preview"
-msgstr ""
+msgstr "Förhandsgranskning av showen"
 
 #: mycodo_flask/forms/forms_camera.py:87
 #, fuzzy
