@@ -16,6 +16,14 @@ from mycodo.config_translations import TRANSLATIONS
 
 
 #
+# Language
+#
+
+class LanguageSelect(FlaskForm):
+    language = StringField(lazy_gettext('Language'))
+
+
+#
 # Create Admin
 #
 

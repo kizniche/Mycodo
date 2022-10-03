@@ -11,7 +11,7 @@
  - Add language selection to installer
  - Add Turkish Translation
  - Make Docs Translatable (https://kizniche.github.io/Mycodo/)
- - Add language selection on Admin Creation page
+ - Add language selection on Admin Creation and Login pages
 
 ### Bugfixes
 

@@ -31,7 +31,6 @@ from mycodo.databases.models import Misc
 from mycodo.databases.models import Role
 from mycodo.databases.models import User
 from mycodo.mycodo_flask.extensions import db
-from mycodo.mycodo_flask.forms import forms_settings
 from mycodo.mycodo_flask.forms import forms_authentication
 from mycodo.mycodo_flask.utils import utils_general
 from mycodo.utils.utils import test_password
@@ -62,7 +61,7 @@ def create_admin():
 
     form_create_admin = forms_authentication.CreateAdmin()
     form_notice = forms_authentication.InstallNotice()
-    form_language = forms_settings.LanguageSelect()
+    form_language = forms_authentication.LanguageSelect()
 
     language = None
 
@@ -195,6 +194,23 @@ def login_password():
         return redirect(url_for('routes_general.home'))
 
     form_login = forms_authentication.Login()
+    form_language = forms_authentication.LanguageSelect()
+
+    language = None
+
+    # Find user-selected language in Mycodo/.language
+    try:
+        lang_path = os.path.join(INSTALL_DIRECTORY, ".language")
+        if os.path.exists(lang_path):
+            with open(lang_path) as f:
+                language_read = f.read().split(":")[0]
+                if language and language in LANGUAGES:
+                    language = language_read
+    except:
+        pass
+
+    if session.get('language'):
+        language = session['language']
 
     # Check if the user is banned from logging in (too many incorrect attempts)
     if banned_from_login():
@@ -205,50 +221,56 @@ def login_password():
                 "info")
     else:
         if request.method == 'POST':
-            username = form_login.username.data.lower()
-            user_ip = request.environ.get('HTTP_X_FORWARDED_FOR', 'unknown address')
-            user = User.query.filter(
-                func.lower(User.name) == username).first()
-
-            if not user:
-                login_log(username, 'NA', user_ip, 'NOUSER')
-                failed_login()
-            elif form_login.validate_on_submit():
-                matched_hash = User().check_password(
-                    form_login.password.data, user.password_hash)
-
-                # Encode stored password hash if it's a str
-                password_hash = user.password_hash
-                if isinstance(user.password_hash, str):
-                    password_hash = user.password_hash.encode('utf-8')
-
-                if matched_hash == password_hash:
-                    user = User.query.filter(User.name == username).first()
-                    role_name = Role.query.filter(Role.id == user.role_id).first().name
-                    login_log(username, role_name, user_ip, 'LOGIN')
-
-                    # flask-login user
-                    login_user = User()
-                    login_user.id = user.id
-                    remember_me = True if form_login.remember.data else False
-                    flask_login.login_user(login_user, remember=remember_me)
-
-                    return redirect(url_for('routes_general.home'))
-                else:
-                    user = User.query.filter(User.name == username).first()
-                    role_name = Role.query.filter(Role.id == user.role_id).first().name
-                    login_log(username, role_name, user_ip, 'FAIL')
-                    failed_login()
+            if form_language.language.data:
+                session['language'] = form_language.language.data
             else:
-                login_log(username, 'NA', user_ip, 'FAIL')
-                failed_login()
+                username = form_login.username.data.lower()
+                user_ip = request.environ.get('HTTP_X_FORWARDED_FOR', 'unknown address')
+                user = User.query.filter(
+                    func.lower(User.name) == username).first()
+
+                if not user:
+                    login_log(username, 'NA', user_ip, 'NOUSER')
+                    failed_login()
+                elif form_login.validate_on_submit():
+                    matched_hash = User().check_password(
+                        form_login.password.data, user.password_hash)
+
+                    # Encode stored password hash if it's a str
+                    password_hash = user.password_hash
+                    if isinstance(user.password_hash, str):
+                        password_hash = user.password_hash.encode('utf-8')
+
+                    if matched_hash == password_hash:
+                        user = User.query.filter(User.name == username).first()
+                        role_name = Role.query.filter(Role.id == user.role_id).first().name
+                        login_log(username, role_name, user_ip, 'LOGIN')
+
+                        # flask-login user
+                        login_user = User()
+                        login_user.id = user.id
+                        remember_me = True if form_login.remember.data else False
+                        flask_login.login_user(login_user, remember=remember_me)
+
+                        return redirect(url_for('routes_general.home'))
+                    else:
+                        user = User.query.filter(User.name == username).first()
+                        role_name = Role.query.filter(Role.id == user.role_id).first().name
+                        login_log(username, role_name, user_ip, 'FAIL')
+                        failed_login()
+                else:
+                    login_log(username, 'NA', user_ip, 'FAIL')
+                    failed_login()
 
             return redirect('/login')
 
     return render_template('login_password.html',
                            dict_translation=TRANSLATIONS,
+                           form_language=form_language,
                            form_login=form_login,
-                           host=socket.gethostname())
+                           host=socket.gethostname(),
+                           language=language,
+                           languages=LANGUAGES)
 
 
 @blueprint.route('/login_keypad', methods=('GET', 'POST'))

@@ -123,6 +123,7 @@ def extension_babel(app):
 
     @babel.localeselector
     def get_locale():
+        # Check if a user is logged in and a language is set
         try:
             user = User.query.filter(
                 User.id == flask_login.current_user.id).first()
@@ -130,11 +131,10 @@ def extension_babel(app):
                 for key in LANGUAGES:
                     if key == user.language:
                         return key
-        # Bypass endpoint test error "'AnonymousUserMixin' object has no attribute 'id'"
-        except AttributeError:
+        except AttributeError:  # Bypass endpoint test error "'AnonymousUserMixin' object has no attribute 'id'"
             pass
 
-        # No user logged in, check session for language
+        # Check the session for a language
         try:
             from flask import session
             if session.get("language") and session['language'] in LANGUAGES:
@@ -142,7 +142,7 @@ def extension_babel(app):
         except:
             pass
 
-        # Find user-selected language in Mycodo/.language
+        # Check for the presence of Mycodo/.language with a language
         try:
             lang_path = os.path.join(INSTALL_DIRECTORY, ".language")
             if os.path.exists(lang_path):

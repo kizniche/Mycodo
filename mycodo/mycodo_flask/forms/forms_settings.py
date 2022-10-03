@@ -24,14 +24,6 @@ from mycodo.config_translations import TRANSLATIONS
 
 
 #
-# Language select
-#
-
-class LanguageSelect(FlaskForm):
-    language = StringField(lazy_gettext('Language'))
-
-
-#
 # Settings (Email)
 #
 
