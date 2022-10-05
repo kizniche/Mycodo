@@ -179,6 +179,8 @@ def page_output():
         output, OutputChannel, dict_outputs, dict_units, dict_measurements)
     choices_output_channels = utils_general.choices_outputs_channels(
         output, output_channel.query.all(), dict_outputs)
+    choices_output_channels_measurements = utils_general.choices_outputs_channels_measurements(
+        output, OutputChannel, dict_outputs, dict_units, dict_measurements)
     choices_pid = utils_general.choices_pids(
         pid, dict_units, dict_measurements)
 
@@ -237,6 +239,7 @@ def page_output():
                                choices_method=choices_method,
                                choices_output=choices_output,
                                choices_output_channels=choices_output_channels,
+                               choices_output_channels_measurements=choices_output_channels_measurements,
                                choices_pid=choices_pid,
                                custom_commands=custom_commands,
                                custom_options_values_outputs=custom_options_values_outputs,
@@ -263,6 +266,7 @@ def page_output():
                                choices_method=choices_method,
                                choices_output=choices_output,
                                choices_output_channels=choices_output_channels,
+                               choices_output_channels_measurements=choices_output_channels_measurements,
                                choices_pid=choices_pid,
                                custom_commands=custom_commands,
                                custom_options_values_outputs=custom_options_values_outputs,
@@ -290,6 +294,7 @@ def page_output():
                                choices_method=choices_method,
                                choices_output=choices_output,
                                choices_output_channels=choices_output_channels,
+                               choices_output_channels_measurements=choices_output_channels_measurements,
                                choices_pid=choices_pid,
                                custom_commands=custom_commands,
                                custom_options_values_outputs=custom_options_values_outputs,

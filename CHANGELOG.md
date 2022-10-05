@@ -21,6 +21,7 @@
  - Fix potential Missing Attribute error on Live page
  - Fix continuous bad checksum errors with MHZ-14 input
  - Fix SI1145 Input dependency
+ - Fix Output/Measurement/Channel selection in Output Modules
 
 ### Miscellaneous
 

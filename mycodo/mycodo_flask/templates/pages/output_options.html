@@ -202,7 +202,7 @@
         {% if custom_options_values[unique_id] %}
 
           {% if 'custom_channel_options_message' in dict_options %}
-      <div class="row small-gutters" style="padding: 1em">
+      <div class="row small-gutters" style="padding: 0.5em">
           <div class="col-12" style="padding-bottom: 0.5em">
             {{dict_options['custom_channel_options_message']|safe}}
           </div>
@@ -210,7 +210,7 @@
           {% endif %}
 
           {% if 'custom_channel_options' in dict_options %}
-      <div class="row small-gutters" style="padding: 1em">
+      <div class="row small-gutters" style="padding: 0.5em">
             {% for each_option in dict_options['custom_channel_options'] %}
               {% include 'pages/form_options/Custom_Options.html' %}
             {% endfor %}
