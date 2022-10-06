@@ -205,22 +205,25 @@ class AbstractBaseController(object):
                 self.logger.exception("Error parsing custom_options")
 
     def setup_custom_options_json(self, custom_options, custom_controller):
+        except_option = None
+
         for each_option_default in custom_options:
             try:
+                except_option = each_option_default
                 required = False
                 custom_option_set = False
                 error = []
 
                 if 'type' not in each_option_default:
-                    error.append("'type' not found in custom_options")
+                    error.append(f"'type' not found in custom_options: {each_option_default}")
                 if ('id' not in each_option_default and
                         ('type' in each_option_default and
                          each_option_default['type'] not in ['new_line', 'message'])):
-                    error.append("'id' not found in custom_options")
+                    error.append(f"'id' not found in custom_options: {each_option_default}")
                 if ('default_value' not in each_option_default and
                         ('type' in each_option_default and
                          each_option_default['type'] != 'new_line')):
-                    error.append("'default_value' not found in custom_options")
+                    error.append(f"'default_value' not found in custom_options: {each_option_default}")
 
                 for each_error in error:
                     self.logger.error(each_error)
@@ -302,33 +305,42 @@ class AbstractBaseController(object):
                 elif each_option_default['type'] == 'select_device':
                     setattr(self, f"{each_option_default['id']}_id", str(option_value))
 
-                elif each_option_default['type'] in ['message', 'new_line']:
-                    pass
-
                 else:
                     self.logger.error(
                         f"setup_custom_options_json() Unknown option type '{each_option_default['type']}'")
             except Exception:
-                self.logger.exception("Error parsing options")
+                self.logger.exception(f"Error parsing option: {except_option}")
 
     def setup_custom_channel_options_json(self, custom_options, custom_controller_channels):
         dict_values = {}
+        except_option = None
         for each_option_default in custom_options:
             try:
-                dict_values[each_option_default['id']] = OrderedDict()
+                except_option = each_option_default
                 required = False
                 custom_option_set = False
                 error = []
+
                 if 'type' not in each_option_default:
-                    error.append("'type' not found in custom_options")
-                if 'id' not in each_option_default:
-                    error.append("'id' not found in custom_options")
-                if 'default_value' not in each_option_default:
-                    error.append("'default_value' not found in custom_options")
+                    error.append(f"'type' not found in custom_options: {each_option_default}")
+                if ('id' not in each_option_default and
+                        ('type' in each_option_default and
+                         each_option_default['type'] not in ['new_line', 'message'])):
+                    error.append(f"'id' not found in custom_options: {each_option_default}")
+                if ('default_value' not in each_option_default and
+                        ('type' in each_option_default and
+                         each_option_default['type'] != 'new_line')):
+                    error.append(f"'default_value' not found in custom_options: {each_option_default}")
+
                 for each_error in error:
                     self.logger.error(each_error)
                 if error:
                     return
+
+                if each_option_default['type'] in ['new_line', 'message']:
+                    continue
+
+                dict_values[each_option_default['id']] = OrderedDict()
 
                 if 'required' in each_option_default and each_option_default['required']:
                     required = True
@@ -340,6 +352,17 @@ class AbstractBaseController(object):
                     dict_values[each_option_default['id']][channel] = each_option_default['default_value']
 
                     if each_option_default['type'] == 'select_measurement':
+                        dict_values[each_option_default['id']][channel] = {}
+                        dict_values[each_option_default['id']][channel]['device_id'] = None
+                        dict_values[each_option_default['id']][channel]['measurement_id'] = None
+                        dict_values[each_option_default['id']][channel]['channel_id'] = None
+
+                    elif each_option_default['type'] == 'select_channel':
+                        dict_values[each_option_default['id']][channel] = {}
+                        dict_values[each_option_default['id']][channel]['device_id'] = None
+                        dict_values[each_option_default['id']][channel]['channel_id'] = None
+
+                    elif each_option_default['type'] == 'select_measurement_channel':
                         dict_values[each_option_default['id']][channel] = {}
                         dict_values[each_option_default['id']][channel]['device_id'] = None
                         dict_values[each_option_default['id']][channel]['measurement_id'] = None
@@ -360,6 +383,15 @@ class AbstractBaseController(object):
                                         dict_values[each_option_default['id']][channel]['measurement_id'] = each_value.split(',')[1]
                                     if len(each_value.split(',')) > 2:
                                         dict_values[each_option_default['id']][channel]['channel_id'] = each_value.split(',')[2]
+                                elif each_option_default['type'] == 'select_channel':
+                                    if len(each_value.split(',')) > 1:
+                                        dict_values[each_option_default['id']][channel]['device_id'] = each_value.split(',')[0]
+                                        dict_values[each_option_default['id']][channel]['channel_id'] = each_value.split(',')[1]
+                                elif each_option_default['type'] == 'select_measurement_channel':
+                                    if len(each_value.split(',')) > 1:
+                                        dict_values[each_option_default['id']][channel]['device_id'] = each_value.split(',')[0]
+                                        dict_values[each_option_default['id']][channel]['measurement_id'] = each_value.split(',')[1]
+                                        dict_values[each_option_default['id']][channel]['channel_id'] = each_value.split(',')[2]
                                 else:
                                     dict_values[each_option_default['id']][channel] = each_value
 
@@ -367,7 +399,7 @@ class AbstractBaseController(object):
                         self.logger.error(
                             f"Option '{each_option_default['id']}' required but was not found to be set by the user")
             except Exception:
-                self.logger.exception("Error parsing options")
+                self.logger.exception(f"Error parsing option: {except_option}")
 
         return dict_values
 

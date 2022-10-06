@@ -12,6 +12,7 @@
  - Add Turkish Translation
  - Make Docs Translatable (https://kizniche.github.io/Mycodo/)
  - Add language selection on Admin Creation and Login pages
+ - Add ability to select Outputs in Output Modules
 
 ### Bugfixes
 
@@ -22,9 +23,11 @@
  - Fix continuous bad checksum errors with MHZ-14 input
  - Fix SI1145 Input dependency
  - Fix Output/Measurement/Channel selection in Output Modules
+ - Fix channel state at initialization of Python and Shell Command Outputs
 
 ### Miscellaneous
 
+ - Improve verbosity of errors with Custom Modules
  - Make Function Status errors appear in the Function Status area of the UI
  - Update Python libraries
 

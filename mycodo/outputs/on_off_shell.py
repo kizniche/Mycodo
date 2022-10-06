@@ -133,9 +133,9 @@ class OutputModule(AbstractOutput):
         if self.options_channels['on_command'][0] and self.options_channels['off_command'][0]:
             self.output_setup = True
             if self.options_channels['state_startup'][0] == 1:
-                self.output_switch('on')
+                self.output_switch('on', output_channel=0)
             elif self.options_channels['state_startup'][0] == 0:
-                self.output_switch('off')
+                self.output_switch('off', output_channel=0)
         else:
             self.logger.error("Output must have both On and Off commands set")
 

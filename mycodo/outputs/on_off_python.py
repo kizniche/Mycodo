@@ -286,9 +286,9 @@ class OutputModule(AbstractOutput):
             self.output_setup = True
 
             if self.options_channels['state_startup'][0] == 1:
-                self.output_switch('on')
+                self.output_switch('on', output_channel=0)
             elif self.options_channels['state_startup'][0] == 0:
-                self.output_switch('off')
+                self.output_switch('off', output_channel=0)
         except Exception:
             self.logger.exception("Could not set up output")
 
