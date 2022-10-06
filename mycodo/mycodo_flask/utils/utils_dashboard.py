@@ -245,13 +245,13 @@ def widget_add(form_base, request_form):
                     dev=dict_widgets[form_base.widget_type.data]['widget_name']),
                 id=new_widget.id),
                 "success")
-        else:
-            for each_error in error:
-                flash(each_error, "error")
     except sqlalchemy.exc.OperationalError as except_msg:
         error.append(except_msg)
     except sqlalchemy.exc.IntegrityError as except_msg:
         error.append(except_msg)
+
+    for each_error in error:
+        flash(each_error, "error")
 
     return dep_unmet
 

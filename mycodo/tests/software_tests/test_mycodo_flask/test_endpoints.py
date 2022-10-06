@@ -794,6 +794,8 @@ def add_widget(testapp, dashboard_id=None, widget_type=''):
     form_dict['widget_add'] = "Add"
     response = testapp.post(f'/dashboard/{dashboard_id}', form_dict)
     # response.showbrowser()
+    # Uncomment to check errors returned on the page
+    # print(f"full_response: {response.follow()}")
     return response
 
 
