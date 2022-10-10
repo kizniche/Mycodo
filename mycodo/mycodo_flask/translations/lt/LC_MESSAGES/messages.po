@@ -8,48 +8,53 @@ msgstr ""
 "Project-Id-Version: Mycodo 8.14.2\n"
 "Report-Msgid-Bugs-To: mycodo@kylegabriel.com\n"
 "POT-Creation-Date: 2022-10-01 16:35-0400\n"
-"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"Last-Translator: Automatically generated\n"
-"Language-Team: none\n"
+"PO-Revision-Date: 2022-10-12 13:58+0000\n"
+"Last-Translator: Laurynas Vilys <enstain@gmail.com>\n"
+"Language-Team: Lithuanian <http://translate.kylegabriel.com:8080/projects/"
+"mycodo/translations/lt/>\n"
 "Language: lt\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=3; plural=(n % 10 == 1 && (n % 100 < 11 || n % 100 > "
+"19)) ? 0 : ((n % 10 >= 2 && n % 10 <= 9 && (n % 100 < 11 || n % 100 > 19)) ? "
+"1 : 2);\n"
+"X-Generator: Weblate 4.14\n"
 "Generated-By: Babel 2.9.1\n"
 
 #: config_devices_units.py:13 config_devices_units.py:17
 #: config_devices_units.py:21 config_devices_units.py:25
 msgid "Acceleration"
-msgstr ""
+msgstr "Pagreitis"
 
 #: config_devices_units.py:29
 msgid "ADC"
-msgstr ""
+msgstr "ADC"
 
 #: config_devices_units.py:33
 msgid "Altitude"
-msgstr ""
+msgstr "Aukštis"
 
 #: config_devices_units.py:37
 msgid "Angle"
-msgstr ""
+msgstr "Kampas"
 
 #: config_devices_units.py:41
 msgid "Battery"
-msgstr ""
+msgstr "Baterija"
 
 #: config_devices_units.py:45 config_devices_units.py:343
 msgid "Boolean"
-msgstr ""
+msgstr "Pasirinkimas"
 
 #: actions/led_kasa_bulb_change_color.py:60 config_devices_units.py:49
 #: mycodo_flask/forms/forms_camera.py:57 outputs/on_off_kasa_rgb_bulbs.py:97
 msgid "Brightness"
-msgstr ""
+msgstr "Šviesumas"
 
 #: config_devices_units.py:53
 msgid "Carbon Dioxide"
-msgstr ""
+msgstr "Anglies dioksias"
 
 #: actions/display_backlight_color.py:14 config_devices_units.py:57
 #: config_devices_units.py:61 config_devices_units.py:65
@@ -57,55 +62,55 @@ msgstr ""
 #: config_devices_units.py:81 functions/function_spacer.py:23
 #: inputs/input_spacer.py:18 outputs/output_spacer.py:26
 msgid "Color"
-msgstr ""
+msgstr "Spalva"
 
 #: config_devices_units.py:57
 msgid "Red"
-msgstr ""
+msgstr "Raudona"
 
 #: config_devices_units.py:61
 msgid "Green"
-msgstr ""
+msgstr "Žalia"
 
 #: config_devices_units.py:65
 msgid "Blue"
-msgstr ""
+msgstr "Mėlyna"
 
 #: config_devices_units.py:69 outputs/on_off_kasa_rgb_bulbs.py:166
 msgid "Color Temperature"
-msgstr ""
+msgstr "Spalvos temperatūra"
 
 #: config_devices_units.py:85 config_devices_units.py:89
 #: config_devices_units.py:93 config_devices_units.py:361
 msgid "CPU Load"
-msgstr ""
+msgstr "Procesoriaus apkrova"
 
 #: config_devices_units.py:85 config_devices_units.py:451
 msgid "Minute"
-msgstr ""
+msgstr "Minutė"
 
 #: config_devices_units.py:89 config_devices_units.py:93
 msgid "Minutes"
-msgstr ""
+msgstr "Minutės"
 
 #: config_devices_units.py:97
 msgid "Dewpoint"
-msgstr ""
+msgstr "Rasos taškas"
 
 #: config_devices_units.py:101 functions/bang_bang.py:84
 #: functions/bang_bang_on_off.py:95 functions/bang_bang_pwm.py:82
 #: functions/pid_autotune.py:129 mycodo_flask/forms/forms_pid.py:32
 #: outputs/pump_l298n.py:140 outputs/pump_pca9685_l298n.py:253
 msgid "Direction"
-msgstr ""
+msgstr "Kryptis"
 
 #: config_devices_units.py:105
 msgid "Disk"
-msgstr ""
+msgstr "Diskas"
 
 #: config_devices_units.py:109
 msgid "Dissolved Oxygen"
-msgstr ""
+msgstr "Ištirpęs deguonis"
 
 #: actions/output_on_off.py:61 actions/output_ramp_pwm.py:77
 #: actions/pause_actions.py:35 config_devices_units.py:113
@@ -115,150 +120,152 @@ msgstr ""
 #: mycodo_flask/templates/pages/usage.html:230
 #: mycodo_flask/templates/pages/usage.html:265
 msgid "Duration"
-msgstr ""
+msgstr "Trukmė"
 
 #: actions/output_pwm.py:48 actions/output_ramp_pwm.py:50
 #: actions/output_ramp_pwm.py:59 actions/output_ramp_pwm.py:68
 #: config_devices_units.py:117 config_translations.py:250
 msgid "Duty Cycle"
-msgstr ""
+msgstr "Darbinis ciklas"
 
 #: config_devices_units.py:121
+#, fuzzy
 msgid "GPIO Edge"
-msgstr ""
+msgstr "GPIO pakraštys"
 
 #: config_devices_units.py:125 functions/regulate_ph_ec.py:240
 msgid "Electrical Conductivity"
-msgstr ""
+msgstr "Elektrinis laidumas"
 
 #: config_devices_units.py:129
 msgid "Electrical Current"
-msgstr ""
+msgstr "Elektrinė srovė"
 
 #: config_devices_units.py:133
 msgid "Electrical Potential"
-msgstr ""
+msgstr "Elektros potencialas"
 
 #: config_devices_units.py:137
 msgid "Energy"
-msgstr ""
+msgstr "Energija"
 
 #: config_devices_units.py:141 config_translations.py:351
 #: mycodo_flask/forms/forms_method.py:67
 msgid "Frequency"
-msgstr ""
+msgstr "Dažnis"
 
 #: config_devices_units.py:145
 #: mycodo_flask/templates/pages/function_options/conditional_options/gpio_state.html:2
 msgid "GPIO State"
-msgstr ""
+msgstr "GPIO būsena"
 
 #: actions/led_kasa_bulb_change_color.py:44 config_devices_units.py:149
 #: mycodo_flask/forms/forms_camera.py:65 outputs/on_off_kasa_rgb_bulbs.py:120
 msgid "Hue"
-msgstr ""
+msgstr "Atspalvis"
 
 #: config_devices_units.py:153 functions/humidity_wet_dry_bulb.py:62
 #: functions/vapor_pressure_deficit.py:114
 msgid "Humidity"
-msgstr ""
+msgstr "Drėgmė"
 
 #: config_devices_units.py:157
 msgid "Humidity Ratio"
-msgstr ""
+msgstr "Drėgmės santykis"
 
 #: config_devices_units.py:161 config_devices_units.py:490
 msgid "Ion Concentration"
-msgstr ""
+msgstr "Jonų koncentracija"
 
 #: config_devices_units.py:165
 msgid "Length"
-msgstr ""
+msgstr "Ilgis"
 
 #: config_devices_units.py:169
 msgid "Light"
-msgstr ""
+msgstr "Šviesa"
 
 #: config_devices_units.py:173
 msgid "Magnetic Flux Density"
-msgstr ""
+msgstr "Magnetinio svyravimo tankis"
 
 #: config_devices_units.py:177
 msgid "Moisture"
-msgstr ""
+msgstr "Drėgmė"
 
 #: config_devices_units.py:181
 msgid "Oxygen"
-msgstr ""
+msgstr "Deguonis"
 
 #: config_devices_units.py:185
 msgid "Oxidation Reduction Potential"
-msgstr ""
+msgstr "Oksidacijos - redukcijos potencialas"
 
 #: config_devices_units.py:201
 msgid "PID P-Value"
-msgstr ""
+msgstr "PID P-vertė"
 
 #: config_devices_units.py:205
 msgid "PID I-Value"
-msgstr ""
+msgstr "PID I-vertė"
 
 #: config_devices_units.py:209
 msgid "PID D-Value"
-msgstr ""
+msgstr "PID D-vertė"
 
 #: config_devices_units.py:213
 msgid "Power"
-msgstr ""
+msgstr "Galia"
 
 #: config_devices_units.py:217
 msgid "Apparent Power"
-msgstr ""
+msgstr "Matomoji galia"
 
 #: config_devices_units.py:221
 msgid "Power Factor"
-msgstr ""
+msgstr "Galios faktorius"
 
 #: config_devices_units.py:225
 msgid "Reactive Power"
-msgstr ""
+msgstr "Reaktyvi galia"
 
 #: config_devices_units.py:229 functions/humidity_wet_dry_bulb.py:147
 msgid "Pressure"
-msgstr ""
+msgstr "Slėgis"
 
 #: config_devices_units.py:233
 msgid "Pulse Width"
-msgstr ""
+msgstr "Impulso plotis"
 
 #: config_devices_units.py:237
 msgid "Radiation Dose Rate"
-msgstr ""
+msgstr "Radiacios dozės greitis"
 
 #: config_devices_units.py:241
 msgid "Volume Flow Rate"
-msgstr ""
+msgstr "Tūrio srauto greitis"
 
 #: config_devices_units.py:245
 msgid "Resistance"
-msgstr ""
+msgstr "Varža"
 
 #: config_devices_units.py:249
+#, fuzzy
 msgid "Rotation"
-msgstr ""
+msgstr "Pasukimas"
 
 #: config_devices_units.py:253
 msgid "Revolutions"
-msgstr ""
+msgstr "Apsisukimai"
 
 #: config_devices_units.py:257
 msgid "Salinity"
-msgstr ""
+msgstr "Druskingumas"
 
 #: actions/led_kasa_bulb_change_color.py:52 config_devices_units.py:261
 #: mycodo_flask/forms/forms_camera.py:67 outputs/on_off_kasa_rgb_bulbs.py:143
 msgid "Saturation"
-msgstr ""
+msgstr "Prisotinimas"
 
 #: actions/pid_setpoint.py:17 actions/pid_setpoint.py:49
 #: actions/pid_setpoint_lower.py:17 actions/pid_setpoint_raise.py:17
@@ -267,57 +274,57 @@ msgstr ""
 #: functions/bang_bang_on_off.py:73 functions/bang_bang_pwm.py:60
 #: functions/pid_autotune.py:97
 msgid "Setpoint"
-msgstr ""
+msgstr "Nustatytas"
 
 #: config_devices_units.py:269
 msgid "Band Min"
-msgstr ""
+msgstr "Juostos min"
 
 #: config_devices_units.py:273
 msgid "Band Max"
-msgstr ""
+msgstr "Juostos max"
 
 #: config_devices_units.py:277
 msgid "Specific Enthalpy"
-msgstr ""
+msgstr "Specifinė entalpija"
 
 #: config_devices_units.py:281
 msgid "Specific Gravity"
-msgstr ""
+msgstr "Specifinė gravitacija"
 
 #: config_devices_units.py:285
 msgid "Specific Volume"
-msgstr ""
+msgstr "Specifinis tūris"
 
 #: config_devices_units.py:289
 msgid "Speed"
-msgstr ""
+msgstr "Greitis"
 
 #: config_devices_units.py:293 functions/vapor_pressure_deficit.py:94
 #: inputs/atlas_pt1000.py:76
 msgid "Temperature"
-msgstr ""
+msgstr "Temperatūra"
 
 #: config_devices_units.py:297
 msgid "Total Dissolved Solids"
-msgstr ""
+msgstr "Bendras ištirpusių kietųjų medžiagų kiekis"
 
 #: config_devices_units.py:301 config_devices_units.py:325
 #: config_devices_units.py:478
 msgid "Unitless"
-msgstr ""
+msgstr "Be vieneto"
 
 #: config_devices_units.py:305
 msgid "Vapor Pressure Deficit"
-msgstr ""
+msgstr "Garų slėgio deficitas"
 
 #: config_devices_units.py:309
 msgid "Version"
-msgstr ""
+msgstr "Versija"
 
 #: config_devices_units.py:313
 msgid "VOC"
-msgstr ""
+msgstr "VOC"
 
 #: actions/clear_total_volume.py:13 actions/output_volume.py:48
 #: config_devices_units.py:317 config_translations.py:214
@@ -325,267 +332,267 @@ msgstr ""
 #: inputs/atlas_flow.py:204 inputs/hall_flow.py:61 outputs/pump_pca9685.py:145
 #: outputs/pump_pca9685_l298n.py:134
 msgid "Volume"
-msgstr ""
+msgstr "Tūris"
 
 #: config_devices_units.py:328
 msgid "Microsecond"
-msgstr ""
+msgstr "Mikrosekundė"
 
 #: config_devices_units.py:331
 msgid "Microsiemens per centimeter"
-msgstr ""
+msgstr "Mikrosiemens centimetrui"
 
 #: config_devices_units.py:334
 msgid "Microsieverts per hour"
-msgstr ""
+msgstr "Mikrosivertai per valandą"
 
 #: config_devices_units.py:337 mycodo_flask/forms/forms_misc.py:27
 #: mycodo_flask/forms/forms_misc.py:35
 msgid "Amp"
-msgstr ""
+msgstr "Amp"
 
 #: config_devices_units.py:340
 msgid "Bearing"
-msgstr ""
+msgstr "Kryptis"
 
 #: config_devices_units.py:346
 msgid "Celsius"
-msgstr ""
+msgstr "Celsijaus"
 
 #: config_devices_units.py:349
 msgid "CIE"
-msgstr ""
+msgstr "CIE"
 
 #: config_devices_units.py:352
 msgid "Centimeter"
-msgstr ""
+msgstr "Centimetras"
 
 #: config_devices_units.py:355
 msgid "Centimeters of water"
-msgstr ""
+msgstr "Centimetrai vandens"
 
 #: config_devices_units.py:358
 msgid "Counts per minute"
-msgstr ""
+msgstr "Kartai per minutę"
 
 #: config_devices_units.py:364
 msgid "Decimal"
-msgstr ""
+msgstr "Dešimtainis"
 
 #: actions/led_kasa_bulb_change_color.py:44 config_devices_units.py:367
 #: outputs/on_off_kasa_rgb_bulbs.py:120
 msgid "Degree"
-msgstr ""
+msgstr "Laipsnis"
 
 #: config_devices_units.py:370
 msgid "8-Bit Color"
-msgstr ""
+msgstr "8-bit spalvos"
 
 #: config_devices_units.py:373
 msgid "Fahrenheit"
-msgstr ""
+msgstr "Farenheito"
 
 #: config_devices_units.py:376
 msgid "Foot"
-msgstr ""
+msgstr "Pėda"
 
 #: config_devices_units.py:379
 msgid "Full"
-msgstr ""
+msgstr "Pilnas"
 
 #: config_devices_units.py:382
 msgid "G-Force"
-msgstr ""
+msgstr "G-jėga"
 
 #: config_devices_units.py:385
 msgid "Gigabyte"
-msgstr ""
+msgstr "Gigabaitas"
 
 #: config_devices_units.py:388
 msgid "Hour"
-msgstr ""
+msgstr "Valanda"
 
 #: config_devices_units.py:391
 msgid "Hectopascals"
-msgstr ""
+msgstr "Hektopaskaliai"
 
 #: config_devices_units.py:394 config_translations.py:351
 msgid "Hertz"
-msgstr ""
+msgstr "Hertzas"
 
 #: config_devices_units.py:397
 msgid "Infrared"
-msgstr ""
+msgstr "Infraraudona"
 
 #: config_devices_units.py:400 outputs/on_off_kasa_rgb_bulbs.py:166
 msgid "Kelvin"
-msgstr ""
+msgstr "Kelvinai"
 
 #: config_devices_units.py:403
 msgid "Kilobyte"
-msgstr ""
+msgstr "Kilobaitas"
 
 #: config_devices_units.py:406
 msgid "Kilogram per kilogram"
-msgstr ""
+msgstr "Kilogramas kilogramui"
 
 #: config_devices_units.py:409
 msgid "Kilohertz"
-msgstr ""
+msgstr "Kilohertzas"
 
 #: config_devices_units.py:412
 msgid "Kilojoule per kilogram"
-msgstr ""
+msgstr "Kilodžauliu kilogramui"
 
 #: config_devices_units.py:415
 msgid "Knot"
-msgstr ""
+msgstr "Mazgai"
 
 #: config_devices_units.py:418
 msgid "Kilopascal"
-msgstr ""
+msgstr "Kilopaskalis"
 
 #: actions/clear_total_kWh.py:13 config_devices_units.py:421
 #: inputs/kasa_energy_meter.py:77
 msgid "Kilowatt-hour"
-msgstr ""
+msgstr "Kilovatvalandė"
 
 #: config_devices_units.py:424
 msgid "Liter"
-msgstr ""
+msgstr "Litras"
 
 #: config_devices_units.py:427
 msgid "Liters per Hour"
-msgstr ""
+msgstr "Litrai per valandą"
 
 #: config_devices_units.py:430
 msgid "Liters per Minute"
-msgstr ""
+msgstr "Litrai per minutę"
 
 #: config_devices_units.py:433
 msgid "Liters Per Second"
-msgstr ""
+msgstr "Litrai per sekundę"
 
 #: config_devices_units.py:436
 msgid "Lux"
-msgstr ""
+msgstr "Apšvietimas"
 
 #: config_devices_units.py:439
 msgid "Meter"
-msgstr ""
+msgstr "Metras"
 
 #: config_devices_units.py:442
 msgid "Meters per second"
-msgstr ""
+msgstr "Metrai per sekundę"
 
 #: config_devices_units.py:445
 msgid "Meters per second per second"
-msgstr ""
+msgstr "Mentrai per sekundę kvadratu"
 
 #: config_devices_units.py:448
 msgid "Milligram per Liter"
-msgstr ""
+msgstr "Miligramų litrui"
 
 #: config_devices_units.py:454
 msgid "Milliamp"
-msgstr ""
+msgstr "Miliamperas"
 
 #: config_devices_units.py:457
 msgid "Milliliter"
-msgstr ""
+msgstr "Mililitras"
 
 #: config_devices_units.py:460
 msgid "Millimeter"
-msgstr ""
+msgstr "Milimetras"
 
 #: config_devices_units.py:463
 msgid "Miles per hour"
-msgstr ""
+msgstr "Mylių per valandą"
 
 #: config_devices_units.py:466
 msgid "Millivolt"
-msgstr ""
+msgstr "Milivoltai"
 
 #: config_devices_units.py:469
 msgid "Cubic meters per kilogram"
-msgstr ""
+msgstr "Kubinių metrų kilogramui"
 
 #: config_devices_units.py:472
 msgid "Megahertz"
-msgstr ""
+msgstr "Megahertzai"
 
 #: config_devices_units.py:475
 msgid "Megabyte"
-msgstr ""
+msgstr "Megabaitai"
 
 #: config_devices_units.py:481 config_translations.py:358
 msgid "Ohm"
-msgstr ""
+msgstr "Omai"
 
 #: config_devices_units.py:484
 msgid "Pascal"
-msgstr ""
+msgstr "Paskaliai"
 
 #: actions/led_kasa_bulb_change_color.py:52
 #: actions/led_kasa_bulb_change_color.py:60 config_devices_units.py:487
 #: outputs/on_off_kasa_rgb_bulbs.py:97 outputs/on_off_kasa_rgb_bulbs.py:143
 msgid "Percent"
-msgstr ""
+msgstr "Procentai"
 
 #: config_devices_units.py:493
 msgid "PID values"
-msgstr ""
+msgstr "PID vertės"
 
 #: config_devices_units.py:496
 msgid "Parts per billion"
-msgstr ""
+msgstr "Dalys milijardui"
 
 #: config_devices_units.py:499
 msgid "Parts per million"
-msgstr ""
+msgstr "Dalys milijonui"
 
 #: config_devices_units.py:502
 msgid "Parts per thousand"
-msgstr ""
+msgstr "Dalys tūkstančiui"
 
 #: config_devices_units.py:505
 msgid "Pounds per square inch"
-msgstr ""
+msgstr "Svarai kvadratiniam coliui"
 
 #: config_devices_units.py:508
 msgid "Revolutions per minute"
-msgstr ""
+msgstr "Apsisukimai per minutę"
 
 #: config_devices_units.py:511
 msgid "Second"
-msgstr ""
+msgstr "Sekindės"
 
 #: config_devices_units.py:517
 msgid "Steps"
-msgstr ""
+msgstr "Žingsniai"
 
 #: config_devices_units.py:520
 msgid "Microgram per cubic meter"
-msgstr ""
+msgstr "Mikrogramai kubiniam metrui"
 
 #: config_devices_units.py:523
 msgid "Microtesla"
-msgstr ""
+msgstr "Mikrotesla"
 
 #: config_devices_units.py:532
 msgid "Volt"
-msgstr ""
+msgstr "Voltai"
 
 #: config_devices_units.py:535
 msgid "Watt"
-msgstr ""
+msgstr "Vatai"
 
 #: config_translations.py:12 mycodo_flask/templates/layout-settings.html:37
 #: mycodo_flask/templates/pages/data_options/input_options.html:289
 #: mycodo_flask/templates/pages/function_options/conditional_options.html:137
 #: mycodo_flask/templates/pages/function_options/trigger_options.html:70
 msgid "Actions"
-msgstr ""
+msgstr "Veiksmai"
 
 #: config_translations.py:14 mycodo_flask/forms/forms_conditional.py:51
 #: mycodo_flask/templates/pages/data_options/input_options.html:306
@@ -597,7 +604,7 @@ msgstr ""
 #: mycodo_flask/templates/pages/input.html:54
 #: mycodo_flask/templates/pages/output.html:148
 msgid "Add"
-msgstr ""
+msgstr "Pridėti"
 
 #: config_translations.py:16
 #: mycodo_flask/templates/pages/data_options/input_entry.html:39
@@ -606,67 +613,68 @@ msgstr ""
 #: mycodo_flask/templates/pages/function_options/pid_entry.html:46
 #: mycodo_flask/templates/pages/function_options/trigger_entry.html:30
 msgid "Activate"
-msgstr ""
+msgstr "Aktyvuoti"
 
 #: config_translations.py:18
 msgid "Alert"
-msgstr ""
+msgstr "Įspėjimas"
 
 #: config_translations.py:20
 #: mycodo_flask/templates/pages/function_options/conditional_options/measurement_past_average.html:28
 msgid "Average"
-msgstr ""
+msgstr "Vidurkis"
 
 #: config_translations.py:22
 msgid "Bluetooth Adapter (hci[X])"
-msgstr ""
+msgstr "Bluetooth adapteris (hci[X])"
 
 #: config_translations.py:24
 msgid "Bluetooth MAC (XX:XX:XX:XX:XX:XX)"
-msgstr ""
+msgstr "Bluetooth MAC (XX:XX:XX:XX:XX:XX)"
 
 #: config_translations.py:26
+#, fuzzy
 msgid "Bus"
-msgstr ""
+msgstr "Jungtis"
 
 #: config_translations.py:28 inputs/ads1256.py:85
 #: inputs/ads1256_analog_ph_ec.py:347
 msgid "Calibration"
-msgstr ""
+msgstr "Kalibravimas"
 
 #: config_translations.py:30
 msgid "Calculate"
-msgstr ""
+msgstr "Apskaičiuoti"
 
 #: actions/camera_timelapse_pause.py:38 actions/camera_timelapse_resume.py:38
 #: actions/photo.py:36 actions/photo_email.py:40 config_translations.py:32
 #: mycodo_flask/templates/layout.html:216
 #: mycodo_flask/templates/pages/camera.html:5 widgets/widget_camera.py:165
 msgid "Camera"
-msgstr ""
+msgstr "Kamera"
 
 #: config_translations.py:34
 msgid "Cancel"
-msgstr ""
+msgstr "Atšaukti"
 
 #: config_translations.py:36
 msgid "Clear"
-msgstr ""
+msgstr "Išvalyti"
 
 #: config_translations.py:38
 #: mycodo_flask/templates/pages/data_options/input_options.html:112
 #: mycodo_flask/templates/pages/function_options/custom_function_options.html:116
 #: mycodo_flask/templates/pages/output_options.html:91
 msgid "Commands"
-msgstr ""
+msgstr "Komandos"
 
 #: config_translations.py:40
 msgid "Completed"
-msgstr ""
+msgstr "Baigta"
 
 #: config_translations.py:42 mycodo_flask/forms/forms_settings.py:139
 msgid "Conditional"
-msgstr ""
+msgstr "Sąlyginis"
 
 #: actions/clear_total_kWh.py:36 actions/clear_total_volume.py:36
 #: actions/controller_activate.py:45 actions/controller_deactivate.py:45
@@ -678,11 +686,11 @@ msgstr ""
 #: config_translations.py:44
 #: widgets/widget_controller_activate_deactivate.py:131
 msgid "Controller"
-msgstr ""
+msgstr "Valdiklis"
 
 #: config_translations.py:46 mycodo_flask/templates/tools/notes.html:73
 msgid "Create"
-msgstr ""
+msgstr "Sukurti"
 
 #: config_translations.py:48 mycodo_flask/templates/layout-settings.html:34
 #: mycodo_flask/templates/layout-settings.html:35
@@ -693,18 +701,18 @@ msgstr ""
 #: mycodo_flask/templates/settings/measurement.html:185
 #: mycodo_flask/templates/settings/measurement.html:231
 msgid "Custom"
-msgstr ""
+msgstr "Pasirinktinis"
 
 #: config_translations.py:50 config_translations_docs.py:57
 #: mycodo_flask/templates/settings/general.html:102
 #: mycodo_flask/templates/settings/general.html:113
 msgid "Dashboard"
-msgstr ""
+msgstr "Valdymo skydas"
 
 #: config_translations.py:52 config_translations_docs.py:53
 #: mycodo_flask/templates/layout.html:189
 msgid "Data"
-msgstr ""
+msgstr "Duomenys"
 
 #: config_translations.py:54
 #: mycodo_flask/templates/pages/data_options/input_entry.html:40
@@ -713,11 +721,11 @@ msgstr ""
 #: mycodo_flask/templates/pages/function_options/pid_entry.html:34
 #: mycodo_flask/templates/pages/function_options/trigger_entry.html:31
 msgid "Deactivate"
-msgstr ""
+msgstr "Išjungti"
 
 #: config_translations.py:56
 msgid "Default"
-msgstr ""
+msgstr "Numatytasis"
 
 #: config_translations.py:58 mycodo_flask/templates/pages/actions.html:35
 #: mycodo_flask/templates/pages/data_options/input_options.html:24
@@ -729,43 +737,43 @@ msgstr ""
 #: mycodo_flask/templates/pages/function_options/trigger_options.html:15
 #: mycodo_flask/templates/pages/output_options.html:20
 msgid "Delete"
-msgstr ""
+msgstr "Ištrinti"
 
 #: config_translations.py:60 mycodo_flask/forms/forms_camera.py:24
 msgid "Device"
-msgstr ""
+msgstr "Įrenginys"
 
 #: config_translations.py:62
 msgid "Diagnostic"
-msgstr ""
+msgstr "Diagnostika"
 
 #: actions/display_backlight_color.py:37 actions/display_backlight_off.py:37
 #: actions/display_backlight_on.py:37 actions/display_flash_off.py:37
 #: actions/display_flash_on.py:37 config_translations.py:64
 msgid "Display"
-msgstr ""
+msgstr "Ekranas"
 
 #: config_translations.py:66
 msgid "Down"
-msgstr ""
+msgstr "Žemyn"
 
 #: config_translations.py:68
 #: mycodo_flask/templates/pages/data_options/input_options.html:27
 msgid "Duplicate"
-msgstr ""
+msgstr "Padauginti"
 
 #: config_translations.py:72 config_translations.py:399
 #: mycodo_flask/forms/forms_input.py:153
 msgid "Edge"
-msgstr ""
+msgstr "Kraštas"
 
 #: config_translations.py:74 mycodo_flask/templates/pages/method-list.html:76
 msgid "Edit"
-msgstr ""
+msgstr "Redaguoti"
 
 #: config_translations.py:76
 msgid "E-Mail"
-msgstr ""
+msgstr "El. paštas"
 
 #: config_translations.py:78 mycodo_flask/templates/layout.html:219
 #: mycodo_flask/templates/pages/usage.html:3
@@ -773,53 +781,54 @@ msgstr ""
 #: mycodo_flask/templates/pages/usage.html:30
 #: mycodo_flask/templates/pages/usage_reports.html:3
 msgid "Energy Usage"
-msgstr ""
+msgstr "Energijos suvartojimas"
 
 #: config_translations.py:80 mycodo_flask/templates/flash_messages.html:46
 #: mycodo_flask/templates/user_templates/widget_template_widget_measurement_js.html:49
 #: mycodo_flask/templates/user_templates/widget_template_widget_output_js.html:58
 #: mycodo_flask/templates/user_templates/widget_template_widget_output_pwm_slider_js.html:73
 msgid "Error"
-msgstr ""
+msgstr "Klaida"
 
 #: config_translations.py:82
 msgid "Export"
-msgstr ""
+msgstr "Eksportuoti"
 
 #: config_translations.py:84
 msgid "Fail"
-msgstr ""
+msgstr "Nepavyko"
 
 #: config_translations.py:86 mycodo_flask/forms/forms_settings.py:142
 #: mycodo_flask/templates/pages/function.html:56
 #: widgets/widget_function_status.py:54 widgets/widget_graph_synchronous.py:384
 msgid "Function"
-msgstr ""
+msgstr "Funkcija"
 
 #: config_translations.py:88 mycodo_flask/templates/layout-settings.html:33
+#, fuzzy
 msgid "General"
-msgstr ""
+msgstr "Bendra"
 
 #: config_translations.py:90 mycodo_flask/forms/forms_pid.py:111
 #: mycodo_flask/templates/pages/function_options/pid_entry.html:43
 msgid "Hold"
-msgstr ""
+msgstr "Užlaikyti"
 
 #: config_translations.py:92
 msgid "I2C Bus"
-msgstr ""
+msgstr "I2C Bus'as"
 
 #: config_translations.py:94
 msgid "I2C Address"
-msgstr ""
+msgstr "I2C Adresas"
 
 #: config_translations.py:96
 msgid "Indicator"
-msgstr ""
+msgstr "Indikatorius"
 
 #: config_translations.py:98
 msgid "Invert"
-msgstr ""
+msgstr "Invertuoti"
 
 #: config_translations.py:100 mycodo_flask/templates/tools/notes.html:138
 #: mycodo_flask/utils/utils_notes.py:453
@@ -834,43 +843,43 @@ msgstr ""
 #: mycodo_flask/utils/utils_settings.py:1050
 #: mycodo_flask/utils/utils_settings.py:1143
 msgid "Import"
-msgstr ""
+msgstr "Importuoti"
 
 #: actions/input_force_measurements.py:13 config_translations.py:102
 #: mycodo_flask/forms/forms_settings.py:145
 #: mycodo_flask/templates/layout-remote.html:50
 #: mycodo_flask/templates/pages/function_options/pid_options.html:273
 msgid "Input"
-msgstr ""
+msgstr "Įvestis"
 
 #: config_translations.py:104
 msgid "Invalid"
-msgstr ""
+msgstr "Neteisingas"
 
 #: config_translations.py:106
 #: mycodo_flask/templates/pages/function_options/conditional_options/measurement.html:2
 msgid "Last"
-msgstr ""
+msgstr "Paskutinis"
 
 #: config_translations.py:108
 msgid "LCD"
-msgstr ""
+msgstr "LCD"
 
 #: config_translations.py:110
 msgid "Line"
-msgstr ""
+msgstr "Linija"
 
 #: config_translations.py:112
 msgid "Lock"
-msgstr ""
+msgstr "Užrakinti"
 
 #: config_translations.py:114
 msgid "Login"
-msgstr ""
+msgstr "Prisijungti"
 
 #: config_translations.py:116
 msgid "Math"
-msgstr ""
+msgstr "Matematika"
 
 #: actions/examples/example_action_for_input.py:35
 #: actions/mqtt_publish_input.py:13 actions/mqtt_publish_input.py:36
@@ -896,45 +905,45 @@ msgstr ""
 #: widgets/widget_gauge_angular.py:153 widgets/widget_gauge_solid.py:175
 #: widgets/widget_indicator.py:55 widgets/widget_measurement.py:55
 msgid "Measurement"
-msgstr ""
+msgstr "Matavimas"
 
 #: actions/pid_method.py:51 config_translations.py:120
 #: mycodo_flask/routes_method.py:225
 #: mycodo_flask/templates/pages/function_options/pid_options.html:272
 #: mycodo_flask/templates/pages/method-list.html:41
 msgid "Method"
-msgstr ""
+msgstr "Metodas"
 
 #: config_translations.py:122
 msgid "Modify"
-msgstr ""
+msgstr "Keisti"
 
 #: config_translations.py:124
 #: mycodo_flask/templates/pages/function_options/conditional_options/measurement_dict.html:2
 msgid "Multiple"
-msgstr ""
+msgstr "Daugybinis"
 
 #: config_translations.py:126
 msgid "None Available"
-msgstr ""
+msgstr "Nėra galimų"
 
 #: actions/create_note.py:54 config_translations.py:128
 msgid "Note"
-msgstr ""
+msgstr "Užrašas"
 
 #: actions/display_backlight_off.py:14 actions/display_flash_off.py:14
 #: config_translations.py:130
 #: mycodo_flask/templates/user_templates/widget_template_widget_indicator_js.html:24
 #: outputs/on_off_kasa_rgb_bulbs.py:228
 msgid "Off"
-msgstr ""
+msgstr "Išjungta"
 
 #: actions/display_backlight_on.py:14 actions/display_flash_on.py:14
 #: config_translations.py:132
 #: mycodo_flask/templates/user_templates/widget_template_widget_indicator_js.html:22
 #: outputs/on_off_kasa_rgb_bulbs.py:212
 msgid "On"
-msgstr ""
+msgstr "Įjungta"
 
 #: config_translations.py:134 functions/bang_bang.py:55
 #: functions/bang_bang_pwm.py:52 functions/pid_autotune.py:79
@@ -942,14 +951,14 @@ msgstr ""
 #: mycodo_flask/forms/forms_settings.py:148 widgets/widget_output.py:52
 #: widgets/widget_output_pwm_slider.py:52
 msgid "Output"
-msgstr ""
+msgstr "Išvestis"
 
 #: config_translations.py:136
 #: mycodo_flask/templates/pages/function_options/conditional_options/measurement_dict.html:2
 #: mycodo_flask/templates/pages/function_options/conditional_options/measurement_past_average.html:28
 #: mycodo_flask/templates/pages/function_options/conditional_options/measurement_past_sum.html:2
 msgid "Past"
-msgstr ""
+msgstr "Praėjęs"
 
 #: actions/mqtt_publish.py:116 actions/mqtt_publish_input.py:100
 #: config_translations.py:138 inputs/mqtt_paho.py:118
@@ -957,16 +966,16 @@ msgstr ""
 #: mycodo_flask/templates/settings/users.html:111 outputs/on_off_mqtt.py:169
 #: outputs/value_mqtt.py:121
 msgid "Password"
-msgstr ""
+msgstr "Slaptažodis"
 
 #: config_translations.py:140 mycodo_flask/forms/forms_pid.py:112
 #: mycodo_flask/templates/pages/function_options/pid_entry.html:40
 msgid "Pause"
-msgstr ""
+msgstr "Pauzė"
 
 #: config_translations.py:142 mycodo_flask/forms/forms_settings.py:151
 msgid "PID"
-msgstr ""
+msgstr "PID"
 
 #: config_translations.py:144 config_translations.py:265
 #: config_translations.py:322 config_translations.py:323
@@ -978,39 +987,39 @@ msgstr ""
 #: outputs/on_off_gpio_sysfs.py:54 outputs/on_off_wireless_rpi_rf.py:61
 #: outputs/pump_gpio.py:84 outputs/pwm_gpio.py:83
 msgid "Pin"
-msgstr ""
+msgstr "Pin"
 
 #: actions/mqtt_publish.py:12 actions/mqtt_publish_input.py:13
 #: config_translations.py:146
 msgid "Publish"
-msgstr ""
+msgstr "Skelbti"
 
 #: config_translations.py:148 outputs/pwm_gpio.py:38 outputs/pwm_pca9685.py:57
 #: outputs/pwm_python.py:159 outputs/pwm_shell.py:37
 msgid "PWM"
-msgstr ""
+msgstr "PWM"
 
 #: config_translations.py:150
 msgid "Ramp"
-msgstr ""
+msgstr "Nuožulnumas"
 
 #: config_translations.py:152
 msgid "Rename"
-msgstr ""
+msgstr "Pervadinti"
 
 #: config_translations.py:154
 msgid "Reorder"
-msgstr ""
+msgstr "Perrūšiuoti"
 
 #: config_translations.py:156
 #: mycodo_flask/templates/user_templates/widget_template_widget_graph_synchronous_title_bar.html:11
 msgid "Reset"
-msgstr ""
+msgstr "Nustatyti iš naujo"
 
 #: config_translations.py:158 mycodo_flask/forms/forms_pid.py:113
 #: mycodo_flask/templates/pages/function_options/pid_entry.html:37
 msgid "Resume"
-msgstr ""
+msgstr "Tęsti"
 
 #: config_translations.py:160 mycodo_flask/forms/forms_settings.py:312
 #: mycodo_flask/templates/pages/actions.html:30
@@ -1023,31 +1032,31 @@ msgstr ""
 #: mycodo_flask/templates/pages/function_options/trigger_options.html:12
 #: mycodo_flask/templates/pages/output_options.html:17
 msgid "Save"
-msgstr ""
+msgstr "Išsaugoti"
 
 #: config_translations.py:162
 msgid "Save Order"
-msgstr ""
+msgstr "Išsaugoti tvarką"
 
 #: config_translations.py:164
 msgid "Scale"
-msgstr ""
+msgstr "Skalė"
 
 #: config_translations.py:166
 msgid "Unscaled Unit Min"
-msgstr ""
+msgstr "Neįvertintas vienetas min"
 
 #: config_translations.py:168
 msgid "Unscaled Unit Max"
-msgstr ""
+msgstr "Neįvertinas vienetas max"
 
 #: config_translations.py:170
 msgid "Rescaled Unit Min"
-msgstr ""
+msgstr "Pakeistas vienetas min"
 
 #: config_translations.py:172
 msgid "Rescaled Unit Max"
-msgstr ""
+msgstr "Pakeistas vienetas max"
 
 #: config_translations.py:174
 #: mycodo_flask/templates/pages/form_options/FTDI.html:23
@@ -1056,80 +1065,80 @@ msgstr ""
 #: mycodo_flask/templates/pages/function_options/pid_options.html:282
 #: mycodo_flask/templates/pages/function_options/pid_options.html:305
 msgid "Select One"
-msgstr ""
+msgstr "Pasirinkti vieną"
 
 #: config_translations.py:176
 msgid "Sensitivity"
-msgstr ""
+msgstr "Jautrumas"
 
 #: config_translations.py:180
 msgid "Settings"
-msgstr ""
+msgstr "Nustatymai"
 
 #: config_translations.py:182
 #: mycodo_flask/templates/pages/function_options/conditional_options/measurement.html:2
 #: mycodo_flask/templates/pages/function_options/conditional_options/measurement_past_average.html:28
 #: mycodo_flask/templates/pages/function_options/conditional_options/measurement_past_sum.html:2
 msgid "Single"
-msgstr ""
+msgstr "Atskiras"
 
 #: config_translations.py:184
 msgid "Stops"
-msgstr ""
+msgstr "Sustojimai"
 
 #: config_translations.py:186 mycodo_flask/templates/flash_messages.html:7
 msgid "Success"
-msgstr ""
+msgstr "Sėkminga"
 
 #: config_translations.py:188
 #: mycodo_flask/templates/pages/function_options/conditional_options/measurement_past_sum.html:2
 msgid "Sum"
-msgstr ""
+msgstr "Suma"
 
 #: config_translations.py:190
 msgid "System"
-msgstr ""
+msgstr "Sistema"
 
 #: config_translations.py:192
 msgid "Tag"
-msgstr ""
+msgstr "Etiketė"
 
 #: config_translations.py:194
 msgid "Text"
-msgstr ""
+msgstr "Tekstas"
 
 #: config_translations.py:196 mycodo_flask/forms/forms_settings.py:345
 #: mycodo_flask/forms/forms_settings.py:351
 #: mycodo_flask/forms/forms_settings.py:391
 #: mycodo_flask/templates/layout.html:301
 msgid "Theme"
-msgstr ""
+msgstr "Tema"
 
 #: config_translations.py:198
 msgid "Time-lapse"
-msgstr ""
+msgstr "Laiko intervalas"
 
 #: config_translations.py:200
 msgid "Timer"
-msgstr ""
+msgstr "Laikmatis"
 
 #: config_translations.py:202
 msgid "Trigger"
-msgstr ""
+msgstr "Trigeris"
 
 #: config_translations.py:204
 msgid "Unlock"
-msgstr ""
+msgstr "Atrakinti"
 
 #: config_translations.py:206
 msgid "Up"
-msgstr ""
+msgstr "Viršun"
 
 #: actions/command_bash.py:32 config_translations.py:208
 #: config_translations.py:277 inputs/linux_command.py:58
 #: outputs/on_off_shell.py:67 outputs/pwm_python.py:214 outputs/pwm_shell.py:68
 msgid "User"
-msgstr ""
+msgstr "Vartotojas"
 
 #: actions/output_value.py:47 config_translations.py:210
 #: config_translations.py:310 config_translations.py:311
@@ -1137,71 +1146,71 @@ msgstr ""
 #: mycodo_flask/templates/user_templates/widget_template_widget_indicator_js.html:60
 #: outputs/value_mqtt.py:32
 msgid "Value"
-msgstr ""
+msgstr "Vertė"
 
 #: config_translations.py:212 config_translations.py:313
 #: config_translations.py:314 config_translations.py:381
 #: inputs/anyleaf_orp.py:52 mycodo_flask/forms/forms_settings.py:112
 msgid "Voltage"
-msgstr ""
+msgstr "Voltažas"
 
 #: config_translations.py:216 mycodo_flask/forms/forms_settings.py:154
 msgid "Widget"
-msgstr ""
+msgstr "Valdiklis"
 
 #: config_translations.py:220
 msgid "1-Wire Device ID"
-msgstr ""
+msgstr "1-Wire prietaiso ID"
 
 #: config_translations.py:223 inputs/as7262.py:83
 #: mycodo_flask/forms/forms_camera.py:63
 msgid "Gain"
-msgstr ""
+msgstr "Stiprinimas"
 
 #: config_translations.py:226 config_translations.py:363
 #: config_translations.py:366
 msgid "Resolution"
-msgstr ""
+msgstr "Raiška"
 
 #: config_translations.py:229
 msgid "Sample Speed"
-msgstr ""
+msgstr "Ėminio greitis"
 
 #: config_translations.py:232
 msgid "Baud Rate"
-msgstr ""
+msgstr "Sparta"
 
 #: config_translations.py:233
 msgid "The UART baud rate"
-msgstr ""
+msgstr "UART sparta"
 
 #: actions/command_bash.py:40 config_translations.py:235
 msgid "Command"
-msgstr ""
+msgstr "Komanda"
 
 #: config_translations.py:236
 msgid "The command to be executed"
-msgstr ""
+msgstr "Komanda, kurią reikia vykdyti"
 
 #: config_translations.py:239
 msgid "Select the unit of the measurement to be stored in the database"
-msgstr ""
+msgstr "Pasirinkite matavimo vienetą, kuris bus saugomas duomenų bazėje"
 
 #: config_translations.py:241
 msgid "Convert to Unit"
-msgstr ""
+msgstr "Konvertuoti į vienetą"
 
 #: config_translations.py:242
 msgid "Convert the measurement to a different unit"
-msgstr ""
+msgstr "Konvertuoti matavimą į kitą vienetą"
 
 #: config_translations.py:245
 msgid "click to copy to the clipboard"
-msgstr ""
+msgstr "spustelėkite, kad nukopijuotumėte į iškarpinę"
 
 #: config_translations.py:247
 msgid "Deadline"
-msgstr ""
+msgstr "Terminas"
 
 #: actions/output_on_off.py:61 actions/output_ramp_pwm.py:77
 #: actions/pause_actions.py:35 config_translations.py:247
@@ -1288,32 +1297,33 @@ msgstr ""
 #: widgets/widget_output.py:60 widgets/widget_output_pwm_slider.py:60
 #: widgets/widget_pid.py:253
 msgid "Seconds"
-msgstr ""
+msgstr "Sekundės"
 
 #: config_translations.py:248
 msgid "Time to wait until failure"
-msgstr ""
+msgstr "Laikas palaukti, kol nepavyks"
 
 #: actions/output_pwm.py:49 actions/output_ramp_pwm.py:51
 #: actions/output_ramp_pwm.py:60 config_translations.py:251
 msgid "Duty cycle for the PWM (percent, 0.0 - 100.0)"
-msgstr ""
+msgstr "PWM darbinis ciklas (procentais, 0.0 - 100.0)"
 
 #: config_translations.py:253 outputs/pump_gpio.py:130
 msgid "Desired Flow Rate"
-msgstr ""
+msgstr "Pageidaujamas tėkmės greitis"
 
 #: config_translations.py:253 outputs/pump_gpio.py:130
+#, fuzzy
 msgid "ml/min"
-msgstr ""
+msgstr "ml/min"
 
 #: config_translations.py:256
 msgid "Name Font Size (em)"
-msgstr ""
+msgstr "Pavadinimo šrifto dydis (em)"
 
 #: config_translations.py:257
 msgid "The font size of the Name text"
-msgstr ""
+msgstr "Pavadinimo teksto šrifto dydis"
 
 #: config_translations.py:259 outputs/on_off_kasa_hs300.py:126
 #: outputs/on_off_kasa_hs300_0_4_2.py:139 outputs/on_off_kasa_kp303.py:126
@@ -1324,73 +1334,76 @@ msgstr ""
 #: outputs/on_off_wireless_rpi_rf.py:138 outputs/pwm_python.py:283
 #: outputs/pwm_shell.py:137
 msgid "Force Command"
-msgstr ""
+msgstr "Priverstinė komanda"
 
 #: config_translations.py:260 outputs/on_off_python.py:241
 #: outputs/pwm_shell.py:138
 msgid "Always send the command if instructed, regardless of the current state"
-msgstr ""
+msgstr "Visada siųsti komandą, jei nurodyta, neatsižvelgiant į esamą būseną"
 
 #: config_translations.py:262
 msgid "FTDI Device"
-msgstr ""
+msgstr "FTDI prietaisas"
 
 #: config_translations.py:263
 msgid "The FTDI device connected to the input/output/etc."
-msgstr ""
+msgstr "FTDI prietaisas, prijungtas prie įvado/išvado/t.t."
 
 #: config_translations.py:265
 #: inputs/rpi_signal_revolutions_pigpio_callback.py:52
 #: mycodo_flask/forms/forms_conditional.py:69 outputs/on_off_gpio.py:58
 #: outputs/on_off_gpio_sysfs.py:54 outputs/on_off_wireless_rpi_rf.py:61
 #: outputs/pump_gpio.py:84 outputs/pwm_gpio.py:83
+#, fuzzy
 msgid "GPIO"
-msgstr ""
+msgstr "GPIO"
 
 #: config_translations.py:266 config_translations.py:323
 #: config_translations.py:326 config_translations.py:329
 #: config_translations.py:332
 msgid "GPIO (using BCM numbering)"
-msgstr ""
+msgstr "GPIO (naudojant BCM numeravimą)"
 
 #: config_translations.py:268 outputs/pump_grove_motor_driver_v1_3.py:132
 msgid "Flow Rate Method"
-msgstr ""
+msgstr "Tėkmės greičio metodas"
 
 #: config_translations.py:269 outputs/pump_grove_motor_driver_v1_3.py:133
 msgid "The flow rate to use when pumping a volume"
-msgstr ""
+msgstr "Naudojamas tėkmės greitis kai pompuojamas tūris"
 
 #: config_translations.py:271
+#, fuzzy
 msgid "Host"
-msgstr ""
+msgstr "Host'as"
 
 #: config_translations.py:272
+#, fuzzy
 msgid "Host or IP address"
-msgstr ""
+msgstr "Host'as ar IP adresas"
 
 #: config_translations.py:274
 #: mycodo_flask/templates/pages/data_options/input_options.html:43
 msgid "Interface"
-msgstr ""
+msgstr "Sąsaja"
 
 #: config_translations.py:275
 msgid "The interface used to communicate"
-msgstr ""
+msgstr "Sąsaja, naudojama komunikavimui"
 
 #: actions/command_bash.py:33 config_translations.py:278
 #: inputs/linux_command.py:59 outputs/on_off_shell.py:68
 #: outputs/pwm_python.py:215 outputs/pwm_shell.py:69
 msgid "The user to execute the command"
-msgstr ""
+msgstr "Vartotojas įvykdyti komandai"
 
 #: config_translations.py:280
 msgid "Log Level: Debug"
-msgstr ""
+msgstr "Žurnalo lygis: Debug'inimas"
 
 #: config_translations.py:281
 msgid "Show debug lines in the Daemon Log"
-msgstr ""
+msgstr "Rodyti debug'inimo eilutes Daemon'o žurnale"
 
 #: config_translations.py:283 functions/average_last_multiple.py:83
 #: functions/average_past_single.py:94 functions/difference.py:83
@@ -1424,35 +1437,35 @@ msgstr ""
 #: widgets/widget_output.py:60 widgets/widget_output_pwm_slider.py:60
 #: widgets/widget_pid.py:253
 msgid "Max Age"
-msgstr ""
+msgstr "Max amžius"
 
 #: config_translations.py:284
 msgid "The maximum allowable measurement age"
-msgstr ""
+msgstr "Maksimalus leidžiamas matavimo amžius"
 
 #: config_translations.py:286
 msgid "Unit Measurement"
-msgstr ""
+msgstr "Vieneto matavimas"
 
 #: config_translations.py:287
 msgid "Select a unit for the stored value"
-msgstr ""
+msgstr "Pasirinkti vienetą įrašomai vertei"
 
 #: config_translations.py:289
 msgid "Measurements Enabled"
-msgstr ""
+msgstr "Matavimai įjungti"
 
 #: config_translations.py:290
 msgid "The measurements to record"
-msgstr ""
+msgstr "Matavimai, kuriuos įrašyti"
 
 #: config_translations.py:292
 msgid "Message Includes Code"
-msgstr ""
+msgstr "Žinutėje rodomas kodas"
 
 #: config_translations.py:293
 msgid "Include the code in the message variable"
-msgstr ""
+msgstr "Įtraukti kodą į pranešimo kintamąjį"
 
 #: actions/create_note.py:46 config_translations.py:295
 #: mycodo_flask/templates/pages/function_options/custom_function_options.html:37
@@ -1464,29 +1477,29 @@ msgstr ""
 #: mycodo_flask/templates/settings/output.html:39
 #: mycodo_flask/templates/settings/widget.html:39
 msgid "Name"
-msgstr ""
+msgstr "Pavadinimas"
 
 #: config_translations.py:296
 msgid "A name to distinguish this from others"
-msgstr ""
+msgstr "Pavadinimas atskirti nuo kitų"
 
 #: config_translations.py:298 outputs/on_off_python.py:202
 #: outputs/on_off_shell.py:60 outputs/on_off_wireless_rpi_rf.py:77
 msgid "Off Command"
-msgstr ""
+msgstr "Išjungimo komanda"
 
 #: config_translations.py:299 outputs/on_off_wireless_rpi_rf.py:78
 msgid "Command to execute when the output is instructed to turn off"
-msgstr ""
+msgstr "Komanda, kuri vykdoma kai išvadui (output) nurodoma išjungti"
 
 #: config_translations.py:301 outputs/on_off_python.py:190
 #: outputs/on_off_shell.py:51 outputs/on_off_wireless_rpi_rf.py:69
 msgid "On Command"
-msgstr ""
+msgstr "Pagal komandą"
 
 #: config_translations.py:302 outputs/on_off_wireless_rpi_rf.py:70
 msgid "Command to execute when the output is instructed to turn on"
-msgstr ""
+msgstr "Komanda vykdoma, kai išvestis nurodoma įjungti"
 
 #: config_translations.py:304 outputs/on_off_gpio.py:91
 #: outputs/on_off_gpio_sysfs.py:87
@@ -1495,16 +1508,16 @@ msgstr ""
 #: outputs/on_off_pcf8575.py:99 outputs/pump_gpio.py:95
 #: outputs/pump_mcp23017.py:95 outputs/pump_pcf8574.py:97
 msgid "On State"
-msgstr ""
+msgstr "Įjungimo būsena"
 
 #: config_translations.py:305
 msgid "What state triggers the output to turn on? High or Low?"
-msgstr ""
+msgstr "Koks signalas aktyvuoja išvado įsijungimą? Aukštas ar žemas?"
 
 #: config_translations.py:308 config_translations.py:311
 #: config_translations.py:314 config_translations.py:317
 msgid "Send to output controller"
-msgstr ""
+msgstr "Siųsti į išvado kontrolerį"
 
 #: config_translations.py:319 functions/average_last_multiple.py:67
 #: functions/average_past_single.py:67 functions/backup_rsync.py:73
@@ -1533,7 +1546,7 @@ msgstr ""
 #: functions/verification.py:63 mycodo_flask/forms/forms_conditional.py:34
 #: mycodo_flask/forms/forms_trigger.py:48
 msgid "Period"
-msgstr ""
+msgstr "Periodas"
 
 #: config_translations.py:320 functions/average_last_multiple.py:68
 #: functions/average_past_single.py:68 functions/backup_rsync.py:74
@@ -1559,37 +1572,37 @@ msgstr ""
 #: functions/statistics_past_single.py:101 functions/sum_last_multiple.py:69
 #: functions/sum_past_single.py:69 functions/verification.py:64
 msgid "The duration between measurements or actions"
-msgstr ""
+msgstr "Trukmė tarp matavimų ar veiksmų"
 
 #: config_translations.py:322 config_translations.py:323
 msgid "Clock"
-msgstr ""
+msgstr "Laikrodis"
 
 #: config_translations.py:325 config_translations.py:326
 msgid "Cable Select"
-msgstr ""
+msgstr "Kabelio pasirinkimas"
 
 #: config_translations.py:328 config_translations.py:329
 msgid "MISO"
-msgstr ""
+msgstr "MISO"
 
 #: config_translations.py:331 config_translations.py:332
 msgid "MOSI"
-msgstr ""
+msgstr "MOSI"
 
 #: actions/mqtt_publish.py:47 actions/mqtt_publish_input.py:52
 #: config_translations.py:334 mycodo_flask/forms/forms_settings.py:102
 #: outputs/on_off_mqtt.py:66 outputs/value_mqtt.py:65
 msgid "Port"
-msgstr ""
+msgstr "Portas"
 
 #: config_translations.py:335
 msgid "Host port number"
-msgstr ""
+msgstr "Host'o porto numeris"
 
 #: config_translations.py:337
 msgid "Pre Out Duration"
-msgstr ""
+msgstr "Pre išėjimo trukmė"
 
 #: config_translations.py:338
 msgid ""
