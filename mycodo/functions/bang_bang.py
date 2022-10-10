@@ -18,6 +18,7 @@ from mycodo.utils.database import db_retrieve_table_daemon
 FUNCTION_INFORMATION = {
     'function_name_unique': 'bang_bang',
     'function_name': 'Bang-Bang Hysteretic (On/Off) (Raise/Lower)',
+    'function_name_short': 'Bang-Bang (On/Off, Raise/Lower)',
 
     'message': 'A simple bang-bang control for controlling one output from one input.'
         ' Select an input, an output, enter a setpoint and a hysteresis, and select a direction.'

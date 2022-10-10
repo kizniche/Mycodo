@@ -177,8 +177,12 @@ return status_dict'''
             new_func.device = function_name
             new_func.position_y = 999
 
-            if 'function_name' in dict_controllers[function_name]:
+            if 'function_name_short' in dict_controllers[function_name]:
+                new_func.name = dict_controllers[function_name]['function_name_short']
+            elif 'function_name' in dict_controllers[function_name]:
                 new_func.name = dict_controllers[function_name]['function_name']
+            elif function_name in FUNCTION_INFO and 'name' in FUNCTION_INFO[function_name]:
+                new_func.name = FUNCTION_INFO[function_name]['name']
             else:
                 new_func.name = 'Function Name'
 
