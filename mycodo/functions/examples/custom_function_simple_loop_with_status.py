@@ -40,6 +40,10 @@ FUNCTION_INFORMATION = {
                'with the current time will be displayed for the user every Status Period. The Status '
                'Widget will also display this status.',
 
+    'options_enabled': [
+        'custom_options',
+        'function_status'
+    ],
     'options_disabled': [
         'measurements_select',
         'measurements_configure'

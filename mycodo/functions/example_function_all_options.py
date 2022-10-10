@@ -1,6 +1,6 @@
 # coding=utf-8
 #
-#  custom_function_example.py - Custom function example file for importing into Mycodo
+#  example_function_all_options.py - Example function module with all options
 #
 #  Copyright (C) 2015-2020 Kyle T. Gabriel <mycodo@kylegabriel.com>
 #
@@ -21,6 +21,7 @@
 #
 #  Contact at kylegabriel.com
 #
+import datetime
 import threading
 import time
 
@@ -30,19 +31,20 @@ from mycodo.mycodo_client import DaemonControl
 from mycodo.utils.constraints_pass import constraints_pass_positive_value
 from mycodo.utils.database import db_retrieve_table_daemon
 
-
 FUNCTION_INFORMATION = {
     'function_name_unique': 'example_function_generic',
     'function_name': 'Example: Generic',
 
-    'message': 'This is a custom message that will appear above the Function options. '
-               'It merely demonstrates how to generate user options and manipulate them. '
+    'message': 'This is an example Function Module that showcases all the different type of UI options. '
+               'It is not useful beyond showing how to develop new custom Function modules.'
+               'This message will appear above the Function options. '
                'It will retrieve the last selected measurement, turn the selected output '
                'on for 15 seconds, then deactivate itself. Study the code to develop your '
-               'own Custom Function.',
+               'own Function Module that can be imported on the Function Import page.',
 
     'options_enabled': [
-        'custom_options'
+        'custom_options',
+        'function_status'
     ],
 
     'dependencies_module': [
@@ -62,12 +64,19 @@ FUNCTION_INFORMATION = {
     # These settings can only be changed when the Function is inactive.
     'custom_options': [
         {
+            'type': 'message',
+            'default_value': """The following fields are for text, integers, and decimal inputs. This message will automatically create a new line for the options that come after it. Alternatively, a new line can be created instead without a message, which are what separates each of the following three inputs."""
+        },
+        {
             'id': 'text_1',
             'type': 'text',
             'default_value': 'Text_1',
             'required': True,
-            'name': 'Text 1',
-            'phrase': 'Text 1 Description'
+            'name': 'Text Input',
+            'phrase': 'Type in text'
+        },
+        {
+            'type': 'new_line'
         },
         {
             'id': 'integer_1',
@@ -75,8 +84,11 @@ FUNCTION_INFORMATION = {
             'default_value': 100,
             'required': True,
             'constraints_pass': constraints_pass_positive_value,
-            'name': 'Integer 1',
-            'phrase': 'Integer 1 Description'
+            'name': 'Integer Input',
+            'phrase': 'Type in an Integer'
+        },
+        {
+            'type': 'new_line'
         },
         {
             'id': 'float_1',
@@ -84,18 +96,23 @@ FUNCTION_INFORMATION = {
             'default_value': 50.2,
             'required': True,
             'constraints_pass': constraints_pass_positive_value,
-            'name': 'Float 1',
-            'phrase': 'Float 1 Description'
+            'name': 'Devimal Input',
+            'phrase': 'Type in a decimal value'
+        },
+        {
+            'type': 'message',
+            'default_value': """A boolean value can be made using a checkbox."""
         },
         {
             'id': 'bool_1',
             'type': 'bool',
             'default_value': True,
-            'name': 'Boolean 1',
-            'phrase': 'Boolean 1 Description'
+            'name': 'Boolean Value',
+            'phrase': 'Set to either True (checked) or False (Unchecked)'
         },
-        {  # This starts a new line for the next action
-            'type': 'new_line'
+        {
+            'type': 'message',
+            'default_value': """A dropdown selection can be made of any user-defined options, with any of the options selected by default when the Function is added by the user."""
         },
         {
             'id': 'select_1',
@@ -106,8 +123,12 @@ FUNCTION_INFORMATION = {
                 ('SECOND', 'Second Option Selected'),
                 ('THIRD', 'Third Option Selected'),
             ],
-            'name': 'Select 1',
-            'phrase': 'Select 1 Description'
+            'name': 'Select Option',
+            'phrase': 'Select an option from the dropdown'
+        },
+        {
+            'type': 'message',
+            'default_value': """A specific measurement from an Input, Function, or PID Controller can be selected. The following dropdown will be populated if at least one Input, Function, or PID Controller has been created (as long as the Function has measurements, e.g. Statistics Function)."""
         },
         {
             'id': 'select_measurement_1',
@@ -118,8 +139,12 @@ FUNCTION_INFORMATION = {
                 'Function',
                 'PID'
             ],
-            'name': 'Select Measurement 1',
-            'phrase': 'Select Measurement 1 Description'
+            'name': 'Controller Measurement',
+            'phrase': 'Select a controller Measurement'
+        },
+        {
+            'type': 'message',
+            'default_value': """An output channel measurement can be selected that will return the Output ID, Channel ID, and Measurement ID. This is useful if you need more than just the Output and Channel IDs and require the user to select the specific Measurement of a channel."""
         },
         {
             'id': 'output_1',
@@ -129,8 +154,12 @@ FUNCTION_INFORMATION = {
             'options_select': [
                 'Output_Channels_Measurements',
             ],
-            'name': 'Output',
-            'phrase': 'Select an output to modulate that will affect the measurement'
+            'name': 'Output Channel Measurement',
+            'phrase': 'Select an output channel and measurement '
+        },
+        {
+            'type': 'message',
+            'default_value': """An output can be selected that will return the Output ID if only the output ID is needed."""
         },
         {
             'id': 'select_device_1',
@@ -139,8 +168,12 @@ FUNCTION_INFORMATION = {
             'options_select': [
                 'Output',
             ],
-            'name': 'Select Device 1',
-            'phrase': 'Select Device 1 Description'
+            'name': 'Output Device',
+            'phrase': 'Select an Output device'
+        },
+        {
+            'type': 'message',
+            'default_value': """An Input, Output, Function, PID, or Trigger can be selected that will return the ID if only the controller ID is needed (e.g. for activating/deactivating a controller)"""
         },
         {
             'id': 'select_device_2',
@@ -153,8 +186,8 @@ FUNCTION_INFORMATION = {
                 'PID',
                 'Trigger'
             ],
-            'name': 'Select Device 2',
-            'phrase': 'Select Device 2 Description'
+            'name': 'Controller Device',
+            'phrase': 'Select an Input/Output/Function/PID/Trigger controller'
         }
     ],
 
@@ -162,8 +195,12 @@ FUNCTION_INFORMATION = {
     # Each button will execute a different function within the Function Controller and pass any
     # input (text, numbers, selections, etc.) the user entered. This is useful for such things as
     # calibration.
-    'custom_commands_message': 'This is a message for custom actions.',
+    'custom_commands_message': 'This is a message for custom actions that will appear above all actions.',
     'custom_commands': [
+        {
+            'type': 'message',
+            'default_value': 'Button One will pass the Button One Value to the button_one() function of this module. This allows functions to be executed with user-specified inputs. These can be text, integers, decimals, or boolean values.',
+        },
         {
             'id': 'button_one_value',
             'type': 'integer',
@@ -172,15 +209,15 @@ FUNCTION_INFORMATION = {
             'phrase': 'Value for button one.'
         },
         {
-            'id': 'button_one',  # Do a search for the function "button_one(self, args_dict)"
+            'id': 'button_one',  # This button will execute the "button_one(self, args_dict) function, below
             'type': 'button',
             'wait_for_return': True,  # The UI will wait until the function has returned the UI with a value to display
             'name': 'Button One',
             'phrase': "This is button one"
         },
-        {  # This message will be displayed on it's own line
+        {
             'type': 'message',
-            'default_value': 'Here is another action',
+            'default_value': 'Here is another action with another user input that will be passed to the function. Note that Button One Value will also be passed to this second function, so be sure to use unique ids for each input.',
         },
         {
             'id': 'button_two_value',
@@ -359,3 +396,14 @@ class CustomModule(AbstractFunction):
     def button_two(self, args_dict):
         self.logger.error("Button Two Pressed!: {}".format(int(args_dict['button_two_value'])))
         return "This message will never be seen in the web UI because this process is threaded"
+
+    def function_status(self):
+        return_dict = {
+            'string_status': f"Current time: {datetime.datetime.now()} ({time.time()})"
+                             f"\ntext: {self.text_1}"
+                             f"\ninteger: {self.integer_1}"
+                             f"\nfloat: {self.float_1}"
+                             f"\nboolean: {self.bool_1}",
+            'error': []
+        }
+        return return_dict

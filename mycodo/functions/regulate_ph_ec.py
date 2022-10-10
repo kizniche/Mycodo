@@ -47,7 +47,10 @@ FUNCTION_INFORMATION = {
         '<br>If an e-mail address (or multiple addresses separated by commas) is entered into the E-Mail Notification field, a notification e-mail will be sent if 1) pH is outside the set danger range, 2) EC is too high and water needs to be added to the reservoir, or 3) a measurement could not be found in the database for the specific Max Age. Each e-mail notification type has its own timer that prevents e-mail spam, and will only allow sending for each notification type every set E-Mail Timer Duration. After this duration, the timer will automatically reset to allow new notifications to be sent. You may also manually reset e-mail timers at any time with the Custom Commands, below.'
         '<br>When the Function is active, Status text will appear below indicating the regulation information and total duration/volume for each output.',
 
-    'options_enabled': ['custom_options'],
+    'options_enabled': [
+        'custom_options',
+        'function_status'
+    ],
     'options_disabled': ['measurements_select'],
 
     'custom_commands': [

@@ -98,6 +98,7 @@
 
     </div>
 
+    {% if 'options_enabled' in dict_controllers[each_function.device] and 'function_status' in dict_controllers[each_function.device]['options_enabled'] %}
     <div id="status_enable_{{unique_id}}" class="row small-gutters align-items-end" style="{% if not each_function.is_activated %}display: none; {% endif %}padding: 0.5em">
       <div class="col-12">
         <h5>{{_('Status')}}</h5>
@@ -106,6 +107,7 @@
         <span id="function_status_message_{{unique_id}}"></span>
       </div>
     </div>
+    {% endif %}
 
     <div id="return_text_{{unique_id}}" class="col-12"></div>
 

@@ -198,17 +198,19 @@
           if (jqXHR.status !== 204) {
             if (data && "string_status" in data) {
               document.getElementById("function_status_message_" + function_id).innerHTML = data['string_status'].replace(/(?:\r\n|\r|\n)/g, "<br>");
+            } else {
+                document.getElementById("function_status_message_" + function_id).innerHTML = '';
             }
-            else if (data && "error" in data) {
+            if (data && "error" in data && data['error'].length) {
               let errors = ''
               for (let c = 0; c < data['error'].length; c++) {
                 errors += data['error'][c].replace(/(?:\r\n|\r|\n)/g, "<br>") + '<br>';
               }
-              document.getElementById("function_status_message_" + function_id).innerHTML += "<pre>Error(s):<br>" + errors + "</pre>";
+              document.getElementById("function_status_message_" + function_id).innerHTML += "<p><pre>Error(s):<br>" + errors + "</pre></p>";
             }
           }
           else {
-            document.getElementById("function_status_message_" + function_id).innerHTML = "Error";
+            document.getElementById("function_status_message_" + function_id).innerHTML = "Error querying status.";
           }
         }
       );

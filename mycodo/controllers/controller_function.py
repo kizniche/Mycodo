@@ -158,4 +158,10 @@ class FunctionController(AbstractController, threading.Thread):
             self.logger.exception(f"Error executing function action '{action_string}'")
 
     def function_status(self):
-        return self.run_function.function_status()
+        func_exists = getattr(self.run_function, "function_status", None)
+        if callable(func_exists):
+            return self.run_function.function_status()
+        else:
+            return {
+                'error': ["function_status() missing from Function Class"]
+            }

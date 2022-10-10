@@ -44,6 +44,15 @@ FUNCTION_INFORMATION = {
             'phrase': lazy_gettext('Select a measurement the selected output will affect')
         },
         {
+            'id': 'measurement_max_age',
+            'type': 'integer',
+            'default_value': 360,
+            'required': True,
+            'name': "{}: {} ({})".format(lazy_gettext("Measurement"), lazy_gettext("Max Age"),
+                                         lazy_gettext("Seconds")),
+            'phrase': lazy_gettext('The maximum age of the measurement to use')
+        },
+        {
             'id': 'output_raise',
             'type': 'select_measurement_channel',
             'default_value': '',
@@ -122,6 +131,7 @@ class CustomModule(AbstractFunction):
         # Initialize custom options
         self.measurement_device_id = None
         self.measurement_measurement_id = None
+        self.measurement_max_age = None
         self.output_raise_device_id = None
         self.output_raise_measurement_id = None
         self.output_raise_channel_id = None
@@ -183,44 +193,49 @@ class CustomModule(AbstractFunction):
 
         last_measurement = self.get_last_measurement(
             self.measurement_device_id,
-            self.measurement_measurement_id)[1]
+            self.measurement_measurement_id,
+            max_age=self.measurement_max_age)
+
+        if not last_measurement:
+            self.logger.error("Could not acquire a measurement")
+            return
 
         if self.direction == 'raise':
-            if last_measurement > (self.setpoint + self.hysteresis):
+            if last_measurement[1] > (self.setpoint + self.hysteresis):
                 self.logger.debug("Raise: Off")
                 self.control.output_off(
                     self.output_raise_device_id, output_channel=self.output_raise_channel)
-            elif last_measurement < (self.setpoint - self.hysteresis):
+            elif last_measurement[1] < (self.setpoint - self.hysteresis):
                 self.logger.debug("Raise: On")
                 self.control.output_on(
                     self.output_raise_device_id, output_channel=self.output_raise_channel)
 
         elif self.direction == 'lower':
-            if last_measurement < (self.setpoint - self.hysteresis):
+            if last_measurement[1] < (self.setpoint - self.hysteresis):
                 self.logger.debug("Lower: Off")
                 self.control.output_off(
                     self.output_lower_device_id, output_channel=self.output_lower_channel)
-            elif last_measurement > (self.setpoint + self.hysteresis):
+            elif last_measurement[1] > (self.setpoint + self.hysteresis):
                 self.logger.debug("Lower: On")
                 self.control.output_on(
                     self.output_lower_device_id, output_channel=self.output_lower_channel)
 
         elif self.direction == 'both':
-            if (self.setpoint - self.hysteresis) < last_measurement < (self.setpoint + self.hysteresis):
+            if (self.setpoint - self.hysteresis) < last_measurement[1] < (self.setpoint + self.hysteresis):
                 self.logger.debug("Lower: Off, Raise: Off")
                 self.control.output_off(
                     self.output_raise_device_id, output_channel=self.output_raise_channel)
                 self.control.output_off(
                     self.output_lower_device_id, output_channel=self.output_lower_channel)
 
-            elif last_measurement > (self.setpoint + self.hysteresis):
+            elif last_measurement[1] > (self.setpoint + self.hysteresis):
                 self.logger.debug("Lower: On, Raise: Off")
                 self.control.output_off(
                     self.output_raise_device_id, output_channel=self.output_raise_channel)
                 self.control.output_on(
                     self.output_lower_device_id, output_channel=self.output_lower_channel)
 
-            elif last_measurement < (self.setpoint - self.hysteresis):
+            elif last_measurement[1] < (self.setpoint - self.hysteresis):
                 self.logger.debug("Lower: Off, Raise: On")
                 self.control.output_off(
                     self.output_lower_device_id, output_channel=self.output_lower_channel)
@@ -236,7 +251,7 @@ class CustomModule(AbstractFunction):
             self.output_lower_device_id, self.output_lower_channel)
 
         self.logger.debug(
-            f"Before execution: Input: {last_measurement}, "
+            f"Before execution: Input: {last_measurement[1]}, "
             f"output_raise: {output_raise_state}, "
             f"output_lower: {output_lower_state}, "
             f"target: {self.setpoint}, "

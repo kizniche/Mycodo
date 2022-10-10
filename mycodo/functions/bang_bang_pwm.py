@@ -42,6 +42,15 @@ FUNCTION_INFORMATION = {
             'phrase': 'Select a measurement the selected output will affect'
         },
         {
+            'id': 'measurement_max_age',
+            'type': 'integer',
+            'default_value': 360,
+            'required': True,
+            'name': "{}: {} ({})".format(lazy_gettext("Measurement"), lazy_gettext("Max Age"),
+                                         lazy_gettext("Seconds")),
+            'phrase': lazy_gettext('The maximum age of the measurement to use')
+        },
+        {
             'id': 'output',
             'type': 'select_measurement_channel',
             'default_value': '',
@@ -200,15 +209,20 @@ class CustomModule(AbstractFunction):
 
         last_measurement = self.get_last_measurement(
             self.measurement_device_id,
-            self.measurement_measurement_id)[1]
+            self.measurement_measurement_id,
+            max_age=self.measurement_max_age)
 
-        outputState = self.control.output_state(self.output_device_id, self.output_channel)
+        if not last_measurement[1]:
+            self.logger.error("Could not acquire a measurement")
+            return
 
-        self.logger.debug("Input: {}, output: {}, target: {}, hyst: {}".format(
-            last_measurement, outputState, self.setpoint, self.hysteresis))
+        output_state = self.control.output_state(self.output_device_id, self.output_channel)
+
+        self.logger.debug(
+            f"Input: {last_measurement[1]}, output: {output_state}, target: {self.setpoint}, hyst: {self.hysteresis}")
 
         if self.direction == 'raise':
-            if last_measurement < (self.setpoint - self.hysteresis):
+            if last_measurement[1] < (self.setpoint - self.hysteresis):
                 self.control.output_on(
                     self.output_device_id,
                     output_type='pwm',
@@ -221,7 +235,7 @@ class CustomModule(AbstractFunction):
                     amount=self.duty_cycle_maintain,
                     output_channel=self.output_channel)
         elif self.direction == 'lower':
-            if last_measurement > (self.setpoint + self.hysteresis):
+            if last_measurement[1] > (self.setpoint + self.hysteresis):
                 self.control.output_on(
                     self.output_device_id,
                     output_type='pwm',
@@ -234,13 +248,13 @@ class CustomModule(AbstractFunction):
                     amount=self.duty_cycle_maintain,
                     output_channel=self.output_channel)
         elif self.direction == 'both':
-            if last_measurement < (self.setpoint - self.hysteresis):
+            if last_measurement[1] < (self.setpoint - self.hysteresis):
                 self.control.output_on(
                     self.output_device_id,
                     output_type='pwm',
                     amount=self.duty_cycle_increase,
                     output_channel=self.output_channel)
-            elif last_measurement > (self.setpoint + self.hysteresis):
+            elif last_measurement[1] > (self.setpoint + self.hysteresis):
                 self.control.output_on(
                     self.output_device_id,
                     output_type='pwm',
