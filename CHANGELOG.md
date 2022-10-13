@@ -26,6 +26,7 @@
  - Fix channel state at initialization of Python and Shell Command Outputs
  - Fix function_status() error-handling
  - Fix function modules not using function_name_short option
+ - Fix Sense Hat Input dependency ([#1233](https://github.com/kizniche/Mycodo/issues/1233))
 
 ### Miscellaneous
 
