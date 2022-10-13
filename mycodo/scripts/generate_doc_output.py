@@ -15,18 +15,20 @@ def generate_controller_doc(out_file, each_data):
         out_file.write("- Dependencies: ")
         for i, each_dep_set in enumerate(each_data['dependencies_module']):
             if len(each_data['dependencies_module']) > 1:
-                out_file.write("Output Variant {}: ".format(i + 1))
+                out_file.write(f"Output Variant {i + 1}: ")
             for i_d, each_dep in enumerate(each_dep_set):
-                if each_dep[0] == "apt":
-                    out_file.write("[{0}](https://packages.debian.org/buster/{0})".format(each_dep[2]))
+                if each_dep[0] in ["bash-commands"]:
+                    out_file.write(f"Bash Commands (see Module for details)")
+                elif each_dep[0] == "apt":
+                    out_file.write(f"[{each_dep[2]}](https://packages.debian.org/search?keywords={each_dep[2]})")
                 elif each_dep[0] == "pip-pypi":
                     if 'git+' in each_dep[2]:
                         url = re.search('git\+(.*).git', each_dep[2])
-                        out_file.write("[{name}]({url})".format(name=each_dep[1], url=url.group(1)))
+                        out_file.write(f"[{each_dep[1]}]({url.group(1)})")
                     elif "==" in each_dep[2]:
-                        out_file.write("[{0}](https://pypi.org/project/{0})".format(each_dep[2].split("==")[0]))
+                        out_file.write(f"[{each_dep[2].split('==')[0]}](https://pypi.org/project/{each_dep[2].split('==')[0]})")
                     else:
-                        out_file.write("[{0}](https://pypi.org/project/{0})".format(each_dep[2]))
+                        out_file.write(f"[{each_dep[2]}](https://pypi.org/project/{each_dep[2]})")
                 else:
                     out_file.write(each_dep[2])
 
@@ -38,74 +40,35 @@ def generate_controller_doc(out_file, each_data):
             else:
                 out_file.write("\n")
 
-    if 'url_manufacturer' in each_data and each_data['url_manufacturer']:
-        out_file.write("- Manufacturer URL")
-        if len(each_data['url_manufacturer']) == 1:
-            out_file.write(": ")
-        else:
-            out_file.write("s: ")
-        for i, each_url in enumerate(each_data['url_manufacturer']):
-            if len(each_data['url_manufacturer']) == 1:
-                out_file.write("[Link]({})".format(each_url))
-            else:
-                out_file.write("[Link {num}]({url})".format(num=i + 1, url=each_url))
-            if i + 1 < len(each_data['url_manufacturer']):
-                out_file.write(", ")
-            else:
-                out_file.write("\n")
+    url_types = [
+        ("url_manufacturer", "Manufacturer"),
+        ("url_datasheet", "Datasheet"),
+        ("url_product_purchase", "Product"),
+        ("url_additional", "Additional")
+    ]
 
-    if 'url_datasheet' in each_data and each_data['url_datasheet']:
-        out_file.write("- Datasheet URL")
-        if len(each_data['url_datasheet']) == 1:
-            out_file.write(": ")
-        else:
-            out_file.write("s: ")
-        for i, each_url in enumerate(each_data['url_datasheet']):
-            if len(each_data['url_datasheet']) == 1:
-                out_file.write("[Link]({})".format(each_url))
+    for each_url_type in url_types:
+        if each_url_type[0] in each_data and each_data[each_url_type[0]]:
+            out_file.write(f"- {each_url_type[1]} URL")
+            if len(each_data[each_url_type[0]]) == 1:
+                out_file.write(": ")
             else:
-                out_file.write("[Link {num}]({url})".format(num=i + 1, url=each_url))
-            if i + 1 < len(each_data['url_datasheet']):
-                out_file.write(", ")
-            else:
-                out_file.write("\n")
-
-    if 'url_product_purchase' in each_data and each_data['url_product_purchase']:
-        out_file.write("- Product URL")
-        if len(each_data['url_product_purchase']) == 1:
-            out_file.write(": ")
-        else:
-            out_file.write("s: ")
-        for i, each_url in enumerate(each_data['url_product_purchase']):
-            if len(each_data['url_product_purchase']) == 1:
-                out_file.write("[Link]({})".format(each_url))
-            else:
-                out_file.write("[Link {num}]({url})".format(num=i + 1, url=each_url))
-            if i + 1 < len(each_data['url_product_purchase']):
-                out_file.write(", ")
-            else:
-                out_file.write("\n")
-
-    if 'url_additional' in each_data and each_data['url_additional']:
-        if len(each_data['url_additional']) == 1:
-            out_file.write("- Additional URL: ")
-        else:
-            out_file.write("- Additional URL(s): ")
-        for i, each_url in enumerate(each_data['url_additional']):
-            if len(each_data['url_additional']) == 1:
-                out_file.write("[Link]({})".format(each_url))
-            else:
-                out_file.write("[Link {num}]({url})".format(num=i + 1, url=each_url))
-            if i + 1 < len(each_data['url_additional']):
-                out_file.write(", ")
-            else:
-                out_file.write("\n")
+                out_file.write("s: ")
+            for i, each_url in enumerate(each_data[each_url_type[0]]):
+                if len(each_data[each_url_type[0]]) == 1:
+                    out_file.write(f"[Link]({each_url})")
+                else:
+                    out_file.write(f"[Link {i + 1}]({each_url})")
+                if i + 1 < len(each_data[each_url_type[0]]):
+                    out_file.write(", ")
+                else:
+                    out_file.write("\n")
 
     if 'message' in each_data and each_data['message']:
-        out_file.write("\n{}\n".format(each_data['message']))
+        out_file.write(f"\n{each_data['message']}\n")
 
     if 'usage' in each_data and each_data['usage']:
-        out_file.write("\nUsage: {}\n".format(each_data['usage']))
+        out_file.write(f"\nUsage: {each_data['usage']}\n")
 
     if 'options_enabled' in each_data or 'custom_options' in each_data:
         out_file.write('<table><thead><tr class="header"><th>Option</th><th>Type</th><th>Description</th></tr></thead><tbody>')
@@ -264,7 +227,7 @@ def generate_controller_doc(out_file, each_data):
                     # Show the select options
                     if 'default_value' in each_option and each_option['default_value']:
                         if each_option['type'] in ['integer', 'text', 'float', 'bool']:
-                            out_file.write("\n- Default Value: {}".format(each_option['default_value']))
+                            out_file.write(f"\n- Default Value: {each_option['default_value']}")
                         elif each_option['type'] == 'select':
                             select_options = "(Options: ["
                             select_default = None
