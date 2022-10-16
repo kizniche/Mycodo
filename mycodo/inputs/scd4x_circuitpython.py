@@ -197,7 +197,7 @@ class InputModule(AbstractInput):
             self.logger.error("CO2 Concentration required")
             return
         try:
-            self.sensor.force_calibration(float(args_dict['co2_concentration']))
+            self.sensor.force_calibration(int(args_dict['co2_concentration']))
         except Exception as err:
             self.logger.error(
                 "Error setting CO2 Concentration: {}".format(err))
