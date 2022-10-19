@@ -27,6 +27,7 @@
  - Fix function_status() error-handling
  - Fix function modules not using function_name_short option
  - Fix Sense Hat Input dependency ([#1233](https://github.com/kizniche/Mycodo/issues/1233))
+ - Fix missing jq dependency if not installed from the install script
 
 ### Miscellaneous
 
