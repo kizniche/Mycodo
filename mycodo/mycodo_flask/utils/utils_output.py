@@ -139,7 +139,7 @@ def output_add(form_add, request_form):
                     if dict_has_value('gpio_pin'):
                         new_output.pin = dict_outputs[output_type]['gpio_pin']
 
-                # Custom location location
+                # Custom location
                 elif dict_has_value('location'):
                     new_output.location = dict_outputs[output_type]['location']['options'][0][0]  # First entry in list
 
@@ -281,7 +281,10 @@ def output_mod(form_output, request_form):
 
         # Parse post-save custom options for output device and its channels
         messages["error"], custom_options_json_postsave = custom_options_return_json(
-            messages["error"], dict_outputs, request_form, mod_dev=mod_output, device=mod_output.output_type)
+            messages["error"], dict_outputs, request_form,
+            mod_dev=mod_output,
+            device=mod_output.output_type,
+            custom_options=custom_options_dict_presave)
         custom_options_dict_postsave = json.loads(custom_options_json_postsave)
 
         custom_options_channels_dict_postsave = {}

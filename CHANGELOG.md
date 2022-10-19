@@ -28,6 +28,7 @@
  - Fix function modules not using function_name_short option
  - Fix Sense Hat Input dependency ([#1233](https://github.com/kizniche/Mycodo/issues/1233))
  - Fix missing jq dependency if not installed from the install script
+ - Fix values set by set_custom_option() from being reset when an Input/Output/Function configuration is saved
 
 ### Miscellaneous
 

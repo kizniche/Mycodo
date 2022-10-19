@@ -179,9 +179,13 @@ def custom_options_return_json(
         request_form=None,
         mod_dev=None,
         device=None,
-        use_defaults=False):
+        use_defaults=False,
+        custom_options=None):
     # Custom options
-    dict_options_return = {}
+    if custom_options:
+        dict_options_return = custom_options
+    else:
+        dict_options_return = {}
 
     # TODO: name these the same in next major release
     if mod_dev is None:

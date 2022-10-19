@@ -3,7 +3,7 @@ import json
 import logging
 import os
 import re
-from mycodo.databases import clone_model
+
 import sqlalchemy
 from flask import current_app
 from flask import flash
@@ -11,6 +11,7 @@ from flask_babel import gettext
 
 from mycodo.config import PATH_PYTHON_CODE_USER
 from mycodo.config_translations import TRANSLATIONS
+from mycodo.databases import clone_model
 from mycodo.databases import set_uuid
 from mycodo.databases.models import Actions
 from mycodo.databases.models import DeviceMeasurements
@@ -25,7 +26,6 @@ from mycodo.mycodo_flask.utils.utils_general import custom_channel_options_retur
 from mycodo.mycodo_flask.utils.utils_general import custom_options_return_json
 from mycodo.mycodo_flask.utils.utils_general import delete_entry_with_id
 from mycodo.mycodo_flask.utils.utils_general import return_dependencies
-from mycodo.utils.actions import parse_action_information
 from mycodo.utils.inputs import parse_input_information
 from mycodo.utils.system_pi import parse_custom_option_values
 
@@ -559,7 +559,10 @@ def input_mod(form_mod, request_form):
 
         # Parse post-save custom options for output device and its channels
         messages["error"], custom_options_json_postsave = custom_options_return_json(
-            messages["error"], dict_inputs, request_form, mod_dev=mod_input, device=mod_input.device)
+            messages["error"], dict_inputs, request_form,
+            mod_dev=mod_input,
+            device=mod_input.device,
+            custom_options=custom_options_dict_presave)
         custom_options_dict_postsave = json.loads(custom_options_json_postsave)
 
         custom_options_channels_dict_postsave = {}
