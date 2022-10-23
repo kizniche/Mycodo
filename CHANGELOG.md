@@ -29,6 +29,8 @@
  - Fix Sense Hat Input dependency ([#1233](https://github.com/kizniche/Mycodo/issues/1233))
  - Fix missing jq dependency if not installed from the install script
  - Fix values set by set_custom_option() from being reset when an Input/Output/Function configuration is saved
+ - Fix Select Device option not populating controllers properly
+ - Fix deprecated opencv dependency (update opencv to 4.6.0.66)
 
 ### Miscellaneous
 
