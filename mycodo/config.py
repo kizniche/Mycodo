@@ -179,6 +179,7 @@ CAMERA_INFO = {
         'name': 'OpenCV',
         'dependencies_module': [
             ('pip-pypi', 'imutils', 'imutils==0.5.4'),
+            ('apt', 'libgl1', 'libgl1'),
             ('pip-pypi', 'cv2', 'opencv-python==4.6.0.66')
         ],
         'capable_image': True,
@@ -202,6 +203,7 @@ CAMERA_INFO = {
         'name': 'URL (urllib)',
         'dependencies_module': [
             ('pip-pypi', 'imutils', 'imutils==0.5.4'),
+            ('apt', 'libgl1', 'libgl1'),
             ('pip-pypi', 'cv2', 'opencv-python==4.6.0.66')
         ],
         'capable_image': True,
@@ -211,6 +213,7 @@ CAMERA_INFO = {
         'name': 'URL (requests)',
         'dependencies_module': [
             ('pip-pypi', 'imutils', 'imutils==0.5.4'),
+            ('apt', 'libgl1', 'libgl1'),
             ('pip-pypi', 'cv2', 'opencv-python==4.6.0.66')
         ],
         'capable_image': True,
