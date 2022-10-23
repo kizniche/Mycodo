@@ -26,6 +26,7 @@ from mycodo.databases.models import NoteTags
 from mycodo.databases.models import Output
 from mycodo.databases.models import OutputChannel
 from mycodo.databases.models import PID
+from mycodo.databases.models import Trigger
 from mycodo.databases.models import Unit
 from mycodo.databases.models import Widget
 from mycodo.mycodo_flask.extensions import db
@@ -292,6 +293,9 @@ def page_dashboard(dashboard_id):
                            table_output_channel=OutputChannel,
                            table_pid=PID,
                            table_device_measurements=DeviceMeasurements,
+                           table_camera=Camera,
+                           table_conditional=Conditional,
+                           table_trigger=Trigger,
                            choices_camera=choices_camera,
                            choices_function=choices_function,
                            choices_input=choices_input,

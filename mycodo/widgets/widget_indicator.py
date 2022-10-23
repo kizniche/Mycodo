@@ -38,8 +38,8 @@ WIDGET_INFORMATION = {
 
     'message': 'Displays a red or green circular image based on a measurement value. Useful for showing if an Output is on or off.',
 
-    'widget_width': 3,
-    'widget_height': 4,
+    'widget_width': 2,
+    'widget_height': 7,
 
     'custom_options': [
         {

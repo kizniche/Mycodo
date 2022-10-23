@@ -211,13 +211,13 @@
     {% elif each_option['type'] == 'select_device' %}
 
       {% set form_choices = [
-        ("Input", input),
-        ("Output", output),
-        ("PID", pid),
-        ("Trigger", trigger),
-        ("Camera", camera),
-        ("Function", function),
-        ("Conditional", conditional)
+        ("Input", table_input.query.all()),
+        ("Output", table_output.query.all()),
+        ("PID", table_pid.query.all()),
+        ("Trigger", table_trigger.query.all()),
+        ("Camera", table_camera.query.all()),
+        ("Function", table_function.query.all()),
+        ("Conditional", table_conditional.query.all())
       ] %}
 
 <div class="col-auto">

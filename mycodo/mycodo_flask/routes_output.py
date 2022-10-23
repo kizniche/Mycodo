@@ -14,6 +14,7 @@ from flask.blueprints import Blueprint
 
 from mycodo.config import INSTALL_DIRECTORY
 from mycodo.databases.models import Camera
+from mycodo.databases.models import Conditional
 from mycodo.databases.models import CustomController
 from mycodo.databases.models import DisplayOrder
 from mycodo.databases.models import Input
@@ -23,6 +24,7 @@ from mycodo.databases.models import Misc
 from mycodo.databases.models import Output
 from mycodo.databases.models import OutputChannel
 from mycodo.databases.models import PID
+from mycodo.databases.models import Trigger
 from mycodo.databases.models import Unit
 from mycodo.databases.models import User
 from mycodo.mycodo_flask.extensions import db
@@ -256,6 +258,13 @@ def page_output():
                                output_types=output_types(),
                                output_templates=output_templates,
                                output_variables=output_variables,
+                               table_camera=Camera,
+                               table_conditional=Conditional,
+                               table_function=CustomController,
+                               table_input=Input,
+                               table_output=Output,
+                               table_pid=PID,
+                               table_trigger=Trigger,
                                user=user)
     elif output_type == 'entry':
         return render_template('pages/output_entry.html',
@@ -284,6 +293,13 @@ def page_output():
                                output_types=output_types(),
                                output_templates=output_templates,
                                output_variables=output_variables,
+                               table_camera=Camera,
+                               table_conditional=Conditional,
+                               table_function=CustomController,
+                               table_input=Input,
+                               table_output=Output,
+                               table_pid=PID,
+                               table_trigger=Trigger,
                                user=user)
     elif output_type == 'options':
         return render_template('pages/output_options.html',
@@ -312,4 +328,11 @@ def page_output():
                                output_types=output_types(),
                                output_templates=output_templates,
                                output_variables=output_variables,
+                               table_camera=Camera,
+                               table_conditional=Conditional,
+                               table_function=CustomController,
+                               table_input=Input,
+                               table_output=Output,
+                               table_pid=PID,
+                               table_trigger=Trigger,
                                user=user)
