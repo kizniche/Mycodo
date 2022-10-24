@@ -382,9 +382,9 @@ def camera_record(record_type, unique_id, duration_sec=None, tmp_filename=None):
 
                 # Get filename and extension, if available
                 a = urlparse(settings.url_still)
-                filename = os.path.basename(a.path)
-                if filename:
-                    path_tmp = f"/tmp/{filename}"
+                url_filename = os.path.basename(a.path)
+                if url_filename:
+                    path_tmp = f"/tmp/{url_filename}"
 
                 try:
                     os.remove(path_tmp)

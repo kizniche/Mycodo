@@ -31,6 +31,7 @@
  - Fix values set by set_custom_option() from being reset when an Input/Output/Function configuration is saved
  - Fix Select Device option not populating controllers properly
  - Fix deprecated opencv dependency (update opencv to 4.6.0.66)
+ - Fix urllib camera library not saving the correct file name
 
 ### Miscellaneous
 
