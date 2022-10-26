@@ -108,6 +108,14 @@ FUNCTION_INFORMATION = {
             'required': True,
             'name': 'Maximum Difference',
             'phrase': 'The maximum allowed difference between the measurements'
+        },
+        {
+            'id': 'average_measurements',
+            'type': 'bool',
+            'default_value': False,
+            'required': True,
+            'name': 'Average Measurements',
+            'phrase': "Store the average of the measurements in the database"
         }
     ]
 }
@@ -133,6 +141,7 @@ class CustomModule(AbstractFunction):
         self.select_measurement_b_measurement_id = None
         self.measurement_max_age_b = None
         self.max_difference = None
+        self.average_measurements = None
 
         # Set custom options
         custom_function = db_retrieve_table_daemon(
@@ -205,11 +214,16 @@ class CustomModule(AbstractFunction):
                     "Not storing measurement.".format(difference, self.max_difference))
                 return
 
+            if self.average_measurements:
+                store_value = (last_measurement_a[1] + last_measurement_b[1]) / 2
+            else:
+                store_value = last_measurement_a[1]
+
             measurement_dict = {
                 0: {
                     'measurement': self.channels_measurement[0].measurement,
                     'unit': self.channels_measurement[0].unit,
-                    'value': last_measurement_a[1]
+                    'value': store_value
                 }
             }
 

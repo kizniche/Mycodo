@@ -13,6 +13,7 @@
  - Make Docs Translatable (https://kizniche.github.io/Mycodo/)
  - Add language selection on Admin Creation and Login pages
  - Add ability to select Outputs in Output Modules
+ - Add ability to average measurements in Verification Function
 
 ### Bugfixes
 
