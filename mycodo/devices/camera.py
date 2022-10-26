@@ -430,7 +430,7 @@ def camera_record(record_type, unique_id, duration_sec=None, tmp_filename=None):
             elif record_type == 'video':
                 pass  # No video (yet)
         except:
-            logger.exception("http:address")
+            logger.exception("http_address")
 
     elif settings.library == 'http_address_requests':
         try:

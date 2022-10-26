@@ -32,6 +32,7 @@
  - Fix Select Device option not populating controllers properly
  - Fix deprecated opencv dependency (update opencv to 4.6.0.66)
  - Fix urllib camera library not saving the correct file name
+ - Fix missing image for Camera Widget when "Acquire Image (and erase last file)" selected
 
 ### Miscellaneous
 

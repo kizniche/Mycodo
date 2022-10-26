@@ -184,10 +184,15 @@ def camera_img_return_path(camera_unique_id, img_type, filename):
                  if os.path.isfile(os.path.join(path, files)))
     else:
         files = []
+
     if filename in files:
         path_file = os.path.join(path, filename)
         if os.path.abspath(path_file).startswith(path):
             return send_file(path_file, mimetype='image/jpeg')
+
+    path_file = f"/tmp/{filename}"
+    if os.path.exists(path_file) and os.path.abspath(path_file).startswith("/tmp"):
+        return send_file(path_file, mimetype='image/jpeg')
 
     return "Image not found"
 

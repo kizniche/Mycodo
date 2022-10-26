@@ -211,7 +211,6 @@ def page_camera():
         if not utils_general.user_has_permission('edit_controllers'):
             return redirect(url_for('routes_page.page_camera'))
 
-        control = DaemonControl()
         mod_camera = Camera.query.filter(
             Camera.unique_id == form_camera.camera_id.data).first()
         if form_camera.camera_add.data:
