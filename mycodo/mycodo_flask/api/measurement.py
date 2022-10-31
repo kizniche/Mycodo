@@ -34,7 +34,7 @@ measurement_create_fields = ns_measurement.model('Measurement Create Fields', {
 })
 
 measurement_fields = ns_measurement.model('Measurement Fields', {
-    'time': fields.DateTime(dt_format='iso8601'),
+    'time': fields.Float,
     'value': fields.Float,
 })
 
