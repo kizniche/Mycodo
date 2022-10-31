@@ -436,7 +436,7 @@ class PIDController(AbstractController, threading.Thread):
             channel, unit, measurement = return_measurement_info(
                 device_measurement, conversion)
 
-            self.last_measurement = read_influxdb_single(
+            last_measurement = read_influxdb_single(
                 self.device_id,
                 unit,
                 channel,
@@ -444,22 +444,15 @@ class PIDController(AbstractController, threading.Thread):
                 duration_sec=int(self.max_measure_age),
                 value='LAST')
 
-            if self.last_measurement:
-                self.last_time = self.last_measurement[0]
-                self.last_measurement = self.last_measurement[1]
+            if last_measurement:
+                self.last_time = last_measurement[0] / 1000
+                self.last_measurement = last_measurement[1]
 
-                utc_dt = datetime.datetime.strptime(self.last_time.split(".")[0], '%Y-%m-%dT%H:%M:%S')
-                utc_timestamp = calendar.timegm(utc_dt.timetuple())
-                local_timestamp = str(datetime.datetime.fromtimestamp(utc_timestamp))
+                local_timestamp = str(datetime.datetime.fromtimestamp(self.last_time))
                 self.logger.debug(f"Latest (CH{channel}, Unit: {unit}): {self.last_measurement} @ {local_timestamp}")
-                if calendar.timegm(time.gmtime()) - utc_timestamp > self.max_measure_age:
-                    sec = calendar.timegm(time.gmtime()) - utc_timestamp
-                    self.logger.error(
-                        f"Last measurement was {sec} seconds ago, however the maximum "
-                        f"measurement age is set to {self.max_measure_age} seconds.")
                 self.last_measurement_success = True
             else:
-                self.logger.warning("No data returned from influxdb")
+                self.logger.warning("No data from the specified time period returned from influxdb")
         except requests.ConnectionError:
             self.logger.error("Failed to read measurement from the influxdb database: Could not connect.")
         except Exception:
