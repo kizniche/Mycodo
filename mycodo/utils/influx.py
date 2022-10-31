@@ -1,8 +1,9 @@
 # coding=utf-8
+import calendar
 import datetime
 import logging
-
 import requests
+from dateutil.parser import parse as date_parse
 
 from mycodo.databases.models import Conversion
 from mycodo.databases.models import DeviceMeasurements
@@ -189,14 +190,14 @@ def read_influxdb_single(unique_id, unit, channel,
                                 if datetime_obj:
                                     time = row.values['_time']
                                 else:
-                                    time = row.values['_time'].timestamp() * 1000
+                                    time = row.values['_time'].timestamp()
                                 return [time, row.values['_value']]
 
                     elif settings.measurement_db_version == '1':
                         number = len(data)
                         last_time = data[number - 1][0]
                         last_measurement = data[number - 1][1]
-                        return [last_time, last_measurement]
+                        return [date_parse(last_time).timestamp(), last_measurement]
             except Exception:
                 logger.exception("Error parsing the last influx measurement")
     except requests.exceptions.ConnectionError:
@@ -278,12 +279,15 @@ def read_influxdb_list(unique_id, unit, channel,
                         if datetime_obj:
                             time = row.values['_time']
                         else:
-                            time = row.values['_time'].timestamp() * 1000
+                            time = row.values['_time'].timestamp()
                         list_data.append((time, row.values['_value']))
                 return list_data
 
             elif settings.measurement_db_version == '1':
-                return data
+                list_data = []
+                for ts, value in data:
+                    list_data.append((date_parse(ts).timestamp(), value))
+                return list_data
     except:
         logger.debug("Could not read form influxdb.")
 
@@ -416,6 +420,32 @@ def valid_date_str(date_str):
         logger.exception(1)
         return False
     return True
+
+
+def influx1_to_list(data):
+    list_data = []
+    for each_data in data:
+        list_data.append((date_parse(each_data[0]).timestamp(), each_data[1]))
+    return list_data
+
+
+def influx2_to_list(data):
+    list_data = []
+    for table in data:
+        for row in table.records:
+            list_data.append((row.values['_time'].timestamp(), row.values['_value']))
+    return list_data
+
+
+def influxdb2_get_count_points(data):
+    for table in data:
+        return len(table.records)
+
+
+def influxdb2_get_first_point(data):
+    for table in data:
+        for row in table.records:
+            return row.values['_time']
 
 
 #

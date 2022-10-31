@@ -354,7 +354,7 @@ WIDGET_INFORMATION = {
           }
         }
         else {
-          const formattedTime = epoch_to_timestamp(data[0]);
+          const formattedTime = epoch_to_timestamp(data[0] * 1000);
           const measurement = data[1];
           if (document.getElementById('value-' + widget_id)) {
             document.getElementById('value-' + widget_id).innerHTML = measurement.toFixed(decimal_places);

@@ -147,7 +147,7 @@ WIDGET_INFORMATION = {
             document.getElementById('value-' + widget_id).innerHTML = 'NO DATA';
           }
           else {
-            const formattedTime = epoch_to_timestamp(data[0]);
+            const formattedTime = epoch_to_timestamp(data[0] * 1000);
             const measurement = data[1];
             if ((measurement && !invert) || (!measurement && invert)) {
               document.getElementById('value-' + widget_id).src = '/static/img/button-green.png';

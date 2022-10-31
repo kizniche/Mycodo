@@ -350,7 +350,7 @@ $(document).ready(function() {
           if (jqXHR.status !== 204) {
             let new_data = [];
             for (let i = 0; i < data.length; i++) {
-              const new_date = new Date(data[i][0]);
+              const new_date = new Date(data[i][0] * 1000);
               const new_time = new_date.getTime();
               new_data.push([new_time, data[i][1]]);
             }
@@ -370,7 +370,7 @@ $(document).ready(function() {
           if (jqXHR.status !== 204) {
             let new_data = [];
             for (let i = 0; i < data.length; i++) {
-              const new_date = new Date(data[i][0]);
+              const new_date = new Date(data[i][0] * 1000);
               const new_time = new_date.getTime();
               new_data.push([new_time, data[i][1]]);
             }

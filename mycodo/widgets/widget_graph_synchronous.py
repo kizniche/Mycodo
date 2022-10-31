@@ -22,11 +22,11 @@
 #  Contact at kylegabriel.com
 #
 import datetime
+import flask_login
 import json
 import logging
 import re
-
-import flask_login
+from dateutil.parser import parse as date_parse
 from flask import flash
 from flask import jsonify
 from flask_babel import lazy_gettext
@@ -123,11 +123,14 @@ def past_data(unique_id, measure_type, measurement_id, past_seconds):
                     list_data = []
                     for table in data:
                         for row in table.records:
-                            list_data.append((row.values['_time'].timestamp() * 1000, row.values['_value']))
+                            list_data.append((row.values['_time'].timestamp(), row.values['_value']))
                     return jsonify(list_data)
 
                 elif settings.measurement_db_version == '1':
-                    return jsonify(data)
+                    list_data = []
+                    for ts, value in data:
+                        list_data.append((date_parse(ts).timestamp(), value))
+                    return jsonify(list_data)
         except Exception as err:
             logger.debug(f"URL for 'past_data' raised and error: {err}")
             return '', 204
@@ -643,7 +646,7 @@ WIDGET_INFORMATION = {
 
           // Add the received data to the graph
           for (let i = 0; i < data.length; i++) {
-            const new_time = new Date(data[i][0]).getTime();
+            const new_time = new Date(data[i][0] * 1000).getTime();
 
             if (measure_type === 'tag') {
               if (!(note_key in note_timestamps)) note_timestamps[note_key] = [];
@@ -709,7 +712,7 @@ WIDGET_INFORMATION = {
 
           // Loop through data and add points to chart
           for (let i = 0; i < data.length; i++) {
-            const time_point_raw = new Date(data[i][0]);
+            const time_point_raw = new Date(data[i][0] * 1000);
             time_point = time_point_raw.getTime();
 
             if (measure_type === 'tag') {

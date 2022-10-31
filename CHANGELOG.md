@@ -1,4 +1,14 @@
-## 8.14.3 (Unreleased)
+## 8.15.0 (Unreleased)
+
+This release fixes several bugs and changes how measurement timestamps are returned from the time-series database.
+
+### InfluxDB Changes
+
+Since support for InfluxDB 2.x was added, in order to make data that's returned from the time-series database more consistent, all timestamps from internal Mycodo functions will be returned as a decimal epoch value. Please update any custom modules or code to incorporate this change.
+
+Previous behavior: InfluxDB 1.x returned data as a date/time string value (e.g. 2022-10-31T14:49:25.034447Z).
+
+New Behavior: InfluxDB 1.x returned data as an epoch float value (e.g. 1667228575.557).
 
 ### Features
 
@@ -34,6 +44,8 @@
  - Fix deprecated opencv dependency (update opencv to 4.6.0.66)
  - Fix urllib camera library not saving the correct file name
  - Fix missing image for Camera Widget when "Acquire Image (and erase last file)" selected
+ - Fix data type issue in PID controller when using InfluxDB 2.x ([#1232](https://github.com/kizniche/Mycodo/issues/1232))
+ - Fix various InfluxDB 2.x issues
 
 ### Miscellaneous
 

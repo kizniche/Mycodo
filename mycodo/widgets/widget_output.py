@@ -304,7 +304,7 @@ WIDGET_INFORMATION = {
           document.getElementById('timestamp-' + measurement_id).innerHTML = 'TOO OLD';
         }
         else {
-          const formattedTime = epoch_to_timestamp(data[0]);
+          const formattedTime = epoch_to_timestamp(data[0] * 1000);
           const measurement = data[1];
             document.getElementById('value-' + measurement_id).innerHTML = measurement.toFixed(decimal_places);
 

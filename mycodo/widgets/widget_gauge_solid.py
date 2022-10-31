@@ -271,7 +271,7 @@ WIDGET_INFORMATION = {
           widget[widget_id].series[0].points[0].update(null);
         }
         else {
-          const formattedTime = epoch_to_timestamp(data[0]);
+          const formattedTime = epoch_to_timestamp(data[0] * 1000);
           const measurement = data[1];
           widget[widget_id].series[0].points[0].update(measurement);
           //document.getElementById('timestamp-' + widget_id).innerHTML = formattedTime;

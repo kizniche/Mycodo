@@ -21,7 +21,6 @@
 #
 #  Contact at kylegabriel.com
 #
-import calendar
 import logging
 
 from dateutil.parser import parse as date_parse
@@ -31,10 +30,12 @@ from flask_login import current_user
 
 from mycodo.databases.models import Conversion
 from mycodo.databases.models import DeviceMeasurements
+from mycodo.databases.models import Misc
 from mycodo.databases.models import PID
 from mycodo.mycodo_client import DaemonControl
 from mycodo.mycodo_flask.utils.utils_general import user_has_permission
 from mycodo.utils.constraints_pass import constraints_pass_positive_value
+from mycodo.utils.database import db_retrieve_table_daemon
 from mycodo.utils.influx import query_string
 from mycodo.utils.system_pi import return_measurement_info
 from mycodo.utils.system_pi import str_is_float
@@ -56,18 +57,22 @@ def return_point_timestamp(dev_id, unit, period, measurement=None, channel=None)
         return [None, None]
 
     try:
-        number = len(data)
-        time_raw = data[number - 1][0]
-        value = data[number - 1][1]
-        value = f'{float(value):.3f}'
-        # Convert date-time to epoch (potential bottleneck for data)
-        dt = date_parse(time_raw)
-        timestamp = calendar.timegm(dt.timetuple()) * 1000
-        return [timestamp, value]
-    except KeyError:
-        return [None, None]
+        settings = db_retrieve_table_daemon(Misc, entry='first')
+        if settings.measurement_db_name == 'influxdb':
+            if settings.measurement_db_version == '2':
+                for table in data:
+                    for row in table.records:
+                        return [row.values['_time'].timestamp(), row.values['_value']]
+
+            elif settings.measurement_db_version == '1':
+                number = len(data)
+                last_time = data[number - 1][0]
+                last_measurement = data[number - 1][1]
+                return [date_parse(last_time).timestamp(), last_measurement]
     except Exception:
-        return [None, None]
+        logger.exception("Error parsing the last influx measurement")
+
+    return [None, None]
 
 
 def last_data_pid(pid_id, input_period):

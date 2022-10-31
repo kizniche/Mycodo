@@ -249,7 +249,7 @@ WIDGET_INFORMATION = {
           document.getElementById('timestamp-' + widget_id).innerHTML = 'MAX AGE EXCEEDED';
         }
         else {
-          const formattedTime = epoch_to_timestamp(data[0]);
+          const formattedTime = epoch_to_timestamp(data[0] * 1000);
           let measurement = data[1];
           
           if (invert_status) {

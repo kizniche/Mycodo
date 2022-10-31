@@ -468,11 +468,7 @@ class CustomModule(AbstractFunction):
                     elif self.options_channels['line_display_type'][current_channel] == 'measurement_ts':
                         if measure_ts:
                             # Convert UTC timestamp to local timezone
-                            utc_dt = datetime.datetime.strptime(
-                                measure_ts.split(".")[0], '%Y-%m-%dT%H:%M:%S')
-                            utc_timestamp = calendar.timegm(utc_dt.timetuple())
-                            lines_display[current_line] = str(
-                                datetime.datetime.fromtimestamp(utc_timestamp))
+                            lines_display[current_line] = str(datetime.datetime.fromtimestamp(measure_ts))
 
                 elif self.options_channels['line_display_type'][current_channel] == 'current_time':
                     lines_display[current_line] = time.strftime('%Y-%m-%d %H:%M:%S')

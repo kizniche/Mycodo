@@ -17,7 +17,7 @@
             document.getElementById(measure_string + "-value").innerHTML = "0";
           }
           else {
-            const time = data[0];
+            const time = data[0] * 1000;
             const measurement_val = parseFloat(data[1].toFixed(3)).toString();
             const date = new Date(parseFloat(time));
             const year = date.getFullYear();

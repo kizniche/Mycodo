@@ -391,6 +391,13 @@ case "${1:-''}" in
         INSTALL_FILE="influxdb_${INFLUXDB1_VERSION}_${MACHINE_TYPE}.deb"
         CORRECT_VERSION="${INFLUXDB1_VERSION}-1"
         CURRENT_VERSION=$(apt-cache policy influxdb | grep 'Installed' | gawk '{print $2}')
+
+        echo "#### Stopping influxdb 2.x (if installed)..."
+        service influxd stop
+
+        echo "#### Uninstalling influxdb 2.x (if installed)..."
+        DEBIAN_FRONTEND=noninteractive apt remove -y influxdb2 influxdb2-cli
+
         if [[ "${CURRENT_VERSION}" != "${CORRECT_VERSION}" ]]; then
             echo "#### Incorrect InfluxDB version (v${CURRENT_VERSION}) installed. Installing v${CORRECT_VERSION}..."
             wget --quiet "${INSTALL_ADDRESS}${INSTALL_FILE}"
@@ -409,6 +416,13 @@ case "${1:-''}" in
             CLI_FILE="influxdb2-client-${INFLUXDB2_VERSION}-${MACHINE_TYPE}.deb"
             CORRECT_VERSION="${INFLUXDB2_VERSION}-1"
             CURRENT_VERSION=$(apt-cache policy influxdb2 | grep 'Installed' | gawk '{print $2}')
+
+            echo "#### Stopping influxdb 1.x (if installed)..."
+            service influxdb stop
+
+            echo "#### Uninstalling influxdb 1.x (if installed)..."
+            DEBIAN_FRONTEND=noninteractive apt remove -y influxdb
+
             if [[ "${CURRENT_VERSION}" != "${CORRECT_VERSION}" ]]; then
                 echo "#### Incorrect InfluxDB version (v${CURRENT_VERSION}) installed. Installing v${CORRECT_VERSION}..."
                 wget --quiet "${INSTALL_ADDRESS}${INSTALL_FILE}"
@@ -432,7 +446,9 @@ case "${1:-''}" in
             # Check if influxdb has successfully started and be connected to
             printf "#### Attempting to connect...\n" &&
             curl -sL -I localhost:8086/ping > /dev/null &&
+            printf "#### Attempting to create database...\n" &&
             influx -execute "CREATE DATABASE mycodo_db" &&
+            printf "#### Attempting to set up user...\n" &&
             influx -database mycodo_db -execute "CREATE USER mycodo WITH PASSWORD 'mmdu77sj3nIoiajjs'" &&
             printf "#### Influxdb database and user successfully created\n" &&
             break ||
@@ -443,25 +459,30 @@ case "${1:-''}" in
         done
     ;;
     'update-influxdb-2-db-user')
-        printf "\n#### Creating InfluxDB 2.x database and user\n"
-        # Attempt to connect to influxdb 10 times, sleeping 60 seconds every fail
-        for _ in {1..10}; do
-            # Check if influxdb has successfully started and be connected to
-            printf "#### Attempting to connect...\n" &&
-            curl -sL -I localhost:8086/ping > /dev/null &&
-            influx setup \
-                   --org mycodo \
-                   --bucket mycodo_db \
-                   --username mycodo \
-                   --password mmdu77sj3nIoiajjs \
-                   --force
-            printf "#### Influxdb database and user successfully created\n" &&
-            break ||
-            # Else wait 60 seconds if the influxd port is not accepting connections
-            # Everything below will begin executing if an error occurs before the break
-            printf "#### Could not connect to Influxdb. Waiting 60 seconds then trying again...\n" &&
-            sleep 60
-        done
+        if influx config | grep -q 'mycodo'; then
+            printf "#### InfluxDB v2.x config already present, skipping DB/user creation...\n"
+        else
+            printf "\n#### Creating InfluxDB 2.x database and user\n"
+            # Attempt to connect to influxdb 10 times, sleeping 60 seconds every fail
+            for _ in {1..10}; do
+                # Check if influxdb has successfully started and be connected to
+                printf "#### Attempting to connect...\n" &&
+                curl -sL -I localhost:8086/ping > /dev/null &&
+                printf "#### Attempting to set up user...\n" &&
+                influx setup \
+                       --org mycodo \
+                       --bucket mycodo_db \
+                       --username mycodo \
+                       --password mmdu77sj3nIoiajjs \
+                       --force &&
+                printf "#### Influxdb database and user successfully created\n" &&
+                break ||
+                # Else wait 60 seconds if the influxd port is not accepting connections
+                # Everything below will begin executing if an error occurs before the break
+                printf "#### Could not connect to Influxdb. Waiting 60 seconds then trying again...\n" &&
+                sleep 60
+            done
+        fi
     ;;
     'update-logrotate')
         printf "\n#### Installing logrotate scripts\n"
