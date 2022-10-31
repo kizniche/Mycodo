@@ -308,7 +308,7 @@ FUNCTION_INFORMATION = {
         },
         {
             'id': 'measure_max_age',
-            'type': 'float',
+            'type': 'integer',
             'default_value': 360,
             'required': True,
             'constraints_pass': constraints_pass_positive_value,
