@@ -62,7 +62,7 @@ INPUT_INFORMATION = {
     'custom_commands': [
         {
             'type': 'message',
-            'default_value': """You can force the CO2 calibration for a specific CO2 concentration value (in ppmv)."""
+            'default_value': """You can force the CO2 calibration for a specific CO2 concentration value (in ppmv). The sensor needs to be active for at least 3 minutes prior to calibration."""
         },
         {
             'id': 'co2_concentration',
