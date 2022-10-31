@@ -62,7 +62,7 @@ INPUT_INFORMATION = {
     'custom_commands': [
         {
             'type': 'message',
-            'default_value': """You can force the CO2 calibration for a specific CO2 concentration value (in ppmv)."""
+            'default_value': """You can force the CO2 calibration for a specific CO2 concentration value (in ppmv). The sensor needs to be active for at least 3 minutes prior to calibration."""
         },
         {
             'id': 'co2_concentration',
@@ -197,7 +197,8 @@ class InputModule(AbstractInput):
             self.logger.error("CO2 Concentration required")
             return
         try:
-            self.sensor.force_calibration(float(args_dict['co2_concentration']))
+            self.sensor.force_calibration(int(args_dict['co2_concentration']))
+            self.sensor.start_periodic_measurement()
         except Exception as err:
             self.logger.error(
                 "Error setting CO2 Concentration: {}".format(err))
