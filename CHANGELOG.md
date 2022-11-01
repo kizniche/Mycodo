@@ -48,6 +48,7 @@ New Behavior: InfluxDB 1.x returned data as an epoch float value (e.g. 166722857
  - Fix data type issue in PID Controller when using InfluxDB 2.x ([#1232](https://github.com/kizniche/Mycodo/issues/1232))
  - Fix data type issue in LCD Functions when using InfluxDB 2.x ([#1239](https://github.com/kizniche/Mycodo/pull/1239))
  - Fix various InfluxDB 2.x issues
+ - Fix SHT31 Smart Gadget Input initialization
 
 ### Miscellaneous
 

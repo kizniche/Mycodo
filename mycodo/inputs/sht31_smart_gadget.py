@@ -154,13 +154,12 @@ class InputModule(AbstractInput):
         self.bt_adapter = self.input_dev.bt_adapter
         self.lock_file = '/var/lock/bluetooth_dev_hci{}'.format(self.bt_adapter)
 
-    def initialize(self):
         """Initialize the device by obtaining sensor information."""
         if not self.SHT31:
             self.logger.error("Error 101: Device not set up. See https://kizniche.github.io/Mycodo/Error-Codes#error-101 for more info.")
             return
 
-        self.logger.debug("Input Initializing (Initialized: {})".format(self.initialized))
+        self.logger.debug("Input Initializing")
 
         if not self.initialized:
             for _ in range(3):
@@ -203,6 +202,8 @@ class InputModule(AbstractInput):
                     sw=self.device_information['software_revision'],
                     sec=self.device_information['logger_interval_ms'] / 1000))
             self.initialized = True
+
+        self.logger.debug("Initialized: {}".format(self.initialized))
 
     def connect(self):
         # Make three attempts to connect
