@@ -145,7 +145,7 @@ def query_flux(unit, unique_id,
     query = f'from(bucket: \"{settings.measurement_db_dbname}\")'
 
     if past_sec:
-        query += f' |> range(start: -{past_sec}s)'
+        query += f' |> range(start: -{int(past_sec)}s)'
     elif start_str and end_str:
         query += f' |> range(start: {start_str}, stop: {end_str})'
     elif start_str:
