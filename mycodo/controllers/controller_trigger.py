@@ -155,6 +155,7 @@ class TriggerController(AbstractController, threading.Thread):
                 self.set_next_daily_time_span_run(time.time())
 
             if check_approved:
+                self.logger.debug("Executing Trigger Actions")
                 self.attempt_execute(self.check_triggers)
 
     def run_finally(self):
