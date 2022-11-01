@@ -44,7 +44,9 @@ New Behavior: InfluxDB 1.x returned data as an epoch float value (e.g. 166722857
  - Fix deprecated opencv dependency (update opencv to 4.6.0.66)
  - Fix urllib camera library not saving the correct file name
  - Fix missing image for Camera Widget when "Acquire Image (and erase last file)" selected
- - Fix data type issue in PID controller when using InfluxDB 2.x ([#1232](https://github.com/kizniche/Mycodo/issues/1232))
+ - Fix issues with SCD4x Input calibration ([#1234](https://github.com/kizniche/Mycodo/pull/1234))
+ - Fix data type issue in PID Controller when using InfluxDB 2.x ([#1232](https://github.com/kizniche/Mycodo/issues/1232))
+ - Fix data type issue in LCD Functions when using InfluxDB 2.x ([#1239](https://github.com/kizniche/Mycodo/pull/1239))
  - Fix various InfluxDB 2.x issues
 
 ### Miscellaneous
