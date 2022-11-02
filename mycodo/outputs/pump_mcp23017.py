@@ -10,6 +10,7 @@ from collections import OrderedDict
 
 from flask_babel import lazy_gettext
 
+from mycodo.config_translations import TRANSLATIONS
 from mycodo.databases.models import OutputChannel
 from mycodo.outputs.base_output import AbstractOutput
 from mycodo.utils.constraints_pass import constraints_pass_positive_value
@@ -84,6 +85,14 @@ OUTPUT_INFORMATION = {
                               "Fastest Rate (ml/min) field. Your pump should now be calibrated to dispense volumes "
                               "accurately." ,
     'custom_channel_options': [
+        {
+            'id': 'name',
+            'type': 'text',
+            'default_value': '',
+            'required': False,
+            'name': TRANSLATIONS['name']['title'],
+            'phrase': TRANSLATIONS['name']['phrase']
+        },
         {
             'id': 'on_state',
             'type': 'select',
