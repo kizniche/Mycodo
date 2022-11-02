@@ -1,6 +1,6 @@
 # Testing
-testfixtures==7.0.0
+testfixtures==7.0.2
 mock==4.0.3
-pytest==7.1.3
+pytest==7.2.0
 factory_boy==3.2.1
 webtest==3.0.0
