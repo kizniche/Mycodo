@@ -249,6 +249,7 @@ def login_password():
                         # flask-login user
                         login_user = User()
                         login_user.id = user.id
+                        login_user.name = user.name
                         remember_me = True if form_login.remember.data else False
                         flask_login.login_user(login_user, remember=remember_me)
 
@@ -339,6 +340,7 @@ def login_keypad_code(code):
             # flask-login user
             login_user = User()
             login_user.id = user.id
+            login_user.name = user.name
             remember_me = True
             flask_login.login_user(login_user, remember=remember_me)
 
@@ -410,6 +412,7 @@ def remote_admin_login():
     if user and str(user.password_hash) == str(password_hash):
         login_user = User()
         login_user.id = user.id
+        login_user.name = user.name
         flask_login.login_user(login_user, remember=False)
         return "Logged in via Remote Admin"
     else:
