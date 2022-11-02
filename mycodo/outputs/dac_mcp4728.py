@@ -246,9 +246,7 @@ class OutputModule(AbstractOutput):
                 return False
 
     def is_setup(self):
-        if self.output_setup:
-            return True
-        return False
+        return self.output_setup
 
     def stop_output(self):
         """Called when Output is stopped."""

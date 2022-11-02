@@ -286,9 +286,7 @@ class OutputModule(AbstractOutput):
             return False
 
     def is_setup(self):
-        if self.output_setup:
-            return True
-        return False
+        return self.output_setup
 
     def dispense_ml(self, args_dict):
         if 'dispense_volume_ml' not in args_dict:

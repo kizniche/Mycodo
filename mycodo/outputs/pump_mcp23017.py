@@ -202,6 +202,8 @@ class OutputModule(AbstractOutput):
                 except Exception as err:
                     self.logger.error(f"Could not check Trigger for channel {channel}: {err}")
 
+        self.output_setup = True
+
     def turn_on_off(self, switch_channel, state):
         msg = ""
         lf = LockFile()
@@ -382,6 +384,9 @@ class OutputModule(AbstractOutput):
     def is_on(self, output_channel=None):
         if self.is_setup():
             return self.output_states[output_channel]
+
+    def is_setup(self):
+        return self.output_setup
 
     def stop_output(self):
         """Called when Output is stopped."""

@@ -49,12 +49,14 @@ New Behavior: InfluxDB 1.x returned data as an epoch float value (e.g. 166722857
  - Fix data type issue in LCD Functions when using InfluxDB 2.x ([#1239](https://github.com/kizniche/Mycodo/pull/1239))
  - Fix various InfluxDB 2.x issues
  - Fix SHT31 Smart Gadget Input initialization
+ - Fix MCP23017 Pump Output initialization
 
 ### Miscellaneous
 
  - Improve verbosity of errors with Custom Modules
  - Make Function Status errors appear in the Function Status area of the UI
- - Update Python libraries
+ - Update ruuvitag-sensor from 1.1.0 to 2.0.0
+ - Update Mycodo Python libraries
 
 
 ## 8.14.2 (2022-08-20)
