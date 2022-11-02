@@ -28,6 +28,7 @@ from mycodo.tests.software_tests.factories import UserFactory
 from mycodo.utils.actions import parse_action_information
 from mycodo.utils.inputs import parse_input_information
 from mycodo.utils.outputs import parse_output_information
+from mycodo.utils.utils import random_alphanumeric
 from mycodo.utils.widgets import parse_widget_information
 
 
@@ -177,20 +178,25 @@ def test_api_measurement_post_get(_, testapp):
     """Verifies behavior of these API endpoints with an apikey in the header to post and get a measurement."""
     print("\nTest: test_api_measurement_post_get")
 
+    from datetime import datetime
+
     # Add two measurements
     measurements_random = [random.uniform(0.0, 100000.0), random.uniform(0.0, 100000.0)]
+    unique_id = random_alphanumeric(12)
     headers = {'Accept': 'application/vnd.mycodo.v1+json',
-               'X-API-KEY': base64.b64encode(b'secret_admin_api_key')}
+               'X-API-KEY': base64.b64encode(b'secret_admin_api_key'),
+               'Content-Type': 'application/json'}
     for each_measurement in measurements_random:
-        endpoint = 'measurements/create/testuniqueid/C/0/{val}'.format(val=each_measurement)
+        data = f'{{"timestamp": "{datetime.utcnow().strftime("%Y-%m-%dT%H:%M:%S.%fZ")}"}}'
+        endpoint = 'measurements/create/{id}/C/0/{val}'.format(id=unique_id, val=each_measurement)
         print("test_api_measurement_post_get: testapp.post('/api/{ep}')".format(ep=endpoint))
-        response = testapp.post('/api/{ep}'.format(ep=endpoint), headers=headers)
+        response = testapp.post('/api/{ep}'.format(ep=endpoint), data, headers)
         assert response.status_code == 200, "Endpoint Tested: {page}".format(page=endpoint)
         assert {"message": "Success"} == json.loads(response.text), "Unexpected HTTP Response: \n{body}".format(
             body=response.body)
 
     # Read last stored measurement
-    endpoint = 'measurements/last/testuniqueid/C/0/1000'
+    endpoint = 'measurements/last/{id}/C/0/1000'.format(id=unique_id)
     print("test_api_measurement_post_get: testapp.get('/api/{ep}')".format(ep=endpoint))
     response = testapp.get('/api/{ep}'.format(ep=endpoint), headers=headers)
     assert response.status_code == 200, "Endpoint Tested: {page}".format(page=endpoint)
@@ -202,7 +208,7 @@ def test_api_measurement_post_get(_, testapp):
     measurements_sum = 0
 
     # Read historical stored measurements
-    endpoint = 'measurements/historical/testuniqueid/C/0/{start}/{end}'.format(start=epoch_start, end=epoch_end)
+    endpoint = 'measurements/historical/{id}/C/0/{start}/{end}'.format(id=unique_id, start=epoch_start, end=epoch_end)
     print("test_api_measurement_post_get: testapp.get('/api/{ep}')".format(ep=endpoint))
     response = testapp.get('/api/{ep}'.format(ep=endpoint), headers=headers)
     assert response.status_code == 200, "Endpoint Tested: {page}".format(page=endpoint)
@@ -219,7 +225,7 @@ def test_api_measurement_post_get(_, testapp):
         body=response.body)
 
     # Read historical stored measurements (epoch_end = 0)
-    endpoint = 'measurements/historical/testuniqueid/C/0/{start}/{end}'.format(start=epoch_start, end=0)
+    endpoint = 'measurements/historical/{id}/C/0/{start}/{end}'.format(id=unique_id, start=epoch_start, end=0)
     print("test_api_measurement_post_get: testapp.get('/api/{ep}')".format(ep=endpoint))
     response = testapp.get('/api/{ep}'.format(ep=endpoint), headers=headers)
     assert response.status_code == 200, "Endpoint Tested: {page}".format(page=endpoint)
@@ -234,7 +240,7 @@ def test_api_measurement_post_get(_, testapp):
         body=response.body)
 
     # Read past stored measurements
-    endpoint = 'measurements/past/testuniqueid/C/0/5'.format()
+    endpoint = 'measurements/past/{id}/C/0/5'.format(id=unique_id)
     print("test_api_measurement_post_get: testapp.get('/api/{ep}')".format(ep=endpoint))
     response = testapp.get('/api/{ep}'.format(ep=endpoint), headers=headers)
     assert response.status_code == 200, "Endpoint Tested: {page}".format(page=endpoint)
