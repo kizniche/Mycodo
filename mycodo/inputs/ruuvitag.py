@@ -76,7 +76,7 @@ INPUT_INFORMATION = {
         ('pip-pypi', 'psutil', 'psutil==5.9.0'),
         ('apt', 'bluez', 'bluez'),
         ('apt', 'bluez-hcidump', 'bluez-hcidump'),
-        ('pip-pypi', 'ruuvitag_sensor', 'ruuvitag-sensor==1.1.0')
+        ('pip-pypi', 'ruuvitag_sensor', 'ruuvitag-sensor==2.0.0')
     ],
 
     'interfaces': ['BT'],
