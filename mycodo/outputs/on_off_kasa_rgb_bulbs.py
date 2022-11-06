@@ -324,6 +324,8 @@ class OutputModule(AbstractOutput):
         self.status_update_period = None
         self.asyncio_rpc_port = None
 
+        self.changing_state = False
+
         self.setup_custom_options(
             OUTPUT_INFORMATION['custom_options'], output)
 
@@ -517,6 +519,8 @@ class OutputModule(AbstractOutput):
     def bulb_change(self, state, transition=0):
         import aio_msgpack_rpc
 
+        self.changing_state = True
+
         async def bulb_change(port, state_, transition_):
             client = aio_msgpack_rpc.Client(*await asyncio.open_connection("127.0.0.1", port))
 
@@ -531,11 +535,12 @@ class OutputModule(AbstractOutput):
                 self.output_states[0] = state
                 self.logger.debug(f"Switching {'ON' if state_ else 'OFF'}: {msg}")
 
+            self.changing_state = False
+
         loop = asyncio.new_event_loop()
         asyncio.set_event_loop(loop)
         asyncio.get_event_loop()
         loop.run_until_complete(bulb_change(self.asyncio_rpc_port, state, transition))
-
 
     def bulb_hue(self, hue, transition_ms):
         import aio_msgpack_rpc
@@ -648,6 +653,9 @@ class OutputModule(AbstractOutput):
             self.logger.error(msg)
             return msg
 
+        while self.changing_state:
+            time.sleep(0.1)
+
         try:
             if state == 'on':
                 self.bulb_change(True)
@@ -674,11 +682,17 @@ class OutputModule(AbstractOutput):
 
     def set_hue(self, args_dict):
         if 'hue' not in args_dict:
-            self.logger.error("Cannot set without hue")
-            return
+            msg = "Cannot set hue without a value"
+            self.logger.error(msg)
+            return msg
         if not (0 <= args_dict['hue'] <= 360):
-            self.logger.error("Hue must be 0 - 360")
-            return
+            msg = "Hue must be 0 - 360"
+            self.logger.error(msg)
+            return msg
+        if not self.output_states[0]:
+            msg = "Cannot set hue when bulb is off"
+            self.logger.error(msg)
+            return msg
 
         transition_ms = 0
         if 'hue_transition_ms' in args_dict:
@@ -698,11 +712,17 @@ class OutputModule(AbstractOutput):
 
     def set_saturation(self, args_dict):
         if 'saturation' not in args_dict:
-            self.logger.error("Cannot set without saturation")
-            return
+            msg = "Cannot set saturation without a value"
+            self.logger.error(msg)
+            return msg
         if not (0 <= args_dict['saturation'] <= 100):
-            self.logger.error("Saturation must be 0 - 100")
-            return
+            msg = "Saturation must be 0 - 100"
+            self.logger.error(msg)
+            return msg
+        if not self.output_states[0]:
+            msg = "Cannot set saturation when bulb is off"
+            self.logger.error(msg)
+            return msg
 
         transition_ms = 0
         if 'saturation_transition_ms' in args_dict:
@@ -722,11 +742,17 @@ class OutputModule(AbstractOutput):
 
     def set_brightness(self, args_dict):
         if 'brightness' not in args_dict:
-            self.logger.error("Cannot set without brightness")
-            return
+            msg = "Cannot set brightness without a value"
+            self.logger.error(msg)
+            return msg
         if not (0 <= args_dict['brightness'] <= 100):
-            self.logger.error("Brightness must be 0 - 100")
-            return
+            msg = "Brightness must be 0 - 100"
+            self.logger.error(msg)
+            return msg
+        if not self.output_states[0]:
+            msg = "Cannot set brightness when bulb is off"
+            self.logger.error(msg)
+            return msg
 
         transition_ms = 0
         if 'brightness_transition_ms' in args_dict:
@@ -746,8 +772,14 @@ class OutputModule(AbstractOutput):
 
     def set_hsv(self, args_dict):
         if 'hsv' not in args_dict:
-            self.logger.error("Cannot set without hsv")
-            return
+            msg = "Cannot set hsv without a value"
+            self.logger.error(msg)
+            return msg
+        if not self.output_states[0]:
+            msg = "Cannot set hsv when bulb is off"
+            self.logger.error(msg)
+            return msg
+
         try:
             list_hsv = args_dict['hsv'].split(",")
             hue = int(list_hsv[0])
@@ -778,11 +810,17 @@ class OutputModule(AbstractOutput):
 
     def set_color_temperature(self, args_dict):
         if 'color_temperature' not in args_dict:
-            self.logger.error("Cannot set without color temperature")
-            return
+            msg = "Cannot set color temperature without a value"
+            self.logger.error(msg)
+            return msg
         if not (2500 <= args_dict['color_temperature'] <= 6500):
-            self.logger.error("Color Temperature must be 2500 - 6500")
-            return
+            msg = "Color Temperature must be 2500 - 6500"
+            self.logger.error(msg)
+            return msg
+        if not self.output_states[0]:
+            msg = "Cannot set color temperature when bulb is off"
+            self.logger.error(msg)
+            return msg
 
         transition_ms = 0
         if 'color_temperature_transition_ms' in args_dict:
