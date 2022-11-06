@@ -1,9 +1,9 @@
 <div class="col-12">
-  <strong>[{{_('Condition')}}] {{_('GPIO State')}}</strong>: <strong>self.condition("{{each_condition.unique_id.split('-')[0]}}")</strong> {{_('returns 1 if the output is HIGH and 0 if the output is LOW.')}}
+  <strong>[{{_('Condition')}}] {{_('GPIO State')}}</strong>: <strong>self.condition("{{each_condition.unique_id.split('-')[0]}}")</strong> {{_('returns True if the GPIO pin is HIGH and False if the GPIO pin is LOW. Do not use this for getting the state of an On/Off GPIO Output (if you do, it will change the GPIO Pin from OUTPUT to INPUT and stop it from working as an Output). Use the Output State Conditional to get the state of the Output.')}}
 </div>
 <div class="col-auto">
   {{form_conditional_conditions.gpio_pin.label(class_='control-label')}}
   <div>
-    {{form_conditional_conditions.gpio_pin(class_='form-control', value=each_condition.gpio_pin, **{'title':_('The GPIO pin to measure the state of. The return value will be True when HIGH and False when LOW.')})}}
+    {{form_conditional_conditions.gpio_pin(class_='form-control', value=each_condition.gpio_pin, **{'title':_('Set a GPIO pin to get the state of')})}}
   </div>
 </div>
