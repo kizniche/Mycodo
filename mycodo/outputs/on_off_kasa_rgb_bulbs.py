@@ -520,6 +520,7 @@ class OutputModule(AbstractOutput):
         import aio_msgpack_rpc
 
         self.changing_state = True
+        time.sleep(1)
 
         async def bulb_change(port, state_, transition_):
             client = aio_msgpack_rpc.Client(*await asyncio.open_connection("127.0.0.1", port))
@@ -681,6 +682,9 @@ class OutputModule(AbstractOutput):
         self.running = False
 
     def set_hue(self, args_dict):
+        while self.changing_state:
+            time.sleep(0.1)
+
         if 'hue' not in args_dict:
             msg = "Cannot set hue without a value"
             self.logger.error(msg)
@@ -711,6 +715,9 @@ class OutputModule(AbstractOutput):
         return f"Set Hue: {args_dict['hue']}, Transition: {transition_ms} ms"
 
     def set_saturation(self, args_dict):
+        while self.changing_state:
+            time.sleep(0.1)
+
         if 'saturation' not in args_dict:
             msg = "Cannot set saturation without a value"
             self.logger.error(msg)
@@ -741,6 +748,9 @@ class OutputModule(AbstractOutput):
         return f"Set Saturation: {args_dict['saturation']} %, Transition: {transition_ms} ms"
 
     def set_brightness(self, args_dict):
+        while self.changing_state:
+            time.sleep(0.1)
+
         if 'brightness' not in args_dict:
             msg = "Cannot set brightness without a value"
             self.logger.error(msg)
@@ -771,6 +781,9 @@ class OutputModule(AbstractOutput):
         return f"Set Brightness: {args_dict['brightness']} %, Transition: {transition_ms} ms"
 
     def set_hsv(self, args_dict):
+        while self.changing_state:
+            time.sleep(0.1)
+
         if 'hsv' not in args_dict:
             msg = "Cannot set hsv without a value"
             self.logger.error(msg)
@@ -809,6 +822,9 @@ class OutputModule(AbstractOutput):
         return f"Set HSV: {hsv} %, Transition: {transition_ms} ms"
 
     def set_color_temperature(self, args_dict):
+        while self.changing_state:
+            time.sleep(0.1)
+
         if 'color_temperature' not in args_dict:
             msg = "Cannot set color temperature without a value"
             self.logger.error(msg)
