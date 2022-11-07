@@ -451,7 +451,7 @@ WIDGET_INFORMATION = {
     'widget_dashboard_body': """<div class="not-draggable" id="container-synchronous-graph-{{each_widget.unique_id}}" style="position: absolute; left: 0; top: 0; bottom: 0; right: 0; overflow: hidden;"></div>""",
 
     'widget_dashboard_configure_options': """
-        <div class="form-row" style="padding-left: 0.5em; padding-top: 1em; padding-bottom: 0.5em">
+        <div class="row small-gutters" style="padding: 0.5em">
           <div class="col-12" style="font-weight: bold">
             Series Options
           </div>
@@ -463,7 +463,7 @@ WIDGET_INFORMATION = {
           </div>
         </div>
           {% for n in range(widget_variables['colors_graph']|length) %}
-        <div class="form-row">
+        <div class="row small-gutters" style="padding: 0.5em">
           <div class="col-12">
             {{widget_variables['colors_graph'][n]['type']}}
             {%- if 'channel' in widget_variables['colors_graph'][n] and widget_variables['colors_graph'][n]['channel'] is not none -%}
@@ -479,7 +479,7 @@ WIDGET_INFORMATION = {
               {{' (' + dict_units[widget_variables['colors_graph'][n]['unit']]['name'] + ')'}}
             {%- endif -%}
           </div>
-          <div class="form-check">
+          <div class="col-auto">
             {% set index = '{0:0>2}'.format(n) %}
             <label class="control-label" for="color_number{{index}}">Color</label>
             <div>
@@ -506,7 +506,7 @@ WIDGET_INFORMATION = {
         </div>
           {% endfor %}
 
-        <div class="form-row" style="padding-left: 0.5em; padding-top: 1em">
+        <div class="row small-gutters" style="padding: 0.5em">
           <div class="col-12" style="font-weight: bold">
             Y-Axis Options
           </div>
@@ -538,13 +538,13 @@ WIDGET_INFORMATION = {
 
       {% for each_yaxis in widget_variables['y_axes'] if each_yaxis in dict_units %}
         {% set index = '{0:0>2}'.format(loop.index) %}
-        <div class="row" style="padding-top: 0.5em">
+        <div class="row small-gutters" style="padding-left: 0.5em">
           <div class="col-auto">
             {{dict_units[each_yaxis]['name']}}{% if dict_units[each_yaxis]['unit'] != '' %} ({{dict_units[each_yaxis]['unit']}}){% endif %}
           </div>
         </div>
 
-        <div class="form-row">
+        <div class="row small-gutters" style="padding-left: 0.5em">
           <input type="hidden" name="custom_yaxis_name_{{index}}" value="{{each_yaxis}}">
           <div class="col-auto">
             <label class="form-check-label" for="custom_yaxis_min_{{index}}">Y-Axis Minimum</label>

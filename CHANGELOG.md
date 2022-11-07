@@ -60,6 +60,7 @@ New Behavior: InfluxDB 1.x returned data as an epoch float value (e.g. 166722857
  - Update ruuvitag-sensor from 1.1.0 to 2.0.0
  - Update Mycodo Python libraries
  - Move toast popup messages from top-right to top-left
+ - Move buttons to the top of the Dashboard Configuration
 
 
 ## 8.14.2 (2022-08-20)
