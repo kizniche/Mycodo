@@ -395,18 +395,14 @@ def export_data(unique_id, measurement_id, start_seconds, end_seconds):
             if settings.measurement_db_version == '2':
                 for table in _data:
                     for row in table.records:
-                        writer.writerow([
-                            row.values['_time'].timestamp(), row.values['_value']
-                        ])
+                        writer.writerow([row.values['_time'].timestamp(), row.values['_value']])
                         line.seek(0)
                         yield line.read()
                         line.truncate(0)
                         line.seek(0)
             elif settings.measurement_db_version == '1':
                 for csv_line in _data:
-                    writer.writerow([
-                        date_parse(csv_line[0]).timestamp(), csv_line[1]
-                    ])
+                    writer.writerow([date_parse(csv_line[0]).timestamp(), csv_line[1]])
                     line.seek(0)
                     yield line.read()
                     line.truncate(0)

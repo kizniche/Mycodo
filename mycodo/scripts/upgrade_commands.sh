@@ -392,14 +392,17 @@ case "${1:-''}" in
         CORRECT_VERSION="${INFLUXDB1_VERSION}-1"
         CURRENT_VERSION=$(apt-cache policy influxdb | grep 'Installed' | gawk '{print $2}')
 
-        echo "#### Stopping influxdb 2.x (if installed)..."
-        service influxd stop
-
-        echo "#### Uninstalling influxdb 2.x (if installed)..."
-        DEBIAN_FRONTEND=noninteractive apt remove -y influxdb2 influxdb2-cli
-
         if [[ "${CURRENT_VERSION}" != "${CORRECT_VERSION}" ]]; then
-            echo "#### Incorrect InfluxDB version (v${CURRENT_VERSION}) installed. Installing v${CORRECT_VERSION}..."
+            echo "#### Incorrect InfluxDB version (v${CURRENT_VERSION}) installed."
+
+            echo "#### Stopping influxdb 2.x (if installed)..."
+            service influxd stop
+
+            echo "#### Uninstalling influxdb 2.x (if installed)..."
+            DEBIAN_FRONTEND=noninteractive apt remove -y influxdb2 influxdb2-cli
+
+            echo "#### Installing InfluxDB v${CORRECT_VERSION}..."
+
             wget --quiet "${INSTALL_ADDRESS}${INSTALL_FILE}"
             dpkg -i "${INSTALL_FILE}"
             rm -rf "${INSTALL_FILE}"
@@ -417,14 +420,17 @@ case "${1:-''}" in
             CORRECT_VERSION="${INFLUXDB2_VERSION}-1"
             CURRENT_VERSION=$(apt-cache policy influxdb2 | grep 'Installed' | gawk '{print $2}')
 
-            echo "#### Stopping influxdb 1.x (if installed)..."
-            service influxdb stop
-
-            echo "#### Uninstalling influxdb 1.x (if installed)..."
-            DEBIAN_FRONTEND=noninteractive apt remove -y influxdb
-
             if [[ "${CURRENT_VERSION}" != "${CORRECT_VERSION}" ]]; then
-                echo "#### Incorrect InfluxDB version (v${CURRENT_VERSION}) installed. Installing v${CORRECT_VERSION}..."
+                echo "#### Incorrect InfluxDB version (v${CURRENT_VERSION}) installed."
+
+                echo "#### Stopping influxdb 1.x (if installed)..."
+                service influxdb stop
+
+                echo "#### Uninstalling influxdb 1.x (if installed)..."
+                DEBIAN_FRONTEND=noninteractive apt remove -y influxdb
+
+                echo "#### Installing InfluxDB v${CORRECT_VERSION}..."
+
                 wget --quiet "${INSTALL_ADDRESS}${INSTALL_FILE}"
                 wget --quiet "${INSTALL_ADDRESS}${CLI_FILE}"
                 dpkg -i "${INSTALL_FILE}"

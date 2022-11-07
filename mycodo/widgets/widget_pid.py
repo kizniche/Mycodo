@@ -23,56 +23,34 @@
 #
 import logging
 
-from dateutil.parser import parse as date_parse
 from flask import jsonify
 from flask_babel import lazy_gettext
 from flask_login import current_user
 
 from mycodo.databases.models import Conversion
 from mycodo.databases.models import DeviceMeasurements
-from mycodo.databases.models import Misc
 from mycodo.databases.models import PID
 from mycodo.mycodo_client import DaemonControl
 from mycodo.mycodo_flask.utils.utils_general import user_has_permission
 from mycodo.utils.constraints_pass import constraints_pass_positive_value
-from mycodo.utils.database import db_retrieve_table_daemon
-from mycodo.utils.influx import query_string
+from mycodo.utils.influx import read_influxdb_single
 from mycodo.utils.system_pi import return_measurement_info
 from mycodo.utils.system_pi import str_is_float
 
 logger = logging.getLogger(__name__)
 
 
-
 def return_point_timestamp(dev_id, unit, period, measurement=None, channel=None):
-    data = query_string(
-        unit,
-        dev_id,
+    last_measurement = read_influxdb_single(
+        dev_id, unit, channel,
         measure=measurement,
-        channel=channel,
         value='LAST',
-        past_sec=period)
+        duration_sec=period)
 
-    if not data:
+    if not last_measurement:
         return [None, None]
 
-    try:
-        settings = db_retrieve_table_daemon(Misc, entry='first')
-        if settings.measurement_db_name == 'influxdb':
-            if settings.measurement_db_version == '2':
-                for table in data:
-                    for row in table.records:
-                        return [row.values['_time'].timestamp(), row.values['_value']]
-
-            elif settings.measurement_db_version == '1':
-                number = len(data)
-                last_time = data[number - 1][0]
-                last_measurement = data[number - 1][1]
-                return [date_parse(last_time).timestamp(), last_measurement]
-    except Exception:
-        logger.exception("Error parsing the last influx measurement")
-
-    return [None, None]
+    return last_measurement
 
 
 def last_data_pid(pid_id, input_period):
@@ -427,7 +405,7 @@ WIDGET_INFORMATION = {
     } else if (document.getElementById(name + '-timestamp-' + widget_id)) {
       document.getElementById(name + '-timestamp-' + widget_id).innerHTML = 'MAX AGE EXCEEDED';
     }
-    if (data[name][1] && document.getElementById(name + '-' + widget_id)) {
+    if (data[name][1] >= 0 && document.getElementById(name + '-' + widget_id)) {
       const value = parseFloat(data[name][1]).toFixed(decimal_places);
       document.getElementById(name + '-' + widget_id).innerHTML = value + units;
     } else if (document.getElementById(name + '-' + widget_id)) {

@@ -51,6 +51,7 @@ New Behavior: InfluxDB 1.x returned data as an epoch float value (e.g. 166722857
  - Fix SHT31 Smart Gadget Input initialization
  - Fix MCP23017 Pump Output initialization
  - Fix race condition with Kasa RGB Bulb that could sometimes turn it back on after turning off
+ - Fix digits not properly displaying on PID Controller Widget
 
 ### Miscellaneous
 

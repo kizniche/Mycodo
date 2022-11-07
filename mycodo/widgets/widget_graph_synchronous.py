@@ -22,11 +22,11 @@
 #  Contact at kylegabriel.com
 #
 import datetime
-import flask_login
 import json
 import logging
 import re
-from dateutil.parser import parse as date_parse
+
+import flask_login
 from flask import flash
 from flask import jsonify
 from flask_babel import lazy_gettext
@@ -38,14 +38,13 @@ from mycodo.databases.models import CustomController
 from mycodo.databases.models import DeviceMeasurements
 from mycodo.databases.models import Input
 from mycodo.databases.models import Measurement
-from mycodo.databases.models import Misc
 from mycodo.databases.models import NoteTags
 from mycodo.databases.models import Notes
 from mycodo.databases.models import Output
 from mycodo.databases.models import PID
 from mycodo.mycodo_flask.utils.utils_general import use_unit_generate
 from mycodo.utils.constraints_pass import constraints_pass_positive_value
-from mycodo.utils.influx import query_string
+from mycodo.utils.influx import read_influxdb_list
 from mycodo.utils.system_pi import add_custom_measurements
 from mycodo.utils.system_pi import return_measurement_info
 from mycodo.utils.system_pi import str_is_float
@@ -108,29 +107,16 @@ def past_data(unique_id, measure_type, measurement_id, past_seconds):
                     _, unit, measurement = return_measurement_info(setpoint_measurement, conversion)
 
         try:
-            data = query_string(
-                unit, unique_id,
-                measure=measurement,
+            list_data = read_influxdb_list(
+                unique_id, unit,
                 channel=channel,
-                past_sec=past_seconds)
+                measure=measurement,
+                duration_sec=past_seconds)
 
-            if not data:
+            if not list_data:
                 return '', 204
 
-            settings = Misc.query.first()
-            if settings.measurement_db_name == 'influxdb':
-                if settings.measurement_db_version == '2':
-                    list_data = []
-                    for table in data:
-                        for row in table.records:
-                            list_data.append((row.values['_time'].timestamp(), row.values['_value']))
-                    return jsonify(list_data)
-
-                elif settings.measurement_db_version == '1':
-                    list_data = []
-                    for ts, value in data:
-                        list_data.append((date_parse(ts).timestamp(), value))
-                    return jsonify(list_data)
+            return jsonify(list_data)
         except Exception as err:
             logger.debug(f"URL for 'past_data' raised and error: {err}")
             return '', 204
