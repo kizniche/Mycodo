@@ -114,6 +114,12 @@ Log out then back in for the group addition to take effect.
 make build
 ```
 
+#### Run with docker-compose
+
+```shell script
+make run
+```
+
 If all goes as planned, you should have all containers build and start without issue.
 
 ## Access
