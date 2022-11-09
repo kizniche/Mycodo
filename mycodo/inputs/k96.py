@@ -157,13 +157,13 @@ class InputModule(AbstractInput):
         for channel, params in measurements_dict.items():
             value = None
 
-            if channel == 11:
+            if channel == 11 and self.value_get(8) and self.value_get(7):
                 value = calculate_dewpoint(
                     self.value_get(8), self.value_get(7))
-            elif channel == 12:
+            elif channel == 12 and self.value_get(6):
                 value = calculate_altitude(
                     convert_from_x_to_y_unit('hPa', 'Pa', self.value_get(6)))
-            elif channel == 13:
+            elif channel == 13 and self.value_get(8) and self.value_get(7):
                 value = calculate_vapor_pressure_deficit(
                     self.value_get(8), self.value_get(7))
             else:
