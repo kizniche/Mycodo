@@ -152,7 +152,7 @@ MEASUREMENTS = {
     'humidity': {
         'name': lazy_gettext('Humidity'),
         'meas': 'humidity',
-        'units': ['percent', 'decimal']},
+        'units': ['decimal', 'percent', 'ppb', 'ppm', 'ppt']},
     'humidity_ratio': {
         'name': lazy_gettext('Humidity Ratio'),
         'meas': 'humidity_ratio',
@@ -173,6 +173,10 @@ MEASUREMENTS = {
         'name': lazy_gettext('Magnetic Flux Density'),
         'meas': 'magnetic_flux_density',
         'units': ['uT']},
+    'methane': {
+        'name': lazy_gettext('Methane'),
+        'meas': 'methane',
+        'units': ['ppm', 'ppb', 'percent']},
     'moisture': {
         'name': lazy_gettext('Moisture'),
         'meas': 'moisture',
