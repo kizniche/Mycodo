@@ -22,7 +22,6 @@ INFLUXDB1_VERSION="1.8.10"
 INFLUXDB2_VERSION="2.2.0"
 
 VIRTUALENV_VERSION="20.14.1"
-SETUPTOOLS_VERSION="65.5.0"  # Also set version in install/requirements.txt
 
 # Required apt packages. This has been tested with Raspbian for the
 # Raspberry Pi and Ubuntu, it should work with most Debian-based systems.
@@ -540,7 +539,6 @@ case "${1:-''}" in
         if [[ ! -d ${MYCODO_PATH}/env ]]; then
             printf "\n## Error: Virtualenv doesn't exist. Create with %s setup-virtualenv\n" "${0}"
         else
-            "${MYCODO_PATH}"/env/bin/python -m pip install --upgrade pip setuptools=="${SETUPTOOLS_VERSION}"
             "${MYCODO_PATH}"/env/bin/python -m pip install --upgrade -r "${MYCODO_PATH}"/install/requirements.txt
             "${MYCODO_PATH}"/env/bin/python -m pip install --upgrade -r "${MYCODO_PATH}"/install/requirements-testing.txt
         fi
@@ -676,7 +674,6 @@ case "${1:-''}" in
         if [[ ! -d ${MYCODO_PATH}/env ]]; then
             printf "\n## Error: Virtualenv doesn't exist. Create with %s setup-virtualenv\n" "${0}"
         else
-            "${MYCODO_PATH}"/env/bin/python -m pip install --upgrade pip setuptools=="${SETUPTOOLS_VERSION}"
             "${MYCODO_PATH}"/env/bin/python -m pip install --no-cache-dir -r /home/mycodo/install/requirements.txt
         fi
     ;;

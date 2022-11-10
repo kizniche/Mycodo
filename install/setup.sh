@@ -9,6 +9,11 @@ INSTALL_DIRECTORY=$( cd "$( dirname "${BASH_SOURCE[0]}" )/.." && pwd -P )
 INSTALL_CMD="/bin/bash ${INSTALL_DIRECTORY}/mycodo/scripts/upgrade_commands.sh"
 LOG_LOCATION=${INSTALL_DIRECTORY}/install/setup.log
 
+# Fix for below issue(s)
+# https://github.com/pypa/setuptools/issues/3278
+# https://github.com/kizniche/Mycodo/issues/1149
+export SETUPTOOLS_USE_DISTUTILS=stdlib
+
 if [ "$EUID" -ne 0 ]; then
     printf "Must be run as root: \"sudo /bin/bash %s/install/setup.sh\"\n" "${INSTALL_DIRECTORY}"
     exit 1
