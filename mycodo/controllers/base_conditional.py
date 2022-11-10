@@ -80,12 +80,11 @@ class AbstractConditional:
         if cond:
             full_cond_id = cond.unique_id
 
-        string_sets = self.control.get_condition_measurement_dict(full_cond_id)
-        if string_sets:
+        list_times_values = self.control.get_condition_measurement_dict(full_cond_id)
+        if list_times_values:
             list_ts_values = []
-            for each_set in string_sets.split(';'):
-                ts_value = each_set.split(',')
-                list_ts_values.append({'time': ts_value[0], 'value': float(ts_value[1])})
+            for time, value in list_times_values:
+                list_ts_values.append({'time': time, 'value': float(value)})
             return list_ts_values
         return None
 

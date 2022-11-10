@@ -509,6 +509,7 @@ case "${1:-''}" in
         printf "\n#### Installing prerequisite apt packages and update pip\n"
         apt remove -y apache2
         apt install -y ${APT_PKGS}
+        apt clean
         python3 -m pip install --upgrade pip
     ;;
     'update-permissions')
@@ -542,6 +543,9 @@ case "${1:-''}" in
             "${MYCODO_PATH}"/env/bin/python -m pip install --upgrade -r "${MYCODO_PATH}"/install/requirements.txt
             "${MYCODO_PATH}"/env/bin/python -m pip install --upgrade -r "${MYCODO_PATH}"/install/requirements-testing.txt
         fi
+    ;;
+    'pip-clear-cache')
+      "${MYCODO_PATH}"/env/bin/python -m pip cache remove *
     ;;
     'update-swap-size')
         printf "\n#### Checking if swap size is 100 MB and needs to be changed to 512 MB\n"

@@ -265,16 +265,7 @@ def get_condition_value_dict(condition_id):
         past_measurements_dict = get_past_measurements(
             device_id, measurement_id, max_age=max_age)
 
-        # TODO: Change to return dictionary in next major release
-        string_ts_values = ''
-        if past_measurements_dict:
-            string_ts_values = ''
-            for index, each_set in enumerate(past_measurements_dict):
-                string_ts_values += '{},{}'.format(each_set[0], each_set[1])
-                if index + 1 < len(past_measurements_dict):
-                    string_ts_values += ';'
-
-        return string_ts_values
+        return past_measurements_dict
 
 
 def action_video(cond_action, message):

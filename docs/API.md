@@ -21,11 +21,11 @@ curl -k -v -X GET "https://127.0.0.1/api/settings/users" -H "authorization: Basi
 ```
 
 ```bash
-curl -k -v -x GET "https://127.0.0.1/api/settings/users -H "X-API-KEY: 0scjVcxRGi0XczregANBRXG3VMMro+oolPYdauadLblaNThd79bzFPITJjYneU1yK/Ikc9ahHXmll9JiKZO9+hogKoIp2Q8a2cMFBGevgJSd5jYVYz5D83dFE5+OBvvKKaN1U5TvPOXXcj3lkjvPzgxOnEF0CZUsKfU3MA3cFEs=" -H "accept: application/vnd.mycodo.v1+json"
+curl -k -v -X GET "https://127.0.0.1/api/settings/users" -H "X-API-KEY: 0scjVcxRGi0XczregANBRXG3VMMro+oolPYdauadLblaNThd79bzFPITJjYneU1yK/Ikc9ahHXmll9JiKZO9+hogKoIp2Q8a2cMFBGevgJSd5jYVYz5D83dFE5+OBvvKKaN1U5TvPOXXcj3lkjvPzgxOnEF0CZUsKfU3MA3cFEs=" -H "accept: application/vnd.mycodo.v1+json"
 ```
 
 ```bash
-curl -k -v -x GET "https://127.0.0.1/api/settings/users?api_key=0scjVcxRGi0XczregANBRXG3VMMro+oolPYdauadLblaNThd79bzFPITJjYneU1yK/Ikc9ahHXmll9JiKZO9+hogKoIp2Q8a2cMFBGevgJSd5jYVYz5D83dFE5+OBvvKKaN1U5TvPOXXcj3lkjvPzgxOnEF0CZUsKfU3MA3cFEs=" -H "accept: application/vnd.mycodo.v1+json"
+curl -k -v -X GET "https://127.0.0.1/api/settings/users?api_key=0scjVcxRGi0XczregANBRXG3VMMro+oolPYdauadLblaNThd79bzFPITJjYneU1yK/Ikc9ahHXmll9JiKZO9+hogKoIp2Q8a2cMFBGevgJSd5jYVYz5D83dFE5+OBvvKKaN1U5TvPOXXcj3lkjvPzgxOnEF0CZUsKfU3MA3cFEs=" -H "accept: application/vnd.mycodo.v1+json"
 ```
 
 ### Python Example (GET)
@@ -38,8 +38,10 @@ ip_address = '127.0.0.1'
 api_key = 'YOUR_API_KEY'
 endpoint = 'settings/inputs'
 url = 'https://{ip}/api/{ep}'.format(ip=ip_address, ep=endpoint)
-headers = {'Accept': 'application/vnd.mycodo.v1+json',
-           'X-API-KEY': api_key}
+headers = {
+    'Accept': 'application/vnd.mycodo.v1+json',
+    'X-API-KEY': api_key
+}
 response = requests.get(url, headers=headers, verify=False)
 print("Response Status: {}".format(response.status_code))
 print("Response Headers: {}".format(response.headers))
@@ -61,8 +63,10 @@ api_key = 'YOUR_API_KEY'
 endpoint = 'outputs/3f5a4806-c830-432d-b329-7821da8336e4'
 url = 'https://{ip}/api/{ep}'.format(ip=ip_address, ep=endpoint)
 data = {"state": True}  # Turn Output On
-headers = {'Accept': 'application/vnd.mycodo.v1+json',
-           'X-API-KEY': api_key}
+headers = {
+    'Accept': 'application/vnd.mycodo.v1+json',
+    'X-API-KEY': api_key
+}
 response = requests.post(url, json=data, headers=headers, verify=False)
 print("Response Status: {}".format(response.status_code))
 print("Response Headers: {}".format(response.headers))

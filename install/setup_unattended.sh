@@ -2,8 +2,8 @@
 #
 #  setup_unattended.sh - Mycodo install script (unattended version)
 #
-#  Usage: sudo /bin/bash ~/Mycodo/install/setup_unattended.sh
-#
+#  Usage: sudo /bin/bash ~/Mycodo/install/setup_unattended.sh [influx-option]
+#  influx-option can be 1 (install influxdb 1.x), 2 (install influxdb 2.x), or 0 (don't install influxdb)
 
 INSTALL_DIRECTORY=$( cd "$( dirname "${BASH_SOURCE[0]}" )/.." && pwd -P )
 INSTALL_CMD="/bin/bash ${INSTALL_DIRECTORY}/mycodo/scripts/upgrade_commands.sh"
@@ -15,7 +15,7 @@ LOG_LOCATION=${INSTALL_DIRECTORY}/install/setup.log
 export SETUPTOOLS_USE_DISTUTILS=stdlib
 
 if [ "$EUID" -ne 0 ]; then
-    printf "Must be run as root: \"sudo /bin/bash %s/install/setup_unattended.sh\"\n" "${INSTALL_DIRECTORY}"
+    printf "Must be run as root: \"sudo /bin/bash %s/install/setup_unattended.sh [influx-option]\"\n" "${INSTALL_DIRECTORY}"
     exit 1
 fi
 
@@ -34,7 +34,23 @@ else
 fi
 
 NOW=$(date)
-printf "### Mycodo installation initiated %s\n" "${NOW}" 2>&1 | tee -a "${LOG_LOCATION}"
+printf "### Mycodo installation initiated %s\n\n" "${NOW}" 2>&1 | tee -a "${LOG_LOCATION}"
+
+case "${1:-''}" in
+    '1')
+        printf "#### Installing Mycodo with Influxdb 1.x\n"
+    ;;
+    '2')
+        printf "#### Installing Mycodo with Influxdb 2.x\n"
+    ;;
+    '0')
+        printf "#### Installing Mycodo without installing Influxdb\n"
+    ;;
+    *)
+        printf "Error: Unrecognized command: %s\n" "${1}"
+        exit 1
+    ;;
+esac
 
 abort()
 {
@@ -73,9 +89,17 @@ ${INSTALL_CMD} update-packages 2>&1 | tee -a "${LOG_LOCATION}"
 ${INSTALL_CMD} setup-virtualenv 2>&1 | tee -a "${LOG_LOCATION}"
 ${INSTALL_CMD} update-pip3 2>&1 | tee -a "${LOG_LOCATION}"
 ${INSTALL_CMD} update-pip3-packages 2>&1 | tee -a "${LOG_LOCATION}"
+${INSTALL_CMD} pip-clear-cache 2>&1 | tee -a "${LOG_LOCATION}"
 ${INSTALL_CMD} install-wiringpi 2>&1 | tee -a "${LOG_LOCATION}"
-${INSTALL_CMD} update-influxdb-1 2>&1 | tee -a "${LOG_LOCATION}"
-${INSTALL_CMD} update-influxdb-1-db-user 2>&1 | tee -a "${LOG_LOCATION}"
+if [[ ${1} == '1' ]]; then
+    ${INSTALL_CMD} update-influxdb-1 2>&1 | tee -a "${LOG_LOCATION}"
+    ${INSTALL_CMD} update-influxdb-1-db-user 2>&1 | tee -a "${LOG_LOCATION}"
+elif [[ ${1} == '2' ]]; then
+    ${INSTALL_CMD} update-influxdb-2 2>&1 | tee -a "${LOG_LOCATION}"
+    ${INSTALL_CMD} update-influxdb-2-db-user 2>&1 | tee -a "${LOG_LOCATION}"
+elif [[ ${1} == '0' ]]; then
+    printf "Instructed to not install Influxdb/n"
+fi
 ${INSTALL_CMD} initialize 2>&1 | tee -a "${LOG_LOCATION}"
 ${INSTALL_CMD} update-logrotate 2>&1 | tee -a "${LOG_LOCATION}"
 ${INSTALL_CMD} ssl-certs-generate 2>&1 | tee -a "${LOG_LOCATION}"
