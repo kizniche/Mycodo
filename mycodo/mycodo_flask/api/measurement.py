@@ -52,7 +52,7 @@ measurement_function_fields = ns_measurement.model('Measurement Function Fields'
     security='apikey',
     responses=default_responses,
     params={
-        'unique_id': 'The unique ID of the measurement',
+        'unique_id': 'The unique ID of the device',
         'unit': 'The unit of the measurement',
         'channel': 'The channel of the measurement',
         'value': 'the value of the measurement'
@@ -108,7 +108,7 @@ class MeasurementsCreate(Resource):
     security='apikey',
     responses=default_responses,
     params={
-        'unique_id': 'The unique ID of the measurement',
+        'unique_id': 'The unique ID of the device',
         'unit': 'The unit of the measurement',
         'channel': 'The channel of the measurement',
         'epoch_start': 'The start time, as epoch. Set to 0 for none.',
@@ -173,7 +173,7 @@ class MeasurementsHistorical(Resource):
     security='apikey',
     responses=default_responses,
     params={
-        'unique_id': 'The unique ID of the measurement',
+        'unique_id': 'The unique ID of the device',
         'unit': 'The unit of the measurement',
         'channel': 'The channel of the measurement',
         'past_seconds': 'How many seconds in the past to query.'
@@ -217,7 +217,7 @@ class MeasurementsLast(Resource):
     security='apikey',
     responses=default_responses,
     params={
-        'unique_id': 'The unique ID of the measurement',
+        'unique_id': 'The unique ID of the device',
         'unit': 'The unit of the measurement',
         'channel': 'The channel of the measurement',
         'past_seconds': 'How many seconds in the past to query.'

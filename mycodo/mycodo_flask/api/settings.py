@@ -252,7 +252,9 @@ class SettingsMeasurementsUniqueID(Resource):
             abort(403)
         try:
             dict_data = get_from_db(
-                MeasurementSchema, Measurement, unique_id=unique_id)
+                MeasurementSchema,
+                Measurement,
+                unique_id=unique_id)
             if dict_data:
                 return dict_data, 200
         except Exception:
