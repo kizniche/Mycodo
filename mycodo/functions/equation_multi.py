@@ -70,6 +70,7 @@ FUNCTION_INFORMATION = {
             'default_value': '',
             'options_select': [
                 'Input',
+                'Output',
                 'Function'
             ],
             'name': '{}: A'.format(lazy_gettext("Measurement")),
@@ -89,6 +90,7 @@ FUNCTION_INFORMATION = {
             'default_value': '',
             'options_select': [
                 'Input',
+                'Output',
                 'Function'
             ],
             'name': '{}: B'.format(lazy_gettext("Measurement")),

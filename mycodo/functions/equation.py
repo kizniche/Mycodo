@@ -70,6 +70,7 @@ FUNCTION_INFORMATION = {
             'default_value': '',
             'options_select': [
                 'Input',
+                'Output',
                 'Function'
             ],
             'name': 'Measurement',

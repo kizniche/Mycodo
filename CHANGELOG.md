@@ -25,6 +25,7 @@ New Behavior: InfluxDB 1.x returned data as an epoch float value (e.g. 166722857
  - Add language selection on Admin Creation and Login pages
  - Add ability to select Outputs in Output Modules
  - Add ability to average measurements in Verification Function
+ - Add ability to select Output Measurements in Equation Functions
 
 ### Bugfixes
 
