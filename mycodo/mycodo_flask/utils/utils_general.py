@@ -121,6 +121,7 @@ def custom_options_return_string(error, dict_options, mod_dev, request_form):
                     elif each_option['type'] in [
                             'text',
                             'select',
+                            'select_custom_choices',
                             'select_measurement',
                             'select_channel',
                             'select_measurement_channel',
@@ -256,6 +257,7 @@ def custom_options_return_json(
                                 'multiline_text',
                                 'text',
                                 'select',
+                                'select_custom_choices',
                                 'select_measurement',
                                 'select_measurement_from_this_input',
                                 'select_channel',
@@ -390,7 +392,7 @@ def custom_channel_options_return_json(
                                         name=each_option['name'],
                                         value=request_form.get(key)))
 
-                        elif each_option['type'] == 'select':
+                        elif each_option['type'] in ['select', 'select_custom_choices']:
                             if 'constraints_pass' in each_option:
                                 (constraints_pass,
                                  constraints_errors,
@@ -451,7 +453,7 @@ def custom_channel_options_return_json(
             elif null_value:
                 if use_defaults and 'default_value' in each_option:
                     # If a select type has cast_value set, cast the value as that type
-                    if (each_option['type'] == 'select' and
+                    if (each_option['type'] in ['select', 'select_custom_choices'] and
                             'cast_value' in each_option and
                             each_option['default_value'] is not None):
                         if each_option['cast_value'] == 'integer':

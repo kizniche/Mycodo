@@ -17,9 +17,14 @@ import logging
 import time
 from collections import OrderedDict
 
+from sqlalchemy import and_
+
 from mycodo.config import MYCODO_DB_PATH
 from mycodo.databases.models import Conversion
 from mycodo.databases.models import DeviceMeasurements
+from mycodo.databases.models import Input
+from mycodo.databases.models import InputChannel
+from mycodo.databases.models import Output
 from mycodo.databases.models import OutputChannel
 from mycodo.databases.utils import session_scope
 from mycodo.utils.database import db_retrieve_table_daemon
@@ -169,7 +174,7 @@ class AbstractBaseController(object):
                 elif each_option_default['type'] == 'select_multi_measurement':
                     setattr(self, each_option_default['id'], str(option_value))
 
-                elif each_option_default['type'] == 'select':
+                elif each_option_default['type'] in ['select', 'select_custom_choices']:
                     option_value = str(option_value)
                     if 'cast_value' in each_option_default and each_option_default['cast_value']:
                         if each_option_default['cast_value'] == 'integer':
@@ -279,7 +284,8 @@ class AbstractBaseController(object):
                                                    'multiline_text',
                                                    'select_multi_measurement',
                                                    'text',
-                                                   'select']:
+                                                   'select',
+                                                   'select_custom_choices']:
                     setattr(self, each_option_default['id'], option_value)
 
                 elif each_option_default['type'] in ['select_measurement',
@@ -435,22 +441,91 @@ class AbstractBaseController(object):
         except Exception:
             self.logger.exception("set_custom_option")
 
-    @staticmethod
-    def _get_custom_option(controller, unique_id, option):
-        read_function = None
+    def _get_custom_option(self, controller, unique_id, option):
         try:
             with session_scope(MYCODO_DB_PATH) as new_session:
                 read_function = new_session.query(controller).filter(
                     controller.unique_id == unique_id).first()
                 new_session.expunge_all()
-            try:
-                dict_custom_options = json.loads(read_function.custom_options)
-            except:
-                dict_custom_options = {}
-            if option in dict_custom_options:
-                return dict_custom_options[option]
+                try:
+                    dict_custom_options = json.loads(read_function.custom_options)
+                except:
+                    dict_custom_options = {}
+                if option in dict_custom_options:
+                    return dict_custom_options[option]
+        except Exception:
+            self.logger.exception("get_custom_option")
+
+    def _delete_custom_channel_option(self, controller, unique_id, channel, option):
+        try:
+            with session_scope(MYCODO_DB_PATH) as new_session:
+                if controller == Output:
+                    channel = new_session.query(OutputChannel).filter(and_(
+                        OutputChannel.output_id == unique_id,
+                        OutputChannel.channel == channel)).first()
+                elif controller == Input:
+                    channel = new_session.query(InputChannel).filter(and_(
+                        InputChannel.input_id == unique_id,
+                        InputChannel.channel == channel)).first()
+                else:
+                    return "controller doesn't represent Output or Input"
+                try:
+                    dict_custom_options = json.loads(channel.custom_options)
+                except:
+                    dict_custom_options = {}
+                if option in dict_custom_options:
+                    dict_custom_options.pop(option)
+                    channel.custom_options = json.dumps(dict_custom_options)
+                    new_session.commit()
+        except Exception:
+            self.logger.exception("delete_custom_option")
+
+    def _set_custom_channel_option(self, controller, unique_id, channel, option, value):
+        try:
+            with session_scope(MYCODO_DB_PATH) as new_session:
+                if controller == Output:
+                    channel = new_session.query(OutputChannel).filter(and_(
+                        OutputChannel.output_id == unique_id,
+                        OutputChannel.channel == channel)).first()
+                elif controller == Input:
+                    channel = new_session.query(InputChannel).filter(and_(
+                        InputChannel.input_id == unique_id,
+                        InputChannel.channel == channel)).first()
+                else:
+                    return "controller doesn't represent Output or Input"
+                try:
+                    dict_custom_options = json.loads(channel.custom_options)
+                except:
+                    dict_custom_options = {}
+                dict_custom_options[option] = value
+                channel.custom_options = json.dumps(dict_custom_options)
+                new_session.commit()
+            return value
         except Exception:
             self.logger.exception("set_custom_option")
+
+    def _get_custom_channel_option(self, controller, unique_id, channel, option):
+        try:
+            with session_scope(MYCODO_DB_PATH) as new_session:
+                if controller == Output:
+                    channel = new_session.query(OutputChannel).filter(and_(
+                        OutputChannel.output_id == unique_id,
+                        OutputChannel.channel == channel)).first()
+                elif controller == Input:
+                    channel = new_session.query(InputChannel).filter(and_(
+                        InputChannel.input_id == unique_id,
+                        InputChannel.channel == channel)).first()
+                else:
+                    return "controller doesn't represent Output or Input"
+                new_session.expunge_all()
+                try:
+                    dict_custom_options = json.loads(channel.custom_options)
+                except:
+                    dict_custom_options = {}
+                if option in dict_custom_options:
+                    return dict_custom_options[option]
+        except Exception:
+            self.logger.exception("get_custom_option")
 
     @staticmethod
     def get_last_measurement(device_id, measurement_id, max_age=None):

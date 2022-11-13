@@ -16,6 +16,7 @@ New Behavior: InfluxDB 1.x returned data as an epoch float value (e.g. 166722857
  - Add Input: MCP3008 (adafruit-circuitpython-mcp3xxx library)
  - Add Input: On/Off Output State
  - Add Input: Senseair K96 ([#1196](https://github.com/kizniche/Mycodo/issues/1196))
+ - Add Output: Remote Mycodo Output: On/Off (API)
  - Add Widget: Activate/Deactivate Controller
  - Add ability to set each Graph Widget series type to either Line or Column
  - Add Temperature Calibration for Atlas Scientific PT-1000 Input

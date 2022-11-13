@@ -73,7 +73,7 @@
       <option value="">{{dict_translation['select_one']['title']}}</option>
       {% for each_set in each_option['options_select'] %}
       <option value="{{each_set[0]}}"
-        {%- if channel_options and each_set[0] == custom_options_values[unique_id][channel][each_option['id']] -%}
+        {%- if (channel_options and each_set[0] == custom_options_values[unique_id][channel][each_option['id']]) or (custom_options_values and each_set[0] == custom_options_values[unique_id][each_option['id']]) -%}
           {{' selected'}}
         {%- elif custom_options_values and
                (each_set[0] == custom_options_values[unique_id][each_option['id']] or
@@ -84,6 +84,40 @@
         {%- endif -%}
       >{{each_set[1]}}</option>
       {% endfor %}
+    </select>
+  </div>
+</div>
+
+    {% elif each_option['type'] == 'select_custom_choices' %}
+
+<div class="col-auto">
+  <label class="control-label" for="{{name_prefix}}{{each_option['id']}}">{{each_option['name']}}</label>
+  <div>
+    <select class="form-control form-tooltip form-dropdown" data-placement="top" id="{{name_prefix}}{{each_option['id']}}" name="{{name_prefix}}{{each_option['id']}}" title="{{each_option['phrase']}}">
+      <option value="">{{dict_translation['select_one']['title']}}</option>
+      {% if each_option['id'] + '_choices' in custom_options_values[unique_id] %}
+        {% set choices = custom_options_values[unique_id][each_option['id'] + '_choices'] %}
+      {% elif each_option['id'] + '_choices' in custom_options_values[unique_id][channel] %}
+        {% set choices = custom_options_values[unique_id][channel][each_option['id'] + '_choices'] %}
+      {% else %}
+        {% set choices = [] %}
+      {% endif %}
+    ASDF {{ choices }} QWER
+      {% if choices %}
+        {% for each_set in choices %}
+      <option value="{{each_set[0]}}"
+          {%- if (channel_options and each_set[0] == custom_options_values[unique_id][channel][each_option['id']]) or (custom_options_values and each_set[0] == custom_options_values[unique_id][each_option['id']]) -%}
+            {{' selected'}}
+          {%- elif custom_options_values and
+                   (each_set[0] == custom_options_values[unique_id][each_option['id']] or
+                    (force_default_value and
+                    'default_value' in each_option and
+                    each_set[0] == each_option['default_value'])) %}
+            {{' selected'}}
+          {%- endif -%}
+      >{{each_set[1]}}</option>
+        {% endfor %}
+      {% endif %}
     </select>
   </div>
 </div>

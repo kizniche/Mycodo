@@ -630,3 +630,12 @@ class AbstractOutput(AbstractBaseController):
 
     def delete_custom_option(self, option):
         return self._delete_custom_option(Output, self.unique_id, option)
+
+    def set_custom_channel_option(self, channel, option, value):
+        return self._set_custom_channel_option(Output, self.unique_id, channel, option, value)
+
+    def get_custom_channel_option(self, channel, option):
+        return self._get_custom_channel_option(Output, self.unique_id, channel, option)
+
+    def delete_custom_channel_option(self, channel, option):
+        return self._delete_custom_channel_option(Output, self.unique_id, channel, option)
