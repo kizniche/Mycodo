@@ -237,7 +237,7 @@ def query_string_influx_1(unit, unique_id,
     if limit:
         query += " GROUP BY * LIMIT {lim}".format(lim=limit)
 
-    raw_data = dbcon.query(query).raw
+    raw_data = dbcon.query(query, epoch='ms').raw
 
     if 'series' not in raw_data or not raw_data['series']:
         return None

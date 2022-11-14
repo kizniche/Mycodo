@@ -8,7 +8,6 @@ from importlib import import_module
 from io import StringIO
 
 import flask_login
-from dateutil.parser import parse as date_parse
 from flask import Response
 from flask import flash
 from flask import jsonify
@@ -321,7 +320,7 @@ def last_data(unique_id, measure_type, measurement_id, period):
                 time_raw = data[number - 1][0]
                 value = data[number - 1][1]
                 value = float(value)
-                live_data = f'[{date_parse(time_raw).timestamp()},{value}]'
+                live_data = f'[{time_raw/1000},{value}]'
 
         return Response(live_data, mimetype='text/json')
     except KeyError:
@@ -402,7 +401,7 @@ def export_data(unique_id, measurement_id, start_seconds, end_seconds):
                         line.seek(0)
             elif settings.measurement_db_version == '1':
                 for csv_line in _data:
-                    writer.writerow([date_parse(csv_line[0]).timestamp(), csv_line[1]])
+                    writer.writerow([csv_line[0]/1000, csv_line[1]])
                     line.seek(0)
                     yield line.read()
                     line.truncate(0)
@@ -496,7 +495,7 @@ def async_data(device_id, device_type, measurement_id, start_seconds, end_second
             if settings.measurement_db_version == '2':
                 first_point = influxdb2_get_first_point(data)
             elif settings.measurement_db_version == '1':
-                first_point = date_parse(data[0][0])
+                first_point = datetime.datetime.fromtimestamp(data[0][0]/1000)
 
         end = datetime.datetime.utcnow()
         end_str = end.strftime('%Y-%m-%dT%H:%M:%S.%fZ')
@@ -541,7 +540,7 @@ def async_data(device_id, device_type, measurement_id, start_seconds, end_second
             if settings.measurement_db_version == '2':
                 first_point = influxdb2_get_first_point(data)
             elif settings.measurement_db_version == '1':
-                first_point = date_parse(data[0][0])
+                first_point = datetime.datetime.fromtimestamp(data[0][0]/1000)
     else:
         start = datetime.datetime.utcfromtimestamp(float(start_seconds))
         start_str = start.strftime('%Y-%m-%dT%H:%M:%S.%fZ')
@@ -581,7 +580,7 @@ def async_data(device_id, device_type, measurement_id, start_seconds, end_second
             if settings.measurement_db_version == '2':
                 first_point = influxdb2_get_first_point(data)
             elif settings.measurement_db_version == '1':
-                first_point = date_parse(data[0][0])
+                first_point = datetime.datetime.fromtimestamp(data[0][0]/1000)
 
     if not first_point:
         logger.error("No first point")
@@ -699,7 +698,7 @@ def async_usage_data(device_id, unit, channel, start_seconds, end_seconds):
             if settings.measurement_db_version == '2':
                 first_point = influxdb2_get_first_point(data)
             elif settings.measurement_db_version == '1':
-                first_point = date_parse(data[0][0])
+                first_point = datetime.datetime.fromtimestamp(data[0][0]/1000)
 
     # Set the time frame to the past start epoch to now
     elif start_seconds != '0' and end_seconds == '0':
@@ -739,7 +738,7 @@ def async_usage_data(device_id, unit, channel, start_seconds, end_seconds):
             if settings.measurement_db_version == '2':
                 first_point = influxdb2_get_first_point(data)
             elif settings.measurement_db_version == '1':
-                first_point = date_parse(data[0][0])
+                first_point = datetime.datetime.fromtimestamp(data[0][0]/1000)
     else:
         start = datetime.datetime.utcfromtimestamp(float(start_seconds))
         start_str = start.strftime('%Y-%m-%dT%H:%M:%S.%fZ')
@@ -777,7 +776,7 @@ def async_usage_data(device_id, unit, channel, start_seconds, end_seconds):
             if settings.measurement_db_version == '2':
                 first_point = influxdb2_get_first_point(data)
             elif settings.measurement_db_version == '1':
-                first_point = date_parse(data[0][0])
+                first_point = datetime.datetime.fromtimestamp(data[0][0]/1000)
 
     if not first_point:
         logger.error("No first point")

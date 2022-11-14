@@ -1,9 +1,8 @@
 # coding=utf-8
-import calendar
 import datetime
 import logging
+
 import requests
-from dateutil.parser import parse as date_parse
 
 from mycodo.databases.models import Conversion
 from mycodo.databases.models import DeviceMeasurements
@@ -197,7 +196,7 @@ def read_influxdb_single(unique_id, unit, channel,
                         number = len(data)
                         last_time = data[number - 1][0]
                         last_measurement = data[number - 1][1]
-                        return [date_parse(last_time).timestamp(), last_measurement]
+                        return [last_time/1000, last_measurement]
             except Exception:
                 logger.exception("Error parsing the last influx measurement")
     except requests.exceptions.ConnectionError:
@@ -286,7 +285,7 @@ def read_influxdb_list(unique_id, unit, channel,
             elif settings.measurement_db_version == '1':
                 list_data = []
                 for ts, value in data:
-                    list_data.append((date_parse(ts).timestamp(), value))
+                    list_data.append((ts/1000, value))
                 return list_data
     except:
         logger.debug("Could not read form influxdb.")
@@ -425,7 +424,7 @@ def valid_date_str(date_str):
 def influx1_to_list(data):
     list_data = []
     for each_data in data:
-        list_data.append((date_parse(each_data[0]).timestamp(), each_data[1]))
+        list_data.append((each_data[0]/1000, each_data[1]))
     return list_data
 
 
