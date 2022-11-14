@@ -2,8 +2,12 @@
 #
 # example_dummy_output.py - Example Output module
 #
+from mycodo.config_translations import TRANSLATIONS
 from mycodo.outputs.base_output import AbstractOutput
 from mycodo.utils.constraints_pass import constraints_pass_positive_value
+from mycodo.databases.models import OutputChannel
+from mycodo.outputs.base_output import AbstractOutput
+from mycodo.utils.database import db_retrieve_table_daemon
 
 
 def constraints_pass_measure_range(mod_input, value):
@@ -23,11 +27,17 @@ def constraints_pass_measure_range(mod_input, value):
     return all_passed, errors, mod_input
 
 
-# Measurements
 measurements_dict = {
     0: {
         'measurement': 'duration_time',
         'unit': 's'
+    }
+}
+
+channels_dict = {
+    0: {
+        'types': ['on_off'],
+        'measurements': [0]
     }
 }
 
@@ -42,8 +52,9 @@ OUTPUT_INFORMATION = {
     # Optional library name (for outputs that are named the same but use different libraries)
     'output_library': 'library_name',
 
-    # The dictionary of measurements for this output. Don't edit this.
+    # The dictionaries of measurements and channels for this output
     'measurements_dict': measurements_dict,
+    'channels_dict': channels_dict,
 
     # Type of output. Options: "on_off", "pwm", "volume"
     'output_types': ['on_off'],
@@ -125,6 +136,25 @@ OUTPUT_INFORMATION = {
             'phrase': 'Select a range value'
         }
     ],
+
+    # Options that appear for each Channel
+    'custom_channel_options': [
+        {
+            'id': 'name',
+            'type': 'text',
+            'default_value': 'Outlet Name',
+            'required': True,
+            'name': TRANSLATIONS['name']['title'],
+            'phrase': TRANSLATIONS['name']['phrase']
+        },
+        {
+            'id': 'custom_selection',
+            'type': 'select_custom_choices',
+            'default_value': '',
+            'name': 'Custom Selection',
+            'phrase': 'A selection defined from within the Output module Class'
+        },
+    ]
 }
 
 
@@ -142,6 +172,12 @@ class OutputModule(AbstractOutput):
         self.setup_custom_options(
             OUTPUT_INFORMATION['custom_options'], output)
 
+        # Set custom channel options to defaults or user-set values
+        output_channels = db_retrieve_table_daemon(
+            OutputChannel).filter(OutputChannel.output_id == self.output.unique_id).all()
+        self.options_channels = self.setup_custom_channel_options_json(
+            OUTPUT_INFORMATION['custom_channel_options'], output_channels)
+
     def initialize(self):
         """Code executed when Mycodo starts up to initialize the output."""
         # Variables set by the user interface
@@ -150,15 +186,23 @@ class OutputModule(AbstractOutput):
         self.setup_output_variables(OUTPUT_INFORMATION)
 
         self.logger.info(
-            "Output class initialized with: "
-            "gpio_pin: {gp}; "
-            "bool_value: {bt}, {bv}; "
-            "float_value: {ft}, {fv}; "
-            "range_value: {rt}, {rv}".format(
-                gp=self.gpio_pin,
-                bt=type(self.bool_value), bv=self.bool_value,
-                ft=type(self.float_value), fv=self.float_value,
-                rt=type(self.range_value), rv=self.range_value))
+            f"Output class initialized with: "
+            f"gpio_pin: {self.gpio_pin}; "
+            f"bool_value: {type(self.bool_value)}, {self.bool_value}; "
+            f"float_value: {type(self.float_value)}, {self.float_value}; "
+            f"range_value: {type(self.range_value)}, {self.range_value}")
+
+        for each_channel in channels_dict:
+            self.logger.info(
+                f"CH{each_channel}: "
+                f"{self.options_channels['name'][each_channel]}: "
+                f"custom_selection = {self.options_channels['custom_selection'][each_channel]}")
+
+        # Generate the custom choices dropdown
+        list_choices = [(1, "Default Option 1")]
+        if self.float_value is not None:
+            list_choices.append((self.float_value, f"Custom Option: {self.float_value}"))
+        self.set_custom_channel_option(0, "custom_selection_choices", list_choices)
 
         # Variable to store whether the output has been successfully set up
         self.logger.info("Output set up")

@@ -348,7 +348,7 @@ def page_notes():
                     data,
                     mimetype='application/zip',
                     as_attachment=True,
-                    attachment_filename=
+                    download_name=
                     'Mycodo_Notes_{mv}_{host}_{dt}.zip'.format(
                         mv=MYCODO_VERSION,
                         host=socket.gethostname().replace(' ', ''),

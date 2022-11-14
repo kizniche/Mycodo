@@ -170,16 +170,20 @@ class OutputModule(AbstractOutput):
         }
 
         response = requests.get(url, headers=headers, verify=False)
-        self.logger.debug("Response Status: {}".format(response.status_code))
-        self.logger.debug("Response Headers: {}".format(response.headers))
+        self.logger.debug(f"Response Status: {response.status_code}")
+        self.logger.debug(f"Response Headers: {response.headers}")
+
+        try:
+            response_dict = json.loads(response.text)
+        except:
+            response_dict = {}
+        self.logger.debug(f"Response Dictionary: {response_dict}")
 
         if response.status_code != 200:
             self.logger.error("Response Status was not 200")
             self.api_output = None
             return
 
-        response_dict = json.loads(response.text)
-        self.logger.debug("Response Dictionary: {}".format(response_dict))
         self.api_output = response_dict
 
     def parse_remote_output_info(self):
@@ -248,15 +252,18 @@ class OutputModule(AbstractOutput):
         }
 
         response = requests.post(url, json=data, headers=headers, verify=False)
-        self.logger.debug("Response Status: {}".format(response.status_code))
-        self.logger.debug("Response Headers: {}".format(response.headers))
+        self.logger.debug(f"Response Status: {response.status_code}")
+        self.logger.debug(f"Response Headers: {response.headers}")
+
+        try:
+            response_dict = json.loads(response.text)
+        except:
+            response_dict = {}
+        self.logger.debug(f"Response Dictionary: {response_dict}")
 
         if response.status_code != 200:
             self.logger.error("Response Status was not 200")
             return
-
-        response_dict = json.loads(response.text)
-        self.logger.debug("Response Dictionary: {}".format(response_dict))
 
         if 'message' in response_dict and 'Success' in response_dict['message']:
             self.output_states[channel] = state
@@ -270,7 +277,7 @@ class OutputModule(AbstractOutput):
         if output_channel:
             return output_channel
         else:
-            self.logger.error("Could not determine channel table")
+            self.logger.error("Could not determine channel table.")
 
     def output_switch(self, state, output_type=None, amount=None, output_channel=0):
         try:

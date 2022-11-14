@@ -156,7 +156,7 @@ def admin_backup():
                         data,
                         mimetype='application/zip',
                         as_attachment=True,
-                        attachment_filename=save_file
+                        download_name=save_file
                     )
             except Exception as err:
                 flash("Error: {}".format(err), "error")

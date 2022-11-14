@@ -100,7 +100,7 @@ def export_settings(form):
                 data,
                 mimetype='application/zip',
                 as_attachment=True,
-                attachment_filename=
+                download_name=
                     'Mycodo_{mver}_Settings_{aver}_{host}_{dt}.zip'.format(
                         mver=MYCODO_VERSION, aver=ALEMBIC_VERSION,
                         host=socket.gethostname().replace(' ', ''),
@@ -135,7 +135,7 @@ def export_influxdb(form):
                     data,
                     mimetype='application/zip',
                     as_attachment=True,
-                    attachment_filename=
+                    download_name=
                     'Mycodo_{mv}_Influxdb_{iv}_{host}_{dt}.zip'.format(
                         mv=MYCODO_VERSION, iv=influxd_version,
                         host=socket.gethostname().replace(' ', ''),
