@@ -214,14 +214,14 @@ class OutputModule(AbstractOutput):
                     channel_unique_id = self.options_channels['remote_output'][each_chan].split(",")[1]
     
                     device_channel = self.get_channel_entry_from_id(channel_unique_id)
-                    if not device_channel:
+                    if device_channel is None:
                         continue
     
                     if (output_unique_id in self.api_output['output states'] and
-                            str(device_channel.channel) in self.api_output['output states'][output_unique_id]):
-                        if self.api_output['output states'][output_unique_id][str(device_channel.channel)] == "on":
+                            str(device_channel) in self.api_output['output states'][output_unique_id]):
+                        if self.api_output['output states'][output_unique_id][str(device_channel)] == "on":
                             self.output_states[each_chan] = True
-                        elif self.api_output['output states'][output_unique_id][str(device_channel.channel)] == "off":
+                        elif self.api_output['output states'][output_unique_id][str(device_channel)] == "off":
                             self.output_states[each_chan] = False
 
     def send_remote_output(self, channel, state):
@@ -236,7 +236,7 @@ class OutputModule(AbstractOutput):
         channel_unique_id = self.options_channels['remote_output'][channel].split(",")[1]
 
         device_channel = self.get_channel_entry_from_id(channel_unique_id)
-        if not device_channel:
+        if device_channel is None:
             return
 
         endpoint = f'outputs/{output_unique_id}'
@@ -247,7 +247,7 @@ class OutputModule(AbstractOutput):
         }
 
         data = {
-            "channel": device_channel.channel,
+            "channel": device_channel,
             "state": state
         }
 
@@ -271,13 +271,14 @@ class OutputModule(AbstractOutput):
             self.logger.error("Did not receive success message from API")
 
     def get_channel_entry_from_id(self, channel_id):
-        output_channel = db_retrieve_table_daemon(
-            OutputChannel).filter(
-            OutputChannel.unique_id == channel_id).first()
-        if output_channel:
-            return output_channel
-        else:
-            self.logger.error("Could not determine channel table.")
+        if not self.api_output or 'output channels' not in self.api_output:
+            return
+
+        for channel in self.api_output['output channels']:
+            if channel_id == channel['unique_id']:
+                return channel['channel']
+
+        self.logger.error("Could not determine channel table.")
 
     def output_switch(self, state, output_type=None, amount=None, output_channel=0):
         try:
