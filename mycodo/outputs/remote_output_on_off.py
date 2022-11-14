@@ -1,7 +1,11 @@
 # coding=utf-8
 #
-# remote_output.py - Output for controlling a remote Mycodo Output
+# remote_output_on_off.py - Output for controlling a remote Mycodo Output (On/Off)
 #
+import json
+import time
+from threading import Thread
+
 from flask_babel import lazy_gettext
 
 from mycodo.databases.models import OutputChannel
@@ -31,7 +35,7 @@ OUTPUT_INFORMATION = {
     'output_library': 'requests',
     'output_types': ['on_off'],
 
-    'message': 'Enter the API key and IP/Host address of your remote Mycodo and save to populate the Remote Output dropdown selection. You will need to refresh the page after saving for the Remote Output dropdown to populate. Configure which Remote Output you would like to control and save again. You must select an On/Off Output Channel for this to work. Selecting a PWM, Volume, or other channel will cause an error.',
+    'message': 'This Output allows remote control of another Mycodo Output over a network using the API.',
 
     'options_enabled': [
         'button_on',
@@ -45,7 +49,17 @@ OUTPUT_INFORMATION = {
 
     'interfaces': ['API'],
 
+    'custom_options_message': 'Enter the API key and IP/Host address of your remote Mycodo and save to populate the Remote Output dropdown selection. You will need to refresh the page after saving for the Remote Mycodo Output dropdown to populate. Configure which Remote Mycodo Output you would like to control and save again. You must select an On/Off Output Channel for this to work. Selecting a PWM, Volume, or other channel will cause an error.',
+
     'custom_options': [
+        {
+            'id': 'host',
+            'type': 'text',
+            'default_value': '',
+            'required': True,
+            'name': "Remote Mycodo Host",
+            'phrase': lazy_gettext('The host or IP address of the remote Mycodo')
+        },
         {
             'id': 'api_key',
             'type': 'text',
@@ -55,12 +69,11 @@ OUTPUT_INFORMATION = {
             'phrase': lazy_gettext('The API key of the remote Mycodo')
         },
         {
-            'id': 'host',
-            'type': 'text',
-            'default_value': '',
-            'required': True,
-            'name': "Remote Mycodo Host",
-            'phrase': lazy_gettext('The host or IP address of the remote Mycodo')
+            'id': 'state_query_period',
+            'type': 'integer',
+            'default_value': 120,
+            'name': "State Query Period (Seconds)",
+            'phrase': 'How often to query the state of the output'
         }
     ],
 
@@ -70,7 +83,7 @@ OUTPUT_INFORMATION = {
             'type': 'select_custom_choices',
             'default_value': '',
             'name': 'Remote Mycodo Output',
-            'phrase': 'The remote Output to control'
+            'phrase': 'The Remote Mycodo Output to control'
         },
         {
             'id': 'state_startup',
@@ -97,6 +110,13 @@ OUTPUT_INFORMATION = {
             'phrase': 'Set the state when Mycodo shuts down'
         },
         {
+            'id': 'command_force',
+            'type': 'bool',
+            'default_value': False,
+            'name': lazy_gettext('Force Command'),
+            'phrase': 'Always send the command if instructed, regardless of the current state'
+        },
+        {
             'id': 'trigger_functions_startup',
             'type': 'bool',
             'default_value': False,
@@ -114,8 +134,10 @@ class OutputModule(AbstractOutput):
 
         self.api_key = None
         self.host = None
+        self.state_query_period = None
 
         self.api_output = None
+        self.query_timer = 0
 
         self.setup_custom_options(
             OUTPUT_INFORMATION['custom_options'], output)
@@ -137,29 +159,45 @@ class OutputModule(AbstractOutput):
 
         try:
             if self.output_setup:
-                if self.options_channels['state_startup'][0] == 1:
-                    self.output_switch("on", output_channel=0)
-                elif self.options_channels['state_startup'][0] == 0:
-                    self.output_switch("off", output_channel=0)
-                else:
-                    return
+                # Set up thread to query output states
+                query_states = Thread(target=self.remote_state_query)
+                query_states.daemon = True
+                query_states.start()
 
-                startup = 'ON' if self.options_channels['state_startup'][0] else 'OFF'
-                self.logger.info(f"Output setup and turned {startup}")
+                for channel in channels_dict:
+                    if self.options_channels['state_startup'][channel] == 1:
+                        self.output_switch("on", output_channel=channel)
+                    elif self.options_channels['state_startup'][channel] == 0:
+                        self.output_switch("off", output_channel=channel)
+                    else:
+                        continue
 
-                if self.options_channels['trigger_functions_startup'][0]:
-                    try:
-                        self.check_triggers(self.unique_id, output_channel=0)
-                    except Exception as err:
-                        self.logger.error(
-                            "Could not check Trigger for channel 0 of output {}: {}".format(
-                                self.unique_id, err))
+                    startup = 'ON' if self.options_channels['state_startup'][channel] else 'OFF'
+                    self.logger.info(f"Output setup and turned {startup}")
+
+                    if self.options_channels['trigger_functions_startup'][channel]:
+                        try:
+                            self.check_triggers(self.unique_id, output_channel=channel)
+                        except Exception as err:
+                            self.logger.error(
+                                f"Could not check Trigger for channel {channel} of output {self.unique_id}: {err}")
         except Exception as except_msg:
             self.logger.exception(
                 "Output was unable to be setup: {err}".format(err=except_msg))
 
+    def remote_state_query(self):
+        """Periodically query output states"""
+        while self.running:
+            now = time.time()
+
+            if self.state_query_period and self.query_timer < now:
+                self.get_remote_output_information()
+                self.parse_output_state_info()
+                self.query_timer = now + self.state_query_period
+
+            time.sleep(1)
+
     def get_remote_output_information(self):
-        import json
         import requests
 
         endpoint = 'outputs'
@@ -197,35 +235,42 @@ class OutputModule(AbstractOutput):
                         self.api_output['output channels']):
                     for each_chan in self.api_output['output channels']:
                         if each_out["unique_id"] == each_chan["output_id"]:
+                            name = f'{each_out["name"]}: [{each_out["interface"]}] CH{each_chan["channel"]}'
+                            if each_chan['name']:
+                                name += f': {each_chan["name"]}'
                             remote_output_choices.append(
-                                (f'{each_out["unique_id"]},{each_chan["unique_id"]}',
-                                 f'{each_out["name"]}: CH{each_chan["channel"]}'))
+                                (f'{each_out["unique_id"]},{each_chan["unique_id"]}', name))
 
         self.logger.debug(f"Remote Outputs: {remote_output_choices}")
 
         if self.output_setup:
             for each_chan in channels_dict:
                 self.set_custom_channel_option(each_chan, "remote_output_choices", remote_output_choices)
-    
-                if ('output states' in self.api_output and
-                        self.options_channels['remote_output'][each_chan] and
-                        ',' in self.options_channels['remote_output'][each_chan]):
-                    output_unique_id = self.options_channels['remote_output'][each_chan].split(",")[0]
-                    channel_unique_id = self.options_channels['remote_output'][each_chan].split(",")[1]
-    
-                    device_channel = self.get_channel_entry_from_id(channel_unique_id)
-                    if device_channel is None:
-                        continue
-    
-                    if (output_unique_id in self.api_output['output states'] and
-                            str(device_channel) in self.api_output['output states'][output_unique_id]):
-                        if self.api_output['output states'][output_unique_id][str(device_channel)] == "on":
-                            self.output_states[each_chan] = True
-                        elif self.api_output['output states'][output_unique_id][str(device_channel)] == "off":
-                            self.output_states[each_chan] = False
+
+    def parse_output_state_info(self):
+        if not self.output_setup:
+            self.logger.error("Output not set up, can't parse API info")
+            return
+
+        for each_chan in channels_dict:
+            if ('output states' in self.api_output and
+                    self.options_channels['remote_output'][each_chan] and
+                    ',' in self.options_channels['remote_output'][each_chan]):
+                output_unique_id = self.options_channels['remote_output'][each_chan].split(",")[0]
+                channel_unique_id = self.options_channels['remote_output'][each_chan].split(",")[1]
+
+                device_channel = self.get_channel_entry_from_id(channel_unique_id)
+                if device_channel is None:
+                    continue
+
+                if (output_unique_id in self.api_output['output states'] and
+                        str(device_channel) in self.api_output['output states'][output_unique_id]):
+                    if self.api_output['output states'][output_unique_id][str(device_channel)] == "on":
+                        self.output_states[each_chan] = True
+                    elif self.api_output['output states'][output_unique_id][str(device_channel)] == "off":
+                        self.output_states[each_chan] = False
 
     def send_remote_output(self, channel, state):
-        import json
         import requests
 
         if (not self.options_channels['remote_output'][channel] or
