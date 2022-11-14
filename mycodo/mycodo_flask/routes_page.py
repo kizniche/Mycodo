@@ -476,7 +476,7 @@ def page_export():
             if url:
                 return redirect(url)
         elif form_export_settings.export_settings_zip.data:
-            file_send = utils_export.export_settings(form_export_settings)
+            file_send = utils_export.export_settings()
             if file_send:
                 return file_send
             else:
@@ -496,7 +496,7 @@ def page_export():
                 flash('An error occurred during the settings database import.',
                       'error')
         elif form_export_influxdb.export_influxdb_zip.data:
-            file_send = utils_export.export_influxdb(form_export_influxdb)
+            file_send = utils_export.export_influxdb()
             if file_send:
                 return file_send
             else:

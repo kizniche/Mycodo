@@ -83,7 +83,7 @@ def export_measurements(form):
     flash_success_errors(error, action, url_for('routes_page.page_export'))
 
 
-def export_settings(form):
+def export_settings():
     """
     Save the Mycodo settings database (mycodo.db) to a zip file and serve it
     to the user
@@ -114,7 +114,7 @@ def export_settings(form):
     flash_success_errors(error, action, url_for('routes_page.page_export'))
 
 
-def export_influxdb(form):
+def export_influxdb():
     """
     Save the Mycodo InfluxDB database in the Enterprise-compatible format, zip
     archive it, and serve it to the user.
