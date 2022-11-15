@@ -29,9 +29,7 @@ import sys
 import traceback
 
 import Pyro5.errors
-import requests
 from Pyro5.api import Proxy
-from influxdb import InfluxDBClient
 
 sys.path.append(os.path.abspath(os.path.join(os.path.realpath(__file__), '../..')))
 
@@ -60,7 +58,7 @@ class DaemonControl:
                 self.pyro_timeout = pyro_timeout
             else:
                 misc = db_retrieve_table_daemon(Misc, entry='first')
-                self.pyro_timeout = misc.rpyc_timeout  # TODO: Rename to pyro_timeout at next major revision
+                self.pyro_timeout = misc.rpyc_timeout  # TODO: Rename to rpc_timeout at next major revision
         except Exception:
             logger.exception("Could not access SQL table to determine Pyro Timeout. Using 30 seconds.")
 
@@ -341,12 +339,6 @@ def parseargs(parser):
                         help='Reset LCD with LCD ID',
                         required=False)
 
-    # Measurement
-    parser.add_argument('--get_measurement', nargs=3,
-                        metavar=('ID', 'UNIT', 'CHANNEL'), type=str,
-                        help='Get the last measurement',
-                        required=False)
-
     # Output Controller
     parser.add_argument('--output_state', metavar='OUTPUTID', type=str,
                         help='State of output with output ID',
@@ -462,35 +454,6 @@ if __name__ == "__main__":
         logger.info(
             "[Remote command] Force acquiring measurements for Input with "
             f"ID '{args.input_force_measurements}': Server returned: {return_msg[1]}")
-
-    elif args.get_measurement:
-        settings = db_retrieve_table_daemon(Misc, entry='first')
-        client = InfluxDBClient(
-            settings.measurement_db_host,
-            settings.measurement_db_port,
-            settings.measurement_db_user,
-            settings.measurement_db_password,
-            settings.measurement_db_dbname,
-            timeout=5)
-        query = f"SELECT LAST(value) FROM {args.get_measurement[1]} " \
-                f"WHERE device_id='{args.get_measurement[0]}' " \
-                f"AND channel='{args.get_measurement[2]}'"
-
-        try:
-            last_measurement = client.query(query).raw
-        except requests.exceptions.ConnectionError:
-            logger.debug("ERROR: Failed to establish a new influxdb connection. Ensure influxdb is running.")
-            last_measurement = None
-
-        if last_measurement and 'series' in last_measurement and last_measurement['series']:
-            try:
-                number = len(last_measurement['series'][0]['values'])
-                last_time = last_measurement['series'][0]['values'][number - 1][0]
-                last_measurement = last_measurement['series'][0]['values'][number - 1][1]
-            except Exception:
-                logger.info("ERROR;Could not retrieve measurement.")
-        else:
-            logger.info("ERROR;Could not retrieve measurement.")
 
     elif args.lcd_reset:
         return_msg = daemon.lcd_reset(args.lcd_reset)
