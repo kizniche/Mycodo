@@ -187,16 +187,20 @@ def read_influxdb_single(unique_id, unit, channel,
                         for table in data:
                             for row in table.records:
                                 if datetime_obj:
-                                    time = row.values['_time']
+                                    last_time = row.values['_time']
                                 else:
-                                    time = row.values['_time'].timestamp()
-                                return [time, row.values['_value']]
+                                    last_time = row.values['_time'].timestamp()
+                                return [last_time, row.values['_value']]
 
                     elif settings.measurement_db_version == '1':
                         number = len(data)
                         last_time = data[number - 1][0]
                         last_measurement = data[number - 1][1]
-                        return [last_time/1000, last_measurement]
+                        if datetime_obj:
+                            last_time = datetime.datetime.fromtimestamp(last_time / 1000000)
+                        else:
+                            last_time = last_time / 1000000
+                        return [last_time, last_measurement]
             except Exception:
                 logger.exception("Error parsing the last influx measurement")
     except requests.exceptions.ConnectionError:
@@ -285,7 +289,11 @@ def read_influxdb_list(unique_id, unit, channel,
             elif settings.measurement_db_version == '1':
                 list_data = []
                 for ts, value in data:
-                    list_data.append((ts/1000, value))
+                    if datetime_obj:
+                        ts = datetime.datetime.fromtimestamp(ts / 1000000)
+                    else:
+                        ts = ts / 1000000
+                    list_data.append((ts, value))
                 return list_data
     except:
         logger.debug("Could not read form influxdb.")
@@ -424,7 +432,7 @@ def valid_date_str(date_str):
 def influx1_to_list(data):
     list_data = []
     for each_data in data:
-        list_data.append((each_data[0]/1000, each_data[1]))
+        list_data.append((each_data[0] / 1000000, each_data[1]))
     return list_data
 
 
