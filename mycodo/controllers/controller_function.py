@@ -134,7 +134,7 @@ class FunctionController(AbstractController, threading.Thread):
                 return 0, "Command sent to Function Controller and is running in the background."
             else:
                 return_val = run_command(args_dict)
-                return 0, f"Command sent to Function Controller. Returned: {return_val}"
+                return 0, ["Command sent to Function Controller.", return_val]
         except:
             self.logger.exception(
                 f"Error executing button press function '{button_id}'")
@@ -153,7 +153,7 @@ class FunctionController(AbstractController, threading.Thread):
                 return 0, "Command sent to Function Controller and is running in the background."
             else:
                 return_val = run_command(args_dict)
-                return 0, f"Command sent to Function Controller. Returned: {return_val}"
+                return 0, ["Command sent to Function Controller.", return_val]
         except:
             self.logger.exception(f"Error executing function action '{action_string}'")
 

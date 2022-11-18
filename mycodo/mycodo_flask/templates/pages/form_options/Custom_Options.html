@@ -23,7 +23,7 @@
     {%- elif each_option['type'] in ['float', 'integer'] -%}number
     {%- endif -%}
     "
-    {%- if each_option['type'] == 'float' %} step="any"{%- else %} {% endif -%}
+    {%- if each_option['type'] == 'float' %} step="any" {% else %} {% endif -%}
     value="
     {%- if channel_options and custom_options_values[unique_id][channel][each_option['id']] is not none -%}
       {{custom_options_values[unique_id][channel][each_option['id']]}}

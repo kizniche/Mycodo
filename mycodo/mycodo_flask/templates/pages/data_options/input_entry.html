@@ -39,7 +39,7 @@
       <input {% if each_input.is_activated -%}style="display: none"{% endif %} onclick="return $(this).processRequest(this, 'input_activate');" name="input_activate" id="input_activate_{{each_input.unique_id}}" class="form-control btn btn-primary btn-sm" type="button" value="{{_('Activate')}}"/>
       <input {% if not each_input.is_activated -%}style="display: none"{% endif %} onclick="return $(this).processRequest(this, 'input_deactivate');" name="input_deactivate" id="input_deactivate_{{each_input.unique_id}}" class="form-control btn btn-primary btn-sm" type="button" value="{{_('Deactivate')}}"/>
     </div>
-  </div> <!- grid-stack-item-content ->
+  </div> <!-- grid-stack-item-content -->
 
 </form>
 

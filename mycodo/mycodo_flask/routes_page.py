@@ -901,10 +901,10 @@ def page_logview():
                     command = 'grep -a "PID Settings" {log} | tail -n {lines}'.format(
                         lines=lines, log=logfile)
             elif form_log_view.log.data == 'log_nginx':
-                command = 'journalctl -u nginx | tail -n {lines}'.format(
+                command = 'journalctl -u nginx -n {lines} --no-pager'.format(
                     lines=lines)
             elif form_log_view.log.data == 'log_flask':
-                command = 'journalctl -u mycodoflask | tail -n {lines}'.format(
+                command = 'journalctl -u mycodoflask -n {lines} --no-pager'.format(
                     lines=lines)
             else:
                 if form_log_view.log.data == 'log_login':
