@@ -5,7 +5,7 @@ if [ "$EUID" -ne 0 ] ; then
   exit 1
 fi
 
-INSTALL_PATH="$( cd -P "$( dirname "${SOURCE}" )/.." && pwd )"
+INSTALL_PATH="$( cd -P "$( dirname "${BASH_SOURCE[0]}" )/.." && pwd )"
 LOG_LOCATION="${INSTALL_PATH}"/docker/docker.log
 touch "${LOG_LOCATION}"
 
@@ -13,15 +13,14 @@ cd "${INSTALL_PATH}" || exit
 
 case "${1:-''}" in
     "dependencies")
-        apt-get update -y
-        apt-get install -y python3 python3-pip python3-dev python3-setuptools libffi-dev libssl-dev build-essential
+        apt update -y
+        apt install -y python3 python3-pip python3-dev python3-setuptools libffi-dev libssl-dev build-essential
         apt remove -y python3-cffi-backend
 
         python3 -m pip install --upgrade pip
 
-        "${INSTALL_PATH}"/mycodo/scripts/upgrade_commands.sh setup-virtualenv
-        "${INSTALL_PATH}"/mycodo/scripts/upgrade_commands.sh install-docker-ce-cli
-        apt install -y docker-ce containerd.io
+        curl -fsSL https://get.docker.com -o get-docker.sh
+        sh get-docker.sh
 
         usermod -aG docker pi
 

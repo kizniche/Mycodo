@@ -76,13 +76,16 @@ Options:
   enable-pigpiod-low            Enable pigpiod with 1 ms sample rate
   enable-pigpiod-high           Enable pigpiod with 5 ms sample rate
   enable-pigpiod-disabled       Create empty service to indicate pigpiod is disabled
+  uninstall                     Disable Mycodo services (frontend/backend)
   update-pigpiod                Update to latest version of pigpiod service file
   update-influxdb-1             Update influxdb 1.x to the latest version
   update-influxdb-2             Update influxdb 2.x to the latest version
   update-influxdb-1-db-user     Create the influxdb 1.x database and user
   update-influxdb-2-db-user     Create the influxdb 2.x database and user
   update-logrotate              Install logrotate script
-  update-mycodo-startup-script  Install the Mycodo daemon startup script
+  update-mycodo-service-disable Disable the Mycodo daemon startup script
+  update-mycodo-service-enable  Enable the Mycodo daemon startup script
+  update-mycodo-startup-script  Update the Mycodo daemon startup script
   update-packages               Ensure required apt packages are installed/up-to-date
   update-permissions            Set permissions for Mycodo directories/files
   update-pip3                   Update pip
@@ -96,6 +99,8 @@ Options:
   web-server-connect            Attempt to connect to the web server
   web-server-reload             Reload the web server
   web-server-restart            Restart the web server
+  web-server-disable            Disable the web server service
+  web-server-enable             Enable the web server service
   web-server-update             Update the web server configuration files
 
 Docker-specific Commands:
@@ -360,6 +365,13 @@ case "${1:-''}" in
         printf "\n#### pigpiod has been disabled. It can be enabled in the web UI configuration\n"
         touch /etc/systemd/system/pigpiod_disabled.service
     ;;
+    'uninstall')
+        printf "\n#### Uninstalling: Stopping and disabling Mycodo services (frontend/backend)\n"
+        service mycodoflask stop
+        service mycodo stop
+        /bin/bash "${MYCODO_PATH}"/mycodo/scripts/upgrade_download.sh web-server-disable
+        /bin/bash "${MYCODO_PATH}"/mycodo/scripts/upgrade_commands.sh update-mycodo-service-disable
+    ;;
     'update-pigpiod')
         printf "\n#### Checking which pigpiod startup script is being used\n"
         GPIOD_SAMPLE_RATE=99
@@ -498,12 +510,19 @@ case "${1:-''}" in
         cp -f "${MYCODO_PATH}"/install/logrotate_mycodo /etc/logrotate.d/mycodo
         printf "Mycodo logrotate script installed\n"
     ;;
-    'update-mycodo-startup-script')
-        printf "\n#### Disabling installed mycodo startup script\n"
+    'update-mycodo-service-disable')
+        printf "\n#### Disabling mycodo startup script\n"
         systemctl disable mycodo.service
         rm -rf /etc/systemd/system/mycodo.service
-        printf "#### Enabling current mycodo startup script\n"
+    ;;
+    'update-mycodo-service-enable')
+        printf "#### Enabling mycodo startup script\n"
         systemctl enable "${MYCODO_PATH}"/install/mycodo.service
+    ;;
+    'update-mycodo-startup-script')
+        printf "\n#### Updating mycodo startup script\n"
+        /bin/bash "${MYCODO_PATH}"/mycodo/scripts/upgrade_commands.sh update-mycodo-service-disable
+        /bin/bash "${MYCODO_PATH}"/mycodo/scripts/upgrade_commands.sh update-mycodo-service-enable
     ;;
     'update-packages')
         printf "\n#### Installing prerequisite apt packages and update pip\n"
@@ -601,13 +620,21 @@ case "${1:-''}" in
         printf "#### Restarting mycodoflask\n"
         service mycodoflask restart
     ;;
-    'web-server-update')
-        printf "\n#### Installing and configuring nginx web server\n"
+    'web-server-disable')
+        printf "\n#### Disabling service for nginx web server\n"
         systemctl disable mycodoflask.service
         rm -rf /etc/systemd/system/mycodoflask.service
+    ;;
+    'web-server-enable')
+        printf "\n#### Enabling service for nginx web server\n"
         ln -sf "${MYCODO_PATH}"/install/mycodoflask_nginx.conf /etc/nginx/sites-enabled/default
         systemctl enable nginx
         systemctl enable "${MYCODO_PATH}"/install/mycodoflask.service
+    ;;
+    'web-server-update')
+        printf "\n#### Installing and configuring nginx web server\n"
+        /bin/bash "${MYCODO_PATH}"/mycodo/scripts/upgrade_download.sh web-server-disable
+        /bin/bash "${MYCODO_PATH}"/mycodo/scripts/upgrade_download.sh web-server-enable
     ;;
 
 
@@ -683,36 +710,8 @@ case "${1:-''}" in
     ;;
     'install-docker-ce-cli')
         printf "\n#### Installing Docker Client\n"
-        apt update
-        apt -y install \
-            apt-transport-https \
-            ca-certificates \
-            curl \
-            gnupg2 \
-            software-properties-common
-        curl -fsSL https://download.docker.com/linux/debian/gpg | apt-key add -
-
-        if [[ ${UNAME_TYPE} == 'x86_64' ]]; then
-            add-apt-repository -y \
-               "deb [arch=amd64] https://download.docker.com/linux/debian \
-               $(lsb_release -cs) \
-               stable"
-        elif [[ ${MACHINE_TYPE} == 'armhf' ]]; then
-            add-apt-repository -y \
-               "deb [arch=armhf] https://download.docker.com/linux/debian \
-               $(lsb_release -cs) \
-               stable"
-        elif [[ ${MACHINE_TYPE} == 'arm64' ]]; then
-            add-apt-repository -y \
-               "deb [arch=arm64] https://download.docker.com/linux/debian \
-               $(lsb_release -cs) \
-               stable"
-        else
-            printf "\nCould not detect architecture\n"
-            exit 1
-        fi
-        apt update
-        apt -y install docker-ce-cli
+        curl -fsSL https://get.docker.com -o get-docker.sh
+        sh get-docker.sh
     ;;
     *)
         printf "Error: Unrecognized command: %s\n%s" "${1}" "${HELP_OPTIONS}"
