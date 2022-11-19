@@ -366,6 +366,13 @@ class OutputModule(AbstractOutput):
                 self.status_thread = Thread(target=self.status_update)
                 self.status_thread.start()
 
+        if self.options_channels['trigger_functions_startup'][0]:
+            try:
+                self.check_triggers(self.unique_id, output_channel=0)
+            except Exception as err:
+                self.logger.error(
+                    f"Could not check Trigger for channel 0 of output {self.unique_id}: {err}")
+
     def aio_rpc_server(self, started_evt, loop, logger):
         import aio_msgpack_rpc
         from kasa import SmartBulb

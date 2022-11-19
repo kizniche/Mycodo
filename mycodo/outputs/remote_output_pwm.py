@@ -1,53 +1,73 @@
 # coding=utf-8
 #
-# remote_output_on_off.py - Output for controlling a remote Mycodo On/Off Output
+# remote_output_pwm.py - Output for controlling a remote Mycodo PWM Output
 #
+import copy
 import json
 import time
 from threading import Thread
 
 from flask_babel import lazy_gettext
+from sqlalchemy import and_
 
-from mycodo.databases.models import OutputChannel
+from mycodo.databases.models import DeviceMeasurements, OutputChannel
 from mycodo.outputs.base_output import AbstractOutput
 from mycodo.utils.database import db_retrieve_table_daemon
+from mycodo.utils.influx import add_measurements_influxdb, read_influxdb_single
+from mycodo.utils.system_pi import return_measurement_info
 
 measurements_dict = {
     0: {
-        'measurement': 'duration_time',
-        'unit': 's'
+        'measurement': 'duty_cycle',
+        'unit': 'percent'
     }
 }
 
 channels_dict = {
     0: {
-        'types': ['on_off'],
+        'types': ['pwm'],
         'measurements': [0]
     }
 }
 
 # Output information
 OUTPUT_INFORMATION = {
-    'output_name_unique': 'remote_output',
-    'output_name': "{} Mycodo Output: {}".format(lazy_gettext('Remote'), lazy_gettext('On/Off')),
+    'output_name_unique': 'remote_output_pwm',
+    'output_name': "{} Mycodo Output: {}".format(lazy_gettext('Remote'), lazy_gettext('PWM')),
     'measurements_dict': measurements_dict,
     'channels_dict': channels_dict,
     'output_library': 'requests',
-    'output_types': ['on_off'],
+    'output_types': ['pwm'],
 
-    'message': 'This Output allows remote control of another Mycodo On/Off Output over a network using the API.',
+    'message': 'This Output allows remote control of another Mycodo PWM Output over a network using the API.',
 
-    'options_enabled': [
-        'button_on',
-        'button_send_duration'
-    ],
     'options_disabled': ['interface'],
 
     'dependencies_module': [
-        ('pip-pypi', 'requests', 'requests==2.25.1'),
+        ('pip-pypi', 'requests', 'requests==2.25.1')
     ],
 
     'interfaces': ['API'],
+
+    'custom_commands': [
+        {
+            'type': 'message',
+            'default_value': """Set the Duty Cycle."""
+        },
+        {
+            'id': 'duty_cycle',
+            'type': 'float',
+            'default_value': 0,
+            'name': 'Duty Cycle',
+            'phrase': 'The duty cycle to set'
+        },
+        {
+            'id': 'set_duty_cycle',
+            'type': 'button',
+            'wait_for_return': True,
+            'name': 'Set Duty Cycle'
+        }
+    ],
 
     'custom_options_message': 'Enter the API key and IP/Host address of your remote Mycodo and save to populate the Remote Output dropdown selection. You will need to refresh the page after saving for the Remote Mycodo Output dropdown to populate. Configure which Remote Mycodo Output you would like to control and save again. You must select an On/Off Output Channel for this to work. Selecting a PWM, Volume, or other channel will cause an error.',
 
@@ -88,40 +108,55 @@ OUTPUT_INFORMATION = {
         {
             'id': 'state_startup',
             'type': 'select',
-            'default_value': -1,
+            'default_value': '',
             'options_select': [
                 (-1, 'Do Nothing'),
                 (0, 'Off'),
-                (1, 'On')
+                ('set_duty_cycle', 'User Set Value'),
+                ('last_duty_cycle', 'Last Known Value')
             ],
             'name': lazy_gettext('Startup State'),
             'phrase': 'Set the state when Mycodo starts'
         },
         {
+            'id': 'startup_value',
+            'type': 'float',
+            'default_value': 0.0,
+            'name': "Start Duty Cycle",
+            'phrase': 'The duty cycle to set at startup, if enabled'
+        },
+        {
             'id': 'state_shutdown',
             'type': 'select',
-            'default_value': -1,
+            'default_value': '',
             'options_select': [
                 (-1, 'Do Nothing'),
                 (0, 'Off'),
-                (1, 'On')
+                ('set_duty_cycle', 'User Set Value')
             ],
             'name': lazy_gettext('Shutdown State'),
             'phrase': 'Set the state when Mycodo shuts down'
         },
         {
-            'id': 'command_force',
-            'type': 'bool',
-            'default_value': False,
-            'name': lazy_gettext('Force Command'),
-            'phrase': 'Always send the command if instructed, regardless of the current state'
+            'id': 'shutdown_value',
+            'type': 'float',
+            'default_value': 0.0,
+            'name': "Shutdown Duty Cycle",
+            'phrase': 'The duty cycle to set at shutdown, if enabled'
         },
         {
-            'id': 'trigger_functions_startup',
+            'id': 'pwm_invert_signal',
             'type': 'bool',
             'default_value': False,
-            'name': lazy_gettext('Trigger Functions at Startup'),
-            'phrase': 'Whether to trigger functions when the output switches at startup'
+            'name': lazy_gettext('Invert Signal'),
+            'phrase': 'Invert the PWM signal'
+        },
+        {
+            'id': 'pwm_invert_stored_signal',
+            'type': 'bool',
+            'default_value': False,
+            'name': lazy_gettext('Invert Stored Signal'),
+            'phrase': 'Invert the value that is saved to the measurement database'
         }
     ]
 }
@@ -164,23 +199,41 @@ class OutputModule(AbstractOutput):
                 query_states.daemon = True
                 query_states.start()
 
-                for channel in channels_dict:
-                    if self.options_channels['state_startup'][channel] == 1:
-                        self.output_switch("on", output_channel=channel)
-                    elif self.options_channels['state_startup'][channel] == 0:
-                        self.output_switch("off", output_channel=channel)
-                    else:
-                        continue
 
-                    startup = 'ON' if self.options_channels['state_startup'][channel] else 'OFF'
-                    self.logger.info(f"Output setup and turned {startup}")
+                state_string = ""
+            if self.options_channels['state_startup'][0] == 0:
+                self.output_switch('off')
+                self.logger.info("PWM turned off (0 % duty cycle)")
+            elif self.options_channels['state_startup'][0] == 'set_duty_cycle':
+                self.output_switch('on', amount=self.options_channels['startup_value'][0])
+                self.logger.info("PWM set to {} % duty cycle (user-specified value)".format(
+                    self.options_channels['startup_value'][0]))
+            elif self.options_channels['state_startup'][0] == 'last_duty_cycle':
+                device_measurement = db_retrieve_table_daemon(DeviceMeasurements).filter(
+                    and_(DeviceMeasurements.device_id == self.unique_id,
+                         DeviceMeasurements.channel == 0)).first()
 
-                    if self.options_channels['trigger_functions_startup'][channel]:
-                        try:
-                            self.check_triggers(self.unique_id, output_channel=channel)
-                        except Exception as err:
-                            self.logger.error(
-                                f"Could not check Trigger for channel {channel} of output {self.unique_id}: {err}")
+                last_measurement = None
+                if device_measurement:
+                    channel, unit, measurement = return_measurement_info(device_measurement, None)
+                    last_measurement = read_influxdb_single(
+                        self.unique_id,
+                        unit,
+                        channel,
+                        measure=measurement,
+                        value='LAST')
+
+                if last_measurement:
+                    self.logger.info(
+                        "PWM set to {} % duty cycle (last known value)".format(
+                            last_measurement[1]))
+                    self.output_switch('on', amount=last_measurement[1])
+                else:
+                    self.logger.error(
+                        "Output instructed at startup to be set to "
+                        "the last known duty cycle, but a last known "
+                        "duty cycle could not be found in the measurement "
+                        "database")
         except Exception as except_msg:
             self.logger.exception(
                 "Output was unable to be setup: {err}".format(err=except_msg))
@@ -265,10 +318,12 @@ class OutputModule(AbstractOutput):
 
                 if (output_unique_id in self.api_output['output states'] and
                         str(device_channel) in self.api_output['output states'][output_unique_id]):
-                    if self.api_output['output states'][output_unique_id][str(device_channel)] == "on":
-                        self.output_states[each_chan] = True
-                    elif self.api_output['output states'][output_unique_id][str(device_channel)] == "off":
-                        self.output_states[each_chan] = False
+                    if self.api_output['output states'][output_unique_id][str(device_channel)]:
+                        try:
+                            self.output_states[each_chan] = float(
+                                self.api_output['output states'][output_unique_id][str(device_channel)])
+                        except:
+                            self.output_states[each_chan] = None
 
     def send_remote_output(self, channel, state):
         import requests
@@ -293,7 +348,7 @@ class OutputModule(AbstractOutput):
 
         data = {
             "channel": device_channel,
-            "state": state
+            "duty_cycle": state
         }
 
         response = requests.post(url, json=data, headers=headers, verify=False)
@@ -326,16 +381,28 @@ class OutputModule(AbstractOutput):
         self.logger.error("Could not determine channel table.")
 
     def output_switch(self, state, output_type=None, amount=None, output_channel=0):
-        try:
-            if state == 'on':
-                self.send_remote_output(output_channel, True)
-            elif state == 'off':
-                self.send_remote_output(output_channel, False)
-            msg = "success"
-        except Exception as e:
-            msg = "State change error: {}".format(e)
-            self.logger.exception(msg)
-        return msg
+        measure_dict = copy.deepcopy(measurements_dict)
+
+        if state == 'on':
+            if self.options_channels['pwm_invert_signal'][output_channel]:
+                amount = 100.0 - abs(amount)
+        elif state == 'off':
+            if self.options_channels['pwm_invert_signal'][output_channel]:
+                amount = 100
+            else:
+                amount = 0
+
+        self.send_remote_output(output_channel, amount)
+
+        self.logger.debug("Duty cycle set to {dc:.2f} %".format(dc=amount))
+
+        if self.options_channels['pwm_invert_stored_signal'][output_channel]:
+            amount = 100.0 - abs(amount)
+
+        measure_dict[0]['value'] = amount
+        add_measurements_influxdb(self.unique_id, measure_dict)
+
+        return "success"
 
     def is_on(self, output_channel=0):
         if self.is_setup():
@@ -351,8 +418,19 @@ class OutputModule(AbstractOutput):
         """Called when Output is stopped."""
         if self.is_setup():
             for channel in channels_dict:
-                if self.options_channels['state_shutdown'][channel] == 1:
-                    self.output_switch('on', output_channel=channel)
-                elif self.options_channels['state_shutdown'][channel] == 0:
-                    self.output_switch('off', output_channel=channel)
+                if self.options_channels['state_shutdown'][channel] == 0:
+                    self.output_switch('off')
+                elif self.options_channels['state_shutdown'][channel] == 'set_duty_cycle':
+                    self.output_switch('on', amount=self.options_channels['shutdown_value'][channel])
         self.running = False
+
+    def set_duty_cycle(self, args_dict):
+        if 'duty_cycle' not in args_dict:
+            self.logger.error("Cannot set without duty cycle")
+            return
+        return_str = self.control.output_on(
+            self.output.unique_id,
+            output_type='pwm',
+            amount=args_dict["duty_cycle"],
+            output_channel=0)
+        return f"Setting duty cycle: {return_str}"

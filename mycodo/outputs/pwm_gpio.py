@@ -7,14 +7,12 @@ import copy
 from flask_babel import lazy_gettext
 from sqlalchemy import and_
 
-from mycodo.databases.models import DeviceMeasurements
-from mycodo.databases.models import OutputChannel
+from mycodo.databases.models import DeviceMeasurements, OutputChannel
 from mycodo.outputs.base_output import AbstractOutput
-from mycodo.utils.constraints_pass import constraints_pass_positive_or_zero_value
-from mycodo.utils.constraints_pass import constraints_pass_positive_value
+from mycodo.utils.constraints_pass import (
+    constraints_pass_positive_or_zero_value, constraints_pass_positive_value)
 from mycodo.utils.database import db_retrieve_table_daemon
-from mycodo.utils.influx import add_measurements_influxdb
-from mycodo.utils.influx import read_influxdb_single
+from mycodo.utils.influx import add_measurements_influxdb, read_influxdb_single
 from mycodo.utils.system_pi import return_measurement_info
 
 # Measurements
@@ -157,13 +155,6 @@ OUTPUT_INFORMATION = {
             'default_value': False,
             'name': lazy_gettext('Invert Stored Signal'),
             'phrase': 'Invert the value that is saved to the measurement database'
-        },
-        {
-            'id': 'trigger_functions_startup',
-            'type': 'bool',
-            'default_value': False,
-            'name': lazy_gettext('Trigger Functions at Startup'),
-            'phrase': 'Whether to trigger functions when the output switches at startup'
         },
         {
             'id': 'amps',
@@ -355,9 +346,9 @@ class OutputModule(AbstractOutput):
         if 'duty_cycle' not in args_dict:
             self.logger.error("Cannot set without duty cycle")
             return
-        test = self.control.output_on(
+        return_str = self.control.output_on(
             self.output.unique_id,
             output_type='pwm',
             amount=args_dict["duty_cycle"],
             output_channel=0)
-        return "Setting duty cycle: {}".format(test)
+        return f"Setting duty cycle: {return_str}"

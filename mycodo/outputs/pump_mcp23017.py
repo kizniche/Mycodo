@@ -196,12 +196,6 @@ class OutputModule(AbstractOutput):
             else:  # Default state: Off
                 self.turn_on_off(channel, "off")
 
-            if self.options_channels['trigger_functions_startup'][channel]:
-                try:
-                    self.check_triggers(self.unique_id, output_channel=channel)
-                except Exception as err:
-                    self.logger.error(f"Could not check Trigger for channel {channel}: {err}")
-
         self.output_setup = True
 
     def turn_on_off(self, switch_channel, state):

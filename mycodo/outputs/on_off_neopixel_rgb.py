@@ -289,6 +289,13 @@ class OutputModule(AbstractOutput):
         except Exception as err:
             self.logger.error(f"Setting up Output: {err}")
 
+        if self.options_channels['trigger_functions_startup'][0]:
+            try:
+                self.check_triggers(self.unique_id, output_channel=0)
+            except Exception as err:
+                self.logger.error(
+                    f"Could not check Trigger for channel 0 of output {self.unique_id}: {err}")
+
     def output_switch(self, state, output_type=None, amount=None, duty_cycle=None, output_channel=None):
         if not self.is_setup():
             msg = "Error 101: Device not set up. See https://kizniche.github.io/Mycodo/Error-Codes#error-101 for more info."

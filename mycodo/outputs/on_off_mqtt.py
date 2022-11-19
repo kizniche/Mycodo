@@ -132,6 +132,13 @@ OUTPUT_INFORMATION = {
             'phrase': 'Set the state when Mycodo shuts down'
         },
         {
+            'id': 'trigger_functions_startup',
+            'type': 'bool',
+            'default_value': False,
+            'name': lazy_gettext('Trigger Functions at Startup'),
+            'phrase': 'Whether to trigger functions when the output switches at startup'
+        },
+        {
             'id': 'command_force',
             'type': 'bool',
             'default_value': False,
@@ -205,6 +212,14 @@ class OutputModule(AbstractOutput):
             self.output_switch('on')
         elif self.options_channels['state_startup'][0] == 0:
             self.output_switch('off')
+
+        if (self.options_channels['state_startup'][0] in [0, 1] and
+                self.options_channels['trigger_functions_startup'][0]):
+            try:
+                self.check_triggers(self.unique_id, output_channel=0)
+            except Exception as err:
+                self.logger.error(
+                    f"Could not check Trigger for channel 0 of output {self.unique_id}: {err}")
 
     def output_switch(self, state, output_type=None, amount=None, output_channel=0):
         try:

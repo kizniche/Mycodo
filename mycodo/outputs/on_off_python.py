@@ -289,6 +289,14 @@ class OutputModule(AbstractOutput):
                 self.output_switch('on', output_channel=0)
             elif self.options_channels['state_startup'][0] == 0:
                 self.output_switch('off', output_channel=0)
+
+            if (self.options_channels['state_startup'][0] in [0, 1] and
+                    self.options_channels['trigger_functions_startup'][0]):
+                try:
+                    self.check_triggers(self.unique_id, output_channel=0)
+                except Exception as err:
+                    self.logger.error(
+                        f"Could not check Trigger for channel 0 of output {self.unique_id}: {err}")
         except Exception:
             self.logger.exception("Could not set up output")
 

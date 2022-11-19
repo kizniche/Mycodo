@@ -202,6 +202,14 @@ class OutputModule(AbstractOutput):
                 elif self.options_channels['state_startup'][channel] == 0:
                     self.outlet_change(channel, False)
 
+                if (self.options_channels['state_startup'][channel] in [0, 1] and
+                        self.options_channels['trigger_functions_startup'][channel]):
+                    try:
+                        self.check_triggers(self.unique_id, output_channel=channel)
+                    except Exception as err:
+                        self.logger.error(
+                            f"Could not check Trigger for channel {channel} of output {self.unique_id}: {err}")
+
             if self.status_update_period:
                 self.status_thread = Thread(target=self.status_update)
                 self.status_thread.start()

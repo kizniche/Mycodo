@@ -191,13 +191,6 @@ class OutputModule(AbstractOutput):
 
         self.output_states = dict_states
 
-        for channel in channels_dict:
-            if self.options_channels['trigger_functions_startup'][channel]:
-                try:
-                    self.check_triggers(self.unique_id, output_channel=channel)
-                except Exception as err:
-                    self.logger.error(f"Could not check Trigger for channel {channel}: {err}")
-
     def turn_on_off(self, switch_channel, state):
         msg = ""
         lf = LockFile()

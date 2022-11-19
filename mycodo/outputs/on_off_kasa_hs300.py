@@ -181,7 +181,16 @@ class OutputModule(AbstractOutput):
                         self.output_switch("on", output_channel=channel)
                     elif self.options_channels['state_startup'][channel] == 0:
                         self.output_switch("off", output_channel=channel)
+
                     self.logger.debug('Strip children: {}'.format(self.strip.children[channel]))
+
+                    if (self.options_channels['state_startup'][channel] in [0, 1] and
+                            self.options_channels['trigger_functions_startup'][channel]):
+                        try:
+                            self.check_triggers(self.unique_id, output_channel=channel)
+                        except Exception as err:
+                            self.logger.error(
+                                f"Could not check Trigger for channel {channel} of output {self.unique_id}: {err}")
         except Exception as e:
             self.logger.error("initialize() Error: {err}".format(err=e))
 

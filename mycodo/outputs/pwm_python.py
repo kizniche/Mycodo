@@ -270,13 +270,6 @@ self.logger.info(log_string)""",
             'phrase': 'Invert the value that is saved to the measurement database'
         },
         {
-            'id': 'trigger_functions_startup',
-            'type': 'bool',
-            'default_value': False,
-            'name': lazy_gettext('Trigger Functions at Startup'),
-            'phrase': 'Whether to trigger functions when the output switches at startup'
-        },
-        {
             'id': 'command_force',
             'type': 'bool',
             'default_value': False,

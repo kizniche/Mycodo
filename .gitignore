@@ -9,6 +9,9 @@ env/
 statistics.csv
 statistics.id
 
+# VS Code
+.vscode/
+
 # jekyll
 _site
 .sass-cache
