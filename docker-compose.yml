@@ -34,6 +34,9 @@ services:
     container_name: mycodo_daemon
     image: app
     restart: always
+    build:
+      context: ./
+      dockerfile: docker/Dockerfile
     volumes:
       - mycodo:/usr/local/mycodo
       - mycodo_env:/home/mycodo/env
@@ -53,16 +56,13 @@ services:
     privileged: true
     command: bash -c "PYTHONPATH=/home/mycodo /home/mycodo/env/bin/python mycodo_daemon.py"
     depends_on:
-      - mycodo_flask
       - mycodo_influxdb
 
   mycodo_flask:
     container_name: mycodo_flask
     image: app
+    hostname: Mycodo
     restart: always
-    build:
-      context: ./
-      dockerfile: docker/Dockerfile
     volumes:
       - mycodo:/usr/local/mycodo
       - mycodo_env:/home/mycodo/env
@@ -81,7 +81,7 @@ services:
     privileged: true
     command: /home/mycodo/env/bin/python -m gunicorn --workers 1 --bind unix:/usr/local/mycodo/mycodoflask.sock start_flask_ui:app
     depends_on:
-      - mycodo_influxdb
+      - mycodo_daemon
 
 #  mycodo_telegraf:
 #    image: telegraf:latest

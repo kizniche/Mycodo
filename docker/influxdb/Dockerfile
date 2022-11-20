@@ -1,9 +1,11 @@
 FROM influxdb:1.8.10
 
+ENV DOCKER_CONTAINER TRUE
+
 RUN mkdir -pv /var/influxdb/data
 
 COPY docker/influxdb/run.sh /run.sh
-RUN chmod +x /*.sh
+RUN chmod +x /run.sh
 
 ENV PRE_CREATE_DB mycodo_db
 ENV ADMIN_USER mycodo

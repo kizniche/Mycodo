@@ -12,10 +12,10 @@ Please do not submit github issues for Docker-related problems. Also do not expe
 
 This has been tested to work with:
 
-- Raspberry Pi running Raspbian Buster
-- 64-bit PC running Ubuntu Linux (18.04, 64-bit)
+- Raspberry Pi running Raspberry Pi OS
+- PC running Ubuntu Linux (20.04, 64-bit)
 
-A Dockerized Mycodo instance cannot run if there is a local install of Mycodo also running. You can stop any local non-Docker Mycodo instances prior to building with the following commands. Note that this will only stop these services until reboot.
+A Dockerized Mycodo instance cannot run if there is a local install of Mycodo also running because they use the same ports. You can stop any local, non-Docker Mycodo instances prior to building with the following commands. Note that this will only stop these services until reboot.
 
 ```shell script
 sudo service mycodo stop
@@ -23,13 +23,14 @@ sudo service mycodoflask stop
 sudo service nginx stop
 ```
 
-### Prerequisites
-
-Install prerequisites with the following command.
+### Install Prerequisites
 
 ```shell script
-cd ~/Mycodo/docker
-sudo /bin/bash ./setup.sh dependencies
+cd ~/Mycodo
+sudo /bin/bash ./docker/setup.sh dependencies
+curl -fsSL https://get.docker.com -o get-docker.sh
+sudo sh get-docker.sh
+sudo usermod -aG docker $USER
 ```
 
 Log out then back in to make the group changes go into effect before attempting to build.
@@ -99,22 +100,7 @@ tar xzf mycodo-latest.tar.gz -C Mycodo --strip-components=1
 rm -f mycodo-latest.tar.gz
 ```
 
-#### Install dependencies
-
-```shell script
-cd ~/Mycodo/docker
-sudo /bin/bash ./setup.sh dependencies
-```
-
-Log out then back in for the group addition to take effect.
-
-#### Build with docker-compose
-
-```shell script
-../env/bin/docker-compose up --build -d
-```
-
-If all goes as planned, you should have all containers build and start without issue.
+Then follow the instructions to [Install Prerequisites](#install-prerequisites) and [Build and Start](#build-and-start).
 
 ## Access
 
@@ -134,21 +120,21 @@ The default user is admin and the password admin.
 
 ```shell script
 cd ~/Mycodo/docker
-../env/bin/docker-compose down
+docker-compose down
 ```
 
 ### Start Containers
 
 ```shell script
 cd ~/Mycodo
-../env/bin/docker-compose up
+docker-compose up
 ```
 
 ### Clean
 
 ```shell script
 cd ~/Mycodo
-../env/bin/docker-compose down
+docker-compose down
 docker system prune -a
 ```
 

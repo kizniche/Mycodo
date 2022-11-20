@@ -215,9 +215,9 @@ case "${1:-''}" in
         service mycodo restart
     ;;
     'setup-virtualenv')
-        printf "\n#### Checking python 3 virtualenv\n"
+        printf "\n#### Checking Python 3 virtual environment\n"
         if [[ ! -e ${MYCODO_PATH}/env/bin/python ]]; then
-            printf "#### Virtualenv doesn't exist. Creating...\n"
+            printf "#### Creating virtualenv with ${PYTHON_BINARY_SYS_LOC} at "${MYCODO_PATH}"/env\n"
             python3 -m pip install virtualenv==${VIRTUALENV_VERSION}
             rm -rf "${MYCODO_PATH}"/env
             python3 -m virtualenv -p "${PYTHON_BINARY_SYS_LOC}" "${MYCODO_PATH}"/env
@@ -705,11 +705,12 @@ case "${1:-''}" in
         if [[ ! -d ${MYCODO_PATH}/env ]]; then
             printf "\n## Error: Virtualenv doesn't exist. Create with %s setup-virtualenv\n" "${0}"
         else
-            "${MYCODO_PATH}"/env/bin/python -m pip install --no-cache-dir -r /home/mycodo/install/requirements.txt
+            "${MYCODO_PATH}"/env/bin/python -m pip install --no-cache-dir -r "${MYCODO_PATH}"/install/requirements.txt
         fi
     ;;
-    'install-docker-ce-cli')
+    'install-docker')
         printf "\n#### Installing Docker Client\n"
+        apt install -y curl
         curl -fsSL https://get.docker.com -o get-docker.sh
         sh get-docker.sh
     ;;
