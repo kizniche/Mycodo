@@ -1,7 +1,9 @@
 # Mycodo files
 test/
+tests/
 site/
 env/
+.venv
 /databases/flask_secret_key
 *.db
 *.pem

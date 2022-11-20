@@ -23,6 +23,8 @@ sudo service mycodoflask stop
 sudo service nginx stop
 ```
 
+If you are building for a Pi Zero, you will need to change `FROM influxdb:1.8.10` to `FROM mendhak/arm32v6-influxdb` in docker/influxdb/Dockerfile prior to building.
+
 ### Install Prerequisites
 
 ```shell script

@@ -2,12 +2,16 @@
 """Get measurement database info"""
 import argparse
 import json
+import logging
 import os
-import requests
 import subprocess
 import sys
 
+import requests
+
 sys.path.append(os.path.abspath(os.path.join(__file__, "../../..")))
+
+logger = logging.getLogger("mycodo.measurement_db")
 
 
 def get_measurement_db_info():
@@ -21,13 +25,37 @@ def get_measurement_db_info():
         settings = db_retrieve_table_daemon(Misc, entry='first')
         dict_info['db_name'] = settings.measurement_db_name
         dict_info['db_version'] = settings.measurement_db_version
-    except:
+    except Exception as err:
+        logger.debug(f"Could not determine influxdb version: {err}")
         dict_info['db_name'] = "ERROR"
         dict_info['db_version'] = "ERROR"
 
     return dict_info
 
+def get_influxdb_host():
+    try:
+        from mycodo.databases.models import Misc
+        from mycodo.utils.database import db_retrieve_table_daemon
+        settings = db_retrieve_table_daemon(Misc, entry='first')
+        if settings and settings.measurement_db_host:
+            return settings.measurement_db_host
+    except Exception as err:
+        logger.debug(f"Could not determine influxdb host from table: {err}")
+
+    list_hosts = [
+        'localhost',
+        '127.0.0.1',
+        'mycodo_influxdb'
+    ]
+    for host in list_hosts:
+        try:
+            if requests.get(f"http://{host}:8086/ping").status_code == 204:
+                return host
+        except Exception as err:
+            logger.debug(f"Could not determine localhost as influxdb host: {err}")
+
 def get_influxdb_info():
+    settings = None
     dict_info = {
         'influxdb_installed': None,
         'influxdb_version': ''
@@ -36,13 +64,23 @@ def get_influxdb_info():
         from mycodo.databases.models import Misc
         from mycodo.utils.database import db_retrieve_table_daemon
         settings = db_retrieve_table_daemon(Misc, entry='first')
-        r = requests.get(f'http://{settings.measurement_db_host}:{settings.measurement_db_port}/ping')
+    except Exception as err:
+        logger.debug(f"Could not determine influxdb info from table: {err}")
+
+    try:
+        if settings:
+            host = settings.measurement_db_host
+            port = settings.measurement_db_port
+        else:
+            host = get_influxdb_host()
+            port = 8086
+        r = requests.get(f'http://{host}:{port}/ping')
 
         if r.headers and "X-Influxdb-Version" in r.headers:
             dict_info['influxdb_installed'] = True
             dict_info['influxdb_version'] = r.headers["X-Influxdb-Version"]
-    except:
-        pass
+    except Exception as err:
+        logger.debug(f"Could not determine influxdb info: {err}")
 
     return dict_info
 

@@ -26,6 +26,7 @@ from flask.blueprints import Blueprint
 from flask_babel import gettext
 from sqlalchemy import and_
 
+from mycodo.config import DOCKER_CONTAINER
 from mycodo.config import ALEMBIC_VERSION
 from mycodo.config import BACKUP_LOG_FILE
 from mycodo.config import CAMERA_INFO
@@ -890,22 +891,24 @@ def page_logview():
             log_field = form_log_view.log.data
 
             # Find which log file was requested, generate command to execute
-            if form_log_view.log.data == 'log_pid_settings':
+            if form_log_view.log.data == 'log_nginx':
+                if DOCKER_CONTAINER:
+                    command = f'docker logs -n {lines} mycodo_nginx'
+                else:
+                    command = f'journalctl -u nginx -n {lines} --no-pager'
+            elif form_log_view.log.data == 'log_flask':
+                if DOCKER_CONTAINER:
+                    command = f'docker logs -n {lines} mycodo_flask'
+                else:
+                    command = f'journalctl -u mycodoflask -n {lines} --no-pager'
+            elif form_log_view.log.data == 'log_pid_settings':
                 logfile = DAEMON_LOG_FILE
                 logrotate_file = logfile + '.1'
                 if (logrotate_file and os.path.exists(logrotate_file) and
                         logfile and os.path.isfile(logfile)):
-                    command = 'cat {lrlog} {log} | grep -a "PID Settings" | tail -n {lines}'.format(
-                        lrlog=logrotate_file, log=logfile, lines=lines)
+                    command = f'cat {logrotate_file} {logfile} | grep -a "PID Settings" | tail -n {lines}'
                 else:
-                    command = 'grep -a "PID Settings" {log} | tail -n {lines}'.format(
-                        lines=lines, log=logfile)
-            elif form_log_view.log.data == 'log_nginx':
-                command = 'journalctl -u nginx -n {lines} --no-pager'.format(
-                    lines=lines)
-            elif form_log_view.log.data == 'log_flask':
-                command = 'journalctl -u mycodoflask -n {lines} --no-pager'.format(
-                    lines=lines)
+                    command = f'grep -a "PID Settings" {logfile} | tail -n {lines}'
             else:
                 if form_log_view.log.data == 'log_login':
                     logfile = LOGIN_LOG_FILE
@@ -929,16 +932,15 @@ def page_logview():
                 logrotate_file = logfile + '.1'
                 if (logrotate_file and os.path.exists(logrotate_file) and
                         logfile and os.path.isfile(logfile)):
-                    command = 'cat {lrlog} {log} | tail -n {lines}'.format(
-                        lrlog=logrotate_file, log=logfile, lines=lines)
+                    command = f'cat {logrotate_file} {logfile} | tail -n {lines}'
                 elif os.path.isfile(logfile):
-                    command = 'tail -n {lines} {log}'.format(lines=lines,
-                                                             log=logfile)
+                    command = f'tail -n {lines} {logfile}'
 
             # Execute command and generate the output to display to the user
             if command:
                 log = subprocess.Popen(
-                    command, stdout=subprocess.PIPE, shell=True)
+                    command,
+                    stdout=subprocess.PIPE, stderr=subprocess.STDOUT, shell=True)
                 (log_output, _) = log.communicate()
                 log.wait()
                 log_output = str(log_output, 'latin-1')

@@ -90,6 +90,9 @@ class DaemonController:
 
         self.logger.info(f"Mycodo daemon v{MYCODO_VERSION} starting")
 
+        if DOCKER_CONTAINER:
+            self.logger.info("Detected running inside a Docker continaer")
+
         self.log_level_debug = debug
         self.startup_timer = timeit.default_timer()
         self.startup_time = None

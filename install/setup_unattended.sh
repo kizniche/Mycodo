@@ -19,6 +19,22 @@ if [ "$EUID" -ne 0 ]; then
     exit 1
 fi
 
+case "${1:-''}" in
+    '1')
+        printf "#### Installing Mycodo with Influxdb 1.x\n"
+    ;;
+    '2')
+        printf "#### Installing Mycodo with Influxdb 2.x\n"
+    ;;
+    '0')
+        printf "#### Installing Mycodo without installing Influxdb\n"
+    ;;
+    *)
+        printf "Error: Unrecognized command: sudo setup_unattended.sh [influxdb version] ('1' for version 1.x and '2' for 2.x)\n"
+        exit 1
+    ;;
+esac
+
 printf "Checking Python version...\n"
 if hash python3 2>/dev/null; then
   if ! python3 "${INSTALL_DIRECTORY}"/mycodo/scripts/upgrade_check.py --min_python_version "3.6"; then
@@ -35,22 +51,6 @@ fi
 
 NOW=$(date)
 printf "### Mycodo installation initiated %s\n\n" "${NOW}" 2>&1 | tee -a "${LOG_LOCATION}"
-
-case "${1:-''}" in
-    '1')
-        printf "#### Installing Mycodo with Influxdb 1.x\n"
-    ;;
-    '2')
-        printf "#### Installing Mycodo with Influxdb 2.x\n"
-    ;;
-    '0')
-        printf "#### Installing Mycodo without installing Influxdb\n"
-    ;;
-    *)
-        printf "Error: Unrecognized command: %s\n" "${1}"
-        exit 1
-    ;;
-esac
 
 abort()
 {

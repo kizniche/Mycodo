@@ -369,7 +369,7 @@ case "${1:-''}" in
         printf "\n#### Uninstalling: Stopping and disabling Mycodo services (frontend/backend)\n"
         service mycodoflask stop
         service mycodo stop
-        /bin/bash "${MYCODO_PATH}"/mycodo/scripts/upgrade_download.sh web-server-disable
+        /bin/bash "${MYCODO_PATH}"/mycodo/scripts/upgrade_commands.sh web-server-disable
         /bin/bash "${MYCODO_PATH}"/mycodo/scripts/upgrade_commands.sh update-mycodo-service-disable
     ;;
     'update-pigpiod')
@@ -633,8 +633,8 @@ case "${1:-''}" in
     ;;
     'web-server-update')
         printf "\n#### Installing and configuring nginx web server\n"
-        /bin/bash "${MYCODO_PATH}"/mycodo/scripts/upgrade_download.sh web-server-disable
-        /bin/bash "${MYCODO_PATH}"/mycodo/scripts/upgrade_download.sh web-server-enable
+        /bin/bash "${MYCODO_PATH}"/mycodo/scripts/upgrade_commands.sh web-server-disable
+        /bin/bash "${MYCODO_PATH}"/mycodo/scripts/upgrade_commands.sh web-server-enable
     ;;
 
 
