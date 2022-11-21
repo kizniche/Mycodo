@@ -1,4 +1,4 @@
-FROM python:3.9.9-slim-bullseye
+FROM debian:stable-slim
 
 ENV DOCKER_CONTAINER TRUE
 

@@ -27,11 +27,21 @@ If you are building for a Pi Zero, you will need to change `FROM influxdb:1.8.10
 
 ### Install Prerequisites
 
+If installing on on a Raspberry Pi, Docker requires Rust be installed. You can skip this step and attempt to install Docker in the next command. If you get an error about Rust being missing, then come back and install it, then try installing Docker again.
+
+```
+curl https://sh.rustup.rs -sSf | sh
+```
+
+Install Docker. If you have docker already installed via another method, do not run this install script. Only run this install script if you don't already have Docker or you preiously installed docker with this install script.
+
 ```shell script
-cd ~/Mycodo
-sudo /bin/bash ./docker/setup.sh dependencies
-curl -fsSL https://get.docker.com -o get-docker.sh
-sudo sh get-docker.sh
+curl https://get.docker.com -sSf | sh
+```
+
+Add your user to the docker group to be able to execute doker commands.
+
+```
 sudo usermod -aG docker $USER
 ```
 
@@ -41,7 +51,8 @@ Log out then back in to make the group changes go into effect before attempting 
 
 ```shell script
 cd ~/Mycodo
-docker compose up --build -d
+docker compose build
+docker compose up -d
 ```
 
 ### Access
@@ -118,11 +129,12 @@ The default user is admin and the password admin.
 
 ### Rebuild
 
-If you change code and want to rebuild to incorporate it into the running conatiners, all you need to do is rebuild.
+If you change code and want to rebuild to incorporate it into the running conatiners, all you need to do is rebuild and restart the containers.
 
 ```shell script
 cd ~/Mycodo
-docker compose up --build -d
+docker compose build
+docker compose restart
 ```
 
 ### Bring Down
@@ -140,7 +152,7 @@ If the containers have been stopped or brought down, you can bring them back up 
 
 ```shell script
 cd ~/Mycodo
-docker compose up
+docker compose up -d
 ```
 
 ### Clean
