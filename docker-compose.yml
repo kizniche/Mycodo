@@ -84,6 +84,8 @@ services:
     depends_on:
       - mycodo_influxdb
 
+# Uncomment the following blocks and rebuild to enable Grafana and/or Telegraf
+
 #  mycodo_telegraf:
 #    image: telegraf:latest
 #    container_name: mycodo_telegraf
@@ -91,16 +93,16 @@ services:
 #      - ./docker/telegraf/telegraf.conf:/etc/telegraf/telegraf.conf:ro
 #    depends_on:
 #      - mycodo_influxdb
-#
+
 #  mycodo_grafana:
 #    image: grafana/grafana:latest
 #    container_name: mycodo_grafana
-#    ports:
-#      - "3000:3000"
 #    env_file:
-#      - 'docker/grafana/env.grafana'
+#      - './docker/grafana/env.grafana'
 #    volumes:
 #      - mycodo_grafana:/var/lib/grafana
+#    ports:
+#      - "3000:3000"
 #    depends_on:
 #      - mycodo_influxdb
 

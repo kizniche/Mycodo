@@ -1,10 +1,10 @@
 # Docker
 
-This effort is to get Mycodo running in Docker containers with all features working. many parts of the system work, however there are also many that do not.
+This effort is to get Mycodo running in Docker containers with all features working. Many parts of the system work, however there are also many that do not.
 
 ***This is currently experimental***
 
-Please do not submit github issues for Docker-related problems. Also do not expect this feature to remain consistent (i.e. previous builds may not be compatible with future builds). 
+Please do not submit github issues for Docker-related problems. Also do not expect this feature to remain consistent (i.e. previous builds may not be compatible with future builds). Join [Docker Issue (#637)](https://github.com/kizniche/Mycodo/issues/637) for Mycodo Docker discussion.
 
 ## Setup
 
@@ -41,8 +41,12 @@ Log out then back in to make the group changes go into effect before attempting 
 
 ```shell script
 cd ~/Mycodo
-docker-compose up --build -d
+docker compose up --build -d
 ```
+
+### Access
+
+Mycodo can be accessed at https://127.0.0.1
 
 ## Virtual Machine
 
@@ -54,7 +58,7 @@ Install Virtualbox from https://www.virtualbox.org/wiki/Downloads
 
 ### Download Raspbian
 
-Download the [Debian Buster with Raspberry Pi Desktop ISO](https://www.raspberrypi.org/downloads/raspberry-pi-desktop/).
+Download the [Debian Buster with Raspberry Pi Desktop ISO](https://www.raspberrypi.org/downloads/raspberry-pi-desktop/) or ISO of another Debian-based Linux distribution.
 
 ### Create New Virtual Machine
 
@@ -104,12 +108,6 @@ rm -f mycodo-latest.tar.gz
 
 Then follow the instructions to [Install Prerequisites](#install-prerequisites) and [Build and Start](#build-and-start).
 
-## Access
-
-### Mycodo
-
-Mycodo can be accessed at https://127.0.0.1
-
 ### Grafana
 
 If Grafana was enabled prior to the build, it can be accessed at http://127.0.0.1:3000
@@ -118,57 +116,50 @@ The default user is admin and the password admin.
 
 ## Docker Management
 
-### Stop Containers
+### Rebuild
 
-```shell script
-cd ~/Mycodo/docker
-docker-compose down
-```
-
-### Start Containers
+If you change code and want to rebuild to incorporate it into the running conatiners, all you need to do is rebuild.
 
 ```shell script
 cd ~/Mycodo
-docker-compose up
+docker compose up --build -d
+```
+
+### Bring Down
+
+To stop the running containers and prevent them from automatically starting when the system start.
+
+```shell script
+cd ~/Mycodo/docker
+docker compose down
+```
+
+### Bring Back Up
+
+If the containers have been stopped or brought down, you can bring them back up or start them again. The system has to have been previously built for this to work.
+
+```shell script
+cd ~/Mycodo
+docker compose up
 ```
 
 ### Clean
 
+To bring down all containers and delete all image data (volume data is preserved).
+
 ```shell script
 cd ~/Mycodo
-docker-compose down
+docker compose down
 docker system prune -a
 ```
 
-## Grafana
+## Grafana and Telegraf
 
 For reference, this is the guide used to implement Grafana and Telegraf: https://towardsdatascience.com/get-system-metrics-for-5-min-with-docker-telegraf-influxdb-and-grafana-97cfd957f0ac
 
 ### Enable Grafana and Telegraf
 
-Grafana and Telegraf are disabled by default. To enable either or both of these features (prior to building), uncomment these lines in docker-compose.yml:
-
-```
-#  telegraf:
-#    image: telegraf:latest
-#    container_name: telegraf
-#    volumes:
-#      - ./telegraf/telegraf.conf:/etc/telegraf/telegraf.conf:ro
-#    depends_on:
-#      - influxdb
-
-#  grafana:
-#    image: grafana/grafana:latest
-#    container_name: grafana
-#    ports:
-#      - "3000:3000"
-#    env_file:
-#      - 'grafana/env.grafana'
-#    volumes:
-#      - grafana-volume:/var/lib/grafana
-#    depends_on:
-#      - influxdb
-```
+Grafana and Telegraf are disabled by default. To enable either or both of these features (prior to building), open docker-compose.yml and uncomment the blocks that follow the statement "Uncomment the following blocks and rebuild to enable Grafana and/or Telegraf", save, then rebuild.
 
 ### Add Mycodo as a data source
 

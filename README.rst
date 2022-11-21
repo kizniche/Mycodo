@@ -176,16 +176,7 @@ A minimal set of anonymous usage statistics are collected to help improve develo
 Docker
 ~~~~~~
 
-Docker support is experimental, but if you want to try it, you can use the following commands after you install docker-compose:
-
-.. code:: bash
-
-    cd Mycodo/docker && docker-compose up --build
-
-
-After verifying it builds properly and runs without errors, you can run docker in the background by running ``docker-compose up --build -d`` instead of ``docker-compose up --build``
-
-There is a `Docker Issue (#637) <https://github.com/kizniche/Mycodo/issues/637>`__ on github for those that wish to help with development.
+Docker support is experimental, but if you want to try it, read the [DOCKER.md](https://github.com/kizniche/Mycodo/blob/master/DOCKER.md). There is also a `Docker Issue (#637) <https://github.com/kizniche/Mycodo/issues/637>`__ on github for those that wish to help with development.
 
 REST API
 --------
