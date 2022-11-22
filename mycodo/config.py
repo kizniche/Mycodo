@@ -222,7 +222,6 @@ CAMERA_INFO = {
 }
 
 METHOD_DEP_BASE = [
-    ('apt', 'unzip', 'unzip'),
     ('bash-commands',
      ['/var/mycodo-root/mycodo/mycodo_flask/static/js/user_js/highcharts-9.1.2.js'],
      [
@@ -337,7 +336,6 @@ DEPENDENCIES_GENERAL = {
     'highstock': {
         'name': 'Highstock',
         'dependencies_module': [
-            ('apt', 'unzip', 'unzip'),
             ('bash-commands',
              [
                  '/var/mycodo-root/mycodo/mycodo_flask/static/js/user_js/highstock-9.1.2.js',

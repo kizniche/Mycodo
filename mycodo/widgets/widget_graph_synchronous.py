@@ -203,7 +203,6 @@ WIDGET_INFORMATION = {
     'message': 'Displays a synchronous graph (all data is downloaded for the selected period on the x-axis).',
 
     'dependencies_module': [
-        ('apt', 'unzip', 'unzip'),
         ('bash-commands',
         [
             '/var/mycodo-root/mycodo/mycodo_flask/static/js/user_js/highstock-9.1.2.js',

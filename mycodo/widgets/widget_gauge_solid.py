@@ -127,7 +127,6 @@ WIDGET_INFORMATION = {
     'message': 'Displays a solid gauge. Be sure to set the Maximum option to the last Stop value for the gauge to display properly.',
 
     'dependencies_module': [
-        ('apt', 'unzip', 'unzip'),
         ('bash-commands',
         [
             '/var/mycodo-root/mycodo/mycodo_flask/static/js/user_js/highstock-9.1.2.js',
