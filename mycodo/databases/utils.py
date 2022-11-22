@@ -16,7 +16,7 @@ def session_scope(db_uri):
     Session = sessionmaker()
 
     # later, we create the engine
-    engine = create_engine(v)
+    engine = create_engine(f"{db_uri}?check_same_thread=False")
 
     # associate it with our custom Session class
     Session.configure(bind=engine)
