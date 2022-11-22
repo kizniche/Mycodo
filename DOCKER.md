@@ -47,6 +47,10 @@ sudo usermod -aG docker $USER
 
 Log out then back in to make the group changes go into effect before attempting to build.
 
+### Configure
+
+Edit docker-compose.yaml and change both (2) instances of TZ=America/New_York to your time zone. This setting is located under both mycodo_daemon and mycodo_flask
+
 ### Build and Start
 
 ```shell script
@@ -133,8 +137,6 @@ If you change code and want to rebuild to incorporate it into the running conati
 
 ```shell script
 cd ~/Mycodo
-docker compose build
-docker compose restart
 ```
 
 ### Bring Down
@@ -173,19 +175,21 @@ For reference, this is the guide used to implement Grafana and Telegraf: https:/
 
 Grafana and Telegraf are disabled by default. To enable either or both of these features (prior to building), open docker-compose.yml and uncomment the blocks that follow the statement "Uncomment the following blocks and rebuild to enable Grafana and/or Telegraf", save, then rebuild.
 
+Grafana will be accessible at http://127.0.0.1:3000
+
 ### Add Mycodo as a data source
 
 After logging in and changing the admin password, select "Add data source", then "InfluxDB". Enter the following information:
 
 -  Name: InfluxDB-mycodo
 -  Default: Checked
--  URL: http://influxdb:8086
+-  URL: http://mycodo_influxdb:8086
 -  Database: mycodo_db
 -  User: mycodo
 -  Password: mmdu77sj3nIoiajjs
 
 Click "Save and Test"
 
-### Add Telegraf plugin
+### Add Telegraf Dashboard
 
-Click the plus icon at the top-left, then Import. Enter 928 in the Grafana.com Dashboard field, then click Load. Select InfluxDB-mycodo as the data source for the ```InfluxDB telegraf``` field, then click Import. Once the dashboard has loaded, click ```Save dashboard``` at the top of the dashboard.
+Hover over Dashboards at the top-left, then click Import. Enter 928 as the Grafana Dashboard URL, then click Load. Select InfluxDB-mycodo as the data source for the ```InfluxDB telegraf``` field, then click Import. Once the dashboard has loaded, click ```Save Dashboard``` at the top of the dashboard.

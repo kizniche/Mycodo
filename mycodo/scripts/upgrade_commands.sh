@@ -23,9 +23,8 @@ INFLUXDB2_VERSION="2.2.0"
 
 VIRTUALENV_VERSION="20.14.1"
 
-# Required apt packages. This has been tested with Raspbian for the
-# Raspberry Pi and Ubuntu, it should work with most Debian-based systems.
-APT_PKGS="gawk gcc g++ git jq libffi-dev libi2c-dev logrotate moreutils nginx sqlite3 wget python3 python3-pip python3-dev python3-setuptools rng-tools netcat"
+# Required apt packages
+APT_PKGS="gawk gcc g++ git jq libffi-dev libi2c-dev logrotate moreutils netcat nginx python3 python3-pip python3-dev python3-setuptools rng-tools sqlite3 unzip wget"
 
 PYTHON_BINARY_SYS_LOC="$(python3 -c "import os; print(os.environ['_'])")"
 
@@ -536,7 +535,6 @@ case "${1:-''}" in
         chown -LR mycodo.mycodo "${MYCODO_PATH}"
         chown -R mycodo.mycodo /var/log/mycodo
         chown -R mycodo.mycodo /var/Mycodo-backups
-        chown -R influxdb.influxdb /var/lib/influxdb/data/
 
         find "${MYCODO_PATH}" -type d -exec chmod u+wx,g+wx {} +
         find "${MYCODO_PATH}" -type f -exec chmod u+w,g+w,o+r {} +

@@ -11,7 +11,6 @@ services:
       - 'docker/influxdb/env.influxdb'
     volumes:
       - mycodo_influxdb:/var/lib/influxdb
-      - /etc/localtime:/etc/localtime:ro  # Use timezone of the host (read-only)
 
   mycodo_nginx:
     container_name: mycodo_nginx
@@ -23,10 +22,9 @@ services:
       - mycodo:/usr/local/mycodo
       - mycodo_log:/var/log/mycodo
       - mycodo_ssl_certs:/home/mycodo/mycodo/mycodo_flask/ssl_certs
-      - /etc/localtime:/etc/localtime:ro  # Use timezone of the host (read-only)
     ports:
-      - "80:80"
-      - "443:443"
+      - 80:80
+      - 443:443
     depends_on:
       - mycodo_flask
 
@@ -34,10 +32,13 @@ services:
     container_name: mycodo_daemon
     image: app
     restart: always
+    environment:
+      - TZ=America/New_York  # See https://en.wikipedia.org/wiki/List_of_tz_database_time_zones for valid TZs
     volumes:
       - mycodo:/usr/local/mycodo
       - mycodo_env:/home/mycodo/env
       - mycodo_databases:/home/mycodo/databases
+      - mycodo_cameras:/home/mycodo/cameras
       - mycodo_custom_functions:/home/mycodo/mycodo/functions/custom_functions
       - mycodo_custom_actions:/home/mycodo/mycodo/actions/custom_actions
       - mycodo_custom_inputs:/home/mycodo/mycodo/inputs/custom_inputs
@@ -49,7 +50,6 @@ services:
       - /dev:/dev
       - /sys:/sys
       - /opt:/opt
-      - /etc/localtime:/etc/localtime:ro  # Use timezone of the host (read-only)
     privileged: true
     command: bash -c "wget --quiet --no-check-certificate -p http://mycodo_nginx/ -O /dev/null && 
                       PYTHONPATH=/home/mycodo /home/mycodo/env/bin/python mycodo_daemon.py"
@@ -64,21 +64,26 @@ services:
       context: ./
       dockerfile: docker/Dockerfile
     restart: always
+    environment:
+      - TZ=America/New_York  # See https://en.wikipedia.org/wiki/List_of_tz_database_time_zones for valid TZs
     volumes:
       - mycodo:/usr/local/mycodo
       - mycodo_env:/home/mycodo/env
       - mycodo_databases:/home/mycodo/databases
+      - mycodo_cameras:/home/mycodo/cameras
       - mycodo_custom_functions:/home/mycodo/mycodo/functions/custom_functions
       - mycodo_custom_actions:/home/mycodo/mycodo/actions/custom_actions
       - mycodo_custom_inputs:/home/mycodo/mycodo/inputs/custom_inputs
       - mycodo_custom_outputs:/home/mycodo/mycodo/outputs/custom_outputs
       - mycodo_custom_widgets:/home/mycodo/mycodo/widgets/custom_widgets
       - mycodo_custom_user_scripts:/home/mycodo/mycodo/user_scripts
+      - mycodo_custom_user_css:/home/mycodo/mycodo/mycodo_flask/static/css/user_css
+      - mycodo_custom_user_js:/home/mycodo/mycodo/mycodo_flask/static/js/user_js
       - mycodo_log:/var/log/mycodo
       - mycodo_ssl_certs:/home/mycodo/mycodo/mycodo_flask/ssl_certs
+      - mycodo_influxdb:/var/lib/influxdb
       - /dev:/dev
       - /var/run/docker.sock:/var/run/docker.sock:ro  # Permits container to restart itself
-      - /etc/localtime:/etc/localtime:ro  # Use timezone of the host (read-only)
     privileged: true
     command: /home/mycodo/env/bin/python -m gunicorn --workers 1 --bind unix:/usr/local/mycodo/mycodoflask.sock start_flask_ui:app
     depends_on:
@@ -102,19 +107,22 @@ services:
 #    volumes:
 #      - mycodo_grafana:/var/lib/grafana
 #    ports:
-#      - "3000:3000"
+#      - 3000:3000
 #    depends_on:
 #      - mycodo_influxdb
 
 volumes:
   mycodo:
   mycodo_env:
+  mycodo_cameras:
   mycodo_custom_functions:
   mycodo_custom_actions:
   mycodo_custom_inputs:
   mycodo_custom_outputs:
   mycodo_custom_widgets:
   mycodo_custom_user_scripts:
+  mycodo_custom_user_css:
+  mycodo_custom_user_js:
   mycodo_databases:
   mycodo_ssl_certs:
   mycodo_log:
