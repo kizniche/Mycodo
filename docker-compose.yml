@@ -33,7 +33,7 @@ services:
     image: app
     restart: always
     environment:
-      - TZ=America/New_York  # See https://en.wikipedia.org/wiki/List_of_tz_database_time_zones for valid TZs
+      - TZ=America/New_York  # See https://en.wikipedia.org/wiki/List_of_tz_database_time_zones for valid time zones
     volumes:
       - mycodo:/usr/local/mycodo
       - mycodo_env:/home/mycodo/env
@@ -59,13 +59,13 @@ services:
   mycodo_flask:
     container_name: mycodo_flask
     image: app
-    hostname: Mycodo
+    hostname: Mycodo  # Change to your desired hostname
     build:
       context: ./
       dockerfile: docker/Dockerfile
     restart: always
     environment:
-      - TZ=America/New_York  # See https://en.wikipedia.org/wiki/List_of_tz_database_time_zones for valid TZs
+      - TZ=America/New_York  # See https://en.wikipedia.org/wiki/List_of_tz_database_time_zones for valid time zones
     volumes:
       - mycodo:/usr/local/mycodo
       - mycodo_env:/home/mycodo/env

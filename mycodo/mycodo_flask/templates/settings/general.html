@@ -210,8 +210,7 @@
         {{form_settings_general.use_database.label(class_='col-sm-12 control-label checkbox-nopad')}}
         <div class="col-sm-12">
           <select class="form-control form-tooltip form-dropdown" id="use_database" name="use_database" title="">
-            <option value="influxdb_1"{% if misc.measurement_db_name == 'influxdb' and misc.measurement_db_version == '1' %} selected{% endif %}>Influxdb 1.x</option>
-            <option value="influxdb_2"{% if misc.measurement_db_name == 'influxdb' and misc.measurement_db_version == '2' %} selected{% endif %}>Influxdb 2.x</option>
+            <option value="influxdb"{% if misc.measurement_db_name == 'influxdb' %} selected{% endif %}>Influxdb 1.x and 2.x with Flux</option>
           </select>
         </div>
       </div>

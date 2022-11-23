@@ -49,32 +49,27 @@ class Misc(CRUDMixin, db.Model):
     default_login_page = db.Column(db.String, default='password')
 
     # Measurement database
-    influx_db_version = '1'
-    influxdb_host = 'localhost'
-
-    try:
-        from mycodo.scripts.measurement_db import get_influxdb_host
-        tmp_host = get_influxdb_host()
-        if tmp_host:
-            influxdb_host = tmp_host
-    except:
-        logger.exception("Determining influxdb host")
+    db_name = 'influxdb'  # Default
+    db_version = ''  # Default
+    db_host = 'localhost'
+    db_port = 0
 
     try:
         from mycodo.scripts.measurement_db import get_influxdb_info
         influx_info = get_influxdb_info()
-        if influx_info['influxdb_installed']:
-            if influx_info['influxdb_version'].startswith('1'):
-                influx_db_version = '1'
-            elif influx_info['influxdb_version'].startswith('2'):
-                influx_db_version = '2'
+        if influx_info['influxdb_installed'] or influx_info['influxdb_host']:
+            db_name = 'influxdb'
+        if influx_info['influxdb_host']:
+            db_host = influx_info['influxdb_host']
+        if influx_info['influxdb_port']:
+            db_port = influx_info['influxdb_port']
     except:
         logger.exception("Determining influxdb version")
 
-    measurement_db_version = db.Column(db.String, default=influx_db_version)
-    measurement_db_host = db.Column(db.String, default=influxdb_host)
-    measurement_db_port = db.Column(db.String, default=8086)
-    measurement_db_name = db.Column(db.String, default='influxdb')
+    measurement_db_name = db.Column(db.String, default=db_name)
+    measurement_db_version = db.Column(db.String, default='')
+    measurement_db_host = db.Column(db.String, default=db_host)
+    measurement_db_port = db.Column(db.String, default=db_port)
     measurement_db_user = db.Column(db.String, default='mycodo')
     measurement_db_password = db.Column(db.String, default='mmdu77sj3nIoiajjs')
     measurement_db_dbname = db.Column(db.String, default='mycodo_db')

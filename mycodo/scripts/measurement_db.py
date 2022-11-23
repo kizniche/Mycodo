@@ -58,7 +58,9 @@ def get_influxdb_info():
     settings = None
     dict_info = {
         'influxdb_installed': None,
-        'influxdb_version': ''
+        'influxdb_version': None,
+        'influxdb_host': None,
+        'influxdb_port': None
     }
     try:
         from mycodo.databases.models import Misc
@@ -69,12 +71,12 @@ def get_influxdb_info():
 
     try:
         if settings:
-            host = settings.measurement_db_host
-            port = settings.measurement_db_port
+            dict_info['influxdb_host'] = settings.measurement_db_host
+            dict_info['influxdb_port'] = settings.measurement_db_port
         else:
-            host = get_influxdb_host()
-            port = 8086
-        r = requests.get(f'http://{host}:{port}/ping')
+            dict_info['influxdb_host'] = get_influxdb_host()
+            dict_info['influxdb_port'] = 8086
+        r = requests.get(f"http://{dict_info['influxdb_host']}:{dict_info['influxdb_port']}/ping")
 
         if r.headers and "X-Influxdb-Version" in r.headers:
             dict_info['influxdb_installed'] = True

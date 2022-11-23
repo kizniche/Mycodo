@@ -309,18 +309,10 @@ def last_data(unique_id, measure_type, measurement_id, period):
         live_data = []
         settings = Misc.query.first()
         if settings.measurement_db_name == 'influxdb':
-            if settings.measurement_db_version == '2':
-                for table in data:
-                    for row in table.records:
-                        if '_value' in row.values and '_time' in row.values:
-                            live_data = f"[{row.values['_time'].timestamp()},{row.values['_value']}]"
-
-            elif settings.measurement_db_version == '1':
-                number = len(data)
-                time_raw = data[number - 1][0]
-                value = data[number - 1][1]
-                value = float(value)
-                live_data = f'[{time_raw / 1000000},{value}]'
+            for table in data:
+                for row in table.records:
+                    if '_value' in row.values and '_time' in row.values:
+                        live_data = f"[{row.values['_time'].timestamp()},{row.values['_value']}]"
 
         return Response(live_data, mimetype='text/json')
     except KeyError:
@@ -391,17 +383,9 @@ def export_data(unique_id, measurement_id, start_seconds, end_seconds):
         writer.writerow([col_1, col_2])
 
         if settings.measurement_db_name == 'influxdb':
-            if settings.measurement_db_version == '2':
-                for table in _data:
-                    for row in table.records:
-                        writer.writerow([row.values['_time'].timestamp(), row.values['_value']])
-                        line.seek(0)
-                        yield line.read()
-                        line.truncate(0)
-                        line.seek(0)
-            elif settings.measurement_db_version == '1':
-                for csv_line in _data:
-                    writer.writerow([csv_line[0] / 1000000, csv_line[1]])
+            for table in _data:
+                for row in table.records:
+                    writer.writerow([row.values['_time'].timestamp(), row.values['_value']])
                     line.seek(0)
                     yield line.read()
                     line.truncate(0)
@@ -476,10 +460,7 @@ def async_data(device_id, device_type, measurement_id, start_seconds, end_second
             return '', 204
 
         if settings.measurement_db_name == 'influxdb':
-            if settings.measurement_db_version == '2':
-                count_points = influxdb2_get_count_points(data)
-            elif settings.measurement_db_version == '1':
-                count_points = data[0][1]
+            count_points = influxdb2_get_count_points(data)
 
         # Get the timestamp of the first point
         data = query_string(
@@ -492,10 +473,7 @@ def async_data(device_id, device_type, measurement_id, start_seconds, end_second
             return '', 204
 
         if settings.measurement_db_name == 'influxdb':
-            if settings.measurement_db_version == '2':
-                first_point = influxdb2_get_first_point(data)
-            elif settings.measurement_db_version == '1':
-                first_point = datetime.datetime.fromtimestamp(data[0][0] / 1000000)
+            first_point = influxdb2_get_first_point(data)
 
         end = datetime.datetime.utcnow()
         end_str = end.strftime('%Y-%m-%dT%H:%M:%S.%fZ')
@@ -519,10 +497,7 @@ def async_data(device_id, device_type, measurement_id, start_seconds, end_second
             return '', 204
 
         if settings.measurement_db_name == 'influxdb':
-            if settings.measurement_db_version == '2':
-                count_points = influxdb2_get_count_points(data)
-            elif settings.measurement_db_version == '1':
-                count_points = data[0][1]
+            count_points = influxdb2_get_count_points(data)
 
         # Get the timestamp of the first point in the past year
         data = query_string(
@@ -537,10 +512,7 @@ def async_data(device_id, device_type, measurement_id, start_seconds, end_second
             return '', 204
 
         if settings.measurement_db_name == 'influxdb':
-            if settings.measurement_db_version == '2':
-                first_point = influxdb2_get_first_point(data)
-            elif settings.measurement_db_version == '1':
-                first_point = datetime.datetime.fromtimestamp(data[0][0] / 1000000)
+            first_point = influxdb2_get_first_point(data)
     else:
         start = datetime.datetime.utcfromtimestamp(float(start_seconds))
         start_str = start.strftime('%Y-%m-%dT%H:%M:%S.%fZ')
@@ -559,10 +531,7 @@ def async_data(device_id, device_type, measurement_id, start_seconds, end_second
             return '', 204
 
         if settings.measurement_db_name == 'influxdb':
-            if settings.measurement_db_version == '2':
-                count_points = influxdb2_get_count_points(data)
-            elif settings.measurement_db_version == '1':
-                count_points = data[0][1]
+            count_points = influxdb2_get_count_points(data)
 
         # Get the timestamp of the first point in the past year
         data = query_string(
@@ -577,10 +546,7 @@ def async_data(device_id, device_type, measurement_id, start_seconds, end_second
             return '', 204
 
         if settings.measurement_db_name == 'influxdb':
-            if settings.measurement_db_version == '2':
-                first_point = influxdb2_get_first_point(data)
-            elif settings.measurement_db_version == '1':
-                first_point = datetime.datetime.fromtimestamp(data[0][0] / 1000000)
+            first_point = influxdb2_get_first_point(data)
 
     if not first_point:
         logger.error("No first point")
@@ -621,10 +587,7 @@ def async_data(device_id, device_type, measurement_id, start_seconds, end_second
                 return '', 204
 
             if settings.measurement_db_name == 'influxdb':
-                if settings.measurement_db_version == '2':
-                    return jsonify(influx2_to_list(data))
-                elif settings.measurement_db_version == '1':
-                    return jsonify(influx1_to_list(data))
+                return jsonify(influx2_to_list(data))
         except Exception as err:
             logger.error(f"URL for 'async_data' raised and error: {err}")
             return '', 204
@@ -641,10 +604,7 @@ def async_data(device_id, device_type, measurement_id, start_seconds, end_second
                 return '', 204
 
             if settings.measurement_db_name == 'influxdb':
-                if settings.measurement_db_version == '2':
-                    return jsonify(influx2_to_list(data))
-                elif settings.measurement_db_version == '1':
-                    return jsonify(influx1_to_list(data))
+                return jsonify(influx2_to_list(data))
         except Exception as err:
             logger.error(f"URL for 'async_data' raised and error: {err}")
             return '', 204
@@ -680,10 +640,7 @@ def async_usage_data(device_id, unit, channel, start_seconds, end_seconds):
             return '', 204
 
         if settings.measurement_db_name == 'influxdb':
-            if settings.measurement_db_version == '2':
-                count_points = influxdb2_get_count_points(data)
-            elif settings.measurement_db_version == '1':
-                count_points = data[0][1]
+            count_points = influxdb2_get_count_points(data)
 
         # Get the timestamp of the first point in the past year
         data = query_string(
@@ -695,10 +652,7 @@ def async_usage_data(device_id, unit, channel, start_seconds, end_seconds):
             return '', 204
 
         if settings.measurement_db_name == 'influxdb':
-            if settings.measurement_db_version == '2':
-                first_point = influxdb2_get_first_point(data)
-            elif settings.measurement_db_version == '1':
-                first_point = datetime.datetime.fromtimestamp(data[0][0] / 1000000)
+            first_point = influxdb2_get_first_point(data)
 
     # Set the time frame to the past start epoch to now
     elif start_seconds != '0' and end_seconds == '0':
@@ -718,10 +672,7 @@ def async_usage_data(device_id, unit, channel, start_seconds, end_seconds):
             return '', 204
 
         if settings.measurement_db_name == 'influxdb':
-            if settings.measurement_db_version == '2':
-                count_points = influxdb2_get_count_points(data)
-            elif settings.measurement_db_version == '1':
-                count_points = data[0][1]
+            count_points = influxdb2_get_count_points(data)
 
         # Get the timestamp of the first point in the past year
         data = query_string(
@@ -735,10 +686,7 @@ def async_usage_data(device_id, unit, channel, start_seconds, end_seconds):
             return '', 204
 
         if settings.measurement_db_name == 'influxdb':
-            if settings.measurement_db_version == '2':
-                first_point = influxdb2_get_first_point(data)
-            elif settings.measurement_db_version == '1':
-                first_point = datetime.datetime.fromtimestamp(data[0][0] / 1000000)
+            first_point = influxdb2_get_first_point(data)
     else:
         start = datetime.datetime.utcfromtimestamp(float(start_seconds))
         start_str = start.strftime('%Y-%m-%dT%H:%M:%S.%fZ')
@@ -756,10 +704,7 @@ def async_usage_data(device_id, unit, channel, start_seconds, end_seconds):
             return '', 204
 
         if settings.measurement_db_name == 'influxdb':
-            if settings.measurement_db_version == '2':
-                count_points = influxdb2_get_count_points(data)
-            elif settings.measurement_db_version == '1':
-                count_points = data[0][1]
+            count_points = influxdb2_get_count_points(data)
 
         # Get the timestamp of the first point in the past year
         data = query_string(
@@ -773,10 +718,7 @@ def async_usage_data(device_id, unit, channel, start_seconds, end_seconds):
             return '', 204
 
         if settings.measurement_db_name == 'influxdb':
-            if settings.measurement_db_version == '2':
-                first_point = influxdb2_get_first_point(data)
-            elif settings.measurement_db_version == '1':
-                first_point = datetime.datetime.fromtimestamp(data[0][0] / 1000000)
+            first_point = influxdb2_get_first_point(data)
 
     if not first_point:
         logger.error("No first point")
@@ -816,10 +758,7 @@ def async_usage_data(device_id, unit, channel, start_seconds, end_seconds):
                 return '', 204
 
             if settings.measurement_db_name == 'influxdb':
-                if settings.measurement_db_version == '2':
-                    return jsonify(influx2_to_list(data))
-                elif settings.measurement_db_version == '1':
-                    return jsonify(influx1_to_list(data))
+                return jsonify(influx2_to_list(data))
         except Exception as err:
             logger.error(f"URL for 'async_data' raised and error: {err}")
             return '', 204
@@ -835,10 +774,7 @@ def async_usage_data(device_id, unit, channel, start_seconds, end_seconds):
                 return '', 204
 
             if settings.measurement_db_name == 'influxdb':
-                if settings.measurement_db_version == '2':
-                    return jsonify(influx2_to_list(data))
-                elif settings.measurement_db_version == '1':
-                    return jsonify(influx1_to_list(data))
+                return jsonify(influx2_to_list(data))
         except Exception as err:
             logger.error(f"URL for 'async_usage' raised and error: {err}")
             return '', 204

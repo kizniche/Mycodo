@@ -403,22 +403,31 @@ case "${1:-''}" in
         CURRENT_VERSION=$(apt-cache policy influxdb | grep 'Installed' | gawk '{print $2}')
 
         if [[ "${CURRENT_VERSION}" != "${CORRECT_VERSION}" ]]; then
-            echo "#### Incorrect InfluxDB version (v${CURRENT_VERSION}) installed."
+            printf "#### Incorrect InfluxDB version (v${CURRENT_VERSION}) installed.\n"
 
-            echo "#### Stopping influxdb 2.x (if installed)..."
+            printf "#### Stopping influxdb 2.x (if installed)...\n"
             service influxd stop
 
-            echo "#### Uninstalling influxdb 2.x (if installed)..."
+            printf "#### Uninstalling influxdb 2.x (if installed)...\n"
             DEBIAN_FRONTEND=noninteractive apt remove -y influxdb2 influxdb2-cli
 
-            echo "#### Installing InfluxDB v${CORRECT_VERSION}..."
+            printf "#### Installing InfluxDB v${CORRECT_VERSION}...\n"
 
             wget --quiet "${INSTALL_ADDRESS}${INSTALL_FILE}"
             dpkg -i "${INSTALL_FILE}"
             rm -rf "${INSTALL_FILE}"
+
             service influxdb restart
         else
             printf "Correct version of InfluxDB currently installed\n"
+        fi
+
+        if [[ $(grep "# flux-enabled = true" /etc/influxdb/influxdb.conf) || $(grep "flux-enabled = false" /etc/influxdb/influxdb.conf) ]]; then   
+            printf "#### Flux found to not be enabled. Enabling and restarting InfluxDB...\n"
+            sed -i 's/.*flux-enabled.*/flux-enabled = true/' /etc/influxdb/influxdb.conf
+            service influxdb restart
+        else
+            printf "Flux is already enabled.\n"
         fi
     ;;
     'update-influxdb-2')
@@ -431,15 +440,15 @@ case "${1:-''}" in
             CURRENT_VERSION=$(apt-cache policy influxdb2 | grep 'Installed' | gawk '{print $2}')
 
             if [[ "${CURRENT_VERSION}" != "${CORRECT_VERSION}" ]]; then
-                echo "#### Incorrect InfluxDB version (v${CURRENT_VERSION}) installed."
+                printf "#### Incorrect InfluxDB version (v${CURRENT_VERSION}) installed.\n"
 
-                echo "#### Stopping influxdb 1.x (if installed)..."
+                printf "#### Stopping influxdb 1.x (if installed)...\n"
                 service influxdb stop
 
-                echo "#### Uninstalling influxdb 1.x (if installed)..."
+                printf "#### Uninstalling influxdb 1.x (if installed)...\n"
                 DEBIAN_FRONTEND=noninteractive apt remove -y influxdb
 
-                echo "#### Installing InfluxDB v${CORRECT_VERSION}..."
+                printf "#### Installing InfluxDB v${CORRECT_VERSION}...\n"
 
                 wget --quiet "${INSTALL_ADDRESS}${INSTALL_FILE}"
                 wget --quiet "${INSTALL_ADDRESS}${CLI_FILE}"
@@ -449,10 +458,10 @@ case "${1:-''}" in
                 rm -rf "${INSTALL_FILE}"
                 service influxd restart
             else
-                printf "Correct version of InfluxDB currently installed\n"
+                printf "Correct version of InfluxDB currently installed.\n"
             fi
         else
-            printf "ERROR: Could not detect 64-bit architecture to install Influxdb 2.x/n"
+            printf "ERROR: Could not detect 64-bit architecture (x86_64/arm64) to install Influxdb 2.x (found ${UNAME_TYPE}/${MACHINE_TYPE}).\n"
         fi
     ;;
     'update-influxdb-1-db-user')

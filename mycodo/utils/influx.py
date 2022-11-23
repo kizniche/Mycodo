@@ -1,51 +1,28 @@
 # coding=utf-8
 import datetime
 import logging
+import time
 
 import requests
 
-from mycodo.databases.models import Conversion
-from mycodo.databases.models import DeviceMeasurements
-from mycodo.databases.models import Misc
-from mycodo.databases.models import Output
+from mycodo.databases.models import (Conversion, DeviceMeasurements, Misc,
+                                     Output)
 from mycodo.mycodo_client import DaemonControl
 from mycodo.utils.database import db_retrieve_table_daemon
-from mycodo.utils.influxdb_1 import add_measurements_influxdb_1
-from mycodo.utils.influxdb_1 import query_string_influx_1
-from mycodo.utils.influxdb_1 import write_influxdb_value_influx_1
-from mycodo.utils.influxdb_2 import add_measurements_influxdb_flux
-from mycodo.utils.influxdb_2 import query_flux
-from mycodo.utils.influxdb_2 import write_influxdb_value_flux
 from mycodo.utils.logging_utils import set_log_level
 from mycodo.utils.system_pi import return_measurement_info
 
-logger = logging.getLogger("mycodo.influx")
+logger = logging.getLogger("mycodo.db_influxdb")
 logger.setLevel(set_log_level(logging))
 
 
-def add_measurements_influxdb(unique_id, measurements, use_same_timestamp=True, block=False):
-    """
-    Parse measurement data into list to be input into influxdb (threaded so returns fast)
-    :param unique_id: Unique ID of device
-    :param measurements: dict of measurements
-    :param use_same_timestamp: Allow influxdb to create the timestamp upon storage
-    :param block: wait until measurements are added before returning
-    :return:
-    """
-    settings = db_retrieve_table_daemon(Misc, entry='first')
-
-    if settings.measurement_db_name == "influxdb":
-        if settings.measurement_db_version == "1":
-            add_measurements_influxdb_1(
-                unique_id, measurements, use_same_timestamp=use_same_timestamp, block=block)
-        elif settings.measurement_db_version == "2":
-            add_measurements_influxdb_flux(
-                unique_id, measurements, use_same_timestamp=use_same_timestamp)
-
+#
+# Influxdb using Flux (influxdb versions 1.8+ and 2.x)
+#
 
 def write_influxdb_value(unique_id, unit, value, measure=None, channel=None, timestamp=None):
     """
-    Write a value into an Influxdb database
+    Write a value into an Influxdb database (flux edition, using influxdb_client)
 
     example:
         write_influxdb_value('00000001', 'C', 37.5)
@@ -53,8 +30,7 @@ def write_influxdb_value(unique_id, unit, value, measure=None, channel=None, tim
     :return: success (0) or failure (1)
     :rtype: bool
 
-    :param unique_id: What unique_id tag to enter in the Influxdb
-        database (ex. '00000001')
+    :param unique_id: What unique_id tag to enter into the Influxdb database (ex. '00000001')
     :type unique_id: str
     :param measure: What type of measurement for the Influxdb
         database entry (ex. 'temperature')
@@ -68,18 +44,167 @@ def write_influxdb_value(unique_id, unit, value, measure=None, channel=None, tim
     :param timestamp: If supplied, this timestamp will be used in the influxdb
     :type timestamp: datetime object
     """
-    ret_value = None
+    from influxdb_client import InfluxDBClient, Point
+
     settings = db_retrieve_table_daemon(Misc, entry='first')
+    influxdb_url = f'http://{settings.measurement_db_host}:{settings.measurement_db_port}'
+    retention_policy = 'autogen'
+    bucket = f'{settings.measurement_db_dbname}/{retention_policy}'
 
-    if settings.measurement_db_name == "influxdb":
-        if settings.measurement_db_version == "1":
-            ret_value = write_influxdb_value_influx_1(
-                unique_id, unit, value, measure=measure, channel=channel, timestamp=timestamp)
-        elif settings.measurement_db_version == "2":
-            ret_value = write_influxdb_value_flux(
-                unique_id, unit, value, measure=measure, channel=channel, timestamp=timestamp)
+    with InfluxDBClient(
+            url=influxdb_url,
+            token=f'{settings.measurement_db_user}:{settings.measurement_db_password}',
+            org='mycodo',
+            timeout=5000) as client:
+        with client.write_api() as write_api:
+            point = Point(unit).tag("device_id", unique_id)
 
-    return ret_value
+            if measure:
+                point = point.tag("measure", measure)
+            if channel is not None:
+                point = point.tag("channel", channel)
+            if timestamp:
+                point = point.time(timestamp)
+
+            point = point.field("value", value)
+
+            try:
+                write_api.write(bucket=bucket, record=point)
+                return 0
+            except Exception as except_msg:
+                logger.debug("Failed to write measurements to influxdb with ID {}. "
+                             "Retrying in 5 seconds.".format(unique_id))
+                time.sleep(5)
+                try:
+                    write_api.write(bucket=bucket, record=point)
+                    logger.debug("Successfully wrote measurements to influxdb after 5-second wait.")
+                    return 0
+                except:
+                    logger.debug(
+                        f"Failed to write measurement to influxdb (Device ID: {unique_id}): {except_msg}.")
+                    return 1
+
+
+def add_measurements_influxdb(unique_id, measurements, use_same_timestamp=True):
+    """
+    Parse measurement data into list to be input into influxdb (flux edition, using influxdb_client)
+    :param unique_id: Unique ID of device
+    :param measurements: dict of measurements
+    :param use_same_timestamp: Allow influxdb to create the timestamp upon storage
+    :return:
+    """
+    from influxdb_client import InfluxDBClient, Point
+
+    settings = db_retrieve_table_daemon(Misc, entry='first')
+    influxdb_url = f'http://{settings.measurement_db_host}:{settings.measurement_db_port}'
+    retention_policy = 'autogen'
+    bucket = f'{settings.measurement_db_dbname}/{retention_policy}'
+
+    with InfluxDBClient(
+            url=influxdb_url,
+            token=f'{settings.measurement_db_user}:{settings.measurement_db_password}',
+            org='mycodo',
+            timeout=5000) as client:
+        with client.write_api() as write_api:
+            for each_channel, each_measurement in measurements.items():
+                if 'value' not in each_measurement or each_measurement['value'] is None:
+                    continue  # skip to next measurement to add
+
+                if use_same_timestamp:
+                    # influxdb will create the timestamp when the data is stored
+                    timestamp = None
+                else:
+                    # Use timestamp stored with each measurement
+                    timestamp = each_measurement['timestamp_utc']
+
+                point = Point(each_measurement['unit']).tag("device_id", unique_id)
+
+                if each_measurement['measurement']:
+                    point = point.tag("measure", each_measurement['measurement'])
+                if each_channel is not None:
+                    point = point.tag("channel", each_channel)
+                if timestamp:
+                    point = point.time(timestamp)
+
+                point = point.field("value", each_measurement['value'])
+                write_api.write(bucket=bucket, record=point)
+
+
+def query_flux(unit, unique_id,
+               value=None, measure=None, channel=None, ts_str=None,
+               start_str=None, end_str=None, past_sec=None, group_sec=None,
+               limit=None):
+    """Generate influxdb query string (flux edition, using influxdb_client)."""
+    from influxdb_client import InfluxDBClient
+
+    settings = db_retrieve_table_daemon(Misc, entry='first')
+    influxdb_url = f'http://{settings.measurement_db_host}:{settings.measurement_db_port}'
+    retention_policy = 'autogen'
+    bucket = f'{settings.measurement_db_dbname}/{retention_policy}'
+
+    client = InfluxDBClient(
+        url=influxdb_url,
+        token=f'{settings.measurement_db_user}:{settings.measurement_db_password}',
+        org='mycodo',
+        timeout=5000)
+    query_api = client.query_api()
+
+    query = f'from(bucket: \"{bucket}\")'
+
+    if past_sec:
+        query += f' |> range(start: -{int(past_sec)}s)'
+    elif start_str and end_str:
+        query += f' |> range(start: {start_str}, stop: {end_str})'
+    elif start_str:
+        query += f' |> range(start: {start_str})'
+    elif end_str:
+        query += f' |> range(stop: {end_str})'
+    else:
+        query += f' |> range(start: -99999d)'
+
+    query += f' |> filter(fn: (r) => r["_measurement"] == "{unit}")'
+    query += f' |> filter(fn: (r) => r["device_id"] == "{unique_id}")'
+
+    if channel is not None:
+        query += f' |> filter(fn: (r) => r["channel"] == "{channel}")'
+    if measure:
+        query += f' |> filter(fn: (r) => r["measure"] == "{measure}")'
+    if ts_str:
+        query += " AND time = '{ts}'".format(ts=ts_str)
+
+    if group_sec:
+        query += f' |> aggregateWindow(every: {group_sec}s, fn: mean)'
+    if limit:
+        query += f' |> limit(n:{limit})'
+
+    if value:  # value is deprecated. Use function instead.
+        if value == "LAST":
+            query += ' |> last()'
+        elif value == "FIRST":
+            query += ' |> first()'
+        elif value == "MAX":
+            query += ' |> max()'
+        elif value == "MIN":
+            query += ' |> min()'
+        elif value == "COUNT":
+            query += ' |> count()'
+
+        # bug in influxdb 1.8: Error: panic: runtime error: invalid memory address or nil pointer dereference
+        # fix this when moving from influxdb 1.8 to 2.x
+        elif value == "SUM":
+            query += ' |> sum(column: "_value")'
+        elif value == "MEAN":
+            query += ' |> mean()'
+
+        else:
+            logger.error(f"query_flux(): Unknown value: '{value}'")
+            return 1
+
+    logger.debug(f"query_flux() query: '{query}'")
+
+    tables = query_api.query(query)
+
+    return tables
 
 
 def query_string(unit, unique_id,
@@ -91,18 +216,11 @@ def query_string(unit, unique_id,
     settings = db_retrieve_table_daemon(Misc, entry='first')
 
     if settings.measurement_db_name == "influxdb":
-        if settings.measurement_db_version == "1":
-            ret_value = query_string_influx_1(
-                unit, unique_id,
-                value=value, measure=measure, channel=channel, ts_str=ts_str,
-                start_str=start_str, end_str=end_str, past_sec=past_sec, group_sec=group_sec,
-                limit=limit, function=function)
-        elif settings.measurement_db_version == "2":
-            ret_value = query_flux(
-                unit, unique_id,
-                value=value, measure=measure, channel=channel, ts_str=ts_str,
-                start_str=start_str, end_str=end_str, past_sec=past_sec, group_sec=group_sec,
-                limit=limit)
+        ret_value = query_flux(
+            unit, unique_id,
+            value=value, measure=measure, channel=channel, ts_str=ts_str,
+            start_str=start_str, end_str=end_str, past_sec=past_sec, group_sec=group_sec,
+            limit=limit)
 
     return ret_value
 
@@ -183,24 +301,13 @@ def read_influxdb_single(unique_id, unit, channel,
             try:
                 settings = db_retrieve_table_daemon(Misc, entry='first')
                 if settings.measurement_db_name == 'influxdb':
-                    if settings.measurement_db_version == '2':
-                        for table in data:
-                            for row in table.records:
-                                if datetime_obj:
-                                    last_time = row.values['_time']
-                                else:
-                                    last_time = row.values['_time'].timestamp()
-                                return [last_time, row.values['_value']]
-
-                    elif settings.measurement_db_version == '1':
-                        number = len(data)
-                        last_time = data[number - 1][0]
-                        last_measurement = data[number - 1][1]
-                        if datetime_obj:
-                            last_time = datetime.datetime.fromtimestamp(last_time / 1000000)
-                        else:
-                            last_time = last_time / 1000000
-                        return [last_time, last_measurement]
+                    for table in data:
+                        for row in table.records:
+                            if datetime_obj:
+                                last_time = row.values['_time']
+                            else:
+                                last_time = row.values['_time'].timestamp()
+                            return [last_time, row.values['_value']]
             except Exception:
                 logger.exception("Error parsing the last influx measurement")
     except requests.exceptions.ConnectionError:
@@ -275,26 +382,15 @@ def read_influxdb_list(unique_id, unit, channel,
 
         settings = db_retrieve_table_daemon(Misc, entry='first')
         if settings.measurement_db_name == 'influxdb':
-            if settings.measurement_db_version == '2':
-                list_data = []
-                for table in data:
-                    for row in table.records:
-                        if datetime_obj:
-                            time = row.values['_time']
-                        else:
-                            time = row.values['_time'].timestamp()
-                        list_data.append((time, row.values['_value']))
-                return list_data
-
-            elif settings.measurement_db_version == '1':
-                list_data = []
-                for ts, value in data:
+            list_data = []
+            for table in data:
+                for row in table.records:
                     if datetime_obj:
-                        ts = datetime.datetime.fromtimestamp(ts / 1000000)
+                        time = row.values['_time']
                     else:
-                        ts = ts / 1000000
-                    list_data.append((ts, value))
-                return list_data
+                        time = row.values['_time'].timestamp()
+                    list_data.append((time, row.values['_value']))
+            return list_data
     except:
         logger.debug("Could not read form influxdb.")
 
@@ -328,13 +424,9 @@ def output_sec_on(output_id, past_seconds, output_channel=0):
     if data:
         settings = db_retrieve_table_daemon(Misc, entry='first')
         if settings.measurement_db_name == 'influxdb':
-            if settings.measurement_db_version == '2':
-                for table in data:
-                    for row in table.records:
-                        sec_recorded_on = row.values['_value']
-
-            elif settings.measurement_db_version == '1':
-                sec_recorded_on = data[0][1]
+            for table in data:
+                for row in table.records:
+                    sec_recorded_on = row.values['_value']
 
     sec_currently_on = 0
     if output_time_on:
@@ -355,13 +447,9 @@ def average_past_seconds(unique_id, unit, channel, past_seconds, measure=None):
     if data:
         settings = db_retrieve_table_daemon(Misc, entry='first')
         if settings.measurement_db_name == 'influxdb':
-            if settings.measurement_db_version == '2':
-                for table in data:
-                    for row in table.records:
-                        return row.values['_value']
-
-            elif settings.measurement_db_version == '1':
-                return data[0][1]
+            for table in data:
+                for row in table.records:
+                    return row.values['_value']
 
 
 def average_start_end_seconds(unique_id, unit, channel, str_start, str_end, measure=None):
@@ -377,13 +465,9 @@ def average_start_end_seconds(unique_id, unit, channel, str_start, str_end, meas
     if data:
         settings = db_retrieve_table_daemon(Misc, entry='first')
         if settings.measurement_db_name == 'influxdb':
-            if settings.measurement_db_version == '2':
-                for table in data:
-                    for row in table.records:
-                        return row.values['_value']
-
-            elif settings.measurement_db_version == '1':
-                return data[0][1]
+            for table in data:
+                for row in table.records:
+                    return row.values['_value']
 
 
 def sum_past_seconds(unique_id, unit, channel, past_seconds, measure=None):
@@ -398,13 +482,9 @@ def sum_past_seconds(unique_id, unit, channel, past_seconds, measure=None):
     if data:
         settings = db_retrieve_table_daemon(Misc, entry='first')
         if settings.measurement_db_name == 'influxdb':
-            if settings.measurement_db_version == '2':
-                for table in data:
-                    for row in table.records:
-                        return row.values['_value']
-
-            elif settings.measurement_db_version == '1':
-                return data[0][1]
+            for table in data:
+                for row in table.records:
+                    return row.values['_value']
 
 
 def influx_time_str_to_milliseconds(timestamp):
