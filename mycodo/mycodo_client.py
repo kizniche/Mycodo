@@ -34,12 +34,10 @@ from Pyro5.api import Proxy
 sys.path.append(os.path.abspath(os.path.join(os.path.realpath(__file__), '../..')))
 
 from mycodo.config import PYRO_URI
-from mycodo.databases.models import Misc
-from mycodo.databases.models import SMTP
+from mycodo.databases.models import SMTP, Misc
 from mycodo.utils.database import db_retrieve_table_daemon
 from mycodo.utils.send_data import send_email as send_email_notification
 from mycodo.utils.widget_generate_html import generate_widget_html
-
 
 logging.basicConfig(
     stream=sys.stdout,

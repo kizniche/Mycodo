@@ -1,10 +1,10 @@
 # coding=utf-8
 """Tests for input classes."""
 import inspect
+import os
 from collections.abc import Iterator
 
 import mock
-import os
 import pytest
 from testfixtures import LogCapture
 
@@ -26,7 +26,8 @@ from mycodo.inputs.linux_command import InputModule as LinuxCommand
 from mycodo.inputs.mh_z16 import InputModule as MHZ16Sensor
 from mycodo.inputs.mh_z19 import InputModule as MHZ19Sensor
 from mycodo.inputs.mycodo_ram import InputModule as MycodoRam
-from mycodo.inputs.rpi_cpu_gpu_temperature import InputModule as RaspberryPiCPUTemp
+from mycodo.inputs.rpi_cpu_gpu_temperature import \
+    InputModule as RaspberryPiCPUTemp
 from mycodo.inputs.rpi_signal_pwm import InputModule as SignalPWMInput
 from mycodo.inputs.rpi_signal_revolutions import InputModule as SignalRPMInput
 from mycodo.inputs.sht1x_7x import InputModule as SHT1x7xSensor

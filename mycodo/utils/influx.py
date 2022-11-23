@@ -12,7 +12,7 @@ from mycodo.utils.database import db_retrieve_table_daemon
 from mycodo.utils.logging_utils import set_log_level
 from mycodo.utils.system_pi import return_measurement_info
 
-logger = logging.getLogger("mycodo.db_influxdb")
+logger = logging.getLogger("mycodo.influx")
 logger.setLevel(set_log_level(logging))
 
 

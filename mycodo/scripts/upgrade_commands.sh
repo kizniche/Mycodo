@@ -423,7 +423,7 @@ case "${1:-''}" in
         fi
 
         if [[ $(grep "# flux-enabled = true" /etc/influxdb/influxdb.conf) || $(grep "flux-enabled = false" /etc/influxdb/influxdb.conf) ]]; then   
-            printf "#### Flux found to not be enabled. Enabling and restarting InfluxDB...\n"
+            printf "#### Flux found to not be enabled. Enabling and restarting InfluxDB.\n"
             sed -i 's/.*flux-enabled.*/flux-enabled = true/' /etc/influxdb/influxdb.conf
             service influxdb restart
         else

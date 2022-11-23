@@ -8,21 +8,13 @@ import time
 import mock
 
 from mycodo.config import FUNCTIONS
-from mycodo.databases.models import Actions
-from mycodo.databases.models import Conditional
-from mycodo.databases.models import CustomController
-from mycodo.databases.models import Dashboard
-from mycodo.databases.models import Function
-from mycodo.databases.models import Input
-from mycodo.databases.models import Output
-from mycodo.databases.models import PID
-from mycodo.databases.models import Trigger
-from mycodo.databases.models import User
-from mycodo.databases.models import Widget
-from mycodo.mycodo_flask.utils.utils_general import choices_custom_functions
-from mycodo.mycodo_flask.utils.utils_general import generate_form_input_list
-from mycodo.mycodo_flask.utils.utils_general import generate_form_output_list
-from mycodo.mycodo_flask.utils.utils_general import generate_form_widget_list
+from mycodo.databases.models import (PID, Actions, Conditional,
+                                     CustomController, Dashboard, Function,
+                                     Input, Output, Trigger, User, Widget)
+from mycodo.mycodo_flask.utils.utils_general import (choices_custom_functions,
+                                                     generate_form_input_list,
+                                                     generate_form_output_list,
+                                                     generate_form_widget_list)
 from mycodo.tests.software_tests.conftest import login_user
 from mycodo.tests.software_tests.factories import UserFactory
 from mycodo.utils.actions import parse_action_information

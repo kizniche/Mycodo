@@ -37,19 +37,12 @@ import time
 import timeit
 import traceback
 
-from Pyro5.api import Proxy
-from Pyro5.api import expose
-from Pyro5.api import serve
 from daemonize import Daemonize
+from Pyro5.api import Proxy, expose, serve
 
-from mycodo.config import DAEMON_LOG_FILE
-from mycodo.config import DAEMON_PID_FILE
-from mycodo.config import DOCKER_CONTAINER
-from mycodo.config import MYCODO_DB_PATH
-from mycodo.config import MYCODO_VERSION
-from mycodo.config import STATS_CSV
-from mycodo.config import STATS_INTERVAL
-from mycodo.config import UPGRADE_CHECK_INTERVAL
+from mycodo.config import (DAEMON_LOG_FILE, DAEMON_PID_FILE, DOCKER_CONTAINER,
+                           MYCODO_DB_PATH, MYCODO_VERSION, STATS_CSV,
+                           STATS_INTERVAL, UPGRADE_CHECK_INTERVAL)
 from mycodo.controllers.controller_conditional import ConditionalController
 from mycodo.controllers.controller_function import FunctionController
 from mycodo.controllers.controller_input import InputController
@@ -57,28 +50,19 @@ from mycodo.controllers.controller_output import OutputController
 from mycodo.controllers.controller_pid import PIDController
 from mycodo.controllers.controller_trigger import TriggerController
 from mycodo.controllers.controller_widget import WidgetController
-from mycodo.databases.models import Camera
-from mycodo.databases.models import Conditional
-from mycodo.databases.models import CustomController
-from mycodo.databases.models import Input
-from mycodo.databases.models import Misc
-from mycodo.databases.models import PID
-from mycodo.databases.models import Trigger
+from mycodo.databases.models import (PID, Camera, Conditional,
+                                     CustomController, Input, Misc, Trigger)
 from mycodo.databases.utils import session_scope
 from mycodo.devices.camera import camera_record
+from mycodo.utils.actions import (get_condition_value,
+                                  get_condition_value_dict,
+                                  parse_action_information, trigger_action,
+                                  trigger_controller_actions)
 from mycodo.utils.database import db_retrieve_table_daemon
-from mycodo.utils.actions import get_condition_value
-from mycodo.utils.actions import get_condition_value_dict
-from mycodo.utils.actions import parse_action_information
-from mycodo.utils.actions import trigger_action
-from mycodo.utils.actions import trigger_controller_actions
 from mycodo.utils.github_release_info import MycodoRelease
-from mycodo.utils.stats import add_update_csv
-from mycodo.utils.stats import recreate_stat_file
-from mycodo.utils.stats import return_stat_file_dict
-from mycodo.utils.stats import send_anonymous_stats
-from mycodo.utils.tools import generate_output_usage_report
-from mycodo.utils.tools import next_schedule
+from mycodo.utils.stats import (add_update_csv, recreate_stat_file,
+                                return_stat_file_dict, send_anonymous_stats)
+from mycodo.utils.tools import generate_output_usage_report, next_schedule
 
 
 class DaemonController:
