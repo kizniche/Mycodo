@@ -49,7 +49,6 @@ def write_influxdb_value(unique_id, unit, value, measure=None, channel=None, tim
 
     settings = db_retrieve_table_daemon(Misc, entry='first')
     influxdb_url = f'http://{settings.measurement_db_host}:{settings.measurement_db_port}'
-    bucket = f'{settings.measurement_db_dbname}/{settings.measurement_db_retention_policy}'
 
     if settings.measurement_db_version == '1':
         client = InfluxDBClient(
@@ -57,6 +56,7 @@ def write_influxdb_value(unique_id, unit, value, measure=None, channel=None, tim
             token=f'{settings.measurement_db_user}:{settings.measurement_db_password}',
             org='mycodo',
             timeout=5000)
+        bucket = f'{settings.measurement_db_dbname}/{settings.measurement_db_retention_policy}'
     elif settings.measurement_db_version == '2':
         client = InfluxDBClient(
             url=influxdb_url,
@@ -64,6 +64,7 @@ def write_influxdb_value(unique_id, unit, value, measure=None, channel=None, tim
             password=settings.measurement_db_password,
             org='mycodo',
             timeout=5000)
+        bucket = settings.measurement_db_dbname
     else:
         logger.error(f"Unknown Influxdb version: {settings.measurement_db_version}")
         return
@@ -108,7 +109,6 @@ def add_measurements_influxdb_flux(unique_id, measurements, use_same_timestamp=T
 
     settings = db_retrieve_table_daemon(Misc, entry='first')
     influxdb_url = f'http://{settings.measurement_db_host}:{settings.measurement_db_port}'
-    bucket = f'{settings.measurement_db_dbname}/{settings.measurement_db_retention_policy}'
 
     if settings.measurement_db_version == '1':
         client = InfluxDBClient(
@@ -116,6 +116,7 @@ def add_measurements_influxdb_flux(unique_id, measurements, use_same_timestamp=T
             token=f'{settings.measurement_db_user}:{settings.measurement_db_password}',
             org='mycodo',
             timeout=5000)
+        bucket = f'{settings.measurement_db_dbname}/{settings.measurement_db_retention_policy}'
     elif settings.measurement_db_version == '2':
         client = InfluxDBClient(
             url=influxdb_url,
@@ -123,6 +124,7 @@ def add_measurements_influxdb_flux(unique_id, measurements, use_same_timestamp=T
             password=settings.measurement_db_password,
             org='mycodo',
             timeout=5000)
+        bucket = settings.measurement_db_dbname
     else:
         logger.error(f"Unknown Influxdb version: {settings.measurement_db_version}")
         return
@@ -179,7 +181,6 @@ def query_flux(unit, unique_id,
 
     settings = db_retrieve_table_daemon(Misc, entry='first')
     influxdb_url = f'http://{settings.measurement_db_host}:{settings.measurement_db_port}'
-    bucket = f'{settings.measurement_db_dbname}/{settings.measurement_db_retention_policy}'
 
     if settings.measurement_db_version == '1':
         client = InfluxDBClient(
@@ -187,6 +188,7 @@ def query_flux(unit, unique_id,
             token=f'{settings.measurement_db_user}:{settings.measurement_db_password}',
             org='mycodo',
             timeout=5000)
+        bucket = f'{settings.measurement_db_dbname}/{settings.measurement_db_retention_policy}'
     elif settings.measurement_db_version == '2':
         client = InfluxDBClient(
             url=influxdb_url,
@@ -194,6 +196,7 @@ def query_flux(unit, unique_id,
             password=settings.measurement_db_password,
             org='mycodo',
             timeout=5000)
+        bucket = settings.measurement_db_dbname
     else:
         logger.error(f"Unknown Influxdb version: {settings.measurement_db_version}")
         return
