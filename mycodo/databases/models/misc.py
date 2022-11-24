@@ -76,7 +76,7 @@ class Misc(CRUDMixin, db.Model):
 
     measurement_db_retention_policy = db.Column(db.String, default=db_retention_policy)
     measurement_db_name = db.Column(db.String, default=db_name)
-    measurement_db_version = db.Column(db.String, default='')
+    measurement_db_version = db.Column(db.String, default=db_version)
     measurement_db_host = db.Column(db.String, default=db_host)
     measurement_db_port = db.Column(db.String, default=db_port)
     measurement_db_user = db.Column(db.String, default='mycodo')
