@@ -215,6 +215,18 @@
         </div>
       </div>
       <div class="form-group">
+        {{form_settings_general.measurement_db_version.label(class_='col-sm-12 control-label checkbox-nopad')}}
+        <div class="col-sm-12">
+          {{form_settings_general.measurement_db_version(class_='form-control', value=misc.measurement_db_version)}}
+        </div>
+      </div>
+      <div class="form-group">
+        {{form_settings_general.measurement_db_retention_policy.label(class_='col-sm-12 control-label checkbox-nopad')}}
+        <div class="col-sm-12">
+          {{form_settings_general.measurement_db_retention_policy(class_='form-control', value=misc.measurement_db_retention_policy)}}
+        </div>
+      </div>
+      <div class="form-group">
         {{form_settings_general.measurement_db_host.label(class_='col-sm-12 control-label checkbox-nopad')}}
         <div class="col-sm-12">
           {{form_settings_general.measurement_db_host(class_='form-control', value=misc.measurement_db_host)}}

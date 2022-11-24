@@ -400,6 +400,8 @@ def settings_general_mod(form):
                 mod_misc.sample_rate_controller_pid = form.sample_rate_controller_pid.data
                 mod_misc.sample_rate_controller_widget = form.sample_rate_controller_widget.data
                 mod_misc.measurement_db_name = form.use_database.data
+                mod_misc.measurement_db_retention_policy = form.measurement_db_retention_policy.data
+                mod_misc.measurement_db_version = form.measurement_db_version.data
                 mod_misc.measurement_db_host = form.measurement_db_host.data
                 mod_misc.measurement_db_port = form.measurement_db_port.data
                 mod_misc.measurement_db_dbname = form.measurement_db_dbname.data

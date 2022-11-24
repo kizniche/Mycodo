@@ -53,6 +53,7 @@ class Misc(CRUDMixin, db.Model):
     db_version = ''  # Default
     db_host = 'localhost'
     db_port = 0
+    db_retention_policy = ''
 
     try:
         from mycodo.scripts.measurement_db import get_influxdb_info
@@ -63,9 +64,17 @@ class Misc(CRUDMixin, db.Model):
             db_host = influx_info['influxdb_host']
         if influx_info['influxdb_port']:
             db_port = influx_info['influxdb_port']
+        if influx_info['influxdb_version']:
+            if influx_info['influxdb_version'].startswith("1"):
+                db_version = '1'
+                db_retention_policy = 'autogen'
+            if influx_info['influxdb_version'].startswith("2"):
+                db_version = '2'
+                db_retention_policy = 'infinite'
     except:
         logger.exception("Determining influxdb version")
 
+    measurement_db_retention_policy = db.Column(db.String, default=db_retention_policy)
     measurement_db_name = db.Column(db.String, default=db_name)
     measurement_db_version = db.Column(db.String, default='')
     measurement_db_host = db.Column(db.String, default=db_host)

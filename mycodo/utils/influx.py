@@ -48,12 +48,22 @@ def write_influxdb_value(unique_id, unit, value, measure=None, channel=None, tim
 
     settings = db_retrieve_table_daemon(Misc, entry='first')
     influxdb_url = f'http://{settings.measurement_db_host}:{settings.measurement_db_port}'
-    retention_policy = 'autogen'
-    bucket = f'{settings.measurement_db_dbname}/{retention_policy}'
+    bucket = f'{settings.measurement_db_dbname}/{settings.measurement_db_retention_policy}'
+
+    if settings.measurement_db_version == '1':
+        token = f'{settings.measurement_db_user}:{settings.measurement_db_password}'
+        username = None
+        password = None
+    elif settings.measurement_db_version == '2':
+        token = None
+        username = settings.measurement_db_user
+        password = settings.measurement_db_password
 
     with InfluxDBClient(
             url=influxdb_url,
-            token=f'{settings.measurement_db_user}:{settings.measurement_db_password}',
+            token=token,
+            username=username,
+            password=password,
             org='mycodo',
             timeout=5000) as client:
         with client.write_api() as write_api:
@@ -97,12 +107,22 @@ def add_measurements_influxdb(unique_id, measurements, use_same_timestamp=True):
 
     settings = db_retrieve_table_daemon(Misc, entry='first')
     influxdb_url = f'http://{settings.measurement_db_host}:{settings.measurement_db_port}'
-    retention_policy = 'autogen'
-    bucket = f'{settings.measurement_db_dbname}/{retention_policy}'
+    bucket = f'{settings.measurement_db_dbname}/{settings.measurement_db_retention_policy}'
+
+    if settings.measurement_db_version == '1':
+        token = f'{settings.measurement_db_user}:{settings.measurement_db_password}'
+        username = None
+        password = None
+    elif settings.measurement_db_version == '2':
+        token = None
+        username = settings.measurement_db_user
+        password = settings.measurement_db_password
 
     with InfluxDBClient(
             url=influxdb_url,
-            token=f'{settings.measurement_db_user}:{settings.measurement_db_password}',
+            token=token,
+            username=username,
+            password=password,
             org='mycodo',
             timeout=5000) as client:
         with client.write_api() as write_api:
@@ -139,12 +159,22 @@ def query_flux(unit, unique_id,
 
     settings = db_retrieve_table_daemon(Misc, entry='first')
     influxdb_url = f'http://{settings.measurement_db_host}:{settings.measurement_db_port}'
-    retention_policy = 'autogen'
-    bucket = f'{settings.measurement_db_dbname}/{retention_policy}'
+    bucket = f'{settings.measurement_db_dbname}/{settings.measurement_db_retention_policy}'
+
+    if settings.measurement_db_version == '1':
+        token = f'{settings.measurement_db_user}:{settings.measurement_db_password}'
+        username = None
+        password = None
+    elif settings.measurement_db_version == '2':
+        token = None
+        username = settings.measurement_db_user
+        password = settings.measurement_db_password
 
     client = InfluxDBClient(
         url=influxdb_url,
-        token=f'{settings.measurement_db_user}:{settings.measurement_db_password}',
+        token=token,
+        username=username,
+        password=password,
         org='mycodo',
         timeout=5000)
     query_api = client.query_api()

@@ -58,6 +58,7 @@ def get_influxdb_info():
     settings = None
     dict_info = {
         'influxdb_installed': None,
+        'influxdb_retention_policy': None,
         'influxdb_version': None,
         'influxdb_host': None,
         'influxdb_port': None
@@ -73,6 +74,7 @@ def get_influxdb_info():
         if settings:
             dict_info['influxdb_host'] = settings.measurement_db_host
             dict_info['influxdb_port'] = settings.measurement_db_port
+            dict_info['influxdb_retention_policy'] = settings.measurement_db_retention_policy
         else:
             dict_info['influxdb_host'] = get_influxdb_host()
             dict_info['influxdb_port'] = 8086
