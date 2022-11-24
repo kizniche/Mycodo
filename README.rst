@@ -173,6 +173,11 @@ If you receive an error during the install that you believe is preventing your s
 
 A minimal set of anonymous usage statistics are collected to help improve development. No identifying information is saved from the information that is collected and it is only used to improve Mycodo. No one other than the development team will have access to this information and it will never be sold. The data collected is mainly what and how many features are used, and other similar information. The data that's collected can be viewed from the 'View collected statistics' link in the ``Settings -> General`` page. There is an opt out option on the General Settings page if you want to turn this functionality off.
 
+Measurement Database
+~~~~~~~~~~~~~~~~~~~~
+
+Mycodo currently supports InfluxDB as the time-searies database used to store measurements. Both versions 1.x (for 32-bit systems) and 2.x (for 64-bit systems) are supported. During the install, you will be prompted to install 1.x, 2.x, or none (if you wish to set up your own, either locally or remotely). The settings for the database can be reconfigured after install. 
+
 Docker
 ~~~~~~
 

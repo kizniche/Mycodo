@@ -50,7 +50,10 @@ FUNCTION_INFORMATION = {
     'enable_channel_unit_select': True,
 
     'message': 'This function acquires the past measurements (within Max Age) for the selected measurement, averages '
-               'them, then stores the resulting value as the selected measurement and unit.',
+               'them, then stores the resulting value as the selected measurement and unit. Note: There is a bug in '
+               'InfluxDB 1.8.10 that prevents the mean() function from working properly. Therefore, if you are using '
+               'Influxdb v1.x, the median() function will be used. InfluxDB 2.x is unaffected and uses mean(). To '
+               'get the true mean, upgrade to InfluxDB 2.x.',
 
     'options_enabled': [
         'measurements_select_measurement_unit',

@@ -8,48 +8,28 @@ from importlib import import_module
 from io import StringIO
 
 import flask_login
-from flask import Response
-from flask import flash
-from flask import jsonify
-from flask import redirect
-from flask import send_file
-from flask import send_from_directory
-from flask import url_for
+from flask import (Response, flash, jsonify, redirect, send_file,
+                   send_from_directory, url_for)
 from flask.blueprints import Blueprint
 from flask_babel import gettext
 from flask_limiter import Limiter
 from sqlalchemy import and_
 
-from mycodo.config import DOCKER_CONTAINER
-from mycodo.config import INSTALL_DIRECTORY
-from mycodo.config import LOG_PATH
-from mycodo.config import PATH_CAMERAS
-from mycodo.config import PATH_NOTE_ATTACHMENTS
-from mycodo.databases.models import Camera
-from mycodo.databases.models import Conversion
-from mycodo.databases.models import DeviceMeasurements
-from mycodo.databases.models import Input
-from mycodo.databases.models import Misc
-from mycodo.databases.models import NoteTags
-from mycodo.databases.models import Notes
-from mycodo.databases.models import Output
-from mycodo.databases.models import OutputChannel
-from mycodo.databases.models import PID
+from mycodo.config import (DOCKER_CONTAINER, INSTALL_DIRECTORY, LOG_PATH,
+                           PATH_CAMERAS, PATH_NOTE_ATTACHMENTS)
+from mycodo.databases.models import (PID, Camera, Conversion,
+                                     DeviceMeasurements, Input, Misc, Notes,
+                                     NoteTags, Output, OutputChannel)
 from mycodo.mycodo_client import DaemonControl
 from mycodo.mycodo_flask.routes_authentication import clear_cookie_auth
 from mycodo.mycodo_flask.utils import utils_general
 from mycodo.mycodo_flask.utils.utils_general import get_ip_address
 from mycodo.mycodo_flask.utils.utils_output import get_all_output_states
 from mycodo.utils.database import db_retrieve_table
-from mycodo.utils.influx import influx1_to_list
-from mycodo.utils.influx import influx2_to_list
-from mycodo.utils.influx import influxdb2_get_count_points
-from mycodo.utils.influx import influxdb2_get_first_point
-from mycodo.utils.influx import query_string
-from mycodo.utils.system_pi import assure_path_exists
-from mycodo.utils.system_pi import is_int
-from mycodo.utils.system_pi import return_measurement_info
-from mycodo.utils.system_pi import str_is_float
+from mycodo.utils.influx import (influx_to_list, influxdb_get_count_points,
+                                 influxdb_get_first_point, query_string)
+from mycodo.utils.system_pi import (assure_path_exists, is_int,
+                                    return_measurement_info, str_is_float)
 
 blueprint = Blueprint('routes_general',
                       __name__,
@@ -460,7 +440,7 @@ def async_data(device_id, device_type, measurement_id, start_seconds, end_second
             return '', 204
 
         if settings.measurement_db_name == 'influxdb':
-            count_points = influxdb2_get_count_points(data)
+            count_points = influxdb_get_count_points(data)
 
         # Get the timestamp of the first point
         data = query_string(
@@ -473,7 +453,7 @@ def async_data(device_id, device_type, measurement_id, start_seconds, end_second
             return '', 204
 
         if settings.measurement_db_name == 'influxdb':
-            first_point = influxdb2_get_first_point(data)
+            first_point = influxdb_get_first_point(data)
 
         end = datetime.datetime.utcnow()
         end_str = end.strftime('%Y-%m-%dT%H:%M:%S.%fZ')
@@ -497,7 +477,7 @@ def async_data(device_id, device_type, measurement_id, start_seconds, end_second
             return '', 204
 
         if settings.measurement_db_name == 'influxdb':
-            count_points = influxdb2_get_count_points(data)
+            count_points = influxdb_get_count_points(data)
 
         # Get the timestamp of the first point in the past year
         data = query_string(
@@ -512,7 +492,7 @@ def async_data(device_id, device_type, measurement_id, start_seconds, end_second
             return '', 204
 
         if settings.measurement_db_name == 'influxdb':
-            first_point = influxdb2_get_first_point(data)
+            first_point = influxdb_get_first_point(data)
     else:
         start = datetime.datetime.utcfromtimestamp(float(start_seconds))
         start_str = start.strftime('%Y-%m-%dT%H:%M:%S.%fZ')
@@ -531,7 +511,7 @@ def async_data(device_id, device_type, measurement_id, start_seconds, end_second
             return '', 204
 
         if settings.measurement_db_name == 'influxdb':
-            count_points = influxdb2_get_count_points(data)
+            count_points = influxdb_get_count_points(data)
 
         # Get the timestamp of the first point in the past year
         data = query_string(
@@ -546,7 +526,7 @@ def async_data(device_id, device_type, measurement_id, start_seconds, end_second
             return '', 204
 
         if settings.measurement_db_name == 'influxdb':
-            first_point = influxdb2_get_first_point(data)
+            first_point = influxdb_get_first_point(data)
 
     if not first_point:
         logger.error("No first point")
@@ -580,14 +560,13 @@ def async_data(device_id, device_type, measurement_id, start_seconds, end_second
                 channel=channel,
                 start_str=start_str,
                 end_str=end_str,
-                group_sec=group_seconds,
-                value='MEAN')
+                group_sec=group_seconds)
 
             if not data:
                 return '', 204
 
             if settings.measurement_db_name == 'influxdb':
-                return jsonify(influx2_to_list(data))
+                return jsonify(influx_to_list(data))
         except Exception as err:
             logger.error(f"URL for 'async_data' raised and error: {err}")
             return '', 204
@@ -604,7 +583,7 @@ def async_data(device_id, device_type, measurement_id, start_seconds, end_second
                 return '', 204
 
             if settings.measurement_db_name == 'influxdb':
-                return jsonify(influx2_to_list(data))
+                return jsonify(influx_to_list(data))
         except Exception as err:
             logger.error(f"URL for 'async_data' raised and error: {err}")
             return '', 204
@@ -640,7 +619,7 @@ def async_usage_data(device_id, unit, channel, start_seconds, end_seconds):
             return '', 204
 
         if settings.measurement_db_name == 'influxdb':
-            count_points = influxdb2_get_count_points(data)
+            count_points = influxdb_get_count_points(data)
 
         # Get the timestamp of the first point in the past year
         data = query_string(
@@ -652,7 +631,7 @@ def async_usage_data(device_id, unit, channel, start_seconds, end_seconds):
             return '', 204
 
         if settings.measurement_db_name == 'influxdb':
-            first_point = influxdb2_get_first_point(data)
+            first_point = influxdb_get_first_point(data)
 
     # Set the time frame to the past start epoch to now
     elif start_seconds != '0' and end_seconds == '0':
@@ -672,7 +651,7 @@ def async_usage_data(device_id, unit, channel, start_seconds, end_seconds):
             return '', 204
 
         if settings.measurement_db_name == 'influxdb':
-            count_points = influxdb2_get_count_points(data)
+            count_points = influxdb_get_count_points(data)
 
         # Get the timestamp of the first point in the past year
         data = query_string(
@@ -686,7 +665,7 @@ def async_usage_data(device_id, unit, channel, start_seconds, end_seconds):
             return '', 204
 
         if settings.measurement_db_name == 'influxdb':
-            first_point = influxdb2_get_first_point(data)
+            first_point = influxdb_get_first_point(data)
     else:
         start = datetime.datetime.utcfromtimestamp(float(start_seconds))
         start_str = start.strftime('%Y-%m-%dT%H:%M:%S.%fZ')
@@ -704,7 +683,7 @@ def async_usage_data(device_id, unit, channel, start_seconds, end_seconds):
             return '', 204
 
         if settings.measurement_db_name == 'influxdb':
-            count_points = influxdb2_get_count_points(data)
+            count_points = influxdb_get_count_points(data)
 
         # Get the timestamp of the first point in the past year
         data = query_string(
@@ -718,7 +697,7 @@ def async_usage_data(device_id, unit, channel, start_seconds, end_seconds):
             return '', 204
 
         if settings.measurement_db_name == 'influxdb':
-            first_point = influxdb2_get_first_point(data)
+            first_point = influxdb_get_first_point(data)
 
     if not first_point:
         logger.error("No first point")
@@ -749,7 +728,6 @@ def async_usage_data(device_id, unit, channel, start_seconds, end_seconds):
             data = query_string(
                 unit, device_id,
                 channel=channel,
-                value='MEAN',
                 start_str=start_str,
                 end_str=end_str,
                 group_sec=group_seconds)
@@ -758,7 +736,7 @@ def async_usage_data(device_id, unit, channel, start_seconds, end_seconds):
                 return '', 204
 
             if settings.measurement_db_name == 'influxdb':
-                return jsonify(influx2_to_list(data))
+                return jsonify(influx_to_list(data))
         except Exception as err:
             logger.error(f"URL for 'async_data' raised and error: {err}")
             return '', 204
@@ -774,7 +752,7 @@ def async_usage_data(device_id, unit, channel, start_seconds, end_seconds):
                 return '', 204
 
             if settings.measurement_db_name == 'influxdb':
-                return jsonify(influx2_to_list(data))
+                return jsonify(influx_to_list(data))
         except Exception as err:
             logger.error(f"URL for 'async_usage' raised and error: {err}")
             return '', 204

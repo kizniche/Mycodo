@@ -72,11 +72,6 @@ class ExportInfluxdb(FlaskForm):
     export_influxdb_zip = SubmitField(lazy_gettext('Export Influxdb'))
 
 
-class ImportInfluxdb(FlaskForm):
-    influxdb_import_file = FileField()
-    influxdb_import_upload = SubmitField(lazy_gettext('Import Influxdb'))
-
-
 #
 # Log viewer
 #

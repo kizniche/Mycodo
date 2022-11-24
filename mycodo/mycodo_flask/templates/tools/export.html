@@ -58,30 +58,13 @@
 
   <h4 style="padding-top: 2em">Export InfluxDB Database and Metastore as ZIP</h4>
 
-  <p>This will create a ZIP file containing the InfluxDB meatastore and database containing all measurement data.</p>
+  <p>This will create a ZIP file containing the InfluxDB backup files containing all measurement data. These files are created with the "influxd backup -portable" command for version 1.x and the "influx backup" command for version 2.x. To restore a backup, refer to the InfluxDB documentation.</p>
 
   <form method="post" action="/export">
   {{form_export_influxdb.csrf_token}}
   <div class="form-inline">
     <div class="form-group">
       {{form_export_influxdb.export_influxdb_zip(class_='btn btn-primary')}}
-    </div>
-  </div>
-  </form>
-
-  <h4 style="padding-top: 2em">Import InfluxDB Database and Metastore from ZIP</h4>
-
-  <p>This will allow a ZIP file containing the InfluxDB meatastore and database to be uploaded and overwirite the current Influxdb database of measurements. Again, all data will be replaced (i.e. destroyed) by the imported backup. It is advised to export your current data before importing a previous backup if you don't want to lose this data. In the future, there will be an option to combine imported data with the current data. InfluxDB and the Mycodo daemon (backend) will be stopped momentarily while the import takes place.</p>
-
-  <form method="post" action="/export" enctype=multipart/form-data>
-  {{form_import_influxdb.csrf_token}}
-  <div class="form-inline">
-    <!-- <div class="form-group fileinput fileinput-new" data-provides="fileinput">
-      <span class="btn btn-sm btn-file"><input id="influxdb_import_file" name="influxdb_import_file" type="file" /></span>
-    </div> -->
-    <div class="form-group">
-      IMPORTING INFLUXDB DATA IS CURRENTLY DISABLED TO FIX ISSUES
-      <!-- {{form_import_influxdb.influxdb_import_upload(class_='btn btn-primary')}} -->
     </div>
   </div>
   </form>

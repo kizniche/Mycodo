@@ -449,7 +449,6 @@ def page_export():
     form_export_settings = forms_misc.ExportSettings()
     form_import_settings = forms_misc.ImportSettings()
     form_export_influxdb = forms_misc.ExportInfluxdb()
-    form_import_influxdb = forms_misc.ImportInfluxdb()
 
     function = CustomController.query.all()
     input_dev = Input.query.all()
@@ -503,18 +502,6 @@ def page_export():
             else:
                 flash('Unknown error creating zipped influxdb database '
                       'and metastore', 'error')
-        elif form_import_influxdb.influxdb_import_upload.data:
-            restore_influxdb = utils_export.import_influxdb(
-                form_import_influxdb)
-            if restore_influxdb == 'success':
-                flash('The influxdb database import has been initialized. '
-                      'This process may take an extended time to complete '
-                      'if there is a lot of data. Please allow ample time '
-                      'for it to complete.',
-                      'success')
-            else:
-                flash('Errors occurred during the influxdb database import.',
-                      'error')
 
     # Generate start end end times for date/time picker
     end_picker = datetime.datetime.now().strftime('%m/%d/%Y %H:%M')
@@ -527,7 +514,6 @@ def page_export():
                            form_export_influxdb=form_export_influxdb,
                            form_export_measurements=form_export_measurements,
                            form_export_settings=form_export_settings,
-                           form_import_influxdb=form_import_influxdb,
                            form_import_settings=form_import_settings,
                            choices_function=choices_function,
                            choices_input=choices_input,

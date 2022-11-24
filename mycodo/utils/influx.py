@@ -187,7 +187,7 @@ def query_flux(unit, unique_id,
             url=influxdb_url,
             token=f'{settings.measurement_db_user}:{settings.measurement_db_password}',
             org='mycodo',
-            timeout=5000)
+            timeout=60000)
         bucket = f'{settings.measurement_db_dbname}/{settings.measurement_db_retention_policy}'
     elif settings.measurement_db_version == '2':
         client = InfluxDBClient(
@@ -195,7 +195,7 @@ def query_flux(unit, unique_id,
             username=settings.measurement_db_user,
             password=settings.measurement_db_password,
             org='mycodo',
-            timeout=5000)
+            timeout=60000)
         bucket = settings.measurement_db_dbname
     else:
         logger.error(f"Unknown Influxdb version: {settings.measurement_db_version}")
@@ -227,11 +227,19 @@ def query_flux(unit, unique_id,
         query += " AND time = '{ts}'".format(ts=ts_str)
 
     if group_sec:
-        query += f' |> aggregateWindow(every: {group_sec}s, fn: mean)'
+        # TODO: Change to mean when issue is fixed
+        # Bug in influxdb/Flux v1.8.10 due to mean
+        # Error: panic: runtime error: invalid memory address or nil pointer dereference
+        # https://github.com/influxdata/influxdb/issues/21649
+        # https://github.com/influxdata/influxdb/pull/23520
+        if settings.measurement_db_version == '1':
+            query += f' |> aggregateWindow(every: {group_sec}s, fn: median)'
+        elif settings.measurement_db_version == '2':
+            query += f' |> aggregateWindow(every: {group_sec}s, fn: mean)'
     if limit:
         query += f' |> limit(n:{limit})'
 
-    if value:  # value is deprecated. Use function instead.
+    if value:
         if value == "LAST":
             query += ' |> last()'
         elif value == "FIRST":
@@ -242,13 +250,19 @@ def query_flux(unit, unique_id,
             query += ' |> min()'
         elif value == "COUNT":
             query += ' |> count()'
-
-        # bug in influxdb 1.8: Error: panic: runtime error: invalid memory address or nil pointer dereference
-        # fix this when moving from influxdb 1.8 to 2.x
         elif value == "SUM":
             query += ' |> sum(column: "_value")'
+
+        # TODO: Change to mean when issue is fixed
+        # Bug in influxdb/Flux v1.8.10 due to mean
+        # Error: panic: runtime error: invalid memory address or nil pointer dereference
+        # https://github.com/influxdata/influxdb/issues/21649
+        # https://github.com/influxdata/influxdb/pull/23520
         elif value == "MEAN":
-            query += ' |> mean()'
+            if settings.measurement_db_version == '1':
+                query += ' |> median()'
+            elif settings.measurement_db_version == '2':
+                query += ' |> mean()'
 
         else:
             logger.error(f"query_flux(): Unknown value: '{value}'")
@@ -563,14 +577,7 @@ def valid_date_str(date_str):
     return True
 
 
-def influx1_to_list(data):
-    list_data = []
-    for each_data in data:
-        list_data.append((each_data[0] / 1000000, each_data[1]))
-    return list_data
-
-
-def influx2_to_list(data):
+def influx_to_list(data):
     list_data = []
     for table in data:
         for row in table.records:
@@ -578,15 +585,16 @@ def influx2_to_list(data):
     return list_data
 
 
-def influxdb2_get_count_points(data):
+def influxdb_get_count_points(data):
     for table in data:
-        return len(table.records)
+        for record in table.records:
+            return record.values['_value']
 
 
-def influxdb2_get_first_point(data):
+def influxdb_get_first_point(data):
     for table in data:
-        for row in table.records:
-            return row.values['_time']
+        for record in table.records:
+            return record.values['_time']
 
 
 #
