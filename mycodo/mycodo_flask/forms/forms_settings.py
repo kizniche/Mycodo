@@ -99,7 +99,6 @@ class SettingsGeneral(FlaskForm):
 
     use_database = StringField(lazy_gettext('Database'))
     measurement_db_retention_policy = StringField(lazy_gettext('Retention Policy'))
-    measurement_db_version = StringField(lazy_gettext('Version'))
     measurement_db_host = StringField(lazy_gettext('Hostname'))
     measurement_db_port = IntegerField(lazy_gettext('Port'))
     measurement_db_dbname = StringField(lazy_gettext('Database Name'))

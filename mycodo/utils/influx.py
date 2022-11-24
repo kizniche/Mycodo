@@ -84,8 +84,7 @@ def write_influxdb_value(unique_id, unit, value, measure=None, channel=None, tim
             write_api.write(bucket=bucket, record=point)
             return 0
         except Exception as except_msg:
-            logger.debug("Failed to write measurements to influxdb with ID {}. "
-                            "Retrying in 5 seconds.".format(unique_id))
+            logger.debug(f"Failed to write measurements to influxdb with ID {unique_id}. Retrying in 5 seconds.")
             time.sleep(5)
             try:
                 write_api.write(bucket=bucket, record=point)
@@ -201,7 +200,7 @@ def query_flux(unit, unique_id,
 
     query_api = client.query_api()
 
-    query = f'from(bucket: \"{bucket}\")'
+    query = f'from(bucket: "{bucket}")'
 
     if past_sec:
         query += f' |> range(start: -{int(past_sec)}s)'
