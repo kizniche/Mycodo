@@ -65,10 +65,10 @@ class Misc(CRUDMixin, db.Model):
         if influx_info['influxdb_port']:
             db_port = influx_info['influxdb_port']
         if influx_info['influxdb_version']:
-            if influx_info['influxdb_version'].startswith("1"):
+            if influx_info['influxdb_version'].startswith("1."):
                 db_version = '1'
                 db_retention_policy = 'autogen'
-            if influx_info['influxdb_version'].startswith("2"):
+            if influx_info['influxdb_version'].startswith("2."):
                 db_version = '2'
                 db_retention_policy = 'infinite'
     except:

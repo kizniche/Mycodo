@@ -14,29 +14,8 @@ sys.path.append(os.path.abspath(os.path.join(__file__, "../../..")))
 logger = logging.getLogger("mycodo.measurement_db")
 
 
-def get_measurement_db_info():
-    dict_info = {
-        'db_name': '',
-        'db_version': ''
-    }
+def get_influxdb_host(settings):
     try:
-        from mycodo.databases.models import Misc
-        from mycodo.utils.database import db_retrieve_table_daemon
-        settings = db_retrieve_table_daemon(Misc, entry='first')
-        dict_info['db_name'] = settings.measurement_db_name
-        dict_info['db_version'] = settings.measurement_db_version
-    except Exception as err:
-        logger.debug(f"Could not determine influxdb version: {err}")
-        dict_info['db_name'] = "ERROR"
-        dict_info['db_version'] = "ERROR"
-
-    return dict_info
-
-def get_influxdb_host():
-    try:
-        from mycodo.databases.models import Misc
-        from mycodo.utils.database import db_retrieve_table_daemon
-        settings = db_retrieve_table_daemon(Misc, entry='first')
         if settings and settings.measurement_db_host:
             return settings.measurement_db_host
     except Exception as err:
@@ -49,6 +28,7 @@ def get_influxdb_host():
     ]
     for host in list_hosts:
         try:
+            print(f"Trying host: {host}")
             if requests.get(f"http://{host}:8086/ping").status_code == 204:
                 return host
         except Exception as err:
@@ -57,6 +37,8 @@ def get_influxdb_host():
 def get_influxdb_info():
     settings = None
     dict_info = {
+        'db_name': None,
+        'db_version': None,
         'influxdb_installed': None,
         'influxdb_retention_policy': None,
         'influxdb_version': None,
@@ -71,18 +53,29 @@ def get_influxdb_info():
         logger.debug(f"Could not determine influxdb info from table: {err}")
 
     try:
+        r = None
         if settings:
+            # First check if user-set host:port is accessible
+            dict_info['db_name'] = settings.measurement_db_name
+            dict_info['db_version'] = settings.measurement_db_version
             dict_info['influxdb_host'] = settings.measurement_db_host
             dict_info['influxdb_port'] = settings.measurement_db_port
             dict_info['influxdb_retention_policy'] = settings.measurement_db_retention_policy
-        else:
-            dict_info['influxdb_host'] = get_influxdb_host()
+            r = requests.get(f"http://{dict_info['influxdb_host']}:{dict_info['influxdb_port']}/ping")
+
+        if not r or not r.headers or "X-Influxdb-Version" not in r.headers:
+            # Next, check if local host:port is accessible
+            dict_info['influxdb_host'] = get_influxdb_host(settings)
             dict_info['influxdb_port'] = 8086
-        r = requests.get(f"http://{dict_info['influxdb_host']}:{dict_info['influxdb_port']}/ping")
+            r = requests.get(f"http://{dict_info['influxdb_host']}:{dict_info['influxdb_port']}/ping")
 
         if r.headers and "X-Influxdb-Version" in r.headers:
             dict_info['influxdb_installed'] = True
             dict_info['influxdb_version'] = r.headers["X-Influxdb-Version"]
+
+            # Remove v from "v2.x" version string
+            if dict_info['influxdb_version'].startswith("v"):
+                dict_info['influxdb_version'] = dict_info['influxdb_version'][1:]
     except Exception as err:
         logger.debug(f"Could not determine influxdb info: {err}")
 
@@ -99,7 +92,5 @@ if __name__ == "__main__":
     args = parser.parse_args()
 
     if args.info:
-        dict_db_info = get_measurement_db_info()
         dict_influx = get_influxdb_info()
-        dict_info = {**dict_db_info, **dict_influx}
-        print(json.dumps(dict_info))
+        print(json.dumps(dict_influx))

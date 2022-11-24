@@ -295,8 +295,8 @@ Mycodo is made possible, in part, by the many fine open source libraries, below.
 -  `Highcharts <https://www.highcharts.com>`__
 -  `importlib_metadata <https://github.com/python/importlib_metadata>`__
 -  `InfluxDB <https://github.com/influxdata/influxdb>`__
--  `influxdb (1.x cl1ent) <https://github.com/influxdata/influxdb-python>`__
--  `influxdb_client (2.x client) <https://github.com/influxdata/influxdb-client-python>`__
+-  `influxdb <https://github.com/influxdata/influxdb-python>`__
+-  `influxdb_client <https://github.com/influxdata/influxdb-client-python>`__
 -  `jQuery <https://jquery.com>`__
 -  `Marshmallow_SQLAlchemy <https://pypi.org/project/marshmallow_sqlalchemy>`__
 -  `Pyro5 <https://github.com/irmen/Pyro5>`__

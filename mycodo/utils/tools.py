@@ -42,7 +42,7 @@ logger = logging.getLogger("mycodo.tools")
 logger.setLevel(set_log_level(logging))
 
 
-def create_measurements_export(save_path=None):
+def create_measurements_export(influxdb_version, save_path=None):
     try:
         data = io.BytesIO()
         influx_backup_dir = os.path.join(INSTALL_DIRECTORY, 'influx_backup')
@@ -55,8 +55,18 @@ def create_measurements_export(save_path=None):
         assure_path_exists(influx_backup_dir)
 
         settings = db_retrieve_table_daemon(Misc, entry='first')
-        cmd = f"/usr/bin/influxd backup -database {settings.measurement_db_dbname} -portable {influx_backup_dir}"
-        _, _, status = cmd_output(cmd)
+
+        if influxdb_version.startswith("1."):
+            cmd = f"/usr/bin/influxd backup -database {settings.measurement_db_dbname} -portable {influx_backup_dir}"
+            out, err, status = cmd_output(cmd, user='root')
+        elif influxdb_version.startswith("2."):
+            cmd = f"/usr/bin/influx backup --org mycodo {influx_backup_dir}"
+            out, err, status = cmd_output(cmd, user='root')
+        else:
+            logger.error(f"Could not determine inflxdb version: {influxdb_version}")
+            return
+        
+        logger.info(f"out: {out}, error: {err}, status: {status}")
 
         if not status:
             # Zip all files in the influx_backup directory
@@ -79,7 +89,7 @@ def create_measurements_export(save_path=None):
             else:
                 return 0, data
     except Exception as err:
-        logger.error(f"Error: {err}")
+        logger.exception(f"Error: {err}")
         return 1, err
 
 
