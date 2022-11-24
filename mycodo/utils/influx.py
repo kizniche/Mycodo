@@ -1,6 +1,7 @@
 # coding=utf-8
 import datetime
 import logging
+import threading
 import time
 
 import requests
@@ -51,51 +52,52 @@ def write_influxdb_value(unique_id, unit, value, measure=None, channel=None, tim
     bucket = f'{settings.measurement_db_dbname}/{settings.measurement_db_retention_policy}'
 
     if settings.measurement_db_version == '1':
-        token = f'{settings.measurement_db_user}:{settings.measurement_db_password}'
-        username = None
-        password = None
-    elif settings.measurement_db_version == '2':
-        token = None
-        username = settings.measurement_db_user
-        password = settings.measurement_db_password
-
-    with InfluxDBClient(
+        client = InfluxDBClient(
             url=influxdb_url,
-            token=token,
-            username=username,
-            password=password,
+            token=f'{settings.measurement_db_user}:{settings.measurement_db_password}',
             org='mycodo',
-            timeout=5000) as client:
-        with client.write_api() as write_api:
-            point = Point(unit).tag("device_id", unique_id)
+            timeout=5000)
+    elif settings.measurement_db_version == '2':
+        client = InfluxDBClient(
+            url=influxdb_url,
+            username=settings.measurement_db_user,
+            password=settings.measurement_db_password,
+            org='mycodo',
+            timeout=5000)
+    else:
+        logger.error(f"Unknown Influxdb version: {settings.measurement_db_version}")
+        return
 
-            if measure:
-                point = point.tag("measure", measure)
-            if channel is not None:
-                point = point.tag("channel", channel)
-            if timestamp:
-                point = point.time(timestamp)
+    with client.write_api() as write_api:
+        point = Point(unit).tag("device_id", unique_id)
 
-            point = point.field("value", value)
+        if measure:
+            point = point.tag("measure", measure)
+        if channel is not None:
+            point = point.tag("channel", channel)
+        if timestamp:
+            point = point.time(timestamp)
 
+        point = point.field("value", value)
+
+        try:
+            write_api.write(bucket=bucket, record=point)
+            return 0
+        except Exception as except_msg:
+            logger.debug("Failed to write measurements to influxdb with ID {}. "
+                            "Retrying in 5 seconds.".format(unique_id))
+            time.sleep(5)
             try:
                 write_api.write(bucket=bucket, record=point)
+                logger.debug("Successfully wrote measurements to influxdb after 5-second wait.")
                 return 0
-            except Exception as except_msg:
-                logger.debug("Failed to write measurements to influxdb with ID {}. "
-                             "Retrying in 5 seconds.".format(unique_id))
-                time.sleep(5)
-                try:
-                    write_api.write(bucket=bucket, record=point)
-                    logger.debug("Successfully wrote measurements to influxdb after 5-second wait.")
-                    return 0
-                except:
-                    logger.debug(
-                        f"Failed to write measurement to influxdb (Device ID: {unique_id}): {except_msg}.")
-                    return 1
+            except:
+                logger.debug(
+                    f"Failed to write measurement to influxdb (Device ID: {unique_id}): {except_msg}.")
+                return 1
 
 
-def add_measurements_influxdb(unique_id, measurements, use_same_timestamp=True):
+def add_measurements_influxdb_flux(unique_id, measurements, use_same_timestamp=True, block=False):
     """
     Parse measurement data into list to be input into influxdb (flux edition, using influxdb_client)
     :param unique_id: Unique ID of device
@@ -110,44 +112,63 @@ def add_measurements_influxdb(unique_id, measurements, use_same_timestamp=True):
     bucket = f'{settings.measurement_db_dbname}/{settings.measurement_db_retention_policy}'
 
     if settings.measurement_db_version == '1':
-        token = f'{settings.measurement_db_user}:{settings.measurement_db_password}'
-        username = None
-        password = None
-    elif settings.measurement_db_version == '2':
-        token = None
-        username = settings.measurement_db_user
-        password = settings.measurement_db_password
-
-    with InfluxDBClient(
+        client = InfluxDBClient(
             url=influxdb_url,
-            token=token,
-            username=username,
-            password=password,
+            token=f'{settings.measurement_db_user}:{settings.measurement_db_password}',
             org='mycodo',
-            timeout=5000) as client:
-        with client.write_api() as write_api:
-            for each_channel, each_measurement in measurements.items():
-                if 'value' not in each_measurement or each_measurement['value'] is None:
-                    continue  # skip to next measurement to add
+            timeout=5000)
+    elif settings.measurement_db_version == '2':
+        client = InfluxDBClient(
+            url=influxdb_url,
+            username=settings.measurement_db_user,
+            password=settings.measurement_db_password,
+            org='mycodo',
+            timeout=5000)
+    else:
+        logger.error(f"Unknown Influxdb version: {settings.measurement_db_version}")
+        return
 
-                if use_same_timestamp:
-                    # influxdb will create the timestamp when the data is stored
-                    timestamp = None
-                else:
-                    # Use timestamp stored with each measurement
-                    timestamp = each_measurement['timestamp_utc']
+    with client.write_api() as write_api:
+        for each_channel, each_measurement in measurements.items():
+            if 'value' not in each_measurement or each_measurement['value'] is None:
+                continue  # skip to next measurement to add
 
-                point = Point(each_measurement['unit']).tag("device_id", unique_id)
+            if use_same_timestamp:
+                # influxdb will create the timestamp when the data is stored
+                timestamp = None
+            else:
+                # Use timestamp stored with each measurement
+                timestamp = each_measurement['timestamp_utc']
 
-                if each_measurement['measurement']:
-                    point = point.tag("measure", each_measurement['measurement'])
-                if each_channel is not None:
-                    point = point.tag("channel", each_channel)
-                if timestamp:
-                    point = point.time(timestamp)
+            point = Point(each_measurement['unit']).tag("device_id", unique_id)
 
-                point = point.field("value", each_measurement['value'])
-                write_api.write(bucket=bucket, record=point)
+            if each_measurement['measurement']:
+                point = point.tag("measure", each_measurement['measurement'])
+            if each_channel is not None:
+                point = point.tag("channel", each_channel)
+            if timestamp:
+                point = point.time(timestamp)
+
+            point = point.field("value", each_measurement['value'])
+            write_api.write(bucket=bucket, record=point)
+
+
+def add_measurements_influxdb(unique_id, measurements, use_same_timestamp=True, block=False):
+    """
+    Parse measurement data into list to be input into influxdb (threaded so returns fast)
+    :param unique_id: Unique ID of device
+    :param measurements: dict of measurements
+    :param use_same_timestamp: Allow influxdb to create the timestamp upon storage
+    :param block: wait until measurements are added before returning
+    :return:
+    """
+    if block:
+        add_measurements_influxdb_flux(unique_id, measurements, use_same_timestamp)
+    else:
+        write_db = threading.Thread(
+            target=add_measurements_influxdb_flux,
+            args=(unique_id, measurements, use_same_timestamp,))
+        write_db.start()
 
 
 def query_flux(unit, unique_id,
@@ -162,21 +183,22 @@ def query_flux(unit, unique_id,
     bucket = f'{settings.measurement_db_dbname}/{settings.measurement_db_retention_policy}'
 
     if settings.measurement_db_version == '1':
-        token = f'{settings.measurement_db_user}:{settings.measurement_db_password}'
-        username = None
-        password = None
+        client = InfluxDBClient(
+            url=influxdb_url,
+            token=f'{settings.measurement_db_user}:{settings.measurement_db_password}',
+            org='mycodo',
+            timeout=5000)
     elif settings.measurement_db_version == '2':
-        token = None
-        username = settings.measurement_db_user
-        password = settings.measurement_db_password
+        client = InfluxDBClient(
+            url=influxdb_url,
+            username=settings.measurement_db_user,
+            password=settings.measurement_db_password,
+            org='mycodo',
+            timeout=5000)
+    else:
+        logger.error(f"Unknown Influxdb version: {settings.measurement_db_version}")
+        return
 
-    client = InfluxDBClient(
-        url=influxdb_url,
-        token=token,
-        username=username,
-        password=password,
-        org='mycodo',
-        timeout=5000)
     query_api = client.query_api()
 
     query = f'from(bucket: \"{bucket}\")'
