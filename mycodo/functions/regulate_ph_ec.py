@@ -628,6 +628,10 @@ class CustomModule(AbstractFunction):
             "ml_ec_d": self.get_custom_option("ml_ec_d")
         }
 
+        # Reset totals
+        if self.total["sec_ph_raise"] is None:
+            self.reset_all_totals()
+
         # Set custom options
         custom_function = db_retrieve_table_daemon(
             CustomController, unique_id=self.unique_id)
