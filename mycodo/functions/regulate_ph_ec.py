@@ -895,7 +895,6 @@ class CustomModule(AbstractFunction):
             if self.email_notification:
                 if self.email_timers['notify_ec'] < time.time():
                     self.email_timers['notify_ec'] = time.time() + (self.email_timer_duration_hours * 60 * 60)
-                    message += msg
                     self.email(message)
 
         #
