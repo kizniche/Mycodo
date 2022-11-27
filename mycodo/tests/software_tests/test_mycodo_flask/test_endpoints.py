@@ -97,7 +97,8 @@ def test_routes_when_not_logged_in(testapp):
         'settings/users',
         'systemctl/restart',
         'systemctl/shutdown',
-        'usage',
+        'energy_usage_outputs',
+        'energy_usage_input_amp',
         'video_feed/0'
     ]
     for index, route in enumerate(routes):
@@ -870,7 +871,6 @@ def sees_navbar(testapp):
         'Note',
         'Output',
         'Energy Usage',
-        'Energy Usage Reports',
         'System Information',
         'Upgrade'
     ]
