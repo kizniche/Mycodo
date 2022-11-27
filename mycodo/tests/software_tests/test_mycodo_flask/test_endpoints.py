@@ -350,8 +350,8 @@ def test_routes_logged_in_as_admin(_, testapp):
         ('output', '<!-- Route: /output -->'),
         ('remote/setup', '<!-- Route: /remote/setup -->'),
         ('reset_password', '<!-- Route: /reset_password -->'),
-        ('usage', '<!-- Route: /usage -->'),
-        ('usage_reports', '<!-- Route: /usage_reports -->')
+        ('energy_usage_outputs', '<!-- Route: /energy_usage_outputs -->'),
+        ('energy_usage_input_amp', '<!-- Route: /energy_usage_input_amp -->')
     ]
 
     for index, route in enumerate(routes):
