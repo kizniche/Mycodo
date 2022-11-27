@@ -1006,7 +1006,10 @@ def page_usage():
     else:
         date_suffix = ['st', 'nd', 'rd'][day % 10 - 1]
 
-    display_order = csv_to_list_of_str(DisplayOrder.query.first().output)
+    # Generate the order to display Outputs
+    display_order = []
+    for each_output in Output.query.order_by(Output.position_y).all():
+        display_order.append(each_output.unique_id)
 
     if calculate_pass:
         start_string = form_energy_usage_mod.energy_usage_date_range.data.split(' - ')[0]

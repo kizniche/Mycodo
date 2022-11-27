@@ -603,11 +603,11 @@ class CustomModule(AbstractFunction):
             'volume_ml': 'ml'
         }
 
-        self.ph_type = 'sec'
-        self.ec_a_type = 'sec'
-        self.ec_b_type = 'sec'
-        self.ec_c_type = 'sec'
-        self.ec_d_type = 'sec'
+        self.ph_type = None
+        self.ec_a_type = None
+        self.ec_b_type = None
+        self.ec_c_type = None
+        self.ec_d_type = None
 
         self.list_doses = []
         self.ratio_letters = []
@@ -670,16 +670,11 @@ class CustomModule(AbstractFunction):
         for each_alter in list_alter:
             self.total[each_alter] = self.set_custom_option(each_alter, 0)
 
-        if self.output_ph_type == "volume_ml":
-            self.ph_type = 'vol'
-        if self.output_ec_a_type == "volume_ml":
-            self.ec_a_type = 'vol'
-        if self.output_ec_b_type == "volume_ml":
-            self.ec_b_type = 'vol'
-        if self.output_ec_c_type == "volume_ml":
-            self.ec_c_type = 'vol'
-        if self.output_ec_d_type == "volume_ml":
-            self.ec_d_type = 'vol'
+        self.ph_type = 'vol' if self.output_ph_type == "volume_ml" else 'sec'
+        self.ec_a_type = 'vol' if self.output_ec_a_type == "volume_ml" else 'sec'
+        self.ec_b_type = 'vol' if self.output_ec_b_type == "volume_ml" else 'sec'
+        self.ec_c_type = 'vol' if self.output_ec_c_type == "volume_ml" else 'sec'
+        self.ec_d_type = 'vol' if self.output_ec_d_type == "volume_ml" else 'sec'
 
         if "," in self.email_notification:
             self.email_notification = self.email_notification.split(",")

@@ -58,6 +58,7 @@ New Behavior: InfluxDB 1.x returned data as an epoch float value (e.g. 166722857
  - Fix digits not properly displaying on PID Controller Widget
  - Fix determining improper influxdb host in Docker
  - Fix flask and nginx logs appearing empty in Docker
+ - Fix Outputs displaying on Energy Usage Page
 
 ### Miscellaneous
 

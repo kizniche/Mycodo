@@ -201,8 +201,6 @@ def query_flux(unit, unique_id,
         logger.error(f"Unknown Influxdb version: {settings.measurement_db_version}")
         return
 
-    query_api = client.query_api()
-
     query = f'from(bucket: "{bucket}")'
 
     if past_sec:
@@ -227,15 +225,16 @@ def query_flux(unit, unique_id,
         query += " AND time = '{ts}'".format(ts=ts_str)
 
     if group_sec:
-        # TODO: Change to mean when issue is fixed
-        # Bug in influxdb/Flux v1.8.10 due to mean
-        # Error: panic: runtime error: invalid memory address or nil pointer dereference
-        # https://github.com/influxdata/influxdb/issues/21649
-        # https://github.com/influxdata/influxdb/pull/23520
         if settings.measurement_db_version == '1':
+            # TODO: Change median to mean when issue is fixed
+            # Bug in influxdb/Flux v1.8.10 due to mean
+            # Error: panic: runtime error: invalid memory address or nil pointer dereference
+            # https://github.com/influxdata/influxdb/issues/21649
+            # https://github.com/influxdata/influxdb/pull/23520
             query += f' |> aggregateWindow(every: {group_sec}s, fn: median)'
         elif settings.measurement_db_version == '2':
             query += f' |> aggregateWindow(every: {group_sec}s, fn: mean)'
+
     if limit:
         query += f' |> limit(n:{limit})'
 
@@ -252,25 +251,21 @@ def query_flux(unit, unique_id,
             query += ' |> count()'
         elif value == "SUM":
             query += ' |> sum(column: "_value")'
-
-        # TODO: Change to mean when issue is fixed
-        # Bug in influxdb/Flux v1.8.10 due to mean
-        # Error: panic: runtime error: invalid memory address or nil pointer dereference
-        # https://github.com/influxdata/influxdb/issues/21649
-        # https://github.com/influxdata/influxdb/pull/23520
         elif value == "MEAN":
             if settings.measurement_db_version == '1':
+                # TODO: Change median to mean when issue is fixed
+                # Bug in influxdb/Flux v1.8.10 due to mean
+                # Error: panic: runtime error: invalid memory address or nil pointer dereference
+                # https://github.com/influxdata/influxdb/issues/21649
+                # https://github.com/influxdata/influxdb/pull/23520
                 query += ' |> median()'
             elif settings.measurement_db_version == '2':
                 query += ' |> mean()'
 
-        else:
-            logger.error(f"query_flux(): Unknown value: '{value}'")
-            return 1
-
     logger.debug(f"query_flux() query: '{query}'")
 
-    tables = query_api.query(query)
+    tables = client.query_api().query(query)
+    client.close()
 
     return tables
 
@@ -278,7 +273,7 @@ def query_flux(unit, unique_id,
 def query_string(unit, unique_id,
                  value=None, measure=None, channel=None, ts_str=None,
                  start_str=None, end_str=None, past_sec=None, group_sec=None,
-                 limit=None, function=None):
+                 limit=None):
     """Generate influxdb query string."""
     ret_value = None
     settings = db_retrieve_table_daemon(Misc, entry='first')
