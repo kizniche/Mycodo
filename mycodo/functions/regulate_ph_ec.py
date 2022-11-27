@@ -630,7 +630,7 @@ class CustomModule(AbstractFunction):
 
         # Reset totals
         if self.total["sec_ph_raise"] is None:
-            self.reset_all_totals()
+            self.reset_all_totals({})
 
         # Set custom options
         custom_function = db_retrieve_table_daemon(
