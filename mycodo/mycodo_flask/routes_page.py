@@ -941,9 +941,9 @@ def page_logview():
                            log_output=log_output)
 
 
-@blueprint.route('/usage', methods=('GET', 'POST'))
+@blueprint.route('/energy_usage_input_amp', methods=('GET', 'POST'))
 @flask_login.login_required
-def page_usage():
+def page_energy_usage_input_amps():
     """Display output usage (duration and energy usage/cost)"""
     if not utils_general.user_has_permission('view_stats'):
         return redirect(url_for('routes_general.home'))
@@ -972,14 +972,12 @@ def page_usage():
             calculate_pass = True
 
         if not calculate_pass:
-            return redirect(url_for('routes_page.page_usage'))
+            return redirect(url_for('routes_page.page_energy_usage_input_amps'))
 
     energy_usage = EnergyUsage.query.all()
     input_dev = Input.query.all()
     function = CustomController.query.all()
     misc = Misc.query.first()
-    output = Output.query.all()
-    output_channel = OutputChannel.query.all()
 
     # Generate all measurement and units used
     dict_measurements = add_custom_measurements(Measurement.query.all())
@@ -990,26 +988,8 @@ def page_usage():
     choices_input = utils_general.choices_inputs(
         input_dev, dict_units, dict_measurements)
 
-    dict_outputs = parse_output_information()
-
-    custom_options_values_output_channels = parse_custom_option_values_output_channels_json(
-        output_channel, dict_controller=dict_outputs, key_name='custom_channel_options')
-
     energy_usage_stats, graph_info = return_energy_usage(
         energy_usage, DeviceMeasurements.query, Conversion.query)
-    output_stats = return_output_usage(
-        dict_outputs, misc, output, OutputChannel, custom_options_values_output_channels)
-
-    day = misc.output_usage_dayofmonth
-    if 4 <= day <= 20 or 24 <= day <= 30:
-        date_suffix = 'th'
-    else:
-        date_suffix = ['st', 'nd', 'rd'][day % 10 - 1]
-
-    # Generate the order to display Outputs
-    display_order = []
-    for each_output in Output.query.order_by(Output.position_y).all():
-        display_order.append(each_output.unique_id)
 
     if calculate_pass:
         start_string = form_energy_usage_mod.energy_usage_date_range.data.split(' - ')[0]
@@ -1035,42 +1015,62 @@ def page_usage():
     picker_start['default'] = datetime.datetime.now() - datetime.timedelta(hours=6)
     picker_start['default'] = picker_start['default'].strftime('%m/%d/%Y %H:%M')
 
-    return render_template('pages/usage.html',
+    return render_template('pages/energy_usage_input_amps.html',
                            calculate_usage=calculate_usage,
                            choices_function=choices_function,
                            choices_input=choices_input,
-                           custom_options_values_output_channels=custom_options_values_output_channels,
-                           date_suffix=date_suffix,
-                           dict_outputs=dict_outputs,
-                           display_order=display_order,
                            energy_usage=energy_usage,
                            energy_usage_stats=energy_usage_stats,
                            form_energy_usage_add=form_energy_usage_add,
                            form_energy_usage_mod=form_energy_usage_mod,
                            graph_info=graph_info,
                            misc=misc,
-                           output=output,
-                           output_stats=output_stats,
-                           output_types=output_types(),
                            picker_end=picker_end,
-                           picker_start=picker_start,
-                           table_output_channel=OutputChannel,
-                           timestamp=time.strftime("%c"))
+                           picker_start=picker_start)
 
 
-@blueprint.route('/usage_reports')
+@blueprint.route('/energy_usage_outputs', methods=('GET', 'POST'))
 @flask_login.login_required
-def page_usage_reports():
+def page_energy_usage_outputs():
     """Display output usage (duration and energy usage/cost)"""
     if not utils_general.user_has_permission('view_stats'):
         return redirect(url_for('routes_general.home'))
 
-    report_location = os.path.normpath(USAGE_REPORTS_PATH)
-    reports = [0, 0]
+    energy_usage = EnergyUsage.query.all()
+    misc = Misc.query.first()
+    output = Output.query.all()
+    output_channel = OutputChannel.query.all()
 
-    return render_template('pages/usage_reports.html',
-                           report_location=report_location,
-                           reports=reports)
+    dict_outputs = parse_output_information()
+
+    custom_options_values_output_channels = parse_custom_option_values_output_channels_json(
+        output_channel, dict_controller=dict_outputs, key_name='custom_channel_options')
+
+    output_stats = return_output_usage(
+        dict_outputs, misc, output, OutputChannel, custom_options_values_output_channels)
+
+    day = misc.output_usage_dayofmonth
+    if 4 <= day <= 20 or 24 <= day <= 30:
+        date_suffix = 'th'
+    else:
+        date_suffix = ['st', 'nd', 'rd'][day % 10 - 1]
+
+    # Generate the order to display Outputs
+    display_order = []
+    for each_output in Output.query.order_by(Output.position_y).all():
+        display_order.append(each_output.unique_id)
+
+    return render_template('pages/energy_usage_outputs.html',
+                           custom_options_values_output_channels=custom_options_values_output_channels,
+                           date_suffix=date_suffix,
+                           dict_outputs=dict_outputs,
+                           display_order=display_order,
+                           misc=misc,
+                           output=output,
+                           output_stats=output_stats,
+                           output_types=output_types(),
+                           table_output_channel=OutputChannel,
+                           timestamp=time.strftime("%c"))
 
 
 def dict_custom_colors():

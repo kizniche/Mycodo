@@ -1,8 +1,8 @@
 {% extends "layout.html" %}
-{% set active_page = "usage" %}
+{% set active_page = "energy_usage_inputs_amps" %}
 {% set help_page = ["https://kizniche.github.io/Mycodo/Energy-Usage/", _('Energy Usage')] %}
 
-{% block title %} - {{_('Energy Usage')}}{% endblock %}
+{% block title %} - {{_('Energy Usage')}} - ({{_('Amp Measure')}}){% endblock %}
 
 {% block head %}
   <script type="text/javascript" src="/static/js/moment.min.js"></script>
@@ -27,7 +27,11 @@
 <div class="container">
   {% include 'flash_messages.html' %}
 
-  <h4>{{_('Energy Usage')}} <a href="{{help_page[0]}}" target="_blank"><span style="font-size: 16px" class="fas fa-question-circle"></span></a></h4>
+  <h4>{{_('Energy Usage')}} ({{_('Amp Measure')}}) <a href="{{help_page[0]}}" target="_blank"><span style="font-size: 16px" class="fas fa-question-circle"></span></a></h4>
+  
+  <div style="clear: both; padding: 1em 0;"></div>
+
+  Energy usage calculated from an Input that measures Amps.
 
   <div style="clear: both; padding: 0.5em 0;"></div>
 
@@ -190,105 +194,6 @@
   <div style="clear: both; padding-bottom: 0.75em;"></div>
 
   {% endfor %}
-
-  <div style="clear: both; padding: 1em 0;"></div>
-
-  Energy usage calculated from output duration. Generated: {{timestamp}}
-
-  <div style="clear: both; padding: 0.5em 0;"></div>
-
-  <div class="table-responsive">
-    <table class="table">
-      <tr>
-        <td>{{_('ID')}}</td>
-        <td>{{_('CH')}}</td>
-        <td>{{_('Name')}}</td>
-        <td></td>
-        <td>{{_('Past Day')}}</td>
-        <td>{{_('Past Week')}}</td>
-        <td>{{_('Past Month')}}</td>
-        <td>{{_('Past Month')}}<br/>({{_('From')}} {{misc.output_usage_dayofmonth}}{{date_suffix}})</td>
-        <td>{{_('Past Year')}}</td>
-      </tr>
-      {% if display_order -%}
-        {%- for order in display_order -%}
-          {%- for each_output in output if each_output.unique_id == order and
-                                           each_output.output_type in output_types['on_off'] -%}
-            {% for each_channel in table_output_channel.query.filter(table_output_channel.output_id == each_output.unique_id).all() %}
-              {% for key, value in output_stats.items() if key == each_output.unique_id -%}
-              <tr>
-                <td>{{each_output.id}}</td>
-                <td>{{each_channel.channel}}</td>
-                <td>{{each_output.name}}
-                {%- if 'name' in custom_options_values_output_channels[each_output.unique_id][each_channel.channel] and
-                      custom_options_values_output_channels[each_output.unique_id][each_channel.channel]['name'] -%}
-                  {{': ' + custom_options_values_output_channels[each_output.unique_id][each_channel.channel]['name']}}
-                {%- elif 'name' in dict_outputs[each_output.output_type]['channels_dict'][each_channel.channel] and
-                         dict_outputs[each_output.output_type]['channels_dict'][each_channel.channel]['name'] -%}
-                  {{': ' + dict_outputs[each_output.output_type]['channels_dict'][each_channel.channel]['name']}}
-                {%- endif -%}</td>
-                <td>{{_('Duration')}} ({{_('hours')}})</td>
-                <td>{{value[each_channel.unique_id]['1d']['hours_on']|round(2)}}</td>
-                <td>{{value[each_channel.unique_id]['1w']['hours_on']|round(2)}}</td>
-                <td>{{value[each_channel.unique_id]['1m']['hours_on']|round(2)}}</td>
-                <td>{{value[each_channel.unique_id]['1m_date']['hours_on']|round(2)}}</td>
-                <td>{{value[each_channel.unique_id]['1y']['hours_on']|round(2)}}</td>
-              </tr>
-              <tr>
-                <td colspan="3"></td>
-                <td>kWh (@{{misc.output_usage_volts}} V)</td>
-                <td>{{value[each_channel.unique_id]['1d']['kwh']|round(3)}}</td>
-                <td>{{value[each_channel.unique_id]['1w']['kwh']|round(3)}}</td>
-                <td>{{value[each_channel.unique_id]['1m']['kwh']|round(3)}}</td>
-                <td>{{value[each_channel.unique_id]['1m_date']['kwh']|round(3)}}</td>
-                <td>{{value[each_channel.unique_id]['1y']['kwh']|round(3)}}</td>
-              </tr>
-              <tr>
-                <td colspan="3"></td>
-                <td>Cost ({{misc.output_usage_currency}}, {{misc.output_usage_cost}}/kWh)</td>
-                <td>{{value[each_channel.unique_id]['1d']['cost']|round(2)}}</td>
-                <td>{{value[each_channel.unique_id]['1w']['cost']|round(2)}}</td>
-                <td>{{value[each_channel.unique_id]['1m']['cost']|round(2)}}</td>
-                <td>{{value[each_channel.unique_id]['1m_date']['cost']|round(2)}}</td>
-                <td>{{value[each_channel.unique_id]['1y']['cost']|round(2)}}</td>
-              </tr>
-              <tr>
-                <td colspan="8"></td>
-              </tr>
-              {% endfor %}
-            {%- endfor -%}
-          {%- endfor -%}
-        {% endfor %}
-      {%- endif -%}
-      <tr>
-        <td colspan="3">{{_('Total')}}</td>
-        <td>{{_('Duration')}} ({{_('hours')}})</td>
-        <td>{{output_stats['total_duration']['1d']|round(2)}}</td>
-        <td>{{output_stats['total_duration']['1w']|round(2)}}</td>
-        <td>{{output_stats['total_duration']['1m']|round(2)}}</td>
-        <td>{{output_stats['total_duration']['1m_date']|round(2)}}</td>
-        <td>{{output_stats['total_duration']['1y']|round(2)}}</td>
-      </tr>
-      <tr>
-        <td colspan="3"></td>
-        <td>kWh (@{{misc.output_usage_volts}} V)</td>
-        <td>{{output_stats['total_kwh']['1d']|round(3)}}</td>
-        <td>{{output_stats['total_kwh']['1w']|round(3)}}</td>
-        <td>{{output_stats['total_kwh']['1m']|round(3)}}</td>
-        <td>{{output_stats['total_kwh']['1m_date']|round(3)}}</td>
-        <td>{{output_stats['total_kwh']['1y']|round(3)}}</td>
-      </tr>
-      <tr>
-        <td colspan="3"></td>
-        <td>{{_('Cost')}} ({{misc.output_usage_currency}}, at {{misc.output_usage_currency}}{{misc.output_usage_cost}}/kWh)</td>
-        <td>{{output_stats['total_cost']['1d']|round(2)}}</td>
-        <td>{{output_stats['total_cost']['1w']|round(2)}}</td>
-        <td>{{output_stats['total_cost']['1m']|round(2)}}</td>
-        <td>{{output_stats['total_cost']['1m_date']|round(2)}}</td>
-        <td>{{output_stats['total_cost']['1y']|round(2)}}</td>
-      </tr>
-    </table>
-  </div>
 
   <div style="clear: both; padding: 1em 0;"></div>
 

@@ -4,36 +4,20 @@ import logging
 import os
 
 import flask_login
-from flask import flash
-from flask import jsonify
-from flask import redirect
-from flask import render_template
-from flask import request
-from flask import url_for
+from flask import flash, jsonify, redirect, render_template, request, url_for
 from flask.blueprints import Blueprint
 
-from mycodo.config import PATH_ACTIONS_CUSTOM
-from mycodo.config import PATH_FUNCTIONS_CUSTOM
-from mycodo.config import PATH_INPUTS_CUSTOM
-from mycodo.config import PATH_OUTPUTS_CUSTOM
-from mycodo.config import PATH_WIDGETS_CUSTOM
-from mycodo.config import THEMES
-from mycodo.databases.models import Conversion
-from mycodo.databases.models import Measurement
-from mycodo.databases.models import Misc
-from mycodo.databases.models import Role
-from mycodo.databases.models import SMTP
-from mycodo.databases.models import Unit
-from mycodo.databases.models import User
+from mycodo.config import (PATH_ACTIONS_CUSTOM, PATH_FUNCTIONS_CUSTOM,
+                           PATH_INPUTS_CUSTOM, PATH_OUTPUTS_CUSTOM,
+                           PATH_WIDGETS_CUSTOM, THEMES, USAGE_REPORTS_PATH)
+from mycodo.databases.models import (SMTP, Conversion, Measurement, Misc, Role,
+                                     Unit, User)
 from mycodo.mycodo_flask.forms import forms_settings
 from mycodo.mycodo_flask.routes_static import inject_variables
-from mycodo.mycodo_flask.utils import utils_general
-from mycodo.mycodo_flask.utils import utils_settings
+from mycodo.mycodo_flask.utils import utils_general, utils_settings
 from mycodo.utils.modules import load_module_from_file
-from mycodo.utils.system_pi import add_custom_measurements
-from mycodo.utils.system_pi import add_custom_units
-from mycodo.utils.system_pi import base64_encode_bytes
-from mycodo.utils.system_pi import cmd_output
+from mycodo.utils.system_pi import (add_custom_measurements, add_custom_units,
+                                    base64_encode_bytes, cmd_output)
 
 logger = logging.getLogger('mycodo.mycodo_flask.settings')
 
@@ -114,8 +98,9 @@ def settings_general():
     form_settings_general = forms_settings.SettingsGeneral()
 
     return render_template('settings/general.html',
+                           form_settings_general=form_settings_general,
                            misc=misc,
-                           form_settings_general=form_settings_general)
+                           report_path=os.path.normpath(USAGE_REPORTS_PATH))
 
 
 @blueprint.route('/settings/function', methods=('GET', 'POST'))

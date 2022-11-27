@@ -250,7 +250,16 @@ def query_flux(unit, unique_id,
         elif value == "COUNT":
             query += ' |> count()'
         elif value == "SUM":
-            query += ' |> sum(column: "_value")'
+            if settings.measurement_db_version == '1':
+                # TODO: Change when issue is fixed
+                # Bug in influxdb/Flux v1.8.10 due to mean
+                # Error: panic: runtime error: invalid memory address or nil pointer dereference
+                # https://github.com/influxdata/influxdb/issues/21649
+                # https://github.com/influxdata/influxdb/pull/23520
+                logger.error("SUM cannot be used with influxdb 1.8.10 without causing an error. "
+                             "Returning all measurements for period to manually sum.")
+            elif settings.measurement_db_version == '2':
+                query += ' |> sum(column: "_value")'
         elif value == "MEAN":
             if settings.measurement_db_version == '1':
                 # TODO: Change median to mean when issue is fixed
@@ -487,9 +496,15 @@ def output_sec_on(output_id, past_seconds, output_channel=0):
     if data:
         settings = db_retrieve_table_daemon(Misc, entry='first')
         if settings.measurement_db_name == 'influxdb':
-            for table in data:
-                for row in table.records:
-                    sec_recorded_on = row.values['_value']
+            if settings.measurement_db_version == '1':
+                # TODO: remove when influxdb 1.8.10 issue is fixed
+                for table in data:
+                    for row in table.records:
+                        sec_recorded_on += row.values['_value']
+            elif settings.measurement_db_version == '2':
+                for table in data:
+                    for row in table.records:
+                        sec_recorded_on = row.values['_value']
 
     sec_currently_on = 0
     if output_time_on:
@@ -543,11 +558,20 @@ def sum_past_seconds(unique_id, unit, channel, past_seconds, measure=None):
         past_sec=past_seconds)
 
     if data:
+        total_seconds = 0
         settings = db_retrieve_table_daemon(Misc, entry='first')
         if settings.measurement_db_name == 'influxdb':
-            for table in data:
-                for row in table.records:
-                    return row.values['_value']
+            if settings.measurement_db_version == '1':
+                # TODO: remove when influxdb 1.8.10 issue is fixed
+                for table in data:
+                    for row in table.records:
+                        total_seconds += row.values['_value']
+                return total_seconds
+            elif settings.measurement_db_version == '2':
+                for table in data:
+                    for row in table.records:
+                        total_seconds = row.values['_value']
+        return total_seconds
 
 
 def influx_time_str_to_milliseconds(timestamp):
