@@ -27,7 +27,6 @@ def get_influxdb_host(settings):
     ]
     for host in list_hosts:
         try:
-            print(f"Trying host: {host}")
             if requests.get(f"http://{host}:8086/ping").status_code == 204:
                 return host
         except Exception as err:
