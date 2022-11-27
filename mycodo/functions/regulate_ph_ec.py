@@ -628,9 +628,13 @@ class CustomModule(AbstractFunction):
             "ml_ec_d": self.get_custom_option("ml_ec_d")
         }
 
+        self.logger.info(f"DEBUG00: {self.total}")
+
         # Reset totals
         if self.total["sec_ph_raise"] is None:
             self.reset_all_totals({})
+        
+        self.logger.info(f"DEBUG01: {self.total}")
 
         # Set custom options
         custom_function = db_retrieve_table_daemon(
@@ -704,60 +708,80 @@ class CustomModule(AbstractFunction):
             self.timer_loop += self.period
 
         message = ""
+        enabled_ph = None
+        enabled_ec = None
+        malfunction_ph = False
+        malfunction_ec = False
+        reguate_ph = False
+        regulate_ec = False
 
         # Get last measurement for pH
-        last_measurement_ph = self.get_last_measurement(
-            self.select_measurement_ph_device_id,
-            self.select_measurement_ph_measurement_id,
-            max_age=self.measurement_max_age_ph)
+        if self.select_measurement_ph_device_id and self.select_measurement_ph_measurement_id:
+            enabled_ph = True
+            last_measurement_ph = self.get_last_measurement(
+                self.select_measurement_ph_device_id,
+                self.select_measurement_ph_measurement_id,
+                max_age=self.measurement_max_age_ph)
 
-        if last_measurement_ph:
-            self.logger.debug(
-                "Most recent timestamp and measurement for "
-                f"pH: {last_measurement_ph[0]}, {last_measurement_ph[1]}")
-        else:
-            self.logger.error(
-                "Could not find a measurement in the database for "
-                f"Measurement A device ID {self.select_measurement_ph_device_id} and measurement "
-                f"ID {self.select_measurement_ph_measurement_id} in the past {self.measurement_max_age_ph} seconds")
+            if last_measurement_ph:
+                self.logger.debug(
+                    "Most recent timestamp and measurement for "
+                    f"pH: {last_measurement_ph[0]}, {last_measurement_ph[1]}")
+            else:
+                self.logger.error(
+                    "Could not find a measurement in the database for "
+                    f"pH with device ID {self.select_measurement_ph_device_id} and measurement "
+                    f"ID {self.select_measurement_ph_measurement_id} in the past {self.measurement_max_age_ph} seconds")
 
         # Get last measurement for EC
-        last_measurement_ec = self.get_last_measurement(
-            self.select_measurement_ec_device_id,
-            self.select_measurement_ec_measurement_id,
-            max_age=self.measurement_max_age_ec)
+        if self.select_measurement_ec_device_id and self.select_measurement_ec_measurement_id:
+            enabled_ec = True
+            last_measurement_ec = self.get_last_measurement(
+                self.select_measurement_ec_device_id,
+                self.select_measurement_ec_measurement_id,
+                max_age=self.measurement_max_age_ec)
 
-        if last_measurement_ec:
-            self.logger.debug(
-                "Most recent timestamp and measurement for "
-                f"EC: {last_measurement_ec[0]}, {last_measurement_ec[1]}")
-        else:
-            self.logger.error(
-                "Could not find a measurement in the database for "
-                f"Measurement A device ID {self.select_measurement_ec_device_id} and measurement "
-                f"ID {self.select_measurement_ec_measurement_id} in the past {self.measurement_max_age_ec} seconds")
+            if last_measurement_ec:
+                self.logger.debug(
+                    "Most recent timestamp and measurement for "
+                    f"EC: {last_measurement_ec[0]}, {last_measurement_ec[1]}")
+            else:
+                self.logger.error(
+                    "Could not find a measurement in the database for "
+                    f"EC with device ID {self.select_measurement_ec_device_id} and measurement "
+                    f"ID {self.select_measurement_ec_measurement_id} in the past {self.measurement_max_age_ec} seconds")
 
-        if (None in [last_measurement_ec, last_measurement_ph] or
-                None in [last_measurement_ec[1], last_measurement_ph[1]]):
-            if not last_measurement_ec or last_measurement_ec[1] is None:
+        if ((enabled_ph and None in [last_measurement_ec, last_measurement_ph]) or
+                (enabled_ec and None in [last_measurement_ec[1], last_measurement_ph[1]])):
+            
+            if enabled_ec and (not last_measurement_ec or last_measurement_ec[1] is None):
+                malfunction_ec = True
                 message += "\nWarning: No EC Measurement! Check sensor!"
-            if not last_measurement_ph or last_measurement_ph[1] is None:
+            if enabled_ph and (not last_measurement_ph or last_measurement_ph[1] is None):
+                malfunction_ph = True
                 message += "\nWarning: No pH Measurement! Check sensor!"
 
             if self.email_notification:
                 if self.email_timers['notify_none'] < time.time():
                     self.email_timers['notify_none'] = time.time() + (self.email_timer_duration_hours * 60 * 60)
                     self.email(message)
-            return
+            
+            if ((enabled_ph and enabled_ec and malfunction_ph and malfunction_ec) or
+                    (enabled_ph and not enabled_ec and malfunction_ph) or
+                    (enabled_ec and not enabled_ph and malfunction_ec)):
+                return
 
-        self.logger.debug(f"Measurements: EC: {last_measurement_ec[1]}, pH: {last_measurement_ph[1]}")
+        if enabled_ph and not malfunction_ph:
+            regulate_ph = True
+        if enabled_ec and not malfunction_ec:
+            regulate_ec = True
 
         #
         # First check if pH is dangerously low or high, and adjust if it is
         #
 
         # pH dangerously low, add base (pH up)
-        if last_measurement_ph[1] < self.danger_range_ph_low:
+        if reguate_ph and last_measurement_ph[1] < self.danger_range_ph_low:
             message += f"pH is dangerously low: {last_measurement_ph[1]:.2f}. Should be > {self.danger_range_ph_low:.2f}. " \
                        f"Dispensing {self.output_ph_amount} {self.output_units[self.output_ph_type]} base"
             self.logger.debug(message)
@@ -783,7 +807,7 @@ class CustomModule(AbstractFunction):
                     self.email(message)
 
         # pH dangerously high, add acid (pH down)
-        elif last_measurement_ph[1] > self.danger_range_ph_high:
+        elif reguate_ph and last_measurement_ph[1] > self.danger_range_ph_high:
             message += f"pH is dangerously high: {last_measurement_ph[1]:.2f}. Should be < {self.danger_range_ph_high:.2f}. " \
                        f"Dispensing {self.output_ph_amount} {self.output_units[self.output_ph_type]} acid"
             self.logger.debug(message)
@@ -813,7 +837,7 @@ class CustomModule(AbstractFunction):
         #
 
         # EC too low, add nutrient
-        elif last_measurement_ec[1] < self.range_ec[0]:
+        elif regulate_ec and last_measurement_ec[1] < self.range_ec[0]:
             self.logger.debug(
                 f"EC: {last_measurement_ec[1]:.2f}. Should be > {self.range_ec[0]:.2f}. "
                 f"Dosing {':'.join(self.ratio_numbers)} ({':'.join(map(str, self.ratio_letters))}): {', '.join(self.list_doses)})")
@@ -883,7 +907,7 @@ class CustomModule(AbstractFunction):
                 output_on_off.start()
 
         # EC too high, add water
-        elif last_measurement_ec[1] > self.range_ec[1]:
+        elif regulate_ec and last_measurement_ec[1] > self.range_ec[1]:
             message += f"EC: {last_measurement_ec[1]:.2f}. Should be < {self.range_ec[1]:.2f}. Add water to dilute."
             self.logger.debug(message)
 
@@ -897,7 +921,7 @@ class CustomModule(AbstractFunction):
         #
 
         # pH too low, add base (pH up)
-        elif last_measurement_ph[1] < self.range_ph[0]:
+        elif reguate_ph and last_measurement_ph[1] < self.range_ph[0]:
             self.logger.debug(
                 f"pH is {last_measurement_ph[1]:.2f}. Should be > {self.range_ph[0]:.2f}. "
                 f"Dispensing {self.output_ph_amount} {self.output_units[self.output_ph_type]} base")
@@ -918,7 +942,7 @@ class CustomModule(AbstractFunction):
             output_on_off.start()
 
         # pH too high, add acid (pH down)
-        elif last_measurement_ph[1] > self.range_ph[1]:
+        elif reguate_ph and last_measurement_ph[1] > self.range_ph[1]:
             self.logger.debug(
                 f"pH is {last_measurement_ph[1]:.2f}. Should be < {self.range_ph[1]:.2f}. "
                 f"Dispensing {self.output_ph_amount} {self.output_units[self.output_ph_type]} acid")
