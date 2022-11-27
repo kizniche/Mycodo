@@ -628,13 +628,9 @@ class CustomModule(AbstractFunction):
             "ml_ec_d": self.get_custom_option("ml_ec_d")
         }
 
-        self.logger.info(f"DEBUG00: {self.total}")
-
         # Reset totals
         if self.total["sec_ph_raise"] is None:
             self.reset_all_totals({})
-        
-        self.logger.info(f"DEBUG01: {self.total}")
 
         # Set custom options
         custom_function = db_retrieve_table_daemon(
@@ -712,7 +708,7 @@ class CustomModule(AbstractFunction):
         enabled_ec = None
         malfunction_ph = False
         malfunction_ec = False
-        reguate_ph = False
+        regulate_ph = False
         regulate_ec = False
 
         # Get last measurement for pH
@@ -728,6 +724,7 @@ class CustomModule(AbstractFunction):
                     "Most recent timestamp and measurement for "
                     f"pH: {last_measurement_ph[0]}, {last_measurement_ph[1]}")
             else:
+                malfunction_ph = True
                 self.logger.error(
                     "Could not find a measurement in the database for "
                     f"pH with device ID {self.select_measurement_ph_device_id} and measurement "
@@ -746,17 +743,16 @@ class CustomModule(AbstractFunction):
                     "Most recent timestamp and measurement for "
                     f"EC: {last_measurement_ec[0]}, {last_measurement_ec[1]}")
             else:
+                malfunction_ec = True
                 self.logger.error(
                     "Could not find a measurement in the database for "
                     f"EC with device ID {self.select_measurement_ec_device_id} and measurement "
                     f"ID {self.select_measurement_ec_measurement_id} in the past {self.measurement_max_age_ec} seconds")
 
         if enabled_ph or enabled_ec:
-            if enabled_ec and (not last_measurement_ec or last_measurement_ec[1] is None):
-                malfunction_ec = True
+            if malfunction_ec:
                 message += "\nWarning: No EC Measurement!"
-            if enabled_ph and (not last_measurement_ph or last_measurement_ph[1] is None):
-                malfunction_ph = True
+            if malfunction_ph:
                 message += "\nWarning: No pH Measurement!"
 
             if (malfunction_ec or malfunction_ph) and self.email_notification:
@@ -773,8 +769,10 @@ class CustomModule(AbstractFunction):
         # First check if pH is dangerously low or high, and adjust if it is
         #
 
+        self.logger.info(f"TEST00: {regulate_ph}, {last_measurement_ph[1]}, {self.danger_range_ph_low}")
+
         # pH dangerously low, add base (pH up)
-        if reguate_ph and last_measurement_ph[1] < self.danger_range_ph_low:
+        if regulate_ph and last_measurement_ph[1] < self.danger_range_ph_low:
             message += f"pH is dangerously low: {last_measurement_ph[1]:.2f}. Should be > {self.danger_range_ph_low:.2f}. " \
                        f"Dispensing {self.output_ph_amount} {self.output_units[self.output_ph_type]} base"
             self.logger.debug(message)
@@ -800,7 +798,7 @@ class CustomModule(AbstractFunction):
                     self.email(message)
 
         # pH dangerously high, add acid (pH down)
-        elif reguate_ph and last_measurement_ph[1] > self.danger_range_ph_high:
+        elif regulate_ph and last_measurement_ph[1] > self.danger_range_ph_high:
             message += f"pH is dangerously high: {last_measurement_ph[1]:.2f}. Should be < {self.danger_range_ph_high:.2f}. " \
                        f"Dispensing {self.output_ph_amount} {self.output_units[self.output_ph_type]} acid"
             self.logger.debug(message)
@@ -914,7 +912,7 @@ class CustomModule(AbstractFunction):
         #
 
         # pH too low, add base (pH up)
-        elif reguate_ph and last_measurement_ph[1] < self.range_ph[0]:
+        elif regulate_ph and last_measurement_ph[1] < self.range_ph[0]:
             self.logger.debug(
                 f"pH is {last_measurement_ph[1]:.2f}. Should be > {self.range_ph[0]:.2f}. "
                 f"Dispensing {self.output_ph_amount} {self.output_units[self.output_ph_type]} base")
@@ -935,7 +933,7 @@ class CustomModule(AbstractFunction):
             output_on_off.start()
 
         # pH too high, add acid (pH down)
-        elif reguate_ph and last_measurement_ph[1] > self.range_ph[1]:
+        elif regulate_ph and last_measurement_ph[1] > self.range_ph[1]:
             self.logger.debug(
                 f"pH is {last_measurement_ph[1]:.2f}. Should be < {self.range_ph[1]:.2f}. "
                 f"Dispensing {self.output_ph_amount} {self.output_units[self.output_ph_type]} acid")
