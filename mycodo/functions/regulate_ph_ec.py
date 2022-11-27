@@ -751,25 +751,18 @@ class CustomModule(AbstractFunction):
                     f"EC with device ID {self.select_measurement_ec_device_id} and measurement "
                     f"ID {self.select_measurement_ec_measurement_id} in the past {self.measurement_max_age_ec} seconds")
 
-        if ((enabled_ph and None in [last_measurement_ec, last_measurement_ph]) or
-                (enabled_ec and None in [last_measurement_ec[1], last_measurement_ph[1]])):
-            
+        if enabled_ph or enabled_ec:
             if enabled_ec and (not last_measurement_ec or last_measurement_ec[1] is None):
                 malfunction_ec = True
-                message += "\nWarning: No EC Measurement! Check sensor!"
+                message += "\nWarning: No EC Measurement!"
             if enabled_ph and (not last_measurement_ph or last_measurement_ph[1] is None):
                 malfunction_ph = True
-                message += "\nWarning: No pH Measurement! Check sensor!"
+                message += "\nWarning: No pH Measurement!"
 
-            if self.email_notification:
+            if (malfunction_ec or malfunction_ph) and self.email_notification:
                 if self.email_timers['notify_none'] < time.time():
                     self.email_timers['notify_none'] = time.time() + (self.email_timer_duration_hours * 60 * 60)
                     self.email(message)
-            
-            if ((enabled_ph and enabled_ec and malfunction_ph and malfunction_ec) or
-                    (enabled_ph and not enabled_ec and malfunction_ph) or
-                    (enabled_ec and not enabled_ph and malfunction_ec)):
-                return
 
         if enabled_ph and not malfunction_ph:
             regulate_ph = True
