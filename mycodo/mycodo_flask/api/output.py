@@ -236,7 +236,7 @@ class Outputs(Resource):
                     unique_id, output_channel=channel, output_type='pwm', amount=duty_cycle)
             elif volume is not None:
                 return_ = control.output_on(
-                    unique_id, output_channel=channel, output_type='vol', amount=duty_cycle)
+                    unique_id, output_channel=channel, output_type='vol', amount=volume)
             elif state is not None:
                 return_ = control.output_on_off(
                     unique_id, state, output_channel=channel)
