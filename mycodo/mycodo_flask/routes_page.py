@@ -14,82 +14,44 @@ from collections import OrderedDict
 from importlib import import_module
 
 import flask_login
-from flask import current_app
-from flask import flash
-from flask import jsonify
-from flask import redirect
-from flask import render_template
-from flask import request
-from flask import send_file
-from flask import url_for
+from flask import (current_app, flash, jsonify, redirect, render_template,
+                   request, send_file, url_for)
 from flask.blueprints import Blueprint
 from flask_babel import gettext
 from sqlalchemy import and_
 
-from mycodo.config import DOCKER_CONTAINER
-from mycodo.config import ALEMBIC_VERSION
-from mycodo.config import BACKUP_LOG_FILE
-from mycodo.config import CAMERA_INFO
-from mycodo.config import DAEMON_LOG_FILE
-from mycodo.config import DAEMON_PID_FILE
-from mycodo.config import DEPENDENCY_LOG_FILE
-from mycodo.config import FRONTEND_PID_FILE
-from mycodo.config import HTTP_ACCESS_LOG_FILE
-from mycodo.config import HTTP_ERROR_LOG_FILE
-from mycodo.config import KEEPUP_LOG_FILE
-from mycodo.config import LOGIN_LOG_FILE
-from mycodo.config import MYCODO_VERSION
-from mycodo.config import RESTORE_LOG_FILE
-from mycodo.config import THEMES_DARK
-from mycodo.config import UPGRADE_LOG_FILE
-from mycodo.config import USAGE_REPORTS_PATH
+from mycodo.config import (ALEMBIC_VERSION, BACKUP_LOG_FILE, CAMERA_INFO,
+                           DAEMON_LOG_FILE, DAEMON_PID_FILE,
+                           DEPENDENCY_LOG_FILE, DOCKER_CONTAINER,
+                           FRONTEND_PID_FILE, HTTP_ACCESS_LOG_FILE,
+                           HTTP_ERROR_LOG_FILE, KEEPUP_LOG_FILE,
+                           LOGIN_LOG_FILE, MYCODO_VERSION, RESTORE_LOG_FILE,
+                           THEMES_DARK, UPGRADE_LOG_FILE, USAGE_REPORTS_PATH)
 from mycodo.config_devices_units import MEASUREMENTS
-from mycodo.databases.models import AlembicVersion
-from mycodo.databases.models import Camera
-from mycodo.databases.models import Conversion
-from mycodo.databases.models import CustomController
-from mycodo.databases.models import DeviceMeasurements
-from mycodo.databases.models import DisplayOrder
-from mycodo.databases.models import EnergyUsage
-from mycodo.databases.models import Input
-from mycodo.databases.models import Measurement
-from mycodo.databases.models import Misc
-from mycodo.databases.models import NoteTags
-from mycodo.databases.models import Notes
-from mycodo.databases.models import Output
-from mycodo.databases.models import OutputChannel
-from mycodo.databases.models import PID
-from mycodo.databases.models import Unit
-from mycodo.databases.models import Widget
+from mycodo.databases.models import (PID, AlembicVersion, Camera, Conversion,
+                                     CustomController, DeviceMeasurements,
+                                     DisplayOrder, EnergyUsage, Input,
+                                     Measurement, Misc, Notes, NoteTags,
+                                     Output, OutputChannel, Unit, Widget)
 from mycodo.devices.camera import camera_record
-from mycodo.mycodo_client import DaemonControl
-from mycodo.mycodo_client import daemon_active
+from mycodo.mycodo_client import DaemonControl, daemon_active
 from mycodo.mycodo_flask.extensions import db
-from mycodo.mycodo_flask.forms import forms_camera
-from mycodo.mycodo_flask.forms import forms_misc
-from mycodo.mycodo_flask.forms import forms_notes
+from mycodo.mycodo_flask.forms import forms_camera, forms_misc, forms_notes
 from mycodo.mycodo_flask.routes_static import inject_variables
-from mycodo.mycodo_flask.utils import utils_camera
-from mycodo.mycodo_flask.utils import utils_dashboard
-from mycodo.mycodo_flask.utils import utils_export
-from mycodo.mycodo_flask.utils import utils_general
-from mycodo.mycodo_flask.utils import utils_misc
-from mycodo.mycodo_flask.utils import utils_notes
+from mycodo.mycodo_flask.utils import (utils_camera, utils_dashboard,
+                                       utils_export, utils_general, utils_misc,
+                                       utils_notes)
 from mycodo.mycodo_flask.utils.utils_general import return_dependencies
 from mycodo.utils.functions import parse_function_information
-from mycodo.utils.inputs import list_analog_to_digital_converters
-from mycodo.utils.inputs import parse_input_information
-from mycodo.utils.outputs import output_types
-from mycodo.utils.outputs import parse_output_information
-from mycodo.utils.system_pi import add_custom_measurements
-from mycodo.utils.system_pi import add_custom_units
-from mycodo.utils.system_pi import csv_to_list_of_str
-from mycodo.utils.system_pi import parse_custom_option_values
-from mycodo.utils.system_pi import parse_custom_option_values_output_channels_json
-from mycodo.utils.system_pi import return_measurement_info
-from mycodo.utils.tools import calc_energy_usage
-from mycodo.utils.tools import return_energy_usage
-from mycodo.utils.tools import return_output_usage
+from mycodo.utils.inputs import (list_analog_to_digital_converters,
+                                 parse_input_information)
+from mycodo.utils.outputs import output_types, parse_output_information
+from mycodo.utils.system_pi import (
+    add_custom_measurements, add_custom_units, csv_to_list_of_str,
+    parse_custom_option_values,
+    parse_custom_option_values_output_channels_json, return_measurement_info)
+from mycodo.utils.tools import (calc_energy_usage, return_energy_usage,
+                                return_output_usage)
 
 logger = logging.getLogger('mycodo.mycodo_flask.routes_page')
 
@@ -108,8 +70,11 @@ def inject_dictionary():
 @blueprint.context_processor
 def inject_functions():
     def epoch_to_time_string(epoch):
-        return datetime.datetime.fromtimestamp(epoch).strftime(
-            "%Y-%m-%d %H:%M:%S")
+        try:
+            return datetime.datetime.fromtimestamp(epoch).strftime(
+                "%Y-%m-%d %H:%M:%S")
+        except:
+            return "EPOCH ERROR"
 
     def get_note_tag_from_unique_id(tag_unique_id):
         tag = NoteTags.query.filter(NoteTags.unique_id == tag_unique_id).first()
@@ -183,7 +148,9 @@ def page_camera():
         return redirect(url_for('routes_general.home'))
 
     form_camera = forms_camera.Camera()
+
     camera = Camera.query.all()
+    misc = Misc.query.first()
     output = Output.query.all()
     output_channel = OutputChannel.query.all()
 
@@ -237,8 +204,9 @@ def page_camera():
             now = time.time()
             mod_camera.timelapse_started = True
             mod_camera.timelapse_start_time = now
-            if form_camera.timelapse_runtime_sec.data:
-                mod_camera.timelapse_end_time = now + float(form_camera.timelapse_runtime_sec.data)
+            timelapse_runtime_sec = float(form_camera.timelapse_runtime_sec.data)
+            if form_camera.timelapse_runtime_sec.data and timelapse_runtime_sec < 315360000:
+                mod_camera.timelapse_end_time = now + timelapse_runtime_sec
             else:
                 mod_camera.timelapse_end_time = now + 315360000
             mod_camera.timelapse_interval = form_camera.timelapse_interval.data
@@ -308,6 +276,7 @@ def page_camera():
                            latest_img_tl=latest_img_tl,
                            latest_img_tl_ts=latest_img_tl_ts,
                            latest_img_tl_size=latest_img_tl_size,
+                           misc=misc,
                            opencv_devices=opencv_devices,
                            output=output,
                            pi_camera_enabled=pi_camera_enabled,
