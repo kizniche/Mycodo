@@ -769,8 +769,6 @@ class CustomModule(AbstractFunction):
         # First check if pH is dangerously low or high, and adjust if it is
         #
 
-        self.logger.info(f"TEST00: {regulate_ph}, {last_measurement_ph[1]}, {self.danger_range_ph_low}")
-
         # pH dangerously low, add base (pH up)
         if regulate_ph and last_measurement_ph[1] < self.danger_range_ph_low:
             message += f"pH is dangerously low: {last_measurement_ph[1]:.2f}. Should be > {self.danger_range_ph_low:.2f}. " \
@@ -1043,13 +1041,18 @@ class CustomModule(AbstractFunction):
         return "Success"
 
     def function_status(self):
-        str_ratio = "(Error: No EC Pumps Enabled!)"
+        str_ratio = "(no EC dosing enabled)"
         if self.ratio_numbers and self.ratio_letters:
             str_ratio = f"at {':'.join(map(str, self.ratio_numbers))} ({':'.join(self.ratio_letters)})"
         return_str = {
-            'string_status': f"Regulating"
-                             f"<br>pH: {self.range_ph[0]:.2f} - {self.range_ph[1]:.2f} at {self.output_ph_amount:.2f} {self.output_units[self.output_ph_type]}"
+            'string_status': f"Regulation"
+                             f"<br>pH: {self.range_ph[0]:.2f} - {self.range_ph[1]:.2f}"
+                             f"<br>pH dose solutions at {self.output_ph_amount:.2f} {self.output_units[self.output_ph_type]}"
                              f"<br>EC: {self.range_ec[0]:.2f} - {self.range_ec[1]:.2f} {str_ratio}"
+                             f"<br>EC dose solution A: {self.output_ec_a_amount:.2f} {self.output_units[self.output_ec_a_type]}"
+                             f"<br>EC dose solution B: {self.output_ec_b_amount:.2f} {self.output_units[self.output_ec_b_type]}"
+                             f"<br>EC dose solution C: {self.output_ec_c_amount:.2f} {self.output_units[self.output_ec_c_type]}"
+                             f"<br>EC dose solution D: {self.output_ec_d_amount:.2f} {self.output_units[self.output_ec_d_type]}"
                              f"<br> <br>Totals"
                              f"<br>pH Raise: {self.total['sec_ph_raise']:.2f} sec, {self.total['ml_ph_raise']:.2f} ml"
                              f"<br>pH Lower: {self.total['sec_ph_lower']:.2f} sec, {self.total['ml_ph_lower']:.2f} ml"

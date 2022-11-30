@@ -66,20 +66,26 @@
   }
 
   function popup_response(data) {
+    {% if not misc.hide_alert_warning %}
     if ('warning' in data.data.messages && data.data.messages.warning.length !== 0) {
       toastr['warning']('Warning: ' + data.data.messages.warning.join(", "));
     }
+    {% endif %}
+    {% if not misc.hide_alert_info %}
     if ('info' in data.data.messages && data.data.messages.info.length !== 0) {
       toastr['info']('Info: ' + data.data.messages.info.join(", "));
     }
+    {% endif %}
+    {% if not misc.hide_alert_success %}
     if ('success' in data.data.messages && data.data.messages.success.length !== 0) {
       toastr['success']('Success: ' + data.data.messages.success.join(", "));
     }
+    {% endif %}
   }
 
   $("#form_dependency_install").submit(function(e) {
     e.preventDefault();
-    toastr['info']('Command sent. Please wait...');
+    {% if not misc.hide_alert_info %}toastr['info']('Command sent. Please wait...');{% endif %}
     $.ajax({
       type: "POST",
       url: '/admin/dependency_install/' + $('#dependency_unmet').val(),

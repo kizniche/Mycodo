@@ -59,6 +59,8 @@ New Behavior: InfluxDB 1.x returned data as an epoch float value (e.g. 166722857
  - Fix determining improper influxdb host in Docker
  - Fix flask and nginx logs appearing empty in Docker
  - Fix Outputs displaying on Energy Usage Page
+ - Fix API Output POST when using a volume ([#1245](https://github.com/kizniche/Mycodo/pull/1245))
+ - Fix hiding Warning/Info/Success toast messages
 
 ### Miscellaneous
 
