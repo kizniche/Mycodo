@@ -68,6 +68,7 @@ def inject_dictionary():
 
 
 @blueprint.context_processor
+@flask_login.login_required
 def inject_functions():
     def epoch_to_time_string(epoch):
         try:
@@ -84,8 +85,11 @@ def inject_functions():
             return 'TAG ERROR'
 
     def utc_to_local_time(utc_dt):
-        utc_timestamp = calendar.timegm(utc_dt.timetuple())
-        return str(datetime.datetime.fromtimestamp(utc_timestamp))
+        try:
+            utc_timestamp = calendar.timegm(utc_dt.timetuple())
+            return str(datetime.datetime.fromtimestamp(utc_timestamp))
+        except:
+            return "TIMESTAMP ERROR"
 
     return dict(epoch_to_time_string=epoch_to_time_string,
                 get_note_tag_from_unique_id=get_note_tag_from_unique_id,

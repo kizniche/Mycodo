@@ -62,6 +62,7 @@ New Behavior: InfluxDB 1.x returned data as an epoch float value (e.g. 166722857
  - Fix API Output POST when using a volume ([#1245](https://github.com/kizniche/Mycodo/pull/1245))
  - Fix hiding Warning/Info/Success toast messages
  - Fix timelapse error from entering too long duration ([#1246](https://github.com/kizniche/Mycodo/issues/1246))
+ - Fix Display Functions not properly changing line sets
 
 ### Miscellaneous
 

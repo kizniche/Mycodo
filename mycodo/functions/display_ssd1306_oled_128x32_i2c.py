@@ -21,7 +21,6 @@
 #
 #  Contact at kylegabriel.com
 #
-import calendar
 import datetime
 import json
 import math
@@ -32,17 +31,16 @@ from flask_babel import lazy_gettext
 
 from mycodo.config import MYCODO_VERSION
 from mycodo.config_translations import TRANSLATIONS
-from mycodo.databases.models import CustomController
-from mycodo.databases.models import FunctionChannel
+from mycodo.databases.models import CustomController, FunctionChannel
 from mycodo.functions.base_function import AbstractFunction
-from mycodo.mycodo_flask.utils.utils_general import custom_channel_options_return_json
-from mycodo.mycodo_flask.utils.utils_general import delete_entry_with_id
+from mycodo.mycodo_flask.utils.utils_general import (
+    custom_channel_options_return_json, delete_entry_with_id)
+from mycodo.utils.constraints_pass import (
+    constraints_pass_positive_or_zero_value, constraints_pass_positive_value)
 from mycodo.utils.database import db_retrieve_table_daemon
 from mycodo.utils.functions import parse_function_information
 from mycodo.utils.lcd import format_measurement_line
 from mycodo.utils.system_pi import cmd_output
-from mycodo.utils.constraints_pass import constraints_pass_positive_or_zero_value
-from mycodo.utils.constraints_pass import constraints_pass_positive_value
 
 # Set to how many lines the LCD has
 lcd_lines = 4
@@ -131,9 +129,13 @@ def execute_at_modification(
                 new_channel.channel = index
 
                 messages["error"], custom_options = custom_channel_options_return_json(
-                    messages["error"], dict_controllers, request_form,
-                    mod_function.unique_id, index,
-                    device=mod_function.device, use_defaults=False)
+                    messages["error"],
+                    dict_controllers,
+                    request_form,
+                    mod_function.unique_id,
+                    index,
+                    device=mod_function.device,
+                    use_defaults=True)
                 custom_options_dict = json.loads(custom_options)
                 custom_options_dict["name"] = new_channel.name
                 new_channel.custom_options = json.dumps(custom_options_dict)

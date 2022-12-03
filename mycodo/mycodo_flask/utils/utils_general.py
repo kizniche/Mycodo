@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+import copy
 import importlib
 import json
 import logging
@@ -8,46 +9,28 @@ from datetime import datetime
 
 import flask_login
 import sqlalchemy
-from flask import flash
-from flask import redirect
-from flask import request
+from flask import flash, redirect, request
 from flask_babel import gettext
 from importlib_metadata import version
 from sqlalchemy import and_
 
-from mycodo.config import CAMERA_INFO
-from mycodo.config import DEPENDENCIES_GENERAL
-from mycodo.config import FUNCTION_INFO
-from mycodo.config import METHOD_INFO
-from mycodo.config import PATH_CAMERAS
-from mycodo.config_devices_units import MEASUREMENTS
-from mycodo.config_devices_units import UNITS
+from mycodo.config import (CAMERA_INFO, DEPENDENCIES_GENERAL, FUNCTION_INFO,
+                           METHOD_INFO, PATH_CAMERAS)
+from mycodo.config_devices_units import MEASUREMENTS, UNITS
 from mycodo.config_translations import TRANSLATIONS
-from mycodo.databases.models import Camera
-from mycodo.databases.models import Conditional
-from mycodo.databases.models import Conversion
-from mycodo.databases.models import CustomController
-from mycodo.databases.models import Dashboard
-from mycodo.databases.models import DeviceMeasurements
-from mycodo.databases.models import Input
-from mycodo.databases.models import Output
-from mycodo.databases.models import PID
-from mycodo.databases.models import Role
-from mycodo.databases.models import Trigger
-from mycodo.databases.models import User
-from mycodo.databases.models import Widget
+from mycodo.databases.models import (PID, Camera, Conditional, Conversion,
+                                     CustomController, Dashboard,
+                                     DeviceMeasurements, Input, Output, Role,
+                                     Trigger, User, Widget)
 from mycodo.mycodo_client import DaemonControl
 from mycodo.mycodo_flask.extensions import db
 from mycodo.utils.actions import parse_action_information
 from mycodo.utils.functions import parse_function_information
 from mycodo.utils.inputs import parse_input_information
 from mycodo.utils.outputs import parse_output_information
-from mycodo.utils.system_pi import add_custom_measurements
-from mycodo.utils.system_pi import add_custom_units
-from mycodo.utils.system_pi import dpkg_package_exists
-from mycodo.utils.system_pi import is_int
-from mycodo.utils.system_pi import return_measurement_info
-from mycodo.utils.system_pi import str_is_float
+from mycodo.utils.system_pi import (add_custom_measurements, add_custom_units,
+                                    dpkg_package_exists, is_int,
+                                    return_measurement_info, str_is_float)
 from mycodo.utils.widgets import parse_widget_information
 
 logger = logging.getLogger(__name__)
@@ -184,7 +167,7 @@ def custom_options_return_json(
         custom_options=None):
     # Custom options
     if custom_options:
-        dict_options_return = custom_options
+        dict_options_return = copy.deepcopy(custom_options)
     else:
         dict_options_return = {}
 
