@@ -176,6 +176,10 @@ class AbstractInput(AbstractBaseController):
     def start_input(self):
         """Not used yet."""
         self.running = True
+    
+    def pre_stop(self):
+        """Executed when the controller is instructed to stop."""
+        pass
 
     def stop_input(self):
         """Called when Input is deactivated."""
