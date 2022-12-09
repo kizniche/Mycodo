@@ -22,7 +22,7 @@ for each_channel in range(8):
         'unit': 's'
     }
     channels_dict[each_channel] = {
-        'name': f'Channel {each_channel + 1}',
+        'name': f'Relay {each_channel + 1}',
         'types': ['on_off'],
         'measurements': [each_channel]
     }
@@ -180,10 +180,10 @@ class OutputModule(AbstractOutput):
 
         try:
             if state == 'on':
-                self.device.set(channel, self.options_channels['on_state'][output_channel])
+                self.device.set(output_channel, self.options_channels['on_state'][output_channel])
                 self.output_states[output_channel] = bool(self.options_channels['on_state'][output_channel])
             elif state == 'off':
-                self.device.set(channel, not self.options_channels['on_state'][output_channel])
+                self.device.set(output_channel, not self.options_channels['on_state'][output_channel])
                 self.output_states[output_channel] = bool(not self.options_channels['on_state'][output_channel])
 
             msg = "success"
