@@ -2,6 +2,8 @@
 #
 # on_off_sequent_8_relay_hat.py - Output for the 8-Relay HAT by Sequent Microsystems
 #
+# Code from https://github.com/SequentMicrosystems/8relind-rpi
+#
 from collections import OrderedDict
 
 from flask_babel import lazy_gettext
@@ -28,7 +30,7 @@ for each_channel in range(8):
 # Output information
 OUTPUT_INFORMATION = {
     'output_name_unique': 'SEQUENT_HAT_8_RELAY',
-    'output_name': "{}: 8-Relay HAT for Raspberry Pi".format(lazy_gettext('On/Off')),
+    'output_name': "{}: Sequent Microsystems 8-Relay HAT for Raspberry Pi".format(lazy_gettext('On/Off')),
     'output_manufacturer': 'Sequent Microsystems',
     'output_library': 'smbus2',
     'measurements_dict': measurements_dict,
@@ -38,6 +40,7 @@ OUTPUT_INFORMATION = {
     'url_manufacturer': 'https://sequentmicrosystems.com',
     'url_datasheet': 'https://cdn.shopify.com/s/files/1/0534/4392/0067/files/8-RELAYS-UsersGuide.pdf?v=1642820552',
     'url_product_purchase': 'https://sequentmicrosystems.com/products/8-relays-stackable-card-for-raspberry-pi',
+    'url_code': 'https://github.com/SequentMicrosystems/8relind-rpi',
 
     'message': 'Controls the 8 relays of the 8-relay HAT made by Sequent Microsystems. 8 of these boards can be used simultaneously, allowing 64 relays to be controlled.',
 
@@ -139,9 +142,10 @@ class OutputModule(AbstractOutput):
             self.logger.debug(f"I2C: Address: {self.output.i2c_location}, Bus: {self.output.i2c_bus}")
             if self.output.i2c_location:
                 self.device = RELAYS(smbus2, self.output.i2c_bus, int(str(self.output.i2c_location), 16), self.logger)
+                self.device.check()
                 self.output_setup = True
         except:
-            self.logger.exception("Could not set up output")
+            self.logger.error("Could not set up output. Check the I2C bus and address are correct.")
             return
 
         for channel in channels_dict:
@@ -209,6 +213,12 @@ class OutputModule(AbstractOutput):
 
 
 class RELAYS:
+    """
+    A Class to support the Sequent Microsystems 8-Relay HAT for the Raspberry Pi
+    I2C addresses range: 0x20 - 0x27
+    Relay number range: 0 - 7
+    Adapted from the code at https://github.com/SequentMicrosystems/8relind-rpi
+    """
     RELAY8_INPORT_REG_ADD = 0x00
     RELAY8_OUTPORT_REG_ADD = 0x01
     RELAY8_POLINV_REG_ADD = 0x02
@@ -218,7 +228,7 @@ class RELAYS:
     def __init__(self, smbus, bus, address, logger):
         self.address = address
         self.logger = logger
-        self.bus = self.smbus.SMBus(bus)
+        self.bus = smbus.SMBus(bus)
 
     def __relayToIO(self, relay):
         val = 0
@@ -234,7 +244,7 @@ class RELAYS:
                 val = val + (1 << i)
         return val
 
-    def __check(self):
+    def check(self):
         cfg = self.bus.read_byte_data(self.address, self.RELAY8_CFG_REG_ADD)
         if cfg != 0:
             self.bus.write_byte_data(self.address, self.RELAY8_CFG_REG_ADD, 0)
@@ -246,11 +256,13 @@ class RELAYS:
             raise ValueError('Invalid relay number!')
         if relay > 7:
             raise ValueError('Invalid relay number!')
+
         try:
-            oldVal = self.__check()
+            oldVal = self.check()
         except Exception as e:
             self.bus.close()
             raise ValueError('8-relay card not detected!')
+
         oldVal = self.__IOToRelay(oldVal)
         try:
             if value == 0:
@@ -273,9 +285,9 @@ class RELAYS:
             raise ValueError('Invalid relay value!')
 
         try:
-            oldVal = self.__check()
+            oldVal = self.check()
         except Exception as e:
-                self.bus.close()
+            self.bus.close()
             raise ValueError('8-relay card not detected!')
         value = self.__relayToIO(value)
         try:
@@ -290,8 +302,9 @@ class RELAYS:
             raise ValueError('Invalid relay number!')
         if relay > 7:
             raise ValueError('Invalid relay number!')
+
         try:
-            val = self.__check()
+            val = self.check()
         except Exception as e:
             self.bus.close()
             raise ValueError('8-relay card not detected!')
@@ -306,7 +319,7 @@ class RELAYS:
 
     def get_all(self):
         try:
-            val = self.__check()
+            val = self.check()
         except Exception as e:
             self.bus.close()
             raise ValueError('8-relay card not detected!')
