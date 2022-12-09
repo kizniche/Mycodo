@@ -180,10 +180,10 @@ class OutputModule(AbstractOutput):
 
         try:
             if state == 'on':
-                self.device.set(output_channel, self.options_channels['on_state'][output_channel])
+                self.device.set(output_channel + 1, self.options_channels['on_state'][output_channel])
                 self.output_states[output_channel] = bool(self.options_channels['on_state'][output_channel])
             elif state == 'off':
-                self.device.set(output_channel, not self.options_channels['on_state'][output_channel])
+                self.device.set(output_channel + 1, not self.options_channels['on_state'][output_channel])
                 self.output_states[output_channel] = bool(not self.options_channels['on_state'][output_channel])
 
             msg = "success"
@@ -230,14 +230,14 @@ class RELAYS:
         self.logger = logger
         self.bus = smbus.SMBus(bus)
 
-    def __relayToIO(self, relay):
+    def relayToIO(self, relay):
         val = 0
         for i in range(0, 8):
             if (relay & (1 << i)) != 0:
                 val = val + self.relayMaskRemap[i]
         return val
 
-    def __IOToRelay(self, iov):
+    def IOToRelay(self, iov):
         val = 0
         for i in range(0, 8):
             if (iov & self.relayMaskRemap[i]) != 0:
@@ -252,9 +252,9 @@ class RELAYS:
         return self.bus.read_byte_data(self.address, self.RELAY8_INPORT_REG_ADD)
 
     def set(self, relay, value):
-        if relay < 0:
+        if relay < 1:
             raise ValueError('Invalid relay number!')
-        if relay > 7:
+        if relay > 8:
             raise ValueError('Invalid relay number!')
 
         try:
@@ -263,15 +263,15 @@ class RELAYS:
             self.bus.close()
             raise ValueError('8-relay card not detected!')
 
-        oldVal = self.__IOToRelay(oldVal)
+        oldVal = self.IOToRelay(oldVal)
         try:
             if value == 0:
-                oldVal = oldVal & (~(1 << relay))
-                oldVal = self.__relayToIO(oldVal)
+                oldVal = oldVal & (~(1 << (relay - 1)))
+                oldVal = self.relayToIO(oldVal)
                 self.bus.write_byte_data(self.address, self.RELAY8_OUTPORT_REG_ADD, oldVal)
             else:
-                oldVal = oldVal | (1 << relay)
-                oldVal = self.__relayToIO(oldVal)
+                oldVal = oldVal | (1 << (relay - 1))
+                oldVal = self.relayToIO(oldVal)
                 self.bus.write_byte_data(self.address, self.RELAY8_OUTPORT_REG_ADD, oldVal)
         except Exception as e:
             self.bus.close()
@@ -289,7 +289,7 @@ class RELAYS:
         except Exception as e:
             self.bus.close()
             raise ValueError('8-relay card not detected!')
-        value = self.__relayToIO(value)
+        value = self.relayToIO(value)
         try:
             self.bus.write_byte_data(self.address, self.RELAY8_OUTPORT_REG_ADD, value)
         except Exception as e:
@@ -298,9 +298,9 @@ class RELAYS:
         self.bus.close()
 
     def get(self, relay):
-        if relay < 0:
+        if relay < 1:
             raise ValueError('Invalid relay number!')
-        if relay > 7:
+        if relay > 8:
             raise ValueError('Invalid relay number!')
 
         try:
@@ -309,8 +309,8 @@ class RELAYS:
             self.bus.close()
             raise ValueError('8-relay card not detected!')
 
-        val = self.__IOToRelay(val)
-        val = val & (1 << relay)
+        val = self.IOToRelay(val)
+        val = val & (1 << (relay - 1))
         self.bus.close()
         if val == 0:
             return 0
@@ -324,6 +324,6 @@ class RELAYS:
             self.bus.close()
             raise ValueError('8-relay card not detected!')
 
-        val = self.__IOToRelay(val)
+        val = self.IOToRelay(val)
         self.bus.close()
         return val
