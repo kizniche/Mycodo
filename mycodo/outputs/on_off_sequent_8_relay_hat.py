@@ -56,7 +56,7 @@ OUTPUT_INFORMATION = {
     ],
 
     'interfaces': ['I2C'],
-    'i2c_location': '0x20',
+    'i2c_location': ['0x20'],
     'i2c_address_editable': False,
 
     'custom_options': [
