@@ -56,7 +56,7 @@ OUTPUT_INFORMATION = {
     ],
 
     'interfaces': ['I2C'],
-    'i2c_location': ['0x20'],
+    'i2c_location': ['0x27'],
     'i2c_address_editable': False,
 
     'custom_options': [
@@ -149,6 +149,9 @@ class OutputModule(AbstractOutput):
 
         self.stack_number = None
 
+        self.setup_custom_options(
+            OUTPUT_INFORMATION['custom_options'], output)
+
         output_channels = db_retrieve_table_daemon(
             OutputChannel).filter(OutputChannel.output_id == output.unique_id).all()
         self.options_channels = self.setup_custom_channel_options_json(
@@ -160,9 +163,9 @@ class OutputModule(AbstractOutput):
         self.setup_output_variables(OUTPUT_INFORMATION)
 
         try:
-            self.logger.debug(f"I2C: Address: {self.output.i2c_location}, Bus: {self.output.i2c_bus}")
+            self.logger.debug(f"I2C Bus: {self.output.i2c_bus}")
             if self.output.i2c_location:
-                self.device = RELAYS(smbus2, self.output.i2c_bus, int(str(self.output.i2c_location), 16), self.logger)
+                self.device = RELAYS(smbus2, self.output.i2c_bus, self.logger)
                 self.output_setup = True
         except:
             self.logger.exception("Could not set up output. Check the I2C bus and address are correct.")
@@ -241,14 +244,14 @@ class RELAYS:
     Adapted from the code at https://github.com/SequentMicrosystems/8relind-rpi
     """
     DEVICE_ADDRESS = 0x38  # 7 bit address (will be left shifted to add the read write bit)
+    ALTERNATE_DEVICE_ADDRESS = 0x20  # 7 bit address (will be left shifted to add the read write bit)
     RELAY8_INPORT_REG_ADD = 0x00
     RELAY8_OUTPORT_REG_ADD = 0x01
     RELAY8_POLINV_REG_ADD = 0x02
     RELAY8_CFG_REG_ADD = 0x03
     relayMaskRemap = [0x01, 0x04, 0x40, 0x10, 0x20, 0x80, 0x08, 0x02]
 
-    def __init__(self, smbus, bus, address, logger):
-        self.address = address
+    def __init__(self, smbus, bus, logger):
         self.logger = logger
         self.bus = smbus.SMBus(bus)
 
@@ -286,7 +289,7 @@ class RELAYS:
         try:
             oldVal = self.check(self.bus, hwAdd)
         except Exception as e:
-            hwAdd = self.address + stack
+            hwAdd = self.ALTERNATE_DEVICE_ADDRESS + stack
             try:
                 oldVal = self.check(self.bus, hwAdd)
             except Exception as e:
@@ -320,7 +323,7 @@ class RELAYS:
         try:
             oldVal = self.check(self.bus, hwAdd)
         except Exception as e:
-            hwAdd = self.address + stack
+            hwAdd = self.ALTERNATE_DEVICE_ADDRESS + stack
             try:
                 oldVal = self.check(self.bus, hwAdd)
             except Exception as e:
@@ -347,7 +350,7 @@ class RELAYS:
         try:
             val = self.check(self.bus, hwAdd)
         except Exception as e:
-            hwAdd = self.address + stack
+            hwAdd = self.ALTERNATE_DEVICE_ADDRESS + stack
             try:
                 val = self.check(self.bus, hwAdd)
             except Exception as e:
@@ -371,7 +374,7 @@ class RELAYS:
         try:
             val = self.check(self.bus, hwAdd)
         except Exception as e:
-            hwAdd = self.address + stack
+            hwAdd = self.ALTERNATE_DEVICE_ADDRESS + stack
             try:
                 val = self.check(self.bus, hwAdd)
             except Exception as e:
