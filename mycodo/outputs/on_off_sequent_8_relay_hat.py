@@ -56,9 +56,28 @@ OUTPUT_INFORMATION = {
     ],
 
     'interfaces': ['I2C'],
-    'i2c_location': ['0x20', '0x21', '0x22', '0x23', '0x24', '0x25', '0x26', '0x27'],
+    'i2c_location': '0x20',
     'i2c_address_editable': False,
-    'i2c_address_default': '0x20',
+
+    'custom_options': [
+        {
+            'id': 'stack_number',
+            'type': 'select',
+            'default_value': 0,
+            'options_select': [
+                (0, 'Board 1'),
+                (1, 'Board 2'),
+                (2, 'Board 3'),
+                (3, 'Board 4'),
+                (4, 'Board 5'),
+                (5, 'Board 6'),
+                (6, 'Board 7'),
+                (7, 'Board 8'),
+            ],
+            'name': 'Board Stack Number',
+            'phrase': 'Select the board stack number when multiple boards are used'
+        }
+    ],
 
     'custom_channel_options': [
         {
@@ -128,6 +147,8 @@ class OutputModule(AbstractOutput):
 
         self.device = None
 
+        self.stack_number = None
+
         output_channels = db_retrieve_table_daemon(
             OutputChannel).filter(OutputChannel.output_id == output.unique_id).all()
         self.options_channels = self.setup_custom_channel_options_json(
@@ -142,10 +163,9 @@ class OutputModule(AbstractOutput):
             self.logger.debug(f"I2C: Address: {self.output.i2c_location}, Bus: {self.output.i2c_bus}")
             if self.output.i2c_location:
                 self.device = RELAYS(smbus2, self.output.i2c_bus, int(str(self.output.i2c_location), 16), self.logger)
-                self.device.check()
                 self.output_setup = True
         except:
-            self.logger.error("Could not set up output. Check the I2C bus and address are correct.")
+            self.logger.exception("Could not set up output. Check the I2C bus and address are correct.")
             return
 
         for channel in channels_dict:
@@ -180,10 +200,10 @@ class OutputModule(AbstractOutput):
 
         try:
             if state == 'on':
-                self.device.set(output_channel + 1, self.options_channels['on_state'][output_channel])
+                self.device.set(self.stack_number, output_channel + 1, self.options_channels['on_state'][output_channel])
                 self.output_states[output_channel] = bool(self.options_channels['on_state'][output_channel])
             elif state == 'off':
-                self.device.set(output_channel + 1, not self.options_channels['on_state'][output_channel])
+                self.device.set(self.stack_number, output_channel + 1, not self.options_channels['on_state'][output_channel])
                 self.output_states[output_channel] = bool(not self.options_channels['on_state'][output_channel])
 
             msg = "success"
@@ -215,10 +235,12 @@ class OutputModule(AbstractOutput):
 class RELAYS:
     """
     A Class to support the Sequent Microsystems 8-Relay HAT for the Raspberry Pi
-    I2C addresses range: 0x20 - 0x27
+    I2C addresses: 0x20
+    Board stack: 0 - 7
     Relay number range: 0 - 7
     Adapted from the code at https://github.com/SequentMicrosystems/8relind-rpi
     """
+    DEVICE_ADDRESS = 0x38  # 7 bit address (will be left shifted to add the read write bit)
     RELAY8_INPORT_REG_ADD = 0x00
     RELAY8_OUTPORT_REG_ADD = 0x01
     RELAY8_POLINV_REG_ADD = 0x02
@@ -244,70 +266,93 @@ class RELAYS:
                 val = val + (1 << i)
         return val
 
-    def check(self):
-        cfg = self.bus.read_byte_data(self.address, self.RELAY8_CFG_REG_ADD)
+    def check(self, bus, add):
+        cfg = self.bus.read_byte_data(add, self.RELAY8_CFG_REG_ADD)
         if cfg != 0:
-            self.bus.write_byte_data(self.address, self.RELAY8_CFG_REG_ADD, 0)
-            self.bus.write_byte_data(self.address, self.RELAY8_OUTPORT_REG_ADD, 0)
-        return self.bus.read_byte_data(self.address, self.RELAY8_INPORT_REG_ADD)
+            self.bus.write_byte_data(add, self.RELAY8_CFG_REG_ADD, 0)
+            self.bus.write_byte_data(add, self.RELAY8_OUTPORT_REG_ADD, 0)
+        return self.bus.read_byte_data(add, self.RELAY8_INPORT_REG_ADD)
 
-    def set(self, relay, value):
+    def set(self, stack, relay, value):
+        if stack < 0 or stack > 7:
+            raise ValueError('Invalid stack level!')
+        stack = 0x07 ^ stack
         if relay < 1:
             raise ValueError('Invalid relay number!')
         if relay > 8:
             raise ValueError('Invalid relay number!')
 
+        hwAdd = self.DEVICE_ADDRESS + stack
         try:
-            oldVal = self.check()
+            oldVal = self.check(self.bus, hwAdd)
         except Exception as e:
-            self.bus.close()
-            raise ValueError('8-relay card not detected!')
-
+            hwAdd = self.address + stack
+            try:
+                oldVal = self.check(self.bus, hwAdd)
+            except Exception as e:
+                self.bus.close()
+                raise ValueError('8-relay card not detected!')
         oldVal = self.IOToRelay(oldVal)
         try:
             if value == 0:
                 oldVal = oldVal & (~(1 << (relay - 1)))
                 oldVal = self.relayToIO(oldVal)
-                self.bus.write_byte_data(self.address, self.RELAY8_OUTPORT_REG_ADD, oldVal)
+                self.bus.write_byte_data(hwAdd, self.RELAY8_OUTPORT_REG_ADD, oldVal)
             else:
                 oldVal = oldVal | (1 << (relay - 1))
                 oldVal = self.relayToIO(oldVal)
-                self.bus.write_byte_data(self.address, self.RELAY8_OUTPORT_REG_ADD, oldVal)
+                self.bus.write_byte_data(hwAdd, self.RELAY8_OUTPORT_REG_ADD, oldVal)
         except Exception as e:
             self.bus.close()
             raise ValueError('Fail to write relay state value!')
         self.bus.close()
 
-    def set_all(self, value):
+    def set_all(self, stack, value):
+        if stack < 0 or stack > 7:
+            raise ValueError('Invalid stack level!')
+        stack = 0x07 ^ stack
         if value > 255:
             raise ValueError('Invalid relay value!')
         if value < 0:
             raise ValueError('Invalid relay value!')
 
+        hwAdd = self.DEVICE_ADDRESS + stack
         try:
-            oldVal = self.check()
+            oldVal = self.check(self.bus, hwAdd)
         except Exception as e:
-            self.bus.close()
-            raise ValueError('8-relay card not detected!')
+            hwAdd = self.address + stack
+            try:
+                oldVal = self.check(self.bus, hwAdd)
+            except Exception as e:
+                self.bus.close()
+                raise ValueError('8-relay card not detected!')
         value = self.relayToIO(value)
         try:
-            self.bus.write_byte_data(self.address, self.RELAY8_OUTPORT_REG_ADD, value)
+            self.bus.write_byte_data(hwAdd, self.RELAY8_OUTPORT_REG_ADD, value)
         except Exception as e:
             self.bus.close()
             raise ValueError('Fail to write relay state value!')
         self.bus.close()
 
-    def get(self, relay):
+    def get(self, stack, relay):
+        if stack < 0 or stack > 7:
+            raise ValueError('Invalid stack level!')
+        stack = 0x07 ^ stack
         if relay < 1:
             raise ValueError('Invalid relay number!')
         if relay > 8:
             raise ValueError('Invalid relay number!')
 
+        hwAdd = self.DEVICE_ADDRESS + stack
         try:
-            val = self.check()
+            val = self.check(self.bus, hwAdd)
         except Exception as e:
-            self.bus.close()
-            raise ValueError('8-relay card not detected!')
+            hwAdd = self.address + stack
+            try:
+                val = self.check(self.bus, hwAdd)
+            except Exception as e:
+                self.bus.close()
+                raise ValueError('8-relay card not detected!')
 
         val = self.IOToRelay(val)
         val = val & (1 << (relay - 1))
@@ -317,12 +362,21 @@ class RELAYS:
         else:
             return 1
 
-    def get_all(self):
+    def get_all(self, stack):
+        if stack < 0 or stack > 7:
+            raise ValueError('Invalid stack level!')
+        stack = 0x07 ^ stack
+
+        hwAdd = self.DEVICE_ADDRESS + stack
         try:
-            val = self.check()
+            val = self.check(self.bus, hwAdd)
         except Exception as e:
-            self.bus.close()
-            raise ValueError('8-relay card not detected!')
+            hwAdd = self.address + stack
+            try:
+                val = self.check(self.bus, hwAdd)
+            except Exception as e:
+                self.bus.close()
+                raise ValueError('8-relay card not detected!')
 
         val = self.IOToRelay(val)
         self.bus.close()
