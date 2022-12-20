@@ -1,6 +1,7 @@
 # coding=utf-8
 import csv
 import datetime
+import json
 import logging
 import os
 import subprocess
@@ -17,7 +18,7 @@ from sqlalchemy import and_
 
 from mycodo.config import (DOCKER_CONTAINER, INSTALL_DIRECTORY, LOG_PATH,
                            PATH_CAMERAS, PATH_NOTE_ATTACHMENTS)
-from mycodo.databases.models import (PID, Camera, Conversion,
+from mycodo.databases.models import (PID, Camera, Conversion, CustomController,
                                      DeviceMeasurements, Input, Misc, Notes,
                                      NoteTags, Output, OutputChannel)
 from mycodo.mycodo_client import DaemonControl
@@ -140,40 +141,86 @@ def send_note_attachment(filename):
             logger.exception("Send note attachment")
 
 
-@blueprint.route('/camera/<camera_unique_id>/<img_type>/<filename>')
+@blueprint.route('/camera/<unique_id>/<img_type>/<filename>')
 @flask_login.login_required
-def camera_img_return_path(camera_unique_id, img_type, filename):
+def camera_img_return_path(unique_id, img_type, filename):
     """Return an image from stills or time-lapses."""
-    camera = Camera.query.filter(Camera.unique_id == camera_unique_id).first()
-    camera_path = assure_path_exists(
-        os.path.join(PATH_CAMERAS, camera.unique_id))
-    if img_type == 'still':
-        if camera.path_still:
-            path = camera.path_still
-        else:
-            path = os.path.join(camera_path, img_type)
-    elif img_type == 'timelapse':
-        if camera.path_timelapse:
-            path = camera.path_timelapse
-        else:
-            path = os.path.join(camera_path, img_type)
-    else:
-        return "Unknown Image Type"
+    if img_type not in ['still', 'video', 'timelapse']:
+        return "img_type not still, video, or timelapse"
 
-    if os.path.isdir(path):
-        files = (files for files in os.listdir(path)
-                 if os.path.isfile(os.path.join(path, files)))
-    else:
-        files = []
+    camera = Camera.query.filter(
+        Camera.unique_id == unique_id).first()
+    function = CustomController.query.filter(
+        CustomController.unique_id == unique_id).first()
 
-    if filename in files:
+    if camera:
+        camera_path = assure_path_exists(
+            os.path.join(PATH_CAMERAS, camera.unique_id))
+        if img_type == 'still':
+            if camera.path_still:
+                path = camera.path_still
+            else:
+                path = os.path.join(camera_path, img_type)
+        elif img_type == 'timelapse':
+            if camera.path_timelapse:
+                path = camera.path_timelapse
+            else:
+                path = os.path.join(camera_path, img_type)
+        else:
+            return "Unknown Image Type"
+
         path_file = os.path.join(path, filename)
-        if os.path.abspath(path_file).startswith(path):
+        if os.path.isfile(path_file) and os.path.abspath(path_file).startswith(path):
             return send_file(path_file, mimetype='image/jpeg')
 
-    path_file = f"/tmp/{filename}"
-    if os.path.exists(path_file) and os.path.abspath(path_file).startswith("/tmp"):
-        return send_file(path_file, mimetype='image/jpeg')
+        path_file = f"/tmp/{filename}"
+        if os.path.exists(path_file) and os.path.abspath(path_file).startswith("/tmp"):
+            return send_file(path_file, mimetype='image/jpeg')
+
+    elif function:
+        try:
+            custom_options = json.loads(function.custom_options)
+        except:
+            custom_options = {}
+
+        camera_path = assure_path_exists(
+            os.path.join(PATH_CAMERAS, function.unique_id))
+
+        if img_type == 'still':
+            if ('custom_path_still' in custom_options and
+                    custom_options['custom_path_still']):
+                path = custom_options['custom_path_still']
+            else:
+                path = os.path.join(camera_path, img_type)
+        elif img_type == 'video':
+            if ('custom_path_video' in custom_options and
+                    custom_options['custom_path_video']):
+                path = custom_options['custom_path_video']
+            else:
+                path = os.path.join(camera_path, img_type)
+        elif img_type == 'timelapse':
+            if ('custom_path_timelapse' in custom_options and
+                    custom_options['custom_path_timelapse']):
+                path = custom_options['custom_path_timelapse']
+            else:
+                path = os.path.join(camera_path, img_type)
+        else:
+            return "Unknown Image Type"
+
+        path_file = os.path.join(path, filename)
+        if os.path.isfile(path_file) and os.path.abspath(path_file).startswith(path):
+            if img_type == 'video':
+                return send_file(path_file, download_name=filename)
+            else:
+                return send_file(path_file, mimetype='image/jpeg')
+
+        path_file = f"/tmp/{filename}"
+        if (os.path.exists(path_file) and
+                os.path.abspath(path_file).startswith("/tmp")):
+            if img_type == 'video':
+                return send_file(path_file, download_name=filename)
+            else:
+                return send_file(path_file, mimetype='image/jpeg')
 
     return "Image not found"
 

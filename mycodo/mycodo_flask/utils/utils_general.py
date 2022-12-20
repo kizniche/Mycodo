@@ -29,8 +29,9 @@ from mycodo.utils.functions import parse_function_information
 from mycodo.utils.inputs import parse_input_information
 from mycodo.utils.outputs import parse_output_information
 from mycodo.utils.system_pi import (add_custom_measurements, add_custom_units,
-                                    dpkg_package_exists, is_int,
-                                    return_measurement_info, str_is_float)
+                                    assure_path_exists, dpkg_package_exists,
+                                    is_int, return_measurement_info,
+                                    str_is_float)
 from mycodo.utils.widgets import parse_widget_information
 
 logger = logging.getLogger(__name__)
@@ -1359,9 +1360,12 @@ def test_sql():
         logger.error("Error creating entries: {err}".format(err=msg))
 
 def get_camera_paths(camera):
-    """Retrieve still/timelapse paths for the given camera object."""
-    camera_path = os.path.join(PATH_CAMERAS, '{uid}'.format(
-        uid=camera.unique_id))
+    """Retrieve still/timelapse paths for the given camera."""
+    if not camera:
+        return None, None
+
+    camera_path = assure_path_exists(
+        os.path.join(PATH_CAMERAS, camera.unique_id))
 
     if camera.path_still:
         still_path = camera.path_still
@@ -1372,8 +1376,42 @@ def get_camera_paths(camera):
         tl_path = camera.path_timelapse
     else:
         tl_path = os.path.join(camera_path, 'timelapse')
-    
+
     return still_path, tl_path
+
+
+def get_camera_function_paths(function):
+    """Retrieve still/video/timelapse paths for the given camera function."""
+    if not function:
+        return None, None, None
+
+    try:
+        custom_options = json.loads(function.custom_options)
+    except:
+        custom_options = {}
+
+    camera_path = assure_path_exists(
+        os.path.join(PATH_CAMERAS, function.unique_id))
+
+    if ('custom_path_still' in custom_options and
+            custom_options['custom_path_still']):
+        still_path = custom_options['custom_path_still']
+    else:
+        still_path = os.path.join(camera_path, 'still')
+
+    if ('custom_path_video' in custom_options and
+            custom_options['custom_path_video']):
+        video_path = custom_options['custom_path_video']
+    else:
+        video_path = os.path.join(camera_path, 'video')
+
+    if ('custom_path_timelapse' in custom_options and
+            custom_options['custom_path_timelapse']):
+        tl_path = custom_options['custom_path_timelapse']
+    else:
+        tl_path = os.path.join(camera_path, 'timelapse')
+
+    return still_path, tl_path, video_path
 
 
 def bytes2human(n, fmt='%(value).1f %(symbol)s', symbols='customary'):

@@ -60,6 +60,9 @@ plugins:
       copyright: Copyright © 2022
       output_path: ../docs/mycodo-manual.pdf
 
+extra_css:
+  - css/hide_lang_links.css
+
 theme:
   name: material
   language: en

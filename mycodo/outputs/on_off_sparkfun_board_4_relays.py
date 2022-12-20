@@ -38,8 +38,8 @@ OUTPUT_INFORMATION = {
     'url_product_purchase': [
         'https://www.sparkfun.com/products/16833',
         'https://www.sparkfun.com/products/16566',
-        'https://www.sparkfun.com/products/16810',
-        'https://www.sparkfun.com/products/15093'
+        # 'https://www.sparkfun.com/products/16810',
+        # 'https://www.sparkfun.com/products/15093'
     ],
 
     'message': 'Controls the 4 relays of the relay module.',

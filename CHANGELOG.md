@@ -29,6 +29,10 @@ New Behavior: InfluxDB 1.x returned data as an epoch float value (e.g. 166722857
  - Add ability to average measurements in Verification Function
  - Add ability to select Output Measurements in Equation Functions
  - Add Output: Sequent Microsystems 8-Relay HAT for Raspberry Pi
+ - Refactor Cameras into Functions
+ - Add Function: Camera libcamera Image
+ - Add Input: VL53L4CD
+ - Add Output: Sparkfun Relay Board (4 Relays)
 
 ### Bugfixes
 
@@ -65,6 +69,7 @@ New Behavior: InfluxDB 1.x returned data as an epoch float value (e.g. 166722857
  - Fix timelapse error from entering too long duration ([#1246](https://github.com/kizniche/Mycodo/issues/1246))
  - Fix Display Functions not properly changing line sets (and other Functions utilizing the same method)
  - Fix typo in variable of Conditional Function example code ([#1248](https://github.com/kizniche/Mycodo/issues/1248))
+ - Fix Create Note Action typo preventing tags form woorking when passes as JSON
 
 ### Miscellaneous
 

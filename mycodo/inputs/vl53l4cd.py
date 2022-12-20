@@ -1,7 +1,9 @@
 # coding=utf-8
-import time
 import copy
+import time
+
 from flask_babel import lazy_gettext
+
 from mycodo.inputs.base_input import AbstractInput
 
 # Measurements
