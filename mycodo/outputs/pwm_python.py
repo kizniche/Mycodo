@@ -91,6 +91,14 @@ def execute_at_modification(
                 custom_options_channels_dict_postsave)
 
     try:
+        if not custom_options_dict_postsave['use_pylint']:
+            messages["info"].append("Review your code for issues and test your Input "
+                "before putting it into a production environment.")
+            return (messages,
+                    mod_output,
+                    custom_options_dict_postsave,
+                    custom_options_channels_dict_postsave)
+
         input_python_code_run, file_run = generate_code(
             custom_options_channels_dict_postsave[0]['pwm_command'],
             mod_output.unique_id)
@@ -125,7 +133,7 @@ def execute_at_modification(
         messages["error"].append("Error running pylint: {}".format(err))
 
     if cmd_status:
-        messages["warning"].append("pylint returned with status: {}".format(cmd_status))
+        messages["warning"].append("pylint returned with status: {}. Note that warnings are not errors. This only indicates that the pylint analysis did not return a perfect score of 10.".format(cmd_status))
 
     if pylint_message:
         messages["info"].append("Review your code for issues and test your Input "
@@ -190,6 +198,16 @@ OUTPUT_INFORMATION = {
             'type': 'button',
             'wait_for_return': True,
             'name': 'Set Duty Cycle'
+        }
+    ],
+
+    'custom_options': [
+        {
+            'id': 'use_pylint',
+            'type': 'bool',
+            'default_value': True,
+            'name': 'Analyze Python Code with Pylint',
+            'phrase': 'Analyze your Python code with pylint when saving'
         }
     ],
 
@@ -294,6 +312,11 @@ class OutputModule(AbstractOutput):
         super().__init__(output, testing=testing, name=__name__)
 
         self.output_run_python_pwm = None
+
+        self.use_pylint = None
+
+        self.setup_custom_options(
+            OUTPUT_INFORMATION['custom_options'], output)
 
         output_channels = db_retrieve_table_daemon(
             OutputChannel).filter(OutputChannel.output_id == self.output.unique_id).all()

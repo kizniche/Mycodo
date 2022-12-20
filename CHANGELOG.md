@@ -33,6 +33,7 @@ New Behavior: InfluxDB 1.x returned data as an epoch float value (e.g. 166722857
  - Add Function: Camera libcamera Image
  - Add Input: VL53L4CD
  - Add Output: Sparkfun Relay Board (4 Relays)
+ - Add Analyse with Pylint option for Python Code in Inputs, Outputs, and Conditional Functions
 
 ### Bugfixes
 

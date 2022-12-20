@@ -58,6 +58,7 @@ class ConditionalController(AbstractController, threading.Thread):
         self.start_offset = None
         self.pyro_timeout = None
         self.log_level_debug = None
+        self.use_pylint = None
         self.message_include_code = None
         self.conditional_import = None
         self.conditional_initialize = None
@@ -101,6 +102,7 @@ class ConditionalController(AbstractController, threading.Thread):
         self.start_offset = cond.start_offset
         self.pyro_timeout = cond.pyro_timeout
         self.log_level_debug = cond.log_level_debug
+        self.use_pylint = cond.use_pylint
         self.message_include_code = cond.message_include_code
 
         self.sample_rate = db_retrieve_table_daemon(

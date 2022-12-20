@@ -33,11 +33,11 @@ def conditional_mod(form):
         "name": None
     }
 
+    cmd_status = None
+    pylint_message = ""
+
     try:
-        if current_app.config['TESTING']:
-            cmd_status = None
-            pylint_message = ""
-        else:
+        if not current_app.config['TESTING'] and form.use_pylint.data:
             messages["error"], lines_code, cmd_status, cmd_out = save_conditional_code(
                 messages["error"],
                 form.conditional_import.data,
@@ -67,12 +67,13 @@ def conditional_mod(form):
         cond_mod.conditional_status = form.conditional_status.data
         cond_mod.period = form.period.data
         cond_mod.log_level_debug = form.log_level_debug.data
+        cond_mod.use_pylint = form.use_pylint.data
         cond_mod.message_include_code = form.message_include_code.data
         cond_mod.start_offset = form.start_offset.data
         cond_mod.pyro_timeout = form.pyro_timeout.data
 
         if cmd_status:
-            messages["warning"].append("pylint returned with status: {}".format(cmd_status))
+            messages["warning"].append("pylint returned with status: {}. Note that warnings are not errors. This only indicates that the pylint analysis did not return a perfect score of 10.".format(cmd_status))
 
         if pylint_message:
             messages["info"].append("Review your code for issues and test before putting it "

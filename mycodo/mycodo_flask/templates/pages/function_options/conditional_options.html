@@ -95,6 +95,12 @@
         </div>
       </div>
       <div class="col-auto">
+        {{form_conditional.use_pylint.label(class_='control-label')}}
+        <div class="input-group-text">
+          <input id="use_pylint" name="use_pylint" type="checkbox" title="{{dict_translation['use_pylint']['phrase']}}" value="y"{% if each_function.use_pylint %} checked{% endif %}>
+        </div>
+      </div>
+      <div class="col-auto">
         {{form_conditional.message_include_code.label(class_='control-label')}}
         <div class="input-group-text">
           <input id="message_include_code" name="message_include_code" type="checkbox" title="{{dict_translation['message_include_code']['phrase']}}" value="y"{% if each_function.message_include_code %} checked{% endif %}>
