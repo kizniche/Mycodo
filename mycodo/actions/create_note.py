@@ -81,7 +81,7 @@ class ActionModule(AbstractFunctionAction):
     def run_action(self, message, dict_vars):
         list_tags = []
         try:
-            list_tags = dict_vars["value"]["tag"]
+            list_tags = dict_vars["value"]["tags"]
         except:
             for each_id_set in self.tag:
                 list_tags.append(each_id_set.split(",")[0])
