@@ -2,15 +2,30 @@ version: "3.7"
 
 services:
 
+#  mycodo_influxdb:
+#    container_name: mycodo_influxdb
+#    build:
+#      context: ./
+#      dockerfile: docker/influxdb/Dockerfile
+#    env_file:
+#      - 'docker/influxdb/env.influxdb'
+#    volumes:
+#      - mycodo_influxdb:/var/lib/influxdb
+#    ports:
+#      - 8086:8086
+
   mycodo_influxdb:
-    container_name: mycodo_influxdb
-    build:
-      context: ./
-      dockerfile: docker/influxdb/Dockerfile
-    env_file:
-      - 'docker/influxdb/env.influxdb'
+    ports:
+      - 8086:8086
     volumes:
-      - mycodo_influxdb:/var/lib/influxdb
+      - mycodo_influxdb:/var/lib/influxdb2
+    image: influxdb:latest
+    environment:
+      - DOCKER_INFLUXDB_INIT_MODE=setup
+      - DOCKER_INFLUXDB_INIT_USERNAME=mycodo
+      - DOCKER_INFLUXDB_INIT_PASSWORD=mmdu77sj3nIoiajjs
+      - DOCKER_INFLUXDB_INIT_ORG=mycodo
+      - DOCKER_INFLUXDB_INIT_BUCKET=mycodo_db
 
   mycodo_nginx:
     container_name: mycodo_nginx
@@ -49,7 +64,7 @@ services:
       - mycodo_ssl_certs:/home/mycodo/mycodo/mycodo_flask/ssl_certs
       - /dev:/dev
       - /sys:/sys
-      - /opt:/opt
+      - ./bindmount/opt:/opt
     privileged: true
     command: bash -c "wget --quiet --no-check-certificate -p http://mycodo_nginx/ -O /dev/null && 
                       PYTHONPATH=/home/mycodo /home/mycodo/env/bin/python mycodo_daemon.py"
