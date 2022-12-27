@@ -1,0 +1,52 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  annotations:
+    kompose.cmd: kompose convert -o kompose
+    kompose.version: 1.26.0 (40646f47)
+  creationTimestamp: null
+  labels:
+    io.kompose.service: mycodoinfluxdb
+  name: mycodoinfluxdb
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      io.kompose.service: mycodoinfluxdb
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      annotations:
+        kompose.cmd: kompose convert -o kompose
+        kompose.version: 1.26.0 (40646f47)
+      creationTimestamp: null
+      labels:
+        io.kompose.service: mycodoinfluxdb
+    spec:
+      containers:
+        - env:
+            - name: DOCKER_INFLUXDB_INIT_BUCKET
+              value: mycodo_db
+            - name: DOCKER_INFLUXDB_INIT_MODE
+              value: setup
+            - name: DOCKER_INFLUXDB_INIT_ORG
+              value: mycodo
+            - name: DOCKER_INFLUXDB_INIT_PASSWORD
+              value: mmdu77sj3nIoiajjs
+            - name: DOCKER_INFLUXDB_INIT_USERNAME
+              value: mycodo
+          image: influxdb:latest
+          name: mycodoinfluxdb
+          ports:
+            - containerPort: 8086
+          resources: {}
+          volumeMounts:
+            - mountPath: /var/lib/influxdb2
+              name: mycodo-influxdb
+      restartPolicy: Always
+      volumes:
+        - name: mycodo-influxdb
+          persistentVolumeClaim:
+            claimName: mycodo-influxdb
+status: {}

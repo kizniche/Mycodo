@@ -1,0 +1,118 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  annotations:
+    kompose.cmd: kompose convert -o kompose
+    kompose.version: 1.26.0 (40646f47)
+  creationTimestamp: null
+  labels:
+    io.kompose.service: mycododaemon
+  name: mycododaemon
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      io.kompose.service: mycododaemon
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      annotations:
+        kompose.cmd: kompose convert -o kompose
+        kompose.version: 1.26.0 (40646f47)
+      creationTimestamp: null
+      labels:
+        io.kompose.service: mycododaemon
+    spec:
+      containers:
+        - args:
+            - bash
+            - -c
+            - wget --quiet --no-check-certificate -p http://mycodo_nginx/ -O /dev/null && PYTHONPATH=/home/mycodo /home/mycodo/env/bin/python mycodo_daemon.py
+          env:
+            - name: TZ
+              value: America/New_York
+          image: app
+          name: mycodo-daemon
+          resources: {}
+          securityContext:
+            privileged: true
+          volumeMounts:
+            - mountPath: /usr/local/mycodo
+              name: mycodo
+            - mountPath: /home/mycodo/env
+              name: mycodo-env
+            - mountPath: /home/mycodo/databases
+              name: mycodo-databases
+            - mountPath: /home/mycodo/cameras
+              name: mycodo-cameras
+            - mountPath: /home/mycodo/mycodo/functions/custom_functions
+              name: mycodo-custom-functions
+            - mountPath: /home/mycodo/mycodo/actions/custom_actions
+              name: mycodo-custom-actions
+            - mountPath: /home/mycodo/mycodo/inputs/custom_inputs
+              name: mycodo-custom-inputs
+            - mountPath: /home/mycodo/mycodo/outputs/custom_outputs
+              name: mycodo-custom-outputs
+            - mountPath: /home/mycodo/mycodo/widgets/custom_widgets
+              name: mycodo-custom-widgets
+            - mountPath: /home/mycodo/mycodo/user_scripts
+              name: mycodo-custom-user-scripts
+            - mountPath: /var/log/mycodo
+              name: mycodo-log
+            - mountPath: /home/mycodo/mycodo/mycodo_flask/ssl_certs
+              name: mycodo-ssl-certs
+            - mountPath: /dev
+              name: mycododaemon-claim12
+            - mountPath: /sys
+              name: mycododaemon-claim13
+            - mountPath: /opt
+              name: mycododaemon-claim14
+      restartPolicy: Always
+      volumes:
+        - name: mycodo
+          persistentVolumeClaim:
+            claimName: mycodo
+        - name: mycodo-env
+          persistentVolumeClaim:
+            claimName: mycodo-env
+        - name: mycodo-databases
+          persistentVolumeClaim:
+            claimName: mycodo-databases
+        - name: mycodo-cameras
+          persistentVolumeClaim:
+            claimName: mycodo-cameras
+        - name: mycodo-custom-functions
+          persistentVolumeClaim:
+            claimName: mycodo-custom-functions
+        - name: mycodo-custom-actions
+          persistentVolumeClaim:
+            claimName: mycodo-custom-actions
+        - name: mycodo-custom-inputs
+          persistentVolumeClaim:
+            claimName: mycodo-custom-inputs
+        - name: mycodo-custom-outputs
+          persistentVolumeClaim:
+            claimName: mycodo-custom-outputs
+        - name: mycodo-custom-widgets
+          persistentVolumeClaim:
+            claimName: mycodo-custom-widgets
+        - name: mycodo-custom-user-scripts
+          persistentVolumeClaim:
+            claimName: mycodo-custom-user-scripts
+        - name: mycodo-log
+          persistentVolumeClaim:
+            claimName: mycodo-log
+        - name: mycodo-ssl-certs
+          persistentVolumeClaim:
+            claimName: mycodo-ssl-certs
+        - name: mycododaemon-claim12
+          persistentVolumeClaim:
+            claimName: mycododaemon-claim12
+        - name: mycododaemon-claim13
+          persistentVolumeClaim:
+            claimName: mycododaemon-claim13
+        - name: mycododaemon-claim14
+          persistentVolumeClaim:
+            claimName: mycododaemon-claim14
+status: {}
