@@ -32,7 +32,7 @@ spec:
           env:
             - name: TZ
               value: America/New_York
-          image: app
+          image: nargetdev/mycodoapp
           name: mycodo-daemon
           resources: {}
           securityContext:
