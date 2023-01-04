@@ -12,13 +12,19 @@ New Behavior: InfluxDB 1.x returned data as an epoch float value (e.g. 166722857
 
 ### Features
 
- - Add Function: Regulate pH and Electrical Conductivity
  - Add Input: MCP3008 (adafruit-circuitpython-mcp3xxx library)
  - Add Input: On/Off Output State
  - Add Input: Senseair K96 ([#1196](https://github.com/kizniche/Mycodo/issues/1196))
+-  Add Input: VL53L4CD
+ - Add Input: ams AS7341 light spectrum sensor
  - Add Output: Remote Mycodo Output: On/Off (API)
  - Add Output: Remote Mycodo Output: PWM (API)
+ - Add Output: Sequent Microsystems 8-Relay HAT for Raspberry Pi
+ - Add Output: Sparkfun Relay Board (4 Relays)
+ - Add Function: Camera libcamera Image
+ - Add Function: Regulate pH and Electrical Conductivity
  - Add Widget: Activate/Deactivate Controller
+ - Refactor Cameras into Functions
  - Add ability to set each Graph Widget series type to either Line or Column
  - Add Temperature Calibration for Atlas Scientific PT-1000 Input
  - Add language selection to installer
@@ -28,12 +34,7 @@ New Behavior: InfluxDB 1.x returned data as an epoch float value (e.g. 166722857
  - Add ability to select Outputs in Output Modules
  - Add ability to average measurements in Verification Function
  - Add ability to select Output Measurements in Equation Functions
- - Add Output: Sequent Microsystems 8-Relay HAT for Raspberry Pi
- - Refactor Cameras into Functions
- - Add Function: Camera libcamera Image
- - Add Input: VL53L4CD
- - Add Output: Sparkfun Relay Board (4 Relays)
- - Add Analyse with Pylint option for Python Code in Inputs, Outputs, and Conditional Functions
+ - Add Analyse with Pylint option for Python Code in Inputs, Outputs, and Conditional Functions ([#1249](https://github.com/kizniche/Mycodo/issues/1249))
 
 ### Bugfixes
 
