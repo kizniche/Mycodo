@@ -22,7 +22,7 @@ class CustomController(CRUDMixin, db.Model):
 
     def is_active(self):
         """
-        :return: Whether the sensor is currently activated
+        :return: Whether the Controller is currently activated
         :rtype: bool
         """
         return self.is_activated

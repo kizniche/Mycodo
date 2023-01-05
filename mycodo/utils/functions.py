@@ -89,6 +89,7 @@ def parse_function_information(exclude_custom=False):
             dict_controllers = dict_has_value(dict_controllers, function_custom, 'execute_at_creation')
             dict_controllers = dict_has_value(dict_controllers, function_custom, 'execute_at_modification')
             dict_controllers = dict_has_value(dict_controllers, function_custom, 'modify_settings_without_deactivating')
+            dict_controllers = dict_has_value(dict_controllers, function_custom, 'function_status')
             dict_controllers = dict_has_value(dict_controllers, function_custom, 'camera_image')
             dict_controllers = dict_has_value(dict_controllers, function_custom, 'camera_video')
             dict_controllers = dict_has_value(dict_controllers, function_custom, 'camera_stream')
