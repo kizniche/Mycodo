@@ -72,6 +72,7 @@ New Behavior: InfluxDB 1.x returned data as an epoch float value (e.g. 166722857
  - Fix Display Functions not properly changing line sets (and other Functions utilizing the same method)
  - Fix typo in variable of Conditional Function example code ([#1248](https://github.com/kizniche/Mycodo/issues/1248))
  - Fix Create Note Action typo preventing tags form woorking when passes as JSON
+ - Fix Atlas Pump not being able to turn on without duration ([#1254](https://github.com/kizniche/Mycodo/issues/1254))
 
 ### Miscellaneous
 
