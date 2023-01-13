@@ -86,7 +86,7 @@ FUNCTION_INFORMATION = {
     'camera_stream': False,
     'function_status': function_status,
 
-    'message': 'Capture images and videos from a camera using libcamera-still and libcamera-vid. The Function must be activated in order to capture still and timelapse images and use the Camera Widget.',
+    'message': 'NOTE: THIS IS CURRENTLY EXPERIMENTAL - USE AT YOUR OWN RISK UNTIL THIS NOTICE IS REMOVED. Capture images and videos from a camera using libcamera-still and libcamera-vid. The Function must be activated in order to capture still and timelapse images and use the Camera Widget.',
 
     'options_enabled': [
         'function_status'

@@ -10,6 +10,12 @@ Previous behavior: InfluxDB 1.x returned data as a date/time string value (e.g. 
 
 New Behavior: InfluxDB 1.x returned data as an epoch float value (e.g. 1667228575.557).
 
+### Camera Changes
+
+Cameras integration was initially built into the Mycodo system. This made it difficult for users to add new camera libraries or features unless they learned the codebase well enough to understand the many files needed to be modified. This release allows for camera functinality to be developed within a single Function module file. This enables users to more easily develop and implement their own Camera Functions or modify existing Camera Functions to add new features.
+
+As this system is developed, the original camera system will be phased out, as it's a lot of work to maintain two different camera systems. As of now, there is only one Camera Function (libcamera). This should be considered EXPERIMENTAL and only used to test the development of this new feature until it is considered stable.
+
 ### Features
 
  - Add Input: MCP3008 (adafruit-circuitpython-mcp3xxx library)
@@ -24,7 +30,6 @@ New Behavior: InfluxDB 1.x returned data as an epoch float value (e.g. 166722857
  - Add Function: Camera libcamera Image
  - Add Function: Regulate pH and Electrical Conductivity
  - Add Widget: Activate/Deactivate Controller
- - Refactor Cameras into Functions
  - Add ability to set each Graph Widget series type to either Line or Column
  - Add Temperature Calibration for Atlas Scientific PT-1000 Input
  - Add language selection to installer
