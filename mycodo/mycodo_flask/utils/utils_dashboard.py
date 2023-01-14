@@ -1,32 +1,24 @@
 # -*- coding: utf-8 -*-
 import json
 import logging
+import subprocess
 
 import sqlalchemy
-from flask import current_app
-from flask import flash
-from flask import url_for
+from flask import current_app, flash, url_for
 from flask_babel import gettext
 
+from mycodo.config import INSTALL_DIRECTORY
 from mycodo.config_translations import TRANSLATIONS
-from mycodo.databases import clone_model
-from mycodo.databases import set_uuid
-from mycodo.databases.models import Conversion
-from mycodo.databases.models import CustomController
-from mycodo.databases.models import Dashboard
-from mycodo.databases.models import DeviceMeasurements
-from mycodo.databases.models import Input
-from mycodo.databases.models import Output
-from mycodo.databases.models import PID
-from mycodo.databases.models import Widget
+from mycodo.databases import clone_model, set_uuid
+from mycodo.databases.models import (PID, Conversion, CustomController,
+                                     Dashboard, DeviceMeasurements, Input,
+                                     Output, Widget)
 from mycodo.databases.utils import session_scope
 from mycodo.mycodo_client import DaemonControl
 from mycodo.mycodo_flask.extensions import db
-from mycodo.mycodo_flask.utils.utils_general import custom_options_return_json
-from mycodo.mycodo_flask.utils.utils_general import delete_entry_with_id
-from mycodo.mycodo_flask.utils.utils_general import flash_success_errors
-from mycodo.mycodo_flask.utils.utils_general import return_dependencies
-from mycodo.mycodo_flask.utils.utils_general import use_unit_generate
+from mycodo.mycodo_flask.utils.utils_general import (
+    custom_options_return_json, delete_entry_with_id, flash_success_errors,
+    return_dependencies, use_unit_generate)
 from mycodo.utils.widgets import parse_widget_information
 
 logger = logging.getLogger(__name__)
@@ -233,7 +225,15 @@ def widget_add(form_base, request_form):
         if not error:
             new_widget.save()
 
-            register_widget_endpoints()
+            # If the first of this widget added, reload the frontend
+            # Otherwise, if add_url_rule is called in register_widget_endpoints(), it will result in an error:
+            # AssertionError: The setup method 'add_url_rule' can no longer be called on the application.
+            # It has already handled its first request, any changes will not be applied consistently.
+            # Make sure all imports, decorators, functions, etc. needed to set up the application are done before running it.
+            if Widget.query.filter(Widget.graph_type == widget_name).count() == 1:
+                cmd = f"{INSTALL_DIRECTORY}/mycodo/scripts/mycodo_wrapper frontend_reload 2>&1"
+                init = subprocess.Popen(cmd, shell=True)
+                init.wait()
 
             if not current_app.config['TESTING']:
                 # Refresh widget settings
