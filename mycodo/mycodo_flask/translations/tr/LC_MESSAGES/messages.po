@@ -3,13 +3,14 @@
 # This file is distributed under the same license as the Mycodo project.
 # FIRST AUTHOR <EMAIL@ADDRESS>, 2022.
 # Kyle Gabriel <business@kylegabriel.com>, 2022.
+# Ramazan Sancar <me@ramazansancar.com.tr>, 2022.
 msgid ""
 msgstr ""
 "Project-Id-Version: Mycodo 8.14.0\n"
 "Report-Msgid-Bugs-To: mycodo@kylegabriel.com\n"
 "POT-Creation-Date: 2022-10-01 16:35-0400\n"
-"PO-Revision-Date: 2022-10-01 21:23+0000\n"
-"Last-Translator: Kyle Gabriel <business@kylegabriel.com>\n"
+"PO-Revision-Date: 2022-11-23 20:10+0000\n"
+"Last-Translator: Ramazan Sancar <me@ramazansancar.com.tr>\n"
 "Language-Team: Turkish <http://translate.kylegabriel.com:8080/projects/"
 "mycodo/translations/tr/>\n"
 "Language: tr\n"
@@ -67,19 +68,16 @@ msgid "Red"
 msgstr ""
 
 #: config_devices_units.py:61
-#, fuzzy
 msgid "Green"
-msgstr "Derece"
+msgstr "Yeşil"
 
 #: config_devices_units.py:65
-#, fuzzy
 msgid "Blue"
-msgstr "Değer"
+msgstr "Mavi"
 
 #: config_devices_units.py:69 outputs/on_off_kasa_rgb_bulbs.py:166
-#, fuzzy
 msgid "Color Temperature"
-msgstr "Sıcaklık"
+msgstr "Renk Sıcaklığı"
 
 #: config_devices_units.py:85 config_devices_units.py:89
 #: config_devices_units.py:93 config_devices_units.py:361
@@ -278,11 +276,11 @@ msgstr "Ayar Noktası"
 
 #: config_devices_units.py:269
 msgid "Band Min"
-msgstr ""
+msgstr "Bant Min"
 
 #: config_devices_units.py:273
 msgid "Band Max"
-msgstr ""
+msgstr "Bant Maks"
 
 #: config_devices_units.py:277
 msgid "Specific Enthalpy"
@@ -1176,7 +1174,7 @@ msgstr "Örnek Hız"
 
 #: config_translations.py:232
 msgid "Baud Rate"
-msgstr ""
+msgstr "Baud Hızı"
 
 #: config_translations.py:233
 msgid "The UART baud rate"
@@ -1472,7 +1470,7 @@ msgstr ""
 #: mycodo_flask/templates/settings/output.html:39
 #: mycodo_flask/templates/settings/widget.html:39
 msgid "Name"
-msgstr ""
+msgstr "İsim"
 
 #: config_translations.py:296
 msgid "A name to distinguish this from others"
@@ -1896,7 +1894,7 @@ msgid ""
 "computers (SBCs). It couples inputs and outputs in interesting ways to "
 "sense and manipulate the environment."
 msgstr ""
-"Mycodo, [Raspberry Pi] (https://en.wikipedia.org/wiki/Raspberry_Pi) ve diğer "
+"Mycodo, [Raspberry Pi](https://en.wikipedia.org/wiki/Raspberry_Pi) ve diğer "
 "tek kartlı bilgisayarlarda (SBC'ler) çalışmak üzere tasarlanmış açık "
 "kaynaklı bir yazılımdır. Çevreyi algılamak ve manipüle etmek için giriş ve "
 "çıkışları ilginç şekillerde birleştirir."
@@ -1994,7 +1992,7 @@ msgid ""
 "that was built to run on single-board computers, specifically the "
 "[Raspberry Pi](https://en.wikipedia.org/wiki/Raspberry_Pi)."
 msgstr ""
-"Mycodo, tek kartlı bilgisayarlarda, özellikle de [Raspberry Pi] (https://en."
+"Mycodo, tek kartlı bilgisayarlarda, özellikle de [Raspberry Pi](https://en."
 "wikipedia.org/wiki/Raspberry_Pi) üzerinde çalışmak üzere inşa edilmiş açık "
 "kaynaklı bir çevresel izleme ve düzenleme sistemidir."
 
@@ -2087,8 +2085,8 @@ msgstr ""
 "birleştirilebilir. Basit düzenlemenin ötesinde, Yöntemler zaman içinde "
 "değişen bir ayar noktası oluşturmak için kullanılabilir, bu da termal "
 "döngüler, yeniden akış fırınları, teraryumlar için çevresel simülasyon, "
-"yiyecek ve içecek fermantasyonu veya kürleme ve yiyecek pişirme ([sous-vide] "
-"(https://en.wikipedia.org/wiki/Sous-vide)) gibi şeyleri mümkün kılar."
+"yiyecek ve içecek fermantasyonu veya kürleme ve yiyecek pişirme ([sous-"
+"vide](https://en.wikipedia.org/wiki/Sous-vide)) gibi şeyleri mümkün kılar."
 
 #: config_translations_docs.py:43
 msgid ""
@@ -2225,8 +2223,8 @@ msgstr ""
 "etme, PWM görev döngüsünü değiştirme, bir veritabanını sorgulama veya "
 "değiştirme, vb.) Pencere öğeleri sürüklenip bırakılarak kolayca yeniden "
 "düzenlenebilir ve yeniden boyutlandırılabilir. Desteklenen Pencere "
-"Araçlarının tam listesi için [Desteklenen Pencere Araçları] (Supported-"
-"Widgets.md) bölümüne bakın."
+"Araçlarının tam listesi için [Desteklenen Pencere Araçları](Supported-Widgets"
+".md) bölümüne bakın."
 
 #: config_translations_docs.py:63
 msgid "Custom Widgets"

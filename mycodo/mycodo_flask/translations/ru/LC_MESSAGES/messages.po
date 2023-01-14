@@ -3,13 +3,14 @@
 # This file is distributed under the same license as the Mycodo project.
 # FIRST AUTHOR <EMAIL@ADDRESS>, 2022.
 # Kyle Gabriel <business@kylegabriel.com>, 2022.
+# Анатолий <tolyakrug@gmail.com>, 2022.
 msgid ""
 msgstr ""
 "Project-Id-Version: Mycodo1 8.11.0\n"
 "Report-Msgid-Bugs-To: mycodo@kylegabriel.com\n"
 "POT-Creation-Date: 2022-10-01 16:35-0400\n"
-"PO-Revision-Date: 2022-10-01 21:23+0000\n"
-"Last-Translator: Kyle Gabriel <business@kylegabriel.com>\n"
+"PO-Revision-Date: 2022-10-25 17:05+0000\n"
+"Last-Translator: Анатолий <tolyakrug@gmail.com>\n"
 "Language-Team: Russian <http://translate.kylegabriel.com:8080/projects/"
 "mycodo/translations/ru/>\n"
 "Language: ru\n"
@@ -28,11 +29,11 @@ msgstr "Ускорение"
 
 #: config_devices_units.py:29
 msgid "ADC"
-msgstr "адъютант"
+msgstr "АЦП"
 
 #: config_devices_units.py:33
 msgid "Altitude"
-msgstr "высота над уровнем моря"
+msgstr "Высота"
 
 #: config_devices_units.py:37
 msgid "Angle"
@@ -40,7 +41,7 @@ msgstr "Угол"
 
 #: config_devices_units.py:41
 msgid "Battery"
-msgstr "аккумулятор"
+msgstr "Батарея"
 
 #: config_devices_units.py:45 config_devices_units.py:343
 msgid "Boolean"
@@ -49,11 +50,11 @@ msgstr "логический"
 #: actions/led_kasa_bulb_change_color.py:60 config_devices_units.py:49
 #: mycodo_flask/forms/forms_camera.py:57 outputs/on_off_kasa_rgb_bulbs.py:97
 msgid "Brightness"
-msgstr "яркость"
+msgstr "Яркость"
 
 #: config_devices_units.py:53
 msgid "Carbon Dioxide"
-msgstr ""
+msgstr "Углекислый газ"
 
 #: actions/display_backlight_color.py:14 config_devices_units.py:57
 #: config_devices_units.py:61 config_devices_units.py:65
@@ -65,22 +66,19 @@ msgstr "Цвет"
 
 #: config_devices_units.py:57
 msgid "Red"
-msgstr ""
+msgstr "Красный"
 
 #: config_devices_units.py:61
-#, fuzzy
 msgid "Green"
-msgstr "Градус"
+msgstr "Зеленый"
 
 #: config_devices_units.py:65
-#, fuzzy
 msgid "Blue"
-msgstr "Значение"
+msgstr "Синий"
 
 #: config_devices_units.py:69 outputs/on_off_kasa_rgb_bulbs.py:166
-#, fuzzy
 msgid "Color Temperature"
-msgstr "температура"
+msgstr "Цветовая температура"
 
 #: config_devices_units.py:85 config_devices_units.py:89
 #: config_devices_units.py:93 config_devices_units.py:361
@@ -89,12 +87,11 @@ msgstr "Загрузка процессора"
 
 #: config_devices_units.py:85 config_devices_units.py:451
 msgid "Minute"
-msgstr "минут"
+msgstr "Минута"
 
 #: config_devices_units.py:89 config_devices_units.py:93
-#, fuzzy
 msgid "Minutes"
-msgstr "минут"
+msgstr "Минуты"
 
 #: config_devices_units.py:97
 msgid "Dewpoint"
@@ -197,7 +194,7 @@ msgstr "влажность"
 
 #: config_devices_units.py:181
 msgid "Oxygen"
-msgstr ""
+msgstr "Кислород"
 
 #: config_devices_units.py:185
 msgid "Oxidation Reduction Potential"

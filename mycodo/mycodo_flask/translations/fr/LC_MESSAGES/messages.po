@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: Mycodo VERSION\n"
 "Report-Msgid-Bugs-To: mycodo@kylegabriel.com\n"
 "POT-Creation-Date: 2022-10-01 16:35-0400\n"
-"PO-Revision-Date: 2022-10-01 21:22+0000\n"
+"PO-Revision-Date: 2022-11-12 05:38+0000\n"
 "Last-Translator: Kyle Gabriel <business@kylegabriel.com>\n"
 "Language-Team: French <http://translate.kylegabriel.com:8080/projects/mycodo/"
 "translations/fr/>\n"
@@ -1903,14 +1903,13 @@ msgid ""
 "sense and manipulate the environment."
 msgstr ""
 "Mycodo est un logiciel open source conçu pour fonctionner sur le [Raspberry "
-"Pi] (https://en.wikipedia.org/wiki/Raspberry_Pi) et d'autres ordinateurs "
+"Pi](https://en.wikipedia.org/wiki/Raspberry_Pi) et d'autres ordinateurs "
 "monocartes (SBC). Il couple les entrées et les sorties de manière "
 "intéressante pour détecter et manipuler l'environnement."
 
 #: config_translations_docs.py:14
-#, fuzzy
 msgid "Information"
-msgstr "pas de durée"
+msgstr "Informations"
 
 #: config_translations_docs.py:15
 msgid ""
@@ -1927,6 +1926,8 @@ msgid ""
 "PDF](https://kizniche.github.io/Mycodo/mycodo-manual.pdf) for offline "
 "reading."
 msgstr ""
+"Ce manuel est également [disponible au format PDF](https://kizniche.github."
+"io/Mycodo/mycodo-manual.pdf) pour une lecture hors ligne."
 
 #: config_translations_docs.py:18
 msgid "Prerequisites"
@@ -1970,9 +1971,8 @@ msgstr ""
 "vous serez invité à créer un utilisateur Admin et à vous connecter."
 
 #: config_translations_docs.py:27
-#, fuzzy
 msgid "Support"
-msgstr "Importer"
+msgstr "Soutien"
 
 #: config_translations_docs.py:28 mycodo_flask/templates/layout.html:244
 msgid "Discussion Forum"
@@ -1991,9 +1991,8 @@ msgid "Become a Sponsor"
 msgstr "Devenir un sponsor"
 
 #: config_translations_docs.py:33
-#, fuzzy
 msgid "Other Methods"
-msgstr "Méthodes sauvegardées"
+msgstr "Autres méthodes"
 
 #: config_translations_docs.py:37
 msgid ""
@@ -2003,7 +2002,7 @@ msgid ""
 msgstr ""
 "Mycodo est un système open-source de surveillance et de régulation de "
 "l'environnement conçu pour fonctionner sur des ordinateurs monocartes, "
-"notamment le [Raspberry Pi] (https://en.wikipedia.org/wiki/Raspberry_Pi)."
+"notamment le [Raspberry Pi](https://en.wikipedia.org/wiki/Raspberry_Pi)."
 
 #: config_translations_docs.py:38
 msgid ""
@@ -2101,7 +2100,7 @@ msgstr ""
 "fil du temps, permettant des choses telles que les thermocycleurs, les fours "
 "de refusion, la simulation environnementale pour les terrariums, la "
 "fermentation ou le séchage des aliments et des boissons, et la cuisson des "
-"aliments ([sous-vide] (https://en.wikipedia.org/wiki/Sous-vide)), pour n'en "
+"aliments ([sous-vide](https://en.wikipedia.org/wiki/Sous-vide)), pour n'en "
 "citer que quelques-unes."
 
 #: config_translations_docs.py:43
@@ -2161,9 +2160,8 @@ msgid "Asynchronous Graphs"
 msgstr "Graphique Asynchrone"
 
 #: config_translations_docs.py:52
-#, fuzzy
 msgid "Page"
-msgstr "Gamme"
+msgstr "Page"
 
 #: config_translations_docs.py:54
 msgid ""
@@ -2210,6 +2208,8 @@ msgid ""
 "Input/Output/Function/etc. needs to be added and activated in order to "
 "display data."
 msgstr ""
+"Les graphiques nécessitent des mesures, donc au moins une entrée/sortie/"
+"fonction/etc. doit être ajoutée et activée afin d'afficher les données."
 
 #: config_translations_docs.py:58
 msgid ""
@@ -2243,12 +2243,12 @@ msgstr ""
 "modification du cycle de fonctionnement du PWM, interrogation ou "
 "modification d'une base de données, etc.) Les widgets peuvent être "
 "facilement réorganisés et redimensionnés par glisser-déposer. Pour une liste "
-"complète des widgets pris en charge, voir [Widgets pris en charge] "
-"(Supported-Widgets.md)."
+"complète des widgets pris en charge, voir [Widgets pris en charge](Supported-"
+"Widgets.md)."
 
 #: config_translations_docs.py:63
 msgid "Custom Widgets"
-msgstr ""
+msgstr "Widgets personnalisés"
 
 #: config_translations_docs.py:64
 msgid ""
@@ -2257,6 +2257,12 @@ msgid ""
 "on the `[Gear Icon] -> Configure -> Custom Widgets` page. After import, "
 "they will be available to use on the `Setup -> Widget` page."
 msgstr ""
+"Il existe un système d'importation de Widgets personnalisés dans Mycodo qui "
+"permet aux Widgets créés par les utilisateurs d'être utilisés dans le "
+"système Mycodo. Les widgets personnalisés peuvent être téléchargés sur la "
+"page `[Icône Gear] -> Configurer -> Widgets personnalisés`. Après "
+"importation, ils seront disponibles pour être utilisés sur la page `Setup -> "
+"Widget`."
 
 #: config_translations_docs.py:65
 msgid ""
@@ -2265,6 +2271,10 @@ msgid ""
 "=feature-request.md&title=New%20Module) or pull request, and it may be "
 "included in the built-in set."
 msgstr ""
+"Si vous développez un module fonctionnel, veuillez envisager de [créer un "
+"nouveau problème GitHub](https://github.com/kizniche/Mycodo/issues/"
+"new?assignees=&labels=&template=feature-request.md&title=New%20Module) ou "
+"une demande de retrait, et il pourra être inclus dans l'ensemble intégré."
 
 #: config_translations_docs.py:66
 msgid ""
@@ -2274,6 +2284,12 @@ msgid ""
 "Widgets in the directory "
 "[Mycodo/mycodo/widgets/examples](https://github.com/kizniche/Mycodo/tree/master/mycodo/widgets/examples)."
 msgstr ""
+"Ouvrez l'un des modules Widget intégrés situés dans le répertoire [Mycodo/"
+"mycodo/widgets](https://github.com/kizniche/Mycodo/tree/master/mycodo/"
+"widgets/) pour voir des exemples de formatage approprié. Il existe également "
+"des exemples de Widgets personnalisés dans le répertoire [Mycodo/mycodo/"
+"widgets/examples](https://github.com/kizniche/Mycodo/tree/master/mycodo/"
+"widgets/examples)."
 
 #: config_translations_docs.py:67
 msgid ""
@@ -2282,6 +2298,11 @@ msgid ""
 " address this, and follow the following brief structure of the dashboard "
 "page that would be generated with multiple widgets being displayed."
 msgstr ""
+"La création d'un module de widgets personnalisés nécessite souvent un "
+"placement et une exécution spécifiques de Javascript. Plusieurs variables "
+"ont été créées dans chaque module pour y remédier, et suivent la brève "
+"structure suivante de la page du tableau de bord qui serait générée avec "
+"l'affichage de plusieurs widgets."
 
 #: actions/clear_total_kWh.py:13 actions/clear_total_volume.py:13
 msgid "Flow Meter"
@@ -6403,7 +6424,7 @@ msgstr "Afficher l'horodatage sur le widget"
 
 #: widgets/widget_controller_activate_deactivate.py:132
 msgid "Select the Controller to Activate or Deactivate"
-msgstr ""
+msgstr "Sélectionner le contrôleur à activer ou à désactiver"
 
 #: widgets/widget_function_status.py:55
 msgid "Select a Function to display the status of"
