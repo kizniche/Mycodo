@@ -1,3 +1,10 @@
+## 8.15.2 (Unreleased)
+
+### Bugfixes
+
+ - Fix PCF8574 Pump Output not properly determining channel states
+
+
 ## 8.15.1 (2023-01-14)
 
 ### Bugfixes

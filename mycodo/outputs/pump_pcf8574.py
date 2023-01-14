@@ -177,7 +177,7 @@ class OutputModule(AbstractOutput):
         dict_states = {}
         for channel in channels_dict:
             dict_states[channel] = bool(not self.options_channels['on_state'][channel])
-            state = 'LOW' if self.options_channels['on_state'][0] else 'HIGH'
+            state = 'LOW' if self.options_channels['on_state'][channel] else 'HIGH'
             self.currently_dispensing[channel] = False
             self.logger.info(f"Output setup on channel {channel} and turned OFF (OFF={state})")
 
@@ -201,10 +201,12 @@ class OutputModule(AbstractOutput):
                     if switch_channel == channel:
                         if state == 'on':
                             dict_states[channel] = bool(self.options_channels['on_state'][channel])
-                            self.logger.debug("Output turned on")
+                            on_state = 'HIGH' if self.options_channels['on_state'][channel] else 'LOW'
+                            self.logger.debug(f"Output turned on (Channel {channel} {on_state})")
                         elif state == 'off':
                             dict_states[channel] = bool(not self.options_channels['on_state'][channel])
-                            self.logger.debug("Output turned off")
+                            off_state = 'LOW' if self.options_channels['on_state'][channel] else 'HIGH'
+                            self.logger.debug(f"Output turned off (Channel {channel} {off_state})")
                     else:
                         dict_states[channel] = self.output_states[channel]
 
@@ -371,7 +373,7 @@ class OutputModule(AbstractOutput):
 
     def is_on(self, output_channel=None):
         if self.is_setup():
-            return self.output_states[output_channel]
+            return self.output_states[output_channel] == bool(self.options_channels['on_state'][output_channel])
 
     def is_setup(self):
         return self.output_setup
