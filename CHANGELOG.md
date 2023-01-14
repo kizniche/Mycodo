@@ -1,4 +1,4 @@
-## 8.15.0 (Unreleased)
+## 8.15.0 (2023-01-13)
 
 This release fixes several bugs and changes how measurement timestamps are returned from the time-series database.
 
