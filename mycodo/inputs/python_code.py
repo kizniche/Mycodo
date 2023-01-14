@@ -96,6 +96,14 @@ def execute_at_modification(
                 custom_options_channels_dict_postsave)
 
     try:
+        if not custom_options_dict_postsave['use_pylint']:
+            messages["info"].append("Review your code for issues and test your Input "
+                "before putting it into a production environment.")
+            return (messages,
+                    mod_input,
+                    custom_options_dict_postsave,
+                    custom_options_channels_dict_postsave)
+
         input_python_code_run, file_run = generate_code(mod_input)
 
         lines_code = ''
@@ -128,7 +136,7 @@ def execute_at_modification(
         messages["error"].append("Error running pylint: {}".format(err))
 
     if cmd_status:
-        messages["warning"].append("pylint returned with status: {}".format(cmd_status))
+        messages["warning"].append("pylint returned with status: {}. Note that warnings are not errors. This only indicates that the pylint analysis did not return a perfect score of 10.".format(cmd_status))
 
     if pylint_message:
         messages["info"].append("Review your code for issues and test your Input "
@@ -181,7 +189,17 @@ INPUT_INFORMATION = {
 random_value_channel_0 = random.uniform(10.0, 100.0)
 
 # Store measurements in database (must specify the channel and measurement)
-self.store_measurement(channel=0, measurement=random_value_channel_0)"""
+self.store_measurement(channel=0, measurement=random_value_channel_0)""",
+
+    'custom_options': [
+        {
+            'id': 'use_pylint',
+            'type': 'bool',
+            'default_value': True,
+            'name': 'Analyze Python Code with Pylint',
+            'phrase': 'Analyze your Python code with pylint when saving'
+        }
+    ]
 }
 
 
@@ -194,7 +212,11 @@ class InputModule(AbstractInput):
         self.input_dev = input_dev
         self.python_code = None
 
+        self.use_pylint = None
+
         if not testing:
+            self.setup_custom_options(
+                INPUT_INFORMATION['custom_options'], input_dev)
             self.try_initialize()
 
     def initialize(self):

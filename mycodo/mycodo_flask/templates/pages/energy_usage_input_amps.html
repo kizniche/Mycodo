@@ -35,7 +35,7 @@
 
   <div style="clear: both; padding: 0.5em 0;"></div>
 
-  <form method="post" action="/usage">
+  <form method="post" action="/energy_usage_input_amp">
     {{form_energy_usage_add.csrf_token}}
 
     <div class="row align-items-end small-gutters">
@@ -68,7 +68,7 @@
 
   <div class="container" style="border: 2px solid #ddd; border-radius: 5px;">
 
-    <form method="post" action="/usage">
+    <form method="post" action="/energy_usage_input_amp">
     {{form_energy_usage_mod.csrf_token}}
     {{form_energy_usage_mod.energy_usage_id(value=each_energy.unique_id)}}
 

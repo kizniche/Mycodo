@@ -90,7 +90,7 @@ class CustomModule(AbstractFunction):
         super().__init__(function, testing=testing, name=__name__)
 
         self.timer_loop = None
-        self.loop_counter = 0
+        self.loop_count = 0
 
         #
         # Initialize what you defined in custom_options, above
@@ -130,9 +130,9 @@ class CustomModule(AbstractFunction):
             "This text will appear in the Daemon Log as an DEBUG line and "
             "will only appear if Log Level: Debug is enabled")
 
-        self.loop_counter += 1
+        self.loop_count += 1
 
-        self.logger.info("Loop counter: {}".format(self.loop_counter))
+        self.logger.info("Loop counter: {}".format(self.loop_count))
 
     def function_status(self):
         return_dict = {
@@ -140,7 +140,7 @@ class CustomModule(AbstractFunction):
                              "\nCurrent time: {}"
                              "\nLoop count: {}".format(
                 datetime.datetime.now(),
-                self.loop_counter),
+                self.loop_count),
             'error': []
         }
         return return_dict

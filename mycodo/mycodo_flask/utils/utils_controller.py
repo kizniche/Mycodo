@@ -42,7 +42,12 @@ def controller_mod(form_mod, request_form):
         mod_controller = CustomController.query.filter(
             CustomController.unique_id == form_mod.function_id.data).first()
 
-        if mod_controller.is_activated:
+        mod_without_deactivate = False
+        if ('modify_settings_without_deactivating' in dict_controllers[mod_controller.device] and
+                dict_controllers[mod_controller.device]['modify_settings_without_deactivating']):
+            mod_without_deactivate = True
+
+        if mod_controller.is_activated and not mod_without_deactivate:
             messages["error"].append(gettext(
                 "Deactivate controller before modifying its settings"))
 

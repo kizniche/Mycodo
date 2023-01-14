@@ -26,16 +26,18 @@ import json
 import logging
 import os
 
-from flask import Response
-from flask import flash
+from flask import Response, flash
 from flask_babel import lazy_gettext
 from flask_login import current_user
 
+from mycodo.mycodo_client import DaemonControl
 from mycodo.config import CAMERA_INFO
+from mycodo.databases.models import CustomController
 from mycodo.databases.models import Camera
 from mycodo.devices.camera import camera_record
 from mycodo.mycodo_flask.utils import utils_general
 from mycodo.utils.constraints_pass import constraints_pass_positive_value
+from mycodo.utils.functions import parse_function_information
 
 logger = logging.getLogger(__name__)
 
@@ -51,11 +53,35 @@ def camera_img_acquire(image_type, camera_unique_id, max_age):
         tmp_filename = f'{camera_unique_id}_tmp.jpg'
     else:
         return
-    path, filename = camera_record('photo', camera_unique_id, tmp_filename=tmp_filename)
+    
+    path = None
+    filename = None
+    
+    camera = Camera.query.filter(
+        Camera.unique_id == camera_unique_id).first()
+    function = CustomController.query.filter(
+        CustomController.unique_id == camera_unique_id).first()
+
+    if camera:
+        path, filename = camera_record(
+            'photo', camera_unique_id, tmp_filename=tmp_filename)
+    elif function:
+        control = DaemonControl()
+        args_dict = {
+            "tmp_filename": tmp_filename
+        }
+        status, response_list = control.module_function(
+            "Function", camera_unique_id, "capture_image", args_dict, thread=False)
+        # find path/filename
+        for each in response_list:
+            if type(each) == dict and 'path' in each and 'filename' in each:
+                path = each['path']
+                filename = each['filename']
+
     if not path and not filename:
         msg = "Could not acquire image."
         logger.error(msg)
-        return msg
+        return_values = f'["{msg}"]'
     else:
         image_path = os.path.join(path, filename)
         time_max_age = datetime.datetime.now() - datetime.timedelta(seconds=int(max_age))
@@ -65,26 +91,44 @@ def camera_img_acquire(image_type, camera_unique_id, max_age):
             return_values = f'["{filename}","{date_time}"]'
         else:
             return_values = '["max_age_exceeded"]'
-        return Response(return_values, mimetype='text/json')
+    return Response(return_values, mimetype='text/json')
 
 
 def camera_img_latest_timelapse(camera_unique_id, max_age):
-    """Capture an image and/or return a filename."""
+    """Return the latest timelapse image information."""
     if not current_user.is_authenticated:
         return "You are not logged in and cannot access this endpoint"
 
     camera = Camera.query.filter(
         Camera.unique_id == camera_unique_id).first()
+    function = CustomController.query.filter(
+        CustomController.unique_id == camera_unique_id).first()
 
-    _, tl_path = utils_general.get_camera_paths(camera)
+    timelapse_last_file = None
+    timelapse_last_ts = None
+    if camera:
+        _, tl_path = utils_general.get_camera_paths(camera)
+        timelapse_last_file = camera.timelapse_last_file
+        timelapse_last_ts = camera.timelapse_last_ts
+    elif function:
+        _, tl_path, _ = utils_general.get_camera_function_paths(function)
+        try:
+            custom_options = json.loads(function.custom_options)
+        except:
+            custom_options = {}
+        if 'tl_last_file' in custom_options:
+            timelapse_last_file = custom_options['tl_last_file']
+        if 'tl_last_ts' in custom_options:
+            timelapse_last_ts = custom_options['tl_last_ts']
 
-    timelapse_file_path = os.path.join(tl_path, str(camera.timelapse_last_file))
+    if timelapse_last_file:
+        timelapse_file_path = os.path.join(tl_path, str(timelapse_last_file))
 
-    if camera.timelapse_last_file is not None and os.path.exists(timelapse_file_path):
+    if timelapse_last_ts and os.path.exists(timelapse_file_path):
         time_max_age = datetime.datetime.now() - datetime.timedelta(seconds=int(max_age))
-        if datetime.datetime.fromtimestamp(camera.timelapse_last_ts) > time_max_age:
-            ts = datetime.datetime.fromtimestamp(camera.timelapse_last_ts).strftime("%Y-%m-%d %H:%M:%S")
-            return_values = f'["{camera.timelapse_last_file}","{ts}"]'
+        if datetime.datetime.fromtimestamp(timelapse_last_ts) > time_max_age:
+            ts = datetime.datetime.fromtimestamp(timelapse_last_ts).strftime("%Y-%m-%d %H:%M:%S")
+            return_values = f'["{timelapse_last_file}","{ts}"]'
         else:
             return_values = '["max_age_exceeded"]'
     else:
@@ -92,21 +136,52 @@ def camera_img_latest_timelapse(camera_unique_id, max_age):
     return Response(return_values, mimetype='text/json')
 
 
-def can_stream(custom_options_json):
-    custom_options = json.loads(custom_options_json)
-    camera = Camera.query.filter(Camera.unique_id == custom_options['camera_id']).first()
-    if ((custom_options['camera_image_type'] == 'stream' and
-            CAMERA_INFO[camera.library]['capable_stream']) or
+def capable_camera_type(cam_type, unique_id, error):
+    """Determine if the camera can acquire a still image or stream"""
+    if cam_type not in ['image', 'stream']:
+        logger.error("image_type not 'image' or 'stream'")
+        return False
 
-            (custom_options['camera_image_type'] in ['new_img', 'tmp_img', 'timelapse'] and
-             CAMERA_INFO[camera.library]['capable_image'])):
-        return True
+    try:
+        camera = Camera.query.filter(
+            Camera.unique_id == unique_id).first()
+        function = CustomController.query.filter(
+            CustomController.unique_id == unique_id).first()
+        dict_function = parse_function_information()
+
+        if cam_type == 'image':
+            if camera and CAMERA_INFO[camera.library]['capable_image']:
+                return True, error
+            elif (function and function.device in dict_function and 
+                    'camera_image' in dict_function[function.device] and
+                    dict_function[function.device]['camera_image']):
+                return True, error
+
+        elif cam_type == 'stream':
+            if camera and CAMERA_INFO[camera.library]['capable_stream']:
+                return True, error
+            elif (function and function.device in dict_function and
+                    'camera_stream' in dict_function[function.device] and
+                    dict_function[function.device]['camera_stream']):
+                return True, error
+    except Exception as err:
+        error.append("capable_camera_type() error: {}".format(err))
+    return False, error
 
 
 def execute_at_creation(error, new_widget, dict_widget):
     try:
-        if not can_stream(new_widget.custom_options):
-            error.append("This camera type is not capable of streaming")
+        custom_options = json.loads(new_widget.custom_options)
+        if custom_options['camera_image_type'] == 'stream':
+            can_save, error = capable_camera_type('stream', custom_options['camera_id'], error)
+            if not can_save:
+                allow_saving = False
+                error.append("This camera type is not capable of streaming")
+        elif custom_options['camera_image_type'] in ['new_img', 'tmp_img', 'timelapse']:
+            can_save, error = capable_camera_type('image', custom_options['camera_id'], error)
+            if not can_save:
+                allow_saving = False
+                error.append("This camera type is not capable of still images")
     except Exception as err:
         error.append("execute_at_creation() error: {}".format(err))
     return error, new_widget
@@ -122,9 +197,16 @@ def execute_at_modification(
     error = []
 
     try:
-        if not can_stream(json.dumps(custom_options_json_postsave)):
-            allow_saving = False
-            error.append("This camera type is not capable of streaming")
+        if custom_options_json_postsave['camera_image_type'] == 'stream':
+            can_save, error = capable_camera_type('stream', custom_options_json_postsave['camera_id'], error)
+            if not can_save:
+                allow_saving = False
+                error.append("This camera type is not capable of streaming")
+        elif custom_options_json_postsave['camera_image_type'] in ['new_img', 'tmp_img', 'timelapse']:
+            can_save, error = capable_camera_type('image', custom_options_json_postsave['camera_id'], error)
+            if not can_save:
+                allow_saving = False
+                error.append("This camera type is not capable of still images")
     except Exception as err:
         error.append("execute_at_modification() error: {}".format(err))
 
@@ -146,7 +228,7 @@ WIDGET_INFORMATION = {
     'execute_at_modification': execute_at_modification,
 
     'widget_width': 7,
-    'widget_height': 8,
+    'widget_height': 18,
 
     'endpoints': [
         # Route URL, route endpoint name, view function, methods
@@ -161,6 +243,7 @@ WIDGET_INFORMATION = {
             'default_value': '',
             'options_select': [
                 'Camera',
+                'Function'
             ],
             'name': lazy_gettext('Camera'),
             'phrase': lazy_gettext('Select the camera to display')
@@ -207,7 +290,7 @@ WIDGET_INFORMATION = {
 
     'widget_dashboard_title_bar': """<span style="padding-right: 0.5em; font-size: {{each_widget.font_em_name}}em">{% if widget_options['enable_timestamp'] %}<span id="{{each_widget.id}}-timestamp"></span> {% endif %}{{each_widget.name}}</span>""",
 
-    'widget_dashboard_body': """<a id="{{each_widget.id}}-image-href" href="" target="_blank"><img id="{{each_widget.id}}-image-src" style="height: 100%; width: 100%" src=""></a>""",
+    'widget_dashboard_body': """<span id="{{each_widget.id}}-error"></span></span><a id="{{each_widget.id}}-image-href" href="" target="_blank"><img id="{{each_widget.id}}-image-src" style="height: 100%; width: 100%" src=""></a>""",
 
     'widget_dashboard_js': """
   // Capture image and update the image
@@ -231,7 +314,7 @@ WIDGET_INFORMATION = {
           document.getElementById(dashboard_id + "-image-src").src = "/static/img/image_error.png";
           document.getElementById(dashboard_id + "-image-href").href = "/static/img/image_error.png";
         }
-        else {
+        else if (data.length === 2) {
           let timestamp_str = '';
           if (image_type_str === 'still') timestamp_str = 'Still: ';
           else if (image_type_str === 'timelapse') timestamp_str = 'Timelapse: ';
@@ -256,11 +339,16 @@ WIDGET_INFORMATION = {
             if (document.getElementById(dashboard_id + "-timestamp")) document.getElementById(dashboard_id + "-timestamp").innerHTML = timestamp_str + timestamp;
           }
         }
+        else if (data.length === 1) {
+            document.getElementById(dashboard_id + "-image-src").src = "/static/img/image_error.png";
+            document.getElementById(dashboard_id + "-image-href").href = "/static/img/image_error.png";
+            if (document.getElementById(dashboard_id + "-error")) document.getElementById(dashboard_id + "-error").innerHTML = "Error: " + data[0] + "<br>";
+        }
       },
       error: function(jqXHR, textStatus, errorThrown) {
         document.getElementById(dashboard_id + "-image-src").src = "/static/img/image_error.png";
         document.getElementById(dashboard_id + "-image-href").href = "/static/img/image_error.png";
-        if (document.getElementById(dashboard_id + "-timestamp")) document.getElementById(dashboard_id + "-timestamp").innerHTML = "Error Getting Image";
+        if (document.getElementById(dashboard_id + "-error")) document.getElementById(dashboard_id + "-error").innerHTML = "Error Getting Image<br>";
       }
     });
   }

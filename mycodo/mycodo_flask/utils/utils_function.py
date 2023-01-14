@@ -79,12 +79,12 @@ def function_add(form_add_func):
             new_func.conditional_import = """
 from datetime import datetime"""
             new_func.conditional_initialize = """
-self.run_loop_count = 0"""
+self.loop_count = 0"""
             new_func.conditional_statement = '''
 # Example code for learning how to use a Conditional. See the manual for more information.
 self.logger.info("This INFO log entry will appear in the Daemon Log")
 
-self.run_loop_count += 1  # Counts how many times the run code has been executed
+self.loop_count += 1  # Counts how many times the run code has been executed
 
 measurement = self.condition("asdf1234")  # Replace ID with correct Conditional ID
 self.logger.info(f"Measurement value is {measurement}")

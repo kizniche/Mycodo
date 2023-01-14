@@ -35,6 +35,7 @@ class Conditional(CRUDMixin, db.Model):
     period = db.Column(db.Float, default=60.0)
     start_offset = db.Column(db.Float, default=10.0)
     pyro_timeout = db.Column(db.Float, default=30.0)
+    use_pylint = db.Column(db.Boolean, default=True)
     message_include_code = db.Column(db.Boolean, default=False)
 
     custom_options = db.Column(db.Text, default='')

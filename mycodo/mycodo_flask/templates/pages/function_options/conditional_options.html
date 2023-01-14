@@ -28,12 +28,12 @@
       </div>
     </div>
 
-    <div id="status_enable_{{each_function.unique_id}}" class="row small-gutters align-items-end" style="{% if not each_function.is_activated %}display: none; {% endif %}padding: 0.5em 0.2em 0.5em 0.3em">
+    <div id="status_activated_enable_{{each_function.unique_id}}" class="row small-gutters align-items-end" style="{% if not each_function.is_activated %}display: none; {% endif %}padding: 0.5em 0.2em 0.5em 0.3em">
       <div class="col-12">
         <h5>{{_('Status')}}</h5>
       </div>
       <div class="col-12">
-        <span id="function_status_message_{{each_function.unique_id}}"></span>
+        <span id="function_status_activated_{{each_function.unique_id}}"></span>
       </div>
     </div>
 
@@ -92,6 +92,12 @@
         {{form_conditional.log_level_debug.label(class_='control-label')}}
         <div class="input-group-text">
           <input id="log_level_debug" name="log_level_debug" type="checkbox" title="{{dict_translation['log_level_debug']['phrase']}}" value="y"{% if each_function.log_level_debug %} checked{% endif %}>
+        </div>
+      </div>
+      <div class="col-auto">
+        {{form_conditional.use_pylint.label(class_='control-label')}}
+        <div class="input-group-text">
+          <input id="use_pylint" name="use_pylint" type="checkbox" title="{{dict_translation['use_pylint']['phrase']}}" value="y"{% if each_function.use_pylint %} checked{% endif %}>
         </div>
       </div>
       <div class="col-auto">

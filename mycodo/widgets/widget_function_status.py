@@ -39,7 +39,7 @@ WIDGET_INFORMATION = {
     'message': 'Displays the status of a Function (if supported).',
 
     'widget_width': 7,
-    'widget_height': 4,
+    'widget_height': 10,
 
     'custom_options': [
         {
@@ -76,41 +76,73 @@ WIDGET_INFORMATION = {
 
     'widget_dashboard_title_bar': """<span style="padding-right: 0.5em; font-size: {{each_widget.font_em_name}}em">{{each_widget.name}}</span>""",
 
-    'widget_dashboard_body': """<span style="font-size: {{widget_options['font_em_value']}}em" id="status-{{each_widget.unique_id}}"></span>""",
+    'widget_dashboard_body': """Activated: <span style="font-size: {{widget_options['font_em_value']}}em" id="status_activated-{{each_widget.unique_id}}"></span><br>Always: <span style="font-size: {{widget_options['font_em_value']}}em" id="status_always-{{each_widget.unique_id}}"></span>""",
 
-    'widget_dashboard_js': """function function_status(function_id, widget_id) {
-  const url = '/function_status/' + function_id;
-    $.getJSON(url,
-      function(data, responseText, jqXHR) {
-        if (jqXHR.status !== 204) {
-          let string_display = "";
-          if ('error' in data) {
-            for (var i = 0, size = data['error'].length; i < size; i++){
-              string_display += "<p>Error: " + data['error'][i] + "</p>";
+    'widget_dashboard_js': """
+    function function_status_activated(function_id, widget_id) {
+      const url = '/function_status_activated/' + function_id;
+      $.getJSON(url,
+        function(data, responseText, jqXHR) {
+          if (jqXHR.status !== 204) {
+            let string_display = "";
+            if ('error' in data) {
+              for (var i = 0, size = data['error'].length; i < size; i++){
+                string_display += "<p>Error: " + data['error'][i] + "</p>";
+              }
             }
+            if ('string_status' in data) {
+              string_display += data['string_status'].replace(/(?:\\r\\n|\\r|\\n)/g, "<br>");
+            }
+            document.getElementById("status_activated-" + widget_id).innerHTML = string_display;
           }
-          if ('string_status' in data) {
-            string_display += data['string_status'].replace(/(?:\\r\\n|\\r|\\n)/g, "<br>");
+          else {
+            document.getElementById("status_activated-" + widget_id).innerHTML = "Error";
           }
-          document.getElementById("status-" + widget_id).innerHTML = string_display;
         }
-        else {
-          document.getElementById("status-" + widget_id).innerHTML = "Error";
+      );
+    }
+    // Repeat function for function_status()
+    function repeat_function_status_activated(function_id, widget_id, period_sec) {
+      setInterval(function () {
+        function_status_activated(function_id, widget_id)
+      }, period_sec * 1000);
+    }
+    
+    function function_status_always(function_id, widget_id) {
+      const url_2 = '/function_status_always/' + function_id;
+      $.getJSON(url_2,
+        function(data, responseText, jqXHR) {
+          if (jqXHR.status !== 204) {
+            let string_display = "";
+            if ('error' in data) {
+              for (var i = 0, size = data['error'].length; i < size; i++){
+                string_display += "<p>Error: " + data['error'][i] + "</p>";
+              }
+            }
+            if ('string_status' in data) {
+              string_display += data['string_status'].replace(/(?:\\r\\n|\\r|\\n)/g, "<br>");
+            }
+            document.getElementById("status_always-" + widget_id).innerHTML = string_display;
+          }
+          else {
+            document.getElementById("status_always-" + widget_id).innerHTML = "Error";
+          }
         }
-      }
-    );
-  }
-  // Repeat function for function_status()
-  function repeat_function_status(function_id, widget_id, period_sec) {
-    setInterval(function () {
-      function_status(function_id, widget_id)
-    }, period_sec * 1000);
-  }""",
+      );
+    }
+    // Repeat function for function_status_always()
+    function repeat_function_status_always(function_id, widget_id, period_sec) {
+      setInterval(function () {
+        function_status_always(function_id, widget_id)
+      }, period_sec * 1000);
+    }""",
 
     'widget_dashboard_js_ready': """<!-- No JS ready content -->""",
 
     'widget_dashboard_js_ready_end': """
-  function_status('{{widget_options['function_id']}}', '{{each_widget.unique_id}}');
-  repeat_function_status('{{widget_options['function_id']}}', '{{each_widget.unique_id}}', {{widget_options['refresh_seconds']}});
+  function_status_activated('{{widget_options['function_id']}}', '{{each_widget.unique_id}}');
+  repeat_function_status_activated('{{widget_options['function_id']}}', '{{each_widget.unique_id}}', {{widget_options['refresh_seconds']}});
+  function_status_always('{{widget_options['function_id']}}', '{{each_widget.unique_id}}');
+  repeat_function_status_always('{{widget_options['function_id']}}', '{{each_widget.unique_id}}', {{widget_options['refresh_seconds']}});
 """
 }

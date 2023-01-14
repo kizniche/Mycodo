@@ -88,6 +88,11 @@ def parse_function_information(exclude_custom=False):
             dict_controllers = dict_has_value(dict_controllers, function_custom, 'enable_channel_unit_select')
             dict_controllers = dict_has_value(dict_controllers, function_custom, 'execute_at_creation')
             dict_controllers = dict_has_value(dict_controllers, function_custom, 'execute_at_modification')
+            dict_controllers = dict_has_value(dict_controllers, function_custom, 'modify_settings_without_deactivating')
+            dict_controllers = dict_has_value(dict_controllers, function_custom, 'function_status')
+            dict_controllers = dict_has_value(dict_controllers, function_custom, 'camera_image')
+            dict_controllers = dict_has_value(dict_controllers, function_custom, 'camera_video')
+            dict_controllers = dict_has_value(dict_controllers, function_custom, 'camera_stream')
             dict_controllers = dict_has_value(dict_controllers, function_custom, 'message')
             dict_controllers = dict_has_value(dict_controllers, function_custom, 'options_enabled')
             dict_controllers = dict_has_value(dict_controllers, function_custom, 'options_disabled')
@@ -96,7 +101,6 @@ def parse_function_information(exclude_custom=False):
             dict_controllers = dict_has_value(dict_controllers, function_custom, 'function_actions')
             dict_controllers = dict_has_value(dict_controllers, function_custom, 'custom_options')
             dict_controllers = dict_has_value(dict_controllers, function_custom, 'custom_channel_options')
-
             dict_controllers = dict_has_value(dict_controllers, function_custom, 'custom_commands_message')
             dict_controllers = dict_has_value(dict_controllers, function_custom, 'custom_commands')
 

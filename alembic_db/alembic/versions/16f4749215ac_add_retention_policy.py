@@ -37,9 +37,9 @@ def upgrade():
         from mycodo.scripts.measurement_db import get_influxdb_info
         info = get_influxdb_info()
         if info['influxdb_version']:
-            if info['influxdb_version'].startswith("1."):
+            if info['influxdb_version'].startswith("1"):
                 db_retention_policy = 'autogen'
-            if info['influxdb_version'].startswith("2."):
+            if info['influxdb_version'].startswith("2"):
                 db_retention_policy = 'infinite'
         
         if db_retention_policy:

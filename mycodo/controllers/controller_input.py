@@ -455,7 +455,8 @@ class InputController(AbstractController, threading.Thread):
             return 1, msg
 
     def pre_stop(self):
-        # Ensure pre-output is off
+        """Executed when the controller is instructed to stop."""
+        self.measure_input.pre_stop()
         if self.pre_output_setup:
             output_off = threading.Thread(
                 target=self.control.output_off,

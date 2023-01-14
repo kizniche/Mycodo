@@ -35,6 +35,8 @@ class Conditional(FlaskForm):
         widget=NumberInput(step='any'))
     log_level_debug = BooleanField(
         TRANSLATIONS['log_level_debug']['title'])
+    use_pylint = BooleanField(
+        TRANSLATIONS['use_pylint']['title'])
     message_include_code = BooleanField(
         TRANSLATIONS['message_include_code']['title'])
     refractory_period = DecimalField(

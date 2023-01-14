@@ -99,12 +99,24 @@
     </div>
 
     {% if 'options_enabled' in dict_controllers[each_function.device] and 'function_status' in dict_controllers[each_function.device]['options_enabled'] %}
-    <div id="status_enable_{{unique_id}}" class="row small-gutters align-items-end" style="{% if not each_function.is_activated %}display: none; {% endif %}padding: 0.5em">
+    <div id="status_activated_enable_{{unique_id}}" class="row small-gutters align-items-end" style="{% if not each_function.is_activated %}display: none; {% endif %}padding: 0.5em">
+      <div class="col-12">
+        <h5>{{_('Activated Status')}}</h5>
+      </div>
+      <div class="col-12">
+        <span id="function_status_activated_{{unique_id}}"></span>
+      </div>
+    </div>
+    {% endif %}
+
+    <!-- HTML for Function option function_status -->
+    {% if 'function_status' in dict_controllers[each_function.device] and dict_controllers[each_function.device]['function_status'] %}
+    <div id="function_status_enable_{{unique_id}}" class="row small-gutters align-items-end" style="padding: 0.5em">
       <div class="col-12">
         <h5>{{_('Status')}}</h5>
       </div>
       <div class="col-12">
-        <span id="function_status_message_{{unique_id}}"></span>
+        <span id="function_status_always{{unique_id}}"></span>
       </div>
     </div>
     {% endif %}
