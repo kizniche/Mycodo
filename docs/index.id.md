@@ -8,8 +8,6 @@ Mycodo adalah perangkat lunak sumber terbuka yang dirancang untuk dijalankan pad
 
 Lihat [README](https://github.com/kizniche/Mycodo#uses) untuk fitur-fitur, proyek-proyek yang menggunakan Mycodo, screenshot, dan informasi lainnya.
 
-This manual is also [available as a PDF](https://kizniche.github.io/Mycodo/mycodo-manual.pdf) for offline reading.
-
 ### Prasyarat
 
 *   Komputer papan tunggal (Direkomendasikan: [Raspberry Pi](https://www.raspberrypi.org/), versi apa pun: Nol, 1, 2, 3, atau 4)

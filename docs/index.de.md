@@ -8,8 +8,6 @@ Mycodo ist eine Open-Source-Software, die auf dem [Raspberry Pi](https://en.wiki
 
 Siehe die [README](https://github.com/kizniche/Mycodo#uses) für Funktionen, Projekte, die Mycodo verwenden, Screenshots und andere Informationen.
 
-Dieses Handbuch ist auch [als PDF-Datei](https://kizniche.github.io/Mycodo/mycodo-manual.pdf) zum Offline-Lesen verfügbar.
-
 ### Voraussetzungen
 
 *   Einplatinencomputer (empfohlen: [Raspberry Pi](https://www.raspberrypi.org/), beliebige Version: Zero, 1, 2, 3, oder 4)

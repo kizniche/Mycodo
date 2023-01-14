@@ -8,8 +8,6 @@ description: Documentation for Mycodo, an open source environmental monitoring a
 
 %%%text_2_1%%%
 
-%%%text_2_2%%%
-
 ### %%%Prerequisites%%%
 
 *   %%%text_3_1%%%

@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Mycodo 8.15.0\n"
 "Report-Msgid-Bugs-To: mycodo@kylegabriel.com\n"
-"POT-Creation-Date: 2023-01-13 19:07-0500\n"
+"POT-Creation-Date: 2023-01-13 19:49-0500\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -701,13 +701,13 @@ msgstr ""
 msgid "Custom"
 msgstr ""
 
-#: config_translations.py:50 config_translations_docs.py:57
+#: config_translations.py:50 config_translations_docs.py:56
 #: mycodo_flask/templates/settings/general.html:108
 #: mycodo_flask/templates/settings/general.html:119
 msgid "Dashboard"
 msgstr ""
 
-#: config_translations.py:52 config_translations_docs.py:53
+#: config_translations.py:52 config_translations_docs.py:52
 #: mycodo_flask/templates/layout.html:189
 msgid "Data"
 msgstr ""
@@ -1017,7 +1017,7 @@ msgid "Resume"
 msgstr ""
 
 #: config_translations.py:160 mycodo_flask/forms/forms_settings.py:313
-#: mycodo_flask/templates/layout.html:320
+#: mycodo_flask/templates/layout.html:319
 #: mycodo_flask/templates/pages/actions.html:30
 #: mycodo_flask/templates/pages/data_options/input_options.html:21
 #: mycodo_flask/templates/pages/function_options/conditional_condition.html:9
@@ -1106,7 +1106,7 @@ msgstr ""
 #: config_translations.py:196 mycodo_flask/forms/forms_settings.py:346
 #: mycodo_flask/forms/forms_settings.py:352
 #: mycodo_flask/forms/forms_settings.py:392
-#: mycodo_flask/templates/layout.html:302
+#: mycodo_flask/templates/layout.html:301
 msgid "Theme"
 msgstr ""
 
@@ -1926,80 +1926,73 @@ msgid ""
 "projects using Mycodo, screenshots, and other information."
 msgstr ""
 
-#: config_translations_docs.py:16
-msgid ""
-"This manual is also [available as a "
-"PDF](https://kizniche.github.io/Mycodo/mycodo-manual.pdf) for offline "
-"reading."
-msgstr ""
-
-#: config_translations_docs.py:18
+#: config_translations_docs.py:17
 msgid "Prerequisites"
 msgstr ""
 
-#: config_translations_docs.py:19
+#: config_translations_docs.py:18
 msgid ""
 "Single-board computer (Recommended: [Raspberry "
 "Pi](https://www.raspberrypi.org/), any version: Zero, 1, 2, 3, or 4)"
 msgstr ""
 
-#: config_translations_docs.py:20
+#: config_translations_docs.py:19
 msgid "Debian-based operating system"
 msgstr ""
 
-#: config_translations_docs.py:21
+#: config_translations_docs.py:20
 msgid "An active internet connection"
 msgstr ""
 
-#: config_translations_docs.py:23
+#: config_translations_docs.py:22
 #: mycodo_flask/templates/admin/dependencies_install.html:21
 msgid "Install"
 msgstr ""
 
-#: config_translations_docs.py:24
+#: config_translations_docs.py:23
 msgid ""
 "Once booted and logged in, run the following command to initiate the "
 "Mycodo install:"
 msgstr ""
 
-#: config_translations_docs.py:25
+#: config_translations_docs.py:24
 msgid ""
 "After installation, open a web browser to the SBC's IP address and you "
 "will be prompted to create an Admin user and login."
 msgstr ""
 
-#: config_translations_docs.py:27
+#: config_translations_docs.py:26
 msgid "Support"
 msgstr ""
 
-#: config_translations_docs.py:28 mycodo_flask/templates/layout.html:246
+#: config_translations_docs.py:27 mycodo_flask/templates/layout.html:245
 msgid "Discussion Forum"
 msgstr ""
 
-#: config_translations_docs.py:29
+#: config_translations_docs.py:28
 msgid "Frequently Asked Questions"
 msgstr ""
 
-#: config_translations_docs.py:31 mycodo_flask/templates/layout.html:249
+#: config_translations_docs.py:30 mycodo_flask/templates/layout.html:248
 msgid "Donate"
 msgstr ""
 
-#: config_translations_docs.py:32
+#: config_translations_docs.py:31
 msgid "Become a Sponsor"
 msgstr ""
 
-#: config_translations_docs.py:33
+#: config_translations_docs.py:32
 msgid "Other Methods"
 msgstr ""
 
-#: config_translations_docs.py:37
+#: config_translations_docs.py:36
 msgid ""
 "Mycodo is an open-source environmental monitoring and regulation system "
 "that was built to run on single-board computers, specifically the "
 "[Raspberry Pi](https://en.wikipedia.org/wiki/Raspberry_Pi)."
 msgstr ""
 
-#: config_translations_docs.py:38
+#: config_translations_docs.py:37
 msgid ""
 "Originally developed for cultivating edible mushrooms, Mycodo has grown "
 "to do much more. The system consists of two parts, a backend (daemon) and"
@@ -2014,7 +2007,7 @@ msgid ""
 "viewing and configuration from any browser-enabled device."
 msgstr ""
 
-#: config_translations_docs.py:39
+#: config_translations_docs.py:38
 msgid ""
 "There are a number of different uses for Mycodo. Some users simply store "
 "sensor measurements to monitor conditions remotely, others regulate the "
@@ -2022,7 +2015,7 @@ msgid ""
 "motion-activated or time-lapse photography, among other uses."
 msgstr ""
 
-#: config_translations_docs.py:40
+#: config_translations_docs.py:39
 msgid ""
 "Input controllers acquire measurements and store them in the InfluxDB "
 "time series database. Measurements typically come from sensors, but may "
@@ -2031,7 +2024,7 @@ msgid ""
 "acquiring and generating data."
 msgstr ""
 
-#: config_translations_docs.py:41
+#: config_translations_docs.py:40
 msgid ""
 "Output controllers produce changes to the general input/output (GPIO) "
 "pins or may be configured to execute Linux Bash or Python commands, "
@@ -2041,7 +2034,7 @@ msgid ""
 " and more."
 msgstr ""
 
-#: config_translations_docs.py:42
+#: config_translations_docs.py:41
 msgid ""
 "When Inputs and Outputs are combined, Function controllers may be used to"
 " create feedback loops that uses the Output device to modulate an "
@@ -2054,14 +2047,14 @@ msgid ""
 "vide](https://en.wikipedia.org/wiki/Sous-vide)), to name a few."
 msgstr ""
 
-#: config_translations_docs.py:43
+#: config_translations_docs.py:42
 msgid ""
 "Triggers can be set to activate events based on specific dates and times,"
 " according to durations of time, or the sunrise/sunset at a specific "
 "latitude and longitude."
 msgstr ""
 
-#: config_translations_docs.py:44
+#: config_translations_docs.py:43
 msgid ""
 "Mycodo has been translated to several languages. By default, the language"
 " of the browser will determine which language is used, but may be "
@@ -2071,7 +2064,7 @@ msgid ""
 "[https://translate.kylegabriel.com](http://translate.kylegabriel.com:8080/engage/mycodo/)."
 msgstr ""
 
-#: config_translations_docs.py:48 mycodo_flask/templates/layout.html:191
+#: config_translations_docs.py:47 mycodo_flask/templates/layout.html:191
 #: mycodo_flask/templates/pages/live.html:3
 #: mycodo_flask/templates/pages/live.html:5
 #: mycodo_flask/templates/settings/general.html:109
@@ -2079,7 +2072,7 @@ msgstr ""
 msgid "Live Measurements"
 msgstr ""
 
-#: config_translations_docs.py:49
+#: config_translations_docs.py:48
 msgid ""
 "The `Live Measurements` page is the first page a user sees after logging "
 "in to Mycodo. It will display the current measurements being acquired "
@@ -2089,17 +2082,17 @@ msgid ""
 "from the measurement database."
 msgstr ""
 
-#: config_translations_docs.py:51 mycodo_flask/templates/layout.html:192
+#: config_translations_docs.py:50 mycodo_flask/templates/layout.html:192
 #: mycodo_flask/templates/pages/graph-async.html:3
 #: mycodo_flask/templates/pages/graph-async.html:26
 msgid "Asynchronous Graphs"
 msgstr ""
 
-#: config_translations_docs.py:52
+#: config_translations_docs.py:51
 msgid "Page"
 msgstr ""
 
-#: config_translations_docs.py:54
+#: config_translations_docs.py:53
 msgid ""
 "A graphical data display that is useful for viewing data sets spanning "
 "relatively long periods of time (weeks/months/years), which could be very"
@@ -2119,14 +2112,14 @@ msgid ""
 "downloaded."
 msgstr ""
 
-#: config_translations_docs.py:55
+#: config_translations_docs.py:54
 msgid ""
 "Graphs require measurements, therefore at least one "
 "Input/Output/Function/etc. needs to be added and activated in order to "
 "display data."
 msgstr ""
 
-#: config_translations_docs.py:58
+#: config_translations_docs.py:57
 msgid ""
 "The dashboard can be used for both viewing data and manipulating the "
 "system, thanks to the numerous dashboard widgets available. Multiple "
@@ -2134,12 +2127,12 @@ msgid ""
 "arrangement."
 msgstr ""
 
-#: config_translations_docs.py:60
+#: config_translations_docs.py:59
 #: mycodo_flask/templates/layout-settings.html:38
 msgid "Widgets"
 msgstr ""
 
-#: config_translations_docs.py:61
+#: config_translations_docs.py:60
 msgid ""
 "Widgets are elements on the Dashboard that have a number of uses, such as"
 " viewing data (charts, indicators, gauges, etc.) or interacting with the "
@@ -2149,11 +2142,11 @@ msgid ""
 "[Supported Widgets](Supported-Widgets.md)."
 msgstr ""
 
-#: config_translations_docs.py:63
+#: config_translations_docs.py:62
 msgid "Custom Widgets"
 msgstr ""
 
-#: config_translations_docs.py:64
+#: config_translations_docs.py:63
 msgid ""
 "There is a Custom Widget import system in Mycodo that allows user-created"
 " Widgets to be used in the Mycodo system. Custom Widgets can be uploaded "
@@ -2161,7 +2154,7 @@ msgid ""
 "they will be available to use on the `Setup -> Widget` page."
 msgstr ""
 
-#: config_translations_docs.py:65
+#: config_translations_docs.py:64
 msgid ""
 "If you develop a working module, please consider [creating a new GitHub "
 "issue](https://github.com/kizniche/Mycodo/issues/new?assignees=&labels=&template"
@@ -2169,7 +2162,7 @@ msgid ""
 "included in the built-in set."
 msgstr ""
 
-#: config_translations_docs.py:66
+#: config_translations_docs.py:65
 msgid ""
 "Open any of the built-in Widget modules located in the directory "
 "[Mycodo/mycodo/widgets](https://github.com/kizniche/Mycodo/tree/master/mycodo/widgets/)"
@@ -2178,7 +2171,7 @@ msgid ""
 "[Mycodo/mycodo/widgets/examples](https://github.com/kizniche/Mycodo/tree/master/mycodo/widgets/examples)."
 msgstr ""
 
-#: config_translations_docs.py:67
+#: config_translations_docs.py:66
 msgid ""
 "Creating a custom widget module often requires specific placement and "
 "execution of Javascript. Several variables were created in each module to"
@@ -2629,7 +2622,6 @@ msgid "LED Mode"
 msgstr ""
 
 #: inputs/atlas_o2.py:87 mycodo_flask/templates/layout.html:239
-#: mycodo_flask/templates/layout.html:240
 msgid "Manual"
 msgstr ""
 
@@ -2834,7 +2826,7 @@ msgstr ""
 #: mycodo_flask/forms/forms_settings.py:353
 #: mycodo_flask/templates/create_admin.html:39
 #: mycodo_flask/templates/create_admin.html:85
-#: mycodo_flask/templates/layout.html:291
+#: mycodo_flask/templates/layout.html:290
 #: mycodo_flask/templates/login_password.html:40
 msgid "Language"
 msgstr ""
@@ -4072,34 +4064,30 @@ msgid "Online"
 msgstr ""
 
 #: mycodo_flask/templates/layout.html:240
-msgid "PDF"
-msgstr ""
-
-#: mycodo_flask/templates/layout.html:241
 msgid "API Info"
 msgstr ""
 
-#: mycodo_flask/templates/layout.html:242
+#: mycodo_flask/templates/layout.html:241
 msgid "API Docs"
 msgstr ""
 
-#: mycodo_flask/templates/layout.html:244
+#: mycodo_flask/templates/layout.html:243
 msgid "Mycodo on Github"
 msgstr ""
 
-#: mycodo_flask/templates/layout.html:245
+#: mycodo_flask/templates/layout.html:244
 msgid "Submit an Issue"
 msgstr ""
 
-#: mycodo_flask/templates/layout.html:247
+#: mycodo_flask/templates/layout.html:246
 msgid "Edit Translations"
 msgstr ""
 
-#: mycodo_flask/templates/layout.html:248
+#: mycodo_flask/templates/layout.html:247
 msgid "Changelog"
 msgstr ""
 
-#: mycodo_flask/templates/layout.html:256
+#: mycodo_flask/templates/layout.html:255
 #: mycodo_flask/templates/pages/dashboard_entry.html:26
 #: mycodo_flask/templates/pages/data_options/input_entry.html:21
 #: mycodo_flask/templates/pages/data_options/input_spacer.html:17
@@ -4114,11 +4102,11 @@ msgstr ""
 msgid "Configure"
 msgstr ""
 
-#: mycodo_flask/templates/layout.html:257
+#: mycodo_flask/templates/layout.html:256
 msgid "Mycodo Logs"
 msgstr ""
 
-#: mycodo_flask/templates/layout.html:258
+#: mycodo_flask/templates/layout.html:257
 #: mycodo_flask/templates/pages/info.html:3
 #: mycodo_flask/templates/pages/info.html:5
 #: mycodo_flask/templates/settings/general.html:110
@@ -4129,55 +4117,55 @@ msgstr ""
 #: mycodo_flask/templates/admin/dependencies.html:3
 #: mycodo_flask/templates/admin/dependencies.html:5
 #: mycodo_flask/templates/admin/dependencies.html:44
-#: mycodo_flask/templates/layout.html:260
+#: mycodo_flask/templates/layout.html:259
 msgid "Dependencies"
 msgstr ""
 
-#: mycodo_flask/templates/layout.html:262
+#: mycodo_flask/templates/layout.html:261
 msgid "Upgrade"
 msgstr ""
 
 #: mycodo_flask/templates/admin/backup.html:3
 #: mycodo_flask/templates/admin/backup.html:5
 #: mycodo_flask/templates/admin/backup.html:12
-#: mycodo_flask/templates/layout.html:263
+#: mycodo_flask/templates/layout.html:262
 msgid "Backup Restore"
 msgstr ""
 
-#: mycodo_flask/templates/layout.html:265
+#: mycodo_flask/templates/layout.html:264
 msgid "Restart Backend"
 msgstr ""
 
-#: mycodo_flask/templates/layout.html:266
+#: mycodo_flask/templates/layout.html:265
 msgid "Restart Frontend"
 msgstr ""
 
-#: mycodo_flask/templates/layout.html:268
+#: mycodo_flask/templates/layout.html:267
 msgid "Restart System"
 msgstr ""
 
-#: mycodo_flask/templates/layout.html:269
+#: mycodo_flask/templates/layout.html:268
 msgid "Shutdown System"
 msgstr ""
 
-#: mycodo_flask/templates/layout.html:271
-#: mycodo_flask/templates/layout.html:285
+#: mycodo_flask/templates/layout.html:270
+#: mycodo_flask/templates/layout.html:284
 msgid "Preferences"
 msgstr ""
 
-#: mycodo_flask/templates/layout.html:272
+#: mycodo_flask/templates/layout.html:271
 msgid "Logout"
 msgstr ""
 
-#: mycodo_flask/templates/layout.html:293
+#: mycodo_flask/templates/layout.html:292
 #: mycodo_flask/templates/settings/general.html:96
 msgid "Selecting a language will override the web browser's language"
 msgstr ""
 
 #: mycodo_flask/templates/admin/dependencies_install.html:18
 #: mycodo_flask/templates/admin/dependencies_install.html:35
-#: mycodo_flask/templates/layout.html:317
-#: mycodo_flask/templates/layout.html:355
+#: mycodo_flask/templates/layout.html:316
+#: mycodo_flask/templates/layout.html:354
 #: mycodo_flask/templates/pages/dashboard_options.html:10
 #: mycodo_flask/templates/pages/data_options/input_options.html:18
 #: mycodo_flask/templates/pages/function_options/conditional_options.html:9

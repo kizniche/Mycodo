@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Mycodo1 8.11.0\n"
 "Report-Msgid-Bugs-To: mycodo@kylegabriel.com\n"
-"POT-Creation-Date: 2023-01-13 19:07-0500\n"
+"POT-Creation-Date: 2023-01-13 19:49-0500\n"
 "PO-Revision-Date: 2022-11-12 05:39+0000\n"
 "Last-Translator: Kyle Gabriel <business@kylegabriel.com>\n"
 "Language: zh\n"
@@ -705,13 +705,13 @@ msgstr "创建"
 msgid "Custom"
 msgstr "自定义"
 
-#: config_translations.py:50 config_translations_docs.py:57
+#: config_translations.py:50 config_translations_docs.py:56
 #: mycodo_flask/templates/settings/general.html:108
 #: mycodo_flask/templates/settings/general.html:119
 msgid "Dashboard"
 msgstr "仪表板"
 
-#: config_translations.py:52 config_translations_docs.py:53
+#: config_translations.py:52 config_translations_docs.py:52
 #: mycodo_flask/templates/layout.html:189
 msgid "Data"
 msgstr "数据"
@@ -1021,7 +1021,7 @@ msgid "Resume"
 msgstr "恢复"
 
 #: config_translations.py:160 mycodo_flask/forms/forms_settings.py:313
-#: mycodo_flask/templates/layout.html:320
+#: mycodo_flask/templates/layout.html:319
 #: mycodo_flask/templates/pages/actions.html:30
 #: mycodo_flask/templates/pages/data_options/input_options.html:21
 #: mycodo_flask/templates/pages/function_options/conditional_condition.html:9
@@ -1110,7 +1110,7 @@ msgstr "文本"
 #: config_translations.py:196 mycodo_flask/forms/forms_settings.py:346
 #: mycodo_flask/forms/forms_settings.py:352
 #: mycodo_flask/forms/forms_settings.py:392
-#: mycodo_flask/templates/layout.html:302
+#: mycodo_flask/templates/layout.html:301
 msgid "Theme"
 msgstr "主题"
 
@@ -1940,75 +1940,68 @@ msgid ""
 "projects using Mycodo, screenshots, and other information."
 msgstr "有关功能、使用Mycodo的项目、屏幕截图和其他信息，请参见[README](https://github.com/kizniche/Mycodo#uses)。"
 
-#: config_translations_docs.py:16
-msgid ""
-"This manual is also [available as a "
-"PDF](https://kizniche.github.io/Mycodo/mycodo-manual.pdf) for offline "
-"reading."
-msgstr ""
-
-#: config_translations_docs.py:18
+#: config_translations_docs.py:17
 msgid "Prerequisites"
 msgstr "先决条件"
 
-#: config_translations_docs.py:19
+#: config_translations_docs.py:18
 msgid ""
 "Single-board computer (Recommended: [Raspberry "
 "Pi](https://www.raspberrypi.org/), any version: Zero, 1, 2, 3, or 4)"
 msgstr "单板计算机（推荐。[Raspberry Pi](https://www.raspberrypi.org/)，任何版本。零，1，2，3，或4)"
 
-#: config_translations_docs.py:20
+#: config_translations_docs.py:19
 msgid "Debian-based operating system"
 msgstr "基于Debian的操作系统"
 
-#: config_translations_docs.py:21
+#: config_translations_docs.py:20
 msgid "An active internet connection"
 msgstr "一个活跃的互联网连接"
 
-#: config_translations_docs.py:23
+#: config_translations_docs.py:22
 #: mycodo_flask/templates/admin/dependencies_install.html:21
 msgid "Install"
 msgstr "安装"
 
-#: config_translations_docs.py:24
+#: config_translations_docs.py:23
 msgid ""
 "Once booted and logged in, run the following command to initiate the "
 "Mycodo install:"
 msgstr "启动并登录后，运行以下命令，启动Mycodo安装。"
 
-#: config_translations_docs.py:25
+#: config_translations_docs.py:24
 msgid ""
 "After installation, open a web browser to the SBC's IP address and you "
 "will be prompted to create an Admin user and login."
 msgstr "安装后，打开Web浏览器到SBC的IP地址，会提示你创建一个管理员用户并登录。"
 
-#: config_translations_docs.py:27
+#: config_translations_docs.py:26
 #, fuzzy
 msgid "Support"
 msgstr "进口"
 
-#: config_translations_docs.py:28 mycodo_flask/templates/layout.html:246
+#: config_translations_docs.py:27 mycodo_flask/templates/layout.html:245
 msgid "Discussion Forum"
 msgstr "论坛"
 
-#: config_translations_docs.py:29
+#: config_translations_docs.py:28
 msgid "Frequently Asked Questions"
 msgstr "常见问题"
 
-#: config_translations_docs.py:31 mycodo_flask/templates/layout.html:249
+#: config_translations_docs.py:30 mycodo_flask/templates/layout.html:248
 msgid "Donate"
 msgstr "捐赠"
 
-#: config_translations_docs.py:32
+#: config_translations_docs.py:31
 msgid "Become a Sponsor"
 msgstr "成为赞助商"
 
-#: config_translations_docs.py:33
+#: config_translations_docs.py:32
 #, fuzzy
 msgid "Other Methods"
 msgstr "保存的方法"
 
-#: config_translations_docs.py:37
+#: config_translations_docs.py:36
 msgid ""
 "Mycodo is an open-source environmental monitoring and regulation system "
 "that was built to run on single-board computers, specifically the "
@@ -2017,7 +2010,7 @@ msgstr ""
 "Mycodo是一个开源的环境监测和调节系统，它是建立在单板计算机上运行的，特别是 [Raspberry "
 "Pi](https://en.wikipedia.org/wiki/Raspberry_Pi)。"
 
-#: config_translations_docs.py:38
+#: config_translations_docs.py:37
 msgid ""
 "Originally developed for cultivating edible mushrooms, Mycodo has grown "
 "to do much more. The system consists of two parts, a backend (daemon) and"
@@ -2032,7 +2025,7 @@ msgid ""
 "viewing and configuration from any browser-enabled device."
 msgstr "Mycodo最初是为培养食用菌而开发的，现在已经发展到可以做得更多。该系统由两部分组成，一个后端（守护程序）和一个前端（网络服务器）。后台执行的任务包括从传感器和设备获取测量值，并协调对这些测量值的各种反应，包括调制输出的能力（开关继电器、生成PWM信号、操作泵、开关无线插座、发布/订阅MQTT等）、用PID控制调节环境条件、安排定时器、捕捉照片和视频流、在测量值满足某些条件时触发行动等等。前端有一个网络界面，可以从任何支持浏览器的设备上查看和配置。"
 
-#: config_translations_docs.py:39
+#: config_translations_docs.py:38
 msgid ""
 "There are a number of different uses for Mycodo. Some users simply store "
 "sensor measurements to monitor conditions remotely, others regulate the "
@@ -2040,7 +2033,7 @@ msgid ""
 "motion-activated or time-lapse photography, among other uses."
 msgstr "Mycodo有许多不同的用途。一些用户只是简单地存储传感器的测量值，以远程监控条件，其他用户则是调节物理空间的环境条件，而其他用户则是捕捉运动激活或延时摄影，以及其他用途。"
 
-#: config_translations_docs.py:40
+#: config_translations_docs.py:39
 msgid ""
 "Input controllers acquire measurements and store them in the InfluxDB "
 "time series database. Measurements typically come from sensors, but may "
@@ -2051,7 +2044,7 @@ msgstr ""
 "输入控制器获取测量值并将其存储在InfluxDB时间序列数据库中。测量值通常来自传感器，但也可能被配置为使用Linux "
 "Bash或Python命令的返回值，或数学方程，这使得这是一个非常动态的获取和生成数据的系统。"
 
-#: config_translations_docs.py:41
+#: config_translations_docs.py:40
 msgid ""
 "Output controllers produce changes to the general input/output (GPIO) "
 "pins or may be configured to execute Linux Bash or Python commands, "
@@ -2063,7 +2056,7 @@ msgstr ""
 "输出控制器对通用输入/输出（GPIO）引脚产生变化，或者可以配置为执行Linux "
 "Bash或Python命令，实现各种潜在用途。有几种不同类型的输出：GPIO引脚的简单开关（高/低），产生脉宽调制（PWM）信号，控制蠕动泵，MQTT发布，等等。"
 
-#: config_translations_docs.py:42
+#: config_translations_docs.py:41
 msgid ""
 "When Inputs and Outputs are combined, Function controllers may be used to"
 " create feedback loops that uses the Output device to modulate an "
@@ -2078,14 +2071,14 @@ msgstr ""
 "当输入和输出相结合时，功能控制器可用于创建反馈回路，使用输出设备来调节输入所测量的环境条件。某些输入可以与某些输出结合，以创造各种不同的控制和调节应用。除了简单的调节，方法可用于创建一个随时间变化的设定点，实现诸如热循环器、回流炉、饲养箱的环境模拟、食品和饮料的发酵或腌制，以及烹饪食物（[苏式蒸煮](https://en.wikipedia.org/wiki"
 "/Sous-vide)），仅举几例。"
 
-#: config_translations_docs.py:43
+#: config_translations_docs.py:42
 msgid ""
 "Triggers can be set to activate events based on specific dates and times,"
 " according to durations of time, or the sunrise/sunset at a specific "
 "latitude and longitude."
 msgstr "触发器可以被设置为根据特定的日期和时间，根据时间的长短，或特定经纬度的日出/日落来激活事件。"
 
-#: config_translations_docs.py:44
+#: config_translations_docs.py:43
 msgid ""
 "Mycodo has been translated to several languages. By default, the language"
 " of the browser will determine which language is used, but may be "
@@ -2097,7 +2090,7 @@ msgstr ""
 "Mycodo已经被翻译成多种语言。默认情况下，浏览器的语言将决定使用哪种语言，但可以在 \"常规设置 \"中，在\"[齿轮图标]->配置->常规 "
 "\"页面中进行覆盖。如果你发现一个问题，想纠正一个翻译，或想添加另一种语言，可以在[https://translate.kylegabriel.com](http://translate.kylegabriel.com:8080/engage/mycodo/)进行。"
 
-#: config_translations_docs.py:48 mycodo_flask/templates/layout.html:191
+#: config_translations_docs.py:47 mycodo_flask/templates/layout.html:191
 #: mycodo_flask/templates/pages/live.html:3
 #: mycodo_flask/templates/pages/live.html:5
 #: mycodo_flask/templates/settings/general.html:109
@@ -2105,7 +2098,7 @@ msgstr ""
 msgid "Live Measurements"
 msgstr "实时测量"
 
-#: config_translations_docs.py:49
+#: config_translations_docs.py:48
 msgid ""
 "The `Live Measurements` page is the first page a user sees after logging "
 "in to Mycodo. It will display the current measurements being acquired "
@@ -2117,18 +2110,18 @@ msgstr ""
 "实时测量 \"页面是用户登录Mycodo后看到的第一个页面。它将显示当前从输入和功能控制器获得的测量结果。如果 \"实时 "
 "\"页面上没有显示，请确保输入或功能控制器配置正确并被激活。数据将从测量数据库中自动更新到该页面上。"
 
-#: config_translations_docs.py:51 mycodo_flask/templates/layout.html:192
+#: config_translations_docs.py:50 mycodo_flask/templates/layout.html:192
 #: mycodo_flask/templates/pages/graph-async.html:3
 #: mycodo_flask/templates/pages/graph-async.html:26
 msgid "Asynchronous Graphs"
 msgstr "异步"
 
-#: config_translations_docs.py:52
+#: config_translations_docs.py:51
 #, fuzzy
 msgid "Page"
 msgstr "范围"
 
-#: config_translations_docs.py:54
+#: config_translations_docs.py:53
 msgid ""
 "A graphical data display that is useful for viewing data sets spanning "
 "relatively long periods of time (weeks/months/years), which could be very"
@@ -2148,14 +2141,14 @@ msgid ""
 "downloaded."
 msgstr "一种图形化的数据显示，对于查看跨度相对较长的时间段（周/月/年）的数据集很有用，如果以同步图的形式查看，可能会非常耗费数据和处理器。选择一个时间框架，如果存在的话，数据将从该时间段加载。第一个视图将是整个选定的数据集。对于每个视图/缩放，700个数据点将被加载。如果所选的时间跨度有超过700个数据点，700个点将从该时间跨度的点的平均数中产生。这样就可以用少得多的数据来浏览一个大的数据集。例如，如果全部下载，4个月的数据可能是10兆字节。然而，当查看4个月的时间跨度时，不可能看到这10兆字节的每一个数据点，点的聚集是不可避免的。通过数据的异步加载，你只下载你所看到的东西。因此，每次加载图表都要下载10兆字节的数据，而在选择新的缩放级别之前，只下载约50kb的数据，这时又只下载约50kb的数据。"
 
-#: config_translations_docs.py:55
+#: config_translations_docs.py:54
 msgid ""
 "Graphs require measurements, therefore at least one "
 "Input/Output/Function/etc. needs to be added and activated in order to "
 "display data."
 msgstr ""
 
-#: config_translations_docs.py:58
+#: config_translations_docs.py:57
 msgid ""
 "The dashboard can be used for both viewing data and manipulating the "
 "system, thanks to the numerous dashboard widgets available. Multiple "
@@ -2163,12 +2156,12 @@ msgid ""
 "arrangement."
 msgstr "由于有许多仪表盘部件可用，仪表盘既可用于查看数据，也可用于操纵系统。可以创建多个仪表盘，也可以锁定以防止改变安排。"
 
-#: config_translations_docs.py:60
+#: config_translations_docs.py:59
 #: mycodo_flask/templates/layout-settings.html:38
 msgid "Widgets"
 msgstr ""
 
-#: config_translations_docs.py:61
+#: config_translations_docs.py:60
 msgid ""
 "Widgets are elements on the Dashboard that have a number of uses, such as"
 " viewing data (charts, indicators, gauges, etc.) or interacting with the "
@@ -2180,11 +2173,11 @@ msgstr ""
 "部件是仪表板上的元素，有多种用途，如查看数据（图表、指标、仪表等）或与系统互动（操纵输出、改变PWM占空比、查询或修改数据库等）。小工具可以通过拖放轻松地重新安排和调整大小。关于支持的Widgets的完整列表，见[支持的[Widgets"
 "](Supported-Widgets.md)。"
 
-#: config_translations_docs.py:63
+#: config_translations_docs.py:62
 msgid "Custom Widgets"
 msgstr ""
 
-#: config_translations_docs.py:64
+#: config_translations_docs.py:63
 msgid ""
 "There is a Custom Widget import system in Mycodo that allows user-created"
 " Widgets to be used in the Mycodo system. Custom Widgets can be uploaded "
@@ -2192,7 +2185,7 @@ msgid ""
 "they will be available to use on the `Setup -> Widget` page."
 msgstr ""
 
-#: config_translations_docs.py:65
+#: config_translations_docs.py:64
 msgid ""
 "If you develop a working module, please consider [creating a new GitHub "
 "issue](https://github.com/kizniche/Mycodo/issues/new?assignees=&labels=&template"
@@ -2200,7 +2193,7 @@ msgid ""
 "included in the built-in set."
 msgstr ""
 
-#: config_translations_docs.py:66
+#: config_translations_docs.py:65
 msgid ""
 "Open any of the built-in Widget modules located in the directory "
 "[Mycodo/mycodo/widgets](https://github.com/kizniche/Mycodo/tree/master/mycodo/widgets/)"
@@ -2209,7 +2202,7 @@ msgid ""
 "[Mycodo/mycodo/widgets/examples](https://github.com/kizniche/Mycodo/tree/master/mycodo/widgets/examples)."
 msgstr ""
 
-#: config_translations_docs.py:67
+#: config_translations_docs.py:66
 msgid ""
 "Creating a custom widget module often requires specific placement and "
 "execution of Javascript. Several variables were created in each module to"
@@ -2678,7 +2671,6 @@ msgid "LED Mode"
 msgstr ""
 
 #: inputs/atlas_o2.py:87 mycodo_flask/templates/layout.html:239
-#: mycodo_flask/templates/layout.html:240
 msgid "Manual"
 msgstr ""
 
@@ -2887,7 +2879,7 @@ msgstr ""
 #: mycodo_flask/forms/forms_settings.py:353
 #: mycodo_flask/templates/create_admin.html:39
 #: mycodo_flask/templates/create_admin.html:85
-#: mycodo_flask/templates/layout.html:291
+#: mycodo_flask/templates/layout.html:290
 #: mycodo_flask/templates/login_password.html:40
 msgid "Language"
 msgstr "语言"
@@ -4144,35 +4136,31 @@ msgid "Online"
 msgstr ""
 
 #: mycodo_flask/templates/layout.html:240
-msgid "PDF"
-msgstr ""
-
-#: mycodo_flask/templates/layout.html:241
 msgid "API Info"
 msgstr ""
 
-#: mycodo_flask/templates/layout.html:242
+#: mycodo_flask/templates/layout.html:241
 msgid "API Docs"
 msgstr ""
 
-#: mycodo_flask/templates/layout.html:244
+#: mycodo_flask/templates/layout.html:243
 msgid "Mycodo on Github"
 msgstr "Github上的Mycodo"
 
-#: mycodo_flask/templates/layout.html:245
+#: mycodo_flask/templates/layout.html:244
 msgid "Submit an Issue"
 msgstr "提交问题"
 
-#: mycodo_flask/templates/layout.html:247
+#: mycodo_flask/templates/layout.html:246
 #, fuzzy
 msgid "Edit Translations"
 msgstr "编辑设置"
 
-#: mycodo_flask/templates/layout.html:248
+#: mycodo_flask/templates/layout.html:247
 msgid "Changelog"
 msgstr "更新日志"
 
-#: mycodo_flask/templates/layout.html:256
+#: mycodo_flask/templates/layout.html:255
 #: mycodo_flask/templates/pages/dashboard_entry.html:26
 #: mycodo_flask/templates/pages/data_options/input_entry.html:21
 #: mycodo_flask/templates/pages/data_options/input_spacer.html:17
@@ -4187,11 +4175,11 @@ msgstr "更新日志"
 msgid "Configure"
 msgstr "配置"
 
-#: mycodo_flask/templates/layout.html:257
+#: mycodo_flask/templates/layout.html:256
 msgid "Mycodo Logs"
 msgstr "Mycodo日志"
 
-#: mycodo_flask/templates/layout.html:258
+#: mycodo_flask/templates/layout.html:257
 #: mycodo_flask/templates/pages/info.html:3
 #: mycodo_flask/templates/pages/info.html:5
 #: mycodo_flask/templates/settings/general.html:110
@@ -4202,55 +4190,55 @@ msgstr "系统信息"
 #: mycodo_flask/templates/admin/dependencies.html:3
 #: mycodo_flask/templates/admin/dependencies.html:5
 #: mycodo_flask/templates/admin/dependencies.html:44
-#: mycodo_flask/templates/layout.html:260
+#: mycodo_flask/templates/layout.html:259
 msgid "Dependencies"
 msgstr "依赖"
 
-#: mycodo_flask/templates/layout.html:262
+#: mycodo_flask/templates/layout.html:261
 msgid "Upgrade"
 msgstr "升级"
 
 #: mycodo_flask/templates/admin/backup.html:3
 #: mycodo_flask/templates/admin/backup.html:5
 #: mycodo_flask/templates/admin/backup.html:12
-#: mycodo_flask/templates/layout.html:263
+#: mycodo_flask/templates/layout.html:262
 msgid "Backup Restore"
 msgstr "备份还原"
 
-#: mycodo_flask/templates/layout.html:265
+#: mycodo_flask/templates/layout.html:264
 msgid "Restart Backend"
 msgstr "重启后端"
 
-#: mycodo_flask/templates/layout.html:266
+#: mycodo_flask/templates/layout.html:265
 msgid "Restart Frontend"
 msgstr "重启前端"
 
-#: mycodo_flask/templates/layout.html:268
+#: mycodo_flask/templates/layout.html:267
 msgid "Restart System"
 msgstr "重启系统"
 
-#: mycodo_flask/templates/layout.html:269
+#: mycodo_flask/templates/layout.html:268
 msgid "Shutdown System"
 msgstr "关机系统"
 
-#: mycodo_flask/templates/layout.html:271
-#: mycodo_flask/templates/layout.html:285
+#: mycodo_flask/templates/layout.html:270
+#: mycodo_flask/templates/layout.html:284
 msgid "Preferences"
 msgstr ""
 
-#: mycodo_flask/templates/layout.html:272
+#: mycodo_flask/templates/layout.html:271
 msgid "Logout"
 msgstr "登出"
 
-#: mycodo_flask/templates/layout.html:293
+#: mycodo_flask/templates/layout.html:292
 #: mycodo_flask/templates/settings/general.html:96
 msgid "Selecting a language will override the web browser's language"
 msgstr "选择语言将覆盖Web浏览器的语言"
 
 #: mycodo_flask/templates/admin/dependencies_install.html:18
 #: mycodo_flask/templates/admin/dependencies_install.html:35
-#: mycodo_flask/templates/layout.html:317
-#: mycodo_flask/templates/layout.html:355
+#: mycodo_flask/templates/layout.html:316
+#: mycodo_flask/templates/layout.html:354
 #: mycodo_flask/templates/pages/dashboard_options.html:10
 #: mycodo_flask/templates/pages/data_options/input_options.html:18
 #: mycodo_flask/templates/pages/function_options/conditional_options.html:9

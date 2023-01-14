@@ -8,8 +8,6 @@ Mycodo是开源软件，旨在运行在[树莓派](https://en.wikipedia.org/wiki
 
 有关功能、使用Mycodo的项目、屏幕截图和其他信息，请参见[README](https://github.com/kizniche/Mycodo#uses)。
 
-This manual is also [available as a PDF](https://kizniche.github.io/Mycodo/mycodo-manual.pdf) for offline reading.
-
 ### 先决条件
 
 *   单板计算机（推荐。[Raspberry Pi](https://www.raspberrypi.org/)，任何版本。零，1，2，3，或4)

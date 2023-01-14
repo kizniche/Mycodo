@@ -8,8 +8,6 @@ Mycodo es un software de código abierto diseñado para funcionar en la [Raspber
 
 Consulte el [README](https://github.com/kizniche/Mycodo#uses) para conocer las características, los proyectos que utilizan Mycodo, las capturas de pantalla y otra información.
 
-Este manual también está [disponible en formato PDF](https://kizniche.github.io/Mycodo/mycodo-manual.pdf) para su lectura sin conexión.
-
 ### Requisitos previos
 
 *   Ordenador monoplaca (Recomendado: [Raspberry Pi](https://www.raspberrypi.org/), cualquier versión: Cero, 1, 2, 3 o 4)

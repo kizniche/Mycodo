@@ -8,8 +8,6 @@ Mycodo är en programvara med öppen källkod som är utformad för att köras p
 
 Se [README](https://github.com/kizniche/Mycodo#uses) för funktioner, projekt som använder Mycodo, skärmdumpar och annan information.
 
-Den här handboken finns också [tillgänglig som PDF](https://kizniche.github.io/Mycodo/mycodo-manual.pdf) för att läsas offline.
-
 ### Förutsättningar
 
 *   Enbordsdator (Rekommenderas: [Raspberry Pi](https://www.raspberrypi.org/), vilken version som helst: Zero, 1, 2, 3 eller 4)

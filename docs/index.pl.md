@@ -8,8 +8,6 @@ Mycodo to oprogramowanie open source przeznaczone do uruchamiania na [Raspberry 
 
 Zobacz [README](https://github.com/kizniche/Mycodo#uses), aby poznać funkcje, projekty wykorzystujące Mycodo, zrzuty ekranu i inne informacje.
 
-Instrukcja ta jest również [dostępna jako PDF](https://kizniche.github.io/Mycodo/mycodo-manual.pdf) do czytania w trybie offline.
-
 ### Wymagania wstępne
 
 *   Komputer jednopłytkowy (Zalecane: [Raspberry Pi](https://www.raspberrypi.org/), dowolna wersja: Zero, 1, 2, 3 lub 4)

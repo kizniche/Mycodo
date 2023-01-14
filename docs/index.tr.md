@@ -8,8 +8,6 @@ Mycodo, [Raspberry Pi](https://en.wikipedia.org/wiki/Raspberry_Pi) ve diğer tek
 
 Özellikler, Mycodo kullanan projeler, ekran görüntüleri ve diğer bilgiler için [README](https://github.com/kizniche/Mycodo#uses) adresine bakın.
 
-This manual is also [available as a PDF](https://kizniche.github.io/Mycodo/mycodo-manual.pdf) for offline reading.
-
 ### Ön Koşullar
 
 *   Tek kartlı bilgisayar (Önerilen: [Raspberry Pi](https://www.raspberrypi.org/), herhangi bir sürüm: Sıfır, 1, 2, 3 veya 4)
