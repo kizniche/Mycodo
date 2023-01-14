@@ -1,3 +1,10 @@
+## 8.15.1 (2023-01-14)
+
+### Bugfixes
+
+ - Fix endpoints of Widgets not able to be created until a frontend restart ([#1260](https://github.com/kizniche/Mycodo/issues/1260))
+
+
 ## 8.15.0 (2023-01-13)
 
 This release fixes several bugs and changes how measurement timestamps are returned from the time-series database.
