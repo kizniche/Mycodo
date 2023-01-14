@@ -182,7 +182,7 @@ nav:
   - Troubleshooting.md
 
 extra:
-  version: 8.14.0
+  version: 8.15.0
   alternate:
     - name: English
       link: ""

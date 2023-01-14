@@ -6,16 +6,16 @@ Strona `Pomiary na żywo` jest pierwszą stroną, którą widzi użytkownik po z
 
 ## Wykresy asynchroniczne
 
-Page\: `Dane -> Wykresy asynchroniczne`
+Strona\: `Dane -> Wykresy asynchroniczne`
 
 Graficzne wyświetlanie danych przydatne do przeglądania zestawów danych obejmujących stosunkowo długie okresy czasu (tygodnie/miesiące/roki), których wyświetlanie w postaci wykresu synchronicznego mogłoby wymagać dużej ilości danych i procesora. Po wybraniu przedziału czasowego zostaną wczytane dane z tego przedziału, jeśli istnieje. Pierwszy widok będzie dotyczył całego wybranego zestawu danych. Dla każdego widoku/powiększenia zostanie załadowanych 700 punktów danych. Jeśli dla wybranego przedziału czasowego zarejestrowano więcej niż 700 punktów danych, 700 punktów zostanie utworzonych z uśrednienia punktów w tym przedziale czasowym. Umożliwia to wykorzystanie znacznie mniejszej ilości danych do nawigacji po dużym zbiorze danych. Na przykład, 4 miesiące danych mogą mieć rozmiar 10 megabajtów, jeśli wszystkie zostaną pobrane. Jednak podczas przeglądania 4-miesięcznego okresu nie jest możliwe zobaczenie każdego punktu danych z tych 10 megabajtów, a agregacja punktów jest nieunikniona. Przy asynchronicznym ładowaniu danych, pobierasz tylko to, co widzisz. Tak więc, zamiast pobierać 10 megabajtów przy każdym ładowaniu wykresu, tylko ~50kb zostanie pobrane do momentu wybrania nowego poziomu powiększenia, w którym to momencie pobierane jest tylko kolejne ~50kb.
 
 !!! note
-    Graphs require measurements, therefore at least one Input/Output/Function/etc. needs to be added and activated in order to display data.
+    Wykresy wymagają pomiarów, dlatego aby wyświetlić dane należy dodać i aktywować przynajmniej jedno Wejście/Wyjście/Funkcję/etc.
 
 ## Pulpit
 
-Page\: `Dane -> Pulpit`
+Strona\: `Dane -> Pulpit`
 
 Dashboard może służyć zarówno do przeglądania danych, jak i do manipulowania systemem, dzięki licznym dostępnym widżetom dashboardowym. Można tworzyć wiele dashboardów, jak również zablokować je, aby uniemożliwić zmianę układu.
 
@@ -23,15 +23,15 @@ Dashboard może służyć zarówno do przeglądania danych, jak i do manipulowan
 
 Widżety to elementy na pulpicie nawigacyjnym, które mają wiele zastosowań, takich jak wyświetlanie danych (wykresy, wskaźniki, mierniki itp.) lub interakcja z systemem (manipulowanie wyjściami, zmiana cyklu pracy PWM, odpytywanie lub modyfikowanie bazy danych itp.) Widżety można łatwo zmieniać układ i rozmiar poprzez przeciąganie i upuszczanie. Pełna lista obsługiwanych Widżetów znajduje się w [Obsługiwane Widżety](Supported-Widgets.md).
 
-### Custom Widgets
+### Własne widżety
 
-There is a Custom Widget import system in Mycodo that allows user-created Widgets to be used in the Mycodo system. Custom Widgets can be uploaded on the `[Gear Icon] -> Configure -> Custom Widgets` page. After import, they will be available to use on the `Setup -> Widget` page.
+W Mycodo istnieje system importu Custom Widget, który umożliwia wykorzystanie w systemie Mycodo widgetów stworzonych przez użytkownika. Custom Widgety można wgrać na stronie `[Gear Icon] -> Configure -> Custom Widgets`. Po zaimportowaniu będą one dostępne do użycia na stronie `Setup -> Widget`.
 
-If you develop a working module, please consider [creating a new GitHub issue](https://github.com/kizniche/Mycodo/issues/new?assignees=&labels=&template=feature-request.md&title=New%20Module) or pull request, and it may be included in the built-in set.
+Jeśli opracujesz działający moduł, rozważ [utworzenie nowego wydania GitHub](https://github.com/kizniche/Mycodo/issues/new?assignees=&labels=&template=feature-request.md&title=New%20Module) lub pull request, a może on zostać włączony do wbudowanego zestawu.
 
-Open any of the built-in Widget modules located in the directory [Mycodo/mycodo/widgets](https://github.com/kizniche/Mycodo/tree/master/mycodo/widgets/) for examples of the proper formatting. There are also example Custom Widgets in the directory [Mycodo/mycodo/widgets/examples](https://github.com/kizniche/Mycodo/tree/master/mycodo/widgets/examples).
+Otwórz dowolny z wbudowanych modułów Widget znajdujących się w katalogu [Mycodo/mycodo/widgets](https://github.com/kizniche/Mycodo/tree/master/mycodo/widgets/), aby uzyskać przykłady prawidłowego formatowania. Istnieją również przykładowe Widżety niestandardowe w katalogu [Mycodo/mycodo/widgets/examples](https://github.com/kizniche/Mycodo/tree/master/mycodo/widgets/examples).
 
-Creating a custom widget module often requires specific placement and execution of Javascript. Several variables were created in each module to address this, and follow the following brief structure of the dashboard page that would be generated with multiple widgets being displayed.
+Tworzenie niestandardowego modułu widżetów często wymaga specyficznego umieszczenia i wykonania skryptów Javascript. W każdym module utworzono kilka zmiennych, aby rozwiązać ten problem, i podążać za następującą krótką strukturą strony pulpitu nawigacyjnego, która zostałaby wygenerowana przy wyświetlaniu wielu widżetów.
 
 ```angular2html
 <html>

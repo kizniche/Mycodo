@@ -2,7 +2,7 @@ description: Documentation for Mycodo, an open source environmental monitoring a
 
 ## Sistem Pemantauan dan Regulasi Lingkungan Mycodo
 
-Mycodo adalah perangkat lunak sumber terbuka yang dirancang untuk dijalankan pada [Raspberry Pi] (https://en.wikipedia.org/wiki/Raspberry_Pi) dan komputer papan tunggal lainnya (SBC). Mycodo memasangkan input dan output dengan cara yang menarik untuk merasakan dan memanipulasi lingkungan.
+Mycodo adalah perangkat lunak sumber terbuka yang dirancang untuk dijalankan pada [Raspberry Pi](https://en.wikipedia.org/wiki/Raspberry_Pi) dan komputer papan tunggal lainnya (SBC). Mycodo memasangkan input dan output dengan cara yang menarik untuk merasakan dan memanipulasi lingkungan.
 
 ### Information
 
@@ -12,7 +12,7 @@ This manual is also [available as a PDF](https://kizniche.github.io/Mycodo/mycod
 
 ### Prasyarat
 
-*   Komputer papan tunggal (Direkomendasikan: [Raspberry Pi] (https://www.raspberrypi.org/), versi apa pun: Nol, 1, 2, 3, atau 4)
+*   Komputer papan tunggal (Direkomendasikan: [Raspberry Pi](https://www.raspberrypi.org/), versi apa pun: Nol, 1, 2, 3, atau 4)
 *   Sistem operasi berbasis Debian
 *   Koneksi internet yang aktif
 

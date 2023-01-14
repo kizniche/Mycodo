@@ -7,7 +7,7 @@
 # sudo npm install -g npx
 #
 
-API_SERV_IP="127.0.0.1"
+API_SERV_IP="192.168.0.29"
 
 INSTALL_DIRECTORY=$( cd "$( dirname "${BASH_SOURCE[0]}" )/../../" && pwd -P )
 
