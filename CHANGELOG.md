@@ -4,6 +4,10 @@
 
  - Fix PCF8574 Pump Output not properly determining channel states
 
+### Miscellaneous
+
+ - Add libarry name to the title when multiple Inputs of the same name exist in the manual
+
 
 ## 8.15.1 (2023-01-14)
 
