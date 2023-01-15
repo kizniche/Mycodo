@@ -10,7 +10,7 @@
 
 ### Miscellaneous
 
- - Add libarry name to the title when multiple Inputs of the same name exist in the manual
+ - Add library name to the title when multiple Inputs of the same name exist in the manual
 
 
 ## 8.15.1 (2023-01-14)
