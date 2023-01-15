@@ -54,11 +54,14 @@ def function_add(form_add_func):
     if not current_app.config['TESTING']:
         dep_unmet, _, dep_message = return_dependencies(function_name)
         if dep_unmet:
-            for each_dep in dep_unmet:
-                list_unmet_deps.append(each_dep[3])
             messages["error"].append(
                 f"{function_name} has unmet dependencies. "
                  "They must be installed before the Function can be added.")
+
+            for each_dep in dep_unmet:
+                list_unmet_deps.append(each_dep[3])
+                if each_dep[2] == 'pip-pypi':
+                    dep_message += f" The Python package {each_dep[3]} was not found to be installed because '{each_dep[0]}' could not be imported."
 
             # Get Function name
             if function_name in dict_controllers:

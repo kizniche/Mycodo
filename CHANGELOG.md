@@ -4,6 +4,10 @@
 
  - Fix PCF8574 Pump Output not properly determining channel states
 
+### Features
+
+ - Add feedback about why a Python package dependency was unmet when adding an Input/Output/Function
+
 ### Miscellaneous
 
  - Add libarry name to the title when multiple Inputs of the same name exist in the manual

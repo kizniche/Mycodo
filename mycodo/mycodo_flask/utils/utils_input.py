@@ -66,10 +66,15 @@ def input_add(form_add):
     if not current_app.config['TESTING']:
         dep_unmet, _, dep_message = return_dependencies(input_name)
         if dep_unmet:
+            messages["error"].append(
+                f"{input_name} has unmet dependencies. "
+                "They must be installed before the Input can be added.")
+
             for each_dep in dep_unmet:
                 list_unmet_deps.append(each_dep[3])
-            messages["error"].append(
-                f"{input_name} has unmet dependencies. They must be installed before the Input can be added.")
+                if each_dep[2] == 'pip-pypi':
+                    dep_message += f" The Python package {each_dep[3]} was not found to be installed because '{each_dep[0]}' could not be imported."
+
             if input_name in dict_inputs:
                 dep_name = dict_inputs[input_name]['input_name']
             else:
