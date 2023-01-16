@@ -26,7 +26,7 @@ from mycodo.config import (ALEMBIC_VERSION, BACKUP_LOG_FILE, CAMERA_INFO,
                            FRONTEND_PID_FILE, HTTP_ACCESS_LOG_FILE,
                            HTTP_ERROR_LOG_FILE, KEEPUP_LOG_FILE,
                            LOGIN_LOG_FILE, MYCODO_VERSION, RESTORE_LOG_FILE,
-                           THEMES_DARK, UPGRADE_LOG_FILE, USAGE_REPORTS_PATH)
+                           THEMES_DARK, UPGRADE_LOG_FILE)
 from mycodo.config_devices_units import MEASUREMENTS
 from mycodo.databases.models import (PID, AlembicVersion, Camera, Conversion,
                                      CustomController, DeviceMeasurements,

@@ -7,44 +7,27 @@ import logging
 import os
 
 import flask_login
-from flask import Flask
-from flask import flash
-from flask import redirect
-from flask import request
-from flask import url_for
-from flask_babel import Babel
-from flask_babel import gettext
+from flask import Flask, flash, redirect, request, url_for
+from flask_babel import Babel, gettext
 from flask_compress import Compress
 from flask_limiter import Limiter
 from flask_login import current_user
 from flask_session import Session
 from flask_talisman import Talisman
 
-from mycodo.config import INSTALL_DIRECTORY
-from mycodo.config import LANGUAGES
-from mycodo.config import ProdConfig
-from mycodo.databases.models import Misc
-from mycodo.databases.models import User
-from mycodo.databases.models import populate_db
+from mycodo.config import INSTALL_DIRECTORY, LANGUAGES, ProdConfig
+from mycodo.databases.models import Misc, User, Widget, populate_db
 from mycodo.databases.utils import session_scope
-from mycodo.mycodo_flask import routes_admin
-from mycodo.mycodo_flask import routes_authentication
-from mycodo.mycodo_flask import routes_dashboard
-from mycodo.mycodo_flask import routes_function
-from mycodo.mycodo_flask import routes_general
-from mycodo.mycodo_flask import routes_input
-from mycodo.mycodo_flask import routes_method
-from mycodo.mycodo_flask import routes_output
-from mycodo.mycodo_flask import routes_page
-from mycodo.mycodo_flask import routes_password_reset
-from mycodo.mycodo_flask import routes_remote_admin
-from mycodo.mycodo_flask import routes_settings
-from mycodo.mycodo_flask import routes_static
-from mycodo.mycodo_flask.api import api_blueprint
-from mycodo.mycodo_flask.api import init_api
+from mycodo.mycodo_flask import (routes_admin, routes_authentication,
+                                 routes_dashboard, routes_function,
+                                 routes_general, routes_input, routes_method,
+                                 routes_output, routes_page,
+                                 routes_password_reset, routes_remote_admin,
+                                 routes_settings, routes_static)
+from mycodo.mycodo_flask.api import api_blueprint, init_api
 from mycodo.mycodo_flask.extensions import db
-from mycodo.mycodo_flask.utils.utils_dashboard import register_widget_endpoints
 from mycodo.mycodo_flask.utils.utils_general import get_ip_address
+from mycodo.utils.widgets import parse_widget_information
 
 logger = logging.getLogger(__name__)
 
@@ -62,7 +45,6 @@ def create_app(config=ProdConfig):
 
     register_extensions(app)
     register_blueprints(app)
-
     register_widget_endpoints(app)
 
     return app
@@ -116,6 +98,35 @@ def register_blueprints(app):
     app.register_blueprint(routes_remote_admin.blueprint)  # register remote admin views
     app.register_blueprint(routes_settings.blueprint)  # register settings views
     app.register_blueprint(routes_static.blueprint)  # register static routes
+
+
+def register_widget_endpoints(app):
+    try:
+        if app.config['TESTING']:  # TODO: Add pytest endpoint test and remove this
+            return
+
+        dict_widgets = parse_widget_information()
+
+        with session_scope(app.config['SQLALCHEMY_DATABASE_URI']) as new_session:
+            widget = new_session.query(Widget).all()
+            widget_types = []
+            for each_widget in widget:
+                if each_widget.graph_type not in widget_types:
+                    widget_types.append(each_widget.graph_type)
+
+            for each_widget_type in widget_types:
+                if each_widget_type in dict_widgets and 'endpoints' in dict_widgets[each_widget_type]:
+                    for rule, endpoint, view_func, methods in dict_widgets[each_widget_type]['endpoints']:
+                        if endpoint in app.view_functions:
+                            logger.info(
+                                "Endpoint {} ({}) already exists. Not adding.".format(
+                                    endpoint, rule))
+                        else:
+                            logger.info(
+                                "Adding endpoint {} ({}).".format(endpoint, rule))
+                            app.add_url_rule(rule, endpoint, view_func, methods=methods)
+    except:
+        logger.exception("Adding Widget Endpoints")
 
 
 def extension_babel(app):

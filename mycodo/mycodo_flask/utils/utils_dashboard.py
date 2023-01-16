@@ -13,7 +13,6 @@ from mycodo.databases import clone_model, set_uuid
 from mycodo.databases.models import (PID, Conversion, CustomController,
                                      Dashboard, DeviceMeasurements, Input,
                                      Output, Widget)
-from mycodo.databases.utils import session_scope
 from mycodo.mycodo_client import DaemonControl
 from mycodo.mycodo_flask.extensions import db
 from mycodo.mycodo_flask.utils.utils_general import (
@@ -527,32 +526,3 @@ def check_func(all_devices,
                     y_axes.append(meas_name)
 
     return y_axes
-
-
-def register_widget_endpoints(app=current_app):
-    try:
-        if app.config['TESTING']:  # TODO: Add pytest endpoint test and remove this
-            return
-
-        dict_widgets = parse_widget_information()
-
-        with session_scope(app.config['SQLALCHEMY_DATABASE_URI']) as new_session:
-            widget = new_session.query(Widget).all()
-            widget_types = []
-            for each_widget in widget:
-                if each_widget.graph_type not in widget_types:
-                    widget_types.append(each_widget.graph_type)
-
-            for each_widget_type in widget_types:
-                if each_widget_type in dict_widgets and 'endpoints' in dict_widgets[each_widget_type]:
-                    for rule, endpoint, view_func, methods in dict_widgets[each_widget_type]['endpoints']:
-                        if endpoint in app.view_functions:
-                            logger.info(
-                                "Endpoint {} ({}) already exists. Not adding.".format(
-                                    endpoint, rule))
-                        else:
-                            logger.info(
-                                "Adding endpoint {} ({}).".format(endpoint, rule))
-                            app.add_url_rule(rule, endpoint, view_func, methods=methods)
-    except:
-        logger.exception("Adding Widget Endpoints")

@@ -11,39 +11,21 @@ import zipfile
 from collections import OrderedDict
 
 import flask_login
-from flask import Blueprint
-from flask import flash
-from flask import jsonify
-from flask import make_response
-from flask import redirect
-from flask import render_template
-from flask import request
-from flask import send_file
-from flask import url_for
+from flask import (Blueprint, flash, jsonify, make_response, redirect,
+                   render_template, request, send_file, url_for)
 from flask_babel import gettext
 from pkg_resources import parse_version
 
-from mycodo.config import BACKUP_LOG_FILE
-from mycodo.config import BACKUP_PATH
-from mycodo.config import CAMERA_INFO
-from mycodo.config import DEPENDENCIES_GENERAL
-from mycodo.config import DEPENDENCY_INIT_FILE
-from mycodo.config import DEPENDENCY_LOG_FILE
-from mycodo.config import FINAL_RELEASES
-from mycodo.config import FORCE_UPGRADE_MASTER
-from mycodo.config import FUNCTION_INFO
-from mycodo.config import INSTALL_DIRECTORY
-from mycodo.config import METHOD_INFO
-from mycodo.config import MYCODO_VERSION
-from mycodo.config import RESTORE_LOG_FILE
-from mycodo.config import STATS_CSV
-from mycodo.config import UPGRADE_INIT_FILE
-from mycodo.config import UPGRADE_LOG_FILE
-from mycodo.config import UPGRADE_TMP_LOG_FILE
+from mycodo.config import (BACKUP_LOG_FILE, BACKUP_PATH, CAMERA_INFO,
+                           DEPENDENCIES_GENERAL, DEPENDENCY_INIT_FILE,
+                           DEPENDENCY_LOG_FILE, FINAL_RELEASES,
+                           FORCE_UPGRADE_MASTER, FUNCTION_INFO,
+                           INSTALL_DIRECTORY, METHOD_INFO, MYCODO_VERSION,
+                           RESTORE_LOG_FILE, STATS_CSV, UPGRADE_INIT_FILE,
+                           UPGRADE_LOG_FILE, UPGRADE_TMP_LOG_FILE)
 from mycodo.databases.models import Misc
 from mycodo.mycodo_flask.extensions import db
-from mycodo.mycodo_flask.forms import forms_dependencies
-from mycodo.mycodo_flask.forms import forms_misc
+from mycodo.mycodo_flask.forms import forms_dependencies, forms_misc
 from mycodo.mycodo_flask.routes_static import inject_variables
 from mycodo.mycodo_flask.utils import utils_general
 from mycodo.utils.actions import parse_action_information
@@ -52,10 +34,8 @@ from mycodo.utils.github_release_info import MycodoRelease
 from mycodo.utils.inputs import parse_input_information
 from mycodo.utils.outputs import parse_output_information
 from mycodo.utils.stats import return_stat_file_dict
-from mycodo.utils.system_pi import can_perform_backup
-from mycodo.utils.system_pi import cmd_output
-from mycodo.utils.system_pi import get_directory_size
-from mycodo.utils.system_pi import internet
+from mycodo.utils.system_pi import (can_perform_backup, cmd_output,
+                                    get_directory_size, internet)
 from mycodo.utils.widgets import parse_widget_information
 
 logger = logging.getLogger('mycodo.mycodo_flask.admin')
