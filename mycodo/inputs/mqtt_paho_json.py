@@ -217,7 +217,6 @@ class InputModule(AbstractInput):
     def listener(self):
         self.callbacks_connect()
         self.connect()
-        self.subscribe()
         self.client.loop_start()
 
     def callbacks_connect(self):
@@ -225,9 +224,9 @@ class InputModule(AbstractInput):
         try:
             self.logger.debug("Connecting MQTT callback functions")
             self.client.on_connect = self.on_connect
+            self.client.on_disconnect = self.on_disconnect
             self.client.on_message = self.on_message
             self.client.on_subscribe = self.on_subscribe
-            self.client.on_disconnect = self.on_disconnect
             self.logger.debug("MQTT callback functions connected")
         except:
             self.logger.error("Unable to connect mqtt callback functions")
@@ -256,8 +255,11 @@ class InputModule(AbstractInput):
                 self.mqtt_channel))
 
     def on_connect(self, client, obj, flags, rc):
-        self.logger.debug("Connected to '{}'. Return code: {}".format(
-            self.mqtt_channel, rc))
+        self.logger.debug(f"Connected: {rc}")
+        self.subscribe()
+
+    def on_disconnect(self, client, userdata, rc):
+        self.logger.debug(f"Disconnected: {rc}")
 
     def on_subscribe(self, client, obj, mid, granted_qos):
         self.logger.debug("Subscribed to mqtt topic: {}, {}, {}".format(
@@ -333,9 +335,6 @@ class InputModule(AbstractInput):
                 self.unique_id,
                 measurement,
                 use_same_timestamp=INPUT_INFORMATION['measurements_use_same_timestamp'])
-
-    def on_disconnect(self, client, userdata, rc=0):
-        self.logger.debug("Disconnected. Return code: {}".format(rc))
 
     def stop_input(self):
         """Called when Input is deactivated."""

@@ -184,7 +184,7 @@ class InputModule(AbstractInput):
         self.client = mqtt.Client(
             self.mqtt_clientid,
             transport='websockets' if self.mqtt_use_websockets else 'tcp')
-        self.logger.debug("Client created with ID {}".format(self.mqtt_clientid))
+        self.logger.debug(f"Client created with ID {self.mqtt_clientid}")
         if self.mqtt_login:
             if not self.mqtt_password:
                 self.mqtt_password = None
@@ -194,19 +194,21 @@ class InputModule(AbstractInput):
             self.client.tls_set()
 
     def listener(self):
-        self.callbacks_connect()
-        self.connect()
-        self.subscribe()
-        self.client.loop_start()
+        try:
+            self.callbacks_connect()
+            self.connect()
+            self.client.loop_start()
+        except:
+            self.logger.exception("Input listener error")
 
     def callbacks_connect(self):
         """Connect the callback functions."""
         try:
             self.logger.debug("Connecting MQTT callback functions")
             self.client.on_connect = self.on_connect
+            self.client.on_disconnect = self.on_disconnect
             self.client.on_message = self.on_message
             self.client.on_subscribe = self.on_subscribe
-            self.client.on_disconnect = self.on_disconnect
             self.logger.debug("MQTT callback functions connected")
         except:
             self.logger.error("Unable to connect mqtt callback functions")
@@ -218,42 +220,38 @@ class InputModule(AbstractInput):
                 self.mqtt_hostname,
                 port=self.mqtt_port,
                 keepalive=self.mqtt_keepalive)
-            self.logger.info("Connected to {} as {}".format(
-                self.mqtt_hostname, self.mqtt_clientid))
+            self.logger.info(f"Connected to {self.mqtt_hostname} as {self.mqtt_clientid}")
         except:
-            self.logger.error("Could not connect to mqtt host: {}:{}".format(
-                self.mqtt_hostname, self.mqtt_port))
+            self.logger.error(f"Could not connect to mqtt host: {self.mqtt_hostname}:{self.mqtt_port}")
 
     def subscribe(self):
         """Set up the subscriptions to the proper MQTT channels to listen to."""
         try:
             for channel in self.channels_measurement:
-                self.logger.debug("Subscribing to MQTT topic '{}'".format(
-                    self.channels_measurement[channel].name))
+                self.logger.debug(f"Subscribing to MQTT topic '{self.channels_measurement[channel].name}'")
                 self.client.subscribe(self.options_channels['subscribe_topic'][channel])
         except:
-            self.logger.error("Could not subscribe to MQTT channel '{}'".format(
-                self.mqtt_channel))
+            self.logger.error(f"Could not subscribe to MQTT channel '{self.mqtt_channel}'")
 
     def on_connect(self, client, obj, flags, rc):
-        self.logger.debug("Connected to '{}'. Return code: {}".format(
-            self.mqtt_channel, rc))
+        self.logger.debug(f"Connected: {rc}")
+        self.subscribe()
+
+    def on_disconnect(self, client, userdata, rc):
+        self.logger.debug(f"Disconnected: {rc}")
 
     def on_subscribe(self, client, obj, mid, granted_qos):
-        self.logger.debug("Subscribed to mqtt topic: {}, {}, {}".format(
-            self.mqtt_channel, mid, granted_qos))
+        self.logger.debug(f"Subscribed to mqtt topic: {self.mqtt_channel}, {mid}, {granted_qos}")
 
     def on_log(self, mqttc, obj, level, string):
-        self.logger.info("Log: {}".format(string))
+        self.logger.info(f"Log: {string}")
 
     def on_message(self, client, userdata, msg):
         try:
             payload = msg.payload.decode()
-            self.logger.debug("Received message: topic: {}, payload: {}".format(
-                msg.topic, payload))
+            self.logger.debug(f"Received message: topic: {msg.topic}, payload: {payload}")
         except Exception as exc:
-            self.logger.error(
-                "Payload could not be decoded: {}".format(exc))
+            self.logger.error(f"Payload could not be decoded: {exc}")
             return
 
         datetime_utc = datetime.datetime.utcnow()
@@ -261,19 +259,16 @@ class InputModule(AbstractInput):
         channel = None
         for each_channel in self.channels_measurement:
             if self.options_channels['subscribe_topic'][each_channel] == msg.topic:
-                self.logger.debug("Found channel {} with topic '{}'".format(
-                    each_channel,
-                    self.options_channels['subscribe_topic'][each_channel]))
+                self.logger.debug(f"Found channel {each_channel} with topic '{self.options_channels['subscribe_topic'][each_channel]}'")
                 channel = each_channel
 
         if channel is None:
-            self.logger.error(
-                "Could not determine channel for topic '{}'".format(msg.topic))
+            self.logger.error(f"Could not determine channel for topic '{msg.topic}'")
             return
 
         try:
             value = float(payload)
-            self.logger.debug("Payload represents a float: {}".format(value))
+            self.logger.debug(f"Payload represents a float: {value}")
             measurement[channel] = {}
             measurement[channel]['measurement'] = self.channels_measurement[channel].measurement
             measurement[channel]['unit'] = self.channels_measurement[channel].unit
@@ -281,9 +276,7 @@ class InputModule(AbstractInput):
             measurement[channel]['timestamp_utc'] = datetime_utc
             self.add_measurement_influxdb(channel, measurement)
         except Exception as err:
-            self.logger.error(
-                "Error processing message payload '{}': {}".format(
-                    payload, err))
+            self.logger.error(f"Error processing message payload '{payload}': {err}")
 
     def add_measurement_influxdb(self, channel, measurement):
         # Convert value/unit is conversion_id present and valid
@@ -305,15 +298,11 @@ class InputModule(AbstractInput):
                 measurement[channel]['value'] = meas[channel]['value']
 
         if measurement:
-            self.logger.debug(
-                "Adding measurement to influxdb: {}".format(measurement))
+            self.logger.debug(f"Adding measurement to influxdb: {measurement}")
             add_measurements_influxdb(
                 self.unique_id,
                 measurement,
                 use_same_timestamp=INPUT_INFORMATION['measurements_use_same_timestamp'])
-
-    def on_disconnect(self, client, userdata, rc=0):
-        self.logger.debug("Disconnected. Return code: {}".format(rc))
 
     def stop_input(self):
         """Called when Input is deactivated."""

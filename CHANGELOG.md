@@ -3,6 +3,7 @@
 ### Bugfixes
 
  - Fix PCF8574 Pump Output not properly determining channel states
+ - Fix MQTT Subscribe Inputs resubscribing to MQTT topics after reconnect
 
 ### Features
 
