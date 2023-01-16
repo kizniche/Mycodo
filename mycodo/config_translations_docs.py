@@ -13,7 +13,6 @@ TRANSLATIONS = {
 
         'Information': lazy_gettext('Information'),
         'text_2_1': lazy_gettext('See the [README](https://github.com/kizniche/Mycodo#uses) for features, projects using Mycodo, screenshots, and other information.'),
-        'text_2_2': lazy_gettext('This manual is also [available as a PDF](https://kizniche.github.io/Mycodo/mycodo-manual.pdf) for offline reading.'),
 
         'Prerequisites': lazy_gettext('Prerequisites'),
         'text_3_1': lazy_gettext('Single-board computer (Recommended: [Raspberry Pi](https://www.raspberrypi.org/), any version: Zero, 1, 2, 3, or 4)'),

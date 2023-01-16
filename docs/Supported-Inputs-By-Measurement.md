@@ -9,16 +9,16 @@ Measurements
  - [Angle](#angle)
  - [Battery](#battery)
  - [Boolean](#boolean)
- - [CO2](#co2)
+ - [Carbon Dioxide](#carbon-dioxide)
  - [Color (Y)](#color-y)
  - [Color (Blue)](#color-blue)
  - [Color (Green)](#color-green)
  - [Color (Red)](#color-red)
  - [Color (x)](#color-x)
  - [Color (y)](#color-y)
- - [CPU Load (15 min)](#cpu-load-15-min)
- - [CPU Load (1 min)](#cpu-load-1-min)
- - [CPU Load (5 min)](#cpu-load-5-min)
+ - [CPU Load (15 Minutes)](#cpu-load-15-minutes)
+ - [CPU Load (1 Minute)](#cpu-load-1-minute)
+ - [CPU Load (5 Minutes)](#cpu-load-5-minutes)
  - [Dewpoint](#dewpoint)
  - [Direction](#direction)
  - [Disk](#disk)
@@ -37,8 +37,9 @@ Measurements
  - [Length](#length)
  - [Light](#light)
  - [Magnetic Flux Density](#magnetic-flux-density)
+ - [Methane](#methane)
  - [Moisture](#moisture)
- - [O2](#o2)
+ - [Oxygen](#oxygen)
  - [Oxidation Reduction Potential](#oxidation-reduction-potential)
  - [PM10](#pm10)
  - [PM1](#pm1)
@@ -112,6 +113,8 @@ Measurements
 
 ### [BOSCH: BMP280](/Mycodo/Supported-Inputs/#bosch-bmp280)
 
+### [Senseair: K96](/Mycodo/Supported-Inputs/#senseair-k96)
+
 ## Angle
 
 ### [Raspberry Pi Foundation: Sense HAT](/Mycodo/Supported-Inputs/#raspberry-pi-foundation-sense-hat)
@@ -128,11 +131,13 @@ Measurements
 
 ## Boolean
 
+### [Mycodo: Output State (On/Off)](/Mycodo/Supported-Inputs/#mycodo-output-state-on-off)
+
 ### [Mycodo: Server Ping](/Mycodo/Supported-Inputs/#mycodo-server-ping)
 
 ### [Mycodo: Server Port Open](/Mycodo/Supported-Inputs/#mycodo-server-port-open)
 
-## CO2
+## Carbon Dioxide
 
 ### [AMS: CCS811 (with Temperature)](/Mycodo/Supported-Inputs/#ams-ccs811-with-temperature)
 
@@ -143,6 +148,8 @@ Measurements
 ### [CO2Meter: K30](/Mycodo/Supported-Inputs/#co2meter-k30)
 
 ### [Cozir: Cozir CO2](/Mycodo/Supported-Inputs/#cozir-cozir-co2)
+
+### [Senseair: K96](/Mycodo/Supported-Inputs/#senseair-k96)
 
 ### [Sensirion: SCD-4x (40, 41)](/Mycodo/Supported-Inputs/#sensirion-scd-4x-40-41)
 
@@ -182,15 +189,15 @@ Measurements
 
 ### [Atlas Scientific: Atlas Color](/Mycodo/Supported-Inputs/#atlas-scientific-atlas-color)
 
-## CPU Load (15 min)
+## CPU Load (15 Minutes)
 
 ### [Mycodo: CPU Load](/Mycodo/Supported-Inputs/#mycodo-cpu-load)
 
-## CPU Load (1 min)
+## CPU Load (1 Minute)
 
 ### [Mycodo: CPU Load](/Mycodo/Supported-Inputs/#mycodo-cpu-load)
 
-## CPU Load (5 min)
+## CPU Load (5 Minutes)
 
 ### [Mycodo: CPU Load](/Mycodo/Supported-Inputs/#mycodo-cpu-load)
 
@@ -219,6 +226,8 @@ Measurements
 ### [Ruuvi: RuuviTag](/Mycodo/Supported-Inputs/#ruuvi-ruuvitag)
 
 ### [Seeedstudio: DHT11/22](/Mycodo/Supported-Inputs/#seeedstudio-dht11-22)
+
+### [Senseair: K96](/Mycodo/Supported-Inputs/#senseair-k96)
 
 ### [Sensirion: SCD-4x (40, 41)](/Mycodo/Supported-Inputs/#sensirion-scd-4x-40-41)
 
@@ -314,6 +323,8 @@ Measurements
 
 ### [Microchip: MCP3008](/Mycodo/Supported-Inputs/#microchip-mcp3008)
 
+### [Microchip: MCP3008](/Mycodo/Supported-Inputs/#microchip-mcp3008)
+
 ### [Microchip: MCP3208](/Mycodo/Supported-Inputs/#microchip-mcp3208)
 
 ### [Microchip: MCP342x (x=2,3,4,6,7,8)](/Mycodo/Supported-Inputs/#microchip-mcp342x-x=2-3-4-6-7-8)
@@ -380,6 +391,8 @@ Measurements
 
 ### [Seeedstudio: DHT11/22](/Mycodo/Supported-Inputs/#seeedstudio-dht11-22)
 
+### [Senseair: K96](/Mycodo/Supported-Inputs/#senseair-k96)
+
 ### [Sensirion: SCD-4x (40, 41)](/Mycodo/Supported-Inputs/#sensirion-scd-4x-40-41)
 
 ### [Sensirion: SCD30](/Mycodo/Supported-Inputs/#sensirion-scd30)
@@ -440,6 +453,8 @@ Measurements
 
 ### [STMicroelectronics: VL53L1X](/Mycodo/Supported-Inputs/#stmicroelectronics-vl53l1x)
 
+### [STMicroelectronics: VL53L4CD](/Mycodo/Supported-Inputs/#stmicroelectronics-vl53l4cd)
+
 ### [Silicon Labs: SI1145](/Mycodo/Supported-Inputs/#silicon-labs-si1145)
 
 ## Light
@@ -458,11 +473,17 @@ Measurements
 
 ### [Xiaomi: Miflora](/Mycodo/Supported-Inputs/#xiaomi-miflora)
 
+### [ams: AS7341](/Mycodo/Supported-Inputs/#ams-as7341)
+
 ## Magnetic Flux Density
 
 ### [Melexis: MLX90393](/Mycodo/Supported-Inputs/#melexis-mlx90393)
 
 ### [Raspberry Pi Foundation: Sense HAT](/Mycodo/Supported-Inputs/#raspberry-pi-foundation-sense-hat)
+
+## Methane
+
+### [Senseair: K96](/Mycodo/Supported-Inputs/#senseair-k96)
 
 ## Moisture
 
@@ -472,7 +493,7 @@ Measurements
 
 ### [Xiaomi: Miflora](/Mycodo/Supported-Inputs/#xiaomi-miflora)
 
-## O2
+## Oxygen
 
 ### [Atlas Scientific: Atlas O2 (Oxygen Gas)](/Mycodo/Supported-Inputs/#atlas-scientific-atlas-o2-oxygen-gas)
 
@@ -541,6 +562,8 @@ Measurements
 ### [Raspberry Pi Foundation: Sense HAT](/Mycodo/Supported-Inputs/#raspberry-pi-foundation-sense-hat)
 
 ### [Ruuvi: RuuviTag](/Mycodo/Supported-Inputs/#ruuvi-ruuvitag)
+
+### [Senseair: K96](/Mycodo/Supported-Inputs/#senseair-k96)
 
 ### [Weather: OpenWeatherMap (City, Current)](/Mycodo/Supported-Inputs/#weather-openweathermap-city-current)
 
@@ -636,8 +659,6 @@ Measurements
 
 ### [MAXIM: DS28EA00](/Mycodo/Supported-Inputs/#maxim-ds28ea00)
 
-### [MAXIM: MAX3010x (MAX30101/MAX30105)](/Mycodo/Supported-Inputs/#maxim-max3010x-max30101-max30105)
-
 ### [MAXIM: MAX31850K](/Mycodo/Supported-Inputs/#maxim-max31850k)
 
 ### [MAXIM: MAX31855 (Gravity PT100)](/Mycodo/Supported-Inputs/#maxim-max31855-gravity-pt100)
@@ -665,6 +686,8 @@ Measurements
 ### [Ruuvi: RuuviTag](/Mycodo/Supported-Inputs/#ruuvi-ruuvitag)
 
 ### [Seeedstudio: DHT11/22](/Mycodo/Supported-Inputs/#seeedstudio-dht11-22)
+
+### [Senseair: K96](/Mycodo/Supported-Inputs/#senseair-k96)
 
 ### [Sensirion: SCD-4x (40, 41)](/Mycodo/Supported-Inputs/#sensirion-scd-4x-40-41)
 
@@ -737,6 +760,8 @@ Measurements
 ### [Ruuvi: RuuviTag](/Mycodo/Supported-Inputs/#ruuvi-ruuvitag)
 
 ### [Seeedstudio: DHT11/22](/Mycodo/Supported-Inputs/#seeedstudio-dht11-22)
+
+### [Senseair: K96](/Mycodo/Supported-Inputs/#senseair-k96)
 
 ### [Sensirion: SCD-4x (40, 41)](/Mycodo/Supported-Inputs/#sensirion-scd-4x-40-41)
 

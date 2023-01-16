@@ -21,7 +21,7 @@ Dasbor dapat digunakan untuk melihat data dan memanipulasi sistem, berkat banyak
 
 ## Widgets
 
-Widget adalah elemen pada Dasbor yang memiliki sejumlah kegunaan, seperti melihat data (grafik, indikator, pengukur, dll.) atau berinteraksi dengan sistem (memanipulasi output, mengubah siklus tugas PWM, menanyakan atau memodifikasi database, dll.). Widget dapat dengan mudah diatur ulang dan diubah ukurannya dengan menyeret dan menjatuhkan. Untuk daftar lengkap Widget yang didukung, lihat [Supported Widgets] (Supported-Widgets.md).
+Widget adalah elemen pada Dasbor yang memiliki sejumlah kegunaan, seperti melihat data (grafik, indikator, pengukur, dll.) atau berinteraksi dengan sistem (memanipulasi output, mengubah siklus tugas PWM, menanyakan atau memodifikasi database, dll.). Widget dapat dengan mudah diatur ulang dan diubah ukurannya dengan menyeret dan menjatuhkan. Untuk daftar lengkap Widget yang didukung, lihat [Supported Widgets](Supported-Widgets.md).
 
 ### Custom Widgets
 

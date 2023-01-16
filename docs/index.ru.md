@@ -8,8 +8,6 @@ Mycodo - это программное обеспечение с открыты�
 
 Особенности, проекты, использующие Mycodo, скриншоты и другую информацию смотрите в [README](https://github.com/kizniche/Mycodo#uses).
 
-This manual is also [available as a PDF](https://kizniche.github.io/Mycodo/mycodo-manual.pdf) for offline reading.
-
 ### Пререквизиты
 
 *   Одноплатный компьютер (рекомендуется: [Raspberry Pi](https://www.raspberrypi.org/), любая версия: Zero, 1, 2, 3 или 4)

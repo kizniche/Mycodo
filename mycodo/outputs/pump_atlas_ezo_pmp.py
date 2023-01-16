@@ -191,37 +191,25 @@ class OutputModule(AbstractOutput):
             measure_dict[1]['value'] = seconds_to_run
         add_measurements_influxdb(self.unique_id, measure_dict)
 
-    def dispense_duration(self, seconds):
-        # timer_dispense = time.time() + seconds
-        self.currently_dispensing = True
-        write_cmd = "D,*"
-        self.logger.debug("EZO-PMP command: {}".format(write_cmd))
-        self.atlas_device.query(write_cmd)
-
-        # while time.time() < timer_dispense and self.currently_dispensing:
-        #     time.sleep(0.1)
-        #
-        # write_cmd = 'X'
-        # self.atlas_device.query(write_cmd)
-        # self.logger.debug("EZO-PMP command: {}".format(write_cmd))
-        # self.currently_dispensing = False
-        #
-        # self.record_dispersal(seconds_to_run=seconds)
-
     def output_switch(self, state, output_type=None, amount=None, output_channel=None):
         if not self.is_setup():
             msg = "Error 101: Device not set up. See https://kizniche.github.io/Mycodo/Error-Codes#error-101 for more info."
             self.logger.error(msg)
             return msg
 
-        if state == 'on' and output_type == 'sec' and amount:
-            # Only dispense for a duration if output_type is 'sec'
-            # Otherwise, refer to output_mode
-            write_db = threading.Thread(
-                target=self.dispense_duration,
-                args=(amount,))
-            write_db.start()
-            return
+        if state == 'on' and output_type == 'sec':
+            if self.currently_dispensing:
+                self.logger.debug(
+                    "Pump instructed to turn on while it's already dispensing.")
+            else:
+                self.currently_dispensing = True
+                write_cmd = "D,*"
+
+        elif state == 'off' or (amount is not None and amount == 0):
+            self.currently_dispensing = False
+            write_cmd = 'X'
+            amount = 0
+            seconds_to_run = 0
 
         elif state == 'on' and output_type in ['vol', None] and amount:
             if self.options_channels['flow_mode'][0] == 'fastest_flow_rate':
@@ -238,12 +226,6 @@ class OutputModule(AbstractOutput):
                     self.options_channels['flow_mode'][0]))
                 return
 
-        elif state == 'off' or (amount is not None and amount == 0):
-            self.currently_dispensing = False
-            write_cmd = 'X'
-            amount = 0
-            seconds_to_run = 0
-
         else:
             self.logger.error(
                 "Invalid parameters: State: {state}, Type: {ot}, Mode: {mod}, Amount: {amt}, Flow Rate: {fr}".format(
@@ -257,7 +239,7 @@ class OutputModule(AbstractOutput):
         self.logger.debug("EZO-PMP command: {}".format(write_cmd))
         self.atlas_device.query(write_cmd)
 
-        if amount and seconds_to_run:
+        if output_type == 'vol' and amount and seconds_to_run:
             self.record_dispersal(amount_ml=amount, seconds_to_run=seconds_to_run)
 
     def is_on(self, output_channel=None):

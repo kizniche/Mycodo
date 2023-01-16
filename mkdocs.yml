@@ -52,13 +52,6 @@ plugins:
 
   - minify:
       minify_html: true
-  - with-pdf:
-      custom_template_path: docs/custom_pdf
-      cover_title: Mycodo
-      cover_subtitle: Environmental monitoring and regulation system
-      cover_logo: images/logo.png
-      copyright: Copyright © 2022
-      output_path: ../docs/mycodo-manual.pdf
 
 extra_css:
   - css/hide_lang_links.css
@@ -182,7 +175,7 @@ nav:
   - Troubleshooting.md
 
 extra:
-  version: 8.14.0
+  version: 8.15.0
   alternate:
     - name: English
       link: ""

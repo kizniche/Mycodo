@@ -81,7 +81,7 @@ def camera_img_acquire(image_type, camera_unique_id, max_age):
     if not path and not filename:
         msg = "Could not acquire image."
         logger.error(msg)
-        return msg
+        return_values = f'["{msg}"]'
     else:
         image_path = os.path.join(path, filename)
         time_max_age = datetime.datetime.now() - datetime.timedelta(seconds=int(max_age))
@@ -91,7 +91,7 @@ def camera_img_acquire(image_type, camera_unique_id, max_age):
             return_values = f'["{filename}","{date_time}"]'
         else:
             return_values = '["max_age_exceeded"]'
-        return Response(return_values, mimetype='text/json')
+    return Response(return_values, mimetype='text/json')
 
 
 def camera_img_latest_timelapse(camera_unique_id, max_age):
@@ -290,7 +290,7 @@ WIDGET_INFORMATION = {
 
     'widget_dashboard_title_bar': """<span style="padding-right: 0.5em; font-size: {{each_widget.font_em_name}}em">{% if widget_options['enable_timestamp'] %}<span id="{{each_widget.id}}-timestamp"></span> {% endif %}{{each_widget.name}}</span>""",
 
-    'widget_dashboard_body': """<a id="{{each_widget.id}}-image-href" href="" target="_blank"><img id="{{each_widget.id}}-image-src" style="height: 100%; width: 100%" src=""></a>""",
+    'widget_dashboard_body': """<span id="{{each_widget.id}}-error"></span></span><a id="{{each_widget.id}}-image-href" href="" target="_blank"><img id="{{each_widget.id}}-image-src" style="height: 100%; width: 100%" src=""></a>""",
 
     'widget_dashboard_js': """
   // Capture image and update the image
@@ -314,7 +314,7 @@ WIDGET_INFORMATION = {
           document.getElementById(dashboard_id + "-image-src").src = "/static/img/image_error.png";
           document.getElementById(dashboard_id + "-image-href").href = "/static/img/image_error.png";
         }
-        else {
+        else if (data.length === 2) {
           let timestamp_str = '';
           if (image_type_str === 'still') timestamp_str = 'Still: ';
           else if (image_type_str === 'timelapse') timestamp_str = 'Timelapse: ';
@@ -339,11 +339,16 @@ WIDGET_INFORMATION = {
             if (document.getElementById(dashboard_id + "-timestamp")) document.getElementById(dashboard_id + "-timestamp").innerHTML = timestamp_str + timestamp;
           }
         }
+        else if (data.length === 1) {
+            document.getElementById(dashboard_id + "-image-src").src = "/static/img/image_error.png";
+            document.getElementById(dashboard_id + "-image-href").href = "/static/img/image_error.png";
+            if (document.getElementById(dashboard_id + "-error")) document.getElementById(dashboard_id + "-error").innerHTML = "Error: " + data[0] + "<br>";
+        }
       },
       error: function(jqXHR, textStatus, errorThrown) {
         document.getElementById(dashboard_id + "-image-src").src = "/static/img/image_error.png";
         document.getElementById(dashboard_id + "-image-href").href = "/static/img/image_error.png";
-        if (document.getElementById(dashboard_id + "-timestamp")) document.getElementById(dashboard_id + "-timestamp").innerHTML = "Error Getting Image";
+        if (document.getElementById(dashboard_id + "-error")) document.getElementById(dashboard_id + "-error").innerHTML = "Error Getting Image<br>";
       }
     });
   }

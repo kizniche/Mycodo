@@ -26,7 +26,7 @@ from mycodo.config import (ALEMBIC_VERSION, BACKUP_LOG_FILE, CAMERA_INFO,
                            FRONTEND_PID_FILE, HTTP_ACCESS_LOG_FILE,
                            HTTP_ERROR_LOG_FILE, KEEPUP_LOG_FILE,
                            LOGIN_LOG_FILE, MYCODO_VERSION, RESTORE_LOG_FILE,
-                           THEMES_DARK, UPGRADE_LOG_FILE, USAGE_REPORTS_PATH)
+                           THEMES_DARK, UPGRADE_LOG_FILE)
 from mycodo.config_devices_units import MEASUREMENTS
 from mycodo.databases.models import (PID, AlembicVersion, Camera, Conversion,
                                      CustomController, DeviceMeasurements,
@@ -190,12 +190,15 @@ def page_camera():
         elif form_camera.capture_still.data:
             # If a stream is active, stop the stream to take a photo
             if mod_camera.stream_started:
-                camera_stream = import_module(
-                    'mycodo.mycodo_flask.camera.camera_{lib}'.format(
-                        lib=mod_camera.library)).Camera
-                if camera_stream(unique_id=mod_camera.unique_id).is_running(mod_camera.unique_id):
-                    camera_stream(unique_id=mod_camera.unique_id).stop(mod_camera.unique_id)
-                time.sleep(2)
+                try:
+                    camera_stream = import_module(
+                        'mycodo.mycodo_flask.camera.camera_{lib}'.format(
+                            lib=mod_camera.library)).Camera
+                    if camera_stream(unique_id=mod_camera.unique_id).is_running(mod_camera.unique_id):
+                        camera_stream(unique_id=mod_camera.unique_id).stop(mod_camera.unique_id)
+                    time.sleep(2)
+                except Exception as err:
+                    flash(f"Error stopping stream: {err}", "error")
             path, filename = camera_record('photo', mod_camera.unique_id)
             if not path and not filename:
                 msg = "Could not acquire image."
@@ -240,11 +243,14 @@ def page_camera():
                 mod_camera.stream_started = True
                 db.session.commit()
         elif form_camera.stop_stream.data:
-            camera_stream = import_module(
-                'mycodo.mycodo_flask.camera.camera_{lib}'.format(
-                    lib=mod_camera.library)).Camera
-            if camera_stream(unique_id=mod_camera.unique_id).is_running(mod_camera.unique_id):
-                camera_stream(unique_id=mod_camera.unique_id).stop(mod_camera.unique_id)
+            try:
+                camera_stream = import_module(
+                    'mycodo.mycodo_flask.camera.camera_{lib}'.format(
+                        lib=mod_camera.library)).Camera
+                if camera_stream(unique_id=mod_camera.unique_id).is_running(mod_camera.unique_id):
+                    camera_stream(unique_id=mod_camera.unique_id).stop(mod_camera.unique_id)
+            except Exception as err:
+                flash(f"Error stopping stream: {err}", "error")
             mod_camera.stream_started = False
             db.session.commit()
 

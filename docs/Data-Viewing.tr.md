@@ -21,7 +21,7 @@ Gösterge paneli, mevcut çok sayıda gösterge paneli widget'ı sayesinde hem v
 
 ## Widgets
 
-Pencere öğeleri, Gösterge Tablosunda veri görüntüleme (grafikler, göstergeler, göstergeler, vb.) veya sistemle etkileşim (çıkışları manipüle etme, PWM görev döngüsünü değiştirme, bir veritabanını sorgulama veya değiştirme, vb.) Pencere öğeleri sürüklenip bırakılarak kolayca yeniden düzenlenebilir ve yeniden boyutlandırılabilir. Desteklenen Pencere Araçlarının tam listesi için [Desteklenen Pencere Araçları] (Supported-Widgets.md) bölümüne bakın.
+Pencere öğeleri, Gösterge Tablosunda veri görüntüleme (grafikler, göstergeler, göstergeler, vb.) veya sistemle etkileşim (çıkışları manipüle etme, PWM görev döngüsünü değiştirme, bir veritabanını sorgulama veya değiştirme, vb.) Pencere öğeleri sürüklenip bırakılarak kolayca yeniden düzenlenebilir ve yeniden boyutlandırılabilir. Desteklenen Pencere Araçlarının tam listesi için [Desteklenen Pencere Araçları](Supported-Widgets.md) bölümüne bakın.
 
 ### Custom Widgets
 

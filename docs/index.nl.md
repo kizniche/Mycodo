@@ -4,11 +4,9 @@ description: Documentation for Mycodo, an open source environmental monitoring a
 
 Mycodo is open source software ontworpen om te draaien op de [Raspberry Pi](https://en.wikipedia.org/wiki/Raspberry_Pi) en andere single-board computers (SBC's). Het koppelt inputs en outputs op interessante manieren om de omgeving aan te voelen en te manipuleren.
 
-### Information
+### Informatie
 
 Zie de [README](https://github.com/kizniche/Mycodo#uses) voor functies, projecten die Mycodo gebruiken, schermafbeeldingen en andere informatie.
-
-This manual is also [available as a PDF](https://kizniche.github.io/Mycodo/mycodo-manual.pdf) for offline reading.
 
 ### Voorwaarden
 
@@ -30,7 +28,7 @@ Open na de installatie een webbrowser naar het IP-adres van de SBC en u wordt ge
 https://127.0.0.1
 ```
 
-### Support
+### Ondersteuning
 
 *   [Mycodo on GitHub](https://github.com/kizniche/Mycodo)
 *   [Mycodo Wiki](https://github.com/kizniche/Mycodo/wiki)
@@ -43,4 +41,4 @@ https://127.0.0.1
 
 Sponsor worden: [github.com/sponsors/kizniche](https://github.com/sponsors/kizniche)
 
-Other Methods: [KyleGabriel.com/donate](https://kylegabriel.com/donate)
+Andere methoden: [KyleGabriel.com/donate](https://kylegabriel.com/donate)

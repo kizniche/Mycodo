@@ -8,33 +8,20 @@ import socket
 import time
 
 import flask_login
-from flask import flash
-from flask import jsonify
-from flask import make_response
-from flask import redirect
-from flask import render_template
-from flask import request
-from flask import session
-from flask import url_for
+from flask import (flash, jsonify, make_response, redirect, render_template,
+                   request, session, url_for)
 from flask.blueprints import Blueprint
 from flask_babel import gettext
 from sqlalchemy import func
 
-from mycodo.config import INSTALL_DIRECTORY
-from mycodo.config import LANGUAGES
-from mycodo.config import LOGIN_ATTEMPTS
-from mycodo.config import LOGIN_BAN_SECONDS
-from mycodo.config import LOGIN_LOG_FILE
+from mycodo.config import (INSTALL_DIRECTORY, LANGUAGES, LOGIN_ATTEMPTS,
+                           LOGIN_BAN_SECONDS, LOGIN_LOG_FILE)
 from mycodo.config_translations import TRANSLATIONS
-from mycodo.databases.models import AlembicVersion
-from mycodo.databases.models import Misc
-from mycodo.databases.models import Role
-from mycodo.databases.models import User
+from mycodo.databases.models import AlembicVersion, Misc, Role, User
 from mycodo.mycodo_flask.extensions import db
 from mycodo.mycodo_flask.forms import forms_authentication
 from mycodo.mycodo_flask.utils import utils_general
-from mycodo.utils.utils import test_password
-from mycodo.utils.utils import test_username
+from mycodo.utils.utils import test_password, test_username
 
 logger = logging.getLogger(__name__)
 

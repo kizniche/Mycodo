@@ -3,7 +3,7 @@ Mycodo
 
 Environmental Regulation System
 
-Latest version: 8.14.2
+Latest version: 8.15.1
 
 Mycodo is open source software for the Raspberry Pi that couples inputs and outputs in interesting ways to sense and manipulate the environment.
 
@@ -34,7 +34,7 @@ Support
 Documentation
 ~~~~~~~~~~~~~
 
-`Mycodo Manual <https://kizniche.github.io/Mycodo>`__ (`PDF <https://github.com/kizniche/Mycodo/raw/master/docs/mycodo-manual.pdf>`__)
+`Mycodo Manual <https://kizniche.github.io/Mycodo>`__
 
 `Mycodo API <https://kizniche.github.io/Mycodo/mycodo-api.html>`__ (Version: v1)
 

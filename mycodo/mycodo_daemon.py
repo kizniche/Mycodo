@@ -492,7 +492,7 @@ class DaemonController:
             except Exception:
                 return {'error': [f"Error getting Function status: {traceback.format_exc()}"]}
         else:
-            return {'error': [f"Function ID not found"]}
+            return {'error': [f"Function ID not found. Is the Function activated?"]}
 
 
     def lcd_reset(self, lcd_id):

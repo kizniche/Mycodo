@@ -269,8 +269,8 @@ class AbstractInput(AbstractBaseController):
     def set_custom_option(self, option, value):
         return self._set_custom_option(Input, self.unique_id, option, value)
 
-    def get_custom_option(self, option):
-        return self._get_custom_option(Input, self.unique_id, option)
+    def get_custom_option(self, option, default_return=None):
+        return self._get_custom_option(Input, self.unique_id, option, default_return=default_return)
 
     def delete_custom_option(self, option):
         return self._delete_custom_option(Input, self.unique_id, option)

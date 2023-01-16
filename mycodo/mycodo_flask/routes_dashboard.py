@@ -4,43 +4,24 @@ import logging
 import os
 
 import flask_login
-from flask import redirect
-from flask import render_template
-from flask import request
-from flask import url_for
+from flask import redirect, render_template, request, url_for
 from flask.blueprints import Blueprint
 from sqlalchemy import and_
 
 from mycodo.config import PATH_HTML_USER
-from mycodo.databases.models import Camera
-from mycodo.databases.models import Conditional
-from mycodo.databases.models import Conversion
-from mycodo.databases.models import CustomController
-from mycodo.databases.models import Dashboard
-from mycodo.databases.models import DeviceMeasurements
-from mycodo.databases.models import Input
-from mycodo.databases.models import Measurement
-from mycodo.databases.models import Method
-from mycodo.databases.models import Misc
-from mycodo.databases.models import NoteTags
-from mycodo.databases.models import Output
-from mycodo.databases.models import OutputChannel
-from mycodo.databases.models import PID
-from mycodo.databases.models import Trigger
-from mycodo.databases.models import Unit
-from mycodo.databases.models import Widget
+from mycodo.databases.models import (PID, Camera, Conditional, Conversion,
+                                     CustomController, Dashboard,
+                                     DeviceMeasurements, Input, Measurement,
+                                     Method, Misc, NoteTags, Output,
+                                     OutputChannel, Trigger, Unit, Widget)
 from mycodo.mycodo_flask.extensions import db
 from mycodo.mycodo_flask.forms import forms_dashboard
 from mycodo.mycodo_flask.routes_static import inject_variables
-from mycodo.mycodo_flask.utils import utils_dashboard
-from mycodo.mycodo_flask.utils import utils_general
-from mycodo.utils.outputs import output_types
-from mycodo.utils.outputs import parse_output_information
-from mycodo.utils.system_pi import add_custom_measurements
-from mycodo.utils.system_pi import add_custom_units
-from mycodo.utils.system_pi import parse_custom_option_values_json
-from mycodo.utils.system_pi import parse_custom_option_values_output_channels_json
-from mycodo.utils.system_pi import return_measurement_info
+from mycodo.mycodo_flask.utils import utils_dashboard, utils_general
+from mycodo.utils.outputs import output_types, parse_output_information
+from mycodo.utils.system_pi import (
+    add_custom_measurements, add_custom_units, parse_custom_option_values_json,
+    parse_custom_option_values_output_channels_json, return_measurement_info)
 from mycodo.utils.widgets import parse_widget_information
 
 logger = logging.getLogger('mycodo.mycodo_flask.routes_dashboard')

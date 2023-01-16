@@ -28,13 +28,53 @@ from datetime import datetime as dt
 from flask_babel import lazy_gettext
 
 from mycodo.config import PATH_CAMERAS
-from mycodo.config_translations import TRANSLATIONS
 from mycodo.databases.models import CustomController
 from mycodo.functions.base_function import AbstractFunction
-from mycodo.mycodo_flask.utils.utils_general import bytes2human
+from mycodo.utils.camera_functions import get_camera_function_image_info
 from mycodo.utils.constraints_pass import constraints_pass_positive_value
 from mycodo.utils.database import db_retrieve_table_daemon
 from mycodo.utils.system_pi import assure_path_exists, cmd_output
+
+
+def function_status(function_id):
+    return_str = {
+        'string_status': generate_latest_media_html(function_id),
+        'error': []
+    }
+    return return_str
+
+def generate_latest_media_html(unique_id):
+    str_last_media = ""
+
+    (latest_img_still_ts,
+    latest_img_still_size,
+    latest_img_still,
+    latest_img_video_ts,
+    latest_img_video_size,
+    latest_img_video,
+    latest_img_tl_ts,
+    latest_img_tl_size,
+    latest_img_tl,
+    time_lapse_imgs) = get_camera_function_image_info(unique_id)
+
+    if latest_img_tl_ts:
+        last_tl = lazy_gettext('Last Timelapse Image')
+        str_last_media += f'<div style="padding-top: 0.5em">{last_tl}: {latest_img_tl_ts} ({latest_img_tl_size})<br/><a href="/camera/{unique_id}/timelapse/{latest_img_tl}" target="_blank"><img style="max-width: 100%" src="/camera/{unique_id}/timelapse/{latest_img_tl}"></a></div>'
+
+    if latest_img_still_ts:
+        last_still = lazy_gettext('Last Still Image')
+        str_last_media += f'<div style="padding-top: 0.5em">{last_still}: {latest_img_still_ts} ({latest_img_still_size})<br/><a href="/camera/{unique_id}/still/{latest_img_still}" target="_blank"><img style="max-width: 100%" src="/camera/{unique_id}/still/{latest_img_still}"></a></div>'
+    
+    if latest_img_video_ts:
+        last_video = lazy_gettext('Last Video')
+        str_last_media += f'<div style="padding-top: 0.5em">{last_video}: {latest_img_video_ts} ({latest_img_video_size}) <a href="/camera/{unique_id}/video/{latest_img_video}">Download</a>'
+
+        if latest_img_video.endswith("mp4"):
+            str_last_media += f'<br/><video controls style="max-width: 100%"><source src="/camera/{unique_id}/video/{latest_img_video}" type="video/mp4"></video>'
+
+        str_last_media += '</div>'
+    
+    return str_last_media
 
 FUNCTION_INFORMATION = {
     'function_name_unique': 'CAMERA_LIBCAMERA',
@@ -44,8 +84,9 @@ FUNCTION_INFORMATION = {
     'camera_image': True,
     'camera_video': True,
     'camera_stream': False,
+    'function_status': function_status,
 
-    'message': 'Capture images and videos from a camera using libcamera-still and libcamera-vid.',
+    'message': 'NOTE: THIS IS CURRENTLY EXPERIMENTAL - USE AT YOUR OWN RISK UNTIL THIS NOTICE IS REMOVED. Capture images and videos from a camera using libcamera-still and libcamera-vid. The Function must be activated in order to capture still and timelapse images and use the Camera Widget.',
 
     'options_enabled': [
         'function_status'
@@ -691,104 +732,9 @@ class CustomModule(AbstractFunction):
         self.tl_pause = self.set_custom_option("tl_pause", False)
         self.tl_active = self.set_custom_option("tl_active", False)
         return "Timelapse stopped."
-    
-    def get_camera_paths(self):
-        """Retrieve still/timelapse paths for the given camera object."""
-        camera_path = os.path.join(PATH_CAMERAS, self.unique_id)
-
-        if self.custom_path_still:
-            still_path = self.custom_path_still
-        else:
-            still_path = os.path.join(camera_path, 'still')
-
-        if self.custom_path_video:
-            video_path = self.custom_path_video
-        else:
-            video_path = os.path.join(camera_path, 'video')
-
-        if self.custom_path_timelapse:
-            tl_path = self.custom_path_timelapse
-        else:
-            tl_path = os.path.join(camera_path, 'timelapse')
-
-        return still_path, video_path, tl_path
-
-    def get_camera_image_info(self):
-        """Retrieve information about the latest camera images."""
-        latest_img_still_ts = None
-        latest_img_still_size = None
-        latest_img_still = None
-        latest_img_video_ts = None
-        latest_img_video_size = None
-        latest_img_video = None
-        latest_img_tl_ts = None
-        latest_img_tl_size = None
-        latest_img_tl = None
-        time_lapse_imgs = None
-
-        still_path, video_path, tl_path = self.get_camera_paths()
-
-        if self.still_last_file and self.still_last_ts:
-            latest_img_still_ts = dt.fromtimestamp(
-                self.still_last_ts).strftime("%Y-%m-%d %H:%M:%S")
-            latest_img_still = self.still_last_file
-            file_still_path = os.path.join(still_path, self.still_last_file)
-            if os.path.exists(file_still_path):
-                latest_img_still_size = bytes2human(os.path.getsize(file_still_path))
-        else:
-            latest_img_still = None
-
-        if self.video_last_file and self.video_last_ts:
-            latest_img_video_ts = dt.fromtimestamp(
-                self.video_last_ts).strftime("%Y-%m-%d %H:%M:%S")
-            latest_img_video = self.video_last_file
-            file_video_path = os.path.join(video_path, self.video_last_file)
-            if os.path.exists(file_video_path):
-                latest_img_video_size = bytes2human(os.path.getsize(file_video_path))
-        else:
-            latest_img_video = None
-
-        try:
-            # Get list of timelapse filename sets for generating a video from images
-            time_lapse_imgs = []
-            for i in os.listdir(tl_path):
-                if (os.path.isfile(os.path.join(tl_path, i)) and
-                        i[:-10] not in time_lapse_imgs):
-                    time_lapse_imgs.append(i[:-10])
-            time_lapse_imgs.sort()
-        except Exception:
-            pass
-
-        if self.tl_last_file and self.tl_last_ts:
-            latest_img_tl_ts = dt.fromtimestamp(
-                self.tl_last_ts).strftime("%Y-%m-%d %H:%M:%S")
-            latest_img_tl = self.tl_last_file
-            file_tl_path = os.path.join(tl_path, self.tl_last_file)
-            if os.path.exists(file_tl_path):
-                latest_img_tl_size = bytes2human(os.path.getsize(file_tl_path))
-        else:
-            latest_img_tl = None
-
-        return (latest_img_still_ts, latest_img_still_size, latest_img_still,
-                latest_img_video_ts, latest_img_video_size, latest_img_video,
-                latest_img_tl_ts, latest_img_tl_size, latest_img_tl, time_lapse_imgs)
 
     def function_status(self):
         now = time.time()
-        str_last_timelapse = ""
-        str_last_still = ""
-        str_last_video = ""
-
-        (latest_img_still_ts,
-        latest_img_still_size,
-        latest_img_still,
-        latest_img_video_ts,
-        latest_img_video_size,
-        latest_img_video,
-        latest_img_tl_ts,
-        latest_img_tl_size,
-        latest_img_tl,
-        time_lapse_imgs) = self.get_camera_image_info()
 
         if self.tl_active:
             if self.tl_pause:
@@ -812,26 +758,8 @@ class CustomModule(AbstractFunction):
         else:
             str_timelapse = "Time-lapse Status: INACTIVE"
 
-        if latest_img_tl_ts:
-            last_tl = lazy_gettext('Last Timelapse Image')
-            str_last_timelapse = f'<br><br>{last_tl}: {latest_img_tl_ts} ({latest_img_tl_size})<br/><a href="/camera/{self.unique_id}/timelapse/{latest_img_tl}" target="_blank"><img style="max-width: 100%" src="/camera/{self.unique_id}/timelapse/{latest_img_tl}"></a>'
-
-        if latest_img_still_ts:
-            last_still = lazy_gettext('Last Still Image')
-            str_last_still = f'<br><br>{last_still}: {latest_img_still_ts} ({latest_img_still_size})<br/><a href="/camera/{self.unique_id}/still/{latest_img_still}" target="_blank"><img style="max-width: 100%" src="/camera/{self.unique_id}/still/{latest_img_still}"></a>'
-        
-        if latest_img_video_ts:
-            last_video = lazy_gettext('Last Video')
-            str_last_video = f'<br><br>{last_video}: {latest_img_video_ts} ({latest_img_video_size}) <a href="/camera/{self.unique_id}/video/{latest_img_video}">Download</a>'
-
-            if latest_img_video.endswith("mp4"):
-                str_last_video += f'<br/><video controls style="max-width: 100%"><source src="/camera/{self.unique_id}/video/{latest_img_video}" type="video/mp4"></video>'
-
         return_str = {
-            'string_status': f"{str_timelapse}"
-                             f"{str_last_timelapse}"
-                             f"{str_last_still}"
-                             f"{str_last_video}",
+            'string_status': str_timelapse,
             'error': []
         }
         return return_str

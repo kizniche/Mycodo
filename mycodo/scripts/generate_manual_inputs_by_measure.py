@@ -80,12 +80,28 @@ if __name__ == "__main__":
         for measure, data in dict_inputs.items():
             out_file.write(f"## {dict_measurements[measure]['name']}\n\n")
 
+            # Determine if there are multiple of the same name
+            dict_names = {}
             for each_name, each_data in data.items():
                 name_str = ""
                 if 'input_manufacturer' in each_data and each_data['input_manufacturer']:
                     name_str += "{}".format(each_data['input_manufacturer'])
                 if 'input_name' in each_data and each_data['input_name']:
                     name_str += ": {}".format(each_data['input_name'])
+                if name_str not in dict_names:
+                    dict_names[name_str] = 1
+                else:
+                    dict_names[name_str] += 1
+
+            for each_name, each_data in data.items():
+                name_str = ""
+                if 'input_manufacturer' in each_data and each_data['input_manufacturer']:
+                    name_str += "{}".format(each_data['input_manufacturer'])
+                if 'input_name' in each_data and each_data['input_name']:
+                    name_str += ": {}".format(each_data['input_name'])
+                if name_str in dict_names and dict_names[name_str] > 1:
+                    if 'input_library' in each_data and each_data['input_library']:
+                        name_str += " ({})".format(each_data['input_library'])
 
                 out_file.write(f"### [{name_str}](/Mycodo/Supported-Inputs/#{safe_link(name_str)})\n")
 

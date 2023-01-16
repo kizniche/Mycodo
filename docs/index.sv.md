@@ -2,17 +2,15 @@ description: Documentation for Mycodo, an open source environmental monitoring a
 
 ## System för miljöövervakning och miljöreglering av Mycodo
 
-Mycodo är en programvara med öppen källkod som är utformad för att köras på [Raspberry Pi] (https://en.wikipedia.org/wiki/Raspberry_Pi) och andra enbordsdatorer (SBC). Den kopplar ihop in- och utgångar på intressanta sätt för att känna av och manipulera miljön.
+Mycodo är en programvara med öppen källkod som är utformad för att köras på [Raspberry Pi](https://en.wikipedia.org/wiki/Raspberry_Pi) och andra enbordsdatorer (SBC). Den kopplar ihop in- och utgångar på intressanta sätt för att känna av och manipulera miljön.
 
 ### Information
 
-Se [README] (https://github.com/kizniche/Mycodo#uses) för funktioner, projekt som använder Mycodo, skärmdumpar och annan information.
-
-This manual is also [available as a PDF](https://kizniche.github.io/Mycodo/mycodo-manual.pdf) for offline reading.
+Se [README](https://github.com/kizniche/Mycodo#uses) för funktioner, projekt som använder Mycodo, skärmdumpar och annan information.
 
 ### Förutsättningar
 
-*   Enbordsdator (Rekommenderas: [Raspberry Pi] (https://www.raspberrypi.org/), vilken version som helst: Zero, 1, 2, 3 eller 4)
+*   Enbordsdator (Rekommenderas: [Raspberry Pi](https://www.raspberrypi.org/), vilken version som helst: Zero, 1, 2, 3 eller 4)
 *   Debianbaserat operativsystem
 *   En aktiv internetanslutning
 
@@ -30,7 +28,7 @@ Efter installationen öppnar du en webbläsare till SBC:s IP-adress och du komme
 https://127.0.0.1
 ```
 
-### Support
+### Stöd
 
 *   [Mycodo on GitHub](https://github.com/kizniche/Mycodo)
 *   [Mycodo Wiki](https://github.com/kizniche/Mycodo/wiki)
@@ -43,4 +41,4 @@ https://127.0.0.1
 
 Bli en sponsor: [github.com/sponsors/kizniche](https://github.com/sponsors/kizniche)
 
-Other Methods: [KyleGabriel.com/donate](https://kylegabriel.com/donate)
+Andra metoder: [KyleGabriel.com/donate](https://kylegabriel.com/donate)

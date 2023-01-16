@@ -2,13 +2,11 @@ description: Documentation for Mycodo, an open source environmental monitoring a
 
 ## Mycodo Çevresel İzleme ve Düzenleme Sistemi
 
-Mycodo, [Raspberry Pi] (https://en.wikipedia.org/wiki/Raspberry_Pi) ve diğer tek kartlı bilgisayarlarda (SBC'ler) çalışmak üzere tasarlanmış açık kaynaklı bir yazılımdır. Çevreyi algılamak ve manipüle etmek için giriş ve çıkışları ilginç şekillerde birleştirir.
+Mycodo, [Raspberry Pi](https://en.wikipedia.org/wiki/Raspberry_Pi) ve diğer tek kartlı bilgisayarlarda (SBC'ler) çalışmak üzere tasarlanmış açık kaynaklı bir yazılımdır. Çevreyi algılamak ve manipüle etmek için giriş ve çıkışları ilginç şekillerde birleştirir.
 
 ### Information
 
 Özellikler, Mycodo kullanan projeler, ekran görüntüleri ve diğer bilgiler için [README](https://github.com/kizniche/Mycodo#uses) adresine bakın.
-
-This manual is also [available as a PDF](https://kizniche.github.io/Mycodo/mycodo-manual.pdf) for offline reading.
 
 ### Ön Koşullar
 

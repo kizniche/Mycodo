@@ -2,23 +2,17 @@
 """flask views that deal with password reset."""
 import datetime
 import logging
+import os
+import random
 import socket
 import string
 
-import os
-import random
-from flask import flash
-from flask import redirect
-from flask import render_template
-from flask import request
-from flask import url_for
+from flask import flash, redirect, render_template, request, url_for
 from flask.blueprints import Blueprint
 from flask_babel import gettext
 
 from mycodo.config import INSTALL_DIRECTORY
-from mycodo.databases.models import Role
-from mycodo.databases.models import SMTP
-from mycodo.databases.models import User
+from mycodo.databases.models import SMTP, Role, User
 from mycodo.mycodo_flask.extensions import db
 from mycodo.mycodo_flask.forms import forms_authentication
 from mycodo.utils.send_data import send_email

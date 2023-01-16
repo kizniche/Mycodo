@@ -913,12 +913,28 @@ def page_function():
         return "Could not determine template"
 
 
-@blueprint.route('/function_status/<unique_id>', methods=('GET', 'POST'))
+@blueprint.route('/function_status_activated/<unique_id>', methods=('GET', 'POST'))
 @flask_login.login_required
-def function_status(unique_id):
+def function_status_activated(unique_id):
     try:
         control = DaemonControl()
         return jsonify(control.function_status(unique_id))
     except Exception as err:
         logger.error("Function Status Error: {}".format(err))
-        return jsonify({'error': str(err)})
+        return jsonify({'error': [str(err)]})
+
+
+@blueprint.route('/function_status_always/<unique_id>', methods=('GET', 'POST'))
+@flask_login.login_required
+def function_status_always(unique_id):
+    try:
+        function = CustomController.query.filter(
+            CustomController.unique_id == unique_id).first()
+        if function:
+            dict_controllers = parse_function_information()
+            if function.device in dict_controllers and 'function_status' in dict_controllers[function.device]:
+                return jsonify(dict_controllers[function.device]['function_status'](unique_id))
+    except Exception as err:
+        logger.error("Function Status Error: {}".format(err))
+        return jsonify({'error': [str(err)]})
+    return jsonify({'error': ["Could not get status from Function."]})

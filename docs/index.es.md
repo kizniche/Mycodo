@@ -4,11 +4,9 @@ description: Documentation for Mycodo, an open source environmental monitoring a
 
 Mycodo es un software de código abierto diseñado para funcionar en la [Raspberry Pi](https://en.wikipedia.org/wiki/Raspberry_Pi) y otros ordenadores de placa única (SBC). Acopla las entradas y salidas de forma interesante para percibir y manipular el entorno.
 
-### Information
+### Información
 
 Consulte el [README](https://github.com/kizniche/Mycodo#uses) para conocer las características, los proyectos que utilizan Mycodo, las capturas de pantalla y otra información.
-
-This manual is also [available as a PDF](https://kizniche.github.io/Mycodo/mycodo-manual.pdf) for offline reading.
 
 ### Requisitos previos
 
@@ -30,7 +28,7 @@ Después de la instalación, abra un navegador web a la dirección IP del SBC y 
 https://127.0.0.1
 ```
 
-### Support
+### Soporte
 
 *   [Mycodo on GitHub](https://github.com/kizniche/Mycodo)
 *   [Mycodo Wiki](https://github.com/kizniche/Mycodo/wiki)
@@ -43,4 +41,4 @@ https://127.0.0.1
 
 Conviértase en patrocinador: [github.com/sponsors/kizniche](https://github.com/sponsors/kizniche)
 
-Other Methods: [KyleGabriel.com/donate](https://kylegabriel.com/donate)
+Otros métodos: [KyleGabriel.com/donate](https://kylegabriel.com/donate)

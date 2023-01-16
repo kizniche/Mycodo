@@ -1,29 +1,20 @@
 # coding=utf-8
 import logging
+import operator
+import os
 import socket
 import subprocess
 import traceback
 
 import flask_login
-import operator
-import os
-from flask import current_app
-from flask import redirect
-from flask import render_template
-from flask import request
-from flask import send_from_directory
-from flask import url_for
+from flask import (current_app, redirect, render_template, request,
+                   send_from_directory, url_for)
 from flask.blueprints import Blueprint
 
-from mycodo.config import ALEMBIC_VERSION
-from mycodo.config import INSTALL_DIRECTORY
-from mycodo.config import LANGUAGES
-from mycodo.config import MYCODO_VERSION
-from mycodo.config import THEMES
-from mycodo.config import THEMES_DARK
+from mycodo.config import (ALEMBIC_VERSION, INSTALL_DIRECTORY, LANGUAGES,
+                           MYCODO_VERSION, THEMES, THEMES_DARK)
 from mycodo.config_translations import TRANSLATIONS
-from mycodo.databases.models import Dashboard
-from mycodo.databases.models import Misc
+from mycodo.databases.models import Dashboard, Misc
 from mycodo.mycodo_client import DaemonControl
 from mycodo.mycodo_flask.forms import forms_dashboard
 from mycodo.mycodo_flask.routes_authentication import admin_exists
@@ -99,11 +90,11 @@ def static_from_root():
     return send_from_directory(current_app.static_folder, request.path[1:])
 
 
-@blueprint.route("/mycodo-manual_{}.pdf".format(MYCODO_VERSION))
-def download_pdf_manual():
-    """Return PDF Manual."""
-    path_manual = os.path.join(INSTALL_DIRECTORY, "docs")
-    return send_from_directory(path_manual, "mycodo-manual.pdf")
+# @blueprint.route("/mycodo-manual_{}.pdf".format(MYCODO_VERSION))
+# def download_pdf_manual():
+#     """Return PDF Manual."""
+#     path_manual = os.path.join(INSTALL_DIRECTORY, "docs")
+#     return send_from_directory(path_manual, "mycodo-manual.pdf")
 
 
 @blueprint.app_errorhandler(404)

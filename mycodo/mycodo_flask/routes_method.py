@@ -3,29 +3,20 @@
 import logging
 
 import flask_login
-from flask import Blueprint
-from flask import flash
-from flask import jsonify
-from flask import redirect
-from flask import render_template
-from flask import request
-from flask import url_for
+from flask import (Blueprint, flash, jsonify, redirect, render_template,
+                   request, url_for)
 from flask_babel import gettext
 
 from mycodo.config import METHOD_INFO
 from mycodo.config_translations import TRANSLATIONS
-from mycodo.databases.models import DisplayOrder
-from mycodo.databases.models import Method
-from mycodo.databases.models import MethodData
+from mycodo.databases.models import DisplayOrder, Method, MethodData
 from mycodo.mycodo_flask.extensions import db
 from mycodo.mycodo_flask.forms import forms_method
 from mycodo.mycodo_flask.routes_static import inject_variables
-from mycodo.mycodo_flask.utils import utils_general
-from mycodo.mycodo_flask.utils import utils_method
+from mycodo.mycodo_flask.utils import utils_general, utils_method
 from mycodo.utils.method import create_method_handler
 from mycodo.utils.outputs import output_types
-from mycodo.utils.system_pi import csv_to_list_of_str
-from mycodo.utils.system_pi import list_to_csv
+from mycodo.utils.system_pi import csv_to_list_of_str, list_to_csv
 
 logger = logging.getLogger('mycodo.mycodo_flask.methods')
 

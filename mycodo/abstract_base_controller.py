@@ -441,7 +441,7 @@ class AbstractBaseController(object):
         except Exception:
             self.logger.exception("set_custom_option")
 
-    def _get_custom_option(self, controller, unique_id, option):
+    def _get_custom_option(self, controller, unique_id, option, default_return=None):
         try:
             with session_scope(MYCODO_DB_PATH) as new_session:
                 read_function = new_session.query(controller).filter(
@@ -455,6 +455,7 @@ class AbstractBaseController(object):
                     return dict_custom_options[option]
         except Exception:
             self.logger.exception("get_custom_option")
+        return default_return
 
     def _delete_custom_channel_option(self, controller, unique_id, channel, option):
         try:

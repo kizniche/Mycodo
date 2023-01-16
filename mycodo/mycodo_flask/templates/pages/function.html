@@ -198,25 +198,25 @@
     var status_message = {};
 
     function function_status(function_id) {
-      const url = '/function_status/' + function_id;
+      const url = '/function_status_activated/' + function_id;
       $.getJSON(url,
         function(data, responseText, jqXHR) {
           if (jqXHR.status !== 204) {
             if (data && "string_status" in data) {
-              document.getElementById("function_status_message_" + function_id).innerHTML = data['string_status'].replace(/(?:\r\n|\r|\n)/g, "<br>");
+              document.getElementById("function_status_activated_" + function_id).innerHTML = data['string_status'].replace(/(?:\r\n|\r|\n)/g, "<br>");
             } else {
-                document.getElementById("function_status_message_" + function_id).innerHTML = '';
+              document.getElementById("function_status_activated_" + function_id).innerHTML = '';
             }
             if (data && "error" in data && data['error'].length) {
               let errors = ''
               for (let c = 0; c < data['error'].length; c++) {
                 errors += data['error'][c].replace(/(?:\r\n|\r|\n)/g, "<br>") + '<br>';
               }
-              document.getElementById("function_status_message_" + function_id).innerHTML += "<p><pre>Error(s):<br>" + errors + "</pre></p>";
+              document.getElementById("function_status_activated_" + function_id).innerHTML += "<p><pre>Error(s):<br>" + errors + "</pre></p>";
             }
           }
           else {
-            document.getElementById("function_status_message_" + function_id).innerHTML = "Error querying status.";
+            document.getElementById("function_status_activated_" + function_id).innerHTML = "Error querying status.";
           }
         }
       );
@@ -228,10 +228,45 @@
       }, period_sec * 1000);
     }
 
+    function function_status_always(function_id) {
+      const url_2 = '/function_status_always/' + function_id;
+      $.getJSON(url_2,
+        function(data, responseText, jqXHR) {
+          if (jqXHR.status !== 204) {
+            if (data && "string_status" in data) {
+              document.getElementById("function_status_always" + function_id).innerHTML = data['string_status'].replace(/(?:\r\n|\r|\n)/g, "<br>");
+            } else {
+              document.getElementById("function_status_always" + function_id).innerHTML = '';
+            }
+            if (data && "error" in data && data['error'].length) {
+              let errors = ''
+              for (let c = 0; c < data['error'].length; c++) {
+                errors += data['error'][c].replace(/(?:\r\n|\r|\n)/g, "<br>") + '<br>';
+              }
+              document.getElementById("function_status_always" + function_id).innerHTML += "<p><pre>Error(s):<br>" + errors + "</pre></p>";
+            }
+          }
+          else {
+            document.getElementById("function_status_always" + function_id).innerHTML = "Error querying status.";
+          }
+        }
+      );
+    }
+    // Repeat function for function_status_always()
+    function repeat_function_status_always(function_id, period_sec) {
+      status_message[function_id] = setInterval(function () {
+        function_status_always(function_id)
+      }, period_sec * 1000);
+    }
+
     jQuery(document).ready(function($) {
-    {%- for each_function in function if each_function.is_activated and 'period_status' in custom_options_values_controllers[each_function.unique_id] %}
+    {%- for each_function in function if 'period_status' in custom_options_values_controllers[each_function.unique_id] %}
+      function_status_always('{{each_function.unique_id}}');
+      repeat_function_status_always('{{each_function.unique_id}}', {{custom_options_values_controllers[each_function.unique_id]['period_status']}});
+      {%- if each_function.is_activated -%}
       function_status('{{each_function.unique_id}}');
       repeat_function_status('{{each_function.unique_id}}', {{custom_options_values_controllers[each_function.unique_id]['period_status']}});
+      {%- endif -%}
     {% endfor %}
     {%- for each_conditional in conditional if each_conditional.is_activated %}
       function_status('{{each_conditional.unique_id}}');
@@ -382,7 +417,7 @@
                   document.getElementById("pid_activity_indicator_" + data.data.function_id).value = "PID Controller [Active]";
                 }
                 if ("function_type" in form_values && ["conditional", "function", "pid"].includes(form_values.function_type)) {
-                  ids_show(data.data.function_id, ["status_enable"]);
+                  ids_show(data.data.function_id, ["status_activated_enable"]);
                   function_status(data.data.function_id);
                   if ("period_status" in data.data.messages && data.data.messages.period_status) {
                     repeat_function_status(data.data.function_id, data.data.messages.period_status);
@@ -404,10 +439,10 @@
                   ids_hide(data.data.function_id, ["pid_deactivate", "pid_pause", "pid_hold", "pid_resume"]);
                   ids_show(data.data.function_id, ["pid_activate"]);
                   document.getElementById("pid_activity_indicator_" + data.data.function_id).value = "PID Controller [Inactive]";
-                  document.getElementById("function_status_message_" + data.data.function_id).innerHTML = "";
+                  document.getElementById("function_status_activated_" + data.data.function_id).innerHTML = "";
                 }
                 if ("function_type" in form_values && ["conditional", "function", "pid"].includes(form_values.function_type)) {
-                  ids_hide(data.data.function_id, ["status_enable"]);
+                  ids_hide(data.data.function_id, ["status_activated_enable"]);
                   if (data.data.function_id in status_message) {
                     clearInterval(status_message[data.data.function_id]);
                     delete status_message[data.data.function_id];

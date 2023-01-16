@@ -53,11 +53,15 @@ def output_add(form_add, request_form):
     if not current_app.config['TESTING']:
         dep_unmet, _, dep_message = return_dependencies(form_add.output_type.data.split(',')[0])
         if dep_unmet:
+            messages["error"].append(
+                f"{output_type} has unmet dependencies. "
+                "They must be installed before the Output can be added.")
+
             for each_dep in dep_unmet:
                 list_unmet_deps.append(each_dep[3])
-            messages["error"].append(
-                "{dev} has unmet dependencies. They must be installed before the Output can be added.".format(
-                    dev=output_type))
+                if each_dep[2] == 'pip-pypi':
+                    dep_message += f" The Python package {each_dep[3]} was not found to be installed because '{each_dep[0]}' could not be imported."
+
             if output_type in dict_outputs:
                 dep_name = dict_outputs[output_type]["output_name"]
             else:

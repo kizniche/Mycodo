@@ -65,12 +65,28 @@ if __name__ == "__main__":
         for each_list in list_inputs:
             out_file.write("## {}\n\n".format(each_list[1]))
 
-            for each_id, each_data in each_list[0].items():
+            # Determine if there are multiple of the same name
+            dict_names = {}
+            for _, each_data in each_list[0].items():
                 name_str = ""
                 if 'input_manufacturer' in each_data and each_data['input_manufacturer']:
                     name_str += "{}".format(each_data['input_manufacturer'])
                 if 'input_name' in each_data and each_data['input_name']:
                     name_str += ": {}".format(each_data['input_name'])
+                if name_str not in dict_names:
+                    dict_names[name_str] = 1
+                else:
+                    dict_names[name_str] += 1
+
+            for _, each_data in each_list[0].items():
+                name_str = ""
+                if 'input_manufacturer' in each_data and each_data['input_manufacturer']:
+                    name_str += "{}".format(each_data['input_manufacturer'])
+                if 'input_name' in each_data and each_data['input_name']:
+                    name_str += ": {}".format(each_data['input_name'])
+                if name_str in dict_names and dict_names[name_str] > 1:
+                    if 'input_library' in each_data and each_data['input_library']:
+                        name_str += " ({})".format(each_data['input_library'])
 
                 out_file.write("### {}\n\n".format(name_str))
 

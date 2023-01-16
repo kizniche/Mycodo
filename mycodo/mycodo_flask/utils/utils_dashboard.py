@@ -1,32 +1,23 @@
 # -*- coding: utf-8 -*-
 import json
 import logging
+import subprocess
 
 import sqlalchemy
-from flask import current_app
-from flask import flash
-from flask import url_for
+from flask import current_app, flash, url_for
 from flask_babel import gettext
 
+from mycodo.config import INSTALL_DIRECTORY
 from mycodo.config_translations import TRANSLATIONS
-from mycodo.databases import clone_model
-from mycodo.databases import set_uuid
-from mycodo.databases.models import Conversion
-from mycodo.databases.models import CustomController
-from mycodo.databases.models import Dashboard
-from mycodo.databases.models import DeviceMeasurements
-from mycodo.databases.models import Input
-from mycodo.databases.models import Output
-from mycodo.databases.models import PID
-from mycodo.databases.models import Widget
-from mycodo.databases.utils import session_scope
+from mycodo.databases import clone_model, set_uuid
+from mycodo.databases.models import (PID, Conversion, CustomController,
+                                     Dashboard, DeviceMeasurements, Input,
+                                     Output, Widget)
 from mycodo.mycodo_client import DaemonControl
 from mycodo.mycodo_flask.extensions import db
-from mycodo.mycodo_flask.utils.utils_general import custom_options_return_json
-from mycodo.mycodo_flask.utils.utils_general import delete_entry_with_id
-from mycodo.mycodo_flask.utils.utils_general import flash_success_errors
-from mycodo.mycodo_flask.utils.utils_general import return_dependencies
-from mycodo.mycodo_flask.utils.utils_general import use_unit_generate
+from mycodo.mycodo_flask.utils.utils_general import (
+    custom_options_return_json, delete_entry_with_id, flash_success_errors,
+    return_dependencies, use_unit_generate)
 from mycodo.utils.widgets import parse_widget_information
 
 logger = logging.getLogger(__name__)
@@ -233,7 +224,15 @@ def widget_add(form_base, request_form):
         if not error:
             new_widget.save()
 
-            register_widget_endpoints()
+            # If the first of this widget added, reload the frontend
+            # Otherwise, if add_url_rule is called in register_widget_endpoints(), it will result in an error:
+            # AssertionError: The setup method 'add_url_rule' can no longer be called on the application.
+            # It has already handled its first request, any changes will not be applied consistently.
+            # Make sure all imports, decorators, functions, etc. needed to set up the application are done before running it.
+            if Widget.query.filter(Widget.graph_type == widget_name).count() == 1:
+                cmd = f"{INSTALL_DIRECTORY}/mycodo/scripts/mycodo_wrapper frontend_reload 2>&1"
+                init = subprocess.Popen(cmd, shell=True)
+                init.wait()
 
             if not current_app.config['TESTING']:
                 # Refresh widget settings
@@ -527,32 +526,3 @@ def check_func(all_devices,
                     y_axes.append(meas_name)
 
     return y_axes
-
-
-def register_widget_endpoints(app=current_app):
-    try:
-        if app.config['TESTING']:  # TODO: Add pytest endpoint test and remove this
-            return
-
-        dict_widgets = parse_widget_information()
-
-        with session_scope(app.config['SQLALCHEMY_DATABASE_URI']) as new_session:
-            widget = new_session.query(Widget).all()
-            widget_types = []
-            for each_widget in widget:
-                if each_widget.graph_type not in widget_types:
-                    widget_types.append(each_widget.graph_type)
-
-            for each_widget_type in widget_types:
-                if each_widget_type in dict_widgets and 'endpoints' in dict_widgets[each_widget_type]:
-                    for rule, endpoint, view_func, methods in dict_widgets[each_widget_type]['endpoints']:
-                        if endpoint in app.view_functions:
-                            logger.info(
-                                "Endpoint {} ({}) already exists. Not adding.".format(
-                                    endpoint, rule))
-                        else:
-                            logger.info(
-                                "Adding endpoint {} ({}).".format(endpoint, rule))
-                            app.add_url_rule(rule, endpoint, view_func, methods=methods)
-    except:
-        logger.exception("Adding Widget Endpoints")

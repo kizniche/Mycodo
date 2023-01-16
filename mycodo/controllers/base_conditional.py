@@ -106,7 +106,7 @@ class AbstractConditional:
         except Exception:
             self.logger.exception("set_custom_option")
 
-    def get_custom_option(self, option):
+    def get_custom_option(self, option, default_return=None):
         conditional = db_retrieve_table_daemon(Conditional, unique_id=self.function_id)
         try:
             dict_custom_options = json.loads(conditional.custom_options)
@@ -114,3 +114,4 @@ class AbstractConditional:
             dict_custom_options = {}
         if option in dict_custom_options:
             return dict_custom_options[option]
+        return default_return
