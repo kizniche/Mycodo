@@ -28,11 +28,14 @@ services:
       - DOCKER_INFLUXDB_INIT_BUCKET=mycodo_db
 
   mycodonginx:
+    labels:
+      - kompose.service.group=sidecar
     container_name: mycodo_nginx
     restart: always
-    build:
-      context: ./
-      dockerfile: docker/nginx/Dockerfile
+    image: nargetdev/mycodonginx:c0.0.0-v8.15.1
+#    build:
+#      context: ./
+#      dockerfile: docker/nginx/Dockerfile
     volumes:
       - mycodo:/usr/local/mycodo
       - mycodo_log:/var/log/mycodo
@@ -44,8 +47,10 @@ services:
       - mycodoflask
 
   mycododaemon:
+    labels:
+      - kompose.service.group=sidecar
     container_name: mycodo_daemon
-    image: app
+    image: nargetdev/mycododaemon:c0.0.0-v8.15
     restart: always
     environment:
       - TZ=America/New_York  # See https://en.wikipedia.org/wiki/List_of_tz_database_time_zones for valid time zones
@@ -72,12 +77,14 @@ services:
       - mycodoflask
 
   mycodoflask:
+    labels:
+      - kompose.service.group=sidecar
     container_name: mycodo_flask
-    image: app
+    image: nargetdev/mycodoflask:c0.0.0-v8.15.1
     hostname: mycodohost  # Change to your desired hostname
-    build:
-      context: ./
-      dockerfile: docker/Dockerfile
+#    build:
+#      context: ./
+#      dockerfile: docker/Dockerfile
     restart: always
     environment:
       - TZ=America/New_York  # See https://en.wikipedia.org/wiki/List_of_tz_database_time_zones for valid time zones
