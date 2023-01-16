@@ -1,0 +1,210 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  annotations:
+    kompose.cmd: kompose convert --service-group-mode=label -o kompose-multicontainer
+    kompose.service.group: sidecar
+    kompose.version: 1.26.0 (40646f47)
+  creationTimestamp: null
+  labels:
+    io.kompose.service: sidecar
+  name: sidecar
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      io.kompose.service: sidecar
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      annotations:
+        kompose.cmd: kompose convert --service-group-mode=label -o kompose-multicontainer
+        kompose.service.group: sidecar
+        kompose.version: 1.26.0 (40646f47)
+      creationTimestamp: null
+      labels:
+        io.kompose.service: sidecar
+    spec:
+      containers:
+        - args:
+            - bash
+            - -c
+            - wget --quiet --no-check-certificate -p http://mycodo_nginx/ -O /dev/null && PYTHONPATH=/home/mycodo /home/mycodo/env/bin/python mycodo_daemon.py
+          env:
+            - name: TZ
+              value: America/New_York
+          image: nargetdev/mycodoapp:8.15.1
+          name: mycodo-daemon
+          resources: {}
+          securityContext:
+            privileged: true
+          volumeMounts:
+            - mountPath: /usr/local/mycodo
+              name: mycodo
+            - mountPath: /var/log/mycodo
+              name: mycodo-log
+            - mountPath: /home/mycodo/mycodo/actions/custom_actions
+              name: mycodo-custom-actions
+            - mountPath: /home/mycodo/mycodo/widgets/custom_widgets
+              name: mycodo-custom-widgets
+            - mountPath: /home/mycodo/databases
+              name: mycodo-databases
+            - mountPath: /home/mycodo/cameras
+              name: mycodo-cameras
+            - mountPath: /home/mycodo/mycodo/user_scripts
+              name: mycodo-custom-user-scripts
+            - mountPath: /home/mycodo/env
+              name: mycodo-env
+            - mountPath: /sys
+              name: sidecar-claim13
+            - mountPath: /home/mycodo/mycodo/mycodo_flask/ssl_certs
+              name: mycodo-ssl-certs
+            - mountPath: /opt
+              name: sidecar-claim14
+            - mountPath: /home/mycodo/mycodo/outputs/custom_outputs
+              name: mycodo-custom-outputs
+            - mountPath: /dev
+              name: sidecar-claim12
+            - mountPath: /home/mycodo/mycodo/functions/custom_functions
+              name: mycodo-custom-functions
+            - mountPath: /home/mycodo/mycodo/inputs/custom_inputs
+              name: mycodo-custom-inputs
+            - mountPath: /home/mycodo/mycodo/mycodo_flask/static/js/user_js
+              name: mycodo-custom-user-js
+            - mountPath: /var/run/docker.sock
+              name: sidecar-claim16
+              readOnly: true
+            - mountPath: /var/lib/influxdb
+              name: mycodo-influxdb
+            - mountPath: /home/mycodo/mycodo/mycodo_flask/static/css/user_css
+              name: mycodo-custom-user-css
+        - args:
+            - /home/mycodo/env/bin/python
+            - -m
+            - gunicorn
+            - --workers
+            - "1"
+            - --bind
+            - unix:/usr/local/mycodo/mycodoflask.sock
+            - start_flask_ui:app
+          env:
+            - name: TZ
+              value: America/New_York
+          image: nargetdev/mycodoapp:8.15.1
+          name: mycodo-flask
+          resources: {}
+          volumeMounts:
+            - mountPath: /home/mycodo/databases
+              name: mycodo-databases
+            - mountPath: /var/run/docker.sock
+              name: sidecar-claim16
+              readOnly: true
+            - mountPath: /home/mycodo/cameras
+              name: mycodo-cameras
+            - mountPath: /home/mycodo/mycodo/actions/custom_actions
+              name: mycodo-custom-actions
+            - mountPath: /home/mycodo/mycodo/user_scripts
+              name: mycodo-custom-user-scripts
+            - mountPath: /home/mycodo/mycodo/inputs/custom_inputs
+              name: mycodo-custom-inputs
+            - mountPath: /home/mycodo/env
+              name: mycodo-env
+            - mountPath: /home/mycodo/mycodo/mycodo_flask/ssl_certs
+              name: mycodo-ssl-certs
+            - mountPath: /home/mycodo/mycodo/functions/custom_functions
+              name: mycodo-custom-functions
+            - mountPath: /home/mycodo/mycodo/mycodo_flask/static/css/user_css
+              name: mycodo-custom-user-css
+            - mountPath: /var/log/mycodo
+              name: mycodo-log
+            - mountPath: /home/mycodo/mycodo/widgets/custom_widgets
+              name: mycodo-custom-widgets
+            - mountPath: /usr/local/mycodo
+              name: mycodo
+            - mountPath: /var/lib/influxdb
+              name: mycodo-influxdb
+            - mountPath: /dev
+              name: sidecar-claim15
+            - mountPath: /home/mycodo/mycodo/outputs/custom_outputs
+              name: mycodo-custom-outputs
+            - mountPath: /home/mycodo/mycodo/mycodo_flask/static/js/user_js
+              name: mycodo-custom-user-js
+        - image: nargetdev/mycodonginx:c0.0.0-v8.15.1
+          name: mycodo-nginx
+          ports:
+            - containerPort: 80
+            - containerPort: 443
+          resources: {}
+          volumeMounts:
+            - mountPath: /usr/local/mycodo
+              name: mycodo
+            - mountPath: /var/log/mycodo
+              name: mycodo-log
+            - mountPath: /home/mycodo/mycodo/mycodo_flask/ssl_certs
+              name: mycodo-ssl-certs
+      hostname: mycodohost
+      restartPolicy: Always
+      volumes:
+        - name: mycodo-cameras
+          persistentVolumeClaim:
+            claimName: mycodo-cameras
+        - name: mycodo-log
+          persistentVolumeClaim:
+            claimName: mycodo-log
+        - name: sidecar-claim14
+          persistentVolumeClaim:
+            claimName: sidecar-claim14
+        - name: mycodo-custom-user-scripts
+          persistentVolumeClaim:
+            claimName: mycodo-custom-user-scripts
+        - name: mycodo-custom-functions
+          persistentVolumeClaim:
+            claimName: mycodo-custom-functions
+        - name: mycodo-ssl-certs
+          persistentVolumeClaim:
+            claimName: mycodo-ssl-certs
+        - name: mycodo-env
+          persistentVolumeClaim:
+            claimName: mycodo-env
+        - name: mycodo-custom-outputs
+          persistentVolumeClaim:
+            claimName: mycodo-custom-outputs
+        - name: mycodo-custom-actions
+          persistentVolumeClaim:
+            claimName: mycodo-custom-actions
+        - name: mycodo-custom-widgets
+          persistentVolumeClaim:
+            claimName: mycodo-custom-widgets
+        - name: mycodo-custom-inputs
+          persistentVolumeClaim:
+            claimName: mycodo-custom-inputs
+        - name: sidecar-claim13
+          persistentVolumeClaim:
+            claimName: sidecar-claim13
+        - name: sidecar-claim12
+          persistentVolumeClaim:
+            claimName: sidecar-claim12
+        - name: mycodo
+          persistentVolumeClaim:
+            claimName: mycodo
+        - name: mycodo-databases
+          persistentVolumeClaim:
+            claimName: mycodo-databases
+        - name: mycodo-influxdb
+          persistentVolumeClaim:
+            claimName: mycodo-influxdb
+        - name: sidecar-claim16
+          persistentVolumeClaim:
+            claimName: sidecar-claim16
+            readOnly: true
+        - name: sidecar-claim15
+          persistentVolumeClaim:
+            claimName: sidecar-claim15
+        - name: mycodo-custom-user-css
+          persistentVolumeClaim:
+            claimName: mycodo-custom-user-css
+        - name: mycodo-custom-user-js
+          persistentVolumeClaim:
+            claimName: mycodo-custom-user-js
+status: {}

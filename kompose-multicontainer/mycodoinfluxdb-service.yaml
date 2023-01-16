@@ -1,0 +1,19 @@
+apiVersion: v1
+kind: Service
+metadata:
+  annotations:
+    kompose.cmd: kompose convert --service-group-mode=label -o kompose-multicontainer
+    kompose.version: 1.26.0 (40646f47)
+  creationTimestamp: null
+  labels:
+    io.kompose.service: mycodoinfluxdb
+  name: mycodoinfluxdb
+spec:
+  ports:
+    - name: "8086"
+      port: 8086
+      targetPort: 8086
+  selector:
+    io.kompose.service: mycodoinfluxdb
+status:
+  loadBalancer: {}
