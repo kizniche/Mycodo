@@ -102,7 +102,7 @@ DOCKER_CONTAINER = os.environ.get('DOCKER_CONTAINER', False) == 'TRUE'
 
 # Pyro5 URI/host, used by mycodo_client.py
 if DOCKER_CONTAINER:
-    PYRO_URI = 'PYRO:mycodo.pyro_server@mycodo_daemon:9080'
+    PYRO_URI = 'PYRO:mycodo.pyro_server@mycododaemon:9080'
 else:
     PYRO_URI = 'PYRO:mycodo.pyro_server@127.0.0.1:9080'
 

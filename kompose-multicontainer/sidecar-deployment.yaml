@@ -85,7 +85,9 @@ spec:
 #            - mountPath: /mnt/opt
 #              name: sidecar-opt-claim
       containers:
-        - args:
+        - name: mycodoflask
+          image: nargetdev/mycodoapp:c0.0.2-v8.15.1
+          args:
             - /home/mycodo/env/bin/python
             - -m
             - gunicorn
@@ -97,8 +99,7 @@ spec:
           env:
             - name: TZ
               value: America/New_York
-          image: nargetdev/mycodoapp:8.15.1
-          name: mycodo-flask
+#          image: nargetdev/mycodoflask:c0.0.1-v8.15.1
           resources: {}
           volumeMounts:
             - mountPath: /home/mycodo/databases
@@ -136,7 +137,9 @@ spec:
               name: mycodo-custom-outputs
             - mountPath: /home/mycodo/mycodo/mycodo_flask/static/js/user_js
               name: mycodo-custom-user-js
-        - args:
+        - name: mycododaemon
+          image: nargetdev/mycodoapp:c0.0.2-v8.15.1
+          args:
             - bash
             - -c
             - wget --quiet --no-check-certificate -p http://mycodonginx/ -O /dev/null && PYTHONPATH=/home/mycodo /home/mycodo/env/bin/python mycodo_daemon.py
@@ -152,8 +155,7 @@ spec:
           env:
             - name: TZ
               value: America/New_York
-          image: nargetdev/mycodoapp:8.15.1
-          name: mycodo-daemon
+#          image: nargetdev/mycodoflask:c0.0.1-v8.15.1
           resources: {}
           securityContext:
             privileged: true
@@ -198,8 +200,8 @@ spec:
               name: mycodo-influxdb
             - mountPath: /home/mycodo/mycodo/mycodo_flask/static/css/user_css
               name: mycodo-custom-user-css
-        - image: nargetdev/mycodonginx:c0.0.0-v8.15.1
-          name: mycodo-nginx
+        - name: mycodonginx
+          image: nargetdev/mycodonginx:c0.0.0-v8.15.1
           ports:
             - containerPort: 80
             - containerPort: 443

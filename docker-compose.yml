@@ -2,6 +2,8 @@ version: "3.7"
 
 services:
 
+## Deprecated untill I read the prev config.
+
 #  mycodo_influxdb:
 #    container_name: mycodo_influxdb
 #    build:
@@ -14,6 +16,7 @@ services:
 #    ports:
 #      - 8086:8086
 
+## InfluxDBv2 setup
   mycodoinfluxdb:
     ports:
       - 8086:8086
@@ -30,7 +33,7 @@ services:
   mycodonginx:
     labels:
       - kompose.service.group=sidecar
-    container_name: mycodo_nginx
+    container_name: mycodonginx
     restart: always
     image: nargetdev/mycodonginx:c0.0.0-v8.15.1
 #    build:
@@ -47,10 +50,10 @@ services:
       - mycodoflask
 
   mycododaemon:
+    image: nargetdev/mycodoapp:c0.0.2-v8.15.1
     labels:
       - kompose.service.group=sidecar
-    container_name: mycodo_daemon
-    image: nargetdev/mycodoapp:8.15.1
+    container_name: mycododaemon
 #    image: nargetdev/mycodoflask:c0.0.0-v8.15.1
     restart: always
     environment:
@@ -78,11 +81,10 @@ services:
       - mycodoflask
 
   mycodoflask:
+    image: nargetdev/mycodoapp:c0.0.2-v8.15.1
     labels:
       - kompose.service.group=sidecar
-    container_name: mycodo_flask
-    image: nargetdev/mycodoapp:8.15.1
-#    image: nargetdev/mycodoflask:c0.0.0-v8.15.1
+    container_name: mycodoflask
     hostname: mycodohost  # Change to your desired hostname
 #    build:
 #      context: ./

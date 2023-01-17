@@ -170,7 +170,7 @@ def thread_import_settings(tmp_folder):
         generate_widget_html()
 
         if DOCKER_CONTAINER:
-            subprocess.Popen('docker start mycodo_daemon 2>&1', shell=True)
+            subprocess.Popen('docker start mycododaemon 2>&1', shell=True)
         else:
             # Start Mycodo daemon (backend)
             cmd = "{pth}/mycodo/scripts/mycodo_wrapper " \
@@ -290,7 +290,7 @@ def import_settings(form):
             logger.info("Stopping daemon and copying files")
             try:
                 if DOCKER_CONTAINER:
-                    subprocess.Popen('docker stop mycodo_daemon 2>&1', shell=True)
+                    subprocess.Popen('docker stop mycododaemon 2>&1', shell=True)
                 else:
                     # Stop Mycodo daemon (backend)
                     cmd = "{pth}/mycodo/scripts/mycodo_wrapper " \
