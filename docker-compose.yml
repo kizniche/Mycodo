@@ -14,18 +14,18 @@ services:
 #    ports:
 #      - 8086:8086
 
-#  mycodoinfluxdb:
-#    ports:
-#      - 8086:8086
-#    volumes:
-#      - mycodo_influxdb:/var/lib/influxdb2
-#    image: influxdb:latest
-#    environment:
-#      - DOCKER_INFLUXDB_INIT_MODE=setup
-#      - DOCKER_INFLUXDB_INIT_USERNAME=mycodo
-#      - DOCKER_INFLUXDB_INIT_PASSWORD=mmdu77sj3nIoiajjs
-#      - DOCKER_INFLUXDB_INIT_ORG=mycodo
-#      - DOCKER_INFLUXDB_INIT_BUCKET=mycodo_db
+  mycodoinfluxdb:
+    ports:
+      - 8086:8086
+    volumes:
+      - mycodo_influxdb:/var/lib/influxdb2
+    image: influxdb:latest
+    environment:
+      - DOCKER_INFLUXDB_INIT_MODE=setup
+      - DOCKER_INFLUXDB_INIT_USERNAME=mycodo
+      - DOCKER_INFLUXDB_INIT_PASSWORD=mmdu77sj3nIoiajjs
+      - DOCKER_INFLUXDB_INIT_ORG=mycodo
+      - DOCKER_INFLUXDB_INIT_BUCKET=mycodo_db
 
   mycodonginx:
     labels:
