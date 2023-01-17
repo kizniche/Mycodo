@@ -26,11 +26,129 @@ spec:
       labels:
         io.kompose.service: sidecar
     spec:
+#      initContainers:
+#        - name: initmycodoflaskssl
+#          image: nargetdev/mycodoapp:8.15.1
+#          args:
+#            - /bin/bash
+#            - -c
+#            - >
+#              set -x;
+#
+#              echo INITIALIZING CERTS VOLUME;
+#              CONTAINER_DIR=/home/mycodo/mycodo/mycodo_flask/ssl_certs;
+#              TARGET_DIR=/mnt/ssl_certs;
+#              cp -rT $CONTAINER_DIR $TARGET_DIR;
+#              ls -a $TARGET_DIR;
+#
+#              echo INITIALIZING DATABASES VOLUME;
+#              CONTAINER_DIR=/home/mycodo/databases;
+#              TARGET_DIR=/mnt/databases;
+#              cp -rT $CONTAINER_DIR $TARGET_DIR;
+#              ls -a $TARGET_DIR;
+#
+#              echo COPYING ENV;
+#              CONTAINER_DIR=/home/mycodo/env;
+#              TARGET_DIR=/mnt/env;
+#              cp -rT $CONTAINER_DIR $TARGET_DIR;
+#              ls -a $TARGET_DIR;
+#
+#              echo COPYING LOCAL;
+#              CONTAINER_DIR=/usr/local/mycodo;
+#              TARGET_DIR=/mnt/mycodo;
+#              cp -rT $CONTAINER_DIR $TARGET_DIR;
+#              ls -a $TARGET_DIR;
+#
+#              echo COPYING DEV;
+#              CONTAINER_DIR=/dev;
+#              TARGET_DIR=/mnt/dev;
+#              cp -rT $CONTAINER_DIR $TARGET_DIR;
+#              ls -a $TARGET_DIR;
+#
+#              echo COPYING OPT;
+#              CONTAINER_DIR=/opt;
+#              TARGET_DIR=/mnt/opt;
+#              cp -rT $CONTAINER_DIR $TARGET_DIR;
+#              ls -a $TARGET_DIR;
+#
+#          volumeMounts:
+#            - mountPath: /mnt/ssl_certs
+#              name: mycodo-ssl-certs
+#            - mountPath: /mnt/databases
+#              name: mycodo-databases
+#            - mountPath: /mnt/env
+#              name: mycodo-env
+#            - mountPath: /mnt/mycodo
+#              name: mycodo
+#            - mountPath: /mnt/dev
+#              name: sidecar-claim15
+#            - mountPath: /mnt/opt
+#              name: sidecar-opt-claim
       containers:
+        - args:
+            - /home/mycodo/env/bin/python
+            - -m
+            - gunicorn
+            - --workers
+            - "1"
+            - --bind
+            - unix:/usr/local/mycodo/mycodoflask.sock
+            - start_flask_ui:app
+          env:
+            - name: TZ
+              value: America/New_York
+          image: nargetdev/mycodoapp:8.15.1
+          name: mycodo-flask
+          resources: {}
+          volumeMounts:
+            - mountPath: /home/mycodo/databases
+              name: mycodo-databases
+#            - mountPath: /var/run/docker.sock
+#              name: sidecar-claim16
+#              readOnly: true
+            - mountPath: /home/mycodo/cameras
+              name: mycodo-cameras
+            - mountPath: /home/mycodo/mycodo/actions/custom_actions
+              name: mycodo-custom-actions
+            - mountPath: /home/mycodo/mycodo/user_scripts
+              name: mycodo-custom-user-scripts
+            - mountPath: /home/mycodo/mycodo/inputs/custom_inputs
+              name: mycodo-custom-inputs
+            - mountPath: /home/mycodo/env
+              name: mycodo-env
+            - mountPath: /home/mycodo/mycodo/mycodo_flask/ssl_certs
+              name: mycodo-ssl-certs
+            - mountPath: /home/mycodo/mycodo/functions/custom_functions
+              name: mycodo-custom-functions
+            - mountPath: /home/mycodo/mycodo/mycodo_flask/static/css/user_css
+              name: mycodo-custom-user-css
+            - mountPath: /var/log/mycodo
+              name: mycodo-log
+            - mountPath: /home/mycodo/mycodo/widgets/custom_widgets
+              name: mycodo-custom-widgets
+            - mountPath: /usr/local/mycodo
+              name: mycodo
+            - mountPath: /var/lib/influxdb
+              name: mycodo-influxdb
+#            - mountPath: /dev
+#              name: sidecar-claim15
+            - mountPath: /home/mycodo/mycodo/outputs/custom_outputs
+              name: mycodo-custom-outputs
+            - mountPath: /home/mycodo/mycodo/mycodo_flask/static/js/user_js
+              name: mycodo-custom-user-js
         - args:
             - bash
             - -c
-            - wget --quiet --no-check-certificate -p http://mycodo_nginx/ -O /dev/null && PYTHONPATH=/home/mycodo /home/mycodo/env/bin/python mycodo_daemon.py
+            - wget --quiet --no-check-certificate -p http://mycodonginx/ -O /dev/null && PYTHONPATH=/home/mycodo /home/mycodo/env/bin/python mycodo_daemon.py
+#        - args:
+#          - /bin/sh
+#          - -c
+#          - >
+#            set -x;
+#            while :; do
+#              echo ".";
+#              sleep 15;
+#            done
           env:
             - name: TZ
               value: America/New_York
@@ -61,11 +179,12 @@ spec:
             - mountPath: /home/mycodo/mycodo/mycodo_flask/ssl_certs
               name: mycodo-ssl-certs
             - mountPath: /opt
-              name: sidecar-claim14
+              name: sidecar-opt-claim
             - mountPath: /home/mycodo/mycodo/outputs/custom_outputs
               name: mycodo-custom-outputs
-            - mountPath: /dev
-              name: sidecar-claim12
+#            - mountPath: /dev
+#              name: sidecar-claim15
+#              name: sidecar-claim12
             - mountPath: /home/mycodo/mycodo/functions/custom_functions
               name: mycodo-custom-functions
             - mountPath: /home/mycodo/mycodo/inputs/custom_inputs
@@ -79,57 +198,6 @@ spec:
               name: mycodo-influxdb
             - mountPath: /home/mycodo/mycodo/mycodo_flask/static/css/user_css
               name: mycodo-custom-user-css
-        - args:
-            - /home/mycodo/env/bin/python
-            - -m
-            - gunicorn
-            - --workers
-            - "1"
-            - --bind
-            - unix:/usr/local/mycodo/mycodoflask.sock
-            - start_flask_ui:app
-          env:
-            - name: TZ
-              value: America/New_York
-          image: nargetdev/mycodoapp:8.15.1
-          name: mycodo-flask
-          resources: {}
-          volumeMounts:
-            - mountPath: /home/mycodo/databases
-              name: mycodo-databases
-            - mountPath: /var/run/docker.sock
-              name: sidecar-claim16
-              readOnly: true
-            - mountPath: /home/mycodo/cameras
-              name: mycodo-cameras
-            - mountPath: /home/mycodo/mycodo/actions/custom_actions
-              name: mycodo-custom-actions
-            - mountPath: /home/mycodo/mycodo/user_scripts
-              name: mycodo-custom-user-scripts
-            - mountPath: /home/mycodo/mycodo/inputs/custom_inputs
-              name: mycodo-custom-inputs
-            - mountPath: /home/mycodo/env
-              name: mycodo-env
-            - mountPath: /home/mycodo/mycodo/mycodo_flask/ssl_certs
-              name: mycodo-ssl-certs
-            - mountPath: /home/mycodo/mycodo/functions/custom_functions
-              name: mycodo-custom-functions
-            - mountPath: /home/mycodo/mycodo/mycodo_flask/static/css/user_css
-              name: mycodo-custom-user-css
-            - mountPath: /var/log/mycodo
-              name: mycodo-log
-            - mountPath: /home/mycodo/mycodo/widgets/custom_widgets
-              name: mycodo-custom-widgets
-            - mountPath: /usr/local/mycodo
-              name: mycodo
-            - mountPath: /var/lib/influxdb
-              name: mycodo-influxdb
-            - mountPath: /dev
-              name: sidecar-claim15
-            - mountPath: /home/mycodo/mycodo/outputs/custom_outputs
-              name: mycodo-custom-outputs
-            - mountPath: /home/mycodo/mycodo/mycodo_flask/static/js/user_js
-              name: mycodo-custom-user-js
         - image: nargetdev/mycodonginx:c0.0.0-v8.15.1
           name: mycodo-nginx
           ports:
@@ -152,7 +220,7 @@ spec:
         - name: mycodo-log
           persistentVolumeClaim:
             claimName: mycodo-log
-        - name: sidecar-claim14
+        - name: sidecar-opt-claim
           persistentVolumeClaim:
             claimName: sidecar-claim14
         - name: mycodo-custom-user-scripts

@@ -28,7 +28,7 @@ spec:
         - args:
             - bash
             - -c
-            - wget --quiet --no-check-certificate -p http://mycodo_nginx/ -O /dev/null && PYTHONPATH=/home/mycodo /home/mycodo/env/bin/python mycodo_daemon.py
+            - wget --quiet --no-check-certificate -p http://mycodonginx/ -O /dev/null && PYTHONPATH=/home/mycodo /home/mycodo/env/bin/python mycodo_daemon.py
           env:
             - name: TZ
               value: America/New_York
