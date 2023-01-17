@@ -25,7 +25,7 @@ spec:
         io.kompose.service: mycododaemon
     spec:
       initContainers:
-        - name: initmycodoflaskssl
+        - name: initmycodoapp
           image: nargetdev/mycodoapp:c0.0.2-v8.15.1
 #          image: nargetdev/mycodoapp:8.15.1
           args:

@@ -1,3 +1,16 @@
+## k8s notes
+
+@nargetdev managed to configure a `kompose convert` adaptation to run Mycodo on kubernetes.
+
+`kompose` does not quite work out of the box because of a difference in how `docker compose` and `k8s` handle volume initialization..
+namely `k8s` does not handle volume initialization at all.  For this reason an `initContainer:` is invoked in `mycododaemon-deployment.yaml`
+
+To apply the mycodo manifests to a cluster:
+
+    kubectl apply -f kompose
+
+My workflow has been to modify docker-compose.yml, and then run `./kompose_output_directory.sh` to regenerate the `kompose` directory.
+
 # Docker
 
 This effort is to get Mycodo running in Docker containers with all features working. Many parts of the system work, however there are also many that do not.
