@@ -3,8 +3,8 @@ kind: PersistentVolumeClaim
 metadata:
   creationTimestamp: null
   labels:
-    io.kompose.service: mycododaemon-claim13
-  name: mycododaemon-claim13
+    io.kompose.service: mycodo-sys
+  name: mycodo-sys
 spec:
   accessModes:
     - ReadWriteOnce

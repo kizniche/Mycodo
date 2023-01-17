@@ -37,8 +37,10 @@ spec:
           env:
             - name: TZ
               value: America/New_York
-          image: nargetdev/mycodoapp
-          name: mycodo-flask
+          image: nargetdev/mycodoapp:c0.0.2-v8.15.1
+          name: mycodoflask
+          ports:
+            - containerPort: 9080
           resources: {}
           securityContext:
             privileged: true
@@ -73,10 +75,8 @@ spec:
               name: mycodo-ssl-certs
             - mountPath: /var/lib/influxdb
               name: mycodo-influxdb
-            - mountPath: /dev
-              name: mycodoflask-claim15
             - mountPath: /var/run/docker.sock
-              name: mycodoflask-claim16
+              name: mycodoflask-claim15
               readOnly: true
       hostname: mycodohost
       restartPolicy: Always
@@ -129,8 +129,5 @@ spec:
         - name: mycodoflask-claim15
           persistentVolumeClaim:
             claimName: mycodoflask-claim15
-        - name: mycodoflask-claim16
-          persistentVolumeClaim:
-            claimName: mycodoflask-claim16
             readOnly: true
 status: {}

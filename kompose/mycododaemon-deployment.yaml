@@ -24,6 +24,57 @@ spec:
       labels:
         io.kompose.service: mycododaemon
     spec:
+      initContainers:
+        - name: initmycodoflaskssl
+          image: nargetdev/mycodoapp:c0.0.2-v8.15.1
+#          image: nargetdev/mycodoapp:8.15.1
+          args:
+            - /bin/bash
+            - -c
+            - >
+              set -x;
+
+              echo INITIALIZING CERTS VOLUME;
+              CONTAINER_DIR=/home/mycodo/mycodo/mycodo_flask/ssl_certs;
+              TARGET_DIR=/mnt/ssl_certs;
+              cp -rT $CONTAINER_DIR $TARGET_DIR;
+              ls -a $TARGET_DIR;
+
+              echo INITIALIZING DATABASES VOLUME;
+              CONTAINER_DIR=/home/mycodo/databases;
+              TARGET_DIR=/mnt/databases;
+              cp -rT $CONTAINER_DIR $TARGET_DIR;
+              ls -a $TARGET_DIR;
+
+              echo COPYING ENV;
+              CONTAINER_DIR=/home/mycodo/env;
+              TARGET_DIR=/mnt/env;
+              cp -rT $CONTAINER_DIR $TARGET_DIR;
+              ls -a $TARGET_DIR;
+
+              echo COPYING LOCAL;
+              CONTAINER_DIR=/usr/local/mycodo;
+              TARGET_DIR=/mnt/mycodo;
+              cp -rT $CONTAINER_DIR $TARGET_DIR;
+              ls -a $TARGET_DIR;
+
+              echo COPYING OPT;
+              CONTAINER_DIR=/opt;
+              TARGET_DIR=/mnt/opt;
+              cp -rT $CONTAINER_DIR $TARGET_DIR;
+              ls -a $TARGET_DIR;
+
+          volumeMounts:
+            - mountPath: /mnt/ssl_certs
+              name: mycodo-ssl-certs
+            - mountPath: /mnt/databases
+              name: mycodo-databases
+            - mountPath: /mnt/env
+              name: mycodo-env
+            - mountPath: /mnt/mycodo
+              name: mycodo
+            - mountPath: /mnt/opt
+              name: mycodo-opt
       containers:
         - args:
             - bash
@@ -32,8 +83,10 @@ spec:
           env:
             - name: TZ
               value: America/New_York
-          image: nargetdev/mycodoapp
-          name: mycodo-daemon
+          image: nargetdev/mycodoapp:c0.0.2-v8.15.1
+          name: mycododaemon
+          ports:
+            - containerPort: 9080
           resources: {}
           securityContext:
             privileged: true
@@ -62,12 +115,10 @@ spec:
               name: mycodo-log
             - mountPath: /home/mycodo/mycodo/mycodo_flask/ssl_certs
               name: mycodo-ssl-certs
-            - mountPath: /dev
-              name: mycododaemon-claim12
             - mountPath: /sys
-              name: mycododaemon-claim13
+              name: mycodo-sys
             - mountPath: /opt
-              name: mycododaemon-claim14
+              name: mycodo-opt
       restartPolicy: Always
       volumes:
         - name: mycodo
@@ -106,13 +157,10 @@ spec:
         - name: mycodo-ssl-certs
           persistentVolumeClaim:
             claimName: mycodo-ssl-certs
-        - name: mycododaemon-claim12
+        - name: mycodo-sys
           persistentVolumeClaim:
-            claimName: mycododaemon-claim12
-        - name: mycododaemon-claim13
+            claimName: mycodo-sys
+        - name: mycodo-opt
           persistentVolumeClaim:
-            claimName: mycododaemon-claim13
-        - name: mycododaemon-claim14
-          persistentVolumeClaim:
-            claimName: mycododaemon-claim14
+            claimName: mycodo-opt
 status: {}

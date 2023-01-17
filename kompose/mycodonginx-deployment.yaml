@@ -25,8 +25,8 @@ spec:
         io.kompose.service: mycodonginx
     spec:
       containers:
-        - image: nargetdev/mycodonginx
-          name: mycodo-nginx
+        - image: nargetdev/mycodonginx:c0.0.0-v8.15.1
+          name: mycodonginx
           ports:
             - containerPort: 80
             - containerPort: 443
