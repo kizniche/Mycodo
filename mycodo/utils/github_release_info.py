@@ -31,6 +31,7 @@ class MycodoRelease:
     def update_mycodo_releases(self):
         try:
             self.mycodo_releases = self.mycodo_releases_dict(self.release_uri)
+            logger.info(f"Checked for releases: {self.mycodo_releases}")
         except Exception as err:
             logger.error("Could not update release dictionary: {}".format(err))
 
@@ -68,12 +69,17 @@ class MycodoRelease:
 
     def github_latest_release(self, mycodo_releases):
         """Return the latest Mycodo release version."""
+        logger.info("Determining latest release...")
         all_versions = []
         for each_release in mycodo_releases:
-            if re.match('v.*(\d\.\d\.\d)', each_release['name']):
+            logger.info(f"Release: {each_release}")
+            if re.match('v(\d+)\.(\d+)\.\d+', each_release['name']):
+                logger.info(f"Match: {each_release['name'][1:]}")
                 all_versions.append(each_release['name'][1:])
         try:
-            return self.sort_reverse_list(all_versions)[0]
+            latest_release = self.sort_reverse_list(all_versions)[0]
+            logger.info(f"Found latest release: {latest_release}")
+            return latest_release
         except IndexError:
             return None
 

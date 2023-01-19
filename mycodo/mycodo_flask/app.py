@@ -130,9 +130,6 @@ def register_widget_endpoints(app):
 
 
 def extension_babel(app):
-    babel = Babel(app)
-
-    @babel.localeselector
     def get_locale():
         # Check if a user is logged in and a language is set
         try:
@@ -165,7 +162,8 @@ def extension_babel(app):
             pass
 
         return request.accept_languages.best_match(LANGUAGES.keys())
-
+    
+    babel = Babel(app, locale_selector=get_locale)
     return app
 
 
@@ -175,19 +173,18 @@ def extension_compress(app):
     return app
 
 
-def get_key_func():
-    """Custom key_func for flask-limiter to handle both logged-in and logged-out requests."""
-    if get_ip_address():
-        str_return = get_ip_address()
-    else:
-        str_return = '0.0.0.0'
-    if current_user and hasattr(current_user, 'name'):
-        str_return += f'/{current_user.name}'
-    return str_return
-
-
 def extension_limiter(app):
-    limiter = Limiter(app, key_func=get_key_func, headers_enabled=True)
+    def get_key_func():
+        """Custom key_func for flask-limiter to handle both logged-in and logged-out requests."""
+        if get_ip_address():
+            str_return = get_ip_address()
+        else:
+            str_return = '0.0.0.0'
+        if current_user and hasattr(current_user, 'name'):
+            str_return += f'/{current_user.name}'
+        return str_return
+
+    limiter = Limiter(app=app, key_func=get_key_func, headers_enabled=True)
     limiter.limit("300/hour")(routes_authentication.blueprint)
     limiter.limit("20/hour")(routes_password_reset.blueprint)
     limiter.limit("200/minute")(api_blueprint)

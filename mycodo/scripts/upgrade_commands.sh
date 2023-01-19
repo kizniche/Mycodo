@@ -21,7 +21,7 @@ WIRINGPI_URL="https://project-downloads.drogon.net/wiringpi-latest.deb"
 INFLUXDB1_VERSION="1.8.10"
 INFLUXDB2_VERSION="2.2.0"
 
-VIRTUALENV_VERSION="20.14.1"
+VIRTUALENV_VERSION="20.17.1"
 
 # Required apt packages
 APT_PKGS="gawk gcc g++ git jq libffi-dev libi2c-dev logrotate moreutils netcat nginx python3 python3-pip python3-dev python3-setuptools rng-tools sqlite3 unzip wget"

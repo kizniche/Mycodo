@@ -1,3 +1,14 @@
+## 8.15.3 (2023-01-18)
+
+### Bugfixes
+
+ - Fix regex to properly parse latest Mycodo release
+
+### Miscellaneous
+
+ - Update Python packages
+
+
 ## 8.15.2 (2023-01-18)
 
 ### Bugfixes
