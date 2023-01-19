@@ -148,22 +148,15 @@ def thread_import_settings(tmp_folder):
 
     try:
         # Upgrade database
-        cmd = "{pth}/mycodo/scripts/mycodo_wrapper " \
-              "upgrade_database".format(
-            pth=INSTALL_DIRECTORY)
+        cmd = f"{INSTALL_DIRECTORY}/mycodo/scripts/mycodo_wrapper upgrade_database"
         _, _, _ = cmd_output(cmd)
 
         # Install/update dependencies (could take a while)
-        cmd = "{pth}/mycodo/scripts/mycodo_wrapper update_dependencies" \
-              " | ts '[%Y-%m-%d %H:%M:%S]' >> {log} 2>&1".format(
-            pth=INSTALL_DIRECTORY,
-            log=DEPENDENCY_LOG_FILE)
+        cmd = f"{INSTALL_DIRECTORY}/mycodo/scripts/mycodo_wrapper update_dependencies | ts '[%Y-%m-%d %H:%M:%S]' >> {DEPENDENCY_LOG_FILE} 2>&1"
         _, _, _ = cmd_output(cmd)
 
         # Initialize
-        cmd = "{pth}/mycodo/scripts/mycodo_wrapper " \
-              "initialize".format(
-            pth=INSTALL_DIRECTORY)
+        cmd = f"{INSTALL_DIRECTORY}/mycodo/scripts/mycodo_wrapper initialize"
         _, _, _ = cmd_output(cmd)
 
         # Generate widget HTML
@@ -173,9 +166,7 @@ def thread_import_settings(tmp_folder):
             subprocess.Popen('docker start mycodo_daemon 2>&1', shell=True)
         else:
             # Start Mycodo daemon (backend)
-            cmd = "{pth}/mycodo/scripts/mycodo_wrapper " \
-                  "daemon_start".format(
-                pth=INSTALL_DIRECTORY)
+            cmd = "{INSTALL_DIRECTORY}/mycodo/scripts/mycodo_wrapper daemon_start"
             _, _, _ = cmd_output(cmd)
 
         # Delete tmp directory if it exists
@@ -293,9 +284,7 @@ def import_settings(form):
                     subprocess.Popen('docker stop mycodo_daemon 2>&1', shell=True)
                 else:
                     # Stop Mycodo daemon (backend)
-                    cmd = "{pth}/mycodo/scripts/mycodo_wrapper " \
-                          "daemon_stop".format(
-                        pth=INSTALL_DIRECTORY)
+                    cmd = f"{INSTALL_DIRECTORY}/mycodo/scripts/mycodo_wrapper daemon_stop"
                     _, _, _ = cmd_output(cmd)
 
                 # Backup current database and replace with extracted mycodo.db

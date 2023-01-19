@@ -122,13 +122,14 @@ if __name__ == "__main__":
         if 'highstock' not in devices:
             devices.append('highstock')
 
-    logger.info(f"Checking dependencies for installed devices: {devices}")
+    if devices:
+        logger.info(f"Checking dependencies for installed devices: {devices}")
 
-    for each_device in devices:
-        device_unmet_dependencies, _, _ = return_dependencies(each_device)
-        for each_dep in device_unmet_dependencies:
-            if each_dep not in dependencies:
-                dependencies.append(each_dep)
+        for each_device in devices:
+            device_unmet_dependencies, _, _ = return_dependencies(each_device)
+            for each_dep in device_unmet_dependencies:
+                if each_dep not in dependencies:
+                    dependencies.append(each_dep)
 
     if dependencies:
         for each_dep in dependencies:
@@ -153,12 +154,9 @@ if __name__ == "__main__":
                 if output:
                     formatted_output = output.decode("utf-8").replace('\\n', '\n')
                     logger.info(formatted_output)
-    else:
-        logger.info("Not Unmet dependencies for devices found")
 
+    # Check apt dependencies
     logger.info("Checking for updates to apt dependencies...")
-
-    # Update installed dependencies
     installed_apt_deps = get_installed_apt_dependencies()
     apt_deps = " ".join(installed_apt_deps)
 
