@@ -499,18 +499,18 @@ def admin_upgrade():
     upgrade_available = False
 
     # Check for any new Mycodo releases on github
-    mycodo_releases = MycodoRelease()
+    mycodo_releases_check = MycodoRelease()
     (upgrade_exists,
      releases,
      mycodo_releases,
      current_latest_release,
-     errors) = mycodo_releases.github_upgrade_exists()
+     errors) = mycodo_releases_check.github_upgrade_exists()
 
     if errors:
         for each_error in errors:
             flash(each_error, 'error')
 
-    if releases:
+    if releases and current_latest_release:
         current_latest_major_version = current_latest_release.split('.')[0]
         current_major_release = releases[0]
         current_releases = []
