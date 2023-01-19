@@ -1,3 +1,10 @@
+## 8.15.4 (Unreleased)
+
+### Bugfixes
+
+ - Fix potential issues with MycodoRelease Class
+
+
 ## 8.15.3 (2023-01-18)
 
 ### Bugfixes

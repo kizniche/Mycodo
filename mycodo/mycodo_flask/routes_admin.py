@@ -510,7 +510,7 @@ def admin_upgrade():
         for each_error in errors:
             flash(each_error, 'error')
 
-    if releases and current_latest_release:
+    if releases and current_latest_release and "." in current_latest_release:
         current_latest_major_version = current_latest_release.split('.')[0]
         current_major_release = releases[0]
         current_releases = []

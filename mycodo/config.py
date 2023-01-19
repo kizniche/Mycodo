@@ -123,7 +123,7 @@ LOGIN_BAN_SECONDS = 600  # 10 minutes
 # Check for upgrade every 2 days (if enabled)
 UPGRADE_CHECK_INTERVAL = 172800
 
-RELEASE_URL = 'https://api.github.com/repos/kizniche/Mycodo/tags'
+TAGS_URL = 'https://api.github.com/repos/kizniche/Mycodo/git/refs/tags'
 
 LANGUAGES = {
     'en': 'English',
