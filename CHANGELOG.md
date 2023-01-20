@@ -3,6 +3,7 @@
 ### Bugfixes
 
  - Fix potential issues with MycodoRelease Class
+ - Fix library version typo in VL53L1X Input
 
 
 ## 8.15.3 (2023-01-18)
