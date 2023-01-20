@@ -137,8 +137,7 @@ class InputController(AbstractController, threading.Thread):
                 time.sleep(0.1)
 
         if (    # Some Inputs require a function to be threaded and run continually
-                ('listener' in self.dict_inputs[self.device] and
-             self.dict_inputs[self.device]['listener']) or
+                ('listener' in self.dict_inputs[self.device] and self.dict_inputs[self.device]['listener']) or
                 # Some Inputs don't run periodically
                 ('do_not_run_periodically' in self.dict_inputs[self.device] and
                  self.dict_inputs[self.device]['do_not_run_periodically'])):
@@ -345,12 +344,12 @@ class InputController(AbstractController, threading.Thread):
         self.input_timer = time.time()
         self.lastUpdate = None
 
-        # Set up listener (e.g. MQTT, EDGE)
+        # Set up listener as thread
         if ('listener' in self.dict_inputs[self.device] and
               self.dict_inputs[self.device]['listener']):
             self.logger.debug("Detected as listener. Starting listener thread.")
             input_listener = threading.Thread(
-                target=self.measure_input.listener())
+                target=self.measure_input.listener)
             input_listener.daemon = True
             input_listener.start()
 

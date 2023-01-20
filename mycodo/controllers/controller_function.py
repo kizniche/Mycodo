@@ -63,12 +63,19 @@ class FunctionController(AbstractController, threading.Thread):
         return str(self.__class__)
 
     def loop(self):
-        if self.timer_loop < time.time():
-            if not self.run_function:
-                self.logger.error("Function could not be initialized. Shutting controller down.")
-                self.running = False
-                return
+        if not self.run_function:
+            self.logger.error("Function could not be initialized. Shutting controller down.")
+            self.running = False
+            return
 
+        if (    # Some Inputs require a function to be threaded and run continually
+                ('listener' in self.dict_function[self.device] and self.dict_function[self.device]['listener']) or
+                # Some Inputs don't run periodically
+                ('do_not_run_periodically' in self.dict_function[self.device] and
+                 self.dict_function[self.device]['do_not_run_periodically'])):
+            return
+
+        if self.timer_loop < time.time():
             while self.timer_loop < time.time():
                 self.timer_loop += self.sample_rate
 
@@ -121,6 +128,15 @@ class FunctionController(AbstractController, threading.Thread):
             self.running = False
             self.logger.error(f"'{self.device}' is not a valid device type. Deactivating controller.")
             return
+        
+        # Set up listener as thread
+        if ('listener' in self.dict_function[self.device] and
+              self.dict_function[self.device]['listener']):
+            self.logger.debug("Detected as listener. Starting listener thread.")
+            function_listener = threading.Thread(
+                target=self.run_function.listener)
+            function_listener.daemon = True
+            function_listener.start()
 
     def call_module_function(self, button_id, args_dict, thread=True):
         """Execute function from custom action button press."""

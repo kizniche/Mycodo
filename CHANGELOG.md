@@ -1,3 +1,10 @@
+## 8.15.5 (Unreleased)
+
+### Features
+
+ - Add listener and do_not_run_periodically as Function module options
+
+
 ## 8.15.4 (2023-01-19)
 
 ### Bugfixes
