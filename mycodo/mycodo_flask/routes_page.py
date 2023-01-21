@@ -469,7 +469,8 @@ def page_export():
                       'as any unmet dependencies will be installed. '
                       'Additionally, the daemon will be stopped during this '
                       'process and all users will be logged out at the '
-                      'completion of the import.', 'success')
+                      'completion of the import. View the Settings Import '
+                      'Log for details.', 'success')
                 return redirect(url_for('routes_authentication.logout'))
             else:
                 flash('An error occurred during the settings database import.',

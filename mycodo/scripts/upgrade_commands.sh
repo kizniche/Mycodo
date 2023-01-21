@@ -153,6 +153,9 @@ case "${1:-''}" in
         if [[ ! -e /var/log/mycodo/mycododependency.log ]]; then
             touch /var/log/mycodo/mycododependency.log
         fi
+        if [[ ! -e /var/log/mycodo/mycodoimport.log ]]; then
+            touch /var/log/mycodo/mycodoimport.log
+        fi
         if [[ ! -e /var/log/mycodo/mycodoupgrade.log ]]; then
             touch /var/log/mycodo/mycodoupgrade.log
         fi
@@ -674,6 +677,9 @@ case "${1:-''}" in
         fi
         if [[ ! -e /var/log/mycodo/mycododependency.log ]]; then
             touch /var/log/mycodo/mycododependency.log
+        fi
+        if [[ ! -e /var/log/mycodo/mycodoimport.log ]]; then
+            touch /var/log/mycodo/mycodoimport.log
         fi
         if [[ ! -e /var/log/mycodo/mycodoupgrade.log ]]; then
             touch /var/log/mycodo/mycodoupgrade.log

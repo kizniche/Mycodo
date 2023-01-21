@@ -1,5 +1,9 @@
 ## 8.15.5 (Unreleased)
 
+### Bugfixes
+
+ - Fix backend/frontend restart during Settings Import
+
 ### Features
 
  - Add listener and do_not_run_periodically as Function module options
