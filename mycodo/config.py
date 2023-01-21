@@ -72,6 +72,7 @@ DAEMON_LOG_FILE = os.path.join(LOG_PATH, 'mycodo.log')
 KEEPUP_LOG_FILE = os.path.join(LOG_PATH, 'mycodokeepup.log')
 BACKUP_LOG_FILE = os.path.join(LOG_PATH, 'mycodobackup.log')
 DEPENDENCY_LOG_FILE = os.path.join(LOG_PATH, 'mycododependency.log')
+IMPORT_LOG_FILE = os.path.join(LOG_PATH, 'mycodoimport.log')
 UPGRADE_LOG_FILE = os.path.join(LOG_PATH, 'mycodoupgrade.log')
 UPGRADE_TMP_LOG_FILE = '/tmp/mycodoupgrade.log'
 RESTORE_LOG_FILE = os.path.join(LOG_PATH, 'mycodorestore.log')

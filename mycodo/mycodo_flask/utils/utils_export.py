@@ -14,7 +14,8 @@ from influxdb import InfluxDBClient
 from werkzeug.utils import secure_filename
 
 from mycodo.config import (ALEMBIC_VERSION, DATABASE_NAME, DEPENDENCY_LOG_FILE,
-                           DOCKER_CONTAINER, INSTALL_DIRECTORY, MYCODO_VERSION,
+                           DOCKER_CONTAINER, IMPORT_LOG_FILE,
+                           INSTALL_DIRECTORY, MYCODO_VERSION,
                            PATH_ACTIONS_CUSTOM, PATH_FUNCTIONS_CUSTOM,
                            PATH_HTML_USER, PATH_INPUTS_CUSTOM,
                            PATH_OUTPUTS_CUSTOM, PATH_PYTHON_CODE_USER,
@@ -148,15 +149,15 @@ def thread_import_settings(tmp_folder):
 
     try:
         # Upgrade database
-        cmd = f"{INSTALL_DIRECTORY}/mycodo/scripts/mycodo_wrapper upgrade_database"
+        cmd = f"{INSTALL_DIRECTORY}/mycodo/scripts/mycodo_wrapper upgrade_database | ts '[%Y-%m-%d %H:%M:%S]' >> {IMPORT_LOG_FILE} 2>&1"
         _, _, _ = cmd_output(cmd)
 
         # Install/update dependencies (could take a while)
-        cmd = f"{INSTALL_DIRECTORY}/mycodo/scripts/mycodo_wrapper update_dependencies | ts '[%Y-%m-%d %H:%M:%S]' >> {DEPENDENCY_LOG_FILE} 2>&1"
+        cmd = f"{INSTALL_DIRECTORY}/mycodo/scripts/mycodo_wrapper update_dependencies | ts '[%Y-%m-%d %H:%M:%S]' >> {IMPORT_LOG_FILE} 2>&1"
         _, _, _ = cmd_output(cmd)
 
         # Initialize
-        cmd = f"{INSTALL_DIRECTORY}/mycodo/scripts/mycodo_wrapper initialize"
+        cmd = f"{INSTALL_DIRECTORY}/mycodo/scripts/mycodo_wrapper initialize | ts '[%Y-%m-%d %H:%M:%S]' >> {IMPORT_LOG_FILE} 2>&1"
         _, _, _ = cmd_output(cmd)
 
         # Generate widget HTML
@@ -166,7 +167,7 @@ def thread_import_settings(tmp_folder):
             subprocess.Popen('docker start mycodo_daemon 2>&1', shell=True)
         else:
             # Start Mycodo daemon (backend)
-            cmd = "{INSTALL_DIRECTORY}/mycodo/scripts/mycodo_wrapper daemon_start"
+            cmd = "{INSTALL_DIRECTORY}/mycodo/scripts/mycodo_wrapper daemon_start | ts '[%Y-%m-%d %H:%M:%S]' >> {IMPORT_LOG_FILE} 2>&1"
             _, _, _ = cmd_output(cmd)
 
         # Delete tmp directory if it exists
@@ -284,7 +285,7 @@ def import_settings(form):
                     subprocess.Popen('docker stop mycodo_daemon 2>&1', shell=True)
                 else:
                     # Stop Mycodo daemon (backend)
-                    cmd = f"{INSTALL_DIRECTORY}/mycodo/scripts/mycodo_wrapper daemon_stop"
+                    cmd = f"{INSTALL_DIRECTORY}/mycodo/scripts/mycodo_wrapper daemon_stop | ts '[%Y-%m-%d %H:%M:%S]' >> {IMPORT_LOG_FILE} 2>&1"
                     _, _, _ = cmd_output(cmd)
 
                 # Backup current database and replace with extracted mycodo.db

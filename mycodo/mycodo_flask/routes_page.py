@@ -24,9 +24,9 @@ from mycodo.config import (ALEMBIC_VERSION, BACKUP_LOG_FILE, CAMERA_INFO,
                            DAEMON_LOG_FILE, DAEMON_PID_FILE,
                            DEPENDENCY_LOG_FILE, DOCKER_CONTAINER,
                            FRONTEND_PID_FILE, HTTP_ACCESS_LOG_FILE,
-                           HTTP_ERROR_LOG_FILE, KEEPUP_LOG_FILE,
-                           LOGIN_LOG_FILE, MYCODO_VERSION, RESTORE_LOG_FILE,
-                           THEMES_DARK, UPGRADE_LOG_FILE)
+                           HTTP_ERROR_LOG_FILE, IMPORT_LOG_FILE,
+                           KEEPUP_LOG_FILE, LOGIN_LOG_FILE, MYCODO_VERSION,
+                           RESTORE_LOG_FILE, THEMES_DARK, UPGRADE_LOG_FILE)
 from mycodo.config_devices_units import MEASUREMENTS
 from mycodo.databases.models import (PID, AlembicVersion, Camera, Conversion,
                                      CustomController, DeviceMeasurements,
@@ -885,6 +885,8 @@ def page_logview():
                     logfile = DAEMON_LOG_FILE
                 elif form_log_view.log.data == 'log_dependency':
                     logfile = DEPENDENCY_LOG_FILE
+                elif form_log_view.log.data == 'log_import':
+                    logfile = IMPORT_LOG_FILE
                 elif form_log_view.log.data == 'log_keepup':
                     logfile = KEEPUP_LOG_FILE
                 elif form_log_view.log.data == 'log_backup':
