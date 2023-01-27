@@ -681,19 +681,19 @@ class CustomModule(AbstractFunction):
 
         if self.output_ec_a_device_id:
             self.ratio_letters.append("A")
-            self.ratio_numbers.append(self.output_ec_a_amount)
+            self.ratio_numbers.append(str(self.output_ec_a_amount))
             self.list_doses.append(f"{self.output_ec_a_amount} {self.output_units[self.output_ec_a_type]} Nut A")
         if self.output_ec_b_device_id:
             self.ratio_letters.append("B")
-            self.ratio_numbers.append(self.output_ec_b_amount)
+            self.ratio_numbers.append(str(self.output_ec_b_amount))
             self.list_doses.append(f"{self.output_ec_b_amount} {self.output_units[self.output_ec_b_type]} Nut B")
         if self.output_ec_c_device_id:
             self.ratio_letters.append("C")
-            self.ratio_numbers.append(self.output_ec_c_amount)
+            self.ratio_numbers.append(str(self.output_ec_c_amount))
             self.list_doses.append(f"{self.output_ec_c_amount} {self.output_units[self.output_ec_c_type]} Nut C")
         if self.output_ec_d_device_id:
             self.ratio_letters.append("D")
-            self.ratio_numbers.append(self.output_ec_d_amount)
+            self.ratio_numbers.append(str(self.output_ec_d_amount))
             self.list_doses.append(f"{self.output_ec_d_amount} {self.output_units[self.output_ec_d_type]} Nut D")
 
     def loop(self):
@@ -829,7 +829,7 @@ class CustomModule(AbstractFunction):
         elif regulate_ec and last_measurement_ec[1] < self.range_ec[0]:
             self.logger.debug(
                 f"EC: {last_measurement_ec[1]:.2f}. Should be > {self.range_ec[0]:.2f}. "
-                f"Dosing {':'.join(self.ratio_numbers)} ({':'.join(map(str, self.ratio_letters))}): {', '.join(self.list_doses)})")
+                f"Dosing {':'.join(self.ratio_numbers)} ({':'.join(self.ratio_letters)}): {', '.join(self.list_doses)}")
 
             if self.output_ec_a_device_id:
                 if self.ph_type == "sec":
@@ -1043,7 +1043,7 @@ class CustomModule(AbstractFunction):
     def function_status(self):
         str_ratio = "(no EC dosing enabled)"
         if self.ratio_numbers and self.ratio_letters:
-            str_ratio = f"at {':'.join(map(str, self.ratio_numbers))} ({':'.join(self.ratio_letters)})"
+            str_ratio = f"at {':'.join(self.ratio_numbers)} ({':'.join(self.ratio_letters)})"
         return_str = {
             'string_status': f"Regulation"
                              f"<br>pH: {self.range_ph[0]:.2f} - {self.range_ph[1]:.2f}"

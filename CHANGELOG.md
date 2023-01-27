@@ -3,6 +3,7 @@
 ### Bugfixes
 
  - Fix backend/frontend restart during Settings Import
+ - Fix TypeError in Regulate pH & Electrical Conductivity Function
 
 ### Features
 
