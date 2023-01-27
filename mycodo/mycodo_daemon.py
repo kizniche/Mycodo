@@ -435,25 +435,33 @@ class DaemonController:
         :param thread: execute the function as a thread or wait to get a return value
         :type thread: bool
         """
+        message = None
         try:
             if controller_type == "Input":
-                return self.controller["Input"][unique_id].call_module_function(
-                    button_id, args_dict, thread=thread)
+                if unique_id in self.controller["Input"]:
+                    return self.controller["Input"][unique_id].call_module_function(
+                        button_id, args_dict, thread=thread)
+                else:
+                    message = f"Attempting to call {button_id}() in inactive Input Controller with ID {unique_id}. Only active Input Controllers can have functions called."
+                    self.logger.error(message)
             elif controller_type == "Output":
                 return self.controller["Output"].call_module_function(
                     button_id, args_dict, unique_id=unique_id, thread=thread)
             elif controller_type in ["Function", "Function_Custom"]:
-                return self.controller["Function"][unique_id].call_module_function(
-                    button_id, args_dict, thread=thread)
+                if unique_id in self.controller["Function"]:
+                    return self.controller["Function"][unique_id].call_module_function(
+                        button_id, args_dict, thread=thread)
+                else:
+                    message = f"Attempting to call {button_id}() in inactive Function Controller with ID {unique_id}. Only active Function Controllers can have functions called."
+                    self.logger.error(message)
             else:
-                msg = f"Unknown controller: {controller_type}"
-                self.logger.error(msg)
-                return 1, msg
+                message = f"Unknown controller: {controller_type}"
+                self.logger.error(message)
         except:
             message = "Cannot execute custom action. Is the controller activated? " \
                       "If it is and this error is still occurring, check the Daemon Log."
             self.logger.exception(message)
-            return 1, message
+        return 1, message
 
 
     def input_force_measurements(self, input_id):

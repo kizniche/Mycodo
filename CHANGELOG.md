@@ -9,6 +9,10 @@
  - Add listener and do_not_run_periodically as Function module options
  - Add Settings Import Log
 
+### Miscellaneous
+
+ - Remove video streaming from non-Function cameras
+
 
 ## 8.15.4 (2023-01-19)
 

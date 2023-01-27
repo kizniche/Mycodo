@@ -462,18 +462,11 @@ def page_export():
                 flash('Unknown error creating zipped settings database',
                       'error')
         elif form_import_settings.settings_import_upload.data:
-            backup_file = utils_export.import_settings(form_import_settings)
-            if backup_file:
-                flash('The settings database import has been initialized. '
-                      'This process may take an extended time to complete, '
-                      'as any unmet dependencies will be installed. '
-                      'Additionally, the daemon will be stopped during this '
-                      'process and all users will be logged out at the '
-                      'completion of the import. View the Settings Import '
-                      'Log for details.', 'success')
+            restore_success = utils_export.import_settings(form_import_settings)
+            if restore_success:
                 return redirect(url_for('routes_authentication.logout'))
             else:
-                flash('An error occurred during the settings database import.',
+                flash('An error occurred during the settings import.',
                       'error')
         elif form_export_influxdb.export_influxdb_zip.data:
             file_send = utils_export.export_influxdb()

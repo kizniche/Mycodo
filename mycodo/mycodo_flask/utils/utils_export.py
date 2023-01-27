@@ -294,9 +294,7 @@ def import_settings(form):
 
                 # Backup current database and replace with extracted mycodo.db
                 imported_database = os.path.join(tmp_folder, DATABASE_NAME)
-                backup_name = "{}.backup_{}".format(
-                    SQL_DATABASE_MYCODO,
-                    datetime.datetime.now().strftime("%Y-%m-%d_%H-%M-%S"))
+                backup_name = f"{SQL_DATABASE_MYCODO}.backup_{datetime.datetime.now().strftime('%Y-%m-%d_%H-%M-%S')}"
 
                 os.rename(SQL_DATABASE_MYCODO, backup_name)  # rename current database to backup name
                 shutil.move(imported_database, SQL_DATABASE_MYCODO)  # move unzipped database to Mycodo
@@ -361,11 +359,11 @@ def import_settings(form):
                     args=(tmp_folder,))
                 import_settings_db.start()
 
-                return backup_name
+                return True
             except Exception as err:
                 logger.exception("Settings import")
                 error.append(f"Exception while replacing database: {err}")
-                return None
+                return
 
     except Exception as err:
         error.append("Exception: {}".format(err))
