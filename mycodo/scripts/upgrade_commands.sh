@@ -439,7 +439,7 @@ case "${1:-''}" in
             INSTALL_ADDRESS="https://dl.influxdata.com/influxdb/releases/"
             INSTALL_FILE="influxdb2-${INFLUXDB2_VERSION}-${MACHINE_TYPE}.deb"
             CLI_FILE="influxdb2-client-${INFLUXDB2_VERSION}-${MACHINE_TYPE}.deb"
-            CORRECT_VERSION="${INFLUXDB2_VERSION}-1"
+            CORRECT_VERSION="${INFLUXDB2_VERSION}"
             CURRENT_VERSION=$(apt-cache policy influxdb2 | grep 'Installed' | gawk '{print $2}')
 
             if [[ "${CURRENT_VERSION}" != "${CORRECT_VERSION}" ]]; then
@@ -511,6 +511,42 @@ case "${1:-''}" in
                 sleep 60
             done
         fi
+    ;;
+    'recreate-influxdb-1-db')
+        printf "\n#### Recreating InfluxDB 1.x database (deletes all measurement data!)\n"
+        # Attempt to connect to influxdb 10 times, sleeping 60 seconds every fail
+        for _ in {1..10}; do
+            # Check if influxdb has successfully started and be connected to
+            printf "#### Attempting to connect...\n" &&
+            curl -sL -I localhost:8086/ping > /dev/null &&
+            printf "#### Attempting to recreate database...\n" &&
+            influx -execute "DROP DATABASE mycodo_db" &&
+            influx -execute "CREATE DATABASE mycodo_db" &&
+            printf "#### Influxdb database successfully recreated\n" &&
+            break ||
+            # Else wait 60 seconds if the influxd port is not accepting connections
+            # Everything below will begin executing if an error occurs before the break
+            printf "#### Could not connect to Influxdb. Waiting 60 seconds then trying again...\n" &&
+            sleep 60
+        done
+    ;;
+    'recreate-influxdb-2-db')
+        printf "\n#### Recreating InfluxDB 2.x database (deletes all measurement data!)\n"
+        # Attempt to connect to influxdb 10 times, sleeping 60 seconds every fail
+        for _ in {1..10}; do
+            # Check if influxdb has successfully started and be connected to
+            printf "#### Attempting to connect...\n" &&
+            curl -sL -I localhost:8086/ping > /dev/null &&
+            printf "#### Attempting to recreate database...\n" &&
+            influx bucket delete -n mycodo_db -o mycodo &&
+            influx bucket create -n mycodo_db -o mycodo &&
+            printf "#### Influxdb database successfully recreated\n" &&
+            break ||
+            # Else wait 60 seconds if the influxd port is not accepting connections
+            # Everything below will begin executing if an error occurs before the break
+            printf "#### Could not connect to Influxdb. Waiting 60 seconds then trying again...\n" &&
+            sleep 60
+        done
     ;;
     'update-logrotate')
         printf "\n#### Installing logrotate scripts\n"

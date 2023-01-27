@@ -22,7 +22,7 @@ Flask_WTF==1.1.1
 geocoder==1.38.1
 gunicorn==20.1.0
 importlib_metadata==6.0.0
-influxdb==5.3.1
+influxdb==5.3.1  # Only used for stats. TODO: update to influxdb_client and remove
 influxdb_client[ciso]==1.35.0
 marshmallow_sqlalchemy==0.28.1
 pyro5==5.14

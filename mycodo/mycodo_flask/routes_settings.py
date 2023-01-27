@@ -617,6 +617,10 @@ def settings_diagnostic():
             utils_settings.settings_diagnostic_delete_file('dependency')
         elif form_settings_diagnostic.delete_file_upgrade.data:
             utils_settings.settings_diagnostic_delete_file('upgrade')
+        elif form_settings_diagnostic.recreate_influxdb_db_1.data:
+            utils_settings.settings_diagnostic_recreate_influxdb_db_1()
+        elif form_settings_diagnostic.recreate_influxdb_db_2.data:
+            utils_settings.settings_diagnostic_recreate_influxdb_db_2()
         elif form_settings_diagnostic.reset_email_counter.data:
             utils_settings.settings_diagnostic_reset_email_counter()
         elif form_settings_diagnostic.install_dependencies.data:

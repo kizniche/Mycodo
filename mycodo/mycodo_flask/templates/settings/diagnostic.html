@@ -51,6 +51,16 @@
       </div>
       <div class="row mt-3">
         <div class="col-12">
+          {{form_settings_diagnostic.recreate_influxdb_db_1(class_='btn btn-primary', **{'onclick':'return confirm("Are you sure you want to do this?")'})}}
+        </div>
+      </div>
+      <div class="row mt-3">
+        <div class="col-12">
+          {{form_settings_diagnostic.recreate_influxdb_db_2(class_='btn btn-primary', **{'onclick':'return confirm("Are you sure you want to do this?")'})}}
+        </div>
+      </div>
+      <div class="row mt-3">
+        <div class="col-12">
           {{form_settings_diagnostic.reset_email_counter(class_='btn btn-primary', **{'onclick':'return confirm("Are you sure you want to do this?")'})}}
         </div>
       </div>

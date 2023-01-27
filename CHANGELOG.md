@@ -9,6 +9,7 @@
 
  - Add listener and do_not_run_periodically as Function module options
  - Add Settings Import Log
+ - Add ability to delete influxdb database on Diagnostics page
 
 ### Miscellaneous
 

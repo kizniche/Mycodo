@@ -1905,6 +1905,38 @@ def settings_diagnostic_delete_file(delete_type):
         error, action, url_for('routes_settings.settings_diagnostic'))
 
 
+def settings_diagnostic_recreate_influxdb_db_1():
+    action = gettext("Recreate InfluxDB 1.x Database")
+    error = []
+
+    if not error:
+        try:
+            command = f'/bin/bash {INSTALL_DIRECTORY}/mycodo/scripts/upgrade_commands.sh recreate-influxdb-1-db'
+            p = subprocess.Popen(command, shell=True)
+            p.communicate()
+        except Exception:
+            logger.exception()
+    
+    flash_success_errors(
+        error, action, url_for('routes_settings.settings_diagnostic'))
+
+
+def settings_diagnostic_recreate_influxdb_db_2():
+    action = gettext("Recreate InfluxDB 2.x Database")
+    error = []
+
+    if not error:
+        try:
+            command = f'/bin/bash {INSTALL_DIRECTORY}/mycodo/scripts/upgrade_commands.sh recreate-influxdb-2-db'
+            p = subprocess.Popen(command, shell=True)
+            p.communicate()
+        except Exception:
+            logger.exception()
+    
+    flash_success_errors(
+        error, action, url_for('routes_settings.settings_diagnostic'))
+
+
 def settings_diagnostic_reset_email_counter():
     action = gettext("Reset Email Counter")
     error = []

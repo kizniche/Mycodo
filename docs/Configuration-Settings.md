@@ -59,23 +59,27 @@ If you are installing via Docker, you will need to change the hostname to "mycod
 <tbody>
 <tr>
 <td>Database</td>
-<td>Select the time-series server type.</td>
+<td>Select the influxdb version to use.</td>
+</tr>
+<tr>
+<td>Retention Policy</td>
+<td>Select the retention policy. Default is "autogen" for v1.x and "infinite" for v2.x.</td>
 </tr>
 <tr>
 <td>Hostname</td>
-<td>The hostname to connect to the time-series server.</td>
+<td>The hostname to connect to the time-series server. Default is "localhost".</td>
 </tr>
 <tr>
 <td>Port</td>
-<td>The time-series database port.</td>
+<td>The time-series database port. Default is 8086.</td>
 </tr>
 <tr>
 <td>Database Name</td>
-<td>The name of the database for Mycodo to store to and query from.</td>
+<td>The name of the database (v1.x) or bucket (v2.x) for Mycodo to store to and query from. Default is "mycodo_db".</td>
 </tr>
 <tr>
 <td>Username</td>
-<td>The username to access the database (if credentials are required).</td>
+<td>The username to access the database (if credentials are required). Default is "mycodo".</td>
 </tr>
 <tr>
 <td>Password</td>
@@ -684,6 +688,14 @@ Sometimes issues arise in the system as a result of incompatible configurations,
 <tr>
 <td>Delete File: .upgrade</td>
 <td>Delete the .upgrade file. If you are having an issue accessing the upgrade page or running an upgrade, try this.</td>
+</tr>
+<tr>
+<td>Recreate Influxdb 1.x database</td>
+<td>Delete the InfluxDB 1.x measurement database, then recreate it. This deletes all measurement data!</td>
+</tr>
+<tr>
+<td>Recreate Influxdb 2.x database</td>
+<td>Delete the InfluxDB 2.x measurement database, then recreate it. This deletes all measurement data!</td>
 </tr>
 <tr>
 <td>Reset Email Counter</td>

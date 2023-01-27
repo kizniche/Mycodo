@@ -10,7 +10,6 @@ import time
 import zipfile
 
 from flask import send_file, url_for
-from influxdb import InfluxDBClient
 from werkzeug.utils import secure_filename
 
 from mycodo.config import (ALEMBIC_VERSION, DATABASE_NAME, DEPENDENCY_LOG_FILE,
@@ -26,7 +25,6 @@ from mycodo.databases.models import Misc
 from mycodo.mycodo_flask.utils.utils_general import (flash_form_errors,
                                                      flash_success_errors)
 from mycodo.scripts.measurement_db import get_influxdb_info
-from mycodo.utils.database import db_retrieve_table_daemon
 from mycodo.utils.system_pi import assure_path_exists, cmd_output
 from mycodo.utils.tools import (create_measurements_export,
                                 create_settings_export)
