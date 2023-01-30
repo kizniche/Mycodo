@@ -171,7 +171,7 @@ CAMERA_INFO = {
     'libcamera': {
         'name': 'libcamera',
         'dependencies_module': [
-            ('apt', 'libcamera-apps-lite', 'libcamera-apps-lite')
+            ('apt', 'libcamera-apps', 'libcamera-apps')
         ],
         'capable_image': True,
         'capable_stream': False

@@ -15,6 +15,7 @@
 
  - Update Python packages
  - Update InfluxDB to 2.6.1
+ - Switch from using libcamera-apps-lite to libcamera-apps ([#1270](https://github.com/kizniche/Mycodo/issues/1270))
 
 
 ## 8.15.4 (2023-01-19)
