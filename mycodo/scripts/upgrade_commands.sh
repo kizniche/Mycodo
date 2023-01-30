@@ -19,7 +19,7 @@ MCB2835_URL="http://www.airspayce.com/mikem/bcm2835/bcm2835-1.50.tar.gz"
 WIRINGPI_URL="https://project-downloads.drogon.net/wiringpi-latest.deb"
 
 INFLUXDB1_VERSION="1.8.10"
-INFLUXDB2_VERSION="2.2.0"
+INFLUXDB2_VERSION="2.6.1"
 
 VIRTUALENV_VERSION="20.17.1"
 
@@ -406,7 +406,7 @@ case "${1:-''}" in
         CURRENT_VERSION=$(apt-cache policy influxdb | grep 'Installed' | gawk '{print $2}')
 
         if [[ "${CURRENT_VERSION}" != "${CORRECT_VERSION}" ]]; then
-            printf "#### Incorrect InfluxDB version (v${CURRENT_VERSION}) installed.\n"
+            printf "#### Incorrect InfluxDB version (v${CURRENT_VERSION}) installed. Should be v${CORRECT_VERSION}\n"
 
             printf "#### Stopping influxdb 2.x (if installed)...\n"
             service influxd stop
@@ -443,7 +443,7 @@ case "${1:-''}" in
             CURRENT_VERSION=$(apt-cache policy influxdb2 | grep 'Installed' | gawk '{print $2}')
 
             if [[ "${CURRENT_VERSION}" != "${CORRECT_VERSION}" ]]; then
-                printf "#### Incorrect InfluxDB version (v${CURRENT_VERSION}) installed.\n"
+                printf "#### Incorrect InfluxDB version (v${CURRENT_VERSION}) installed. Should be v${CORRECT_VERSION}\n"
 
                 printf "#### Stopping influxdb 1.x (if installed)...\n"
                 service influxdb stop

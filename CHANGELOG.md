@@ -1,9 +1,9 @@
-## 8.15.5 (Unreleased)
+## 8.15.5 (2023-01-30)
 
 ### Bugfixes
 
  - Fix backend/frontend restart during Settings Import
- - Fix TypeError in Regulate pH & Electrical Conductivity Function
+ - Fix pumps not actuating with Regulate pH & Electrical Conductivity Function
 
 ### Features
 
@@ -13,7 +13,8 @@
 
 ### Miscellaneous
 
- - Remove video streaming from non-Function cameras
+ - Update Python packages
+ - Update InfluxDB to 2.6.1
 
 
 ## 8.15.4 (2023-01-19)
