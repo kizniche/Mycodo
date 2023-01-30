@@ -1,3 +1,10 @@
+## 8.15.6 (2023-01-30)
+
+### Bugfixes
+
+ - Revert SQLAlchemy to 1.4.46 due to 2.0.0 causing high CPU load
+
+
 ## 8.15.5 (2023-01-30)
 
 ### Bugfixes
