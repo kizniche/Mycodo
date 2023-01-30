@@ -439,7 +439,7 @@ case "${1:-''}" in
             INSTALL_ADDRESS="https://dl.influxdata.com/influxdb/releases/"
             INSTALL_FILE="influxdb2-${INFLUXDB2_VERSION}-${MACHINE_TYPE}.deb"
             CLI_FILE="influxdb2-client-${INFLUXDB2_VERSION}-${MACHINE_TYPE}.deb"
-            CORRECT_VERSION="${INFLUXDB2_VERSION}"
+            CORRECT_VERSION="${INFLUXDB2_VERSION}-1"
             CURRENT_VERSION=$(apt-cache policy influxdb2 | grep 'Installed' | gawk '{print $2}')
 
             if [[ "${CURRENT_VERSION}" != "${CORRECT_VERSION}" ]]; then
