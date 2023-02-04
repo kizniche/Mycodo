@@ -205,8 +205,16 @@ def page_camera():
                 flash(msg, "error")
                 logger.error(msg)
         elif form_camera.start_timelapse.data:
+            error = []
             if mod_camera.stream_started:
-                flash(gettext("Cannot start time-lapse if stream is active."), "error")
+                error.append("Cannot start time-lapse if stream is active.")
+            if not form_camera.timelapse_runtime_sec.data:
+                error.append("Must enter Run Time.")
+            if not form_camera.timelapse_interval.data:
+                error.append("Must enter Interval.")
+            if error:
+                for each_err in error:
+                    flash(each_err, "error")
                 return redirect(url_for('routes_page.page_camera'))
             now = time.time()
             mod_camera.timelapse_started = True
