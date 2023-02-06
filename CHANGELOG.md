@@ -1,3 +1,10 @@
+## 8.15.7 (Unreleased)
+
+### Bugfixes
+
+ - Fix Regulate pH & EC Function not regulating pH when water needs to be added
+
+
 ## 8.15.6 (2023-01-30)
 
 ### Bugfixes

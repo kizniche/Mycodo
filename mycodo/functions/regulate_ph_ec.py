@@ -795,6 +795,8 @@ class CustomModule(AbstractFunction):
                     self.email_timers['notify_ph'] = time.time() + (self.email_timer_duration_hours * 60 * 60)
                     self.email(message)
 
+            return
+
         # pH dangerously high, add acid (pH down)
         elif regulate_ph and last_measurement_ph[1] > self.danger_range_ph_high:
             message += f"pH is dangerously high: {last_measurement_ph[1]:.2f}. Should be < {self.danger_range_ph_high:.2f}. " \
@@ -820,6 +822,8 @@ class CustomModule(AbstractFunction):
                 if self.email_timers['notify_ph'] < time.time():
                     self.email_timers['notify_ph'] = time.time() + (self.email_timer_duration_hours * 60 * 60)
                     self.email(message)
+
+            return
 
         #
         # If pH isn't dangerously low or high, check if EC is within range
@@ -894,6 +898,8 @@ class CustomModule(AbstractFunction):
                             'amount': self.output_ec_d_amount,
                             'output_channel': self.output_ec_d_channel})
                 output_on_off.start()
+            
+            return
 
         # EC too high, add water
         elif regulate_ec and last_measurement_ec[1] > self.range_ec[1]:
@@ -910,7 +916,7 @@ class CustomModule(AbstractFunction):
         #
 
         # pH too low, add base (pH up)
-        elif regulate_ph and last_measurement_ph[1] < self.range_ph[0]:
+        if regulate_ph and last_measurement_ph[1] < self.range_ph[0]:
             self.logger.debug(
                 f"pH is {last_measurement_ph[1]:.2f}. Should be > {self.range_ph[0]:.2f}. "
                 f"Dispensing {self.output_ph_amount} {self.output_units[self.output_ph_type]} base")
