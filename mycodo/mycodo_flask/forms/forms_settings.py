@@ -272,7 +272,7 @@ class ConversionAdd(FlaskForm):
     convert_unit_from = StringField(
         lazy_gettext('Convert From Unit'), validators=[DataRequired()])
     convert_unit_to = StringField(
-        lazy_gettext('Convert To Measurement'), validators=[DataRequired()])
+        lazy_gettext('Convert To Unit'), validators=[DataRequired()])
     equation = StringField(
         lazy_gettext('Equation'), validators=[DataRequired()])
     add_conversion = SubmitField(lazy_gettext('Add Conversion'))

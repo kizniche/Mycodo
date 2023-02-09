@@ -274,35 +274,40 @@ class InputModule(AbstractInput):
             measurement[channel]['unit'] = self.channels_measurement[channel].unit
             measurement[channel]['value'] = value
             measurement[channel]['timestamp_utc'] = datetime_utc
-            self.add_measurement_influxdb(channel, measurement)
+            measurement = self.check_conversion(channel, measurement)
+
+            if measurement:
+                self.logger.debug(f"Adding measurement to influxdb: {measurement}")
+                add_measurements_influxdb(
+                    self.unique_id,
+                    measurement,
+                    use_same_timestamp=INPUT_INFORMATION['measurements_use_same_timestamp'])
         except Exception as err:
             self.logger.error(f"Error processing message payload '{payload}': {err}")
 
-    def add_measurement_influxdb(self, channel, measurement):
+    def check_conversion(self, channel, measurement):
         # Convert value/unit is conversion_id present and valid
-        if self.channels_conversion[channel]:
-            conversion = db_retrieve_table_daemon(
-                Conversion,
-                unique_id=self.channels_measurement[channel].conversion_id)
-            if conversion:
-                meas = parse_measurement(
-                    self.channels_conversion[channel],
-                    self.channels_measurement[channel],
-                    measurement,
-                    channel,
-                    measurement[channel],
-                    timestamp=measurement[channel]['timestamp_utc'])
+        try:
+            if self.channels_conversion[channel]:
+                conversion = db_retrieve_table_daemon(
+                    Conversion,
+                    unique_id=self.channels_measurement[channel].conversion_id)
+                if conversion:
+                    meas = parse_measurement(
+                        self.channels_conversion[channel],
+                        self.channels_measurement[channel],
+                        measurement,
+                        channel,
+                        measurement[channel],
+                        timestamp=measurement[channel]['timestamp_utc'])
 
-                measurement[channel]['measurement'] = meas[channel]['measurement']
-                measurement[channel]['unit'] = meas[channel]['unit']
-                measurement[channel]['value'] = meas[channel]['value']
+                    measurement[channel]['measurement'] = meas[channel]['measurement']
+                    measurement[channel]['unit'] = meas[channel]['unit']
+                    measurement[channel]['value'] = meas[channel]['value']
+        except:
+            self.logger.exception("Checking conversion")
 
-        if measurement:
-            self.logger.debug(f"Adding measurement to influxdb: {measurement}")
-            add_measurements_influxdb(
-                self.unique_id,
-                measurement,
-                use_same_timestamp=INPUT_INFORMATION['measurements_use_same_timestamp'])
+        return measurement
 
     def stop_input(self):
         """Called when Input is deactivated."""
