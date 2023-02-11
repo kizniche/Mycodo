@@ -129,7 +129,7 @@ else
     exit 1
 fi
 
-if [[ ${INFLUX} == '0)' ]]; then
+if [[ ${INFLUX} == '2)' ]]; then
     clear
     INSTALL=$(whiptail --title "Mycodo Installer: Measurement Database" \
                        --backtitle "Mycodo" \
@@ -192,7 +192,6 @@ if [[ ${INFLUX} == '0)' ]]; then
 elif [[ ${INFLUX} == '1)' ]]; then
     ${INSTALL_CMD} update-influxdb-1 2>&1 | tee -a "${LOG_LOCATION}"
     ${INSTALL_CMD} update-influxdb-1-db-user 2>&1 | tee -a "${LOG_LOCATION}"
-
 elif [[ ${INFLUX} == '2)' ]]; then
     printf "Instructed to not install InfluxDB/n"
 fi

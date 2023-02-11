@@ -4,6 +4,7 @@
 
  - Fix Regulate pH & EC Function not regulating pH when water needs to be added
  - Fix unit conversion of Python 3 Code Input
+ - Fix influxdb warning text during install (does not affect the actual install) ([#1276](https://github.com/kizniche/Mycodo/issues/1276))
 
 
 ## 8.15.6 (2023-01-30)
