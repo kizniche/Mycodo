@@ -85,7 +85,7 @@ class ActionModule(AbstractFunctionAction):
     def initialize(self):
         self.action_setup = True
 
-    def run_action(self, message, dict_vars):
+    def run_action(self, dict_vars):
         try:
             controller_id = dict_vars["value"]["output_id"]
         except:
@@ -111,23 +111,23 @@ class ActionModule(AbstractFunctionAction):
 
         if not this_output:
             msg = f" Error: Output with ID '{controller_id}' not found."
-            message += msg
+            dict_vars['message'] += msg
             self.logger.error(msg)
-            return message
+            return dict_vars
 
         payload = {
             "hsv": f"{hue}, {saturation}, {brightness}",
         }
 
-        message += f" Set HSV to {payload['hsv']} for Output {controller_id} ({this_output.name})."
+        dict_vars['message'] += f" Set HSV to {payload['hsv']} for Output {controller_id} ({this_output.name})."
         clear_volume = threading.Thread(
             target=self.control.module_function,
             args=("Output", this_output.unique_id, "set_hsv", payload,))
         clear_volume.start()
 
-        self.logger.debug(f"Message: {message}")
+        self.logger.debug(f"Message: {dict_vars['message']}")
 
-        return message
+        return dict_vars
 
     def is_setup(self):
         return self.action_setup

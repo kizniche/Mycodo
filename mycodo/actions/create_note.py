@@ -78,7 +78,7 @@ class ActionModule(AbstractFunctionAction):
     def initialize(self):
         self.action_setup = True
 
-    def run_action(self, message, dict_vars):
+    def run_action(self, dict_vars):
         list_tags = []
         try:
             list_tags = dict_vars["value"]["tags"]
@@ -118,14 +118,14 @@ class ActionModule(AbstractFunctionAction):
 
             if not list_tag_names:
                 msg = "No valid tags specified. Cannot create note."
-                message += msg
+                dict_vars['message'] += msg
                 self.logger.error(msg)
-                return message
+                return dict_vars
 
-            message += f" Create note with name '{name}', tag(s) '{','.join(list_tag_names)}'"
+            dict_vars['message'] += f" Create note with name '{name}', tag(s) '{','.join(list_tag_names)}'"
             if note:
-                message += f", and note {note}"
-            message += "."
+                dict_vars['message'] += f", and note {note}"
+            dict_vars['message'] += "."
 
             new_note = Notes()
             new_note.name = name
@@ -133,12 +133,12 @@ class ActionModule(AbstractFunctionAction):
             if note:
                 new_note.note = note
             else:
-                new_note.note = message
+                new_note.note = dict_vars['message']
             new_session.add(new_note)
 
-        self.logger.debug(f"Message: {message}")
+        self.logger.debug(f"Message: {dict_vars['message']}")
 
-        return message
+        return dict_vars
 
     def is_setup(self):
         return self.action_setup

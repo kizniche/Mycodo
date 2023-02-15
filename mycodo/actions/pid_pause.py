@@ -62,7 +62,7 @@ class ActionModule(AbstractFunctionAction):
     def initialize(self):
         self.action_setup = True
 
-    def run_action(self, message, dict_vars):
+    def run_action(self, dict_vars):
         try:
             controller_id = dict_vars["value"]["pid_id"]
         except:
@@ -73,14 +73,14 @@ class ActionModule(AbstractFunctionAction):
 
         if not pid:
             msg = f" Error: PID Controller with ID '{controller_id}' not found."
-            message += msg
+            dict_vars['message'] += msg
             self.logger.error(msg)
-            return message
+            return dict_vars
 
-        message += f" Pause PID {controller_id} ({pid.name})."
+        dict_vars['message'] += f" Pause PID {controller_id} ({pid.name})."
 
         if pid.is_paused:
-            message += " Notice: PID is already paused!"
+            dict_vars['message'] += " Notice: PID is already paused!"
         elif pid.is_activated:
             with session_scope(MYCODO_DB_PATH) as new_session:
                 mod_pid = new_session.query(PID).filter(
@@ -92,9 +92,9 @@ class ActionModule(AbstractFunctionAction):
                 args=(controller_id,))
             pause_pid.start()
 
-        self.logger.debug(f"Message: {message}")
+        self.logger.debug(f"Message: {dict_vars['message']}")
 
-        return message
+        return dict_vars
 
     def is_setup(self):
         return self.action_setup

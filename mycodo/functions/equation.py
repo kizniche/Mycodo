@@ -42,7 +42,7 @@ measurements_dict = {
 
 FUNCTION_INFORMATION = {
     'function_name_unique': 'EQUATION_SINGLE',
-    'function_name': 'Equation (Single-Measure)',
+    'function_name': '{} (Single-Measure)'.format(lazy_gettext('Equation')),
     'measurements_dict': measurements_dict,
     'enable_channel_unit_select': True,
 

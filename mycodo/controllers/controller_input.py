@@ -232,11 +232,18 @@ class InputController(AbstractController, threading.Thread):
                     actions = db_retrieve_table_daemon(Actions).filter(
                         Actions.function_id == self.unique_id).all()
                     for each_action in actions:
-                        message = self.control.trigger_action(
+                        return_dict = self.control.trigger_action(
                             each_action.unique_id,
-                            value=measurements_dict,
-                            message=message,
+                            value={"message": message, "measurements_dict": measurements_dict},
                             debug=self.log_level_debug)
+
+                        # if message is returned, set message
+                        if return_dict and 'message' in return_dict and return_dict['message']:
+                            message = return_dict['message']
+
+                        # if measurements_dict is returned, use that to store measurements
+                        if return_dict and 'measurements_dict' in return_dict and return_dict['measurements_dict']:
+                            measurements_dict = return_dict['measurements_dict']
 
                     # Add measurement(s) to influxdb
                     use_same_timestamp = True

@@ -49,10 +49,19 @@ class AbstractConditional:
         if action:
             full_action_id = action.unique_id
 
+        send_dict = {}
+
         if message is None:
-            message = self.message
-        self.message = self.control.trigger_action(
-            full_action_id, value=value, message=message)
+            send_dict['message'] = self.message
+
+        if value:
+            send_dict['value'] = value
+
+        return_dict = self.control.trigger_action(
+            full_action_id, value=send_dict)
+
+        if return_dict and 'message' in return_dict:
+            self.message = return_dict['message']
 
     def condition(self, condition_id):
         full_cond_id = condition_id

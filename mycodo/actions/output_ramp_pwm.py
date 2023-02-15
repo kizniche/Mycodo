@@ -104,7 +104,7 @@ class ActionModule(AbstractFunctionAction):
     def initialize(self):
         self.action_setup = True
 
-    def run_action(self, message, dict_vars):
+    def run_action(self, dict_vars):
         try:
             output_id = dict_vars["value"]["output_id"]
         except:
@@ -141,13 +141,13 @@ class ActionModule(AbstractFunctionAction):
 
         if not output:
             msg = f" Error: Output with ID '{output_id}' not found."
-            message += msg
+            dict_vars['message'] += msg
             self.logger.error(msg)
-            return message
+            return dict_vars
 
-        message += f" Ramp output {output_id} CH{channel} ({output.name}) " \
-                   f"duty cycle from {start} % to {end} % in increments " \
-                   f"of {increment} over {duration} seconds."
+        dict_vars['message'] += f" Ramp output {output_id} CH{channel} ({output.name}) " \
+                                f"duty cycle from {start} % to {end} % in increments " \
+                                f"of {increment} over {duration} seconds."
 
         change_in_duty_cycle = abs(start - end)
         steps = change_in_duty_cycle * 1 / increment
@@ -191,9 +191,9 @@ class ActionModule(AbstractFunctionAction):
                 if not loop_running:
                     break
 
-        self.logger.debug(f"Message: {message}")
+        self.logger.debug(f"Message: {dict_vars['message']}")
 
-        return message
+        return dict_vars
 
     def is_setup(self):
         return self.action_setup

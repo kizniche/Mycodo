@@ -71,7 +71,7 @@ class ActionModule(AbstractFunctionAction):
     def initialize(self):
         self.action_setup = True
 
-    def run_action(self, message, dict_vars):
+    def run_action(self, dict_vars):
         try:
             output_id = dict_vars["value"]["output_id"]
         except:
@@ -93,11 +93,11 @@ class ActionModule(AbstractFunctionAction):
 
         if not output:
             msg = f" Error: Output with ID '{output_id}' not found."
-            message += msg
+            dict_vars['message'] += msg
             self.logger.error(msg)
-            return message
+            return dict_vars
 
-        message += f" Turn output {output_id} CH{channel} ({output.name}) with value of {value}."
+        dict_vars['message'] += f" Turn output {output_id} CH{channel} ({output.name}) with value of {value}."
 
         output_on = threading.Thread(
             target=self.control.output_on,
@@ -107,9 +107,9 @@ class ActionModule(AbstractFunctionAction):
                     'output_channel': channel})
         output_on.start()
 
-        self.logger.debug(f"Message: {message}")
+        self.logger.debug(f"Message: {dict_vars['message']}")
 
-        return message
+        return dict_vars
 
     def is_setup(self):
         return self.action_setup

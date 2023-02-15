@@ -952,13 +952,12 @@ class DaemonController:
             self.logger.info(f"Widget controller had an issue stopping: {err}")
 
 
-    def trigger_action(self, action_id, value=None, message='', debug=False):
+    def trigger_action(self, action_id, value=None, debug=False):
         try:
             return trigger_action(
                 self.actions,
                 action_id,
                 value=value,
-                message=message,
                 debug=debug)
         except Exception as err:
             message = f"Could not trigger Conditional Actions: {err}"
@@ -1256,12 +1255,11 @@ class PyroServer(object):
         """Add, delete, or modify a output in the running output controller."""
         return self.mycodo.output_setup(action, output_id)
 
-    def trigger_action(self, action_id, value=None, message='', debug=False):
+    def trigger_action(self, action_id, value=None, debug=False):
         """Trigger action."""
         return self.mycodo.trigger_action(
             action_id,
             value=value,
-            message=message,
             debug=debug)
 
     def trigger_all_actions(self, function_id, message='', debug=False):

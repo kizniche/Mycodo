@@ -72,7 +72,7 @@ class ActionModule(AbstractFunctionAction):
     def initialize(self):
         self.action_setup = True
 
-    def run_action(self, message, dict_vars):
+    def run_action(self, dict_vars):
         try:
             controller_id = dict_vars["value"]["pid_id"]
         except:
@@ -88,11 +88,11 @@ class ActionModule(AbstractFunctionAction):
 
         if not pid:
             msg = f" Error: PID Controller with ID '{controller_id}' not found."
-            message += msg
+            dict_vars['message'] += msg
             self.logger.error(msg)
-            return message
+            return dict_vars
 
-        message += f" Set Setpoint of PID {controller_id} ({pid.name})."
+        dict_vars['message'] += f" Set Setpoint of PID {controller_id} ({pid.name})."
 
         if pid.is_activated:
             setpoint_pid = threading.Thread(
@@ -108,9 +108,9 @@ class ActionModule(AbstractFunctionAction):
                 mod_pid.setpoint = setpoint
                 new_session.commit()
 
-        self.logger.debug(f"Message: {message}")
+        self.logger.debug(f"Message: {dict_vars['message']}")
 
-        return message
+        return dict_vars
 
     def is_setup(self):
         return self.action_setup

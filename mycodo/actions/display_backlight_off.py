@@ -59,7 +59,7 @@ class ActionModule(AbstractFunctionAction):
     def initialize(self):
         self.action_setup = True
 
-    def run_action(self, message, dict_vars):
+    def run_action(self, dict_vars):
         try:
             controller_id = dict_vars["value"]["display_id"]
         except:
@@ -70,28 +70,28 @@ class ActionModule(AbstractFunctionAction):
 
         if not display:
             msg = f" Error: Display with ID '{controller_id}' not found."
-            message += msg
+            dict_vars['message'] += msg
             self.logger.error(msg)
-            return message
+            return dict_vars
 
         functions = parse_function_information()
         if display.device in functions and "function_actions" in functions[display.device]:
             if "backlight_off" not in functions[display.device]["function_actions"]:
                 msg = " Selected display is not capable of turning the backlight off"
-                message += msg
+                dict_vars['message'] += msg
                 self.logger.error(msg)
-                return message
+                return dict_vars
 
-        message += f" Display {controller_id} ({display.name}) Backlight Off."
+        dict_vars['message'] += f" Display {controller_id} ({display.name}) Backlight Off."
 
         start_flashing = threading.Thread(
             target=self.control.module_function,
             args=("Function", controller_id, "backlight_off", {},))
         start_flashing.start()
 
-        self.logger.debug(f"Message: {message}")
+        self.logger.debug(f"Message: {dict_vars['message']}")
 
-        return message
+        return dict_vars
 
     def is_setup(self):
         return self.action_setup

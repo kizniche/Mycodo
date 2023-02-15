@@ -145,20 +145,20 @@ class ActionModule(AbstractFunctionAction):
         self.publish = publish
         self.action_setup = True
 
-    def run_action(self, message, dict_vars):
+    def run_action(self, dict_vars):
         device_measurement = get_measurement(
             self.measurement_measurement_id)
 
         if not device_measurement:
             msg = f" Error: A measurement needs to be selected as the payload."
             self.logger.error(msg)
-            message += msg
-            return message
+            dict_vars["message"] += msg
+            return dict_vars
 
         channel = device_measurement.channel
 
         try:
-            payload = dict_vars["value"][channel]['value']
+            payload = dict_vars["measurements_dict"][channel]['value']
         except:
             payload = None
 
@@ -167,8 +167,8 @@ class ActionModule(AbstractFunctionAction):
         if payload is None:
             msg = f" Error: No measurement found in dictionary passed to Action for channel {channel}."
             self.logger.error(msg)
-            message += msg
-            return message
+            dict_vars["message"] += msg
+            return dict_vars
 
         try:
             auth_dict = None
@@ -186,15 +186,13 @@ class ActionModule(AbstractFunctionAction):
                 keepalive=self.keepalive,
                 auth=auth_dict,
                 transport='websockets' if self.mqtt_use_websockets else 'tcp')
-            message += f" MQTT Publish '{payload}'."
+            dict_vars["message"] += f" MQTT Publish '{payload}'."
         except Exception as err:
             msg = f" Could not execute MQTT Publish: {err}"
             self.logger.error(msg)
-            message += msg
+            dict_vars["message"] += msg
 
-        self.logger.debug(f"Message: {message}")
-
-        return message
+        return dict_vars
 
     def is_setup(self):
         return self.action_setup

@@ -69,7 +69,7 @@ class ActionModule(AbstractFunctionAction):
     def initialize(self):
         self.action_setup = True
 
-    def run_action(self, message, dict_vars):
+    def run_action(self, dict_vars):
         try:
             log_level = dict_vars["value"]["log_level"]
         except:
@@ -81,9 +81,9 @@ class ActionModule(AbstractFunctionAction):
             log_text = self.log_text
 
         if not log_text:
-            log_text = message
+            log_text = dict_vars['message']
 
-        message += f" Adding text '{log_text}' to Daemon log at log level {log_level}"
+        dict_vars['message'] += f" Adding text '{log_text}' to Daemon log at log level {log_level}"
 
         if log_level == 'info':
             self.logger.info(log_text)
@@ -95,9 +95,9 @@ class ActionModule(AbstractFunctionAction):
             self.logger.debug(log_text)
 
         if log_level != 'debug':
-            self.logger.debug(f"Message: {message}")
+            self.logger.debug(f"Message: {dict_vars['message']}")
 
-        return message
+        return dict_vars
 
     def is_setup(self):
         return self.action_setup
