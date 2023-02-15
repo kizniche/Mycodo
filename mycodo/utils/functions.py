@@ -85,7 +85,6 @@ def parse_function_information(exclude_custom=False):
             dict_controllers = dict_has_value(dict_controllers, function_custom, 'channels_dict')
             dict_controllers = dict_has_value(dict_controllers, function_custom, 'measurements_variable_amount')
             dict_controllers = dict_has_value(dict_controllers, function_custom, 'listener')
-            dict_controllers = dict_has_value(dict_controllers, function_custom, 'do_not_run_periodically')
             dict_controllers = dict_has_value(dict_controllers, function_custom, 'channel_quantity_same_as_measurements')
             dict_controllers = dict_has_value(dict_controllers, function_custom, 'enable_channel_unit_select')
             dict_controllers = dict_has_value(dict_controllers, function_custom, 'execute_at_creation')

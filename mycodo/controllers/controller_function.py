@@ -59,6 +59,8 @@ class FunctionController(AbstractController, threading.Thread):
         self.device = None
         self.period = None
 
+        self.has_loop = False
+
     def __str__(self):
         return str(self.__class__)
 
@@ -68,14 +70,7 @@ class FunctionController(AbstractController, threading.Thread):
             self.running = False
             return
 
-        if (    # Some Inputs require a function to be threaded and run continually
-                ('listener' in self.dict_function[self.device] and self.dict_function[self.device]['listener']) or
-                # Some Inputs don't run periodically
-                ('do_not_run_periodically' in self.dict_function[self.device] and
-                 self.dict_function[self.device]['do_not_run_periodically'])):
-            return
-
-        if self.timer_loop < time.time():
+        if self.has_loop and self.timer_loop < time.time():
             while self.timer_loop < time.time():
                 self.timer_loop += self.sample_rate
 
@@ -137,6 +132,10 @@ class FunctionController(AbstractController, threading.Thread):
                 target=self.run_function.listener)
             function_listener.daemon = True
             function_listener.start()
+
+        # Check if loop exists
+        if hasattr(self.run_function, 'loop'):
+            self.has_loop = True
 
     def call_module_function(self, button_id, args_dict, thread=True):
         """Execute function from custom action button press."""
