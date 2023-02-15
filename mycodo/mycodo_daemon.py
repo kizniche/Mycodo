@@ -952,7 +952,7 @@ class DaemonController:
             self.logger.info(f"Widget controller had an issue stopping: {err}")
 
 
-    def trigger_action(self, action_id, value=None, debug=False):
+    def trigger_action(self, action_id, value={}, debug=False):
         try:
             return trigger_action(
                 self.actions,
@@ -1255,7 +1255,7 @@ class PyroServer(object):
         """Add, delete, or modify a output in the running output controller."""
         return self.mycodo.output_setup(action, output_id)
 
-    def trigger_action(self, action_id, value=None, debug=False):
+    def trigger_action(self, action_id, value={}, debug=False):
         """Trigger action."""
         return self.mycodo.trigger_action(
             action_id,

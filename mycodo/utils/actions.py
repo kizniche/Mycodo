@@ -291,7 +291,7 @@ def action_video(cond_action, message):
 def trigger_action(
         dict_actions,
         action_id,
-        value=None,
+        value={},
         debug=False):
     """
     Trigger individual action

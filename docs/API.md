@@ -371,7 +371,7 @@ Instruct the daemon to shut down.
 
 ### trigger_action()
 
-**trigger_action**\ (*action_id*, *value=''*, *debug=False*)
+**trigger_action**\ (*action_id*, *value={}*, *debug=False*)
 
 Instruct a Function Action to be executed.
 

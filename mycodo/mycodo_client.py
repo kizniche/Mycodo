@@ -142,7 +142,7 @@ class DaemonControl:
     #
 
     def trigger_action(
-            self, action_id, value=None, debug=False):
+            self, action_id, value={}, debug=False):
         return self.proxy().trigger_action(
             action_id, value=value, debug=debug)
 
