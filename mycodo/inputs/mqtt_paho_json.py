@@ -295,7 +295,7 @@ class InputModule(AbstractInput):
 
             try:
                 jmesexpression = self.jmespath.compile(json_name)
-                value = jmesexpression.search(json_values)
+                value = float(jmesexpression.search(json_values))
                 self.logger.debug(
                     "Found key: {}, value: {}".format(json_name, value))
                 measurement[each_channel] = {}
