@@ -849,88 +849,89 @@ def page_logview():
     search = ''
     logfile = ''
     log_field = None
-    if request.method == 'POST':
-        if form_log_view.lines.data:
-            lines = form_log_view.lines.data
+    command = None
 
-        if form_log_view.search.data:
-            search = form_log_view.search.data
+    if form_log_view.lines.data:
+        lines = form_log_view.lines.data
 
-        # Log fie requested
-        if form_log_view.log_view.data:
-            command = None
-            log_field = form_log_view.log.data
+    if form_log_view.search.data:
+        search = form_log_view.search.data
 
-            # Find which log file was requested, generate command to execute
-            if form_log_view.log.data == 'log_nginx':
-                if DOCKER_CONTAINER:
-                    command = f'docker logs -n {lines} mycodo_nginx'
-                    if search:
-                        command += f' 2>&1 | grep "{search}"'
-                else:
-                    command = f'journalctl -u nginx -n {lines} --no-pager'
-                    if search:
-                        command += f' | grep "{search}"'
-            elif form_log_view.log.data == 'log_flask':
-                if DOCKER_CONTAINER:
-                    command = f'docker logs -n {lines} mycodo_flask'
-                    if search:
-                        command += f' 2>&1 | grep "{search}"'
-                else:
-                    command = f'journalctl -u mycodoflask -n {lines} --no-pager'
-                    if search:
-                        command += f' | grep "{search}"'
-            elif form_log_view.log.data == 'log_pid_settings':
-                logfile = DAEMON_LOG_FILE
-                logrotate_file = logfile + '.1'
-                if (logrotate_file and os.path.exists(logrotate_file) and
-                        logfile and os.path.isfile(logfile)):
-                    command = f'cat {logrotate_file} {logfile} | grep -a "PID Settings" | tail -n {lines}'
-                else:
-                    command = f'grep -a "PID Settings" {logfile} | tail -n {lines}'
-            else:
-                if form_log_view.log.data == 'log_login':
-                    logfile = LOGIN_LOG_FILE
-                elif form_log_view.log.data == 'log_http_access':
-                    logfile = HTTP_ACCESS_LOG_FILE
-                elif form_log_view.log.data == 'log_http_error':
-                    logfile = HTTP_ERROR_LOG_FILE
-                elif form_log_view.log.data == 'log_daemon':
-                    logfile = DAEMON_LOG_FILE
-                elif form_log_view.log.data == 'log_dependency':
-                    logfile = DEPENDENCY_LOG_FILE
-                elif form_log_view.log.data == 'log_import':
-                    logfile = IMPORT_LOG_FILE
-                elif form_log_view.log.data == 'log_keepup':
-                    logfile = KEEPUP_LOG_FILE
-                elif form_log_view.log.data == 'log_backup':
-                    logfile = BACKUP_LOG_FILE
-                elif form_log_view.log.data == 'log_restore':
-                    logfile = RESTORE_LOG_FILE
-                elif form_log_view.log.data == 'log_upgrade':
-                    logfile = UPGRADE_LOG_FILE
+    if form_log_view.log.data:
+        log_field = form_log_view.log.data
 
-                logrotate_file = logfile + '.1'
-                if (logrotate_file and os.path.exists(logrotate_file) and
-                        logfile and os.path.isfile(logfile)):
-                    command = f'cat {logrotate_file} {logfile} | tail -n {lines}'
-                    if search:
-                        command += f' | grep "{search}"'
-                elif os.path.isfile(logfile):
-                    command = f'tail -n {lines} {logfile}'
-                    if search:
-                        command += f' | grep "{search}"'
+    # Find which log file was requested, generate command to execute
+    if form_log_view.log.data == 'log_nginx':
+        if DOCKER_CONTAINER:
+            command = f'docker logs -n {lines} mycodo_nginx'
+            if search:
+                command += f' 2>&1 | grep "{search}"'
+        else:
+            command = f'journalctl -u nginx -n {lines} --no-pager'
+            if search:
+                command += f' | grep "{search}"'
+    elif form_log_view.log.data == 'log_flask':
+        if DOCKER_CONTAINER:
+            command = f'docker logs -n {lines} mycodo_flask'
+            if search:
+                command += f' 2>&1 | grep "{search}"'
+        else:
+            command = f'journalctl -u mycodoflask -n {lines} --no-pager'
+            if search:
+                command += f' | grep "{search}"'
+    elif form_log_view.log.data == 'log_pid_settings':
+        logfile = DAEMON_LOG_FILE
+        logrotate_file = logfile + '.1'
+        if (logrotate_file and os.path.exists(logrotate_file) and
+                logfile and os.path.isfile(logfile)):
+            command = f'cat {logrotate_file} {logfile} | grep -a "PID Settings" | tail -n {lines}'
+        else:
+            command = f'grep -a "PID Settings" {logfile} | tail -n {lines}'
+    else:
+        if form_log_view.log.data == 'log_login':
+            logfile = LOGIN_LOG_FILE
+        elif form_log_view.log.data == 'log_http_access':
+            logfile = HTTP_ACCESS_LOG_FILE
+        elif form_log_view.log.data == 'log_http_error':
+            logfile = HTTP_ERROR_LOG_FILE
+        elif form_log_view.log.data == 'log_daemon':
+            logfile = DAEMON_LOG_FILE
+        elif form_log_view.log.data == 'log_dependency':
+            logfile = DEPENDENCY_LOG_FILE
+        elif form_log_view.log.data == 'log_import':
+            logfile = IMPORT_LOG_FILE
+        elif form_log_view.log.data == 'log_keepup':
+            logfile = KEEPUP_LOG_FILE
+        elif form_log_view.log.data == 'log_backup':
+            logfile = BACKUP_LOG_FILE
+        elif form_log_view.log.data == 'log_restore':
+            logfile = RESTORE_LOG_FILE
+        elif form_log_view.log.data == 'log_upgrade':
+            logfile = UPGRADE_LOG_FILE
+        else:
+            logfile = DAEMON_LOG_FILE  # Default
 
-            # Execute command and generate the output to display to the user
-            if command:
-                log = subprocess.Popen(
-                    command,
-                    stdout=subprocess.PIPE, stderr=subprocess.STDOUT, shell=True)
-                (log_output, _) = log.communicate()
-                log.wait()
-                log_output = str(log_output, 'latin-1')
-            else:
-                log_output = 404
+        logrotate_file = logfile + '.1'
+        if (logrotate_file and os.path.exists(logrotate_file) and
+                logfile and os.path.isfile(logfile)):
+            command = f'cat {logrotate_file} {logfile} | tail -n {lines}'
+            if search:
+                command += f' | grep "{search}"'
+        elif os.path.isfile(logfile):
+            command = f'tail -n {lines} {logfile}'
+            if search:
+                command += f' | grep "{search}"'
+
+    # Execute command and generate the output to display to the user
+    if command:
+        log = subprocess.Popen(
+            command,
+            stdout=subprocess.PIPE, stderr=subprocess.STDOUT, shell=True)
+        (log_output, _) = log.communicate()
+        log.wait()
+        log_output = str(log_output, 'latin-1')
+    else:
+        log_output = 404
 
     return render_template('tools/logview.html',
                            form_log_view=form_log_view,
