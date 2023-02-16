@@ -90,7 +90,6 @@ def parse_widget_information(exclude_custom=False):
             dict_widgets = dict_has_value(dict_widgets, widget_custom, 'widget_height')
             dict_widgets = dict_has_value(dict_widgets, widget_custom, 'widget_width')
 
-            dict_widgets = dict_has_value(dict_widgets, widget_custom, 'listener')
             dict_widgets = dict_has_value(dict_widgets, widget_custom, 'message')
 
             dict_widgets = dict_has_value(dict_widgets, widget_custom, 'url_datasheet', force_type='list')

@@ -124,6 +124,9 @@ class InputController(AbstractController, threading.Thread):
         self.input_timer = time.time()
         self.lastUpdate = None
 
+        self.has_loop = False
+        self.has_listener = False
+
     def __str__(self):
         return str(self.__class__)
 
@@ -136,13 +139,7 @@ class InputController(AbstractController, threading.Thread):
             while self.pause_loop:
                 time.sleep(0.1)
 
-        if (    # Some Inputs require a function to be threaded and run continually
-                ('listener' in self.dict_inputs[self.device] and self.dict_inputs[self.device]['listener']) or
-                # Some Inputs don't run periodically
-                ('do_not_run_periodically' in self.dict_inputs[self.device] and
-                 self.dict_inputs[self.device]['do_not_run_periodically'])):
-            pass
-        else:
+        if self.has_loop:
             now = time.time()
             # Signal that a measurement needs to be obtained
             if (now > self.next_measurement and
@@ -351,10 +348,23 @@ class InputController(AbstractController, threading.Thread):
         self.input_timer = time.time()
         self.lastUpdate = None
 
+        # Check if loop() exists
+        if hasattr(self.measure_input, 'get_measurement'):
+            self.logger.debug("get_measurement() found")
+            self.has_loop = True
+        else:
+            self.logger.debug("get_measurement() not found")
+
+        # Check if listener() exists
+        if hasattr(self.measure_input, 'listener'):
+            self.logger.debug("listener() found")
+            self.has_listener = True
+        else:
+            self.logger.debug("listener() not found")
+
         # Set up listener as thread
-        if ('listener' in self.dict_inputs[self.device] and
-              self.dict_inputs[self.device]['listener']):
-            self.logger.debug("Detected as listener. Starting listener thread.")
+        if self.has_listener:
+            self.logger.debug("Starting listener() thread.")
             input_listener = threading.Thread(
                 target=self.measure_input.listener)
             input_listener.daemon = True

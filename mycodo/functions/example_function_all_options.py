@@ -25,6 +25,8 @@ import datetime
 import threading
 import time
 
+from flask_babel import lazy_gettext
+
 from mycodo.databases.models import CustomController
 from mycodo.functions.base_function import AbstractFunction
 from mycodo.mycodo_client import DaemonControl
@@ -63,6 +65,15 @@ FUNCTION_INFORMATION = {
     # which the user can use to set different values and options for the Function.
     # These settings can only be changed when the Function is inactive.
     'custom_options': [
+        {
+            'id': 'period',
+            'type': 'float',
+            'default_value': 60,
+            'required': True,
+            'constraints_pass': constraints_pass_positive_value,
+            'name': "{} ({})".format(lazy_gettext('Period'), lazy_gettext('Seconds')),
+            'phrase': lazy_gettext('The duration between measurements or actions')
+        },
         {
             'type': 'message',
             'default_value': """The following fields are for text, integers, and decimal inputs. This message will automatically create a new line for the options that come after it. Alternatively, a new line can be created instead without a message, which are what separates each of the following three inputs."""
@@ -245,10 +256,14 @@ class CustomModule(AbstractFunction):
         super().__init__(function, testing=testing, name=__name__)
 
         self.control = DaemonControl()
+        self.listener_running = True
+        self.timer_loop = time.time()  # start the loop() timer
 
         #
         # Initialize what you defined in custom_options, above
         #
+
+        self.period = None  # How often to run loop()
 
         # Standard custom options inherit the name you defined in the "id" key
         self.text_1 = None
@@ -292,18 +307,24 @@ class CustomModule(AbstractFunction):
         # You may import something you defined in dependencies_module
         pass
 
-    def run(self):
-        try:
-            self.running = True
+    def loop(self):
+        """This will run periodically. Delete this function if you only want to use listener()"""
+        if self.timer_loop > time.time():
+            return
 
+        while self.timer_loop < time.time():
+            self.timer_loop += self.period
+
+        try:
             # This log line will appear in the Daemon log under Config -> Mycodo Logs
-            self.logger.info("Function running")
+            self.logger.info("Function loop() running")
 
             # Make sure the option "Log Level: Debug" is enabled for these debug
             # log lines to appear in the Daemon log.
             self.logger.debug(
                 "Custom controller started with options: "
-                "{}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}".format(
+                "{}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}".format(
+                    self.period,
                     self.text_1,
                     self.integer_1,
                     self.float_1,
@@ -353,9 +374,8 @@ class CustomModule(AbstractFunction):
             # Deactivate controller in the SQL database
             self.logger.debug(
                 "Deactivating (SQL) Custom controller select_device_2 with ID {}".format(self.select_device_2_id))
+            from mycodo.config import MYCODO_DB_PATH, SQL_DATABASE_MYCODO
             from mycodo.databases.utils import session_scope
-            from mycodo.config import SQL_DATABASE_MYCODO
-            from mycodo.config import MYCODO_DB_PATH
             with session_scope(MYCODO_DB_PATH) as new_session:
                 mod_cont = new_session.query(CustomController).filter(
                     CustomController.unique_id == self.select_device_2_id).first()
@@ -375,18 +395,16 @@ class CustomModule(AbstractFunction):
                 target=self.control.controller_deactivate,
                 args=(self.select_device_2_id,))
             deactivate_controller.start()
-
-            # Start a loop
-            while self.running:
-                time.sleep(1)
         except:
             self.logger.exception("Run Error")
         finally:
-            self.running = False
             self.logger.error("Deactivated unexpectedly")
 
-    def loop(self):
-        pass
+    def listener(self):
+        """This function will be turned into a thread. Delete this function if you don't want to use it."""
+        while self.listener_running:
+            self.logger.info("This process is running in a separate thread from the main loop().")
+            time.time(60)
 
     def button_one(self, args_dict):
         self.logger.error("Button One Pressed!: {}".format(int(args_dict['button_one_value'])))

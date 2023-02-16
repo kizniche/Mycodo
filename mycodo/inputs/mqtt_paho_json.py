@@ -36,7 +36,6 @@ INPUT_INFORMATION = {
     'measurements_variable_amount': True,
     'channel_quantity_same_as_measurements': True,
     'measurements_use_same_timestamp': False,
-    'listener': True,
 
     'message': 'A single topic is subscribed to and the returned JSON payload contains one or '
                'more key/value pairs. The given JSON Key is used as a JMESPATH expression to find the '

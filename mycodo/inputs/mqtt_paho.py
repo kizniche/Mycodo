@@ -35,7 +35,6 @@ INPUT_INFORMATION = {
     'measurements_variable_amount': True,
     'channel_quantity_same_as_measurements': True,
     'measurements_use_same_timestamp': False,
-    'listener': True,
 
     'message': 'A topic is subscribed to for each channel Subscription Topic and the returned '
                'payload value will be stored for that channel. Be sure you select and save the '
