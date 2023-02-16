@@ -26,11 +26,9 @@ import os
 from mycodo.config import PATH_INPUTS
 from mycodo.config import PATH_INPUTS_CUSTOM
 from mycodo.inputs.sensorutils import convert_units
-from mycodo.utils.logging_utils import set_log_level
 from mycodo.utils.modules import load_module_from_file
 
 logger = logging.getLogger("mycodo.utils.inputs")
-logger.setLevel(set_log_level(logging))
 
 
 def parse_measurement(

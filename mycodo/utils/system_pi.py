@@ -26,10 +26,8 @@ from mycodo.databases.models import Input
 from mycodo.databases.models import Output
 from mycodo.utils.database import db_retrieve_table
 from mycodo.utils.database import db_retrieve_table_daemon
-from mycodo.utils.logging_utils import set_log_level
 
 logger = logging.getLogger("mycodo.system_pi")
-logger.setLevel(set_log_level(logging))
 
 
 def parse_custom_option_values(controllers, dict_controller=None):

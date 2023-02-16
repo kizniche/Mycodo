@@ -29,13 +29,11 @@ from mycodo.databases.models import Output
 from mycodo.databases.models import PID
 from mycodo.databases.models import Unit
 from mycodo.utils.database import db_retrieve_table_daemon
-from mycodo.utils.logging_utils import set_log_level
 from mycodo.utils.system_pi import add_custom_units
 from mycodo.utils.system_pi import get_measurement
 from mycodo.utils.system_pi import return_measurement_info
 
 logger = logging.getLogger("mycodo.utils.lcd")
-logger.setLevel(set_log_level(logging))
 
 
 def format_measurement_line(device_id, measure_id, val_rounded, lcd_x_characters, display_unit=True, label=None):

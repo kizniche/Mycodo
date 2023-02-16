@@ -22,10 +22,7 @@
 #  Contact at kylegabriel.com
 import logging
 
-from mycodo.utils.logging_utils import set_log_level
-
 logger = logging.getLogger("mycodo.utils.image")
-logger.setLevel(set_log_level(logging))
 
 
 def generate_thermal_image_from_pixels(

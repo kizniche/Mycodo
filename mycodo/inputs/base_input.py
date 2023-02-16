@@ -172,7 +172,7 @@ class AbstractInput(AbstractBaseController):
                 self.logger.setLevel(logging.DEBUG)
             else:
                 self.logger.setLevel(logging.INFO)
-
+            
     def start_input(self):
         """Not used yet."""
         self.running = True

@@ -13,10 +13,8 @@ sys.path.append(os.path.abspath(os.path.join(
     os.path.dirname(__file__), os.path.pardir) + '/..'))
 
 from mycodo.config import MYCODO_VERSION, TAGS_URL
-from mycodo.utils.logging_utils import set_log_level
 
 logger = logging.getLogger("mycodo.github_release_info")
-logger.setLevel(set_log_level(logging))
 
 
 class MycodoRelease:

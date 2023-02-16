@@ -22,7 +22,6 @@ from mycodo.databases.models import (Conversion, DeviceMeasurements,
 from mycodo.utils.database import db_retrieve_table_daemon
 from mycodo.utils.influx import (average_past_seconds,
                                  average_start_end_seconds, output_sec_on)
-from mycodo.utils.logging_utils import set_log_level
 from mycodo.utils.outputs import parse_output_information
 from mycodo.utils.system_pi import (
     assure_path_exists, cmd_output,
@@ -30,7 +29,6 @@ from mycodo.utils.system_pi import (
     set_user_grp)
 
 logger = logging.getLogger("mycodo.tools")
-logger.setLevel(set_log_level(logging))
 
 
 def create_measurements_export(influxdb_version, save_path=None):

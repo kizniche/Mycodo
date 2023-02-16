@@ -33,10 +33,12 @@ Again, if you use any custom Actions, it is imperative that you make this second
 ### Features
 
  - Add Input Equation Action
+ - Add Search to Log Page
 
 ### Miscellaneous
 
  - Update Python packages
+ - Remove Daemonize as a requirement
 
 
 ## 8.15.6 (2023-01-30)

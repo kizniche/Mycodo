@@ -86,7 +86,9 @@ class LogView(FlaskForm):
         )],
         widget=NumberInput()
     )
-
+    search = StringField(
+        lazy_gettext('Search'),
+        render_kw={'placeholder': lazy_gettext('Search')},)
     log = StringField(lazy_gettext('Log'))
     log_view = SubmitField(lazy_gettext('View Log'))
 

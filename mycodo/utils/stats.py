@@ -33,10 +33,8 @@ from mycodo.databases.models import Output
 from mycodo.databases.models import PID
 from mycodo.databases.models import Trigger
 from mycodo.utils.database import db_retrieve_table_daemon
-from mycodo.utils.logging_utils import set_log_level
 
 logger = logging.getLogger("mycodo.stats")
-logger.setLevel(set_log_level(logging))
 
 
 #
@@ -229,7 +227,7 @@ def recreate_stat_file():
     os.chmod(STATS_CSV, 0o664)
 
 
-def send_anonymous_stats(start_time, debug=False):
+def send_anonymous_stats(start_time):
     """
     Send anonymous usage statistics
 
@@ -237,11 +235,6 @@ def send_anonymous_stats(start_time, debug=False):
         current_stat = return_stat_file_dict(csv_file)
         add_update_csv(csv_file, 'stat', current_stat['stat'] + 5)
     """
-    if debug:
-        logger.setLevel(logging.DEBUG)
-    else:
-        logger.setLevel(logging.INFO)
-
     try:
         client = InfluxDBClient(STATS_HOST, STATS_PORT, STATS_USER, STATS_PASSWORD, STATS_DATABASE)
         # Prepare stats before sending

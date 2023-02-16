@@ -7,9 +7,7 @@
   <div class="container">
     {% include 'flash_messages.html' %}
 
-    <p>{{_('Select the number of lines to display from the end of a log')}}</p>
-
-    <form class="row" method="post" action="/logview">
+    <form class="row" method="post" action="/logview" style="padding-top: 0.5em">
       <input type="hidden" name="form-name" value="logview">
       {{form_log_view.hidden_tag()}}
       <div class="col-12 col-sm-2">
@@ -31,6 +29,9 @@
           <option value="log_http_error"{% if log_field == "log_http_error" %} selected{% endif %}>Web Error</option>
           <option value="log_login"{% if log_field == "log_login" %} selected{% endif %}>Web Login</option>
         </select>
+      </div>
+      <div class="col-auto">
+        {{form_log_view.search(class_='form-control', value=search)}}
       </div>
       <div class="col-auto">
         {{form_log_view.log_view(class_='btn btn-primary btn-block')}}

@@ -28,10 +28,7 @@ import re
 import string
 import sys
 
-from mycodo.utils.logging_utils import set_log_level
-
 logger = logging.getLogger("mycodo.utils")
-logger.setLevel(set_log_level(logging))
 
 
 def append_to_log(log_file, str_append):

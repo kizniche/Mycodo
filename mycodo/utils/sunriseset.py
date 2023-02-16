@@ -29,10 +29,7 @@ import math
 from dateutil import tz
 from dateutil.parser import parse
 
-from mycodo.utils.logging_utils import set_log_level
-
 logger = logging.getLogger("mycodo.sun_rise_set")
-logger.setLevel(set_log_level(logging))
 
 
 class Sun:

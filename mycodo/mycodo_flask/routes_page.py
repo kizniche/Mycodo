@@ -846,11 +846,15 @@ def page_logview():
     form_log_view = forms_misc.LogView()
     log_output = None
     lines = 30
+    search = ''
     logfile = ''
     log_field = None
     if request.method == 'POST':
         if form_log_view.lines.data:
             lines = form_log_view.lines.data
+
+        if form_log_view.search.data:
+            search = form_log_view.search.data
 
         # Log fie requested
         if form_log_view.log_view.data:
@@ -861,13 +865,21 @@ def page_logview():
             if form_log_view.log.data == 'log_nginx':
                 if DOCKER_CONTAINER:
                     command = f'docker logs -n {lines} mycodo_nginx'
+                    if search:
+                        command += f' 2>&1 | grep "{search}"'
                 else:
                     command = f'journalctl -u nginx -n {lines} --no-pager'
+                    if search:
+                        command += f' | grep "{search}"'
             elif form_log_view.log.data == 'log_flask':
                 if DOCKER_CONTAINER:
                     command = f'docker logs -n {lines} mycodo_flask'
+                    if search:
+                        command += f' 2>&1 | grep "{search}"'
                 else:
                     command = f'journalctl -u mycodoflask -n {lines} --no-pager'
+                    if search:
+                        command += f' | grep "{search}"'
             elif form_log_view.log.data == 'log_pid_settings':
                 logfile = DAEMON_LOG_FILE
                 logrotate_file = logfile + '.1'
@@ -902,8 +914,12 @@ def page_logview():
                 if (logrotate_file and os.path.exists(logrotate_file) and
                         logfile and os.path.isfile(logfile)):
                     command = f'cat {logrotate_file} {logfile} | tail -n {lines}'
+                    if search:
+                        command += f' | grep "{search}"'
                 elif os.path.isfile(logfile):
                     command = f'tail -n {lines} {logfile}'
+                    if search:
+                        command += f' | grep "{search}"'
 
             # Execute command and generate the output to display to the user
             if command:
@@ -921,7 +937,8 @@ def page_logview():
                            lines=lines,
                            log_field=log_field,
                            logfile=logfile,
-                           log_output=log_output)
+                           log_output=log_output,
+                           search=search)
 
 
 @blueprint.route('/energy_usage_input_amp', methods=('GET', 'POST'))
