@@ -7,7 +7,6 @@ StartLimitBurst=5
 [Service]
 Restart=on-failure
 RestartSec=20s
-Type=forking
 TimeoutSec=0
 ExecStartPre=/bin/bash /var/mycodo-root/install/influxdb_wait_until_running.sh
 ExecStart=/var/mycodo-root/env/bin/python /var/mycodo-root/mycodo/mycodo_daemon.py
