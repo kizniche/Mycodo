@@ -171,19 +171,19 @@ class ActionModule(AbstractFunctionAction):
         except:
             payload = self.payload
 
+            try:
+                if self.payload_type == 'integer':
+                    payload = int(payload)
+                elif self.payload_type == 'float':
+                    payload = float(payload)
+            except:
+                msg = f" Error: Could not cast payload as {self.payload_type}."
+                self.logger.error(msg)
+                dict_vars['message'] += msg
+                return dict_vars
+
         if not payload:
             msg = f" Error: Cannot publish to MQTT server without a payload."
-            self.logger.error(msg)
-            dict_vars['message'] += msg
-            return dict_vars
-
-        try:
-            if self.payload_type == 'integer':
-                payload = int(payload)
-            elif self.payload_type == 'float':
-                payload = float(payload)
-        except:
-            msg = f" Error: Could not cast payload as {self.payload_type}."
             self.logger.error(msg)
             dict_vars['message'] += msg
             return dict_vars

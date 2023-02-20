@@ -211,8 +211,7 @@ class DaemonController:
 
     @staticmethod
     def get_condition_measurement(condition_id):
-        condition_return = get_condition_value(condition_id)
-        return condition_return
+        return get_condition_value(condition_id)
 
 
     @staticmethod
