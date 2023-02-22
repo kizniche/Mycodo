@@ -192,6 +192,9 @@ class InputModule(AbstractInput):
         if self.mqtt_use_tls:
             self.client.tls_set()
 
+    def get_measurement(self):
+        raise NotImplementedError
+
     def listener(self):
         try:
             self.callbacks_connect()

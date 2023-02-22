@@ -123,6 +123,8 @@ class AbstractInput(AbstractBaseController):
             self._measurements = self.get_measurement()
             if self._measurements is not None:
                 return  # success - no errors
+        except NotImplementedError:  # NotImplementedError raised in get_measurement() of modules that don't use this method (e.g. those that use listener())
+            self.has_loop = False
         except TimeoutError as error:
             msg = "TimeoutError: {}".format(error)
             if logging.getLevelName(self.logger.getEffectiveLevel()) == 'DEBUG':

@@ -109,6 +109,9 @@ class InputModule(AbstractInput):
         except:
             self.logger.exception("Setting up Input")
 
+    def get_measurement(self):
+        raise NotImplementedError
+
     def listener(self):
         self.GPIO.add_event_detect(
             int(self.gpio_location),
