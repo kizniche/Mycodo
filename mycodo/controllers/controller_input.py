@@ -22,7 +22,6 @@
 #
 #  Contact at kylegabriel.com
 #
-import logging
 import threading
 import time
 
@@ -30,6 +29,7 @@ from mycodo.controllers.base_controller import AbstractController
 from mycodo.databases.models import (SMTP, Actions, Conversion,
                                      DeviceMeasurements, Input, Misc, Output,
                                      OutputChannel)
+from mycodo.inputs.base_input import AbstractInput
 from mycodo.mycodo_client import DaemonControl
 from mycodo.utils.database import db_retrieve_table_daemon
 from mycodo.utils.influx import add_measurements_influxdb
@@ -343,8 +343,8 @@ class InputController(AbstractController, threading.Thread):
         self.input_timer = time.time()
         self.lastUpdate = None
 
-        # Check if loop() exists
-        if hasattr(self.measure_input, 'get_measurement'):
+        # Check if get_measurement() has been overwritten
+        if type(self.measure_input).get_measurement != AbstractInput.get_measurement:
             self.logger.debug("get_measurement() found")
             self.has_loop = True
         else:
@@ -354,16 +354,13 @@ class InputController(AbstractController, threading.Thread):
         if hasattr(self.measure_input, 'listener'):
             self.logger.debug("listener() found")
             self.has_listener = True
-        else:
-            self.logger.debug("listener() not found")
-
-        # Set up listener as thread
-        if self.has_listener:
             self.logger.debug("Starting listener() thread.")
             input_listener = threading.Thread(
                 target=self.measure_input.listener)
             input_listener.daemon = True
             input_listener.start()
+        else:
+            self.logger.debug("listener() not found")
 
     def update_measure(self):
         """
@@ -385,8 +382,6 @@ class InputController(AbstractController, threading.Thread):
             # Reset StopIteration counter on successful read
             if self.stop_iteration_counter:
                 self.stop_iteration_counter = 0
-        except NotImplementedError:  # NotImplementedError raised in get_measurement() of modules that don't use this method (e.g. those that use listener())
-            self.has_loop = False
         except StopIteration:
             self.stop_iteration_counter += 1
             # Notify after 3 consecutive errors. Prevents filling log
@@ -395,10 +390,11 @@ class InputController(AbstractController, threading.Thread):
                 self.stop_iteration_counter = 0
                 self.logger.error(
                     "StopIteration raised 3 times. Possibly could not read "
-                    "input. Ensure it's connected properly and detected.")
+                    "input. Ensure it's connected properly and "
+                    "detected.")
         except AttributeError:
-            self.logger.exception(
-                "Mycodo is attempting to acquire measurement(s) from an Input that may have already critically errored. "
+            self.logger.error(
+                "Mycodo is attempting to acquire measurement(s) from an Input that has already critically errored. "
                 "Review the log lines following Input Activation to investigate why this happened.")
         except Exception as except_msg:
             if except_msg == "'NoneType' object has no attribute 'next'":
