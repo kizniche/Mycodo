@@ -118,33 +118,10 @@ class AbstractInput(AbstractBaseController):
 
         :returns: None on success or 1 on error
         """
-        self._measurements = None
-        try:
-            self._measurements = self.get_measurement()
-            if self._measurements is not None:
-                return  # success - no errors
-        except NotImplementedError:  # NotImplementedError raised in get_measurement() of modules that don't use this method (e.g. those that use listener())
-            self.has_loop = False
-        except TimeoutError as error:
-            msg = "TimeoutError: {}".format(error)
-            if logging.getLevelName(self.logger.getEffectiveLevel()) == 'DEBUG':
-                self.logger.exception(msg)
-            else:
-                self.logger.error(msg)
-        except IOError as e:
-            msg = "{cls}.get_measurement() method raised IOError: " \
-                  "{err}".format(cls=type(self).__name__, err=e)
-            if logging.getLevelName(self.logger.getEffectiveLevel()) == 'DEBUG':
-                self.logger.exception(msg)
-            else:
-                self.logger.error(msg)
-        except Exception as e:
-            msg = "{cls} raised an exception when taking a reading: " \
-                  "{err}".format(cls=type(self).__name__, err=e)
-            if logging.getLevelName(self.logger.getEffectiveLevel()) == 'DEBUG':
-                self.logger.exception(msg)
-            else:
-                self.logger.error(msg)
+        self._measurements = self.get_measurement()
+        if self._measurements is not None:
+            return  # success - no errors
+
         return 1
 
     def initialize_measurements(self):

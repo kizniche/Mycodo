@@ -22,23 +22,18 @@
 #
 #  Contact at kylegabriel.com
 #
+import logging
 import threading
 import time
 
 from mycodo.controllers.base_controller import AbstractController
-from mycodo.databases.models import Actions
-from mycodo.databases.models import Conversion
-from mycodo.databases.models import DeviceMeasurements
-from mycodo.databases.models import Input
-from mycodo.databases.models import Misc
-from mycodo.databases.models import Output
-from mycodo.databases.models import OutputChannel
-from mycodo.databases.models import SMTP
+from mycodo.databases.models import (SMTP, Actions, Conversion,
+                                     DeviceMeasurements, Input, Misc, Output,
+                                     OutputChannel)
 from mycodo.mycodo_client import DaemonControl
 from mycodo.utils.database import db_retrieve_table_daemon
 from mycodo.utils.influx import add_measurements_influxdb
-from mycodo.utils.inputs import parse_input_information
-from mycodo.utils.inputs import parse_measurement
+from mycodo.utils.inputs import parse_input_information, parse_measurement
 from mycodo.utils.lockfile import LockFile
 from mycodo.utils.modules import load_module_from_file
 
@@ -390,6 +385,8 @@ class InputController(AbstractController, threading.Thread):
             # Reset StopIteration counter on successful read
             if self.stop_iteration_counter:
                 self.stop_iteration_counter = 0
+        except NotImplementedError:  # NotImplementedError raised in get_measurement() of modules that don't use this method (e.g. those that use listener())
+            self.has_loop = False
         except StopIteration:
             self.stop_iteration_counter += 1
             # Notify after 3 consecutive errors. Prevents filling log
@@ -398,11 +395,10 @@ class InputController(AbstractController, threading.Thread):
                 self.stop_iteration_counter = 0
                 self.logger.error(
                     "StopIteration raised 3 times. Possibly could not read "
-                    "input. Ensure it's connected properly and "
-                    "detected.")
+                    "input. Ensure it's connected properly and detected.")
         except AttributeError:
-            self.logger.error(
-                "Mycodo is attempting to acquire measurement(s) from an Input that has already critically errored. "
+            self.logger.exception(
+                "Mycodo is attempting to acquire measurement(s) from an Input that may have already critically errored. "
                 "Review the log lines following Input Activation to investigate why this happened.")
         except Exception as except_msg:
             if except_msg == "'NoneType' object has no attribute 'next'":
