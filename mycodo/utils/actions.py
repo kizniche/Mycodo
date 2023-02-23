@@ -322,11 +322,9 @@ def trigger_action(
     # Set up function action to run from standalone action module file
     run_function_action = None
     if action.action_type in dict_actions:
-
         message += "\n[Action {id}, {name}]:".format(
             id=action.unique_id.split('-')[0],
             name=dict_actions[action.action_type]['name'])
-
         try:
             action_loaded, status = load_module_from_file(
                 dict_actions[action.action_type]['file_path'], 'action')
@@ -366,17 +364,17 @@ def trigger_controller_actions(dict_actions, controller_id, message='', debug=Fa
     actions = actions.filter(
         Actions.function_id == controller_id).all()
     
-    dict_actions = {'message': message}
+    dict_return = {'message': message}
 
     for each_action in actions:
-        dict_actions = trigger_action(
+        dict_return = trigger_action(
             dict_actions,
             each_action.unique_id,
-            value=dict_actions,
+            value=dict_return,
             debug=debug)
 
-    if dict_actions and 'message' in dict_actions:
-        message = dict_actions['message']
+    if dict_return and 'message' in dict_return:
+        message = dict_return['message']
 
     logger_actions.debug("Message: {}".format(message))
 
