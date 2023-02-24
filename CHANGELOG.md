@@ -30,6 +30,7 @@ Again, if you use any custom Actions, it is imperative that you make this second
  - Fix unit conversion of Python 3 Code Input
  - Fix influxdb warning text during install (does not affect the actual install) ([#1276](https://github.com/kizniche/Mycodo/issues/1276))
  - Fix MQTT JSON Input not storing values as float
+ - Fix PID Controller Widget timestamps
 
 ### Features
 

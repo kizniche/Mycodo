@@ -401,7 +401,7 @@ WIDGET_INFORMATION = {
       data[name][1] = data['setpoint_band']
     }
     if (data[name][0] && document.getElementById(name + '-timestamp-' + widget_id)) {
-      document.getElementById(name + '-timestamp-' + widget_id).innerHTML = epoch_to_timestamp(data[name][0]);
+      document.getElementById(name + '-timestamp-' + widget_id).innerHTML = epoch_to_timestamp(data[name][0] * 1000);
     } else if (document.getElementById(name + '-timestamp-' + widget_id)) {
       document.getElementById(name + '-timestamp-' + widget_id).innerHTML = 'MAX AGE EXCEEDED';
     }
