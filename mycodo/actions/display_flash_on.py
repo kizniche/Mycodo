@@ -24,7 +24,7 @@ ACTION_INFORMATION = {
     'message': 'Turn display flashing on',
 
     'usage': 'Executing <strong>self.run_action("ACTION_ID")</strong> will start the backlight flashing on the selected display. '
-             'Executing <strong>self.run_action("ACTION_ID", value={"display_id": "959019d1-c1fa-41fe-a554-7be3366a9c5b"})</strong> will start the backlight flashing on the controller with the specified ID.',
+             'Executing <strong>self.run_action("ACTION_ID", value={"display_id": "959019d1-c1fa-41fe-a554-7be3366a9c5b"})</strong> will start the backlight flashing on the controller with the specified ID. Don\'t forget to change the display_id value to an actual Function ID that exists in your system.',
 
     'custom_options': [
         {

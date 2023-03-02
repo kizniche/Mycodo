@@ -157,8 +157,8 @@ INPUT_INFORMATION = {
             'type': 'text',
             'default_value': '',
             'required': True,
-            'name': 'JSON Key',
-            'phrase': 'JMES Path expression to find value in JSON response'
+            'name': 'JMESPATH Expression',
+            'phrase': 'JMESPATH expression to find value in JSON response'
         }
     ]
 }

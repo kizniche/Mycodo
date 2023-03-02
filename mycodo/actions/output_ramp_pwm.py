@@ -27,7 +27,7 @@ ACTION_INFORMATION = {
     'message': lazy_gettext('Ramp a PWM Output from one duty cycle to another duty cycle over a period of time.'),
 
     'usage': 'Executing <strong>self.run_action("ACTION_ID")</strong> will ramp the PWM output duty cycle according to the settings. '
-             'Executing <strong>self.run_action("ACTION_ID", value={"output_id": "959019d1-c1fa-41fe-a554-7be3366a9c5b", "channel": 0, "start": 42, "end": 62, "increment": 1.0, "duration": 600})</strong> will ramp the duty cycle of the PWM output with the specified ID and channel.',
+             'Executing <strong>self.run_action("ACTION_ID", value={"output_id": "959019d1-c1fa-41fe-a554-7be3366a9c5b", "channel": 0, "start": 42, "end": 62, "increment": 1.0, "duration": 600})</strong> will ramp the duty cycle of the PWM output with the specified ID and channel. Don\'t forget to change the output_id value to an actual Output ID that exists in your system.',
 
     'custom_options': [
         {

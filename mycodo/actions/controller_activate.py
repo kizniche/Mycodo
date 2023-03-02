@@ -27,7 +27,7 @@ ACTION_INFORMATION = {
     'message': lazy_gettext('Activate a controller.'),
 
     'usage': 'Executing <strong>self.run_action("ACTION_ID")</strong> will activate the selected Controller. '
-             'Executing <strong>self.run_action("ACTION_ID", value={"controller_id": "959019d1-c1fa-41fe-a554-7be3366a9c5b"})</strong> will activate the controller with the specified ID.',
+             'Executing <strong>self.run_action("ACTION_ID", value={"controller_id": "959019d1-c1fa-41fe-a554-7be3366a9c5b"})</strong> will activate the controller with the specified ID. Don\'t forget to change the controller_id value to an actual Controller ID that exists in your system.',
 
     'custom_options': [
         {

@@ -23,7 +23,7 @@ ACTION_INFORMATION = {
     'message': 'Clear the total kWh saved for an energy meter Input. The Input must have the Clear Total kWh option. This will also clear all energy stats on the device, not just the total kWh.',
 
     'usage': 'Executing <strong>self.run_action("ACTION_ID")</strong> will clear the total kWh for the selected energy meter Input. '
-             'Executing <strong>self.run_action("ACTION_ID", value={"input_id": "959019d1-c1fa-41fe-a554-7be3366a9c5b"})</strong> will clear the total kWh for the energy meter Input with the specified ID.',
+             'Executing <strong>self.run_action("ACTION_ID", value={"input_id": "959019d1-c1fa-41fe-a554-7be3366a9c5b"})</strong> will clear the total kWh for the energy meter Input with the specified ID. Don\'t forget to change the input_id value to an actual Input ID that exists in your system.',
 
     'custom_options': [
         {
