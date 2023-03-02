@@ -2,27 +2,27 @@
 
 This update fixes a few bugs and adds the new Input Equation Action, which can apply an equation to an Input measurements prior to being stored in the database. For instance, if you wanted to apply an offset of +10 to a particular measurement of an Input, you could use the equation "x+10".
 
-In order for this new Action to be able to be created, there had to be a refactoring of the trigger_action() API function and run_action() Action module function.
+In order for this new Action to be able to be created, there had to be a refactoring of the `trigger_action()` API function and `run_action()` Action module function.
 
 All references your code previously made to:
 
-trigger_action(action_id, value=None, message='', debug=False) 
+`trigger_action(action_id, value=None, message='', debug=False)`
 
 Will need to be changed to:
 
-trigger_action(action_id, value=None, debug=False)
+`trigger_action(action_id, value=None, debug=False)`
 
 Additionally, custom Action modules previously with the Class function:
 
-run_action(self, message, dict_vars)
+`run_action(self, message, dict_vars)`
 
 Will need to be changed to:
 
-run_action(self, dict_vars)
+`run_action(self, dict_vars)`
 
-Since dict_vars will be a dictionary that contains the key "message". Any messages added in run_action() will need to be appended to dict_vars['message']. Additionally, dict_vars will need to be returned by run_action() rather than the varaible messages.
+Since dict_vars will be a dictionary that contains the key "message". Any messages added in `run_action()` will need to be appended to `dict_vars['message']`. Additionally, dict_vars will need to be returned by `run_action()` rather than the variable messages.
 
-Again, if you use any custom Actions, it is imperative that you make this second update to your modules for them to be able to peroprly work when upgrading to or beyond v8.15.7.
+Again, if you use any custom Actions, it is imperative that you make this second update to your modules for them to be able to properly work when upgrading to or beyond v8.15.7.
 
 ### Bugfixes
 
