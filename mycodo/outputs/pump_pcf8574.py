@@ -236,7 +236,7 @@ class OutputModule(AbstractOutput):
         self.turn_on_off(channel, "off")
         self.currently_dispensing[channel] = False
         self.logger.debug("Output turned off")
-        self.record_dispersal(amount, total_dispense_seconds, total_dispense_seconds, timestamp=timestamp_start)
+        self.record_dispersal(channel, amount, total_dispense_seconds, total_dispense_seconds, timestamp=timestamp_start)
 
     def dispense_volume_rate(self, channel, amount, dispense_rate):
         """Dispense at a specific flow rate."""
@@ -278,17 +278,17 @@ class OutputModule(AbstractOutput):
                 time.sleep(0.01)
 
         self.currently_dispensing[channel] = False
-        self.record_dispersal(amount, total_seconds_on, total_dispense_seconds, timestamp=timestamp_start)
+        self.f(amount, total_seconds_on, total_dispense_seconds, timestamp=timestamp_start)
 
-    def record_dispersal(self, amount, total_on_seconds, total_dispense_seconds, timestamp=None):
+    def record_dispersal(self, channel, amount, total_on_seconds, total_dispense_seconds, timestamp=None):
         measure_dict = copy.deepcopy(measurements_dict)
-        measure_dict[0]['value'] = total_on_seconds
-        measure_dict[1]['value'] = amount
-        measure_dict[2]['value'] = total_dispense_seconds
+        measure_dict[channel * 3]['value'] = total_on_seconds
+        measure_dict[(channel * 3) + 1]['value'] = amount
+        measure_dict[(channel * 3) + 2]['value'] = total_dispense_seconds
         if timestamp:
-            measure_dict[0]['timestamp_utc'] = timestamp
-            measure_dict[1]['timestamp_utc'] = timestamp
-            measure_dict[2]['timestamp_utc'] = timestamp
+            measure_dict[channel * 3]['timestamp_utc'] = timestamp
+            measure_dict[(channel * 3) + 1]['timestamp_utc'] = timestamp
+            measure_dict[(channel * 3) + 2]['timestamp_utc'] = timestamp
         add_measurements_influxdb(self.unique_id, measure_dict, use_same_timestamp=False)
 
     def output_switch(self, state, output_type=None, amount=None, output_channel=None):

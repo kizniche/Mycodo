@@ -1,3 +1,11 @@
+## 8.15.8 (Unreleased)
+
+### Bugfixes
+
+ - Fix PID Controller startup status error
+ - Fix PCF8574 Pump Output always saving output amount to channel 0 ([#1281](https://github.com/kizniche/Mycodo/issues/1281))
+
+
 ## 8.15.7 (2023-03-02)
 
 This update fixes a few bugs and adds the new Input Equation Action, which can apply an equation to an Input measurements prior to being stored in the database. For instance, if you wanted to apply an offset of +10 to a particular measurement of an Input, you could use the equation "x+10".
