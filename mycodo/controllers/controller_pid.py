@@ -939,7 +939,6 @@ class PIDController(AbstractController, threading.Thread):
         return self.PID_Controller.Kd
 
     def function_status(self):
-        total = 0
         p_value = 0
         i_value = 0
         d_value = 0
