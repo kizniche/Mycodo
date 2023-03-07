@@ -24,6 +24,7 @@ spec:
       labels:
         io.kompose.service: mycodoinfluxdb
     spec:
+      nodeName: lilgreen
       containers:
         - env:
             - name: DOCKER_INFLUXDB_INIT_BUCKET
@@ -47,6 +48,9 @@ spec:
       restartPolicy: Always
       volumes:
         - name: mycodo-influxdb
-          persistentVolumeClaim:
-            claimName: mycodo-influxdb
+          nfs:
+            server: 192.168.1.129
+            path: /volume2/SSD_500GB/mycodoPVs/mycodo-influxdb
+#          persistentVolumeClaim:
+#            claimName: mycodo-influxdb
 status: {}

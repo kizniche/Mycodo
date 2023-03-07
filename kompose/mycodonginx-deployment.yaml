@@ -24,6 +24,7 @@ spec:
       labels:
         io.kompose.service: mycodonginx
     spec:
+      nodeName: lilgreen
       containers:
         - image: nargetdev/mycodonginx:c0.0.0-v8.15.1
           name: mycodonginx
@@ -41,12 +42,21 @@ spec:
       restartPolicy: Always
       volumes:
         - name: mycodo
-          persistentVolumeClaim:
-            claimName: mycodo
+          nfs:
+            server: 192.168.1.129
+            path: /volume2/SSD_500GB/mycodoPVs/mycodo
+#          persistentVolumeClaim:
+#            claimName: mycodo
         - name: mycodo-log
-          persistentVolumeClaim:
-            claimName: mycodo-log
+          nfs:
+            server: 192.168.1.129
+            path: /volume2/SSD_500GB/mycodoPVs/mycodo-log
+#          persistentVolumeClaim:
+#            claimName: mycodo-log
         - name: mycodo-ssl-certs
-          persistentVolumeClaim:
-            claimName: mycodo-ssl-certs
+          nfs:
+            server: 192.168.1.129
+            path: /volume2/SSD_500GB/mycodoPVs/mycodo-ssl-certs
+#          persistentVolumeClaim:
+#            claimName: mycodo-ssl-certs
 status: {}
