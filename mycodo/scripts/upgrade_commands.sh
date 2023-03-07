@@ -24,7 +24,7 @@ INFLUXDB2_VERSION="2.6.1"
 VIRTUALENV_VERSION="20.17.1"
 
 # Required apt packages
-APT_PKGS="gawk gcc g++ git jq libffi-dev libi2c-dev logrotate moreutils netcat nginx python3 python3-pip python3-dev python3-setuptools rng-tools sqlite3 unzip wget"
+APT_PKGS="gawk gcc g++ git jq libatlas-base-dev libffi-dev libi2c-dev logrotate moreutils netcat nginx python3 python3-pip python3-dev python3-setuptools rng-tools sqlite3 unzip wget"
 
 PYTHON_BINARY_SYS_LOC="$(python3 -c "import os; print(os.environ['_'])")"
 
