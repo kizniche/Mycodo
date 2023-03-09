@@ -6,6 +6,8 @@
  - Fix PCF8574 Pump Output always saving output amount to channel 0 ([#1281](https://github.com/kizniche/Mycodo/issues/1281))
  - Fix numpy import error by installing libatlas-base-dev
  - Fix dependency install for bash-commands
+ - Fix Custom Option display when no value in database
+ - Fix Conditional Function pylint dependency install
 
 
 ## 8.15.7 (2023-03-02)
