@@ -131,10 +131,11 @@ if __name__ == "__main__":
 
     if dependencies:
         for each_dep in dependencies:
-            logger.info(f"Installing: {each_dep[1]}")
-            if each_dep[1] == 'bash-commands':
-                for each_command in each_dep[2]:
+            logger.info(f"Installing: {each_dep[0]}")
+            if each_dep[2] == 'bash-commands':
+                for each_command in each_dep[1]:
                     command = f"{each_command} | ts '[%Y-%m-%d %H:%M:%S]' >> {DEPENDENCY_LOG_FILE} 2>&1"
+                    logger.info(f"Executing command: {command}")
                     cmd_out, cmd_err, cmd_status = cmd_output(
                         command, timeout=600, cwd="/tmp")
                     ret_list = []
