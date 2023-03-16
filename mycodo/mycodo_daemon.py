@@ -119,7 +119,6 @@ class DaemonController:
 
         self.thread_shutdown_timer = None
         self.start_time = time.time()
-        self.timer_ram_use = time.time()
         self.timer_stats = time.time() + 120
         self.timer_upgrade = time.time() + 120
         self.timer_upgrade_message = time.time()
@@ -162,12 +161,6 @@ class DaemonController:
             try:
                 # Capture time-lapse image (if enabled)
                 self.check_all_timelapses(now)
-
-                # Query daemon ram usage
-                if now > self.timer_ram_use:
-                    while now > self.timer_ram_use:
-                        self.timer_ram_use += 432000  # 5 days
-                    self.log_ram_usage()
 
                 # Generate output usage report (if enabled)
                 if (self.output_usage_report_gen and
@@ -992,14 +985,6 @@ class DaemonController:
     #
     # Timed functions
     #
-
-    def log_ram_usage(self):
-        try:
-            ram_mb = resource.getrusage(resource.RUSAGE_SELF).ru_maxrss / float(1000)
-            self.logger.info(f"{ram_mb:.2f} MB RAM in use")
-        except Exception:
-            self.logger.exception("Free Ram ERROR")
-
 
     def check_mycodo_upgrade_exists(self, now):
         """Check for any new Mycodo releases on github."""
