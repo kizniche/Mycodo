@@ -9,6 +9,10 @@
  - Fix Custom Option display when no value in database
  - Fix Conditional Function pylint dependency install
 
+### Features
+
+ - Improve RAM Input by adding System Free/Used RAM and Mycodo Frontend RAM
+
 
 ## 8.15.7 (2023-03-02)
 

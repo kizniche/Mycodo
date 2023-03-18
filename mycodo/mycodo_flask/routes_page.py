@@ -758,6 +758,12 @@ def page_info():
                            virtualenv_flask=virtualenv_flask)
 
 
+@blueprint.route('/ram')
+def ram():
+    """Return how much ram the frontend has used."""
+    return f"{resource.getrusage(resource.RUSAGE_SELF).ru_maxrss / float(1000)}"
+
+
 def output_pstree_top(pid):
     pstree = subprocess.Popen(
         "pstree -p {pid}".format(pid=pid), stdout=subprocess.PIPE, shell=True)
