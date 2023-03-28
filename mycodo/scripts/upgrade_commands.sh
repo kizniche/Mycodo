@@ -191,13 +191,13 @@ case "${1:-''}" in
         adduser mycodo i2c
         adduser mycodo kmem
         adduser mycodo video
+
         if getent group gpio; then
             adduser mycodo gpio
         fi
-        if id pi &>/dev/null; then
-            adduser pi mycodo
-            adduser mycodo pi
-        fi
+
+        usermod -aG mycodo $USER
+        usermod -aG $USER mycodo
     ;;
     'generate-widget-html')
         printf "\n#### Generating widget HTML files\n"
