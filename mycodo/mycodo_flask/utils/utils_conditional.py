@@ -37,7 +37,7 @@ def conditional_mod(form):
     pylint_message = ""
 
     try:
-        if not current_app.config['TESTING'] and form.use_pylint.data:
+        if not current_app.config['TESTING']:
             messages["error"], lines_code, cmd_status, cmd_out = save_conditional_code(
                 messages["error"],
                 form.conditional_import.data,
@@ -48,14 +48,13 @@ def conditional_mod(form):
                 ConditionalConditions.query.all(),
                 Actions.query.all(),
                 timeout=form.pyro_timeout.data,
-                test=True)
+                test=form.use_pylint.data)
 
-            pylint_message = Markup(
-                '<pre>\n\n'
-                'Full Conditional code:\n\n{code}\n\n'
-                'Conditional code analysis:\n\n{report}'
-                '</pre>'.format(
-                    code=lines_code, report=cmd_out.decode("utf-8")))
+            code_str = f"<pre>\n\nFull Conditional code:\n\n{lines_code}"
+            if form.use_pylint.data:
+                code_str += f'\npylint code analysis:\n\n{cmd_out.decode("utf-8")}'
+            code_str += "</pre>"
+            pylint_message = Markup(code_str)
 
         cond_mod = Conditional.query.filter(
             Conditional.unique_id == form.function_id.data).first()

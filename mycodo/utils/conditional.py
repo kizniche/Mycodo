@@ -108,21 +108,21 @@ class ConditionalRun(AbstractConditional):
 
         if len(class_code.splitlines()) > 999:
             error.append("Too many lines in code. Reduce code to less than 1000 lines.")
+        
+        lines_code = ''
+        for line_num, each_line in enumerate(class_code.splitlines(), 1):
+            if len(str(line_num)) == 3:
+                line_spacing = ''
+            elif len(str(line_num)) == 2:
+                line_spacing = ' '
+            else:
+                line_spacing = '  '
+            lines_code += '{sp}{ln}: {line}\n'.format(
+                sp=line_spacing,
+                ln=line_num,
+                line=each_line)
 
         if test:
-            lines_code = ''
-            for line_num, each_line in enumerate(class_code.splitlines(), 1):
-                if len(str(line_num)) == 3:
-                    line_spacing = ''
-                elif len(str(line_num)) == 2:
-                    line_spacing = ' '
-                else:
-                    line_spacing = '  '
-                lines_code += '{sp}{ln}: {line}\n'.format(
-                    sp=line_spacing,
-                    ln=line_num,
-                    line=each_line)
-
             cmd_test = 'mkdir -p /var/mycodo-root/.pylint.d && ' \
                        'export PYTHONPATH=$PYTHONPATH:/var/mycodo-root && ' \
                        'export PYLINTHOME=/var/mycodo-root/.pylint.d && ' \
