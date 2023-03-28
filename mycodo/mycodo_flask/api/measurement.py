@@ -258,3 +258,30 @@ class MeasurementsPast(Resource):
             abort(500,
                   message='An exception occurred',
                   error=traceback.format_exc())
+
+@ns_measurement.route('/backup_influxdb')
+@ns_measurement.doc(
+    security='apikey',
+    responses=default_responses,
+    params={}
+)
+class BackupInfluxdb(Resource):
+    """Download an influxdb backup."""
+
+    @accept('application/vnd.mycodo.v1+json')
+    @flask_login.login_required
+    def get(self):
+        """
+        Return an influxdb measurement archive that can be used to restore the database at a later time
+        """
+        if not utils_general.user_has_permission('view_settings'):
+            abort(403)
+
+        try:
+            from mycodo.mycodo_flask.utils.utils_export import export_influxdb
+            file_send = export_influxdb()
+            return file_send, 200
+        except Exception:
+            abort(500,
+                  message='An exception occurred',
+                  error=traceback.format_exc())
