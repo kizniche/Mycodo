@@ -5,18 +5,13 @@ import traceback
 
 import flask_login
 from flask_accept import accept
-from flask_restx import Resource
-from flask_restx import abort
-from flask_restx import fields
+from flask_restx import Resource, abort, fields
 
 from mycodo.databases.models import Unit
-from mycodo.mycodo_flask.api import api
-from mycodo.mycodo_flask.api import default_responses
+from mycodo.mycodo_flask.api import api, default_responses
 from mycodo.mycodo_flask.utils import utils_general
-from mycodo.utils.influx import read_influxdb_list
-from mycodo.utils.influx import read_influxdb_single
-from mycodo.utils.influx import valid_date_str
-from mycodo.utils.influx import write_influxdb_value
+from mycodo.utils.influx import (read_influxdb_list, read_influxdb_single,
+                                 valid_date_str, write_influxdb_value)
 from mycodo.utils.system_pi import add_custom_units
 
 logger = logging.getLogger(__name__)
@@ -254,33 +249,6 @@ class MeasurementsPast(Resource):
                 return dict_return, 200
             else:
                 return return_, 200
-        except Exception:
-            abort(500,
-                  message='An exception occurred',
-                  error=traceback.format_exc())
-
-@ns_measurement.route('/backup_influxdb')
-@ns_measurement.doc(
-    security='apikey',
-    responses=default_responses,
-    params={}
-)
-class BackupInfluxdb(Resource):
-    """Download an influxdb backup."""
-
-    @accept('application/vnd.mycodo.v1+json')
-    @flask_login.login_required
-    def get(self):
-        """
-        Return an influxdb measurement archive that can be used to restore the database at a later time
-        """
-        if not utils_general.user_has_permission('view_settings'):
-            abort(403)
-
-        try:
-            from mycodo.mycodo_flask.utils.utils_export import export_influxdb
-            file_send = export_influxdb()
-            return file_send, 200
         except Exception:
             abort(500,
                   message='An exception occurred',

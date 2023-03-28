@@ -13,6 +13,10 @@
 
  - Improve RAM Input by adding System Free/Used RAM and Mycodo Frontend RAM
 
+### Miscellaneous
+
+ - Update Python packages
+
 
 ## 8.15.7 (2023-03-02)
 

@@ -6,14 +6,12 @@ import traceback
 import flask_login
 from flask import send_file
 from flask_accept import accept
-from flask_restx import Resource
-from flask_restx import abort
+from flask_restx import Resource, abort
 
 from mycodo.config import PATH_CAMERAS
 from mycodo.databases.models import Camera
 from mycodo.devices.camera import camera_record
-from mycodo.mycodo_flask.api import api
-from mycodo.mycodo_flask.api import default_responses
+from mycodo.mycodo_flask.api import api, default_responses
 from mycodo.mycodo_flask.utils import utils_general
 from mycodo.utils.system_pi import assure_path_exists
 
