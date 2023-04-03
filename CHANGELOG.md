@@ -15,6 +15,7 @@
 ### Features
 
  - Improve RAM Input by adding System Free/Used RAM and Mycodo Frontend RAM
+ - Add API endpoints to export Mycodo Configuration and Influxdb Database
 
 ### Miscellaneous
 
