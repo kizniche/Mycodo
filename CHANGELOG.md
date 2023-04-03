@@ -9,6 +9,8 @@
  - Fix Custom Option display when no value in database
  - Fix Conditional Function pylint dependency install
  - Fix Conditional Function displaying code output when saved if pylint disabled ([#1291](https://github.com/kizniche/Mycodo/issues/1291))
+ - Fix waiting for influxdb to start if installed without influxdb ([#1293](https://github.com/kizniche/Mycodo/issues/1293))
+ - Fix WiringPi URLs ([#1294](https://github.com/kizniche/Mycodo/issues/1294))
 
 ### Features
 

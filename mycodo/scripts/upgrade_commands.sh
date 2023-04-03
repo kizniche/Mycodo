@@ -16,7 +16,8 @@ MYCODO_MAJOR_VERSION="8"
 # Dependency versions/URLs
 PIGPIO_URL="https://github.com/joan2937/pigpio/archive/v79.tar.gz"
 MCB2835_URL="http://www.airspayce.com/mikem/bcm2835/bcm2835-1.50.tar.gz"
-WIRINGPI_URL="https://project-downloads.drogon.net/wiringpi-latest.deb"
+WIRINGPI_URL_ARMHF="https://github.com/WiringPi/WiringPi/releases/download/2.61-1/wiringpi-2.61-1-armhf.deb"
+WIRINGPI_URL_ARM64="https://github.com/WiringPi/WiringPi/releases/download/2.61-1/wiringpi-2.61-1-arm64.deb"
 
 INFLUXDB1_VERSION="1.8.10"
 INFLUXDB2_VERSION="2.6.1"
@@ -296,9 +297,13 @@ case "${1:-''}" in
     ;;
     'install-wiringpi')
         if [[ ${MACHINE_TYPE} == 'armhf' ]]; then
-            cd "${MYCODO_PATH}"/install || return
-            wget ${WIRINGPI_URL} -O wiringpi-latest.deb
+            wget ${WIRINGPI_URL_ARMHF} -O wiringpi-latest.deb
             dpkg -i wiringpi-latest.deb
+            rm -rf wiringpi-latest.deb
+        else if [[ ${MACHINE_TYPE} == 'arm64' ]]; then
+            wget ${WIRINGPI_URL_ARM64} -O wiringpi-latest.deb
+            dpkg -i wiringpi-latest.deb
+            rm -rf wiringpi-latest.deb
         else
             printf "\n#### WiringPi not supported on this architecture, skipping.\n"
         fi
