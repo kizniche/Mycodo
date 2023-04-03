@@ -300,7 +300,7 @@ case "${1:-''}" in
             wget ${WIRINGPI_URL_ARMHF} -O wiringpi-latest.deb
             dpkg -i wiringpi-latest.deb
             rm -rf wiringpi-latest.deb
-        else if [[ ${MACHINE_TYPE} == 'arm64' ]]; then
+        elif [[ ${MACHINE_TYPE} == 'arm64' ]]; then
             wget ${WIRINGPI_URL_ARM64} -O wiringpi-latest.deb
             dpkg -i wiringpi-latest.deb
             rm -rf wiringpi-latest.deb
