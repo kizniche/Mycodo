@@ -76,6 +76,8 @@ def get_influxdb_info():
                 dict_info['influxdb_version'] = dict_info['influxdb_version'][1:]
     except Exception as err:
         logger.debug(f"Could not determine influxdb info: {err}")
+    
+    logger.info(f"Influxdb info: {dict_info}")
 
     return dict_info
 

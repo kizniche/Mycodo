@@ -156,7 +156,7 @@ class AbstractBaseController(object):
                 if required and not custom_option_set:
                     self.logger.error(
                         f"Option '{each_option_default['id']}' required but was not found to be set by the user. "
-                         "Setting to default.")
+                        f"Setting to default ({option_value}).")
 
                 if each_option_default['type'] == 'integer':
                     setattr(self, each_option_default['id'], int(option_value))
@@ -276,7 +276,7 @@ class AbstractBaseController(object):
                 if required and not custom_option_set:
                     self.logger.error(
                         f"Option '{each_option_default['id']}' required but was not found to be set by the user. "
-                        f"Setting to default.")
+                        f"Setting to default ({option_value}).")
 
                 if each_option_default['type'] in ['integer',
                                                    'float',

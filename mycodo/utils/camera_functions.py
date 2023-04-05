@@ -8,10 +8,8 @@ from mycodo.config import PATH_CAMERAS
 from mycodo.databases.models import CustomController
 from mycodo.mycodo_flask.utils.utils_general import bytes2human
 from mycodo.utils.database import db_retrieve_table_daemon
-from mycodo.utils.logging_utils import set_log_level
 
 logger = logging.getLogger("mycodo.camera_functions")
-logger.setLevel(set_log_level(logging))
 
 
 def get_camera_function_paths(unique_id):

@@ -64,7 +64,7 @@
     </div>
     <div class="row">
       <div class="col-auto">
-        <select class="form-control" id="selected_measure" name="selected_measure" size="{{choices_input|length + choices_math|length + choices_output|length + choices_pid|length + choices_tag|length}}" multiple>
+        <select class="form-control" id="selected_measure" name="selected_measure" size="{{choices_input|length + choices_function|length + choices_output|length + choices_pid|length + choices_tag|length}}" multiple>
         {% for each_input_form in choices_input -%}
           <option value="{{each_input_form['value']}},input"{% if each_input_form['value'] + ',input' in selected_ids_measures %} selected{% endif %}>{{each_input_form['item']}}</option>
         {% endfor -%}

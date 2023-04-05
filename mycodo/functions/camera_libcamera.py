@@ -97,7 +97,7 @@ FUNCTION_INFORMATION = {
     ],
 
     'dependencies_module': [
-        ('apt', 'libcamera-apps-lite', 'libcamera-apps-lite'),
+        ('apt', 'libcamera-apps', 'libcamera-apps'),
         ('apt', 'ffmpeg', 'ffmpeg'),
     ],
 

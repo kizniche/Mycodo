@@ -45,7 +45,7 @@ OUTPUT_INFORMATION = {
     'options_disabled': ['interface'],
 
     'dependencies_module': [
-        ('pip-pypi', 'neopixel', 'adafruit-circuitpython-neopixel')
+        ('pip-pypi', 'neopixel', 'adafruit-circuitpython-neopixel==6.3.8')
     ],
 
     'interfaces': ['GPIO'],

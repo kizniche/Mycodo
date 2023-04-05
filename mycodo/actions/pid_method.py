@@ -28,7 +28,7 @@ ACTION_INFORMATION = {
     'message': lazy_gettext('Select a method to set the PID to use.'),
 
     'usage': 'Executing <strong>self.run_action("ACTION_ID")</strong> will pause the selected PID Controller. '
-             'Executing <strong>self.run_action("ACTION_ID", value={"pid_id": "959019d1-c1fa-41fe-a554-7be3366a9c5b", "method_id": "fe8b8f41-131b-448d-ba7b-00a044d24075"})</strong> will set a method for the PID Controller with the specified IDs.',
+             'Executing <strong>self.run_action("ACTION_ID", value={"pid_id": "959019d1-c1fa-41fe-a554-7be3366a9c5b", "method_id": "fe8b8f41-131b-448d-ba7b-00a044d24075"})</strong> will set a method for the PID Controller with the specified IDs. Don\'t forget to change the pid_id value to an actual PID ID that exists in your system.',
 
     'custom_options': [
         {
@@ -74,7 +74,7 @@ class ActionModule(AbstractFunctionAction):
     def initialize(self):
         self.action_setup = True
 
-    def run_action(self, message, dict_vars):
+    def run_action(self, dict_vars):
         try:
             controller_id = dict_vars["value"]["pid_id"]
         except:
@@ -90,20 +90,20 @@ class ActionModule(AbstractFunctionAction):
 
         if not pid:
             msg = f" Error: PID Controller with ID '{controller_id}' not found."
-            message += msg
+            dict_vars['message'] += msg
             self.logger.error(msg)
-            return message
+            return dict_vars
 
         method = db_retrieve_table_daemon(
             Method, unique_id=method_id, entry='first')
 
         if not method:
             msg = f" Error: Method with ID {method_id} not found."
-            message += msg
+            dict_vars['message'] += msg
             self.logger.error(msg)
-            return message
+            return dict_vars
 
-        message += f" Set PID {controller_id} ({pid.name}) to Method {method_id} ({method.name})."
+        dict_vars['message'] += f" Set PID {controller_id} ({pid.name}) to Method {method_id} ({method.name})."
 
         if pid.is_activated:
             method_pid = threading.Thread(
@@ -119,9 +119,9 @@ class ActionModule(AbstractFunctionAction):
                 mod_pid.method_id = method_id
                 new_session.commit()
 
-        self.logger.debug(f"Message: {message}")
+        self.logger.debug(f"Message: {dict_vars['message']}")
 
-        return message
+        return dict_vars
 
     def is_setup(self):
         return self.action_setup

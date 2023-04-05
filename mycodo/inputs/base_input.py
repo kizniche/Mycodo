@@ -154,6 +154,9 @@ class AbstractInput(AbstractBaseController):
         self.setup_device_measurement(self.unique_id)
 
     def is_enabled(self, channel):
+        if channel not in self.channels_measurement:
+            self.logger.error(f"Channel {channel} not found by is_enabled()")
+            return
         try:
             return self.channels_measurement[channel].is_enabled
         except:
@@ -172,7 +175,7 @@ class AbstractInput(AbstractBaseController):
                 self.logger.setLevel(logging.DEBUG)
             else:
                 self.logger.setLevel(logging.INFO)
-
+            
     def start_input(self):
         """Not used yet."""
         self.running = True

@@ -26,12 +26,10 @@ from mycodo.mycodo_client import DaemonControl
 from mycodo.utils.database import db_retrieve_table_daemon
 from mycodo.utils.influx import get_last_measurement
 from mycodo.utils.influx import get_past_measurements
-from mycodo.utils.logging_utils import set_log_level
 from mycodo.utils.modules import load_module_from_file
 from mycodo.utils.system_pi import return_measurement_info
 
 logger = logging.getLogger("mycodo.actions")
-logger.setLevel(set_log_level(logging))
 
 
 def parse_action_information(exclude_custom=False):
@@ -291,31 +289,27 @@ def action_video(cond_action, message):
 def trigger_action(
         dict_actions,
         action_id,
-        value=None,
-        message='',
+        value={},
         debug=False):
     """
     Trigger individual action
 
-    If single_action == False, message, note_tags, email_recipients,
-    attachment_file, and attachment_type are returned and may be
-    passed back to this function in order to append to those lists.
-
-    :param dict_actions: dict of function action information
+    :param dict_actions: dict of action information
     :param action_id: unique_id of action
-    :param value: a variable to be sent to the action
-    :param message: message string to append to that will be sent back
+    :param value: an object to be sent to the action. Typically a dictionary with 'message' as a key.
     :param debug: determine if logging level should be DEBUG
 
-    :return: message or (message, note_tags, email_recipients, attachment_file, attachment_type)
+    :return: dict with 'message' as a key
     """
     action = db_retrieve_table_daemon(Actions, unique_id=action_id)
     if not action:
         message += 'Error: Action with ID {} not found!'.format(action_id)
-        return message
+        return {'message': message}
 
-    if message is None:
+    if not value or 'message' not in value:
         message = ''
+    else:
+        message = value['message']
 
     logger_actions = logging.getLogger("mycodo.trigger_action_{id}".format(
         id=action.unique_id.split('-')[0]))
@@ -328,25 +322,24 @@ def trigger_action(
     # Set up function action to run from standalone action module file
     run_function_action = None
     if action.action_type in dict_actions:
-        dict_vars = {"value": value}
-
         message += "\n[Action {id}, {name}]:".format(
             id=action.unique_id.split('-')[0],
             name=dict_actions[action.action_type]['name'])
-
         try:
             action_loaded, status = load_module_from_file(
                 dict_actions[action.action_type]['file_path'], 'action')
             if action_loaded:
                 run_function_action = action_loaded.ActionModule(action)
+                value = run_function_action.run_action(value)
 
-            message = run_function_action.run_action(message, dict_vars)
+                if value and "message" in value:
+                    message = value["message"]
         except:
             message += " Exception executing action: {}".format(traceback.print_exc())
 
     logger_actions.debug("Message: {}".format(message))
 
-    return message
+    return value
 
 
 def trigger_controller_actions(dict_actions, controller_id, message='', debug=False):
@@ -370,13 +363,18 @@ def trigger_controller_actions(dict_actions, controller_id, message='', debug=Fa
     actions = db_retrieve_table_daemon(Actions)
     actions = actions.filter(
         Actions.function_id == controller_id).all()
+    
+    dict_return = {'message': message}
 
     for each_action in actions:
-        message = trigger_action(
+        dict_return = trigger_action(
             dict_actions,
             each_action.unique_id,
-            message=message,
+            value=dict_return,
             debug=debug)
+
+    if dict_return and 'message' in dict_return:
+        message = dict_return['message']
 
     logger_actions.debug("Message: {}".format(message))
 

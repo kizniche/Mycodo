@@ -5,18 +5,13 @@ import traceback
 
 import flask_login
 from flask_accept import accept
-from flask_restx import Resource
-from flask_restx import abort
-from flask_restx import fields
+from flask_restx import Resource, abort, fields
 
 from mycodo.databases.models import Unit
-from mycodo.mycodo_flask.api import api
-from mycodo.mycodo_flask.api import default_responses
+from mycodo.mycodo_flask.api import api, default_responses
 from mycodo.mycodo_flask.utils import utils_general
-from mycodo.utils.influx import read_influxdb_list
-from mycodo.utils.influx import read_influxdb_single
-from mycodo.utils.influx import valid_date_str
-from mycodo.utils.influx import write_influxdb_value
+from mycodo.utils.influx import (read_influxdb_list, read_influxdb_single,
+                                 valid_date_str, write_influxdb_value)
 from mycodo.utils.system_pi import add_custom_units
 
 logger = logging.getLogger(__name__)

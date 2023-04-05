@@ -4,10 +4,7 @@ import logging
 import os
 import traceback
 
-from mycodo.utils.logging_utils import set_log_level
-
 logger = logging.getLogger("mycodo.modules")
-logger.setLevel(set_log_level(logging))
 
 
 def load_module_from_file(path_file, module_type):

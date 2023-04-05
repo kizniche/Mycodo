@@ -59,10 +59,10 @@ class ActionModule(AbstractFunctionAction):
     def initialize(self):
         self.action_setup = True
 
-    def run_action(self, message, dict_vars):
+    def run_action(self, dict_vars):
         action_string = self.webhook
-        action_string = action_string.replace("{{{message}}}", message)
-        action_string = action_string.replace("{{{quoted_message}}}", urllib.parse.quote_plus(message))
+        action_string = action_string.replace("{{{message}}}", dict_vars['message'])
+        action_string = action_string.replace("{{{quoted_message}}}", urllib.parse.quote_plus(dict_vars['message']))
         lines = action_string.splitlines()
 
         method = "GET"
@@ -88,8 +88,8 @@ class ActionModule(AbstractFunctionAction):
 
         path_and_query = parsed_url.path + "?" + parsed_url.query
 
-        message += f" Webhook with method: {method}, scheme: {parsed_url.scheme}, netloc: {parsed_url.netloc}, " \
-                   f"path: {path_and_query}, headers: {headers}, body: {body}."
+        dict_vars['message'] += f" Webhook with method: {method}, scheme: {parsed_url.scheme}, netloc: {parsed_url.netloc}, " \
+                                f"path: {path_and_query}, headers: {headers}, body: {body}."
 
         if parsed_url.scheme == 'http':
             conn = http.client.HTTPConnection(parsed_url.netloc)
@@ -108,9 +108,9 @@ class ActionModule(AbstractFunctionAction):
             raise Exception(f"Got HTTP {response.getcode()} response.")
         response.close()
 
-        self.logger.debug(f"Message: {message}")
+        self.logger.debug(f"Message: {dict_vars['message']}")
 
-        return message
+        return dict_vars
 
     def is_setup(self):
         return self.action_setup

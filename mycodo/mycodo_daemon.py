@@ -36,13 +36,13 @@ import threading
 import time
 import timeit
 import traceback
+from logging import handlers
 
-from daemonize import Daemonize
 from Pyro5.api import Proxy, expose, serve
 
-from mycodo.config import (DAEMON_LOG_FILE, DAEMON_PID_FILE, DOCKER_CONTAINER,
-                           MYCODO_DB_PATH, MYCODO_VERSION, STATS_CSV,
-                           STATS_INTERVAL, UPGRADE_CHECK_INTERVAL)
+from mycodo.config import (DAEMON_LOG_FILE, DOCKER_CONTAINER, MYCODO_DB_PATH,
+                           MYCODO_VERSION, STATS_CSV, STATS_INTERVAL,
+                           UPGRADE_CHECK_INTERVAL)
 from mycodo.controllers.controller_conditional import ConditionalController
 from mycodo.controllers.controller_function import FunctionController
 from mycodo.controllers.controller_input import InputController
@@ -65,24 +65,30 @@ from mycodo.utils.stats import (add_update_csv, recreate_stat_file,
 from mycodo.utils.tools import generate_output_usage_report, next_schedule
 
 
+formatter = logging.Formatter('%(asctime)s - %(levelname)s - %(name)s - %(message)s')
+logHandler = logging.FileHandler(DAEMON_LOG_FILE)
+logHandler.setLevel(logging.DEBUG)
+logHandler.setFormatter(formatter)
+
+logger = logging.getLogger('mycodo')
+logger.setLevel(logging.DEBUG)
+logger.addHandler(logHandler)
+
+
 class DaemonController:
     """Mycodo daemon."""
-    def __init__(self, debug):
-        self.logger = logging.getLogger('mycodo.daemon')
-        if not debug:
-            self.logger.setLevel(logging.INFO)
+    def __init__(self):
+        self.logger = logger
 
         self.logger.info(f"Mycodo daemon v{MYCODO_VERSION} starting")
 
         if DOCKER_CONTAINER:
             self.logger.info("Detected running inside a Docker continaer")
 
-        self.log_level_debug = debug
         self.startup_timer = timeit.default_timer()
         self.startup_time = None
         self.daemon_run = True
         self.terminated = False
-        self.debug = debug
 
         # Actions
         self.actions = {}
@@ -113,7 +119,6 @@ class DaemonController:
 
         self.thread_shutdown_timer = None
         self.start_time = time.time()
-        self.timer_ram_use = time.time()
         self.timer_stats = time.time() + 120
         self.timer_upgrade = time.time() + 120
         self.timer_upgrade_message = time.time()
@@ -136,7 +141,7 @@ class DaemonController:
         self.load_actions()
 
         try:
-            self.start_all_controllers(self.debug)
+            self.start_all_controllers()
         except Exception:
             self.logger.exception("Could not start all controllers")
 
@@ -156,12 +161,6 @@ class DaemonController:
             try:
                 # Capture time-lapse image (if enabled)
                 self.check_all_timelapses(now)
-
-                # Query daemon ram usage
-                if now > self.timer_ram_use:
-                    while now > self.timer_ram_use:
-                        self.timer_ram_use += 432000  # 5 days
-                    self.log_ram_usage()
 
                 # Generate output usage report (if enabled)
                 if (self.output_usage_report_gen and
@@ -205,8 +204,7 @@ class DaemonController:
 
     @staticmethod
     def get_condition_measurement(condition_id):
-        condition_return = get_condition_value(condition_id)
-        return condition_return
+        return get_condition_value(condition_id)
 
 
     @staticmethod
@@ -435,25 +433,33 @@ class DaemonController:
         :param thread: execute the function as a thread or wait to get a return value
         :type thread: bool
         """
+        message = None
         try:
             if controller_type == "Input":
-                return self.controller["Input"][unique_id].call_module_function(
-                    button_id, args_dict, thread=thread)
+                if unique_id in self.controller["Input"]:
+                    return self.controller["Input"][unique_id].call_module_function(
+                        button_id, args_dict, thread=thread)
+                else:
+                    message = f"Attempting to call {button_id}() in inactive Input Controller with ID {unique_id}. Only active Input Controllers can have functions called."
+                    self.logger.error(message)
             elif controller_type == "Output":
                 return self.controller["Output"].call_module_function(
                     button_id, args_dict, unique_id=unique_id, thread=thread)
             elif controller_type in ["Function", "Function_Custom"]:
-                return self.controller["Function"][unique_id].call_module_function(
-                    button_id, args_dict, thread=thread)
+                if unique_id in self.controller["Function"]:
+                    return self.controller["Function"][unique_id].call_module_function(
+                        button_id, args_dict, thread=thread)
+                else:
+                    message = f"Attempting to call {button_id}() in inactive Function Controller with ID {unique_id}. Only active Function Controllers can have functions called."
+                    self.logger.error(message)
             else:
-                msg = f"Unknown controller: {controller_type}"
-                self.logger.error(msg)
-                return 1, msg
+                message = f"Unknown controller: {controller_type}"
+                self.logger.error(message)
         except:
             message = "Cannot execute custom action. Is the controller activated? " \
                       "If it is and this error is still occurring, check the Daemon Log."
             self.logger.exception(message)
-            return 1, message
+        return 1, message
 
 
     def input_force_measurements(self, input_id):
@@ -842,7 +848,7 @@ class DaemonController:
         self.actions = parse_action_information()
 
 
-    def start_all_controllers(self, debug):
+    def start_all_controllers(self):
         """
         Start all activated controllers
 
@@ -944,13 +950,12 @@ class DaemonController:
             self.logger.info(f"Widget controller had an issue stopping: {err}")
 
 
-    def trigger_action(self, action_id, value=None, message='', debug=False):
+    def trigger_action(self, action_id, value={}, debug=False):
         try:
             return trigger_action(
                 self.actions,
                 action_id,
                 value=value,
-                message=message,
                 debug=debug)
         except Exception as err:
             message = f"Could not trigger Conditional Actions: {err}"
@@ -980,14 +985,6 @@ class DaemonController:
     #
     # Timed functions
     #
-
-    def log_ram_usage(self):
-        try:
-            ram_mb = resource.getrusage(resource.RUSAGE_SELF).ru_maxrss / float(1000)
-            self.logger.info(f"{ram_mb:.2f} MB RAM in use")
-        except Exception:
-            self.logger.exception("Free Ram ERROR")
-
 
     def check_mycodo_upgrade_exists(self, now):
         """Check for any new Mycodo releases on github."""
@@ -1100,7 +1097,7 @@ class DaemonController:
 
         # Send stats
         try:
-            send_anonymous_stats(self.start_time, self.log_level_debug)
+            send_anonymous_stats(self.start_time)
         except Exception:
             self.logger.exception("Sending statistics")
 
@@ -1248,12 +1245,11 @@ class PyroServer(object):
         """Add, delete, or modify a output in the running output controller."""
         return self.mycodo.output_setup(action, output_id)
 
-    def trigger_action(self, action_id, value=None, message='', debug=False):
+    def trigger_action(self, action_id, value={}, debug=False):
         """Trigger action."""
         return self.mycodo.trigger_action(
             action_id,
             value=value,
-            message=message,
             debug=debug)
 
     def trigger_all_actions(self, function_id, message='', debug=False):
@@ -1307,14 +1303,10 @@ class PyroDaemon(threading.Thread):
     user) to communicate with the daemon (mycodo_daemon.py running with root privileges).
 
     """
-    def __init__(self, mycodo, debug):
+    def __init__(self, mycodo):
         threading.Thread.__init__(self)
 
         self.logger = logging.getLogger('mycodo.pyro_daemon')
-        if debug:
-            self.logger.setLevel(logging.DEBUG)
-        else:
-            self.logger.setLevel(logging.WARNING)
         self.mycodo = mycodo
 
     def run(self):
@@ -1332,14 +1324,10 @@ class PyroMonitor(threading.Thread):
     Monitor whether the Pyro5 server (and daemon) is active or not
 
     """
-    def __init__(self, debug):
+    def __init__(self):
         threading.Thread.__init__(self)
 
         self.logger = logging.getLogger('mycodo.pyro_monitor')
-        if debug:
-            self.logger.setLevel(logging.DEBUG)
-        else:
-            self.logger.setLevel(logging.WARNING)
         self.timer_sec = 1800
 
     def run(self):
@@ -1366,24 +1354,20 @@ class MycodoDaemon:
     """
     Handle starting the components of the Mycodo Daemon
     """
-    def __init__(self, mycodo, debug):
+    def __init__(self, mycodo):
         self.logger = logging.getLogger('mycodo.daemon')
-        if not debug:
-            self.logger.setLevel(logging.INFO)
-        self.debug = debug
         self.mycodo = mycodo
 
     def start_daemon(self):
         """Start communication and daemon threads."""
         try:
-            pd = PyroDaemon(self.mycodo, self.debug)
+            pd = PyroDaemon(self.mycodo)
             pd.daemon = True
             pd.start()
 
-            if self.debug:
-                pm = PyroMonitor(self.debug)
-                pm.daemon = True
-                pm.start()
+            # pm = PyroMonitor()
+            # pm.daemon = True
+            # pm.start()
 
             self.mycodo.run()  # Start daemon thread that manages controllers
         except Exception:
@@ -1404,25 +1388,8 @@ if __name__ == '__main__':
     if not os.geteuid() == 0:
         sys.exit("Script must be executed as root")
 
-    # Check if lock file already exists
-    # if os.path.isfile(DAEMON_PID_FILE):
-    #     sys.exit(
-    #         "Daemon PID file present. Ensure the daemon isn't already "
-    #         f"running and delete {DAEMON_PID_FILE}")
-
     # Parse commandline arguments
     args = parse_args()
-
-    # Set up logger
-    logger = logging.getLogger('mycodo')
-    logger.setLevel(logging.DEBUG)
-    logger.propagate = False
-    fh = logging.FileHandler(DAEMON_LOG_FILE, 'a')
-    fh.setLevel(logging.DEBUG)
-    formatter = logging.Formatter("%(asctime)s - %(levelname)s - %(name)s - %(message)s")
-    fh.setFormatter(formatter)
-    logger.addHandler(fh)
-    keep_fds = [fh.stream.fileno()]
 
     debug = False
     misc = db_retrieve_table_daemon(Misc, entry='first')
@@ -1431,16 +1398,13 @@ if __name__ == '__main__':
     if args.debug:
         debug = args.debug
 
-    daemon_controller = DaemonController(debug)
-    mycodo_daemon = MycodoDaemon(daemon_controller, debug)
-
-    if DOCKER_CONTAINER:
-        mycodo_daemon.start_daemon()
+    if debug:
+        log_level = logging.DEBUG
     else:
-        # Set up daemon and start it
-        daemon = Daemonize(
-            app="mycodo_daemon",
-            pid=DAEMON_PID_FILE,
-            action=mycodo_daemon.start_daemon,
-            keep_fds=keep_fds)
-        daemon.start()
+        log_level = logging.INFO
+
+    logger.setLevel(log_level)
+
+    daemon_controller = DaemonController()
+    mycodo_daemon = MycodoDaemon(daemon_controller)
+    mycodo_daemon.start_daemon()

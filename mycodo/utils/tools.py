@@ -11,35 +11,24 @@ from collections import OrderedDict
 
 from dateutil import relativedelta
 
-from mycodo.config import INSTALL_DIRECTORY
-from mycodo.config import PATH_FUNCTIONS_CUSTOM
-from mycodo.config import PATH_ACTIONS_CUSTOM
-from mycodo.config import PATH_INPUTS_CUSTOM
-from mycodo.config import PATH_OUTPUTS_CUSTOM
-from mycodo.config import PATH_USER_SCRIPTS
-from mycodo.config import PATH_WIDGETS_CUSTOM
-from mycodo.config import SQL_DATABASE_MYCODO
-from mycodo.config import USAGE_REPORTS_PATH
-from mycodo.databases.models import Conversion
-from mycodo.databases.models import DeviceMeasurements
-from mycodo.databases.models import EnergyUsage
-from mycodo.databases.models import Misc
-from mycodo.databases.models import Output
-from mycodo.databases.models import OutputChannel
+from mycodo.config import (INSTALL_DIRECTORY, PATH_ACTIONS_CUSTOM,
+                           PATH_FUNCTIONS_CUSTOM, PATH_HTML_USER,
+                           PATH_INPUTS_CUSTOM, PATH_OUTPUTS_CUSTOM,
+                           PATH_PYTHON_CODE_USER, PATH_USER_SCRIPTS,
+                           PATH_WIDGETS_CUSTOM, SQL_DATABASE_MYCODO,
+                           USAGE_REPORTS_PATH)
+from mycodo.databases.models import (Conversion, DeviceMeasurements,
+                                     EnergyUsage, Misc, Output, OutputChannel)
 from mycodo.utils.database import db_retrieve_table_daemon
-from mycodo.utils.influx import average_past_seconds
-from mycodo.utils.influx import average_start_end_seconds
-from mycodo.utils.influx import output_sec_on
-from mycodo.utils.logging_utils import set_log_level
+from mycodo.utils.influx import (average_past_seconds,
+                                 average_start_end_seconds, output_sec_on)
 from mycodo.utils.outputs import parse_output_information
-from mycodo.utils.system_pi import assure_path_exists
-from mycodo.utils.system_pi import cmd_output
-from mycodo.utils.system_pi import parse_custom_option_values_output_channels_json
-from mycodo.utils.system_pi import return_measurement_info
-from mycodo.utils.system_pi import set_user_grp
+from mycodo.utils.system_pi import (
+    assure_path_exists, cmd_output,
+    parse_custom_option_values_output_channels_json, return_measurement_info,
+    set_user_grp)
 
 logger = logging.getLogger("mycodo.tools")
-logger.setLevel(set_log_level(logging))
 
 
 def create_measurements_export(influxdb_version, save_path=None):
@@ -105,7 +94,9 @@ def create_settings_export(save_path=None):
                 (PATH_INPUTS_CUSTOM, "custom_inputs"),
                 (PATH_OUTPUTS_CUSTOM, "custom_outputs"),
                 (PATH_WIDGETS_CUSTOM, "custom_widgets"),
-                (PATH_USER_SCRIPTS, "user_scripts")
+                (PATH_USER_SCRIPTS, "user_scripts"),
+                (PATH_HTML_USER, "user_html"),
+                (PATH_PYTHON_CODE_USER, "user_python_code")
             ]
             for each_backup in export_directories:
                 if not os.path.exists(each_backup[0]):

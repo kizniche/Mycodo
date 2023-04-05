@@ -23,7 +23,7 @@ ACTION_INFORMATION = {
     'message': 'Change the color of an LED in a Neopixel LED strip. Select the Neopixel LED Strip Output.',
 
     'usage': 'Executing <strong>self.run_action("ACTION_ID")</strong> will set the selected LED to the selected Color. '
-             'Executing <strong>self.run_action("ACTION_ID", value={"output_id": "959019d1-c1fa-41fe-a554-7be3366a9c5b", "led": 0, "color": "10, 10, 0"})</strong> will set the color of the specified LED for the Neopixel LED Strip Output with the specified ID.',
+             'Executing <strong>self.run_action("ACTION_ID", value={"output_id": "959019d1-c1fa-41fe-a554-7be3366a9c5b", "led": 0, "color": "10, 10, 0"})</strong> will set the color of the specified LED for the Neopixel LED Strip Output with the specified ID. Don\'t forget to change the output_id value to an actual Output ID that exists in your system.',
 
     'custom_options': [
         {
@@ -76,7 +76,7 @@ class ActionModule(AbstractFunctionAction):
     def initialize(self):
         self.action_setup = True
 
-    def run_action(self, message, dict_vars):
+    def run_action(self, dict_vars):
         try:
             controller_id = dict_vars["value"]["output_id"]
         except:
@@ -98,38 +98,38 @@ class ActionModule(AbstractFunctionAction):
             blue = int(led_color.split(',')[2])
             if not (0 <= red <= 255 and 0 <= green <= 255 and 0 <= blue <= 255):
                 msg = f" Error: Invalid color value(s). Must be between 0 and 255."
-                message += msg
+                dict_vars['message'] += msg
                 self.logger.error(msg)
-                return message
+                return dict_vars
         except:
             msg = f" Error: Invalid color string: {led_color}"
-            message += msg
+            dict_vars['message'] += msg
             self.logger.error(msg)
-            return message
+            return dict_vars
 
         this_output = db_retrieve_table_daemon(
             Output, unique_id=controller_id, entry='first')
 
         if not this_output:
             msg = f" Error: Output with ID '{controller_id}' not found."
-            message += msg
+            dict_vars['message'] += msg
             self.logger.error(msg)
-            return message
+            return dict_vars
 
         payload = {
             "led_number": led_number,
             "led_color": led_color
         }
 
-        message += f" Set color of LED {led_number} to {led_color} for Output {controller_id} ({this_output.name})."
+        dict_vars['message'] += f" Set color of LED {led_number} to {led_color} for Output {controller_id} ({this_output.name})."
         clear_volume = threading.Thread(
             target=self.control.module_function,
             args=("Output", this_output.unique_id, "set_led", payload,))
         clear_volume.start()
 
-        self.logger.debug(f"Message: {message}")
+        self.logger.debug(f"Message: {dict_vars['message']}")
 
-        return message
+        return dict_vars
 
     def is_setup(self):
         return self.action_setup

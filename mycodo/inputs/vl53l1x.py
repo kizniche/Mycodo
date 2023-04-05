@@ -41,7 +41,7 @@ INPUT_INFORMATION = {
 
     'dependencies_module': [
         ('pip-pypi', 'smbus2', 'smbus2==0.4.1'),
-        ('pip-pypi', 'VL53L1X', 'vl53l1x==1.0.4')
+        ('pip-pypi', 'VL53L1X', 'vl53l1x==0.0.5')
     ],
 
     'interfaces': ['I2C'],

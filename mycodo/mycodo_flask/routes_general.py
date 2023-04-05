@@ -319,6 +319,7 @@ def last_data(unique_id, measure_type, measurement_id, period):
                 conversion = Conversion.query.filter(
                     Conversion.unique_id == setpoint_measurement.conversion_id).first()
                 _, unit, measurement = return_measurement_info(setpoint_measurement, conversion)
+
     try:
         if period != '0':
             data = query_string(
@@ -342,12 +343,6 @@ def last_data(unique_id, measure_type, measurement_id, period):
                         live_data = f"[{row.values['_time'].timestamp()},{row.values['_value']}]"
 
         return Response(live_data, mimetype='text/json')
-    except KeyError:
-        logger.debug("No Data returned form influxdb")
-        return '', 204
-    except IndexError:
-        logger.debug("No Data returned form influxdb")
-        return '', 204
     except Exception as err:
         logger.exception(f"URL for 'last_data' raised and error: {err}")
         return '', 204

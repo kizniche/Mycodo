@@ -23,7 +23,7 @@ ACTION_INFORMATION = {
     'message': lazy_gettext('Capture a photo with the selected Camera.'),
 
     'usage': 'Executing <strong>self.run_action("ACTION_ID")</strong> will capture a photo with the selected Camera. '
-             'Executing <strong>self.run_action("ACTION_ID", value={"camera_id": "959019d1-c1fa-41fe-a554-7be3366a9c5b"})</strong> will capture a photo with the Camera with the specified ID.',
+             'Executing <strong>self.run_action("ACTION_ID", value={"camera_id": "959019d1-c1fa-41fe-a554-7be3366a9c5b"})</strong> will capture a photo with the Camera with the specified ID. Don\'t forget to change the camera_id value to an actual Camera ID that exists in your system.',
 
     'custom_options': [
         {
@@ -58,7 +58,7 @@ class ActionModule(AbstractFunctionAction):
     def initialize(self):
         self.action_setup = True
 
-    def run_action(self, message, dict_vars):
+    def run_action(self, dict_vars):
         try:
             controller_id = dict_vars["value"]["camera_id"]
         except:
@@ -69,21 +69,21 @@ class ActionModule(AbstractFunctionAction):
 
         if not camera:
             msg = f" Error: Camera with ID '{controller_id}' not found."
-            message += msg
+            dict_vars['message'] += msg
             self.logger.error(msg)
-            return message
+            return dict_vars
 
-        message += f" Capturing photo with camera {controller_id} ({camera.name})."
+        dict_vars['message'] += f" Capturing photo with camera {controller_id} ({camera.name})."
 
         path, filename = camera_record('photo', controller_id)
         if not path and not filename:
             msg = " Could not acquire image."
             self.logger.error(msg)
-            message += msg
+            dict_vars['message'] += msg
 
-        self.logger.debug(f"Message: {message}")
+        self.logger.debug(f"Message: {dict_vars['message']}")
 
-        return message
+        return dict_vars
 
     def is_setup(self):
         return self.action_setup

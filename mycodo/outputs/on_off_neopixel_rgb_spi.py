@@ -45,7 +45,7 @@ OUTPUT_INFORMATION = {
     'options_disabled': ['interface'],
 
     'dependencies_module': [
-        ('pip-pypi', 'neopixel_spi', 'adafruit-circuitpython-neopixel-spi==1.0.2')
+        ('pip-pypi', 'neopixel_spi', 'adafruit-circuitpython-neopixel-spi==1.0.5')
     ],
 
     'interfaces': ['SPI'],

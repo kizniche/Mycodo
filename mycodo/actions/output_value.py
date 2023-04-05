@@ -25,7 +25,7 @@ ACTION_INFORMATION = {
     'message': lazy_gettext('Send a value to the Output.'),
 
     'usage': 'Executing <strong>self.run_action("ACTION_ID")</strong> will actuate a value output. '
-             'Executing <strong>self.run_action("ACTION_ID", value={"output_id": "959019d1-c1fa-41fe-a554-7be3366a9c5b", "channel": 0, "value": 42})</strong> will send a value to the output with the specified ID and channel.',
+             'Executing <strong>self.run_action("ACTION_ID", value={"output_id": "959019d1-c1fa-41fe-a554-7be3366a9c5b", "channel": 0, "value": 42})</strong> will send a value to the output with the specified ID and channel. Don\'t forget to change the output_id value to an actual Output ID that exists in your system.',
 
     'custom_options': [
         {
@@ -71,7 +71,7 @@ class ActionModule(AbstractFunctionAction):
     def initialize(self):
         self.action_setup = True
 
-    def run_action(self, message, dict_vars):
+    def run_action(self, dict_vars):
         try:
             output_id = dict_vars["value"]["output_id"]
         except:
@@ -93,11 +93,11 @@ class ActionModule(AbstractFunctionAction):
 
         if not output:
             msg = f" Error: Output with ID '{output_id}' not found."
-            message += msg
+            dict_vars['message'] += msg
             self.logger.error(msg)
-            return message
+            return dict_vars
 
-        message += f" Turn output {output_id} CH{channel} ({output.name}) with value of {value}."
+        dict_vars['message'] += f" Turn output {output_id} CH{channel} ({output.name}) with value of {value}."
 
         output_on = threading.Thread(
             target=self.control.output_on,
@@ -107,9 +107,9 @@ class ActionModule(AbstractFunctionAction):
                     'output_channel': channel})
         output_on.start()
 
-        self.logger.debug(f"Message: {message}")
+        self.logger.debug(f"Message: {dict_vars['message']}")
 
-        return message
+        return dict_vars
 
     def is_setup(self):
         return self.action_setup

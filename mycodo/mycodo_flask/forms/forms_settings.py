@@ -272,7 +272,7 @@ class ConversionAdd(FlaskForm):
     convert_unit_from = StringField(
         lazy_gettext('Convert From Unit'), validators=[DataRequired()])
     convert_unit_to = StringField(
-        lazy_gettext('Convert To Measurement'), validators=[DataRequired()])
+        lazy_gettext('Convert To Unit'), validators=[DataRequired()])
     equation = StringField(
         lazy_gettext('Equation'), validators=[DataRequired()])
     add_conversion = SubmitField(lazy_gettext('Add Conversion'))
@@ -431,6 +431,8 @@ class SettingsDiagnostic(FlaskForm):
     delete_settings_database = SubmitField(lazy_gettext('Delete Settings Database'))
     delete_file_dependency = SubmitField(lazy_gettext('Delete File') + ': .dependency')
     delete_file_upgrade = SubmitField(lazy_gettext('Delete File') + ': .upgrade')
+    recreate_influxdb_db_1 = SubmitField('Recreate InfluxDB 1.x Database')
+    recreate_influxdb_db_2 = SubmitField('Recreate InfluxDB 2.x Database')
     reset_email_counter = SubmitField(lazy_gettext('Reset Email Counter'))
     install_dependencies = SubmitField(lazy_gettext('Install Dependencies'))
     regenerate_widget_html = SubmitField(lazy_gettext('Regenerate Widget HTML'))

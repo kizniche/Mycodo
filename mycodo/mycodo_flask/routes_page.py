@@ -24,9 +24,9 @@ from mycodo.config import (ALEMBIC_VERSION, BACKUP_LOG_FILE, CAMERA_INFO,
                            DAEMON_LOG_FILE, DAEMON_PID_FILE,
                            DEPENDENCY_LOG_FILE, DOCKER_CONTAINER,
                            FRONTEND_PID_FILE, HTTP_ACCESS_LOG_FILE,
-                           HTTP_ERROR_LOG_FILE, KEEPUP_LOG_FILE,
-                           LOGIN_LOG_FILE, MYCODO_VERSION, RESTORE_LOG_FILE,
-                           THEMES_DARK, UPGRADE_LOG_FILE)
+                           HTTP_ERROR_LOG_FILE, IMPORT_LOG_FILE,
+                           KEEPUP_LOG_FILE, LOGIN_LOG_FILE, MYCODO_VERSION,
+                           RESTORE_LOG_FILE, THEMES_DARK, UPGRADE_LOG_FILE)
 from mycodo.config_devices_units import MEASUREMENTS
 from mycodo.databases.models import (PID, AlembicVersion, Camera, Conversion,
                                      CustomController, DeviceMeasurements,
@@ -205,8 +205,16 @@ def page_camera():
                 flash(msg, "error")
                 logger.error(msg)
         elif form_camera.start_timelapse.data:
+            error = []
             if mod_camera.stream_started:
-                flash(gettext("Cannot start time-lapse if stream is active."), "error")
+                error.append("Cannot start time-lapse if stream is active.")
+            if not form_camera.timelapse_runtime_sec.data:
+                error.append("Must enter Run Time.")
+            if not form_camera.timelapse_interval.data:
+                error.append("Must enter Interval.")
+            if error:
+                for each_err in error:
+                    flash(each_err, "error")
                 return redirect(url_for('routes_page.page_camera'))
             now = time.time()
             mod_camera.timelapse_started = True
@@ -462,17 +470,11 @@ def page_export():
                 flash('Unknown error creating zipped settings database',
                       'error')
         elif form_import_settings.settings_import_upload.data:
-            backup_file = utils_export.import_settings(form_import_settings)
-            if backup_file:
-                flash('The settings database import has been initialized. '
-                      'This process may take an extended time to complete, '
-                      'as any unmet dependencies will be installed. '
-                      'Additionally, the daemon will be stopped during this '
-                      'process and all users will be logged out at the '
-                      'completion of the import.', 'success')
+            restore_success = utils_export.import_settings(form_import_settings)
+            if restore_success:
                 return redirect(url_for('routes_authentication.logout'))
             else:
-                flash('An error occurred during the settings database import.',
+                flash('An error occurred during the settings import.',
                       'error')
         elif form_export_influxdb.export_influxdb_zip.data:
             file_send = utils_export.export_influxdb()
@@ -756,6 +758,12 @@ def page_info():
                            virtualenv_flask=virtualenv_flask)
 
 
+@blueprint.route('/ram')
+def ram():
+    """Return how much ram the frontend has used."""
+    return f"{resource.getrusage(resource.RUSAGE_SELF).ru_maxrss / float(1000)}"
+
+
 def output_pstree_top(pid):
     pstree = subprocess.Popen(
         "pstree -p {pid}".format(pid=pid), stdout=subprocess.PIPE, shell=True)
@@ -844,80 +852,100 @@ def page_logview():
     form_log_view = forms_misc.LogView()
     log_output = None
     lines = 30
+    search = ''
     logfile = ''
     log_field = None
-    if request.method == 'POST':
-        if form_log_view.lines.data:
-            lines = form_log_view.lines.data
+    command = None
 
-        # Log fie requested
-        if form_log_view.log_view.data:
-            command = None
-            log_field = form_log_view.log.data
+    if form_log_view.lines.data:
+        lines = form_log_view.lines.data
 
-            # Find which log file was requested, generate command to execute
-            if form_log_view.log.data == 'log_nginx':
-                if DOCKER_CONTAINER:
-                    command = f'docker logs -n {lines} mycodo_nginx'
-                else:
-                    command = f'journalctl -u nginx -n {lines} --no-pager'
-            elif form_log_view.log.data == 'log_flask':
-                if DOCKER_CONTAINER:
-                    command = f'docker logs -n {lines} mycodo_flask'
-                else:
-                    command = f'journalctl -u mycodoflask -n {lines} --no-pager'
-            elif form_log_view.log.data == 'log_pid_settings':
-                logfile = DAEMON_LOG_FILE
-                logrotate_file = logfile + '.1'
-                if (logrotate_file and os.path.exists(logrotate_file) and
-                        logfile and os.path.isfile(logfile)):
-                    command = f'cat {logrotate_file} {logfile} | grep -a "PID Settings" | tail -n {lines}'
-                else:
-                    command = f'grep -a "PID Settings" {logfile} | tail -n {lines}'
-            else:
-                if form_log_view.log.data == 'log_login':
-                    logfile = LOGIN_LOG_FILE
-                elif form_log_view.log.data == 'log_http_access':
-                    logfile = HTTP_ACCESS_LOG_FILE
-                elif form_log_view.log.data == 'log_http_error':
-                    logfile = HTTP_ERROR_LOG_FILE
-                elif form_log_view.log.data == 'log_daemon':
-                    logfile = DAEMON_LOG_FILE
-                elif form_log_view.log.data == 'log_dependency':
-                    logfile = DEPENDENCY_LOG_FILE
-                elif form_log_view.log.data == 'log_keepup':
-                    logfile = KEEPUP_LOG_FILE
-                elif form_log_view.log.data == 'log_backup':
-                    logfile = BACKUP_LOG_FILE
-                elif form_log_view.log.data == 'log_restore':
-                    logfile = RESTORE_LOG_FILE
-                elif form_log_view.log.data == 'log_upgrade':
-                    logfile = UPGRADE_LOG_FILE
+    if form_log_view.search.data:
+        search = form_log_view.search.data
 
-                logrotate_file = logfile + '.1'
-                if (logrotate_file and os.path.exists(logrotate_file) and
-                        logfile and os.path.isfile(logfile)):
-                    command = f'cat {logrotate_file} {logfile} | tail -n {lines}'
-                elif os.path.isfile(logfile):
-                    command = f'tail -n {lines} {logfile}'
+    if form_log_view.log.data:
+        log_field = form_log_view.log.data
 
-            # Execute command and generate the output to display to the user
-            if command:
-                log = subprocess.Popen(
-                    command,
-                    stdout=subprocess.PIPE, stderr=subprocess.STDOUT, shell=True)
-                (log_output, _) = log.communicate()
-                log.wait()
-                log_output = str(log_output, 'latin-1')
-            else:
-                log_output = 404
+    # Find which log file was requested, generate command to execute
+    if form_log_view.log.data == 'log_nginx':
+        if DOCKER_CONTAINER:
+            command = f'docker logs -n {lines} mycodo_nginx'
+            if search:
+                command += f' 2>&1 | grep "{search}"'
+        else:
+            command = f'journalctl -u nginx -n {lines} --no-pager'
+            if search:
+                command += f' | grep "{search}"'
+    elif form_log_view.log.data == 'log_flask':
+        if DOCKER_CONTAINER:
+            command = f'docker logs -n {lines} mycodo_flask'
+            if search:
+                command += f' 2>&1 | grep "{search}"'
+        else:
+            command = f'journalctl -u mycodoflask -n {lines} --no-pager'
+            if search:
+                command += f' | grep "{search}"'
+    elif form_log_view.log.data == 'log_pid_settings':
+        logfile = DAEMON_LOG_FILE
+        logrotate_file = logfile + '.1'
+        if (logrotate_file and os.path.exists(logrotate_file) and
+                logfile and os.path.isfile(logfile)):
+            command = f'cat {logrotate_file} {logfile} | grep -a "PID Settings" | tail -n {lines}'
+        else:
+            command = f'grep -a "PID Settings" {logfile} | tail -n {lines}'
+    else:
+        if form_log_view.log.data == 'log_login':
+            logfile = LOGIN_LOG_FILE
+        elif form_log_view.log.data == 'log_http_access':
+            logfile = HTTP_ACCESS_LOG_FILE
+        elif form_log_view.log.data == 'log_http_error':
+            logfile = HTTP_ERROR_LOG_FILE
+        elif form_log_view.log.data == 'log_daemon':
+            logfile = DAEMON_LOG_FILE
+        elif form_log_view.log.data == 'log_dependency':
+            logfile = DEPENDENCY_LOG_FILE
+        elif form_log_view.log.data == 'log_import':
+            logfile = IMPORT_LOG_FILE
+        elif form_log_view.log.data == 'log_keepup':
+            logfile = KEEPUP_LOG_FILE
+        elif form_log_view.log.data == 'log_backup':
+            logfile = BACKUP_LOG_FILE
+        elif form_log_view.log.data == 'log_restore':
+            logfile = RESTORE_LOG_FILE
+        elif form_log_view.log.data == 'log_upgrade':
+            logfile = UPGRADE_LOG_FILE
+        else:
+            logfile = DAEMON_LOG_FILE  # Default
+
+        logrotate_file = logfile + '.1'
+        if (logrotate_file and os.path.exists(logrotate_file) and
+                logfile and os.path.isfile(logfile)):
+            command = f'cat {logrotate_file} {logfile} | tail -n {lines}'
+            if search:
+                command += f' | grep "{search}"'
+        elif os.path.isfile(logfile):
+            command = f'tail -n {lines} {logfile}'
+            if search:
+                command += f' | grep "{search}"'
+
+    # Execute command and generate the output to display to the user
+    if command:
+        log = subprocess.Popen(
+            command,
+            stdout=subprocess.PIPE, stderr=subprocess.STDOUT, shell=True)
+        (log_output, _) = log.communicate()
+        log.wait()
+        log_output = str(log_output, 'latin-1')
+    else:
+        log_output = 404
 
     return render_template('tools/logview.html',
                            form_log_view=form_log_view,
                            lines=lines,
                            log_field=log_field,
                            logfile=logfile,
-                           log_output=log_output)
+                           log_output=log_output,
+                           search=search)
 
 
 @blueprint.route('/energy_usage_input_amp', methods=('GET', 'POST'))

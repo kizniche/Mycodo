@@ -16,15 +16,16 @@ MYCODO_MAJOR_VERSION="8"
 # Dependency versions/URLs
 PIGPIO_URL="https://github.com/joan2937/pigpio/archive/v79.tar.gz"
 MCB2835_URL="http://www.airspayce.com/mikem/bcm2835/bcm2835-1.50.tar.gz"
-WIRINGPI_URL="https://project-downloads.drogon.net/wiringpi-latest.deb"
+WIRINGPI_URL_ARMHF="https://github.com/WiringPi/WiringPi/releases/download/2.61-1/wiringpi-2.61-1-armhf.deb"
+WIRINGPI_URL_ARM64="https://github.com/WiringPi/WiringPi/releases/download/2.61-1/wiringpi-2.61-1-arm64.deb"
 
 INFLUXDB1_VERSION="1.8.10"
-INFLUXDB2_VERSION="2.2.0"
+INFLUXDB2_VERSION="2.6.1"
 
-VIRTUALENV_VERSION="20.14.1"
+VIRTUALENV_VERSION="20.17.1"
 
 # Required apt packages
-APT_PKGS="gawk gcc g++ git jq libffi-dev libi2c-dev logrotate moreutils netcat nginx python3 python3-pip python3-dev python3-setuptools rng-tools sqlite3 unzip wget"
+APT_PKGS="gawk gcc g++ git jq libatlas-base-dev libffi-dev libi2c-dev logrotate moreutils netcat nginx python3 python3-pip python3-dev python3-setuptools rng-tools sqlite3 unzip wget"
 
 PYTHON_BINARY_SYS_LOC="$(python3 -c "import os; print(os.environ['_'])")"
 
@@ -153,6 +154,9 @@ case "${1:-''}" in
         if [[ ! -e /var/log/mycodo/mycododependency.log ]]; then
             touch /var/log/mycodo/mycododependency.log
         fi
+        if [[ ! -e /var/log/mycodo/mycodoimport.log ]]; then
+            touch /var/log/mycodo/mycodoimport.log
+        fi
         if [[ ! -e /var/log/mycodo/mycodoupgrade.log ]]; then
             touch /var/log/mycodo/mycodoupgrade.log
         fi
@@ -188,13 +192,13 @@ case "${1:-''}" in
         adduser mycodo i2c
         adduser mycodo kmem
         adduser mycodo video
+
         if getent group gpio; then
             adduser mycodo gpio
         fi
-        if id pi &>/dev/null; then
-            adduser pi mycodo
-            adduser mycodo pi
-        fi
+
+        usermod -aG mycodo $USER
+        usermod -aG $USER mycodo
     ;;
     'generate-widget-html')
         printf "\n#### Generating widget HTML files\n"
@@ -224,6 +228,7 @@ case "${1:-''}" in
     ;;
     'setup-virtualenv-full')
         /bin/bash "${MYCODO_PATH}"/mycodo/scripts/upgrade_commands.sh setup-virtualenv
+        /bin/bash "${MYCODO_PATH}"/mycodo/scripts/upgrade_commands.sh update-pip3
         /bin/bash "${MYCODO_PATH}"/mycodo/scripts/upgrade_commands.sh update-pip3-packages
         /bin/bash "${MYCODO_PATH}"/mycodo/scripts/upgrade_commands.sh update-dependencies
         /bin/bash "${MYCODO_PATH}"/mycodo/scripts/upgrade_commands.sh update-permissions
@@ -292,9 +297,13 @@ case "${1:-''}" in
     ;;
     'install-wiringpi')
         if [[ ${MACHINE_TYPE} == 'armhf' ]]; then
-            cd "${MYCODO_PATH}"/install || return
-            wget ${WIRINGPI_URL} -O wiringpi-latest.deb
+            wget ${WIRINGPI_URL_ARMHF} -O wiringpi-latest.deb
             dpkg -i wiringpi-latest.deb
+            rm -rf wiringpi-latest.deb
+        elif [[ ${MACHINE_TYPE} == 'arm64' ]]; then
+            wget ${WIRINGPI_URL_ARM64} -O wiringpi-latest.deb
+            dpkg -i wiringpi-latest.deb
+            rm -rf wiringpi-latest.deb
         else
             printf "\n#### WiringPi not supported on this architecture, skipping.\n"
         fi
@@ -403,7 +412,7 @@ case "${1:-''}" in
         CURRENT_VERSION=$(apt-cache policy influxdb | grep 'Installed' | gawk '{print $2}')
 
         if [[ "${CURRENT_VERSION}" != "${CORRECT_VERSION}" ]]; then
-            printf "#### Incorrect InfluxDB version (v${CURRENT_VERSION}) installed.\n"
+            printf "#### Incorrect InfluxDB version (v${CURRENT_VERSION}) installed. Should be v${CORRECT_VERSION}\n"
 
             printf "#### Stopping influxdb 2.x (if installed)...\n"
             service influxd stop
@@ -440,7 +449,7 @@ case "${1:-''}" in
             CURRENT_VERSION=$(apt-cache policy influxdb2 | grep 'Installed' | gawk '{print $2}')
 
             if [[ "${CURRENT_VERSION}" != "${CORRECT_VERSION}" ]]; then
-                printf "#### Incorrect InfluxDB version (v${CURRENT_VERSION}) installed.\n"
+                printf "#### Incorrect InfluxDB version (v${CURRENT_VERSION}) installed. Should be v${CORRECT_VERSION}\n"
 
                 printf "#### Stopping influxdb 1.x (if installed)...\n"
                 service influxdb stop
@@ -508,6 +517,42 @@ case "${1:-''}" in
                 sleep 60
             done
         fi
+    ;;
+    'recreate-influxdb-1-db')
+        printf "\n#### Recreating InfluxDB 1.x database (deletes all measurement data!)\n"
+        # Attempt to connect to influxdb 10 times, sleeping 60 seconds every fail
+        for _ in {1..10}; do
+            # Check if influxdb has successfully started and be connected to
+            printf "#### Attempting to connect...\n" &&
+            curl -sL -I localhost:8086/ping > /dev/null &&
+            printf "#### Attempting to recreate database...\n" &&
+            influx -execute "DROP DATABASE mycodo_db" &&
+            influx -execute "CREATE DATABASE mycodo_db" &&
+            printf "#### Influxdb database successfully recreated\n" &&
+            break ||
+            # Else wait 60 seconds if the influxd port is not accepting connections
+            # Everything below will begin executing if an error occurs before the break
+            printf "#### Could not connect to Influxdb. Waiting 60 seconds then trying again...\n" &&
+            sleep 60
+        done
+    ;;
+    'recreate-influxdb-2-db')
+        printf "\n#### Recreating InfluxDB 2.x database (deletes all measurement data!)\n"
+        # Attempt to connect to influxdb 10 times, sleeping 60 seconds every fail
+        for _ in {1..10}; do
+            # Check if influxdb has successfully started and be connected to
+            printf "#### Attempting to connect...\n" &&
+            curl -sL -I localhost:8086/ping > /dev/null &&
+            printf "#### Attempting to recreate database...\n" &&
+            influx bucket delete -n mycodo_db -o mycodo &&
+            influx bucket create -n mycodo_db -o mycodo &&
+            printf "#### Influxdb database successfully recreated\n" &&
+            break ||
+            # Else wait 60 seconds if the influxd port is not accepting connections
+            # Everything below will begin executing if an error occurs before the break
+            printf "#### Could not connect to Influxdb. Waiting 60 seconds then trying again...\n" &&
+            sleep 60
+        done
     ;;
     'update-logrotate')
         printf "\n#### Installing logrotate scripts\n"
@@ -674,6 +719,9 @@ case "${1:-''}" in
         fi
         if [[ ! -e /var/log/mycodo/mycododependency.log ]]; then
             touch /var/log/mycodo/mycododependency.log
+        fi
+        if [[ ! -e /var/log/mycodo/mycodoimport.log ]]; then
+            touch /var/log/mycodo/mycodoimport.log
         fi
         if [[ ! -e /var/log/mycodo/mycodoupgrade.log ]]; then
             touch /var/log/mycodo/mycodoupgrade.log

@@ -25,7 +25,7 @@ ACTION_INFORMATION = {
     'message': 'Pause a camera time-lapse',
 
     'usage': 'Executing <strong>self.run_action("ACTION_ID")</strong> will pause the selected Camera time-lapse. '
-             'Executing <strong>self.run_action("ACTION_ID", value={"camera_id": "959019d1-c1fa-41fe-a554-7be3366a9c5b"})</strong> will pause the Camera time-lapse with the specified ID.',
+             'Executing <strong>self.run_action("ACTION_ID", value={"camera_id": "959019d1-c1fa-41fe-a554-7be3366a9c5b"})</strong> will pause the Camera time-lapse with the specified ID. Don\'t forget to change the camera_id value to an actual Camera ID that exists in your system.',
 
     'custom_options': [
         {
@@ -60,7 +60,7 @@ class ActionModule(AbstractFunctionAction):
     def initialize(self):
         self.action_setup = True
 
-    def run_action(self, message, dict_vars):
+    def run_action(self, dict_vars):
         try:
             controller_id = dict_vars["value"]["camera_id"]
         except:
@@ -71,20 +71,20 @@ class ActionModule(AbstractFunctionAction):
 
         if not this_camera:
             msg = f" Error: Camera with ID '{controller_id}' not found."
-            message += msg
+            dict_vars['message'] += msg
             self.logger.error(msg)
-            return message
+            return dict_vars
 
-        message += f" Pause timelapse with Camera {controller_id} ({this_camera.name})."
+        dict_vars['message'] += f" Pause timelapse with Camera {controller_id} ({this_camera.name})."
         with session_scope(MYCODO_DB_PATH) as new_session:
             mod_camera = new_session.query(Camera).filter(
                 Camera.unique_id == controller_id).first()
             mod_camera.timelapse_paused = True
             new_session.commit()
 
-        self.logger.debug(f"Message: {message}")
+        self.logger.debug(f"Message: {dict_vars['message']}")
 
-        return message
+        return dict_vars
 
     def is_setup(self):
         return self.action_setup

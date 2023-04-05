@@ -13,7 +13,7 @@ from flask_babel import lazy_gettext as lg
 sys.path.append(os.path.abspath(os.path.dirname(__file__)))
 from config_translations import TRANSLATIONS as T
 
-MYCODO_VERSION = '8.15.1'
+MYCODO_VERSION = '8.15.7'
 ALEMBIC_VERSION = '16b28ef31b5b'
 
 # FORCE UPGRADE MASTER
@@ -72,6 +72,7 @@ DAEMON_LOG_FILE = os.path.join(LOG_PATH, 'mycodo.log')
 KEEPUP_LOG_FILE = os.path.join(LOG_PATH, 'mycodokeepup.log')
 BACKUP_LOG_FILE = os.path.join(LOG_PATH, 'mycodobackup.log')
 DEPENDENCY_LOG_FILE = os.path.join(LOG_PATH, 'mycododependency.log')
+IMPORT_LOG_FILE = os.path.join(LOG_PATH, 'mycodoimport.log')
 UPGRADE_LOG_FILE = os.path.join(LOG_PATH, 'mycodoupgrade.log')
 UPGRADE_TMP_LOG_FILE = '/tmp/mycodoupgrade.log'
 RESTORE_LOG_FILE = os.path.join(LOG_PATH, 'mycodorestore.log')
@@ -123,7 +124,7 @@ LOGIN_BAN_SECONDS = 600  # 10 minutes
 # Check for upgrade every 2 days (if enabled)
 UPGRADE_CHECK_INTERVAL = 172800
 
-RELEASE_URL = 'https://api.github.com/repos/kizniche/Mycodo/tags'
+TAGS_URL = 'https://api.github.com/repos/kizniche/Mycodo/git/refs/tags'
 
 LANGUAGES = {
     'en': 'English',
@@ -170,7 +171,7 @@ CAMERA_INFO = {
     'libcamera': {
         'name': 'libcamera',
         'dependencies_module': [
-            ('apt', 'libcamera-apps-lite', 'libcamera-apps-lite')
+            ('apt', 'libcamera-apps', 'libcamera-apps')
         ],
         'capable_image': True,
         'capable_stream': False

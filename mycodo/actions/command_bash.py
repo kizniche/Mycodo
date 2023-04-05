@@ -63,7 +63,7 @@ class ActionModule(AbstractFunctionAction):
     def initialize(self):
         self.action_setup = True
 
-    def run_action(self, message, dict_vars):
+    def run_action(self, dict_vars):
         try:
             command = dict_vars["value"]["command"]
         except:
@@ -74,15 +74,15 @@ class ActionModule(AbstractFunctionAction):
         except:
             user = self.user
 
-        message += f" Execute '{command}' as {user}."
+        dict_vars['message'] += f" Execute '{command}' as {user}."
 
         cmd_out, cmd_err, cmd_status = cmd_output(command, user=user)
 
-        message += f" return out: {cmd_out}, err: {cmd_err}, status: {cmd_status}."
+        dict_vars['message'] += f" return out: {cmd_out}, err: {cmd_err}, status: {cmd_status}."
 
-        self.logger.debug(f"Message: {message}")
+        self.logger.debug(f"Message: {dict_vars['message']}")
 
-        return message
+        return dict_vars
 
     def is_setup(self):
         return self.action_setup

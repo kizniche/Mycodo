@@ -25,11 +25,9 @@ import os
 
 from mycodo.config import PATH_OUTPUTS
 from mycodo.config import PATH_OUTPUTS_CUSTOM
-from mycodo.utils.logging_utils import set_log_level
 from mycodo.utils.modules import load_module_from_file
 
 logger = logging.getLogger("mycodo.utils.outputs")
-logger.setLevel(set_log_level(logging))
 
 
 def parse_output_information(exclude_custom=False):

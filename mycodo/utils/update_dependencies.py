@@ -7,34 +7,22 @@ sys.path.append(
     os.path.abspath(os.path.join(
         os.path.dirname(__file__), os.path.pardir) + '/..'))
 
-from mycodo.config import CAMERA_INFO
-from mycodo.config import DEPENDENCIES_GENERAL
-from mycodo.config import FUNCTION_INFO
-from mycodo.config import INSTALL_DIRECTORY
-from mycodo.config import DEPENDENCY_LOG_FILE
-from mycodo.config import METHOD_INFO
-from mycodo.databases.models import Actions
-from mycodo.databases.models import Widget
-from mycodo.databases.models import Camera
-from mycodo.databases.models import Trigger
-from mycodo.databases.models import CustomController
-from mycodo.databases.models import EnergyUsage
-from mycodo.databases.models import Function
-from mycodo.databases.models import Input
-from mycodo.databases.models import Method
-from mycodo.databases.models import Output
+from mycodo.config import (CAMERA_INFO, DEPENDENCIES_GENERAL,
+                           DEPENDENCY_LOG_FILE, FUNCTION_INFO,
+                           INSTALL_DIRECTORY, METHOD_INFO)
+from mycodo.databases.models import (Actions, Camera, Conditional,
+                                     CustomController, EnergyUsage, Function,
+                                     Input, Method, Output, Trigger, Widget)
 from mycodo.mycodo_flask.utils.utils_general import return_dependencies
-from mycodo.utils.functions import parse_function_information
 from mycodo.utils.actions import parse_action_information
 from mycodo.utils.database import db_retrieve_table_daemon
-from mycodo.utils.outputs import parse_output_information
+from mycodo.utils.functions import parse_function_information
 from mycodo.utils.inputs import parse_input_information
+from mycodo.utils.outputs import parse_output_information
 from mycodo.utils.system_pi import cmd_output
 from mycodo.utils.widgets import parse_widget_information
-from mycodo.utils.logging_utils import set_log_level
 
 logger = logging.getLogger("mycodo.update_dependencies")
-logger.setLevel(set_log_level(logging))
 
 
 def get_installed_apt_dependencies():
@@ -96,6 +84,10 @@ if __name__ == "__main__":
     for each_dev in function:
         if each_dev.function_type not in devices:
             devices.append(each_dev.function_type)
+    
+    conditional = db_retrieve_table_daemon(Conditional, entry='first')
+    if conditional and 'conditional_conditional' not in devices:
+        devices.append('conditional_conditional')
 
     trigger = db_retrieve_table_daemon(Trigger)
     for each_dev in trigger:
@@ -122,20 +114,22 @@ if __name__ == "__main__":
         if 'highstock' not in devices:
             devices.append('highstock')
 
-    logger.info(f"Checking dependencies for installed devices: {devices}")
+    if devices:
+        logger.info(f"Checking dependencies for installed devices: {devices}")
 
-    for each_device in devices:
-        device_unmet_dependencies, _, _ = return_dependencies(each_device)
-        for each_dep in device_unmet_dependencies:
-            if each_dep not in dependencies:
-                dependencies.append(each_dep)
+        for each_device in devices:
+            device_unmet_dependencies, _, _ = return_dependencies(each_device)
+            for each_dep in device_unmet_dependencies:
+                if each_dep not in dependencies:
+                    dependencies.append(each_dep)
 
     if dependencies:
         for each_dep in dependencies:
-            logger.info(f"Installing: {each_dep[1]}")
-            if each_dep[1] == 'bash-commands':
-                for each_command in each_dep[2]:
+            logger.info(f"Installing: {each_dep[0]}")
+            if each_dep[2] == 'bash-commands':
+                for each_command in each_dep[1]:
                     command = f"{each_command} | ts '[%Y-%m-%d %H:%M:%S]' >> {DEPENDENCY_LOG_FILE} 2>&1"
+                    logger.info(f"Executing command: {command}")
                     cmd_out, cmd_err, cmd_status = cmd_output(
                         command, timeout=600, cwd="/tmp")
                     ret_list = []
@@ -153,12 +147,9 @@ if __name__ == "__main__":
                 if output:
                     formatted_output = output.decode("utf-8").replace('\\n', '\n')
                     logger.info(formatted_output)
-    else:
-        logger.info("Not Unmet dependencies for devices found")
 
+    # Check apt dependencies
     logger.info("Checking for updates to apt dependencies...")
-
-    # Update installed dependencies
     installed_apt_deps = get_installed_apt_dependencies()
     apt_deps = " ".join(installed_apt_deps)
 

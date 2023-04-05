@@ -8,10 +8,8 @@ sys.path.append(os.path.abspath(os.path.join(os.path.realpath(__file__), '../../
 
 from mycodo.config import PATH_HTML_USER
 from mycodo.utils.widgets import parse_widget_information
-from mycodo.utils.logging_utils import set_log_level
 
 logger = logging.getLogger("mycodo.utils.widget_generate_html")
-logger.setLevel(set_log_level(logging))
 
 
 def set_user_grp(filepath, user, group):

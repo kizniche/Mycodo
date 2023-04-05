@@ -44,14 +44,14 @@ class ActionModule(AbstractFunctionAction):
     def initialize(self):
         self.action_setup = True
 
-    def run_action(self, message, dict_vars):
-        message += " System restarting in 10 seconds."
+    def run_action(self, dict_vars):
+        dict_vars['message'] += " System restarting in 10 seconds."
         cmd = f'{INSTALL_DIRECTORY}/mycodo/scripts/mycodo_wrapper restart 2>&1'
         subprocess.Popen(cmd, shell=True)
 
-        self.logger.debug(f"Message: {message}")
+        self.logger.debug(f"Message: {dict_vars['message']}")
 
-        return message
+        return dict_vars
 
     def is_setup(self):
         return self.action_setup

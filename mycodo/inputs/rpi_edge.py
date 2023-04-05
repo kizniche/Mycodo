@@ -25,7 +25,6 @@ INPUT_INFORMATION = {
     'input_library': 'RPi.GPIO',
     'measurements_name': 'Rising/Falling Edge',
     'measurements_dict': measurements_dict,
-    'listener': True,
 
     'options_enabled': [
         'gpio_location',

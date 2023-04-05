@@ -371,15 +371,14 @@ Instruct the daemon to shut down.
 
 ### trigger_action()
 
-**trigger_action**\ (*action_id*, *message=''*, *single_action=True*, *debug=False*)
+**trigger_action**\ (*action_id*, *value={}*, *debug=False*)
 
 Instruct a Function Action to be executed.
 
 Parameters:
 
 -  **action_id** - The unique ID of the Function Action.
--  **message** - A message to send with the action that may be used by the action.
--  **single_action** - True if only executing a single action.
+-  **value** - A dict with at a minimum 'message' key to have messages appended in the action. This dict should be returned by the action.
 -  **debug** - Whether to show debug logging messages.
 
 ### trigger_all_actions()

@@ -21,10 +21,24 @@
 #
 #  Contact at kylegabriel.com
 
+import logging
 import random
+import os
 import re
 import string
 import sys
+
+logger = logging.getLogger("mycodo.utils")
+
+
+def append_to_log(log_file, str_append):
+    """Write to a file. Do not use when may be executed more than once at a time."""
+    if os.path.exists:
+        w_type = "a"
+    else:
+        w_type = "w"
+    with open(log_file, w_type) as f:
+        f.write(str_append)
 
 
 def is_email(email):

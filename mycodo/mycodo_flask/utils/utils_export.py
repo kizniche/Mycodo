@@ -10,11 +10,11 @@ import time
 import zipfile
 
 from flask import send_file, url_for
-from influxdb import InfluxDBClient
 from werkzeug.utils import secure_filename
 
 from mycodo.config import (ALEMBIC_VERSION, DATABASE_NAME, DEPENDENCY_LOG_FILE,
-                           DOCKER_CONTAINER, INSTALL_DIRECTORY, MYCODO_VERSION,
+                           DOCKER_CONTAINER, IMPORT_LOG_FILE,
+                           INSTALL_DIRECTORY, MYCODO_VERSION,
                            PATH_ACTIONS_CUSTOM, PATH_FUNCTIONS_CUSTOM,
                            PATH_HTML_USER, PATH_INPUTS_CUSTOM,
                            PATH_OUTPUTS_CUSTOM, PATH_PYTHON_CODE_USER,
@@ -25,10 +25,10 @@ from mycodo.databases.models import Misc
 from mycodo.mycodo_flask.utils.utils_general import (flash_form_errors,
                                                      flash_success_errors)
 from mycodo.scripts.measurement_db import get_influxdb_info
-from mycodo.utils.database import db_retrieve_table_daemon
 from mycodo.utils.system_pi import assure_path_exists, cmd_output
 from mycodo.utils.tools import (create_measurements_export,
                                 create_settings_export)
+from mycodo.utils.utils import append_to_log
 from mycodo.utils.widget_generate_html import generate_widget_html
 
 logger = logging.getLogger(__name__)
@@ -66,7 +66,7 @@ def export_measurements(form):
                     start=start_seconds, end=end_seconds)
                 return url
         except Exception as err:
-            error.append("Error: {}".format(err))
+            error.append(f"Error: {err}")
     else:
         flash_form_errors(form)
         return
@@ -100,7 +100,7 @@ def export_settings():
         else:
             error.append(data)
     except Exception as err:
-        error.append("Error: {}".format(err))
+        error.append(f"Error: {err}")
 
     flash_success_errors(error, action, url_for('routes_page.page_export'))
 
@@ -134,7 +134,7 @@ def export_influxdb():
         else:
             error.append("Could not determine Influxdb host/version")
     except Exception as err:
-        error.append("Error: {}".format(err))
+        error.append(f"Error: {err}")
 
     flash_success_errors(error, action, url_for('routes_page.page_export'))
 
@@ -144,46 +144,53 @@ def export_influxdb():
 #
 
 def thread_import_settings(tmp_folder):
-    logger.info("Finishing up settings import")
+    logger.info("Finishing up settings import with thread_import_settings()")
 
     try:
+        # Initialize
+        cmd = f"{INSTALL_DIRECTORY}/mycodo/scripts/mycodo_wrapper initialize | ts '[%Y-%m-%d %H:%M:%S]' >> {IMPORT_LOG_FILE} 2>&1"
+        _, _, _ = cmd_output(cmd)
+
         # Upgrade database
-        cmd = "{pth}/mycodo/scripts/mycodo_wrapper " \
-              "upgrade_database".format(
-            pth=INSTALL_DIRECTORY)
+        append_to_log(IMPORT_LOG_FILE, f"\n[{datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')}] Upgrading database\n")
+        cmd = f"{INSTALL_DIRECTORY}/mycodo/scripts/mycodo_wrapper upgrade_database | ts '[%Y-%m-%d %H:%M:%S]' >> {IMPORT_LOG_FILE} 2>&1"
         _, _, _ = cmd_output(cmd)
 
         # Install/update dependencies (could take a while)
-        cmd = "{pth}/mycodo/scripts/mycodo_wrapper update_dependencies" \
-              " | ts '[%Y-%m-%d %H:%M:%S]' >> {log} 2>&1".format(
-            pth=INSTALL_DIRECTORY,
-            log=DEPENDENCY_LOG_FILE)
-        _, _, _ = cmd_output(cmd)
-
-        # Initialize
-        cmd = "{pth}/mycodo/scripts/mycodo_wrapper " \
-              "initialize".format(
-            pth=INSTALL_DIRECTORY)
+        append_to_log(IMPORT_LOG_FILE, f"\n[{datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')}] Installing dependencies (this can take a while)...\n")
+        cmd = f"{INSTALL_DIRECTORY}/mycodo/scripts/mycodo_wrapper update_dependencies | ts '[%Y-%m-%d %H:%M:%S]' >> {IMPORT_LOG_FILE} 2>&1"
         _, _, _ = cmd_output(cmd)
 
         # Generate widget HTML
         generate_widget_html()
 
+        # Initialize
+        cmd = f"{INSTALL_DIRECTORY}/mycodo/scripts/mycodo_wrapper initialize | ts '[%Y-%m-%d %H:%M:%S]' >> {IMPORT_LOG_FILE} 2>&1"
+        _, _, _ = cmd_output(cmd)
+
+        # Start Mycodo daemon (backend)
+        append_to_log(IMPORT_LOG_FILE, f"\n[{datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')}] Restarting backend")
         if DOCKER_CONTAINER:
             subprocess.Popen('docker start mycododaemon 2>&1', shell=True)
         else:
-            # Start Mycodo daemon (backend)
-            cmd = "{pth}/mycodo/scripts/mycodo_wrapper " \
-                  "daemon_start".format(
-                pth=INSTALL_DIRECTORY)
-            _, _, _ = cmd_output(cmd)
+            cmd = f"{INSTALL_DIRECTORY}/mycodo/scripts/mycodo_wrapper daemon_restart | ts '[%Y-%m-%d %H:%M:%S]' >> {IMPORT_LOG_FILE} 2>&1"
+            a, b, c = cmd_output(cmd)
 
         # Delete tmp directory if it exists
         if os.path.isdir(tmp_folder):
             shutil.rmtree(tmp_folder)
+
+        # Reload Mycodo Flask (frontend)
+        append_to_log(IMPORT_LOG_FILE, f"\n[{datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')}] Reloading frontend")
+        if DOCKER_CONTAINER:
+            subprocess.Popen('docker start mycodo_flask 2>&1', shell=True)
+        else:
+            cmd = f"{INSTALL_DIRECTORY}/mycodo/scripts/mycodo_wrapper frontend_reload | ts '[%Y-%m-%d %H:%M:%S]' >> {IMPORT_LOG_FILE} 2>&1"
+            _, _, _ = cmd_output(cmd)
     except:
         logger.exception("thread_import_settings()")
 
+    append_to_log(IMPORT_LOG_FILE, f"\n[{datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')}] Settings Import complete")
     logger.info("Settings import complete")
 
 
@@ -199,7 +206,8 @@ def import_settings(form):
     error = []
 
     try:
-        logger.info("Beginning settings import")
+        logger.info("Beginning Settings Import")
+        append_to_log(IMPORT_LOG_FILE, f"\n\n[{datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')}] Settings Import initiated")
         correct_format = 'Mycodo_MYCODOVERSION_Settings_DBVERSION_HOST_DATETIME.zip'
         upload_folder = os.path.join(INSTALL_DIRECTORY, 'upload')
         tmp_folder = os.path.join(upload_folder, 'mycodo_db_tmp')
@@ -225,36 +233,23 @@ def import_settings(form):
             # Compare the uploaded filename parts to the correct parts
             try:
                 if name_split[0] != correct_name_1:
-                    error.append(
-                        "Invalid file name: {n}: {fn} != {cn}.".format(
-                            n=file_name,
-                            fn=name_split[0],
-                            cn=correct_name_1))
-                    error.append("Correct format is: {fmt}".format(
-                        fmt=correct_format))
+                    error.append(f"Invalid file name: {file_name}: {name_split[0]} != {correct_name_1}.")
+                    error.append(f"Correct format is: {correct_format}")
                 elif name_split[2] != correct_name_2:
-                    error.append(
-                        "Invalid file name: {n}: {fn} != {cn}".format(
-                            n=file_name,
-                            fn=name_split[2],
-                            cn=correct_name_2))
-                    error.append("Correct format is: {fmt}".format(
-                        fmt=correct_format))
+                    error.append(f"Invalid file name: {file_name}: {name_split[2]} != {correct_name_2}")
+                    error.append(f"Correct format is: {correct_format}")
                 elif extension != correct_extension:
                     error.append("Extension not 'zip'")
                 elif name_split[1] > MYCODO_VERSION:
                     error.append(
-                        "Invalid Mycodo version: {fv} > {mv}. "
-                        "Only databases <= {mver} can only be imported".format(
-                            fv=name_split[1],
-                            mv=MYCODO_VERSION,
-                            mver=name_split[1]))
+                        f"Invalid Mycodo version: {name_split[1]} > {MYCODO_VERSION}. "
+                        f"Only databases <= {name_split[1]} can only be imported")
             except Exception as err:
-                error.append(
-                    "Exception while verifying file name: {err}".format(err=err))
+                error.append(f"Exception while verifying file name: {err}")
 
         if not error:
             logger.info("Saving import file")
+            append_to_log(IMPORT_LOG_FILE, f"\n[{datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')}] Saving import file")
             # Save file to upload directory
             filename = secure_filename(
                 form.settings_import_file.data.filename)
@@ -268,14 +263,13 @@ def import_settings(form):
             try:
                 file_list = zipfile.ZipFile(full_path, 'r').namelist()
                 if DATABASE_NAME not in file_list:
-                    error.append("{} not found in zip: {}".format(
-                        DATABASE_NAME, ", ".join(file_list)))
+                    error.append(f"{DATABASE_NAME} not found in zip: {', '.join(file_list)}")
             except Exception as err:
-                error.append("Exception checking files in zip: "
-                             "{err}".format(err=err))
+                error.append(f"Exception checking files in zip: {err}")
 
         if not error:
             logger.info("Unzipping import file")
+            append_to_log(IMPORT_LOG_FILE, f"\n[{datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')}] Unzipping import file")
             # Unzip file
             try:
                 assure_path_exists(tmp_folder)
@@ -283,26 +277,22 @@ def import_settings(form):
                 zip_ref.extractall(tmp_folder)
                 zip_ref.close()
             except Exception as err:
-                error.append("Exception while extracting zip file: "
-                             "{err}".format(err=err))
+                error.append(f"Exception while extracting zip file: {err}")
 
         if not error:
             logger.info("Stopping daemon and copying files")
+            append_to_log(IMPORT_LOG_FILE, f"\n[{datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')}] Stopping daemon and copying files")
             try:
                 if DOCKER_CONTAINER:
                     subprocess.Popen('docker stop mycododaemon 2>&1', shell=True)
                 else:
                     # Stop Mycodo daemon (backend)
-                    cmd = "{pth}/mycodo/scripts/mycodo_wrapper " \
-                          "daemon_stop".format(
-                        pth=INSTALL_DIRECTORY)
+                    cmd = f"{INSTALL_DIRECTORY}/mycodo/scripts/mycodo_wrapper daemon_stop"
                     _, _, _ = cmd_output(cmd)
 
                 # Backup current database and replace with extracted mycodo.db
                 imported_database = os.path.join(tmp_folder, DATABASE_NAME)
-                backup_name = "{}.backup_{}".format(
-                    SQL_DATABASE_MYCODO,
-                    datetime.datetime.now().strftime("%Y-%m-%d_%H-%M-%S"))
+                backup_name = f"{SQL_DATABASE_MYCODO}.backup_{datetime.datetime.now().strftime('%Y-%m-%d_%H-%M-%S')}"
 
                 os.rename(SQL_DATABASE_MYCODO, backup_name)  # rename current database to backup name
                 shutil.move(imported_database, SQL_DATABASE_MYCODO)  # move unzipped database to Mycodo
@@ -313,13 +303,14 @@ def import_settings(form):
                     PATH_INPUTS_CUSTOM,
                     PATH_OUTPUTS_CUSTOM,
                     PATH_WIDGETS_CUSTOM,
+                    PATH_USER_SCRIPTS,
                     PATH_HTML_USER,
-                    PATH_PYTHON_CODE_USER,
-                    PATH_USER_SCRIPTS
+                    PATH_PYTHON_CODE_USER
                 ]
 
                 # Delete custom functions/inputs/outputs/widgets and generated HTML/Python code
                 for each_dir in delete_directories:
+                    append_to_log(IMPORT_LOG_FILE, f"\n[{datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')}] Deleting directory: {each_dir}")
                     if not os.path.exists(each_dir):
                         continue
                     for folder_name, sub_folders, filenames in os.walk(each_dir):
@@ -338,11 +329,14 @@ def import_settings(form):
                     (PATH_INPUTS_CUSTOM, "custom_inputs"),
                     (PATH_OUTPUTS_CUSTOM, "custom_outputs"),
                     (PATH_WIDGETS_CUSTOM, "custom_widgets"),
-                    (PATH_USER_SCRIPTS, "user_scripts")
+                    (PATH_USER_SCRIPTS, "user_scripts"),
+                    (PATH_HTML_USER, "user_html"),
+                    (PATH_PYTHON_CODE_USER, "user_python_code")
                 ]
 
                 # Restore zipped custom functions/inputs/outputs/widgets
                 for each_dir in restore_directories:
+                    append_to_log(IMPORT_LOG_FILE, f"\n[{datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')}] Restoring {each_dir[1]} directory: {each_dir[0]}")
                     extract_dir = os.path.join(tmp_folder, each_dir[1])
                     if not os.path.exists(extract_dir):
                         continue
@@ -350,9 +344,11 @@ def import_settings(form):
                         for filename in filenames:
                             file_path = os.path.join(folder_name, filename)
                             new_path = os.path.join(each_dir[0], filename)
+                            append_to_log(IMPORT_LOG_FILE, f"\n[{datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')}] Restoring {new_path}")
                             try:
                                 shutil.move(file_path, new_path)
                             except:
+                                append_to_log(IMPORT_LOG_FILE, f"\n[{datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')}] Error: Could not restore {filename}")
                                 logger.exception("Moving file")
 
                 logger.info("Finalizing import")
@@ -361,14 +357,18 @@ def import_settings(form):
                     args=(tmp_folder,))
                 import_settings_db.start()
 
-                return backup_name
+                return True
             except Exception as err:
                 logger.exception("Settings import")
-                error.append("Exception while replacing database: "
-                             "{err}".format(err=err))
-                return None
+                error.append(f"Exception while replacing database: {err}")
+                return
 
     except Exception as err:
         error.append("Exception: {}".format(err))
+
+    if error:
+        append_to_log(IMPORT_LOG_FILE, f"\n\n[{datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')}] Could not complete Settings Import, error(s) found:")
+    for each_err in error:
+        append_to_log(IMPORT_LOG_FILE, f"\n[{datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')}] Error: {each_err}")
 
     flash_success_errors(error, action, url_for('routes_page.page_export'))

@@ -24,7 +24,7 @@ ACTION_INFORMATION = {
     'message': 'Turn display flashing on',
 
     'usage': 'Executing <strong>self.run_action("ACTION_ID")</strong> will start the backlight flashing on the selected display. '
-             'Executing <strong>self.run_action("ACTION_ID", value={"display_id": "959019d1-c1fa-41fe-a554-7be3366a9c5b"})</strong> will start the backlight flashing on the controller with the specified ID.',
+             'Executing <strong>self.run_action("ACTION_ID", value={"display_id": "959019d1-c1fa-41fe-a554-7be3366a9c5b"})</strong> will start the backlight flashing on the controller with the specified ID. Don\'t forget to change the display_id value to an actual Function ID that exists in your system.',
 
     'custom_options': [
         {
@@ -59,7 +59,7 @@ class ActionModule(AbstractFunctionAction):
     def initialize(self):
         self.action_setup = True
 
-    def run_action(self, message, dict_vars):
+    def run_action(self, dict_vars):
         try:
             controller_id = dict_vars["value"]["display_id"]
         except:
@@ -70,28 +70,28 @@ class ActionModule(AbstractFunctionAction):
 
         if not display:
             msg = f" Error: Display with ID '{controller_id}' not found."
-            message += msg
+            dict_vars['message'] += msg
             self.logger.error(msg)
-            return message
+            return dict_vars
 
         functions = parse_function_information()
         if display.device in functions and "function_actions" in functions[display.device]:
             if "backlight_flash" not in functions[display.device]["function_actions"]:
                 msg = " Selected display is not capable of flashing"
-                message += msg
+                dict_vars['message'] += msg
                 self.logger.error(msg)
-                return message
+                return dict_vars
 
-        message += f" Display {controller_id} ({display.name}) Flash On."
+        dict_vars['message'] += f" Display {controller_id} ({display.name}) Flash On."
 
         start_flashing = threading.Thread(
             target=self.control.module_function,
             args=("Function", controller_id, "backlight_flash_on", {},))
         start_flashing.start()
 
-        self.logger.debug(f"Message: {message}")
+        self.logger.debug(f"Message: {dict_vars['message']}")
 
-        return message
+        return dict_vars
 
     def is_setup(self):
         return self.action_setup

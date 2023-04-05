@@ -254,7 +254,7 @@ WIDGET_INFORMATION = {
             'default_value': 'new_img',
             'options_select': [
                 ('new_img', lazy_gettext('Acquire Image (and save new file)')),
-                ('tmp_img', lazy_gettext('Acquire Image (and erase last file)')),
+                ('tmp_img', lazy_gettext('Acquire Image (and save temporary file)')),
                 ('stream', lazy_gettext('Display Live Video Stream')),
                 ('timelapse', lazy_gettext('Display Latest Timelapse Image'))
             ],

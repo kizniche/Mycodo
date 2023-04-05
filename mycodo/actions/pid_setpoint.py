@@ -28,7 +28,7 @@ ACTION_INFORMATION = {
 
     'usage': 'Executing <strong>self.run_action("ACTION_ID")</strong> will set the setpoint of the selected PID Controller. '
              'Executing <strong>self.run_action("ACTION_ID", value={"setpoint": 42})</strong> will set the setpoint of the PID Controller (e.g. 42). '
-             'You can also specify the PID ID (e.g. value={"setpoint": 42, "pid_id": "959019d1-c1fa-41fe-a554-7be3366a9c5b"})',
+             'You can also specify the PID ID (e.g. value={"setpoint": 42, "pid_id": "959019d1-c1fa-41fe-a554-7be3366a9c5b"}). Don\'t forget to change the pid_id value to an actual PID ID that exists in your system.',
 
     'custom_options': [
         {
@@ -72,7 +72,7 @@ class ActionModule(AbstractFunctionAction):
     def initialize(self):
         self.action_setup = True
 
-    def run_action(self, message, dict_vars):
+    def run_action(self, dict_vars):
         try:
             controller_id = dict_vars["value"]["pid_id"]
         except:
@@ -88,11 +88,11 @@ class ActionModule(AbstractFunctionAction):
 
         if not pid:
             msg = f" Error: PID Controller with ID '{controller_id}' not found."
-            message += msg
+            dict_vars['message'] += msg
             self.logger.error(msg)
-            return message
+            return dict_vars
 
-        message += f" Set Setpoint of PID {controller_id} ({pid.name})."
+        dict_vars['message'] += f" Set Setpoint of PID {controller_id} ({pid.name})."
 
         if pid.is_activated:
             setpoint_pid = threading.Thread(
@@ -108,9 +108,9 @@ class ActionModule(AbstractFunctionAction):
                 mod_pid.setpoint = setpoint
                 new_session.commit()
 
-        self.logger.debug(f"Message: {message}")
+        self.logger.debug(f"Message: {dict_vars['message']}")
 
-        return message
+        return dict_vars
 
     def is_setup(self):
         return self.action_setup

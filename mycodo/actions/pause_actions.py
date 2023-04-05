@@ -57,14 +57,14 @@ class ActionModule(AbstractFunctionAction):
     def initialize(self):
         self.action_setup = True
 
-    def run_action(self, message, dict_vars):
-        message += f" Pause for {self.duration} seconds."
+    def run_action(self, dict_vars):
+        dict_vars['message'] += f" Pause for {self.duration} seconds."
 
         time.sleep(self.duration)
 
-        self.logger.debug(f"Message: {message}")
+        self.logger.debug(f"Message: {dict_vars['message']}")
 
-        return message
+        return dict_vars
 
     def is_setup(self):
         return self.action_setup

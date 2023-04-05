@@ -6,10 +6,8 @@ from mycodo.config import PATH_PYTHON_CODE_USER
 from mycodo.utils.system_pi import assure_path_exists
 from mycodo.utils.system_pi import cmd_output
 from mycodo.utils.system_pi import set_user_grp
-from mycodo.utils.logging_utils import set_log_level
 
 logger = logging.getLogger(__name__)
-logger.setLevel(set_log_level(logging))
 
 
 def cond_statement_replace(
@@ -110,27 +108,29 @@ class ConditionalRun(AbstractConditional):
 
         if len(class_code.splitlines()) > 999:
             error.append("Too many lines in code. Reduce code to less than 1000 lines.")
+        
+        lines_code = ''
+        for line_num, each_line in enumerate(class_code.splitlines(), 1):
+            if len(str(line_num)) == 3:
+                line_spacing = ''
+            elif len(str(line_num)) == 2:
+                line_spacing = ' '
+            else:
+                line_spacing = '  '
+            lines_code += '{sp}{ln}: {line}\n'.format(
+                sp=line_spacing,
+                ln=line_num,
+                line=each_line)
 
         if test:
-            lines_code = ''
-            for line_num, each_line in enumerate(class_code.splitlines(), 1):
-                if len(str(line_num)) == 3:
-                    line_spacing = ''
-                elif len(str(line_num)) == 2:
-                    line_spacing = ' '
-                else:
-                    line_spacing = '  '
-                lines_code += '{sp}{ln}: {line}\n'.format(
-                    sp=line_spacing,
-                    ln=line_num,
-                    line=each_line)
-
             cmd_test = 'mkdir -p /var/mycodo-root/.pylint.d && ' \
                        'export PYTHONPATH=$PYTHONPATH:/var/mycodo-root && ' \
                        'export PYLINTHOME=/var/mycodo-root/.pylint.d && ' \
                        '{dir}/env/bin/python -m pylint -d I,W0621,C0103,C0111,C0301,C0327,C0410,C0413,R0912,R0914,R0915 {path}'.format(
                            dir=INSTALL_DIRECTORY, path=file_run)
-            cmd_out, _, cmd_status = cmd_output(cmd_test)
+            cmd_out, cmd_err, cmd_status = cmd_output(cmd_test)
+            if cmd_err:
+                error.append(str(cmd_err))
     except Exception as err:
         error.append("Error saving/testing conditional code: {}".format(err))
 

@@ -31,7 +31,7 @@
           }
         },
         error: function(XMLHttpRequest, textStatus, errorThrown) {
-          document.getElementById(measure_string + "-time").innerHTML = "No Data Last " + period.toString() + " sec";
+          document.getElementById(measure_string + "-time").innerHTML = "Error: No Data Last " + period.toString() + " sec";
           document.getElementById(measure_string + "-value").innerHTML = "0";
         },
         cache: false

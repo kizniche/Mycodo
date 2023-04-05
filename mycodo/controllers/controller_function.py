@@ -59,16 +59,19 @@ class FunctionController(AbstractController, threading.Thread):
         self.device = None
         self.period = None
 
+        self.has_loop = False
+        self.has_listener = False
+
     def __str__(self):
         return str(self.__class__)
 
     def loop(self):
-        if self.timer_loop < time.time():
-            if not self.run_function:
-                self.logger.error("Function could not be initialized. Shutting controller down.")
-                self.running = False
-                return
+        if not self.run_function:
+            self.logger.error("Function could not be initialized. Shutting controller down.")
+            self.running = False
+            return
 
+        if self.has_loop and self.timer_loop < time.time():
             while self.timer_loop < time.time():
                 self.timer_loop += self.sample_rate
 
@@ -121,6 +124,28 @@ class FunctionController(AbstractController, threading.Thread):
             self.running = False
             self.logger.error(f"'{self.device}' is not a valid device type. Deactivating controller.")
             return
+
+        # Check if loop() exists
+        if hasattr(self.run_function, 'loop'):
+            self.logger.debug("loop() found")
+            self.has_loop = True
+        else:
+            self.logger.debug("loop() not found")
+
+        # Check if listener() exists
+        if hasattr(self.run_function, 'listener'):
+            self.logger.debug("listener() found")
+            self.has_listener = True
+        else:
+            self.logger.debug("listener() not found")
+
+        # Set up listener() thread
+        if self.has_listener:
+            self.logger.debug("Starting listener() thread")
+            function_listener = threading.Thread(
+                target=self.run_function.listener)
+            function_listener.daemon = True
+            function_listener.start()
 
     def call_module_function(self, button_id, args_dict, thread=True):
         """Execute function from custom action button press."""

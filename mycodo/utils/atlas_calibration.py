@@ -1,10 +1,7 @@
 # coding=utf-8
 import logging
 
-from mycodo.utils.logging_utils import set_log_level
-
 logger = logging.getLogger("mycodo.atlas_scientific")
-logger.setLevel(set_log_level(logging))
 
 
 def setup_atlas_device(atlas_device):

@@ -160,7 +160,7 @@ class ActionModule(AbstractFunctionAction):
         self.publish = publish
         self.action_setup = True
 
-    def run_action(self, message, dict_vars):
+    def run_action(self, dict_vars):
         try:
             topic = dict_vars["value"]["topic"]
         except:
@@ -171,22 +171,22 @@ class ActionModule(AbstractFunctionAction):
         except:
             payload = self.payload
 
+            try:
+                if self.payload_type == 'integer':
+                    payload = int(payload)
+                elif self.payload_type == 'float':
+                    payload = float(payload)
+            except:
+                msg = f" Error: Could not cast payload as {self.payload_type}."
+                self.logger.error(msg)
+                dict_vars['message'] += msg
+                return dict_vars
+
         if not payload:
             msg = f" Error: Cannot publish to MQTT server without a payload."
             self.logger.error(msg)
-            message += msg
-            return
-
-        try:
-            if self.payload_type == 'integer':
-                payload = int(payload)
-            elif self.payload_type == 'float':
-                payload = float(payload)
-        except:
-            msg = f" Error: Could not cast payload as {self.payload_type}."
-            self.logger.error(msg)
-            message += msg
-            return
+            dict_vars['message'] += msg
+            return dict_vars
 
         try:
             auth_dict = None
@@ -204,15 +204,15 @@ class ActionModule(AbstractFunctionAction):
                 keepalive=self.keepalive,
                 auth=auth_dict,
                 transport='websockets' if self.mqtt_use_websockets else 'tcp')
-            message += f" MQTT Publish '{payload}'."
+            dict_vars['message'] += f" MQTT Publish '{payload}'."
         except Exception as err:
             msg = f" Could not execute MQTT Publish: {err}"
             self.logger.error(msg)
-            message += msg
+            dict_vars['message'] += msg
 
-        self.logger.debug(f"Message: {message}")
+        self.logger.debug(f"Message: {dict_vars['message']}")
 
-        return message
+        return dict_vars
 
     def is_setup(self):
         return self.action_setup

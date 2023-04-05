@@ -10,11 +10,9 @@ from mycodo.databases.models import (Conversion, DeviceMeasurements, Misc,
                                      Output)
 from mycodo.mycodo_client import DaemonControl
 from mycodo.utils.database import db_retrieve_table_daemon
-from mycodo.utils.logging_utils import set_log_level
 from mycodo.utils.system_pi import return_measurement_info
 
 logger = logging.getLogger("mycodo.influx")
-logger.setLevel(set_log_level(logging))
 
 
 #
@@ -69,7 +67,7 @@ def write_influxdb_value(unique_id, unit, value, measure=None, channel=None, tim
         logger.error(f"Unknown Influxdb version: {settings.measurement_db_version}")
         return
 
-    with client.write_api() as write_api:
+    with client.write_api(success_callback=write_success, error_callback=write_fail) as write_api:
         point = Point(unit).tag("device_id", unique_id)
 
         if measure:
@@ -89,7 +87,6 @@ def write_influxdb_value(unique_id, unit, value, measure=None, channel=None, tim
             time.sleep(5)
             try:
                 write_api.write(bucket=bucket, record=point)
-                logger.debug("Successfully wrote measurements to influxdb after 5-second wait.")
                 return 0
             except:
                 logger.debug(
@@ -129,7 +126,7 @@ def add_measurements_influxdb_flux(unique_id, measurements, use_same_timestamp=T
         logger.error(f"Unknown Influxdb version: {settings.measurement_db_version}")
         return
 
-    with client.write_api() as write_api:
+    with client.write_api(success_callback=write_success, error_callback=write_fail) as write_api:
         for each_channel, each_measurement in measurements.items():
             if 'value' not in each_measurement or each_measurement['value'] is None:
                 continue  # skip to next measurement to add
@@ -152,6 +149,14 @@ def add_measurements_influxdb_flux(unique_id, measurements, use_same_timestamp=T
 
             point = point.field("value", each_measurement['value'])
             write_api.write(bucket=bucket, record=point)
+
+
+def write_fail(point_data, written_data, err):
+    logger.debug(f"Write point fail: {err}: {written_data}")
+
+
+def write_success(point_data, written_data):
+    logger.debug(f"Write point success: {written_data}")
 
 
 def add_measurements_influxdb(unique_id, measurements, use_same_timestamp=True, block=False):

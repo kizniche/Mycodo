@@ -27,7 +27,7 @@ ACTION_INFORMATION = {
     'message': lazy_gettext('Activate a controller.'),
 
     'usage': 'Executing <strong>self.run_action("ACTION_ID")</strong> will activate the selected Controller. '
-             'Executing <strong>self.run_action("ACTION_ID", value={"controller_id": "959019d1-c1fa-41fe-a554-7be3366a9c5b"})</strong> will activate the controller with the specified ID.',
+             'Executing <strong>self.run_action("ACTION_ID", value={"controller_id": "959019d1-c1fa-41fe-a554-7be3366a9c5b"})</strong> will activate the controller with the specified ID. Don\'t forget to change the controller_id value to an actual Controller ID that exists in your system.',
 
     'custom_options': [
         {
@@ -69,7 +69,7 @@ class ActionModule(AbstractFunctionAction):
     def initialize(self):
         self.action_setup = True
 
-    def run_action(self, message, dict_vars):
+    def run_action(self, dict_vars):
         try:
             controller_id = dict_vars["value"]["controller_id"]
         except:
@@ -83,14 +83,14 @@ class ActionModule(AbstractFunctionAction):
 
         if not controller_entry:
             msg = f" Error: Controller with ID '{controller_id}' not found."
-            message += msg
+            dict_vars['message'] += msg
             self.logger.error(msg)
-            return message
+            return dict_vars
 
-        message += f" Activate Controller {controller_id} ({controller_entry.name})."
+        dict_vars['message'] += f" Activate Controller {controller_id} ({controller_entry.name})."
 
         if controller_entry.is_activated:
-            message += " Notice: Controller is already active!"
+            dict_vars['message'] += " Notice: Controller is already active!"
         else:
             with session_scope(MYCODO_DB_PATH) as new_session:
                 mod_cont = new_session.query(controller_object).filter(
@@ -102,9 +102,9 @@ class ActionModule(AbstractFunctionAction):
                 args=(controller_id,))
             activate_controller.start()
 
-        self.logger.debug(f"Message: {message}")
+        self.logger.debug(f"Message: {dict_vars['message']}")
 
-        return message
+        return dict_vars
 
     def is_setup(self):
         return self.action_setup

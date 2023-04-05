@@ -36,7 +36,6 @@ INPUT_INFORMATION = {
     'measurements_variable_amount': True,
     'channel_quantity_same_as_measurements': True,
     'measurements_use_same_timestamp': False,
-    'listener': True,
 
     'message': 'A single topic is subscribed to and the returned JSON payload contains one or '
                'more key/value pairs. The given JSON Key is used as a JMESPATH expression to find the '
@@ -158,8 +157,8 @@ INPUT_INFORMATION = {
             'type': 'text',
             'default_value': '',
             'required': True,
-            'name': 'JSON Key',
-            'phrase': 'JMES Path expression to find value in JSON response'
+            'name': 'JMESPATH Expression',
+            'phrase': 'JMESPATH expression to find value in JSON response'
         }
     ]
 }
@@ -217,7 +216,6 @@ class InputModule(AbstractInput):
     def listener(self):
         self.callbacks_connect()
         self.connect()
-        self.subscribe()
         self.client.loop_start()
 
     def callbacks_connect(self):
@@ -225,9 +223,9 @@ class InputModule(AbstractInput):
         try:
             self.logger.debug("Connecting MQTT callback functions")
             self.client.on_connect = self.on_connect
+            self.client.on_disconnect = self.on_disconnect
             self.client.on_message = self.on_message
             self.client.on_subscribe = self.on_subscribe
-            self.client.on_disconnect = self.on_disconnect
             self.logger.debug("MQTT callback functions connected")
         except:
             self.logger.error("Unable to connect mqtt callback functions")
@@ -256,8 +254,11 @@ class InputModule(AbstractInput):
                 self.mqtt_channel))
 
     def on_connect(self, client, obj, flags, rc):
-        self.logger.debug("Connected to '{}'. Return code: {}".format(
-            self.mqtt_channel, rc))
+        self.logger.debug(f"Connected: {rc}")
+        self.subscribe()
+
+    def on_disconnect(self, client, userdata, rc):
+        self.logger.debug(f"Disconnected: {rc}")
 
     def on_subscribe(self, client, obj, mid, granted_qos):
         self.logger.debug("Subscribed to mqtt topic: {}, {}, {}".format(
@@ -293,7 +294,7 @@ class InputModule(AbstractInput):
 
             try:
                 jmesexpression = self.jmespath.compile(json_name)
-                value = jmesexpression.search(json_values)
+                value = float(jmesexpression.search(json_values))
                 self.logger.debug(
                     "Found key: {}, value: {}".format(json_name, value))
                 measurement[each_channel] = {}
@@ -301,41 +302,41 @@ class InputModule(AbstractInput):
                 measurement[each_channel]['unit'] = self.channels_measurement[each_channel].unit
                 measurement[each_channel]['value'] = value
                 measurement[each_channel]['timestamp_utc'] = datetime_utc
-                self.add_measurement_influxdb(each_channel, measurement)
+                measurement = self.check_conversion(each_channel, measurement)
             except Exception as err:
                 self.logger.error(
                     "Error in JSON '{}' finding '{}': {}".format(
                         json_values, json_name, err))
+    
+        self.logger.debug(f"Adding measurement to influxdb: {measurement}")
+        add_measurements_influxdb(
+            self.unique_id,
+            measurement,
+            use_same_timestamp=INPUT_INFORMATION['measurements_use_same_timestamp'])
 
-    def add_measurement_influxdb(self, channel, measurement):
+    def check_conversion(self, channel, measurement):
         # Convert value/unit is conversion_id present and valid
-        if self.channels_conversion[channel]:
-            conversion = db_retrieve_table_daemon(
-                Conversion,
-                unique_id=self.channels_measurement[channel].conversion_id)
-            if conversion:
-                meas = parse_measurement(
-                    self.channels_conversion[channel],
-                    self.channels_measurement[channel],
-                    measurement,
-                    channel,
-                    measurement[channel],
-                    timestamp=measurement[channel]['timestamp_utc'])
+        try:
+            if self.channels_conversion[channel]:
+                conversion = db_retrieve_table_daemon(
+                    Conversion,
+                    unique_id=self.channels_measurement[channel].conversion_id)
+                if conversion:
+                    meas = parse_measurement(
+                        self.channels_conversion[channel],
+                        self.channels_measurement[channel],
+                        measurement,
+                        channel,
+                        measurement[channel],
+                        timestamp=measurement[channel]['timestamp_utc'])
 
-                measurement[channel]['measurement'] = meas[channel]['measurement']
-                measurement[channel]['unit'] = meas[channel]['unit']
-                measurement[channel]['value'] = meas[channel]['value']
-
-        if measurement:
-            self.logger.debug(
-                "Adding measurement to influxdb: {}".format(measurement))
-            add_measurements_influxdb(
-                self.unique_id,
-                measurement,
-                use_same_timestamp=INPUT_INFORMATION['measurements_use_same_timestamp'])
-
-    def on_disconnect(self, client, userdata, rc=0):
-        self.logger.debug("Disconnected. Return code: {}".format(rc))
+                    measurement[channel]['measurement'] = meas[channel]['measurement']
+                    measurement[channel]['unit'] = meas[channel]['unit']
+                    measurement[channel]['value'] = meas[channel]['value']
+        except:
+            self.logger.exception("Checking conversion")
+        
+        return measurement
 
     def stop_input(self):
         """Called when Input is deactivated."""

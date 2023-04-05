@@ -25,11 +25,9 @@ import os
 
 from mycodo.config import PATH_WIDGETS
 from mycodo.config import PATH_WIDGETS_CUSTOM
-from mycodo.utils.logging_utils import set_log_level
 from mycodo.utils.modules import load_module_from_file
 
 logger = logging.getLogger("mycodo.utils.widgets")
-logger.setLevel(set_log_level(logging))
 
 
 def parse_widget_information(exclude_custom=False):
@@ -92,7 +90,6 @@ def parse_widget_information(exclude_custom=False):
             dict_widgets = dict_has_value(dict_widgets, widget_custom, 'widget_height')
             dict_widgets = dict_has_value(dict_widgets, widget_custom, 'widget_width')
 
-            dict_widgets = dict_has_value(dict_widgets, widget_custom, 'listener')
             dict_widgets = dict_has_value(dict_widgets, widget_custom, 'message')
 
             dict_widgets = dict_has_value(dict_widgets, widget_custom, 'url_datasheet', force_type='list')

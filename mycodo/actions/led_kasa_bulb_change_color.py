@@ -23,7 +23,7 @@ ACTION_INFORMATION = {
     'message': 'Change the color of the LED in a Kasa RGB Bulb. Select the Kasa RGB Bulb Output.',
 
     'usage': 'Executing <strong>self.run_action("ACTION_ID")</strong> will set the selected Kasa RGB Bulb to the selected Hue, Saturation, and Brightness. '
-             'Executing <strong>self.run_action("ACTION_ID", value={"output_id": "959019d1-c1fa-41fe-a554-7be3366a9c5b", "hue": 10, "saturation": 50, "brightness": 25})</strong> will set the hue (0 - 360), saturation (0 - 100), and brightness (0 - 100) of the Kasa RGB Bulb Output with the specified ID.',
+             'Executing <strong>self.run_action("ACTION_ID", value={"output_id": "959019d1-c1fa-41fe-a554-7be3366a9c5b", "hue": 10, "saturation": 50, "brightness": 25})</strong> will set the hue (0 - 360), saturation (0 - 100), and brightness (0 - 100) of the Kasa RGB Bulb Output with the specified ID. Don\'t forget to change the output_id value to an actual Output ID that exists in your system.',
 
     'custom_options': [
         {
@@ -85,7 +85,7 @@ class ActionModule(AbstractFunctionAction):
     def initialize(self):
         self.action_setup = True
 
-    def run_action(self, message, dict_vars):
+    def run_action(self, dict_vars):
         try:
             controller_id = dict_vars["value"]["output_id"]
         except:
@@ -111,23 +111,23 @@ class ActionModule(AbstractFunctionAction):
 
         if not this_output:
             msg = f" Error: Output with ID '{controller_id}' not found."
-            message += msg
+            dict_vars['message'] += msg
             self.logger.error(msg)
-            return message
+            return dict_vars
 
         payload = {
             "hsv": f"{hue}, {saturation}, {brightness}",
         }
 
-        message += f" Set HSV to {payload['hsv']} for Output {controller_id} ({this_output.name})."
+        dict_vars['message'] += f" Set HSV to {payload['hsv']} for Output {controller_id} ({this_output.name})."
         clear_volume = threading.Thread(
             target=self.control.module_function,
             args=("Output", this_output.unique_id, "set_hsv", payload,))
         clear_volume.start()
 
-        self.logger.debug(f"Message: {message}")
+        self.logger.debug(f"Message: {dict_vars['message']}")
 
-        return message
+        return dict_vars
 
     def is_setup(self):
         return self.action_setup

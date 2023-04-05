@@ -7,9 +7,7 @@
   <div class="container">
     {% include 'flash_messages.html' %}
 
-    <p>{{_('Select the number of lines to display from the end of a log')}}</p>
-
-    <form class="row" method="post" action="/logview">
+    <form class="row" method="post" action="/logview" style="padding-top: 0.5em">
       <input type="hidden" name="form-name" value="logview">
       {{form_log_view.hidden_tag()}}
       <div class="col-12 col-sm-2">
@@ -21,6 +19,7 @@
           <option value="log_pid_settings"{% if log_field == "log_pid_settings" %} selected{% endif %}>Daemon (PID Settings)</option>
           <option value="log_keepup"{% if log_field == "log_keepup" %} selected{% endif %}>Daemon Keepup</option>
           <option value="log_dependency"{% if log_field == "log_dependency" %} selected{% endif %}>Dependency</option>
+          <option value="log_import"{% if log_field == "log_import" %} selected{% endif %}>Settings Import</option>
           <option value="log_nginx"{% if log_field == "log_nginx" %} selected{% endif %}>Nginx</option>
           <option value="log_backup"{% if log_field == "log_backup" %} selected{% endif %}>Mycodo Backup</option>
           <option value="log_restore"{% if log_field == "log_restore" %} selected{% endif %}>Mycodo Restore</option>
@@ -30,6 +29,9 @@
           <option value="log_http_error"{% if log_field == "log_http_error" %} selected{% endif %}>Web Error</option>
           <option value="log_login"{% if log_field == "log_login" %} selected{% endif %}>Web Login</option>
         </select>
+      </div>
+      <div class="col-auto">
+        {{form_log_view.search(class_='form-control', value=search)}}
       </div>
       <div class="col-auto">
         {{form_log_view.log_view(class_='btn btn-primary btn-block')}}

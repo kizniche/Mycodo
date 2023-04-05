@@ -114,10 +114,10 @@ if [[ ${MACHINE_TYPE} == 'armhf' ]]; then
 elif [[ ${MACHINE_TYPE} == 'arm64' || ${UNAME_TYPE} == 'x86_64' ]]; then
     INFLUX=$(whiptail --title "Mycodo Installer: Measurement Database" \
                       --backtitle "Mycodo" \
-                      --menu "Install Influxdb?\n\nIf you do not install InfluxDB now, you will need to set the InfluxDB server/credential settings in the Configuration after Mycodo is installed." 20 68 4 \
-                      "1)" "Install Influxdb 1.x (default)" \
-                      "2)" "Install Influxdb 2.x (experimental)" \
-                      "0)" "Do Not Install Influxdb" \
+                      --menu "Install Influxdb?\n\nIf you do not install InfluxDB now, you will need to configure the InfluxDB server settings and credentials after Mycodo is installed. If using a 32-bit CPU, you can only use 1.x (do not use 2.x, as it only works with 64-bit CPUs)." 20 68 4 \
+                      "0)" "Install Influxdb 2.x (recommended)" \
+                      "1)" "Install Influxdb 1.x (old)" \
+                      "2)" "Do Not Install Influxdb" \
                       3>&1 1>&2 2>&3)
     exitstatus=$?
     if [ $exitstatus != 0 ]; then
@@ -129,7 +129,7 @@ else
     exit 1
 fi
 
-if [[ ${INFLUX} == '0)' ]]; then
+if [[ ${INFLUX} == '2)' ]]; then
     clear
     INSTALL=$(whiptail --title "Mycodo Installer: Measurement Database" \
                        --backtitle "Mycodo" \
@@ -186,13 +186,13 @@ ${INSTALL_CMD} setup-virtualenv 2>&1 | tee -a "${LOG_LOCATION}"
 ${INSTALL_CMD} update-pip3 2>&1 | tee -a "${LOG_LOCATION}"
 ${INSTALL_CMD} update-pip3-packages 2>&1 | tee -a "${LOG_LOCATION}"
 ${INSTALL_CMD} install-wiringpi 2>&1 | tee -a "${LOG_LOCATION}"
-if [[ ${INFLUX} == '1)' ]]; then
+if [[ ${INFLUX} == '0)' ]]; then
+    ${INSTALL_CMD} update-influxdb-2 2>&1 | tee -a "${LOG_LOCATION}"
+    ${INSTALL_CMD} update-influxdb-2-db-user 2>&1 | tee -a "${LOG_LOCATION}"
+elif [[ ${INFLUX} == '1)' ]]; then
     ${INSTALL_CMD} update-influxdb-1 2>&1 | tee -a "${LOG_LOCATION}"
     ${INSTALL_CMD} update-influxdb-1-db-user 2>&1 | tee -a "${LOG_LOCATION}"
 elif [[ ${INFLUX} == '2)' ]]; then
-    ${INSTALL_CMD} update-influxdb-2 2>&1 | tee -a "${LOG_LOCATION}"
-    ${INSTALL_CMD} update-influxdb-2-db-user 2>&1 | tee -a "${LOG_LOCATION}"
-elif [[ ${INFLUX} == '0)' ]]; then
     printf "Instructed to not install InfluxDB/n"
 fi
 ${INSTALL_CMD} initialize 2>&1 | tee -a "${LOG_LOCATION}"

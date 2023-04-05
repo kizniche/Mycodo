@@ -939,14 +939,25 @@ class PIDController(AbstractController, threading.Thread):
         return self.PID_Controller.Kd
 
     def function_status(self):
-        total = self.PID_Controller.P_value + self.PID_Controller.I_value + self.PID_Controller.D_value
+        p_value = 0
+        i_value = 0
+        d_value = 0
+
+        if self.PID_Controller.P_value:
+            p_value = self.PID_Controller.P_value
+        if self.PID_Controller.I_value:
+            i_value = self.PID_Controller.I_value
+        if self.PID_Controller.D_value:
+            d_value = self.PID_Controller.D_value
+        total = p_value + i_value + d_value
+
         return_dict = {
             'string_status': "This info is being returned from the PID Controller."
                              f"\nCurrent time: {datetime.datetime.now()}"
                              f"\nControl Variable: {total:.4f} = "
-                             f"{self.PID_Controller.P_value:.4f} (P), "
-                             f"{self.PID_Controller.I_value:.4f} (I), "
-                             f"{self.PID_Controller.D_value:.4f} (D)",
+                             f"{p_value:.4f} (P), "
+                             f"{i_value:.4f} (I), "
+                             f"{d_value:.4f} (D)",
             'error': []
         }
         return return_dict

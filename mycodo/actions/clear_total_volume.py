@@ -23,7 +23,7 @@ ACTION_INFORMATION = {
     'message': 'Clear the total volume saved for a flow meter Input. The Input must have the Clear Total Volume option.',
 
     'usage': 'Executing <strong>self.run_action("ACTION_ID")</strong> will clear the total volume for the selected flow meter Input. '
-             'Executing <strong>self.run_action("ACTION_ID", value={"input_id": "959019d1-c1fa-41fe-a554-7be3366a9c5b"})</strong> will clear the total volume for the flow meter Input with the specified ID.',
+             'Executing <strong>self.run_action("ACTION_ID", value={"input_id": "959019d1-c1fa-41fe-a554-7be3366a9c5b"})</strong> will clear the total volume for the flow meter Input with the specified ID. Don\'t forget to change the input_id value to an actual Input ID that exists in your system.',
 
     'custom_options': [
         {
@@ -58,7 +58,7 @@ class ActionModule(AbstractFunctionAction):
     def initialize(self):
         self.action_setup = True
 
-    def run_action(self, message, dict_vars):
+    def run_action(self, dict_vars):
         try:
             controller_id = dict_vars["value"]["input_id"]
         except:
@@ -69,19 +69,19 @@ class ActionModule(AbstractFunctionAction):
 
         if not this_input:
             msg = f" Error: Input with ID '{controller_id}' not found."
-            message += msg
+            dict_vars['message'] += msg
             self.logger.error(msg)
-            return message
+            return dict_vars
 
-        message += f" Clear total volume of Input {controller_id} ({this_input.name})."
+        dict_vars['message'] += f" Clear total volume of Input {controller_id} ({this_input.name})."
         clear_volume = threading.Thread(
             target=self.control.module_function,
             args=("Input", this_input.unique_id, "clear_total_volume", {},))
         clear_volume.start()
 
-        self.logger.debug(f"Message: {message}")
+        self.logger.debug(f"Message: {dict_vars['message']}")
 
-        return message
+        return dict_vars
 
     def is_setup(self):
         return self.action_setup

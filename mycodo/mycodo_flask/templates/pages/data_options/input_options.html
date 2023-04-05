@@ -189,7 +189,7 @@
 
     {% set custom_options_values = custom_options_values_inputs %}
 
-    {% if ('custom_options' in dict_options and custom_options_values[unique_id]) or
+    {% if 'custom_options' in dict_options or
           'custom_options_message' in dict_options %}
       {% set force_default_value = false %}
   <div class="row small-gutters" style="padding: 0.5em">
