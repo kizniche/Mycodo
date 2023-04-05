@@ -671,6 +671,7 @@ case "${1:-''}" in
         sleep 5
         printf "#### Restarting mycodoflask\n"
         service mycodoflask restart
+        sleep 5
     ;;
     'web-server-disable')
         printf "\n#### Disabling service for nginx web server\n"
