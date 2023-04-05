@@ -49,7 +49,7 @@ spec:
       volumes:
         - name: mycodo-influxdb
           nfs:
-            server: 192.168.1.129
+            server: 192.168.1.247
             path: /volume2/SSD_500GB/mycodoPVs/mycodo-influxdb
 #          persistentVolumeClaim:
 #            claimName: mycodo-influxdb

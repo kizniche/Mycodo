@@ -84,97 +84,97 @@ spec:
       volumes:
         - name: mycodo
           nfs:
-            server: 192.168.1.129
+            server: 192.168.1.247
             path: /volume2/SSD_500GB/mycodoPVs/mycodo
 #          persistentVolumeClaim:
 #            claimName: mycodo
         - name: mycodo-env
           nfs:
-            server: 192.168.1.129
+            server: 192.168.1.247
             path: /volume2/SSD_500GB/mycodoPVs/mycodo-env
 #          persistentVolumeClaim:
 #            claimName: mycodo-env
         - name: mycodo-databases
           nfs:
-            server: 192.168.1.129
+            server: 192.168.1.247
             path: /volume2/SSD_500GB/mycodoPVs/mycodo-databases
 #          persistentVolumeClaim:
 #            claimName: mycodo-databases
         - name: mycodo-cameras
           nfs:
-            server: 192.168.1.129
+            server: 192.168.1.247
             path: /volume2/SSD_500GB/mycodoPVs/mycodo-cameras
 #          persistentVolumeClaim:
 #            claimName: mycodo-cameras
         - name: mycodo-custom-functions
           nfs:
-            server: 192.168.1.129
+            server: 192.168.1.247
             path: /volume2/SSD_500GB/mycodoPVs/mycodo-custom-functions
 #          persistentVolumeClaim:
 #            claimName: mycodo-custom-functions
         - name: mycodo-custom-actions
           nfs:
-            server: 192.168.1.129
+            server: 192.168.1.247
             path: /volume2/SSD_500GB/mycodoPVs/mycodo-custom-actions
 #          persistentVolumeClaim:
 #            claimName: mycodo-custom-actions
         - name: mycodo-custom-inputs
           nfs:
-            server: 192.168.1.129
+            server: 192.168.1.247
             path: /volume2/SSD_500GB/mycodoPVs/mycodo-custom-inputs
 #          persistentVolumeClaim:
 #            claimName: mycodo-custom-inputs
         - name: mycodo-custom-outputs
           nfs:
-            server: 192.168.1.129
+            server: 192.168.1.247
             path: /volume2/SSD_500GB/mycodoPVs/mycodo-custom-outputs
 #          persistentVolumeClaim:
 #            claimName: mycodo-custom-outputs
         - name: mycodo-custom-widgets
           nfs:
-            server: 192.168.1.129
+            server: 192.168.1.247
             path: /volume2/SSD_500GB/mycodoPVs/mycodo-custom-widgets
 #          persistentVolumeClaim:
 #            claimName: mycodo-custom-widgets
         - name: mycodo-custom-user-scripts
           nfs:
-            server: 192.168.1.129
+            server: 192.168.1.247
             path: /volume2/SSD_500GB/mycodoPVs/mycodo-user-scripts
 #          persistentVolumeClaim:
 #            claimName: mycodo-custom-user-scripts
         - name: mycodo-custom-user-css
           nfs:
-            server: 192.168.1.129
+            server: 192.168.1.247
             path: /volume2/SSD_500GB/mycodoPVs/mycodo-user-css
 #          persistentVolumeClaim:
 #            claimName: mycodo-custom-user-css
         - name: mycodo-custom-user-js
           nfs:
-            server: 192.168.1.129
+            server: 192.168.1.247
             path: /volume2/SSD_500GB/mycodoPVs/mycodo-custom-user-js
 #          persistentVolumeClaim:
 #            claimName: mycodo-custom-user-js
         - name: mycodo-log
           nfs:
-              server: 192.168.1.129
+              server: 192.168.1.247
               path: /volume2/SSD_500GB/mycodoPVs/mycodo-log
 #          persistentVolumeClaim:
 #            claimName: mycodo-log
         - name: mycodo-ssl-certs
           nfs:
-            server: 192.168.1.129
+            server: 192.168.1.247
             path: /volume2/SSD_500GB/mycodoPVs/mycodo-ssl-certs
 #          persistentVolumeClaim:
 #            claimName: mycodo-ssl-certs
         - name: mycodo-influxdb
           nfs:
-            server: 192.168.1.129
+            server: 192.168.1.247
             path: /volume2/SSD_500GB/mycodoPVs/mycodo-influxdb
 #          persistentVolumeClaim:
 #            claimName: mycodo-influxdb
         - name: mycodoflask-claim15
           nfs:
-            server: 192.168.1.129
+            server: 192.168.1.247
             path: /volume2/SSD_500GB/mycodoPVs/mycodo-claim15
 #          persistentVolumeClaim:
 #            claimName: mycodoflask-claim15
