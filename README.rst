@@ -244,6 +244,8 @@ This software includes third party open source software components. Please see i
 Languages
 ---------
 
+Mycodo has been translated to several laguages. Weblate is now used so anyone can contribute to translations. However, due to an increasing number of new languages being added and not translated, only languages that are at least 50% complete will be included in Mycodo as a translation option.
+
 |Translation Table|
 
 -  Native: `English <https://kizniche.github.io/Mycodo/>`__
