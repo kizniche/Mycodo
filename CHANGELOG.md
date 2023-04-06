@@ -21,6 +21,7 @@
 ### Miscellaneous
 
  - Update Python packages
+ - Update the SCD-4x Input adafruit-circuitpython-scd4x version to 1.3.8
 
 
 ## 8.15.7 (2023-03-02)
