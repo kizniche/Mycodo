@@ -20,12 +20,12 @@ measurements_dict = {
     2: {
         'measurement': 'disk_space',
         'unit': 'MB',
-        'name': 'Mycodo Backend RAM'
+        'name': 'Mycodo Backend RAM Used'
     },
     3: {
         'measurement': 'disk_space',
         'unit': 'MB',
-        'name': 'Mycodo Frontend RAM'
+        'name': 'Mycodo Frontend RAM Used'
     }
 }
 
