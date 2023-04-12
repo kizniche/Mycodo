@@ -77,27 +77,37 @@ class InputModule(AbstractInput):
             self.sensor = K30Sensor(bus=f"/dev/i2c-{self.input_dev.i2c_bus}")
 
     def get_measurement(self):
-        """Gets the K30's CO2 concentration in ppmv via UART."""
+        """Gets the K30's CO2 concentration in ppmv via UART or I2C."""
         if not self.sensor:
             self.logger.error("Error 101: Device not set up. See https://kizniche.github.io/Mycodo/Error-Codes#error-101 for more info.")
             return
 
         self.return_dict = copy.deepcopy(measurements_dict)
 
-        if self.interface in ['UART']:
-            self.sensor.flushInput()
-            time.sleep(1)
-            self.sensor.write(bytearray([0xfe, 0x44, 0x00, 0x08, 0x02, 0x9f, 0x25]))
-            time.sleep(.01)
-            resp = self.sensor.read(7)
-            if len(resp) != 0:
-                high = resp[3]
-                low = resp[4]
-                co2 = (high * 256) + low
-                self.value_set(0, co2)
-        elif self.interface in ['I2C']:
+        if self.interface == 'UART':
             try:
-                self.value_set(0, self.sensor.read_co2_ppm())
+                self.sensor.flushInput()
+                time.sleep(1)
+                self.sensor.write(bytearray([0xfe, 0x44, 0x00, 0x08, 0x02, 0x9f, 0x25]))
+                time.sleep(.01)
+                resp = self.sensor.read(7)
+                if len(resp) != 0:
+                    high = resp[3]
+                    low = resp[4]
+                    co2 = (high * 256) + low
+                    self.value_set(0, co2)
+            except:
+                self.logger.exception("UART")
+        elif self.interface == 'I2C':
+            try:
+                co2 = self.sensor.read_co2_ppm()
+                self.logger.debug(f"CO2 measured: {co2}")
+                if co2 < 0:
+                    self.logger.error(f"CO2 measurement ({co2}) cannot be below 0 ppm")
+                elif co2 > 10000:
+                    self.logger.error(f"CO2 measurement ({co2}) cannot be above 10,000 ppm")
+                else:
+                    self.value_set(0, co2)
             except:
                 self.logger.exception("I2C")
 
