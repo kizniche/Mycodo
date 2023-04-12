@@ -154,6 +154,8 @@ class InputModule(AbstractInput):
         if self.persist_settings:
             self.sensor.persist_settings()
 
+        self.sensor.start_periodic_measurement()
+
     def get_measurement(self):
         """Gets the measurements."""
         if not self.sensor:
@@ -161,8 +163,6 @@ class InputModule(AbstractInput):
             return
 
         self.return_dict = copy.deepcopy(measurements_dict)
-
-        self.sensor.start_periodic_measurement()
 
         timer = time.time() + 10
         while not self.sensor.data_ready and time.time() < timer:

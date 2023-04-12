@@ -175,12 +175,10 @@ def execute_at_creation(error, new_widget, dict_widget):
         if custom_options['camera_image_type'] == 'stream':
             can_save, error = capable_camera_type('stream', custom_options['camera_id'], error)
             if not can_save:
-                allow_saving = False
                 error.append("This camera type is not capable of streaming")
         elif custom_options['camera_image_type'] in ['new_img', 'tmp_img', 'timelapse']:
             can_save, error = capable_camera_type('image', custom_options['camera_id'], error)
             if not can_save:
-                allow_saving = False
                 error.append("This camera type is not capable of still images")
     except Exception as err:
         error.append("execute_at_creation() error: {}".format(err))

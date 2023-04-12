@@ -1,7 +1,8 @@
 # coding=utf-8
-import time
-
 import copy
+import fcntl
+import io
+import time
 
 from mycodo.inputs.base_input import AbstractInput
 from mycodo.inputs.sensorutils import is_device
@@ -19,13 +20,14 @@ INPUT_INFORMATION = {
     'input_name_unique': 'K30',
     'input_manufacturer': 'CO2Meter',
     'input_name': 'K30',
-    'input_library': 'serial',
+    'input_library': 'serial (UART)',
     'measurements_name': 'CO2',
     'measurements_dict': measurements_dict,
     'url_manufacturer': 'https://www.co2meter.com/products/k-30-co2-sensor-module',
     'url_datasheet': 'http://co2meters.com/Documentation/Datasheets/DS_SE_0118_CM_0024_Revised9%20(1).pdf',
 
     'options_enabled': [
+        'i2c_location',
         'uart_location',
         'uart_baud_rate',
         'period',
@@ -33,7 +35,9 @@ INPUT_INFORMATION = {
     ],
     'options_disabled': ['interface'],
 
-    'interfaces': ['UART'],
+    'interfaces': ['I2C', 'UART'],
+    'i2c_location': ['0x68'],
+    'i2c_address_editable': False,
     'uart_location': '/dev/ttyAMA0',
     'uart_baud_rate': 9600
 }
@@ -44,7 +48,8 @@ class InputModule(AbstractInput):
     def __init__(self, input_dev, testing=False):
         super().__init__(input_dev, testing=testing, name=__name__)
 
-        self.ser = None
+        self.sensor = None
+        self.interface = None
 
         if not testing:
             self.try_initialize()
@@ -52,37 +57,105 @@ class InputModule(AbstractInput):
     def initialize(self):
         import serial
 
+        self.interface = self.input_dev.interface
+
         # Check if device is valid
-        if is_device(self.input_dev.uart_location):
-            try:
-                self.ser = serial.Serial(
-                    port=self.input_dev.uart_location,
-                    baudrate=self.input_dev.baud_rate,
-                    timeout=1,
-                    writeTimeout=5)
-            except serial.SerialException:
-                self.logger.exception('Opening serial')
-        else:
-            self.logger.error('Could not open "{dev}". Check the device location is correct.'.format(
-                dev=self.input_dev.uart_location))
+        if self.interface in ['UART']:
+            if is_device(self.input_dev.uart_location):
+                try:
+                    self.sensor = serial.Serial(
+                        port=self.input_dev.uart_location,
+                        baudrate=self.input_dev.baud_rate,
+                        timeout=1,
+                        writeTimeout=5)
+                except serial.SerialException:
+                    self.logger.exception('Opening serial')
+            else:
+                self.logger.error('Could not open "{dev}". Check the device location is correct.'.format(
+                    dev=self.input_dev.uart_location))
+        elif self.interface in ['I2C']:
+            self.sensor = K30Sensor(bus=f"/dev/i2c-{self.input_dev.i2c_bus}")
 
     def get_measurement(self):
         """Gets the K30's CO2 concentration in ppmv via UART."""
-        if not self.ser:
+        if not self.sensor:
             self.logger.error("Error 101: Device not set up. See https://kizniche.github.io/Mycodo/Error-Codes#error-101 for more info.")
             return
 
         self.return_dict = copy.deepcopy(measurements_dict)
 
-        self.ser.flushInput()
-        time.sleep(1)
-        self.ser.write(bytearray([0xfe, 0x44, 0x00, 0x08, 0x02, 0x9f, 0x25]))
-        time.sleep(.01)
-        resp = self.ser.read(7)
-        if len(resp) != 0:
-            high = resp[3]
-            low = resp[4]
-            co2 = (high * 256) + low
-            self.value_set(0, co2)
+        if self.interface in ['UART']:
+            self.sensor.flushInput()
+            time.sleep(1)
+            self.sensor.write(bytearray([0xfe, 0x44, 0x00, 0x08, 0x02, 0x9f, 0x25]))
+            time.sleep(.01)
+            resp = self.sensor.read(7)
+            if len(resp) != 0:
+                high = resp[3]
+                low = resp[4]
+                co2 = (high * 256) + low
+                self.value_set(0, co2)
+        elif self.interface in ['I2C']:
+            try:
+                self.value_set(0, self.sensor.read_co2_ppm())
+            except:
+                self.logger.exception("I2C")
 
         return self.return_dict
+
+
+class K30Sensor:
+    """
+    From https://gist.github.com/galexite/12c9e4a5b21070d05619b31a1c970933
+    Copyright (c) 2019 George White.
+    Permission is hereby granted, free of charge, to any person obtaining a copy of
+    this software and associated documentation files (the "Software"), to deal in
+    the Software without restriction, including without limitation the rights to
+    use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of
+    the Software, and to permit persons to whom the Software is furnished to do so,
+    subject to the following conditions:
+    The above copyright notice and this permission notice shall be included in all
+    copies or substantial portions of the Software.
+    THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+    IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS
+    FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR
+    COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER
+    IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
+    CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+
+    Changes: Updated to work with Python 3
+    """
+    I2C_SLAVE = 0x0703
+    CMD_READ_REG = 0x22
+    REG_CO2_PPM = 0x08
+
+    def __init__(self, bus, addr=0x68):
+        self.fr = io.open(bus, "rb", buffering=0)
+        self.fw = io.open(bus, "wb", buffering=0)
+        
+        fcntl.ioctl(self.fr, self.I2C_SLAVE, addr)
+        fcntl.ioctl(self.fw, self.I2C_SLAVE, addr)
+        
+    def write(self, *data):
+        if type(data) is list or type(data) is tuple:
+            data = bytes(data)
+        self.fw.write(data)
+    
+    def read(self, count):
+        s = self.fr.read(count)
+        l = []
+        if len(s) != 0:
+            for n in s:
+                l.append(n)
+        return l
+    
+    def read_co2_ppm(self):
+        checksum = (self.CMD_READ_REG + self.REG_CO2_PPM) & 0xFF
+        self.write(self.CMD_READ_REG, 0, self.REG_CO2_PPM, checksum)
+        time.sleep(0.1)
+        response = self.read(4)
+        return ((response[1] & 0xFF) << 8) | (response[2] & 0xFF)
+    
+    def close(self):
+        self.fw.close()
+        self.fr.close()

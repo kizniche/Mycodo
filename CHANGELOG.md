@@ -1,3 +1,10 @@
+## 8.15.9 (Unreleased)
+
+### Features
+
+ - Add I2C interface for K30 Input
+
+
 ## 8.15.8 (2023-04-06)
 
 ### Bugfixes
