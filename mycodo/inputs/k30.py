@@ -100,9 +100,11 @@ class InputModule(AbstractInput):
                 self.logger.exception("UART")
         elif self.interface == 'I2C':
             try:
-                co2 = self.sensor.read_co2_ppm()
-                self.logger.debug(f"CO2 measured: {co2}")
-                if co2 < 0 or co2 > 10000:
+                co2, checksum_returned, checksum_calculated = self.sensor.read_co2_ppm()
+                self.logger.debug(f"CO2: {co2}, Checksum returned: {checksum_returned}, Checksum calculated: {checksum_calculated}")
+                if checksum_calculated != checksum_returned:
+                    self.logger.error(f"Bad checksum ({checksum_returned} returned != {checksum_calculated} calculated)")
+                elif co2 < 0 or co2 > 10000:
                     self.logger.error(f"CO2 measurement must be between 0 and 10,000 ppm (measured: {co2})")
                 else:
                     self.value_set(0, co2)
@@ -165,7 +167,10 @@ class K30Sensor:
         self.write(self.CMD_READ_REG, 0, self.REG_CO2_PPM, checksum)
         time.sleep(0.1)
         response = self.read(4)
-        return ((response[1] & 0xFF) << 8) | (response[2] & 0xFF)
+        checksum_calculated = response[0] + response[1] + response[2]
+        checksum_returned = response[3]
+        co2 = ((response[1] & 0xFF) << 8) | (response[2] & 0xFF)
+        return co2, checksum_returned, checksum_calculated
 
     def close(self):
         self.fw.close()
