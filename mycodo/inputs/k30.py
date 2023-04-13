@@ -102,10 +102,8 @@ class InputModule(AbstractInput):
             try:
                 co2 = self.sensor.read_co2_ppm()
                 self.logger.debug(f"CO2 measured: {co2}")
-                if co2 < 0:
-                    self.logger.error(f"CO2 measurement ({co2}) cannot be below 0 ppm")
-                elif co2 > 10000:
-                    self.logger.error(f"CO2 measurement ({co2}) cannot be above 10,000 ppm")
+                if co2 < 0 or co2 > 10000:
+                    self.logger.error(f"CO2 measurement must be between 0 and 10,000 ppm (measured: {co2})")
                 else:
                     self.value_set(0, co2)
             except:
@@ -113,6 +111,9 @@ class InputModule(AbstractInput):
 
         return self.return_dict
 
+    def pre_stop(self):
+        if self.interface == 'I2C':
+            self.sensor.close()
 
 class K30Sensor:
     """
@@ -145,12 +146,12 @@ class K30Sensor:
         
         fcntl.ioctl(self.fr, self.I2C_SLAVE, addr)
         fcntl.ioctl(self.fw, self.I2C_SLAVE, addr)
-        
+
     def write(self, *data):
         if type(data) is list or type(data) is tuple:
             data = bytes(data)
         self.fw.write(data)
-    
+
     def read(self, count):
         s = self.fr.read(count)
         l = []
@@ -158,14 +159,14 @@ class K30Sensor:
             for n in s:
                 l.append(n)
         return l
-    
+
     def read_co2_ppm(self):
         checksum = (self.CMD_READ_REG + self.REG_CO2_PPM) & 0xFF
         self.write(self.CMD_READ_REG, 0, self.REG_CO2_PPM, checksum)
         time.sleep(0.1)
         response = self.read(4)
         return ((response[1] & 0xFF) << 8) | (response[2] & 0xFF)
-    
+
     def close(self):
         self.fw.close()
         self.fr.close()
