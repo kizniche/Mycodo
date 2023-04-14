@@ -49,7 +49,7 @@ class InputModule(AbstractInput):
         super().__init__(input_dev, testing=testing, name=__name__)
 
         self.sensor = None
-        self.interface = None
+        self.interface = input_dev.interface
 
         if not testing:
             self.try_initialize()
@@ -57,11 +57,9 @@ class InputModule(AbstractInput):
     def initialize(self):
         import serial
 
-        self.interface = self.input_dev.interface
-
         # Check if device is valid
-        if self.interface in ['UART']:
-            if is_device(self.input_dev.uart_location):
+        if self.interface == 'UART':
+            if self.input_dev.uart_location and is_device(self.input_dev.uart_location):
                 try:
                     self.sensor = serial.Serial(
                         port=self.input_dev.uart_location,
@@ -73,8 +71,8 @@ class InputModule(AbstractInput):
             else:
                 self.logger.error('Could not open "{dev}". Check the device location is correct.'.format(
                     dev=self.input_dev.uart_location))
-        elif self.interface in ['I2C']:
-            self.sensor = K30Sensor(bus=f"/dev/i2c-{self.input_dev.i2c_bus}")
+        elif self.interface == 'I2C':
+            self.sensor = K30Sensor(bus=f"/dev/i2c-{self.input_dev.i2c_bus}", logger=self.logger)
 
     def get_measurement(self):
         """Gets the K30's CO2 concentration in ppmv via UART or I2C."""
@@ -89,7 +87,7 @@ class InputModule(AbstractInput):
                 self.sensor.flushInput()
                 time.sleep(1)
                 self.sensor.write(bytearray([0xfe, 0x44, 0x00, 0x08, 0x02, 0x9f, 0x25]))
-                time.sleep(.01)
+                time.sleep(0.5)
                 resp = self.sensor.read(7)
                 if len(resp) != 0:
                     high = resp[3]
@@ -100,11 +98,12 @@ class InputModule(AbstractInput):
                 self.logger.exception("UART")
         elif self.interface == 'I2C':
             try:
-                co2, checksum_returned, checksum_calculated = self.sensor.read_co2_ppm()
-                self.logger.debug(f"CO2: {co2}, Checksum returned: {checksum_returned}, Checksum calculated: {checksum_calculated}")
-                if checksum_calculated != checksum_returned:
-                    self.logger.error(f"Bad checksum ({checksum_returned} returned != {checksum_calculated} calculated)")
-                elif co2 < 0 or co2 > 10000:
+                co2, csum_ret, csum_calc = self.sensor.read_co2_ppm()
+
+                checksum_str = "GOOD" if csum_calc == csum_ret else "BAD"
+                self.logger.debug(f"CO2: {co2}, Checksum {checksum_str} (returned: {csum_ret}, calculated: {csum_calc})")
+
+                if co2 < 0 or co2 > 10000:
                     self.logger.error(f"CO2 measurement must be between 0 and 10,000 ppm (measured: {co2})")
                 else:
                     self.value_set(0, co2)
@@ -142,7 +141,9 @@ class K30Sensor:
     CMD_READ_REG = 0x22
     REG_CO2_PPM = 0x08
 
-    def __init__(self, bus, addr=0x68):
+    def __init__(self, bus, addr=0x68, logger=None):
+        self.logger = logger
+
         self.fr = io.open(bus, "rb", buffering=0)
         self.fw = io.open(bus, "wb", buffering=0)
         
@@ -165,8 +166,10 @@ class K30Sensor:
     def read_co2_ppm(self):
         checksum = (self.CMD_READ_REG + self.REG_CO2_PPM) & 0xFF
         self.write(self.CMD_READ_REG, 0, self.REG_CO2_PPM, checksum)
-        time.sleep(0.1)
+        time.sleep(0.5)
         response = self.read(4)
+        if self.logger:
+            self.logger.debug(f"K30 sensor response: {response}")
         checksum_calculated = response[0] + response[1] + response[2]
         checksum_returned = response[3]
         co2 = ((response[1] & 0xFF) << 8) | (response[2] & 0xFF)
