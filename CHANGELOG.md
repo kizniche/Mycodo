@@ -3,6 +3,7 @@
 ### Features
 
  - Add I2C interface for K30 Input
+ - Add Day to unit conversion
 
 
 ## 8.15.8 (2023-04-06)

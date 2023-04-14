@@ -112,7 +112,7 @@ MEASUREMENTS = {
     'duration_time': {
         'name': lazy_gettext('Duration'),
         'meas': 'duration_time',
-        'units': ['s', 'minute', 'h']},
+        'units': ['s', 'minute', 'h', 'day']},
     'duty_cycle': {
         'name': lazy_gettext('Duty Cycle'),
         'meas': 'duty_cycle',
@@ -364,6 +364,9 @@ UNITS = {
     'cpu_load': {
         'name': lazy_gettext('CPU Load'),
         'unit': 'Proc.'},
+    'day': {
+        'name': lazy_gettext('Day'),
+        'unit': 'day'},
     'decimal': {
         'name': lazy_gettext('Decimal'),
         'unit': ''},
@@ -630,10 +633,16 @@ UNIT_CONVERSIONS = [
     # Time
     ('s', 'minute', 'x/60'),
     ('s', 'h', 'x/60/60'),
+    ('s', 'day', 'x/60/60/24'),
     ('minute', 's', 'x*60'),
     ('minute', 'h', 'x/60'),
+    ('minute', 'day', 'x/60/24'),
     ('h', 's', 'x*60*60'),
     ('h', 'minute', 'x*60'),
+    ('h', 'day', 'x*60*24'),
+    ('day', 's', 'x*60*60*24'),
+    ('day', 'minute', 'x*60*24'),
+    ('day', 'h', 'x*24'),
 
     # Volt
     ('V', 'mV', 'x*1000'),
