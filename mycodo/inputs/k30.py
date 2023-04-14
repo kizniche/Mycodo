@@ -49,7 +49,7 @@ class InputModule(AbstractInput):
         super().__init__(input_dev, testing=testing, name=__name__)
 
         self.sensor = None
-        self.interface = input_dev.interface
+        self.interface = None
 
         if not testing:
             self.try_initialize()
@@ -57,7 +57,9 @@ class InputModule(AbstractInput):
     def initialize(self):
         import serial
 
-        # Check if device is valid
+        self.interface = self.input_dev.interface
+        self.logger.debug(f"K30 Interface: {self.interface}")
+
         if self.interface == 'UART':
             if self.input_dev.uart_location and is_device(self.input_dev.uart_location):
                 try:
