@@ -31,7 +31,9 @@
       {{custom_options_values[unique_id][each_option['id']]}}
     {%- elif force_default_value and 'default_value' in each_option -%}
       {{each_option['default_value']}}
-    {%- endif -%}">
+    {%- endif -%}"
+    {%- if 'disabled' in each_option and each_option['disabled'] %} disabled{%- endif -%}
+    >
   </div>
 </div>
 
@@ -40,7 +42,9 @@
 <div class="col-12">
   <label class="control-label" for="{{name_prefix}}{{each_option['id']}}">{{each_option['name']}}</label>
   <div>
-    <textarea style="font-family:monospace;" class="form-control" id="{{name_prefix}}{{each_option['id']}}" name="{{name_prefix}}{{each_option['id']}}" rows="{{each_option['lines']}}" type="text" title="{{each_option['phrase']}}">
+    <textarea style="font-family:monospace;" class="form-control" id="{{name_prefix}}{{each_option['id']}}" name="{{name_prefix}}{{each_option['id']}}" rows="{{each_option['lines']}}" type="text" title="{{each_option['phrase']}}"
+    {%- if 'disabled' in each_option and each_option['disabled'] %} disabled{% endif -%}
+    >
     {%- if channel_options and custom_options_values[unique_id][channel][each_option['id']] is not none -%}
       {{custom_options_values[unique_id][channel][each_option['id']]}}
     {%- elif custom_options_values and custom_options_values[unique_id][each_option['id']] -%}
@@ -60,7 +64,9 @@
     <input id="{{name_prefix}}{{each_option['id']}}" name="{{name_prefix}}{{each_option['id']}}" title="{{each_option['phrase']}}" type="checkbox" value="y"
       {%- if (channel_options and custom_options_values[unique_id][channel][each_option['id']]) or
              (custom_options_values and custom_options_values[unique_id][each_option['id']]) or
-             (force_default_value and 'default_value' in each_option and each_option['default_value'])%} checked{% endif %}>
+             (force_default_value and 'default_value' in each_option and each_option['default_value'])%} checked{% endif %}
+    {%- if 'disabled' in each_option and each_option['disabled'] %} disabled{% endif -%}
+    >
   </div>
 </div>
 
@@ -93,7 +99,9 @@
 <div class="col-auto">
   <label class="control-label" for="{{name_prefix}}{{each_option['id']}}">{{each_option['name']}}</label>
   <div>
-    <select class="form-control form-tooltip form-dropdown" data-placement="top" id="{{name_prefix}}{{each_option['id']}}" name="{{name_prefix}}{{each_option['id']}}" title="{{each_option['phrase']}}">
+    <select class="form-control form-tooltip form-dropdown" data-placement="top" id="{{name_prefix}}{{each_option['id']}}" name="{{name_prefix}}{{each_option['id']}}" title="{{each_option['phrase']}}"
+    {%- if 'disabled' in each_option and each_option['disabled'] %} disabled{% endif -%}
+    >
       <option value="">{{dict_translation['select_one']['title']}}</option>
       {% if each_option['id'] + '_choices' in custom_options_values[unique_id] %}
         {% set choices = custom_options_values[unique_id][each_option['id'] + '_choices'] %}
@@ -136,7 +144,9 @@
 <div class="col-auto">
   <label class="control-label" for="{{name_prefix}}{{each_option['id']}}">{{each_option['name']}}</label>
   <div>
-    <select class="form-control form-tooltip form-dropdown" data-placement="top" id="{{name_prefix}}{{each_option['id']}}" name="{{name_prefix}}{{each_option['id']}}" title="{{each_option['phrase']}}">
+    <select class="form-control form-tooltip form-dropdown" data-placement="top" id="{{name_prefix}}{{each_option['id']}}" name="{{name_prefix}}{{each_option['id']}}" title="{{each_option['phrase']}}"
+    {%- if 'disabled' in each_option and each_option['disabled'] %} disabled{% endif -%}
+    >
       <option value="">{{dict_translation['select_one']['title']}}</option>
       {% for name, choices in form_choices %}
         {% if name in each_option['options_select'] %}
@@ -154,7 +164,9 @@
 <div class="col-auto">
   <label class="control-label" for="{{name_prefix}}{{each_option['id']}}">{{each_option['name']}}</label>
   <div>
-    <select class="form-control form-tooltip form-dropdown" data-placement="top" id="{{name_prefix}}{{each_option['id']}}" name="{{name_prefix}}{{each_option['id']}}" title="{{each_option['phrase']}}">
+    <select class="form-control form-tooltip form-dropdown" data-placement="top" id="{{name_prefix}}{{each_option['id']}}" name="{{name_prefix}}{{each_option['id']}}" title="{{each_option['phrase']}}"
+    {%- if 'disabled' in each_option and each_option['disabled'] %} disabled{% endif -%}
+    >
       <option value="">{{dict_translation['select_one']['title']}}</option>
       {% for each_choice in choices_input if each_choice['value'].startswith(each_input.unique_id) -%}
       <option value="{{each_choice['value']}}"{% if (channel_options and each_choice['value'] == custom_options_values[unique_id][channel][each_option['id']]) or (custom_options_values and each_choice['value'] == custom_options_values[unique_id][each_option['id']]) -%} selected{% endif %}>{{each_choice['item']}}</option>
@@ -168,7 +180,9 @@
 <div class="col-auto">
   <label class="control-label" for="{{name_prefix}}{{each_option['id']}}">{{each_option['name']}}</label>
   <div>
-    <select class="form-control form-tooltip form-dropdown" data-placement="top" id="{{name_prefix}}{{each_option['id']}}" name="{{name_prefix}}{{each_option['id']}}" title="{{each_option['phrase']}}">
+    <select class="form-control form-tooltip form-dropdown" data-placement="top" id="{{name_prefix}}{{each_option['id']}}" name="{{name_prefix}}{{each_option['id']}}" title="{{each_option['phrase']}}"
+    {%- if 'disabled' in each_option and each_option['disabled'] %} disabled{% endif -%}
+    >
       <option value="">{{dict_translation['select_one']['title']}}</option>
       {% if 'Output_Channels' in each_option['options_select'] %}
         {% for each_output_form in choices_output_channels -%}
@@ -184,7 +198,9 @@
 <div class="col-auto">
   <label class="control-label" for="{{name_prefix}}{{each_option['id']}}">{{each_option['name']}}</label>
   <div>
-    <select class="form-control form-tooltip form-dropdown" data-placement="top" id="{{name_prefix}}{{each_option['id']}}" name="{{name_prefix}}{{each_option['id']}}" title="{{each_option['phrase']}}">
+    <select class="form-control form-tooltip form-dropdown" data-placement="top" id="{{name_prefix}}{{each_option['id']}}" name="{{name_prefix}}{{each_option['id']}}" title="{{each_option['phrase']}}"
+    {%- if 'disabled' in each_option and each_option['disabled'] %} disabled{% endif -%}
+    >
       <option value="">{{dict_translation['select_one']['title']}}</option>
       {% if 'Output_Channels_Measurements' in each_option['options_select'] %}
         {% for each_output_form in choices_output_channels_measurements -%}
@@ -230,7 +246,9 @@
 <div class="col-auto">
   <label class="control-label" for="{{name_prefix}}{{each_option['id']}}">{{each_option['name']}}</label>
   <div>
-    <select class="form-control form-tooltip form-dropdown" data-placement="top" id="{{name_prefix}}{{each_option['id']}}" name="{{name_prefix}}{{each_option['id']}}" title="{{each_option['phrase']}}" size="{{multiselect_size}}" multiple="">
+    <select class="form-control form-tooltip form-dropdown" data-placement="top" id="{{name_prefix}}{{each_option['id']}}" name="{{name_prefix}}{{each_option['id']}}" title="{{each_option['phrase']}}" size="{{multiselect_size}}" multiple=""
+    {%- if 'disabled' in each_option and each_option['disabled'] %} disabled{% endif -%}
+    >
       {% for name, choices in form_choices %}
         {% if name in each_option['options_select'] %}
           {% for each_choice in choices -%}
@@ -257,7 +275,9 @@
 <div class="col-auto">
   <label class="control-label" for="{{name_prefix}}{{each_option['id']}}">{{each_option['name']}}</label>
   <div>
-    <select class="form-control form-tooltip form-dropdown" data-placement="top" id="{{name_prefix}}{{each_option['id']}}" name="{{name_prefix}}{{each_option['id']}}" title="{{each_option['phrase']}}">
+    <select class="form-control form-tooltip form-dropdown" data-placement="top" id="{{name_prefix}}{{each_option['id']}}" name="{{name_prefix}}{{each_option['id']}}" title="{{each_option['phrase']}}"
+    {%- if 'disabled' in each_option and each_option['disabled'] %} disabled{% endif -%}
+    >
       <option value="">{{dict_translation['select_one']['title']}}</option>
       {% for name, devices in form_choices %}
         {% if name in each_option['options_select'] %}
@@ -281,7 +301,9 @@
 <div class="col-auto">
   <label class="control-label" for="{{name_prefix}}{{each_option['id']}}">{{each_option['name']}}</label>
   <div>
-    <select class="form-control form-tooltip form-dropdown" data-placement="top" id="{{name_prefix}}{{each_option['id']}}" name="{{name_prefix}}{{each_option['id']}}" title="{{each_option['phrase']}}">
+    <select class="form-control form-tooltip form-dropdown" data-placement="top" id="{{name_prefix}}{{each_option['id']}}" name="{{name_prefix}}{{each_option['id']}}" title="{{each_option['phrase']}}"
+    {%- if 'disabled' in each_option and each_option['disabled'] %} disabled{% endif -%}
+    >
       <option value="">{{dict_translation['select_one']['title']}}</option>
       {% for each_measure_name_safe, each_measure in dict_measurements.items() %}
       <option value="{{each_measure_name_safe}}"
@@ -301,7 +323,9 @@
 <div class="col-auto">
   <label class="control-label" for="{{name_prefix}}{{each_option['id']}}">{{each_option['name']}}</label>
   <div>
-    <select class="form-control form-tooltip form-dropdown" data-placement="top" id="{{name_prefix}}{{each_option['id']}}" name="{{name_prefix}}{{each_option['id']}}" title="{{each_option['phrase']}}">
+    <select class="form-control form-tooltip form-dropdown" data-placement="top" id="{{name_prefix}}{{each_option['id']}}" name="{{name_prefix}}{{each_option['id']}}" title="{{each_option['phrase']}}"
+    {%- if 'disabled' in each_option and each_option['disabled'] %} disabled{% endif -%}
+    >
       <option value="">{{dict_translation['select_one']['title']}}</option>
       {% for each_unit_name_safe, each_unit in dict_units.items() %}
       <option value="{{each_unit_name_safe}}"
@@ -319,7 +343,9 @@
     {% elif each_option['type'] == 'button' %}
 
   <div class="col-auto small-gutters">
-      <input onclick="return $(this).processRequest(this, 'custom_button_{{each_option['id']}}');" name="custom_button_{{each_option['id']}}" title="{{each_option['phrase']}}" class="form-control btn btn-primary btn-sm btn-block" type="button" value="{{each_option['name']}}"/>
+      <input onclick="return $(this).processRequest(this, 'custom_button_{{each_option['id']}}');" name="custom_button_{{each_option['id']}}" title="{{each_option['phrase']}}" class="form-control btn btn-primary btn-sm btn-block" type="button" value="{{each_option['name']}}"
+      {%- if 'disabled' in each_option and each_option['disabled'] %} disabled{% endif -%}
+      />
   </div>
 
     {% endif %}

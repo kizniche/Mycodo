@@ -4,6 +4,7 @@
 
  - Add I2C interface for K30 Input
  - Add Day to unit conversion
+ - Add ability to disable any Input/Output/Function/Widget option (user can view but not change)
 
 
 ## 8.15.8 (2023-04-06)

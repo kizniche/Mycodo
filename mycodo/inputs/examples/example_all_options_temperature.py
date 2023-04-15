@@ -225,6 +225,14 @@ INPUT_INFORMATION = {
             'name': 'Fan On Duration (Seconds)',
             'phrase': 'How long to turn the fan on before acquiring measurements'
         },
+        {  # Adding 'disabled': True will make the option unable to be changed. Useful for default options or options determined as a result of other options.
+            'id': 'disabled_option_1',
+            'type': 'text',
+            'default_value': 'Disabled Text Field',
+            'disabled': True,
+            'name': 'Disabled Option',
+            'phrase': "The user can't change this option"
+        },
         {  # This message will be displayed on its own line
             'type': 'message',
             'default_value': 'Another message between options',
