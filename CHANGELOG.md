@@ -1,5 +1,9 @@
 ## 8.15.9 (Unreleased)
 
+### Bugfixes
+
+ - Fix setting Camera timelapse duration to 0
+
 ### Features
 
  - Add I2C interface for K30 Input

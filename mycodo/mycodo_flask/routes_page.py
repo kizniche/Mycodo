@@ -208,7 +208,7 @@ def page_camera():
             error = []
             if mod_camera.stream_started:
                 error.append("Cannot start time-lapse if stream is active.")
-            if not form_camera.timelapse_runtime_sec.data:
+            if form_camera.timelapse_runtime_sec.data is None or form_camera.timelapse_runtime_sec.data < 0:
                 error.append("Must enter Run Time.")
             if not form_camera.timelapse_interval.data:
                 error.append("Must enter Interval.")
@@ -216,14 +216,15 @@ def page_camera():
                 for each_err in error:
                     flash(each_err, "error")
                 return redirect(url_for('routes_page.page_camera'))
+
             now = time.time()
             mod_camera.timelapse_started = True
             mod_camera.timelapse_start_time = now
             timelapse_runtime_sec = float(form_camera.timelapse_runtime_sec.data)
-            if form_camera.timelapse_runtime_sec.data and timelapse_runtime_sec < 315360000:
+            if form_camera.timelapse_runtime_sec.data and timelapse_runtime_sec < 315600000:
                 mod_camera.timelapse_end_time = now + timelapse_runtime_sec
-            else:
-                mod_camera.timelapse_end_time = now + 315360000
+            elif form_camera.timelapse_runtime_sec.data == 0:  # Run forever (10 years)
+                mod_camera.timelapse_end_time = now + 315600000
             mod_camera.timelapse_interval = form_camera.timelapse_interval.data
             mod_camera.timelapse_next_capture = now
             mod_camera.timelapse_capture_number = 0
