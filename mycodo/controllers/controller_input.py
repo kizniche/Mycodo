@@ -201,14 +201,13 @@ class InputController(AbstractController, threading.Thread):
                             else:
                                 # Pre-output has turned off, now measure
                                 self.update_measure()
-
-                            self.pre_output_activated = False
-                            self.get_new_measurement = False
                         finally:
-                            # always remove lock
                             self.lf.lock_release(self.pre_output_lock_file)
                     else:
                         self.logger.error(f"Pre-output lock not found at {self.pre_output_lock_file}")
+
+                    self.pre_output_activated = False
+                    self.get_new_measurement = False
 
                 elif not self.pre_output_setup:
                     # Pre-output not enabled, just measure
