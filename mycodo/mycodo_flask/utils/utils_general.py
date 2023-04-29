@@ -1800,15 +1800,12 @@ def custom_command(controller_type, dict_device, unique_id, form):
                     'wait_for_return' in options[button_id] and
                     options[button_id]['wait_for_return']):
                 use_thread = False
-            status = control.module_function(
+            status, msg = control.module_function(
                 controller_type, unique_id, button_id, args_dict, use_thread)
             if status:
-                if status[0]:
-                    messages["error"].append("Custom Button: {}".format(status[1]))
-                else:
-                    messages["success"].append("Custom Button: {}".format(status[1]))
+                messages["error"].append("Custom Button: {}".format(msg))
             else:
-                messages["error"].append("Custom Button didn't receive a return value")
+                messages["success"].append("Custom Button: {}".format(msg))
 
     except Exception as except_msg:
         logger.exception(1)

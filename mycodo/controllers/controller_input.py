@@ -443,21 +443,25 @@ class InputController(AbstractController, threading.Thread):
         self.next_measurement = time.time()
         return 0, "Input instructed to begin acquiring measurements"
 
-    def call_module_function(self, button_id, args_dict, thread=True):
+    def call_module_function(self, button_id, args_dict, thread=True, return_from_function=False):
         """Execute function from custom action button press."""
         try:
             run_command = getattr(self.measure_input, button_id)
-            if thread:
+            if not thread or return_from_function:
+                return_val = run_command(args_dict)
+                if return_from_function:
+                    return 0, return_val
+                else:
+                    return 0, f"Command sent to Input Controller. Returned: {return_val}"
+            else:
                 thread_run_command = threading.Thread(
                     target=run_command,
                     args=(args_dict,))
                 thread_run_command.start()
                 return 0, "Command sent to Input Controller and is running in the background."
-            else:
-                return_val = run_command(args_dict)
-                return 0, f"Command sent to Input Controller. Returned: {return_val}"
+
         except Exception as err:
-            msg = f"Error executing button press function '{button_id}': {err}"
+            msg = f"Error executing function '{button_id}': {err}"
             self.logger.exception(msg)
             return 1, msg
 

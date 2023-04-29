@@ -269,10 +269,10 @@ class DaemonControl:
             smtp.user, smtp.passw, smtp.email_from,
             recipients, message, subject=subject)
 
-    def module_function(self, controller_type, unique_id, button_id, args_dict, thread=True):
+    def module_function(self, controller_type, unique_id, button_id, args_dict, thread=True, return_from_function=False):
         try:
             return self.proxy().module_function(
-                controller_type, unique_id, button_id, args_dict, thread)
+                controller_type, unique_id, button_id, args_dict, thread=thread, return_from_function=return_from_function)
         except Exception:
             return 0, traceback.format_exc()
 

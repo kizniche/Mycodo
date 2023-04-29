@@ -415,7 +415,7 @@ class DaemonController:
             return f"Exception: {except_msg}"
 
 
-    def module_function(self, controller_type, unique_id, button_id, args_dict, thread=True):
+    def module_function(self, controller_type, unique_id, button_id, args_dict, thread=True, return_from_function=False):
         """
         Call a module function
 
@@ -432,23 +432,25 @@ class DaemonController:
         :type args_dict: dict
         :param thread: execute the function as a thread or wait to get a return value
         :type thread: bool
+        :param return_from_function: return the object returned from the function, rather than merely a status string
+        :type return_from_function: bool
         """
         message = None
         try:
             if controller_type == "Input":
                 if unique_id in self.controller["Input"]:
                     return self.controller["Input"][unique_id].call_module_function(
-                        button_id, args_dict, thread=thread)
+                        button_id, args_dict, thread=thread, return_from_function=return_from_function)
                 else:
                     message = f"Attempting to call {button_id}() in inactive Input Controller with ID {unique_id}. Only active Input Controllers can have functions called."
                     self.logger.error(message)
             elif controller_type == "Output":
                 return self.controller["Output"].call_module_function(
-                    button_id, args_dict, unique_id=unique_id, thread=thread)
+                    button_id, args_dict, unique_id=unique_id, thread=thread, return_from_function=False)
             elif controller_type in ["Function", "Function_Custom"]:
                 if unique_id in self.controller["Function"]:
                     return self.controller["Function"][unique_id].call_module_function(
-                        button_id, args_dict, thread=thread)
+                        button_id, args_dict, thread=thread, return_from_function=return_from_function)
                 else:
                     message = f"Attempting to call {button_id}() in inactive Function Controller with ID {unique_id}. Only active Function Controllers can have functions called."
                     self.logger.error(message)
@@ -1132,10 +1134,10 @@ class PyroServer(object):
     def get_condition_measurement_dict(self, condition_id):
         return self.mycodo.get_condition_measurement_dict(condition_id)
 
-    def module_function(self, controller_type, unique_id, button_id, args_dict, thread=True):
+    def module_function(self, controller_type, unique_id, button_id, args_dict, thread=True, return_from_function=False):
         """execute custom button function."""
         return self.mycodo.module_function(
-            controller_type, unique_id, button_id, args_dict, thread)
+            controller_type, unique_id, button_id, args_dict, thread=thread, return_from_function=return_from_function)
 
     def controller_activate(self, cont_id):
         """Activates a controller."""

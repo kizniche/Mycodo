@@ -70,13 +70,12 @@ def camera_img_acquire(image_type, camera_unique_id, max_age):
         args_dict = {
             "tmp_filename": tmp_filename
         }
-        status, response_list = control.module_function(
-            "Function", camera_unique_id, "capture_image", args_dict, thread=False)
+        status, response_dict = control.module_function(
+            "Function", camera_unique_id, "capture_image", args_dict, thread=False, return_from_function=True)
         # find path/filename
-        for each in response_list:
-            if type(each) == dict and 'path' in each and 'filename' in each:
-                path = each['path']
-                filename = each['filename']
+        if type(response_dict) == dict and 'path' in response_dict and 'filename' in response_dict:
+            path = response_dict['path']
+            filename = response_dict['filename']
 
     if not path and not filename:
         msg = "Could not acquire image."
