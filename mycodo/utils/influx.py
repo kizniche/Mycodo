@@ -179,7 +179,7 @@ def add_measurements_influxdb(unique_id, measurements, use_same_timestamp=True, 
 
 def query_flux(unit, unique_id,
                value=None, measure=None, channel=None, ts_str=None,
-               start_str=None, end_str=None, past_sec=None, group_sec=None,
+               start_str=None, end_str=None, min_value=None, max_value=None, past_sec=None, group_sec=None,
                limit=None):
     """Generate influxdb query string (flux edition, using influxdb_client)."""
     from influxdb_client import InfluxDBClient
@@ -218,6 +218,11 @@ def query_flux(unit, unique_id,
         query += f' |> range(stop: {end_str})'
     else:
         query += f' |> range(start: -99999d)'
+
+    if min_value:
+        query += f' |> filter(fn: (r) => r._value > {min_value})'
+    if max_value:
+        query += f' |> filter(fn: (r) => r._value < {max_value})'
 
     query += f' |> filter(fn: (r) => r["_measurement"] == "{unit}")'
     query += f' |> filter(fn: (r) => r["device_id"] == "{unique_id}")'
@@ -286,8 +291,8 @@ def query_flux(unit, unique_id,
 
 def query_string(unit, unique_id,
                  value=None, measure=None, channel=None, ts_str=None,
-                 start_str=None, end_str=None, past_sec=None, group_sec=None,
-                 limit=None):
+                 start_str=None, end_str=None, min_value=None, max_value=None,
+                 past_sec=None, group_sec=None, limit=None):
     """Generate influxdb query string."""
     ret_value = None
     settings = db_retrieve_table_daemon(Misc, entry='first')
@@ -296,8 +301,8 @@ def query_string(unit, unique_id,
         ret_value = query_flux(
             unit, unique_id,
             value=value, measure=measure, channel=channel, ts_str=ts_str,
-            start_str=start_str, end_str=end_str, past_sec=past_sec, group_sec=group_sec,
-            limit=limit)
+            start_str=start_str, end_str=end_str, min_value=min_value, max_value=max_value,
+            past_sec=past_sec, group_sec=group_sec, limit=limit)
 
     return ret_value
 
