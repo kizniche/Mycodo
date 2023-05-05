@@ -96,6 +96,7 @@ class InputModule(AbstractInput):
                     low = resp[4]
                     co2 = (high * 256) + low
                     self.value_set(0, co2)
+                    self.logger.debug(f"CO2: {co2}")
             except:
                 self.logger.exception("UART")
         elif self.interface == 'I2C':

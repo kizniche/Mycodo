@@ -81,18 +81,6 @@
       </div>
       <div class="row small-gutters">
         <div class="col">
-          Pi Camera is {% if pi_settings['pi_camera_enabled'] %}Enabled{% else %}Disabled{% endif %}
-        </div>
-        <div class="col">
-          {% if pi_settings['pi_camera_enabled'] %}
-            {{form_settings_pi.disable_pi_camera(class_='btn btn-primary')}}
-          {% else %}
-            {{form_settings_pi.enable_pi_camera(class_='btn btn-primary')}}
-          {% endif %}
-        </div>
-      </div>
-      <div class="row small-gutters">
-        <div class="col">
           {{form_settings_pi.hostname(class_='form-control', value=pi_settings['hostname'])}}
         </div>
         <div class="col">

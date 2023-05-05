@@ -411,8 +411,6 @@ class SettingsPi(FlaskForm):
     disable_spi = SubmitField(lazy_gettext('Disable SPI'))
     enable_ssh = SubmitField(lazy_gettext('Enable SSH'))
     disable_ssh = SubmitField(lazy_gettext('Disable SSH'))
-    enable_pi_camera = SubmitField(lazy_gettext('Enable Pi Camera'))
-    disable_pi_camera = SubmitField(lazy_gettext('Disable Pi Camera'))
     hostname = StringField(lazy_gettext('Hostname'))
     change_hostname = SubmitField(lazy_gettext('Change Hostname'))
     pigpiod_sample_rate = StringField(lazy_gettext('Configure pigpiod'))

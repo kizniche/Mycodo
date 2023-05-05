@@ -3,6 +3,7 @@
 ### Bugfixes
 
  - Fix setting Camera timelapse duration to 0
+ - Remove deprecated Raspberry Pi Enable Camera option
 
 ### Features
 

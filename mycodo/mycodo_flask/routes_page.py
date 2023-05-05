@@ -169,15 +169,6 @@ def page_camera():
                 opencv_devices = []
             break
 
-    pi_camera_enabled = False
-    try:
-        if (not current_app.config['TESTING'] and
-                'start_x=1' in open('/boot/config.txt').read()):
-            pi_camera_enabled = True
-    except IOError as e:
-        logger.error("Camera IOError raised in '/camera' endpoint: "
-                     "{err}".format(err=e))
-
     if request.method == 'POST':
         unmet_dependencies = None
         if not utils_general.user_has_permission('edit_controllers'):
@@ -298,7 +289,6 @@ def page_camera():
                            misc=misc,
                            opencv_devices=opencv_devices,
                            output=output,
-                           pi_camera_enabled=pi_camera_enabled,
                            time_lapse_imgs=time_lapse_imgs,
                            time_now=time_now)
 

@@ -1595,12 +1595,6 @@ def settings_pi_mod(form):
     elif form.disable_ssh.data:
         _, _, status = cmd_output("raspi-config nonint do_ssh 1", user='root')
         action_str = "Disable SSH"
-    elif form.enable_pi_camera.data:
-        _, _, status = cmd_output("raspi-config nonint do_camera 0", user='root')
-        action_str = "Enable Pi Camera"
-    elif form.disable_pi_camera.data:
-        _, _, status = cmd_output("raspi-config nonint do_camera 1", user='root')
-        action_str = "Disable Pi Camera"
     elif form.change_hostname.data:
         if is_valid_hostname(form.hostname.data):
             _, _, status = cmd_output(

@@ -431,7 +431,7 @@ WIDGET_INFORMATION = {
         <div class="widget-graph-controls" id="widget-graph-controls-{{each_widget.unique_id}}">
             <div class="widget-graph-responsive-controls" id="widget-graph-responsive-controls-{{each_widget.unique_id}}">
                 <a class="btn btn-sm btn-success" id="updateData{{each_widget.unique_id}}" title="{{_('Update')}}">
-                    <i class="fa fa-sync-alt"></i>
+                    <i class="fa fa-download"></i>
                 </a>
                 <a class="btn btn-sm btn-success" id="resetZoom{{each_widget.unique_id}}" title="{{_('Reset')}}">
                     <i class="fa fa-undo-alt"></i>
