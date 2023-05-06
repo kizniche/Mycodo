@@ -4,6 +4,7 @@
 
  - Fix setting Camera timelapse duration to 0
  - Remove deprecated Raspberry Pi Enable Camera option
+ - Fix no image when libcamera AWB turned off
 
 ### Features
 

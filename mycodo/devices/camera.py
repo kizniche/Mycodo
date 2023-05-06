@@ -265,7 +265,7 @@ def camera_record(record_type, unique_id, duration_sec=None, tmp_filename=None):
             elif (settings.picamera_awb == "off" and
                   settings.picamera_awb_gain_blue is not None and
                   settings.picamera_awb_gain_red is not None):
-                cmd += f" --awb {settings.picamera_awb}"
+                cmd += f" --awb custom"
                 cmd += f" --awbgains {settings.picamera_awb_gain_red:.1f},{settings.picamera_awb_gain_blue:.1f}"
             if settings.hflip:
                 cmd += " --hflip"
