@@ -181,7 +181,7 @@ class OutputModule(AbstractOutput):
                 self.device.set_relay_on(output_channel + 1)
                 self.output_states[output_channel] = True
             elif state == 'off':
-                self.device.set_relay_off(channel + 1)
+                self.device.set_relay_off(output_channel + 1)
                 self.output_states[output_channel] = False
 
             msg = "success"
