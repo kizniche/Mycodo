@@ -28,20 +28,17 @@ import time
 
 from flask_babel import lazy_gettext
 
-from mycodo.config import ALEMBIC_VERSION
-from mycodo.config import MYCODO_VERSION
-from mycodo.config import PATH_CAMERAS
-from mycodo.config import PATH_MEASUREMENTS_BACKUP
-from mycodo.config import PATH_SETTINGS_BACKUP
+from mycodo.config import (ALEMBIC_VERSION, MYCODO_VERSION, PATH_CAMERAS,
+                           PATH_MEASUREMENTS_BACKUP, PATH_SETTINGS_BACKUP)
 from mycodo.databases.models import CustomController
 from mycodo.functions.base_function import AbstractFunction
 from mycodo.mycodo_client import DaemonControl
+from mycodo.scripts.measurement_db import get_influxdb_info
 from mycodo.utils.constraints_pass import constraints_pass_positive_value
 from mycodo.utils.database import db_retrieve_table_daemon
-from mycodo.utils.system_pi import assure_path_exists
-from mycodo.utils.system_pi import cmd_output
-from mycodo.utils.tools import create_measurements_export
-from mycodo.utils.tools import create_settings_export
+from mycodo.utils.system_pi import assure_path_exists, cmd_output
+from mycodo.utils.tools import (create_measurements_export,
+                                create_settings_export)
 
 try:
     host_name = socket.gethostname().replace(' ', '_')
@@ -357,7 +354,11 @@ class CustomModule(AbstractFunction):
             dt=datetime.datetime.now().strftime("%Y-%m-%d_%H-%M-%S"))
         path_save = os.path.join(PATH_MEASUREMENTS_BACKUP, filename)
         assure_path_exists(PATH_MEASUREMENTS_BACKUP)
-        status, saved_path = create_measurements_export(save_path=path_save)
+
+        influxdb_info = get_influxdb_info()
+        status, saved_path = create_measurements_export(
+            influxdb_info['influxdb_version'], save_path=path_save)
+
         if not status:
             self.logger.debug("Saved measurements file: "
                               "{}".format(saved_path))

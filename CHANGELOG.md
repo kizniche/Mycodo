@@ -5,6 +5,7 @@
  - Fix setting Camera timelapse duration to 0
  - Remove deprecated Raspberry Pi Enable Camera option
  - Fix no image when libcamera AWB turned off
+ - Fix Rsync Backup Function ([#1314](https://github.com/kizniche/Mycodo/issues/1314))
 
 ### Features
 
