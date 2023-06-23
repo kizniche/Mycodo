@@ -28,6 +28,7 @@ from flask_babel import lazy_gettext
 from flask_login import current_user
 
 from mycodo.databases.models import Conditional
+from mycodo.databases.models import CustomController
 from mycodo.databases.models import Function
 from mycodo.databases.models import Input
 from mycodo.databases.models import Trigger
@@ -44,6 +45,7 @@ def controller_state(unique_id):
 
     input = Input.query.filter(Input.unique_id == unique_id).first()
     function = Function.query.filter(Function.unique_id == unique_id).first()
+    customfunction = CustomController.query.filter(CustomController.unique_id == unique_id).first()
     trigger = Trigger.query.filter(Trigger.unique_id == unique_id).first()
     conditional = Conditional.query.filter(Conditional.unique_id == unique_id).first()
 
@@ -52,6 +54,8 @@ def controller_state(unique_id):
         controller = input
     elif function:
         controller = function
+    elif customfunction:
+        controller = customfunction
     elif trigger:
         controller = trigger
     elif conditional:
@@ -72,6 +76,7 @@ def controller_activate_deactivate(unique_id, state):
 
     input = Input.query.filter(Input.unique_id == unique_id).first()
     function = Function.query.filter(Function.unique_id == unique_id).first()
+    customfunction = CustomController.query.filter(CustomController.unique_id == unique_id).first()
     trigger = Trigger.query.filter(Trigger.unique_id == unique_id).first()
     conditional = Conditional.query.filter(Conditional.unique_id == unique_id).first()
 
@@ -80,6 +85,8 @@ def controller_activate_deactivate(unique_id, state):
         controller = input
     elif function:
         controller = function
+    elif customfunction:
+        controller = customfunction
     elif trigger:
         controller = trigger
     elif conditional:
@@ -165,7 +172,7 @@ WIDGET_INFORMATION = {
 
     'widget_dashboard_js': """
   // Modify Controller
-  function modController(btn_val) {
+  function adctivate_deactivate_controller(btn_val) {
     const widget_id = btn_val.split('/')[0];
     const controller_id = btn_val.split('/')[1];
     const controller_state = btn_val.split('/')[2];
@@ -236,7 +243,7 @@ WIDGET_INFORMATION = {
     {% if not misc.hide_alert_info %}
     toastr['info']('Command sent to Activate Controller');
     {% endif %}
-    modController(btn_val);
+    adctivate_deactivate_controller(btn_val);
   });
   $('.deactivate_controller').click(function() {
     const btn_val = this.name;
@@ -244,7 +251,7 @@ WIDGET_INFORMATION = {
     {% if not misc.hide_alert_info %}
     toastr['info']('Command sent to Deactivate Controller');
     {% endif %}
-    modController(btn_val);
+    adctivate_deactivate_controller(btn_val);
   });
 """,
 
