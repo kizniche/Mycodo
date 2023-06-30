@@ -16,6 +16,10 @@
  - Add ability to return Input/Output/Function object with module_function()
  - Add min_value and max_value parameters to query_flux()
 
+### Miscellaneous
+
+ - Add check for missing measurements/channels when an Input is saved
+
 
 ## 8.15.8 (2023-04-06)
 

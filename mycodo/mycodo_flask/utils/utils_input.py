@@ -8,6 +8,7 @@ import sqlalchemy
 from flask import current_app
 from flask import flash
 from flask_babel import gettext
+from sqlalchemy import and_
 
 from mycodo.config import PATH_PYTHON_CODE_USER
 from mycodo.config_translations import TRANSLATIONS
@@ -254,52 +255,9 @@ def input_add(form_add):
                 new_input.save()
                 new_input_id = new_input.unique_id
 
-                #
-                # If there are a variable number of measurements
-                #
-
-                if ('measurements_variable_amount' in dict_inputs[input_name] and
-                        dict_inputs[input_name]['measurements_variable_amount']):
-                    # Add first default measurement with empty unit and measurement
-                    new_measurement = DeviceMeasurements()
-                    new_measurement.name = ""
-                    new_measurement.device_id = new_input.unique_id
-                    new_measurement.measurement = ""
-                    new_measurement.unit = ""
-                    new_measurement.channel = 0
-                    new_measurement.save()
-
-                #
-                # If measurements defined in the Input Module
-                #
-
-                elif ('measurements_dict' in dict_inputs[input_name] and
-                        dict_inputs[input_name]['measurements_dict']):
-                    for each_channel in dict_inputs[input_name]['measurements_dict']:
-                        measure_info = dict_inputs[input_name]['measurements_dict'][each_channel]
-                        new_measurement = DeviceMeasurements()
-                        if 'name' in measure_info:
-                            new_measurement.name = measure_info['name']
-                        new_measurement.device_id = new_input.unique_id
-                        new_measurement.measurement = measure_info['measurement']
-                        new_measurement.unit = measure_info['unit']
-                        new_measurement.channel = each_channel
-                        new_measurement.save()
-
-                if 'channels_dict' in dict_inputs[new_input.device]:
-                    for each_channel, channel_info in dict_inputs[new_input.device]['channels_dict'].items():
-                        new_channel = InputChannel()
-                        new_channel.channel = each_channel
-                        new_channel.input_id = new_input.unique_id
-
-                        # Generate string to save from custom options
-                        messages["error"], custom_options = custom_channel_options_return_json(
-                            messages["error"], dict_inputs, None,
-                            new_input.unique_id, each_channel,
-                            device=new_input.device, use_defaults=True)
-                        new_channel.custom_options = custom_options
-
-                        new_channel.save()
+                # Create measurements and channels
+                messages = check_input_channels_exist(
+                    dict_inputs, new_input.device, new_input.unique_id, messages)
 
                 messages["success"].append(
                     f"{TRANSLATIONS['add']['title']} {TRANSLATIONS['input']['title']}")
@@ -487,6 +445,10 @@ def input_mod(form_mod, request_form):
 
         channels = InputChannel.query.filter(
             InputChannel.input_id == form_mod.input_id.data)
+
+        # Ensure all required measurements and channels exist
+        messages = check_input_channels_exist(
+            dict_inputs, mod_input.device, mod_input.unique_id, messages)
 
         # Save Measurement settings
         messages, page_refresh = utils_measurement.measurement_mod_form(
@@ -791,6 +753,78 @@ def input_deactivate_associated_controllers(messages, input_id):
                 messages, 'deactivate', 'PID', each_pid.unique_id)
     return messages
 
+
+def check_input_channels_exist(dict_inputs, device, unique_id, messages):
+    """Ensure all measurements and channels exist for Input"""
+    try:
+        #
+        # If there are a variable number of measurements
+        #
+        if ('measurements_variable_amount' in dict_inputs[device] and
+                dict_inputs[device]['measurements_variable_amount']):
+            # Add first default measurement with empty unit and measurement
+            measure_exists = DeviceMeasurements.query.filter(
+                DeviceMeasurements.device_id == unique_id).count()
+
+            if not measure_exists:
+                new_measurement = DeviceMeasurements()
+                new_measurement.name = ""
+                new_measurement.device_id = unique_id
+                new_measurement.measurement = ""
+                new_measurement.unit = ""
+                new_measurement.channel = 0
+                new_measurement.save()
+
+        #
+        # If measurements defined in the Input Module
+        #
+
+        elif ('measurements_dict' in dict_inputs[device] and
+              dict_inputs[device]['measurements_dict']):
+            for each_channel in dict_inputs[device]['measurements_dict']:
+
+                measure_exists = DeviceMeasurements.query.filter(
+                    and_(DeviceMeasurements.device_id == unique_id,
+                         DeviceMeasurements.channel == each_channel)).count()
+
+                if measure_exists:
+                    continue
+
+                measure_info = dict_inputs[device]['measurements_dict'][each_channel]
+                new_measurement = DeviceMeasurements()
+                if 'name' in measure_info:
+                    new_measurement.name = measure_info['name']
+                new_measurement.device_id = unique_id
+                new_measurement.measurement = measure_info['measurement']
+                new_measurement.unit = measure_info['unit']
+                new_measurement.channel = each_channel
+                new_measurement.save()
+
+        if 'channels_dict' in dict_inputs[device]:
+            for each_channel, channel_info in dict_inputs[device]['channels_dict'].items():
+                channel_exists = InputChannel.query.filter(
+                    and_(InputChannel.input_id == unique_id,
+                         InputChannel.channel == each_channel)).count()
+
+                if channel_exists:
+                    continue
+
+                new_channel = InputChannel()
+                new_channel.channel = each_channel
+                new_channel.input_id = unique_id
+
+                # Generate string to save from custom options
+                messages["error"], custom_options = custom_channel_options_return_json(
+                    messages["error"], dict_inputs, None,
+                    unique_id, each_channel,
+                    device=device, use_defaults=True)
+                new_channel.custom_options = custom_options
+
+                new_channel.save()
+    except:
+        logger.exception("check_input_channels_exist()")
+
+    return messages
 
 def force_acquire_measurements(unique_id):
     messages = {
