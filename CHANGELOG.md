@@ -7,6 +7,7 @@
  - Fix no image when libcamera AWB turned off
  - Fix Rsync Backup Function ([#1314](https://github.com/kizniche/Mycodo/issues/1314))
  - Fix Activate/Deactivate Controller Widget not recognizing Custom Functions
+ - Fix tags in Create Note Action
 
 ### Features
 
