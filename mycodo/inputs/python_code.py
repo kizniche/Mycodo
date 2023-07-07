@@ -122,6 +122,8 @@ def execute_at_modification(
                 custom_options_channels_dict_postsave)
 
     try:
+        input_python_code_run, file_run = generate_code(mod_input)
+
         if not custom_options_dict_postsave['use_pylint']:
             messages["info"].append("Review your code for issues and test your Input "
                 "before putting it into a production environment.")
@@ -129,8 +131,6 @@ def execute_at_modification(
                     mod_input,
                     custom_options_dict_postsave,
                     custom_options_channels_dict_postsave)
-
-        input_python_code_run, file_run = generate_code(mod_input)
 
         lines_code = ''
         for line_num, each_line in enumerate(input_python_code_run.splitlines(), 1):
