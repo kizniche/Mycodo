@@ -18,6 +18,7 @@
  - Add ability to disable any Input/Output/Function/Widget option (user can view but not change)
  - Add ability to return Input/Output/Function object with module_function()
  - Add min_value and max_value parameters to query_flux()
+ - Add ability to select Output measurements in Sum Functions
 
 ### Miscellaneous
 

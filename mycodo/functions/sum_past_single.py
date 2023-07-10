@@ -82,7 +82,8 @@ FUNCTION_INFORMATION = {
             'default_value': '',
             'options_select': [
                 'Input',
-                'Function'
+                'Function',
+                'Output'
             ],
             'name': 'Measurement',
             'phrase': 'Measurement to replace "x" in the equation'
