@@ -3,8 +3,8 @@ import time
 
 from flask_babel import lazy_gettext
 
-from mycodo.databases.models import Actions
 from mycodo.actions.base_action import AbstractFunctionAction
+from mycodo.databases.models import Actions
 from mycodo.utils.constraints_pass import constraints_pass_positive_value
 from mycodo.utils.database import db_retrieve_table_daemon
 
@@ -162,7 +162,7 @@ class ActionModule(AbstractFunctionAction):
         # Often derived from dependencies_module, above
         self.action_setup = True
 
-    def run_action(self, message, dict_vars):
+    def run_action(self, dict_vars):
         try:
             integer_1 = int(dict_vars["value"]["integer_1"])
         except:
@@ -181,18 +181,18 @@ class ActionModule(AbstractFunctionAction):
 
         if not integer_1:
             msg = f" Error: integer_1 not set. Cannot calculate the time."
-            message += msg
+            dict_vars['message'] += msg
             self.logger.error(msg)
-            return message
+            return dict_vars
 
         now = int(time.time())
         plural = "s" if integer_1 > 1 else ""
-        message += f" The current epoch time is {now}. The epoch {integer_1} hour{plural} in the " \
+        dict_vars['message'] += f" The current epoch time is {now}. The epoch {integer_1} hour{plural} in the " \
                    f"future is {now + (integer_1 * 60 * 60)}."
 
-        self.logger.info(f"Message: {message}")
+        self.logger.info(f"Message: {dict_vars['message']}")
 
-        return message
+        return dict_vars
 
     def is_setup(self):
         return self.action_setup

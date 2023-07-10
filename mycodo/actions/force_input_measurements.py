@@ -3,9 +3,9 @@ import threading
 
 from flask_babel import lazy_gettext
 
+from mycodo.actions.base_action import AbstractFunctionAction
 from mycodo.databases.models import Actions
 from mycodo.databases.models import Input
-from mycodo.actions.base_action import AbstractFunctionAction
 from mycodo.utils.database import db_retrieve_table_daemon
 
 ACTION_INFORMATION = {
@@ -59,7 +59,7 @@ class ActionModule(AbstractFunctionAction):
     def initialize(self):
         self.action_setup = True
 
-    def run_action(self, message, dict_vars):
+    def run_action(self, dict_vars):
         try:
             input_id = dict_vars["value"]["input_id"]
         except:
@@ -70,20 +70,20 @@ class ActionModule(AbstractFunctionAction):
 
         if not this_input:
             msg = f" Input not found with ID {input_id}"
-            message += msg
+            dict_vars['message'] += msg
             self.logger.error(msg)
-            return
+            return dict_vars
 
-        message += f" Force measuring from Input {input_id} ({this_input.name})."
+        dict_vars['message'] += f" Force measuring from Input {input_id} ({this_input.name})."
 
         force_measurements = threading.Thread(
             target=self.control.input_force_measurements,
             args=(input_id,))
         force_measurements.start()
 
-        self.logger.debug(f"Message: {message}")
+        self.logger.debug(f"Message: {dict_vars['message']}")
 
-        return message
+        return dict_vars
 
     def is_setup(self):
         return self.action_setup

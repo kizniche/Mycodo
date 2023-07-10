@@ -62,14 +62,14 @@ class ActionModule(AbstractFunctionAction):
         # Often derived from dependencies_module, above
         self.action_setup = True
 
-    def run_action(self, message, dict_vars):
+    def run_action(self, dict_vars):
         device_measurement = get_measurement(
             self.measurement_measurement_id)
         if not device_measurement:
             msg = f" Error: A measurement needs to be selected."
             self.logger.error(msg)
-            message += msg
-            return message
+            dict_vars['message'] += msg
+            return dict_vars
 
         channel = device_measurement.channel
 
@@ -83,14 +83,14 @@ class ActionModule(AbstractFunctionAction):
         if measurement is None:
             msg = f" Error: No measurement found in dictionary passed to Action for channel {channel}."
             self.logger.error(msg)
-            message += msg
-            return message
+            dict_vars['message'] += msg
+            return dict_vars
 
-        message += f" Measurement from Input is {measurement}. Do what you want with it in this Action module."
+        dict_vars['message'] += f" Measurement from Input is {measurement}. Do what you want with it in this Action module."
 
-        self.logger.info(f"Message: {message}")
+        self.logger.info(f"Message: {dict_vars['message']}")
 
-        return message
+        return dict_vars
 
     def is_setup(self):
         return self.action_setup

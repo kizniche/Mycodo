@@ -74,7 +74,7 @@ class AbstractFunctionAction(AbstractBaseController):
             "this method")
         raise NotImplementedError
 
-    def run_action(self, message, dict_vars):
+    def run_action(self, dict_vars):
         """Called when Action is executed."""
         pass
 

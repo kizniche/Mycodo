@@ -2,12 +2,13 @@
 import threading
 
 from flask_babel import lazy_gettext
-from mycodo.utils.functions import parse_function_information
+
+from mycodo.actions.base_action import AbstractFunctionAction
 from mycodo.config_translations import TRANSLATIONS
 from mycodo.databases.models import Actions
 from mycodo.databases.models import CustomController
-from mycodo.actions.base_action import AbstractFunctionAction
 from mycodo.utils.database import db_retrieve_table_daemon
+from mycodo.utils.functions import parse_function_information
 
 ACTION_INFORMATION = {
     'name_unique': 'display_backlight_off',

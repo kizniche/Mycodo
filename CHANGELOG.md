@@ -9,6 +9,7 @@
  - Fix Activate/Deactivate Controller Widget not recognizing Custom Functions
  - Fix tags in Create Note Action
  - Fix saving Python Code Input when Pylint Analysis is disabled
+ - Fix several Actions using incorrect calls to a function 
 
 ### Features
 
