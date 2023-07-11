@@ -13,12 +13,13 @@ from mycodo.config import PATH_PYTHON_CODE_USER
 from mycodo.databases.models import DeviceMeasurements
 from mycodo.inputs.base_input import AbstractInput
 from mycodo.utils.database import db_retrieve_table_daemon
+from mycodo.utils.inputs import parse_input_information
 from mycodo.utils.system_pi import assure_path_exists
 from mycodo.utils.system_pi import cmd_output
 from mycodo.utils.system_pi import set_user_grp
 
 
-def generate_code(new_input):
+def generate_code(input_id, python_code):
     error = []
     pre_statement_run = """import os
 import sys
@@ -72,12 +73,13 @@ class PythonInputRun:
 
     def python_code_run(self):
 """
-    indented_code = textwrap.indent(new_input.cmd_command, ' ' * 8)
+
+    indented_code = textwrap.indent(python_code, ' ' * 8)
     input_python_code_run = pre_statement_run + indented_code
 
     assure_path_exists(PATH_PYTHON_CODE_USER)
     file_run = '{}/input_python_code_{}.py'.format(
-        PATH_PYTHON_CODE_USER, new_input.unique_id)
+        PATH_PYTHON_CODE_USER, input_id)
     with open(file_run, 'w') as fw:
         fw.write('{}\n'.format(input_python_code_run))
         fw.close()
@@ -89,8 +91,19 @@ class PythonInputRun:
     return input_python_code_run, file_run
 
 
-def execute_at_creation(error, new_input, dict_inputs=None):
-    generate_code(new_input)
+def execute_at_creation(error, new_input, dict_inputs=None, python_code=None):
+    code = None
+
+    # Get python code
+    if dict_inputs:
+        for option in dict_inputs['custom_options']:
+            if option['id'] == 'python_code':
+                code = option['default_value']
+                break
+    elif python_code:
+        code = python_code
+
+    generate_code(new_input.unique_id, code)
     return error, new_input
 
 def execute_at_modification(
@@ -122,7 +135,8 @@ def execute_at_modification(
                 custom_options_channels_dict_postsave)
 
     try:
-        input_python_code_run, file_run = generate_code(mod_input)
+        input_python_code_run, file_run = generate_code(
+            mod_input.unique_id, custom_options_dict_postsave['python_code'])
 
         if not custom_options_dict_postsave['use_pylint']:
             messages["info"].append("Review your code for issues and test your Input "
@@ -180,9 +194,9 @@ measurements_dict = {}
 
 # Input information
 INPUT_INFORMATION = {
-    'input_name_unique': 'PythonCode',
+    'input_name_unique': 'PythonCode_v_2_0',
     'input_manufacturer': 'Linux',
-    'input_name': 'Python 3 Code (v1.0)',
+    'input_name': 'Python 3 Code (v2.0)',
     'measurements_name': 'Store Value(s)',
     'measurements_dict': measurements_dict,
     'measurements_variable_amount': True,
@@ -190,7 +204,10 @@ INPUT_INFORMATION = {
     'execute_at_creation': execute_at_creation,
     'execute_at_modification': execute_at_modification,
 
-    'message': 'All channels require a Measurement Unit to be selected and saved in order to store values to the '
+    'message': 'This is an alternate Python 3 Code Input that uses a different method for storing values to the '
+               'database. This was created because the Python 3 Code v1.0 Input does not allow the use of Input '
+               'Actions. This method does allow the use of Input Actions. '
+               'All channels require a Measurement Unit to be selected and saved in order to store values to the '
                'database. Your code is executed from the same Python virtual environment that Mycodo runs from. '
                'Therefore, you must install Python libraries to this environment if you want them to be available to '
                'your code. This virtualenv is located at ~/Mycodo/env and if you wanted to install a library, for '
@@ -199,7 +216,6 @@ INPUT_INFORMATION = {
     'options_enabled': [
         'measurements_select',
         'period',
-        'cmd_command',
         'pre_output'
     ],
     'options_disabled': ['interface'],
@@ -209,15 +225,24 @@ INPUT_INFORMATION = {
     ],
 
     'interfaces': ['Mycodo'],
-    'cmd_command': """import random  # Import any external libraries
-
-# Get measurements/values (for example, these are randomly-generated numbers)
-random_value_channel_0 = random.uniform(10.0, 100.0)
-
-# Store measurements in database (must specify the channel and measurement)
-self.store_measurement(channel=0, measurement=random_value_channel_0)""",
 
     'custom_options': [
+        {
+            'id': 'python_code',
+            'type': 'multiline_text',
+            'lines': 7,
+            'default_value': """import random  # Import any external libraries
+
+# Get measurements/values (for example, these are randomly-generated numbers)
+random_value = random.uniform(10.0, 100.0)
+
+# Store measurements in database (must return a dictionary of channels and values)
+return {0: random_value}""",
+            'required': True,
+            'col_width': 12,
+            'name': 'Python 3 Code',
+            'phrase': 'The code to execute. Must return a value.'
+        },
         {
             'id': 'use_pylint',
             'type': 'bool',
@@ -257,32 +282,34 @@ class InputModule(AbstractInput):
             self.measure_info[each_measure.channel]['unit'] = each_measure.unit
             self.measure_info[each_measure.channel]['measurement'] = each_measure.measurement
 
-        self.python_code = self.input_dev.cmd_command
-
     def get_measurement(self):
         """Determine if the return value of the command is a number."""
         if not self.python_code:
             self.logger.error("Error 101: Device not set up. See https://kizniche.github.io/Mycodo/Error-Codes#error-101 for more info.")
             return
 
-        self.return_dict = copy.deepcopy(measurements_dict)
+        self.return_dict = copy.deepcopy(self.measure_info)
 
         file_run = '{}/input_python_code_{}.py'.format(PATH_PYTHON_CODE_USER, self.unique_id)
 
         # If the file to execute doesn't exist, generate it
         if not os.path.exists(file_run):
-            execute_at_creation([], self.input_dev)
+            dict_inputs = parse_input_information()
+            execute_at_creation([], self.input_dev, dict_inputs)
 
         with open(file_run, 'r') as file:
             self.logger.debug("Python Code:\n{}".format(file.read()))
 
         module_name = "mycodo.input.python_code_exec_{}".format(os.path.basename(file_run).split('.')[0])
         spec = importlib.util.spec_from_file_location(module_name, file_run)
-        conditional_run = importlib.util.module_from_spec(spec)
-        spec.loader.exec_module(conditional_run)
-        run = conditional_run.PythonInputRun(self.logger, self.unique_id, self.measure_info, self.channels_conversion, self.channels_measurement)
+        python_code_run = importlib.util.module_from_spec(spec)
+        spec.loader.exec_module(python_code_run)
+        run = python_code_run.PythonInputRun(self.logger, self.unique_id, self.measure_info, self.channels_conversion, self.channels_measurement)
+
         try:
-            run.python_code_run()
+            return_value = run.python_code_run()
+            for channel, value in return_value.items():
+                self.return_dict[channel]['value'] = value
         except Exception:
             self.logger.exception(1)
 

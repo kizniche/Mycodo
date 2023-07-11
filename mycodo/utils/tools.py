@@ -52,7 +52,7 @@ def create_measurements_export(influxdb_version, save_path=None):
             cmd = f"/usr/bin/influx backup --org mycodo {influx_backup_dir}"
             out, err, status = cmd_output(cmd, user='root')
         else:
-            logger.error(f"Could not determine inflxdb version: {influxdb_version}")
+            logger.error(f"Could not determine influxdb version: {influxdb_version}")
             return
         
         logger.info(f"out: {out}, error: {err}, status: {status}")

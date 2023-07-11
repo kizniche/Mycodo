@@ -19,6 +19,7 @@
  - Add ability to return Input/Output/Function object with module_function()
  - Add min_value and max_value parameters to query_flux()
  - Add ability to select Output measurements in Sum Functions
+ - Add Input: Python 3 Code (v2.0) ([#1297](https://github.com/kizniche/Mycodo/issues/1297))
 
 ### Miscellaneous
 
