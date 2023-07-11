@@ -20,7 +20,7 @@ INPUT_INFORMATION = {
     'input_name_unique': 'CCS811_CP',
     'input_manufacturer': 'AMS',
     'input_name': 'CCS811 (without Temperature)',
-    'input_name_short': 'CCS881 (w/o temp)',
+    'input_name_short': 'CCS811 (w/o temp)',
     'input_library': 'Adafruit_CircuitPython_CCS811',
     'measurements_name': 'CO2/VOC',
     'measurements_dict': measurements_dict,
