@@ -99,11 +99,11 @@ class SettingsGeneral(FlaskForm):
 
     use_database = StringField(lazy_gettext('Database'))
     measurement_db_retention_policy = StringField(lazy_gettext('Retention Policy'))
-    measurement_db_host = StringField(lazy_gettext('Hostname'))
+    measurement_db_host = StringField(lazy_gettext('Database Hostname'))
     measurement_db_port = IntegerField(lazy_gettext('Port'))
     measurement_db_dbname = StringField(lazy_gettext('Database Name'))
-    measurement_db_user = StringField(lazy_gettext('Username'))
-    measurement_db_password = PasswordField(lazy_gettext('Password'))
+    measurement_db_user = StringField(lazy_gettext('Database Username'))
+    measurement_db_password = PasswordField(lazy_gettext('Database Password'))
 
     grid_cell_height = IntegerField(
         lazy_gettext('Grid Cell Height (px)'), widget=NumberInput())
