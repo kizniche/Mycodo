@@ -26,6 +26,7 @@
 ### Miscellaneous
 
  - Add check for missing measurements/channels when an Input is saved
+ - Update Python packages
 
 
 ## 8.15.8 (2023-04-06)
