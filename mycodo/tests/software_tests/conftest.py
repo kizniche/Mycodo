@@ -115,7 +115,7 @@ def login_user(app, username, password):
     """
     res = app.get('/login_password')
     form = res.forms['login_form']
-    form['username'] = username
-    form['password'] = password
+    form['mycodo_username'] = username
+    form['mycodo_password'] = password
     form.submit().maybe_follow()
     return None
