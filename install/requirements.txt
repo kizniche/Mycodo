@@ -23,7 +23,7 @@ gunicorn==21.2.0
 importlib_metadata==6.8.0
 influxdb==5.3.1  # Only used for stats. TODO: update to influxdb_client and remove
 influxdb_client[ciso]==1.37.0
-jsonschema==4.17.3
+jsonschema==4.17.3 # Dependency of Flask_RESTX. jsonschema 4.18.x introduces Rust as a dependency. Setting version to avoid this.
 marshmallow_sqlalchemy==0.29.0
 pyro5==5.14
 pyserial==3.5
