@@ -51,12 +51,12 @@ class CreateAdmin(FlaskForm):
 #
 
 class Login(FlaskForm):
-    username = StringField(
+    mycodo_username = StringField(
         TRANSLATIONS['user']['title'],
         render_kw={"placeholder": TRANSLATIONS['user']['title']},
         validators=[DataRequired()]
     )
-    password = PasswordField(
+    mycodo_password = PasswordField(
         TRANSLATIONS['password']['title'],
         render_kw={"placeholder": TRANSLATIONS['password']['title']},
         validators=[DataRequired()]

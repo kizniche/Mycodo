@@ -9,7 +9,8 @@
  - Fix Activate/Deactivate Controller Widget not recognizing Custom Functions
  - Fix tags in Create Note Action
  - Fix saving Python Code Input when Pylint Analysis is disabled
- - Fix several Actions using incorrect calls to a function 
+ - Fix several Actions using incorrect calls to a function
+ - Fix Mycodo login and influxdb login fields having the same web form ID
 
 ### Features
 
@@ -25,6 +26,7 @@
 ### Miscellaneous
 
  - Add check for missing measurements/channels when an Input is saved
+ - Update Python packages
 
 
 ## 8.15.8 (2023-04-06)

@@ -211,7 +211,7 @@ def login_password():
             if form_language.language.data:
                 session['language'] = form_language.language.data
             else:
-                username = form_login.username.data.lower()
+                username = form_login.mycodo_username.data.lower()
                 user_ip = request.environ.get('HTTP_X_FORWARDED_FOR', 'unknown address')
                 user = User.query.filter(
                     func.lower(User.name) == username).first()
@@ -221,7 +221,7 @@ def login_password():
                     failed_login()
                 elif form_login.validate_on_submit():
                     matched_hash = User().check_password(
-                        form_login.password.data, user.password_hash)
+                        form_login.mycodo_password.data, user.password_hash)
 
                     # Encode stored password hash if it's a str
                     password_hash = user.password_hash
