@@ -83,12 +83,15 @@ def page_dashboard_add():
 def page_dashboard(dashboard_id):
     """Generate custom dashboard with various data."""
     # Retrieve tables from SQL database
+    this_dashboard = Dashboard.query.filter(
+        Dashboard.unique_id == dashboard_id).first()
+    if not this_dashboard:
+        return redirect(url_for('routes_dashboard.page_dashboard_default'))
+
     camera = Camera.query.all()
     conditional = Conditional.query.all()
     function = CustomController.query.all()
     widget = Widget.query.all()
-    this_dashboard = Dashboard.query.filter(
-        Dashboard.unique_id == dashboard_id).first()
     input_dev = Input.query.all()
     device_measurements = DeviceMeasurements.query.all()
     method = Method.query.all()
@@ -133,7 +136,7 @@ def page_dashboard(dashboard_id):
                                     device=form_base.widget_type.data))
 
         return redirect(url_for(
-            'routes_dashboard.page_dashboard', dashboard_id=dashboard_id))
+            'routes_dashboard.page_dashboard', dashboard_id=this_dashboard.unique_id))
 
     # Generate all measurement and units used
     dict_measurements = add_custom_measurements(Measurement.query.all())
@@ -288,7 +291,7 @@ def page_dashboard(dashboard_id):
                            choices_pid=choices_pid,
                            choices_pid_devices=choices_pid_devices,
                            choices_tag=choices_tag,
-                           dashboard_id=dashboard_id,
+                           dashboard_id=this_dashboard.unique_id,
                            device_measurements_dict=device_measurements_dict,
                            dict_measure_measurements=dict_measure_measurements,
                            dict_measure_units=dict_measure_units,
