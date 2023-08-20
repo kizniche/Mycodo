@@ -11,6 +11,7 @@
  - Fix saving Python Code Input when Pylint Analysis is disabled
  - Fix several Actions using incorrect calls to a function
  - Fix Mycodo login and influxdb login fields having the same web form ID
+ - Fix Install issue selecting InfluxDB on 32-bit operating systems
 
 ### Features
 
