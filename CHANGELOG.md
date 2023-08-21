@@ -2,6 +2,13 @@
 
 ### Bugfixes
 
+ - Fix deprecated parse_version with packaging.version.parse()
+
+
+## 8.15.9 (2023.08.21)
+
+### Bugfixes
+
  - Fix setting Camera timelapse duration to 0
  - Remove deprecated Raspberry Pi Enable Camera option
  - Fix no image when libcamera AWB turned off

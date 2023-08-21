@@ -7,7 +7,7 @@ import re
 import sys
 from urllib.request import urlopen
 
-from pkg_resources import parse_version
+from packaging.version import parse
 
 sys.path.append(os.path.abspath(os.path.join(
     os.path.dirname(__file__), os.path.pardir) + '/..'))
@@ -89,8 +89,8 @@ class MycodoRelease:
             releases = self.github_releases(current_maj_version)
 
             if releases:
-                if (parse_version(releases[0]) > parse_version(MYCODO_VERSION) or
-                        parse_version(current_latest_tag[0]) > parse_version(MYCODO_VERSION)):
+                if (parse(releases[0]) > parse(MYCODO_VERSION) or
+                        parse(current_latest_tag[0]) > parse(MYCODO_VERSION)):
                     upgrade_exists = True
         except Exception:
             logger.exception("github_upgrade_exists()")
