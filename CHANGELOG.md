@@ -2,13 +2,6 @@
 
 ### Bugfixes
 
- - Fix deprecated parse_version with packaging.version.parse()
-
-
-## 8.15.9 (2023.08.21)
-
-### Bugfixes
-
  - Fix setting Camera timelapse duration to 0
  - Remove deprecated Raspberry Pi Enable Camera option
  - Fix no image when libcamera AWB turned off
@@ -20,6 +13,7 @@
  - Fix Mycodo login and influxdb login fields having the same web form ID
  - Fix Install issue selecting InfluxDB on 32-bit operating systems
  - Fix Install by setting python jsonschema version to 4.17.3 to avoid 4.18.x rust dependency
+ - Fix deprecated parse_version with packaging.version.parse() ([#1333](https://github.com/kizniche/Mycodo/issues/1333))
 
 ### Features
 
