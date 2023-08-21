@@ -1,4 +1,4 @@
-## 8.15.9 (Unreleased)
+## 8.15.9 (2023.08.21)
 
 ### Bugfixes
 
@@ -12,6 +12,7 @@
  - Fix several Actions using incorrect calls to a function
  - Fix Mycodo login and influxdb login fields having the same web form ID
  - Fix Install issue selecting InfluxDB on 32-bit operating systems
+ - Fix Install by setting python jsonschema version to 4.17.3 to avoid 4.18.x rust dependency
 
 ### Features
 
