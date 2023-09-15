@@ -62,10 +62,13 @@ class DaemonControl:
 
         self.uri= pyro_uri
 
-    def proxy(self):
+    def proxy(self, timeout=None):
         try:
             proxy = Proxy(self.uri)
-            proxy._pyroTimeout = self.pyro_timeout
+            if timeout:
+                proxy._pyroTimeout = timeout
+            else:
+                proxy._pyroTimeout = self.pyro_timeout
             return proxy
         except Exception as e:
             logger.error(f"Pyro5 proxy error: {e}")
@@ -269,9 +272,9 @@ class DaemonControl:
             smtp.user, smtp.passw, smtp.email_from,
             recipients, message, subject=subject)
 
-    def module_function(self, controller_type, unique_id, button_id, args_dict, thread=True, return_from_function=False):
+    def module_function(self, controller_type, unique_id, button_id, args_dict, thread=True, return_from_function=False, timeout=None):
         try:
-            return self.proxy().module_function(
+            return self.proxy(timeout=timeout).module_function(
                 controller_type, unique_id, button_id, args_dict, thread=thread, return_from_function=return_from_function)
         except Exception:
             return 0, traceback.format_exc()

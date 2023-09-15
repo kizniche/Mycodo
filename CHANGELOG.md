@@ -1,3 +1,10 @@
+## 8.15.10 (Unreleased)
+
+### Miscellaneous
+
+ - Add timeout parameter to module_function()
+
+
 ## 8.15.9 (2023.08.21)
 
 ### Bugfixes
