@@ -10,7 +10,7 @@ on:
 
 jobs:
   build:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.10
     steps:
       - uses: actions/checkout@v2
       - name: Set up Python 3.9

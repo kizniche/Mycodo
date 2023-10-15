@@ -582,7 +582,7 @@ case "${1:-''}" in
         apt remove -y apache2
         apt install -y ${APT_PKGS}
         apt clean
-        python3 -m pip install --upgrade pip
+        python3 -m pip install --break-system-packages --upgrade pip
     ;;
     'update-permissions')
         printf "\n#### Setting permissions\n"
