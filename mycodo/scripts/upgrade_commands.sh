@@ -221,7 +221,7 @@ case "${1:-''}" in
         printf "\n#### Checking Python 3 virtual environment\n"
         if [[ ! -e ${MYCODO_PATH}/env/bin/python ]]; then
             printf "#### Creating virtualenv with ${PYTHON_BINARY_SYS_LOC} at "${MYCODO_PATH}"/env\n"
-            python3 -m pip install virtualenv==${VIRTUALENV_VERSION}
+            python3 -m pip install --break-system-packages virtualenv==${VIRTUALENV_VERSION}
             rm -rf "${MYCODO_PATH}"/env
             python3 -m virtualenv -p "${PYTHON_BINARY_SYS_LOC}" "${MYCODO_PATH}"/env
         fi
@@ -582,7 +582,7 @@ case "${1:-''}" in
         apt remove -y apache2
         apt install -y ${APT_PKGS}
         apt clean
-        python3 -m pip install --upgrade pip
+        python3 -m pip install --break-system-packages --upgrade pip
     ;;
     'update-permissions')
         printf "\n#### Setting permissions\n"
@@ -602,7 +602,7 @@ case "${1:-''}" in
         if [[ ! -d ${MYCODO_PATH}/env ]]; then
             printf "\n## Error: Virtualenv doesn't exist. Create with %s setup-virtualenv\n" "${0}"
         else
-            "${MYCODO_PATH}"/env/bin/python -m pip install --upgrade pip
+            "${MYCODO_PATH}"/env/bin/python -m pip install --break-system-packages --upgrade pip
         fi
     ;;
     'update-pip3-packages')
@@ -611,8 +611,8 @@ case "${1:-''}" in
         if [[ ! -d ${MYCODO_PATH}/env ]]; then
             printf "\n## Error: Virtualenv doesn't exist. Create with %s setup-virtualenv\n" "${0}"
         else
-            "${MYCODO_PATH}"/env/bin/python -m pip install --upgrade -r "${MYCODO_PATH}"/install/requirements.txt
-            "${MYCODO_PATH}"/env/bin/python -m pip install --upgrade -r "${MYCODO_PATH}"/install/requirements-testing.txt
+            "${MYCODO_PATH}"/env/bin/python -m pip install --break-system-packages --upgrade -r "${MYCODO_PATH}"/install/requirements.txt
+            "${MYCODO_PATH}"/env/bin/python -m pip install --break-system-packages --upgrade -r "${MYCODO_PATH}"/install/requirements-testing.txt
         fi
     ;;
     'pip-clear-cache')
@@ -752,7 +752,7 @@ case "${1:-''}" in
         if [[ ! -d ${MYCODO_PATH}/env ]]; then
             printf "\n## Error: Virtualenv doesn't exist. Create with %s setup-virtualenv\n" "${0}"
         else
-            "${MYCODO_PATH}"/env/bin/python -m pip install --upgrade pip
+            "${MYCODO_PATH}"/env/bin/python -m pip install --break-system-packages --upgrade pip
         fi
     ;;
     'docker-update-pip-packages')
@@ -761,7 +761,7 @@ case "${1:-''}" in
         if [[ ! -d ${MYCODO_PATH}/env ]]; then
             printf "\n## Error: Virtualenv doesn't exist. Create with %s setup-virtualenv\n" "${0}"
         else
-            "${MYCODO_PATH}"/env/bin/python -m pip install --no-cache-dir -r "${MYCODO_PATH}"/install/requirements.txt
+            "${MYCODO_PATH}"/env/bin/python -m pip install --break-system-packages --no-cache-dir -r "${MYCODO_PATH}"/install/requirements.txt
         fi
     ;;
     'install-docker')
