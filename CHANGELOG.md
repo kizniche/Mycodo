@@ -1,5 +1,9 @@
 ## 8.15.10 (Unreleased)
 
+### Bugfixes
+
+ - Fix missing netcat apt install candidate with package netcat-openbsd
+
 ### Miscellaneous
 
  - Add timeout parameter to module_function()
