@@ -1,4 +1,6 @@
-## 8.15.10 (Unreleased)
+## 8.15.10 (2023.10.15)
+
+This release is a bugfix release to fix issues related to installing Mycodo on the latest Raspberry Pi OS (Debian 12, Bookworm).
 
 ### Bugfixes
 

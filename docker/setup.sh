@@ -34,7 +34,7 @@ case "${1:-''}" in
         printf "\n#### All dependencies installed\n\n" 2>&1 | tee -a "${LOG_LOCATION}"
     ;;
     "test")
-        docker exec -ti mycodo_flask "${INSTALL_PATH}"/env/bin/python -m pip install --break-system-packages --upgrade -r /home/mycodo/mycodo/install/requirements-testing.txt
+        docker exec -ti mycodo_flask "${INSTALL_PATH}"/env/bin/python -m pip install --upgrade -r /home/mycodo/mycodo/install/requirements-testing.txt
         docker exec -ti mycodo_flask "${INSTALL_PATH}"/env/bin/python -m pytest /home/mycodo/mycodo/tests/software_tests
     ;;
     "clean-all")
