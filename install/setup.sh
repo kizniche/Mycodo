@@ -36,10 +36,10 @@ else
   exit 1
 fi
 
-WHIPTAIL=$(command -v whiptail)
+DIALOG=$(command -v dialog)
 exitstatus=$?
 if [ $exitstatus != 0 ]; then
-    printf "\nError: whiptail not installed. Install it then try the Mycodo setup again.\n"
+    printf "\nError: dialog not installed. Install it then try the Mycodo setup again.\n"
     exit 1
 fi
 
@@ -47,14 +47,14 @@ START_A=$(date)
 printf "### Mycodo installation initiated %s\n" "${START_A}" 2>&1 | tee -a "${LOG_LOCATION}"
 
 clear
-LICENSE=$(whiptail --title "Mycodo Installer: License Agreement" \
+LICENSE=$(dialog --title "Mycodo Installer: License Agreement" \
                    --backtitle "Mycodo" \
                    --yesno "Mycodo is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.\n\nMycodo is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.\n\nYou should have received a copy of the GNU General Public License along with Mycodo. If not, see gnu.org/licenses\n\nDo you agree to the license terms?" \
                    20 68 \
                    3>&1 1>&2 2>&3)
 
 clear
-LANGUAGE=$(whiptail --title "Mycodo Installer" \
+LANGUAGE=$(dialog --title "Mycodo Installer" \
                   --backtitle "Mycodo" \
                   --menu "User Interface Language" 23 68 14 \
                   "en": "English" \
@@ -81,7 +81,7 @@ else
 fi
 
 clear
-INSTALL=$(whiptail --title "Mycodo Installer: Install" \
+INSTALL=$(dialog --title "Mycodo Installer: Install" \
                    --backtitle "Mycodo" \
                    --yesno "Mycodo will be installed in the home directory of the current user. Several software packages will be installed via apt, including the nginx web server that the Mycodo web user interface will be hosted on. Proceed with the installation?" \
                    20 68 \
@@ -94,7 +94,7 @@ fi
 
 clear
 if [[ ${MACHINE_TYPE} == 'armhf' ]]; then
-    INFLUX_A=$(whiptail --title "Mycodo Installer: Measurement Database" \
+    INFLUX_A=$(dialog --title "Mycodo Installer: Measurement Database" \
                         --backtitle "Mycodo" \
                         --menu "Install Influxdb?\n\nIf you do not install InfluxDB now, you will need to set the InfluxDB server/credential settings in the Configuration after Mycodo is installed." 20 68 4 \
                         "0)" "Install Influxdb 1.x (default)" \
@@ -106,7 +106,7 @@ if [[ ${MACHINE_TYPE} == 'armhf' ]]; then
         exit 1
     fi
 elif [[ ${MACHINE_TYPE} == 'arm64' || ${UNAME_TYPE} == 'x86_64' ]]; then
-    INFLUX_B=$(whiptail --title "Mycodo Installer: Measurement Database" \
+    INFLUX_B=$(dialog --title "Mycodo Installer: Measurement Database" \
                         --backtitle "Mycodo" \
                         --menu "Install Influxdb?\n\nIf you do not install InfluxDB now, you will need to configure the InfluxDB server settings and credentials after Mycodo is installed. If using a 32-bit CPU, you can only use 1.x (do not use 2.x, as it only works with 64-bit CPUs)." 20 68 4 \
                         "0)" "Install Influxdb 2.x (recommended)" \
@@ -125,7 +125,7 @@ fi
 
 if [[ ${INFLUX_A} == '1)' || ${INFLUX_B} == '2)' ]]; then
     clear
-    INSTALL=$(whiptail --title "Mycodo Installer: Measurement Database" \
+    INSTALL=$(dialog --title "Mycodo Installer: Measurement Database" \
                        --backtitle "Mycodo" \
                        --yesno "You have chosen not to install Influxdb. This is typically done if you want to use an existing influxdb server. Make sure to change the influxdb client options in the Mycodo Configuration after installing to ensure measurements can be properly saved/queried. If you would like to install influxdb, select cancel and start the Mycodo Installer over again." \
                        20 68 \

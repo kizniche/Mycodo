@@ -4,6 +4,7 @@
 
  - Fix missing netcat apt install candidate with package netcat-openbsd
  - Fix pip requiring --break-system-packages to install/update non-system packages
+ - Fix install by replacing whiptail with dialog
 
 ### Miscellaneous
 
