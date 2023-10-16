@@ -22,12 +22,8 @@ WIRINGPI_URL_ARM64="https://github.com/WiringPi/WiringPi/releases/download/2.61-
 INFLUXDB1_VERSION="1.8.10"
 INFLUXDB2_VERSION="2.6.1"
 
-VIRTUALENV_VERSION="20.17.1"
-
 # Required apt packages
-APT_PKGS="gawk gcc g++ git jq libatlas-base-dev libffi-dev libi2c-dev logrotate moreutils netcat-openbsd nginx python3 python3-pip python3-dev python3-setuptools rng-tools sqlite3 unzip wget"
-
-PYTHON_BINARY_SYS_LOC="$(python3 -c "import os; print(os.environ['_'])")"
+APT_PKGS="gawk gcc g++ git jq libatlas-base-dev libffi-dev libi2c-dev logrotate moreutils netcat-openbsd nginx python3 python3-dev python3-pip python3-setuptools python3-venv rng-tools sqlite3 unzip wget"
 
 UNAME_TYPE=$(uname -m)
 MACHINE_TYPE=$(dpkg --print-architecture)
@@ -220,10 +216,9 @@ case "${1:-''}" in
     'setup-virtualenv')
         printf "\n#### Checking Python 3 virtual environment\n"
         if [[ ! -e ${MYCODO_PATH}/env/bin/python ]]; then
-            printf "#### Creating virtualenv with ${PYTHON_BINARY_SYS_LOC} at "${MYCODO_PATH}"/env\n"
-            python3 -m pip install --break-system-packages virtualenv==${VIRTUALENV_VERSION}
+            printf "#### Creating virtual environment at "${MYCODO_PATH}"/env\n"
             rm -rf "${MYCODO_PATH}"/env
-            python3 -m virtualenv -p "${PYTHON_BINARY_SYS_LOC}" "${MYCODO_PATH}"/env
+            python3 -m venv "${MYCODO_PATH}"/env
         fi
     ;;
     'setup-virtualenv-full')
@@ -582,7 +577,6 @@ case "${1:-''}" in
         apt remove -y apache2
         apt install -y ${APT_PKGS}
         apt clean
-        python3 -m pip install --break-system-packages --upgrade pip
     ;;
     'update-permissions')
         printf "\n#### Setting permissions\n"
