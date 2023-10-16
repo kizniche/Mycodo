@@ -25,7 +25,7 @@ if [ -d ~/Mycodo ]; then
 fi
 
 sudo apt update
-sudo apt install -y jq whiptail python3 wget
+sudo apt install -y jq dialog python3 wget
 
 cd ~
 curl -s https://api.github.com/repos/kizniche/Mycodo/releases/latest | \
