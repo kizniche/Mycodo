@@ -1,13 +1,14 @@
 # coding=utf-8
 """collection of Page endpoints."""
+import flask_login
 import logging
 import os
-
-import flask_login
+import subprocess
 from flask import redirect, render_template, request, url_for
 from flask.blueprints import Blueprint
 from sqlalchemy import and_
 
+from mycodo.config import INSTALL_DIRECTORY
 from mycodo.config import PATH_HTML_USER
 from mycodo.databases.models import (PID, Camera, Conditional, Conversion,
                                      CustomController, Dashboard,
@@ -125,7 +126,11 @@ def page_dashboard(dashboard_id):
 
         # Widget
         elif form_base.widget_add.data:
-            unmet_dependencies = utils_dashboard.widget_add(form_base, request.form)
+            unmet_dependencies, reload_flask = utils_dashboard.widget_add(form_base, request.form)
+            if not unmet_dependencies and reload_flask:
+                return redirect(url_for(
+                    'routes_dashboard.restart_flask_auto_advance_page',
+                    dashboard_id=this_dashboard.unique_id))
         elif form_base.widget_mod.data:
             utils_dashboard.widget_mod(form_base, request.form)
         elif form_base.widget_delete.data:
@@ -319,3 +324,17 @@ def page_dashboard(dashboard_id):
                            form_base=form_base,
                            form_dashboard=form_dashboard,
                            widget=widget)
+
+
+@blueprint.route('/reload_flask/<dashboard_id>')
+@flask_login.login_required
+def restart_flask_auto_advance_page(dashboard_id=""):
+    """Wait then automatically load next page"""
+    logger.info("Reloading frontend in 5 seconds")
+
+    cmd = f"sleep 5 && {INSTALL_DIRECTORY}/mycodo/scripts/mycodo_wrapper frontend_reload 2>&1"
+    subprocess.Popen(cmd, shell=True)
+    logger.info("Rendering wait page")
+
+    return render_template('pages/wait_and_autoload.html',
+                           dashboard_id=dashboard_id)

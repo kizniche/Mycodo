@@ -178,13 +178,22 @@ def install_dependencies(dependencies):
     for each_dep in dependencies:
         if each_dep[2] == 'bash-commands':
             for each_command in each_dep[1]:
-                command = "{cmd} | ts '[%Y-%m-%d %H:%M:%S]' >> {log} 2>&1".format(
-                    cmd=each_command,
-                    log=DEPENDENCY_LOG_FILE)
-                cmd_out, cmd_err, cmd_status = cmd_output(
-                    command, timeout=600, cwd="/tmp")
-                logger.info("Command returned: out: {}, error: {}, status: {}".format(
-                    cmd_out, cmd_err, cmd_status))
+                try:
+                    with open(DEPENDENCY_LOG_FILE, 'a') as f:
+                        now = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+                        f.write(f"\n[{now}] Executing command: {each_command}\n")
+
+                    command = "{cmd} | ts '[%Y-%m-%d %H:%M:%S]' >> {log} 2>&1".format(
+                        cmd=each_command,
+                        log=DEPENDENCY_LOG_FILE)
+                    cmd_out, cmd_err, cmd_status = cmd_output(
+                        command, user='root', timeout=600, cwd="/tmp")
+
+                    with open(DEPENDENCY_LOG_FILE, 'a') as f:
+                        now = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+                        f.write(f"\n[{now}] Command returned: out: {cmd_out}, error: {cmd_err}, status: {cmd_status}\n")
+                except:
+                    logger.exception("Executing command")
         else:
             cmd = "{pth}/mycodo/scripts/mycodo_wrapper install_dependency {dep}" \
                   " | ts '[%Y-%m-%d %H:%M:%S]' >> {log} 2>&1".format(

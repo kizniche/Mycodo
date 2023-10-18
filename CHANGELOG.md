@@ -1,3 +1,13 @@
+## 8.15.11 (2023.10.18)
+
+This release fixes a bug that prevents installing some dependencies.
+
+### Bugfixes
+
+ - Fix issue installing some dependencies
+ - Fix automatically reloading the frontend when adding certain Widgets
+
+
 ## 8.15.10 (2023.10.15)
 
 This release is a bugfix release to fix issues related to installing Mycodo on the latest Raspberry Pi OS (Debian 12, Bookworm).

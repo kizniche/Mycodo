@@ -1,0 +1,21 @@
+{% extends "layout.html" %}
+
+{% set dashboard_dict = dict() %}
+
+{% block title %} - Please Wait 10 Seconds{% endblock %}
+
+{% block head %}
+  <meta http-equiv="refresh" content="10;url=/dashboard/{{dashboard_id}}" />
+{% endblock %}
+
+{% block body %}
+  <!-- Route: /dashboard -->
+  <div class="container">
+  {% include 'flash_messages.html' %}
+  </div>
+
+  <div class="container-fluid" style="text-align: center">
+    To add this Widget, the Frontend needs to reload. Please wait for the frontend to reload. You will be automatically redirected after 10 seconds.
+  </div>
+
+{% endblock %}

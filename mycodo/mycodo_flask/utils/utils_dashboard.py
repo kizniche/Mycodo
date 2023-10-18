@@ -157,6 +157,8 @@ def widget_add(form_base, request_form):
         controller=TRANSLATIONS['widget']['title'])
     error = []
 
+    reload_flask = False
+
     dict_widgets = parse_widget_information()
 
     if form_base.widget_type.data:
@@ -230,9 +232,7 @@ def widget_add(form_base, request_form):
             # It has already handled its first request, any changes will not be applied consistently.
             # Make sure all imports, decorators, functions, etc. needed to set up the application are done before running it.
             if Widget.query.filter(Widget.graph_type == widget_name).count() == 1:
-                cmd = f"{INSTALL_DIRECTORY}/mycodo/scripts/mycodo_wrapper frontend_reload 2>&1"
-                init = subprocess.Popen(cmd, shell=True)
-                init.wait()
+                reload_flask = True
 
             if not current_app.config['TESTING']:
                 # Refresh widget settings
@@ -252,7 +252,7 @@ def widget_add(form_base, request_form):
     for each_error in error:
         flash(each_error, "error")
 
-    return dep_unmet
+    return dep_unmet, reload_flask
 
 
 def widget_mod(form_base, request_form):
