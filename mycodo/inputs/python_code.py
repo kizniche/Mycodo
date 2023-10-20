@@ -205,7 +205,7 @@ INPUT_INFORMATION = {
     'options_disabled': ['interface'],
 
     'dependencies_module': [
-        ('pip-pypi', 'pylint', 'pylint==2.12.2')
+        ('pip-pypi', 'pylint', 'pylint==3.0.1')
     ],
 
     'interfaces': ['Mycodo'],

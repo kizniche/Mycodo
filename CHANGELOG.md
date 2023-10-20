@@ -1,3 +1,10 @@
+## 8.15.12 (Unreleased)
+
+### Miscellaneous
+
+ - Update pylint to 3.0.1
+
+
 ## 8.15.11 (2023.10.18)
 
 This release fixes a bug that prevents installing some dependencies.

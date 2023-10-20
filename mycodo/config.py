@@ -391,7 +391,7 @@ FUNCTION_INFO = {
     'conditional_conditional': {
         'name': f"{T['conditional']['title']} {T['controller']['title']}",
         'dependencies_module': [
-            ('pip-pypi', 'pylint', 'pylint==2.12.2')
+            ('pip-pypi', 'pylint', 'pylint==3.0.1')
         ]
     },
     'pid_pid': {
