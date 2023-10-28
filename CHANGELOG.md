@@ -2,7 +2,7 @@
 
 ### Features
 
- - Add Input Action: Execute Python 3 Code
+ - Add Input Action: Execute Python 3 Code ([#1334](https://github.com/kizniche/Mycodo/issues/1334))
 
 
 ## 8.15.12 (2023.10.28)
