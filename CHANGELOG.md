@@ -1,4 +1,4 @@
-## 8.15.12 (Unreleased)
+## 8.15.12 (2023.10.28)
 
 ### Miscellaneous
 
