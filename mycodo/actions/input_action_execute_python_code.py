@@ -13,7 +13,6 @@ from mycodo.utils.database import db_retrieve_table_daemon
 from mycodo.utils.system_pi import assure_path_exists
 from mycodo.utils.system_pi import set_user_grp
 
-
 def generate_code(input_id, python_code):
     error = []
     pre_statement_run = """import os
@@ -106,7 +105,6 @@ class ActionModule(AbstractFunctionAction):
             self.try_initialize()
 
     def initialize(self):
-        self.logger.info("Initializing")
         action_python_code_run, file_run = generate_code(self.unique_id, self.python_code)
 
         module_name = "mycodo.action.{}".format(os.path.basename(file_run).split('.')[0])
@@ -118,11 +116,11 @@ class ActionModule(AbstractFunctionAction):
         self.action_setup = True
 
     def run_action(self, dict_vars):
-        self.logger.debug(f"pre dict_vars: {dict_vars}")
+        self.logger.debug(f"pre action run dict_vars: {dict_vars}")
 
         dict_vars = self.run_python.python_code_run(dict_vars)
 
-        self.logger.debug(f"post dict_vars: {dict_vars}")
+        self.logger.debug(f"post action run dict_vars: {dict_vars}")
 
         return dict_vars
 
