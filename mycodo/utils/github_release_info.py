@@ -4,7 +4,9 @@ import json
 import logging
 import os
 import re
+import socket
 import sys
+import urllib
 from urllib.request import urlopen
 
 from packaging.version import parse
@@ -40,6 +42,10 @@ class MycodoRelease:
                     tag_full = each_tag['ref'].split('/')
                     if len(tag_full) == 3 and re.match('v(\d+)\.(\d+)\.\d+', tag_full[2]):
                         parsed_tags.append(tag_full[2])
+        except socket.gaierror:
+            logger.error("Cannot connect")
+        except urllib.error.URLError:
+            logger.error("Cannot resolve name")
         except Exception:
             logger.exception("update_mycodo_tags()")
         self.mycodo_tags = parsed_tags
