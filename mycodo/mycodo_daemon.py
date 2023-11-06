@@ -930,6 +930,7 @@ class DaemonController:
                         controller_running[each_controller].append(cont_id)
                 except Exception as err:
                     self.logger.info(f"{each_controller} controller {cont_id} thread had an issue stopping: {err}")
+            time.sleep(2.5)  # Give time for each controller type to stop before stopping the next type
 
         for each_controller in list(reversed(self.cont_types)):
             for cont_id in controller_running[each_controller]:
@@ -942,12 +943,14 @@ class DaemonController:
         try:
             self.controller['Output'].stop_controller()
             self.controller['Output'].join(15)  # Give each thread 15 seconds to stop
+            self.logger.info("Output controller stopped")
         except Exception as err:
             self.logger.info(f"Output controller had an issue stopping: {err}")
 
         try:
             self.controller['Widget'].stop_controller()
             self.controller['Widget'].join(15)  # Give each thread 15 seconds to stop
+            self.logger.info("Widget controller stopped")
         except Exception as err:
             self.logger.info(f"Widget controller had an issue stopping: {err}")
 
