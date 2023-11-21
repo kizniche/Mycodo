@@ -11,6 +11,7 @@ from mycodo.databases.models import Input
 from mycodo.databases.models import InputChannel
 from mycodo.databases.utils import session_scope
 from mycodo.inputs.base_input import AbstractInput
+from mycodo.utils.actions import run_input_actions
 from mycodo.utils.database import db_retrieve_table_daemon
 from mycodo.utils.influx import add_measurements_influxdb
 from mycodo.utils.inputs import parse_measurement
@@ -124,6 +125,7 @@ class InputModule(AbstractInput):
     def __init__(self, input_dev, testing=False):
         super().__init__(input_dev, testing=testing, name=__name__)
 
+        self.log_level_debug = None
         self.first_run = True
 
         self.application_id = None
@@ -136,6 +138,7 @@ class InputModule(AbstractInput):
             self.try_initialize()
 
     def initialize(self):
+        self.log_level_debug = self.input_dev.log_level_debug
         self.interface = self.input_dev.interface
         self.period = self.input_dev.period
         self.latest_datetime = self.input_dev.datetime
@@ -211,6 +214,8 @@ class InputModule(AbstractInput):
                             measurements[channel]['value'] = meas[channel]['value']
 
             if measurements:
+                message, measurements = run_input_actions(self.unique_id, "", measurements, self.log_level_debug)
+
                 self.logger.debug("Adding measurements to influxdb: {}".format(measurements))
                 add_measurements_influxdb(
                     self.unique_id, measurements,

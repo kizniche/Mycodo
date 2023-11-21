@@ -165,7 +165,7 @@ class ActionModule(AbstractFunctionAction):
         self.logger.debug(f"Input channel: {channel}, payload: {payload}")
 
         if payload is None:
-            msg = f" Error: No measurement found in dictionary passed to Action for channel {channel}."
+            msg = f" Error: No measurement found in payload for {channel}."
             self.logger.error(msg)
             dict_vars["message"] += msg
             return dict_vars

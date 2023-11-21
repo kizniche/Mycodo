@@ -3,6 +3,7 @@ from mycodo.config_translations import TRANSLATIONS
 from mycodo.databases.models import Conversion
 from mycodo.databases.models import InputChannel
 from mycodo.inputs.base_input import AbstractInput
+from mycodo.utils.actions import run_input_actions
 from mycodo.utils.database import db_retrieve_table_daemon
 from mycodo.utils.influx import add_measurements_influxdb
 from mycodo.utils.inputs import parse_measurement
@@ -333,9 +334,10 @@ class InputModule(AbstractInput):
 
         self.random = None
         self.interface = None
-        self.resolution = None
         self.i2c_address = None
         self.i2c_bus = None
+        self.resolution = None
+        self.log_level_debug = None
 
         #
         # Set variables to custom options
@@ -374,6 +376,7 @@ class InputModule(AbstractInput):
         #
 
         self.resolution = self.input_dev.resolution
+        self.log_level_debug = self.input_dev.log_level_debug
 
         #
         # Initialize the sensor class
@@ -441,6 +444,9 @@ class InputModule(AbstractInput):
                         measurements[channel]['value'] = meas[channel]['value']
 
         if measurements:
+            # Run Actions for Input before saving measurements to database
+            message, measurements = run_input_actions(self.unique_id, "", measurements, self.log_level_debug)
+
             self.logger.debug("Adding measurements to influxdb: {}".format(measurements))
             add_measurements_influxdb(
                 self.unique_id, measurements,

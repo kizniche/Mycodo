@@ -24,11 +24,7 @@ def generate_code(input_id, python_code):
     pre_statement_run = """import os
 import sys
 sys.path.append(os.path.abspath('/var/mycodo-root'))
-from mycodo.databases.models import Conversion
 from mycodo.mycodo_client import DaemonControl
-from mycodo.utils.database import db_retrieve_table_daemon
-from mycodo.utils.influx import add_measurements_influxdb
-from mycodo.utils.inputs import parse_measurement
 control = DaemonControl()
 
 class PythonInputRun:
@@ -38,38 +34,6 @@ class PythonInputRun:
         self.measurement_info = measurement_info
         self.channels_conversion = channels_conversion
         self.channels_measurement = channels_measurement
-
-    def store_measurement(self, channel=None, measurement=None, timestamp=None):
-        if None in [channel, measurement]:
-            return
-        measure = {
-            channel: {
-                'measurement': self.measurement_info[channel]['measurement'],
-                'unit': self.measurement_info[channel]['unit'],
-                'value': measurement,
-                'timestamp_utc': None
-            }
-        }
-        if timestamp:
-            measure[channel]['timestamp_utc'] = timestamp
-
-        if channel in self.channels_conversion and self.channels_conversion[channel]:
-            conversion = db_retrieve_table_daemon(
-                Conversion,
-                unique_id=self.channels_measurement[channel].conversion_id)
-            if conversion:  # Convert value/unit is conversion_id present and valid
-                meas_conv = parse_measurement(
-                    self.channels_conversion[channel],
-                    self.channels_measurement[channel],
-                    measure,
-                    channel,
-                    measure[channel],
-                    timestamp=measure[channel]['timestamp_utc'])
-                measure[channel]['measurement'] = meas_conv[channel]['measurement']
-                measure[channel]['unit'] = meas_conv[channel]['unit']
-                measure[channel]['value'] = meas_conv[channel]['value']
-
-        add_measurements_influxdb(self.input_id, measure)
 
     def python_code_run(self):
 """
@@ -164,7 +128,7 @@ def execute_at_modification(
                    'export PYLINTHOME=/var/mycodo-root/.pylint.d && ' \
                    '{dir}/env/bin/python -m pylint -d I,W0621,C0103,C0111,C0301,C0327,C0410,C0413 {path}'.format(
                        dir=INSTALL_DIRECTORY, path=file_run)
-        cmd_out, cmd_error, cmd_status = cmd_output(cmd_test)
+        cmd_out, cmd_error, cmd_status = cmd_output(cmd_test, user='root')
         pylint_message = Markup(
             '<pre>\n\n'
             'Full Python Code Input code:\n\n{code}\n\n'
@@ -173,6 +137,7 @@ def execute_at_modification(
                 code=lines_code, report=cmd_out.decode("utf-8")))
     except Exception as err:
         cmd_status = None
+        cmd_error = None
         messages["error"].append("Error running pylint: {}".format(err))
 
     if cmd_status:
@@ -206,7 +171,8 @@ INPUT_INFORMATION = {
 
     'message': 'This is an alternate Python 3 Code Input that uses a different method for storing values to the '
                'database. This was created because the Python 3 Code v1.0 Input does not allow the use of Input '
-               'Actions. This method does allow the use of Input Actions. '
+               'Actions. This method does allow the use of Input Actions. (11/21/2023 Update: The Python 3 Code '
+               '(v1.0) Input now allows the execution of Actions). '
                'All channels require a Measurement Unit to be selected and saved in order to store values to the '
                'database. Your code is executed from the same Python virtual environment that Mycodo runs from. '
                'Therefore, you must install Python libraries to this environment if you want them to be available to '

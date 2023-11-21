@@ -3,7 +3,7 @@ import datetime
 import json
 
 from flask_babel import lazy_gettext
-
+from mycodo.utils.actions import run_input_actions
 from mycodo.config_translations import TRANSLATIONS
 from mycodo.databases.models import Conversion
 from mycodo.databases.models import InputChannel
@@ -170,6 +170,7 @@ class InputModule(AbstractInput):
     def __init__(self, input_dev, testing=False):
         super().__init__(input_dev, testing=testing, name=__name__)
 
+        self.log_level_debug = None
         self.client = None
         self.jmespath = None
         self.options_channels = None
@@ -195,6 +196,7 @@ class InputModule(AbstractInput):
         import jmespath
 
         self.jmespath = jmespath
+        self.log_level_debug = self.input_dev.log_level_debug
 
         input_channels = db_retrieve_table_daemon(
             InputChannel).filter(InputChannel.input_id == self.input_dev.unique_id).all()
@@ -307,7 +309,9 @@ class InputModule(AbstractInput):
                 self.logger.error(
                     "Error in JSON '{}' finding '{}': {}".format(
                         json_values, json_name, err))
-    
+
+        message, measurement = run_input_actions(self.unique_id, "", measurement, self.log_level_debug)
+
         self.logger.debug(f"Adding measurement to influxdb: {measurement}")
         add_measurements_influxdb(
             self.unique_id,

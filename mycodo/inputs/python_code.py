@@ -25,6 +25,7 @@ import sys
 sys.path.append(os.path.abspath('/var/mycodo-root'))
 from mycodo.databases.models import Conversion
 from mycodo.mycodo_client import DaemonControl
+from mycodo.utils.actions import run_input_actions
 from mycodo.utils.database import db_retrieve_table_daemon
 from mycodo.utils.influx import add_measurements_influxdb
 from mycodo.utils.inputs import parse_measurement
@@ -67,6 +68,8 @@ class PythonInputRun:
                 measure[channel]['measurement'] = meas_conv[channel]['measurement']
                 measure[channel]['unit'] = meas_conv[channel]['unit']
                 measure[channel]['value'] = meas_conv[channel]['value']
+
+        message, measure = run_input_actions(self.input_id, "", measure)
 
         add_measurements_influxdb(self.input_id, measure)
 
@@ -150,7 +153,7 @@ def execute_at_modification(
                    'export PYLINTHOME=/var/mycodo-root/.pylint.d && ' \
                    '{dir}/env/bin/python -m pylint -d I,W0621,C0103,C0111,C0301,C0327,C0410,C0413 {path}'.format(
                        dir=INSTALL_DIRECTORY, path=file_run)
-        cmd_out, cmd_error, cmd_status = cmd_output(cmd_test)
+        cmd_out, cmd_error, cmd_status = cmd_output(cmd_test, user='root')
         pylint_message = Markup(
             '<pre>\n\n'
             'Full Python Code Input code:\n\n{code}\n\n'

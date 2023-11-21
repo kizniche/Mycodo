@@ -26,11 +26,12 @@ import threading
 import time
 
 from mycodo.controllers.base_controller import AbstractController
-from mycodo.databases.models import (SMTP, Actions, Conversion,
+from mycodo.databases.models import (SMTP, Conversion,
                                      DeviceMeasurements, Input, Misc, Output,
                                      OutputChannel)
 from mycodo.inputs.base_input import AbstractInput
 from mycodo.mycodo_client import DaemonControl
+from mycodo.utils.actions import run_input_actions
 from mycodo.utils.database import db_retrieve_table_daemon
 from mycodo.utils.influx import add_measurements_influxdb
 from mycodo.utils.inputs import parse_input_information, parse_measurement
@@ -218,23 +219,9 @@ class InputController(AbstractController, threading.Thread):
                 if self.measurement_success:
                     measurements_dict = self.create_measurements_dict()
 
-                    # Run any actions
+                    # Run actions
                     message = "Executing actions of Input."
-                    actions = db_retrieve_table_daemon(Actions).filter(
-                        Actions.function_id == self.unique_id).all()
-                    for each_action in actions:
-                        return_dict = self.control.trigger_action(
-                            each_action.unique_id,
-                            value={"message": message, "measurements_dict": measurements_dict},
-                            debug=self.log_level_debug)
-
-                        # if message is returned, set message
-                        if return_dict and 'message' in return_dict and return_dict['message']:
-                            message = return_dict['message']
-
-                        # if measurements_dict is returned, use that to store measurements
-                        if return_dict and 'measurements_dict' in return_dict and return_dict['measurements_dict']:
-                            measurements_dict = return_dict['measurements_dict']
+                    message, measurements_dict = run_input_actions(self.unique_id, message, measurements_dict, self.log_level_debug)
 
                     # Add measurement(s) to influxdb
                     use_same_timestamp = True

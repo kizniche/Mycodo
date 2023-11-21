@@ -296,20 +296,20 @@ def trigger_action(
 
     :param dict_actions: dict of action information
     :param action_id: unique_id of action
-    :param value: an object to be sent to the action. Typically a dictionary with 'message' as a key.
+    :param value: an object to be sent to the action. Typically, a dictionary with 'message' as a key.
     :param debug: determine if logging level should be DEBUG
 
     :return: dict with 'message' as a key
     """
     action = db_retrieve_table_daemon(Actions, unique_id=action_id)
-    if not action:
-        message += 'Error: Action with ID {} not found!'.format(action_id)
-        return {'message': message}
-
     if not value or 'message' not in value:
         message = ''
     else:
         message = value['message']
+
+    if not action:
+        message += 'Error: Action with ID {} not found!'.format(action_id)
+        return {'message': message}
 
     logger_actions = logging.getLogger("mycodo.trigger_action_{id}".format(
         id=action.unique_id.split('-')[0]))
@@ -340,6 +340,27 @@ def trigger_action(
     logger_actions.debug("Message: {}".format(message))
 
     return value
+
+
+def run_input_actions(unique_id, message, measurements_dict, debug=False):
+    control = DaemonControl()
+    actions = db_retrieve_table_daemon(Actions).filter(
+        Actions.function_id == unique_id).all()
+    for each_action in actions:
+        return_dict = control.trigger_action(
+            each_action.unique_id,
+            value={"message": message, "measurements_dict": measurements_dict},
+            debug=debug)
+
+        # if message is returned, set message
+        if return_dict and 'message' in return_dict and return_dict['message']:
+            message = return_dict['message']
+
+        # if measurements_dict is returned, use that to store measurements
+        if return_dict and 'measurements_dict' in return_dict and return_dict['measurements_dict']:
+            measurements_dict = return_dict['measurements_dict']
+
+    return message, measurements_dict
 
 
 def trigger_controller_actions(dict_actions, controller_id, message='', debug=False):

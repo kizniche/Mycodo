@@ -4,6 +4,11 @@
 
  - Add Input Action: Execute Python 3 Code ([#1334](https://github.com/kizniche/Mycodo/issues/1334))
 
+### Bugfixes
+
+ - Fix Actions not executing for MQTT, TTN, and Python Code Inputs ([#1336](https://github.com/kizniche/Mycodo/issues/1336))
+ - Fix Python Code Inputs running pylint
+
 
 ## 8.15.12 (2023.10.28)
 

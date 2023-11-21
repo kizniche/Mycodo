@@ -7,6 +7,7 @@ from mycodo.config_translations import TRANSLATIONS
 from mycodo.databases.models import Conversion
 from mycodo.databases.models import InputChannel
 from mycodo.inputs.base_input import AbstractInput
+from mycodo.utils.actions import run_input_actions
 from mycodo.utils.constraints_pass import constraints_pass_positive_value
 from mycodo.utils.database import db_retrieve_table_daemon
 from mycodo.utils.influx import add_measurements_influxdb
@@ -154,6 +155,7 @@ class InputModule(AbstractInput):
     def __init__(self, input_dev, testing=False):
         super().__init__(input_dev, testing=testing, name=__name__)
 
+        self.log_level_debug = None
         self.client = None
 
         self.mqtt_hostname = None
@@ -174,6 +176,8 @@ class InputModule(AbstractInput):
 
     def initialize(self):
         import paho.mqtt.client as mqtt
+
+        self.log_level_debug = self.input_dev.log_level_debug
 
         input_channels = db_retrieve_table_daemon(
             InputChannel).filter(InputChannel.input_id == self.input_dev.unique_id).all()
@@ -276,6 +280,8 @@ class InputModule(AbstractInput):
             measurement = self.check_conversion(channel, measurement)
 
             if measurement:
+                message, measurement = run_input_actions(self.unique_id, "", measurement, self.log_level_debug)
+
                 self.logger.debug(f"Adding measurement to influxdb: {measurement}")
                 add_measurements_influxdb(
                     self.unique_id,

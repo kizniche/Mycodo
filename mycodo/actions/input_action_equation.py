@@ -81,7 +81,7 @@ class ActionModule(AbstractFunctionAction):
 
         if original_value is None:
             msg = f" Error: No measurement found in dictionary passed to Action for channel {channel}."
-            self.logger.error(msg)
+            self.logger.debug(msg)
             dict_vars['message'] += msg
             return dict_vars
 
