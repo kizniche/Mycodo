@@ -265,6 +265,10 @@
 
   {% if 'enable_actions' in dict_options['options_enabled']%}
 
+  <div class="row align-items-end small-gutters" style="border-top: 1px solid #ddd; padding-top: 0.5em">
+    <h5>{{_('Actions')}} <a href="https://kizniche.github.io/Mycodo/Actions" target="_blank"><span style="font-size: 16px" class="fas fa-question-circle"></span></a></h5>
+  </div>
+
   <form method="post" action="/function">
     {{form_actions.csrf_token}}
     {{form_actions.device_id(class_='form-control', value=each_function.unique_id)}}
