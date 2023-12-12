@@ -38,19 +38,23 @@ from mycodo.utils.influx import write_influxdb_value
 measurements_dict = {
     0: {
         'measurement': 'boolean',
-        'unit': 'bool'
+        'unit': 'bool',
+        'name': 'Key 1'
     },
     1: {
         'measurement': 'boolean',
-        'unit': 'bool'
+        'unit': 'bool',
+        'name': 'Key 2'
     },
     2: {
         'measurement': 'boolean',
-        'unit': 'bool'
+        'unit': 'bool',
+        'name': 'Key 3'
     },
     3: {
         'measurement': 'boolean',
-        'unit': 'bool'
+        'unit': 'bool',
+        'name': 'Key 4'
     }
 }
 
@@ -127,14 +131,19 @@ FUNCTION_INFORMATION = {
         ('pip-pypi', 'adafruit_neokey', 'adafruit-circuitpython-neokey==1.1.2')
     ],
 
-    'options_disabled': [
+    'options_disabled': [],
+
+    'options_enabled': [
+        'custom_options',
+        'enable_actions',
         'measurements_select',
         'measurements_configure'
     ],
 
-    'options_enabled': [
-        'custom_options',
-        'enable_actions'
+    'function_actions': [
+        'neopixel_set_color',
+        'neopixel_start_flashing',
+        'neopixel_stop_flashing'
     ],
 
     'custom_options': [
@@ -161,6 +170,14 @@ FUNCTION_INFORMATION = {
             'required': True,
             'name': 'LED Brightness (0.0-1.0)',
             'phrase': 'The brightness of the LEDs'
+        },
+        {
+            'id': 'led_flash_period_sec',
+            'type': 'float',
+            'default_value': 1.0,
+            'required': True,
+            'name': 'LED Flash Period (Seconds)',
+            'phrase': 'Set the period if the LED begins flashing'
         },
     ],
 
@@ -230,13 +247,16 @@ class CustomModule(AbstractFunction):
 
         self.options_channels = {}
         self.neokey = None
+        self.flashing = {}
         self.colorwheel = None
         self.control = None
+        self.timer_flash = None
 
         # Initialize custom options
         self.i2c_address = None
         self.i2c_bus = None
         self.key_led_brightness = None
+        self.led_flash_period_sec = None
 
         # Set custom options
         custom_function = db_retrieve_table_daemon(
@@ -285,17 +305,36 @@ class CustomModule(AbstractFunction):
             self.neokey.pixels.brightness = self.key_led_brightness
 
             for key in range(4):
-                self.set_color(key, self.options_channels['led_rest'][key])
+                self.set_color({"led_number": key, "led_color": self.options_channels['led_rest'][key]})
+                self.flashing[key] = {
+                    "enabled": False,
+                    "color": None,
+                    "on": False
+                }
         except:
             self.logger.exception("Initializing device")
 
     def listener(self):
         """This function will be turned into a thread to watch for key presses."""
         while self.running:
+            # Check for flashing
+            if self.timer_flash < time.time():
+                while self.timer_flash < time.time():
+                    self.timer_flash += self.led_flash_period_sec
+                for key in range(4):
+                    if self.flashing[key]["enabled"]:
+                        if self.flashing[key]["on"]:
+                            self.flashing[key]["on"] = False
+                            self.neokey.pixels[key] = 0x0  # LED off
+                        else:
+                            self.flashing[key]["on"] = True
+                            self.set_color({"led_number": key, "led_color": self.flashing[key]["color"]})
+
+            # Check key press
             for key in range(4):
                 if self.neokey[key]:
                     self.logger.debug(f"Key {key + 1} Pressed")
-                    self.set_color(key, self.options_channels['led_start'][key])
+                    self.set_color({"led_number": key, "led_color": self.options_channels['led_start'][key]})
 
                     while self.neokey[key] and self.running:
                         time.sleep(0.2)
@@ -311,16 +350,17 @@ class CustomModule(AbstractFunction):
                         target=self.run_key_actions,
                         args=(key,))
                     key_thread.start()
+
             time.sleep(0.25)
 
     def run_key_actions(self, key):
         for i, each_id in enumerate(self.options_channels['key_action_ids'][key]):
             if i == len(self.options_channels['key_action_ids'][key]) - 1:
-                self.set_color(key, self.options_channels['led_last'][key])
+                self.set_color({"led_number": key, "led_color": self.options_channels['led_last'][key]})
 
             if not self.running:
                 self.logger.info("Detected shutting down, stopping execution of Actions")
-                self.set_color(key, self.options_channels['led_rest'][key])
+                self.set_color({"led_number": key, "led_color": self.options_channels['led_rest'][key]})
                 return
 
             action = db_retrieve_table_daemon(Actions).filter(
@@ -342,10 +382,62 @@ class CustomModule(AbstractFunction):
                 self.logger.exception(f"Executing Action with ID {each_id}")
 
         time.sleep(self.options_channels['key_led_delay'][key])
-        self.set_color(key, self.options_channels['led_rest'][key])
+        self.set_color({"led_number": key, "led_color": self.options_channels['led_rest'][key]})
 
-    def set_color(self, key, color):
-        if color == 0:
-            self.neokey.pixels[key] = 0x0  # LED off
-        else:
-            self.neokey.pixels[key] = self.colorwheel(color)
+    def set_color(self, dict_payload):
+        if "led_number" not in dict_payload:
+            self.logger.error("Missing key 'led_number'")
+            return
+        if "led_color" not in dict_payload:
+            self.logger.error("Missing key 'led_color'")
+            return
+
+        if type(dict_payload["led_color"]) is int:
+            if dict_payload["led_color"] == 0:
+                self.neokey.pixels[dict_payload["led_number"]] = 0x0  # LED off
+            else:
+                self.neokey.pixels[dict_payload["led_number"]] = self.colorwheel(dict_payload["led_color"])
+        elif type(dict_payload["led_color"]) is str:
+            list_color = dict_payload["led_color"].replace(" ", "").split(",")
+            r = int(list_color[0])
+            g = int(list_color[1])
+            b = int(list_color[2])
+            self.neokey.pixels[dict_payload["led_number"]] = r << 16 | g << 8 | b  # Each 0 - 255
+
+    def flashing_on(self, dict_payload):
+        if "led_number" not in dict_payload:
+            self.logger.error("Missing key 'led_number'")
+            return
+        if "led_color" not in dict_payload:
+            self.logger.error("Missing key 'led_color'")
+            return
+        if dict_payload["led_number"] not in self.flashing:
+            self.logger.error(f'Key {dict_payload["led_number"]} does not exist')
+            return
+
+        if type(dict_payload["led_color"]) is int:
+            if dict_payload["led_color"] == 0:
+                self.flashing[dict_payload["led_number"]]["color"] = 0x0  # LED off
+            else:
+                self.flashing[dict_payload["led_number"]]["color"] = self.colorwheel(dict_payload["led_color"])
+        elif type(dict_payload["led_color"]) is str:
+            list_color = dict_payload["led_color"].replace(" ", "").split(",")
+            r = int(list_color[0])
+            g = int(list_color[1])
+            b = int(list_color[2])
+            self.flashing[dict_payload["led_number"]]["color"] = r << 16 | g << 8 | b  # Each 0 - 255
+
+        self.timer_flash = time.time() + self.led_flash_period_sec
+        self.flashing[dict_payload["led_number"]]["enabled"] = True
+
+    def flashing_off(self, dict_payload):
+        if "led_number" not in dict_payload:
+            self.logger.error("Missing key 'led_number'")
+            return
+        if dict_payload["led_number"] not in self.flashing:
+            self.logger.error(f'Key {dict_payload["led_number"]} does not exist')
+            return
+
+        self.flashing[dict_payload["led_number"]]["enabled"] = False
+        time.sleep(0.5)
+        self.neokey.pixels[dict_payload["led_number"]] = 0x0  # LED off

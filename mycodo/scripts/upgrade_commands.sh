@@ -20,7 +20,6 @@ WIRINGPI_URL_ARMHF="https://github.com/WiringPi/WiringPi/releases/download/2.61-
 WIRINGPI_URL_ARM64="https://github.com/WiringPi/WiringPi/releases/download/2.61-1/wiringpi-2.61-1-arm64.deb"
 
 INFLUXDB1_VERSION="1.8.10"
-INFLUXDB2_VERSION="2.6.1"
 
 # Required apt packages
 APT_PKGS="gawk gcc g++ git jq libatlas-base-dev libffi-dev libi2c-dev logrotate moreutils netcat-openbsd nginx python3 python3-dev python3-pip python3-setuptools python3-venv rng-tools sqlite3 unzip wget"
@@ -438,9 +437,25 @@ case "${1:-''}" in
         printf "\n#### Ensuring compatible version of influxdb 2.x is installed ####\n"
         if [[ ${UNAME_TYPE} == 'x86_64' || ${MACHINE_TYPE} == 'arm64' ]]; then
             INSTALL_ADDRESS="https://dl.influxdata.com/influxdb/releases/"
-            INSTALL_FILE="influxdb2-${INFLUXDB2_VERSION}-${MACHINE_TYPE}.deb"
-            CLI_FILE="influxdb2-client-${INFLUXDB2_VERSION}-${MACHINE_TYPE}.deb"
-            CORRECT_VERSION="${INFLUXDB2_VERSION}-1"
+            AMD64_INSTALL_FILE="influxdb2_2.7.3-1_amd64.deb"
+            ARM64_INSTALL_FILE="influxdb2_2.7.3-1_arm64.deb"
+            AMD64_CLIENT_FILE="influxdb2-client-2.7.3-amd64.deb"
+            ARM64_CLIENT_FILE="influxdb2-client-2.7.3-arm64.deb"
+            CORRECT_VERSION="2.7.3-1"
+
+            if [[ ${UNAME_TYPE} == 'x86_64' ]]; then
+                printf "#### Detected x86_64 architecture\n"
+                INSTALL_FILE=$AMD64_INSTALL_FILE
+                CLIENT_FILE=$AMD64_CLIENT_FILE
+            elif [[ ${MACHINE_TYPE} == 'arm64' ]]; then
+                printf "#### Detected arm64 architecture\n"
+                INSTALL_FILE=$ARM64_INSTALL_FILE
+                CLIENT_FILE=$ARM64_CLIENT_FILE
+            fi
+
+            printf "#### Influxdb server file location: ${INSTALL_ADDRESS}${INSTALL_FILE}\n"
+            printf "#### Influxdb client file location: ${INSTALL_ADDRESS}${CLIENT_FILE}\n"
+
             CURRENT_VERSION=$(apt-cache policy influxdb2 | grep 'Installed' | gawk '{print $2}')
 
             if [[ "${CURRENT_VERSION}" != "${CORRECT_VERSION}" ]]; then
@@ -455,14 +470,16 @@ case "${1:-''}" in
                 printf "#### Installing InfluxDB v${CORRECT_VERSION}...\n"
 
                 wget --quiet "${INSTALL_ADDRESS}${INSTALL_FILE}"
-                wget --quiet "${INSTALL_ADDRESS}${CLI_FILE}"
                 dpkg -i "${INSTALL_FILE}"
-                dpkg -i "${CLI_FILE}"
-                rm -rf "${CLI_FILE}"
                 rm -rf "${INSTALL_FILE}"
+
+                wget --quiet "${INSTALL_ADDRESS}${CLIENT_FILE}"
+                dpkg -i "${CLIENT_FILE}"
+                rm -rf "${CLIENT_FILE}"
+
                 service influxd restart
             else
-                printf "Correct version of InfluxDB currently installed.\n"
+                printf "Correct version of InfluxDB currently installed (v${CORRECT_VERSION}).\n"
             fi
         else
             printf "ERROR: Could not detect 64-bit architecture (x86_64/arm64) to install Influxdb 2.x (found ${UNAME_TYPE}/${MACHINE_TYPE}).\n"

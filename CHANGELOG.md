@@ -5,7 +5,10 @@
  - Add ability to use Actions in Custom Functions
  - Add Input Action: Execute Python 3 Code ([#1334](https://github.com/kizniche/Mycodo/issues/1334))
  - Add Function: Adafruit Neokey (Key Press Executes Actions) ([#1353](https://github.com/kizniche/Mycodo/issues/1353))
+ - Add Action: Neopixel Flashing On
+ - Add Action: Neopixel Flashing Off
  - Change deprecated threading.currentThread to threading.current_thread
+ - Update InfluxDB 2.x to 2.7.3
 
 ### Bugfixes
 
