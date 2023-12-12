@@ -66,7 +66,7 @@ OUTPUT_INFORMATION = {
             'type': 'text',
             'default_value': '10, 0, 0',
             'name': f"RGB Color",
-            'phrase': 'The color (e.g 10, 0 0)'
+            'phrase': 'The color (e.g 10, 0, 0)'
         },
         {
             'id': 'set_led',

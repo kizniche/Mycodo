@@ -116,14 +116,15 @@ def execute_at_modification(
 
 FUNCTION_INFORMATION = {
     'function_name_unique': 'function_adafruit_neokey_01',
-    'function_name': 'Adafruit Neokey (Key Executes Actions)',
+    'function_name': 'Neokey 4x1 Neopixel Keyboard (Execute Actions)',
+    'function_name_short': 'Neokey 4x1 Neopixel Keyboard',
     'function_manufacturer': 'Adafruit',
     'function_library': 'adafruit-circuitpython-neokey',
     'execute_at_modification': execute_at_modification,
     'measurements_dict': measurements_dict,
     'channels_dict': channels_dict,
 
-    'message': 'This Function executes actions when a key is pressed. Add actions at the bottom of this module, then enter one or more short action IDs for each key, separated by commas. The Action ID is found next to the Action (for example, the Action "[Action 0559689e] Controller: Activate" has an Action ID of 0559689e. When entering Action ID(s), separate multiple IDs by commas (for example, "asdf1234" or "asdf1234,qwer5678,zxcv0987"). Actions will be executed in the order they are entered in the text string.',
+    'message': 'This Function executes actions when a key is pressed. Add actions at the bottom of this module, then enter one or more short action IDs for each key, separated by commas. The Action ID is found next to the Action (for example, the Action "[Action 0559689e] Controller: Activate" has an Action ID of 0559689e. When entering Action ID(s), separate multiple IDs by commas (for example, "asdf1234" or "asdf1234,qwer5678,zxcv0987"). Actions will be executed in the order they are entered in the text string. Enter Action IDs to execute those actions when the key is pressed. If enable Toggling Actions, every other key press will execute Actions listed in Toggled Action IDs. The LED color of the key before being pressed, after being pressed, and while the last action is running. Color is an RGB string, with 0-255 for each color. For example, red is "255, 0, 0" and blue is "0, 0, 255".',
 
     'dependencies_module': [
         ('pip-pypi', 'usb.core', 'pyusb==1.1.1'),
@@ -131,12 +132,9 @@ FUNCTION_INFORMATION = {
         ('pip-pypi', 'adafruit_neokey', 'adafruit-circuitpython-neokey==1.1.2')
     ],
 
-    'options_disabled': [],
-
     'options_enabled': [
         'custom_options',
         'enable_actions',
-        'measurements_select',
         'measurements_configure'
     ],
 
@@ -191,6 +189,14 @@ FUNCTION_INFORMATION = {
             'phrase': TRANSLATIONS['name']['phrase']
         },
         {
+            'id': 'key_led_delay',
+            'type': 'float',
+            'default_value': 1.5,
+            'required': True,
+            'name': 'LED Delay (Seconds)',
+            'phrase': 'How long to leave the LED on after the last action executes.'
+        },
+        {
             'id': 'key_action_ids',
             'type': 'text',
             'default_value': '',
@@ -199,40 +205,44 @@ FUNCTION_INFORMATION = {
             'phrase': 'Set which action(s) execute when the key is pressed. Enter one or more Action IDs, separated by commas'
         },
         {
-            'id': 'key_led_delay',
-            'type': 'float',
-            'default_value': 1.5,
+            'id': 'enable_toggling_actions',
+            'type': 'bool',
+            'default_value': False,
             'required': True,
-            'name': 'LED Delay',
-            'phrase': 'How long to leave the LED on after the last action executes.'
+            'name': 'Enable Toggling Actions',
+            'phrase': 'Alternate between executing two sets of Actions'
         },
         {
-            'type': 'message',
-            'default_value': 'The LED color of the key before being pressed, after being pressed, and when the last action is running. Values use colorwheel, with 85 as green, 170 as blue, and 255 as red, with the values between being the rest of the rainbow. Setting to 0 will turn the LED off.',
+            'id': 'toggle_action_ids',
+            'type': 'text',
+            'default_value': '',
+            'required': False,
+            'name': 'Toggled Action ID(s)',
+            'phrase': 'Set which action(s) execute when the key is pressed on even presses. Enter one or more Action IDs, separated by commas'
         },
         {
             'id': 'led_rest',
-            'type': 'integer',
-            'default_value': 0,
+            'type': 'text',
+            'default_value': '0, 0, 0',
             'required': True,
-            'name': 'Resting LED Color (0-255)',
-            'phrase': 'The LED color while no actions are running'
+            'name': 'Resting LED Color (RGB)',
+            'phrase': 'The RGB color while no actions are running (e.g 10, 0, 0)'
         },
         {
             'id': 'led_start',
-            'type': 'integer',
-            'default_value': 85,
+            'type': 'text',
+            'default_value': '0, 255, 0',
             'required': True,
-            'name': 'Actions Running LED Color: (0-255)',
-            'phrase': 'The LED color while all but the last action is running'
+            'name': 'Actions Running LED Color: (RGB)',
+            'phrase': 'The RGB color while all but the last action is running (e.g 10, 0, 0)'
         },
         {
             'id': 'led_last',
-            'type': 'integer',
-            'default_value': 255,
+            'type': 'text',
+            'default_value': '0, 0, 255',
             'required': True,
-            'name': 'Last Action LED Color (0-255)',
-            'phrase': 'The LED color while the last action is running'
+            'name': 'Last Action LED Color (RGB)',
+            'phrase': 'The RGB color while the last action is running (e.g 10, 0, 0)'
         }
     ]
 }
@@ -251,6 +261,8 @@ class CustomModule(AbstractFunction):
         self.colorwheel = None
         self.control = None
         self.timer_flash = None
+        self.key_press_executing = {}
+        self.toggle = {}
 
         # Initialize custom options
         self.i2c_address = None
@@ -311,28 +323,21 @@ class CustomModule(AbstractFunction):
                     "color": None,
                     "on": False
                 }
+                self.key_press_executing[key] = False
+                self.toggle[key] = {
+                    "enabled": self.options_channels['enable_toggling_actions'][key],
+                    "toggled": False
+                }
         except:
             self.logger.exception("Initializing device")
 
     def listener(self):
         """This function will be turned into a thread to watch for key presses."""
         while self.running:
-            # Check for flashing
-            if self.timer_flash < time.time():
-                while self.timer_flash < time.time():
-                    self.timer_flash += self.led_flash_period_sec
-                for key in range(4):
-                    if self.flashing[key]["enabled"]:
-                        if self.flashing[key]["on"]:
-                            self.flashing[key]["on"] = False
-                            self.neokey.pixels[key] = 0x0  # LED off
-                        else:
-                            self.flashing[key]["on"] = True
-                            self.set_color({"led_number": key, "led_color": self.flashing[key]["color"]})
-
             # Check key press
             for key in range(4):
                 if self.neokey[key]:
+                    self.key_press_executing[key] = True
                     self.logger.debug(f"Key {key + 1} Pressed")
                     self.set_color({"led_number": key, "led_color": self.options_channels['led_start'][key]})
 
@@ -351,11 +356,31 @@ class CustomModule(AbstractFunction):
                         args=(key,))
                     key_thread.start()
 
+            # Check for flashing
+            if self.timer_flash < time.time():
+                while self.timer_flash < time.time():
+                    self.timer_flash += self.led_flash_period_sec
+                for key in range(4):
+                    if self.flashing[key]["enabled"] and not self.key_press_executing[key]:
+                        if self.flashing[key]["on"]:
+                            self.flashing[key]["on"] = False
+                            self.neokey.pixels[key] = 0x0  # LED off
+                        else:
+                            self.flashing[key]["on"] = True
+                            self.set_color({"led_number": key, "led_color": self.flashing[key]["color"]})
+
             time.sleep(0.25)
 
     def run_key_actions(self, key):
-        for i, each_id in enumerate(self.options_channels['key_action_ids'][key]):
-            if i == len(self.options_channels['key_action_ids'][key]) - 1:
+        action_ids = self.options_channels['key_action_ids'][key]
+        if self.toggle[key]["enabled"] and self.toggle[key]["toggled"]:
+            self.toggle[key]["toggled"] = False
+            action_ids = self.options_channels['toggle_action_ids'][key]
+        elif self.toggle[key]["enabled"] and not self.toggle[key]["toggled"]:
+            self.toggle[key]["toggled"] = True
+
+        for i, each_id in enumerate(action_ids):
+            if i == len(action_ids) - 1:
                 self.set_color({"led_number": key, "led_color": self.options_channels['led_last'][key]})
 
             if not self.running:
@@ -383,6 +408,7 @@ class CustomModule(AbstractFunction):
 
         time.sleep(self.options_channels['key_led_delay'][key])
         self.set_color({"led_number": key, "led_color": self.options_channels['led_rest'][key]})
+        self.key_press_executing[key] = False
 
     def set_color(self, dict_payload):
         if "led_number" not in dict_payload:
@@ -392,17 +418,23 @@ class CustomModule(AbstractFunction):
             self.logger.error("Missing key 'led_color'")
             return
 
-        if type(dict_payload["led_color"]) is int:
-            if dict_payload["led_color"] == 0:
-                self.neokey.pixels[dict_payload["led_number"]] = 0x0  # LED off
-            else:
-                self.neokey.pixels[dict_payload["led_number"]] = self.colorwheel(dict_payload["led_color"])
-        elif type(dict_payload["led_color"]) is str:
+        if type(dict_payload["led_color"]) is str:
             list_color = dict_payload["led_color"].replace(" ", "").split(",")
-            r = int(list_color[0])
-            g = int(list_color[1])
-            b = int(list_color[2])
-            self.neokey.pixels[dict_payload["led_number"]] = r << 16 | g << 8 | b  # Each 0 - 255
+            color_error = False
+            try:
+                r = int(list_color[0])
+                g = int(list_color[1])
+                b = int(list_color[2])
+                if r < 0 or r > 255 or g < 0 or g > 255 or b < 0 or b > 255:
+                    color_error = True
+                self.neokey.pixels[dict_payload["led_number"]] = r << 16 | g << 8 | b  # Each 0 - 255
+            except:
+                color_error = True
+            if color_error:
+                self.logger.error(
+                    "Improper RGB color format. "
+                    "Must be three values, separated by commas, between 0 and 255 each. For example: 10, 0, 255")
+
 
     def flashing_on(self, dict_payload):
         if "led_number" not in dict_payload:
@@ -415,12 +447,7 @@ class CustomModule(AbstractFunction):
             self.logger.error(f'Key {dict_payload["led_number"]} does not exist')
             return
 
-        if type(dict_payload["led_color"]) is int:
-            if dict_payload["led_color"] == 0:
-                self.flashing[dict_payload["led_number"]]["color"] = 0x0  # LED off
-            else:
-                self.flashing[dict_payload["led_number"]]["color"] = self.colorwheel(dict_payload["led_color"])
-        elif type(dict_payload["led_color"]) is str:
+        if type(dict_payload["led_color"]) is str:
             list_color = dict_payload["led_color"].replace(" ", "").split(",")
             r = int(list_color[0])
             g = int(list_color[1])
