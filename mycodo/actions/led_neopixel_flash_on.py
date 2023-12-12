@@ -123,8 +123,8 @@ class ActionModule(AbstractFunctionAction):
         if this_function:
             functions = parse_function_information()
             if this_function.device in functions and "function_actions" in functions[this_function.device]:
-                if "neopixel_start_flashing" not in functions[this_function.device]["function_actions"]:
-                    msg = " Selected neopixel Function is not capable of setting an LED to a color"
+                if "neopixel_flashing_on" not in functions[this_function.device]["function_actions"]:
+                    msg = " Selected neopixel Function is not capable of flashing"
                     dict_vars['message'] += msg
                     self.logger.error(msg)
                     return dict_vars

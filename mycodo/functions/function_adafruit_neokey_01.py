@@ -142,8 +142,8 @@ FUNCTION_INFORMATION = {
 
     'function_actions': [
         'neopixel_set_color',
-        'neopixel_start_flashing',
-        'neopixel_stop_flashing'
+        'neopixel_flashing_on',
+        'neopixel_flashing_off'
     ],
 
     'custom_options': [
