@@ -646,25 +646,25 @@ def get_raspi_config_settings():
         'spi_enabled': None,
         'hostname': None
     }
-    i2c_status, _, _ = cmd_output("raspi-config nonint get_i2c")
+    i2c_status, _, _ = cmd_output("raspi-config nonint get_i2c", user="root")
     if i2c_status:
         settings['i2c_enabled'] = not bool(int(i2c_status))
-    ssh_status, _, _ = cmd_output("raspi-config nonint get_ssh")
+    ssh_status, _, _ = cmd_output("raspi-config nonint get_ssh", user="root")
     if ssh_status:
         settings['ssh_enabled'] = not bool(int(ssh_status))
-    cam_status, _, _ = cmd_output("raspi-config nonint get_camera")
+    cam_status, _, _ = cmd_output("raspi-config nonint get_camera", user="root")
     if cam_status:
         settings['pi_camera_enabled'] = not bool(int(cam_status))
-    one_wire_status, _, _ = cmd_output("raspi-config nonint get_onewire")
+    one_wire_status, _, _ = cmd_output("raspi-config nonint get_onewire", user="root")
     if one_wire_status:
         settings['one_wire_enabled'] = not bool(int(one_wire_status))
-    serial_status, _, _ = cmd_output("raspi-config nonint get_serial")
+    serial_status, _, _ = cmd_output("raspi-config nonint get_serial", user="root")
     if serial_status:
         settings['serial_enabled'] = not bool(int(serial_status))
-    spi_status, _, _ = cmd_output("raspi-config nonint get_spi")
+    spi_status, _, _ = cmd_output("raspi-config nonint get_spi", user="root")
     if spi_status:
         settings['spi_enabled'] = not bool(int(spi_status))
-    hostname_out, _, _ = cmd_output("raspi-config nonint get_hostname")
+    hostname_out, _, _ = cmd_output("raspi-config nonint get_hostname", user="root")
     if hostname_out:
         settings['hostname'] = hostname_out.decode("utf-8")
     return settings

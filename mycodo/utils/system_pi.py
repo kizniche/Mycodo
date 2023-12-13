@@ -340,7 +340,7 @@ def dpkg_package_exists(package_name):
     start = "dpkg-query -W -f='${Status}'"
     end = '2>/dev/null | grep -c "ok installed"'
     cmd = "{} {} {}".format(start, package_name, end)
-    _, _, stat = cmd_output(cmd)
+    _, _, stat = cmd_output(cmd, user="root")
     if not stat:
         return True
 
