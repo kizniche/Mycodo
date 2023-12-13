@@ -10,10 +10,10 @@ import time
 import zipfile
 
 from flask import send_file, url_for
+from packaging.version import parse
 from werkzeug.utils import secure_filename
 
-from mycodo.config import (ALEMBIC_VERSION, DATABASE_NAME, DEPENDENCY_LOG_FILE,
-                           DOCKER_CONTAINER, IMPORT_LOG_FILE,
+from mycodo.config import (ALEMBIC_VERSION, DATABASE_NAME, DOCKER_CONTAINER, IMPORT_LOG_FILE,
                            INSTALL_DIRECTORY, MYCODO_VERSION,
                            PATH_ACTIONS_CUSTOM, PATH_FUNCTIONS_CUSTOM,
                            PATH_HTML_USER, PATH_INPUTS_CUSTOM,
@@ -21,7 +21,6 @@ from mycodo.config import (ALEMBIC_VERSION, DATABASE_NAME, DEPENDENCY_LOG_FILE,
                            PATH_USER_SCRIPTS, PATH_WIDGETS_CUSTOM,
                            SQL_DATABASE_MYCODO)
 from mycodo.config_translations import TRANSLATIONS
-from mycodo.databases.models import Misc
 from mycodo.mycodo_flask.utils.utils_general import (flash_form_errors,
                                                      flash_success_errors)
 from mycodo.scripts.measurement_db import get_influxdb_info
@@ -240,10 +239,10 @@ def import_settings(form):
                     error.append(f"Correct format is: {correct_format}")
                 elif extension != correct_extension:
                     error.append("Extension not 'zip'")
-                elif name_split[1] > MYCODO_VERSION:
+                elif parse(name_split[1]) > parse(MYCODO_VERSION):
                     error.append(
                         f"Invalid Mycodo version: {name_split[1]} > {MYCODO_VERSION}. "
-                        f"Only databases <= {name_split[1]} can only be imported")
+                        f"Only databases <= {name_split[1]} can be imported")
             except Exception as err:
                 error.append(f"Exception while verifying file name: {err}")
 

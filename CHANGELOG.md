@@ -2,6 +2,7 @@
 
 ### Features
 
+ - Fix inability to import settings backup
  - Add ability to use Actions in Custom Functions
  - Add Input Action: Execute Python 3 Code ([#1334](https://github.com/kizniche/Mycodo/issues/1334))
  - Add Function: Adafruit Neokey (Key Press Executes Actions) ([#1353](https://github.com/kizniche/Mycodo/issues/1353))
