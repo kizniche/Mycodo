@@ -243,6 +243,14 @@ FUNCTION_INFORMATION = {
             'required': True,
             'name': 'Last Action LED Color (RGB)',
             'phrase': 'The RGB color while the last action is running (e.g 10, 0, 0)'
+        },
+        {
+            'id': 'led_shutdown',
+            'type': 'text',
+            'default_value': '0, 0, 0',
+            'required': True,
+            'name': 'Shutdown LED Color (RGB)',
+            'phrase': 'The RGB color when the Function is disabled (e.g 10, 0, 0)'
         }
     ]
 }
@@ -260,7 +268,7 @@ class CustomModule(AbstractFunction):
         self.flashing = {}
         self.colorwheel = None
         self.control = None
-        self.timer_flash = None
+        self.timer_flash = time.time()
         self.key_press_executing = {}
         self.toggle = {}
 
@@ -336,13 +344,10 @@ class CustomModule(AbstractFunction):
         while self.running:
             # Check key press
             for key in range(4):
-                if self.neokey[key]:
+                if self.neokey[key] and not self.key_press_executing[key]:
                     self.key_press_executing[key] = True
                     self.logger.debug(f"Key {key + 1} Pressed")
                     self.set_color({"led_number": key, "led_color": self.options_channels['led_start'][key]})
-
-                    while self.neokey[key] and self.running:
-                        time.sleep(0.2)
 
                     write_influxdb_value(
                         self.unique_id,
@@ -369,7 +374,12 @@ class CustomModule(AbstractFunction):
                             self.flashing[key]["on"] = True
                             self.set_color({"led_number": key, "led_color": self.flashing[key]["color"]})
 
-            time.sleep(0.25)
+            time.sleep(0.05)
+
+    def stop_function(self):
+        self.running = False
+        for key in range(4):
+            self.set_color({"led_number": key, "led_color": self.options_channels['led_shutdown'][key]})
 
     def run_key_actions(self, key):
         action_ids = self.options_channels['key_action_ids'][key]
