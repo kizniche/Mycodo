@@ -344,7 +344,7 @@ class CustomModule(AbstractFunction):
         while self.running:
             # Check key press
             for key in range(4):
-                if self.neokey[key] and not self.key_press_executing[key]:
+                if not self.key_press_executing[key] and self.neokey[key]:
                     self.key_press_executing[key] = True
                     self.logger.debug(f"Key {key + 1} Pressed")
                     self.set_color({"led_number": key, "led_color": self.options_channels['led_start'][key]})
@@ -359,6 +359,7 @@ class CustomModule(AbstractFunction):
                     key_thread = threading.Thread(
                         target=self.run_key_actions,
                         args=(key,))
+                    key_thread.daemon = True
                     key_thread.start()
 
             # Check for flashing
@@ -374,7 +375,7 @@ class CustomModule(AbstractFunction):
                             self.flashing[key]["on"] = True
                             self.set_color({"led_number": key, "led_color": self.flashing[key]["color"]})
 
-            time.sleep(0.05)
+            time.sleep(0.1)
 
     def stop_function(self):
         self.running = False
@@ -444,7 +445,6 @@ class CustomModule(AbstractFunction):
                 self.logger.error(
                     "Improper RGB color format. "
                     "Must be three values, separated by commas, between 0 and 255 each. For example: 10, 0, 255")
-
 
     def flashing_on(self, dict_payload):
         if "led_number" not in dict_payload:
