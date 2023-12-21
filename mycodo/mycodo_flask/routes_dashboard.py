@@ -332,7 +332,7 @@ def restart_flask_auto_advance_page(dashboard_id=""):
     """Wait then automatically load next page"""
     logger.info("Reloading frontend in 5 seconds")
 
-    cmd = f"sleep 5 && {INSTALL_DIRECTORY}/mycodo/scripts/mycodo_wrapper frontend_reload 2>&1"
+    cmd = f"sleep 10 && {INSTALL_DIRECTORY}/mycodo/scripts/mycodo_wrapper frontend_reload 2>&1"
     subprocess.Popen(cmd, shell=True)
     logger.info("Rendering wait page")
 
