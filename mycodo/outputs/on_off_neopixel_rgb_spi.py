@@ -4,7 +4,7 @@
 #
 import time
 from threading import Thread
-from threading import currentThread
+from threading import current_thread
 
 from flask_babel import lazy_gettext
 
@@ -368,7 +368,7 @@ class OutputModule(AbstractOutput):
         return current_color
 
     def rainbow(self):
-        t = currentThread()
+        t = current_thread()
         maximum = self.rainbow_brightness
         cycle = [
             (maximum, 0, 0),  # Red

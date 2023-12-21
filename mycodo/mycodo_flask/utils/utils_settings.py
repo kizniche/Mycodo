@@ -1959,19 +1959,19 @@ def settings_diagnostic_install_dependencies():
                       " | ts '[%Y-%m-%d %H:%M:%S]' >> {log} 2>&1".format(
                     pth=INSTALL_DIRECTORY,
                     log=DEPENDENCY_LOG_FILE)
-                _, _, _ = cmd_output(cmd)
+                _, _, _ = cmd_output(cmd, user="root")
 
                 cmd = "{pth}/mycodo/scripts/mycodo_wrapper frontend_restart" \
                       " | ts '[%Y-%m-%d %H:%M:%S]' >> {log} 2>&1".format(
                     pth=INSTALL_DIRECTORY,
                     log=DEPENDENCY_LOG_FILE)
-                _, _, _ = cmd_output(cmd)
+                _, _, _ = cmd_output(cmd, user="root")
 
                 cmd = "{pth}/mycodo/scripts/mycodo_wrapper daemon_restart" \
                       " | ts '[%Y-%m-%d %H:%M:%S]' >> {log} 2>&1".format(
                     pth=INSTALL_DIRECTORY,
                     log=DEPENDENCY_LOG_FILE)
-                _, _, _ = cmd_output(cmd)
+                _, _, _ = cmd_output(cmd, user="root")
 
             install_deps = threading.Thread(target=install_dependencies)
             install_deps.start()

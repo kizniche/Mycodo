@@ -55,7 +55,7 @@ def test_python_code(python_code_run, filename):
                    'export PYLINTHOME=/var/mycodo-root/.pylint.d && ' \
                    '{dir}/env/bin/python -m pylint -d I,W0621,C0103,C0111,C0301,C0327,C0410,C0413,R0201,R0903,W0201,W0612 {path}'.format(
                     dir=INSTALL_DIRECTORY, path=file_run)
-        cmd_out, _, cmd_status = cmd_output(cmd_test)
+        cmd_out, _, cmd_status = cmd_output(cmd_test, user='root')
 
         message = Markup(
             '<pre>\n\n'

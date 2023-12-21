@@ -346,19 +346,23 @@ def run_input_actions(unique_id, message, measurements_dict, debug=False):
     control = DaemonControl()
     actions = db_retrieve_table_daemon(Actions).filter(
         Actions.function_id == unique_id).all()
+
     for each_action in actions:
-        return_dict = control.trigger_action(
-            each_action.unique_id,
-            value={"message": message, "measurements_dict": measurements_dict},
-            debug=debug)
+        try:
+            return_dict = control.trigger_action(
+                each_action.unique_id,
+                value={"message": message, "measurements_dict": measurements_dict},
+                debug=debug)
 
-        # if message is returned, set message
-        if return_dict and 'message' in return_dict and return_dict['message']:
-            message = return_dict['message']
+            # if message is returned, set message
+            if return_dict and 'message' in return_dict and return_dict['message']:
+                message = return_dict['message']
 
-        # if measurements_dict is returned, use that to store measurements
-        if return_dict and 'measurements_dict' in return_dict and return_dict['measurements_dict']:
-            measurements_dict = return_dict['measurements_dict']
+            # if measurements_dict is returned, use that to store measurements
+            if return_dict and 'measurements_dict' in return_dict and return_dict['measurements_dict']:
+                measurements_dict = return_dict['measurements_dict']
+        except:
+            logger.exception(f"Running Input Action {each_action.unique_id}")
 
     return message, measurements_dict
 

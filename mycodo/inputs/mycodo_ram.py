@@ -1,6 +1,5 @@
 # coding=utf-8
 import copy
-import resource
 
 from mycodo.inputs.base_input import AbstractInput
 from mycodo.mycodo_client import DaemonControl

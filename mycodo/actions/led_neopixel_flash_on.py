@@ -6,13 +6,12 @@ from flask_babel import lazy_gettext
 from mycodo.actions.base_action import AbstractFunctionAction
 from mycodo.databases.models import Actions
 from mycodo.databases.models import CustomController
-from mycodo.databases.models import Output
 from mycodo.utils.database import db_retrieve_table_daemon
 from mycodo.utils.functions import parse_function_information
 
 ACTION_INFORMATION = {
-    'name_unique': 'action_led_neopixel_change_color',
-    'name': f"LED: Neopixel: Change Pixel Color",
+    'name_unique': 'action_led_neopixel_flash_on',
+    'name': "LED: Neopixel: {} {}".format(lazy_gettext('Flashing'), lazy_gettext('On')),
     'library': None,
     'manufacturer': 'Mycodo',
     'application': ['functions'],
@@ -22,10 +21,10 @@ ACTION_INFORMATION = {
     'url_product_purchase': None,
     'url_additional': None,
 
-    'message': 'Change the color of an LED in a Neopixel LED strip. Select the Neopixel LED Strip Controller, pixel number, and color.',
+    'message': 'Start flashing an LED in a Neopixel LED strip. Select the Neopixel LED Strip Controller, pixel number, and color.',
 
     'usage': 'Executing <strong>self.run_action("ACTION_ID")</strong> will set the selected LED to the selected Color. '
-             'Executing <strong>self.run_action("ACTION_ID", value={"controller_id": "959019d1-c1fa-41fe-a554-7be3366a9c5b", "led": 0, "color": "10, 10, 0"})</strong> will set the color of the specified LED for the Neopixel LED Strip Controller with the specified ID. Don\'t forget to change the controller_id value to an actual Controller ID that exists in your system.',
+             'Executing <strong>self.run_action("ACTION_ID", value={"controller_id": "959019d1-c1fa-41fe-a554-7be3366a9c5b", "led": 0, "color": "10, 10, 0"})</strong> will start flashing the color of the specified LED for the Neopixel LED Strip Controller with the specified ID. Don\'t forget to change the controller_id value to an actual Controller ID that exists in your system.',
 
     'custom_options': [
         {
@@ -33,8 +32,7 @@ ACTION_INFORMATION = {
             'type': 'select_device',
             'default_value': '',
             'options_select': [
-                'Function',
-                'Output'
+                'Function'
             ],
             'name': lazy_gettext('Controller'),
             'phrase': 'Select the controller that modulates your neopixels'
@@ -85,11 +83,6 @@ class ActionModule(AbstractFunctionAction):
         led_color = self.led_color
 
         try:
-            controller_id = dict_vars["value"]["output_id"]  # From previous version of this Action. Keep for backwards-compatibility
-        except:
-            pass
-
-        try:
             controller_id = dict_vars["value"]["controller_id"]
         except:
             pass
@@ -119,45 +112,28 @@ class ActionModule(AbstractFunctionAction):
             self.logger.error(msg)
             return dict_vars
 
-        this_output = db_retrieve_table_daemon(
-            Output, unique_id=controller_id, entry='first')
-
         this_function = db_retrieve_table_daemon(
             CustomController, unique_id=controller_id, entry='first')
-
-        if not this_output and not this_function:
-            msg = f" Error: Controller with ID '{controller_id}' not found."
-            dict_vars['message'] += msg
-            self.logger.error(msg)
-            return dict_vars
 
         payload = {
             "led_number": led_number,
             "led_color": led_color
         }
 
-        if this_output:
-            dict_vars['message'] += f" Set color of LED {led_number} to {led_color} of Controller with ID {controller_id} ({this_output.name})."
-
-            clear_volume = threading.Thread(
-                target=self.control.module_function,
-                args=("Output", this_output.unique_id, "set_led", payload,))
-            clear_volume.start()
-
-        elif this_function:
+        if this_function:
             functions = parse_function_information()
             if this_function.device in functions and "function_actions" in functions[this_function.device]:
-                if "neopixel_set_color" not in functions[this_function.device]["function_actions"]:
-                    msg = " Selected neopixel Function is not capable of setting an LED to a color"
+                if "neopixel_flashing_on" not in functions[this_function.device]["function_actions"]:
+                    msg = " Selected neopixel Function is not capable of flashing"
                     dict_vars['message'] += msg
                     self.logger.error(msg)
                     return dict_vars
 
-                dict_vars['message'] += f" Set color of LED {led_number} to {led_color} of Controller with ID {controller_id} ({this_function.name})."
+                dict_vars['message'] += f" Star flashing LED {led_number} the color {led_color} of Controller with ID {controller_id} ({this_function.name})."
 
                 start_flashing = threading.Thread(
                     target=self.control.module_function,
-                    args=("Function", controller_id, "set_color", payload,))
+                    args=("Function", controller_id, "flashing_on", payload,))
                 start_flashing.start()
 
         self.logger.debug(f"Message: {dict_vars['message']}")

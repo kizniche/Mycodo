@@ -128,7 +128,7 @@ class ConditionalRun(AbstractConditional):
                        'export PYLINTHOME=/var/mycodo-root/.pylint.d && ' \
                        '{dir}/env/bin/python -m pylint -d I,W0621,C0103,C0111,C0301,C0327,C0410,C0413,R0912,R0914,R0915 {path}'.format(
                            dir=INSTALL_DIRECTORY, path=file_run)
-            cmd_out, cmd_err, cmd_status = cmd_output(cmd_test)
+            cmd_out, cmd_err, cmd_status = cmd_output(cmd_test, user='root')
             if cmd_err:
                 error.append(str(cmd_err))
     except Exception as err:

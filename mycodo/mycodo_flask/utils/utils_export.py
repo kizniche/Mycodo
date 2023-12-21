@@ -10,18 +10,17 @@ import time
 import zipfile
 
 from flask import send_file, url_for
+from packaging.version import parse
 from werkzeug.utils import secure_filename
 
-from mycodo.config import (ALEMBIC_VERSION, DATABASE_NAME, DEPENDENCY_LOG_FILE,
-                           DOCKER_CONTAINER, IMPORT_LOG_FILE,
+from mycodo.config import (ALEMBIC_VERSION, DATABASE_NAME, DOCKER_CONTAINER, IMPORT_LOG_FILE,
                            INSTALL_DIRECTORY, MYCODO_VERSION,
                            PATH_ACTIONS_CUSTOM, PATH_FUNCTIONS_CUSTOM,
                            PATH_HTML_USER, PATH_INPUTS_CUSTOM,
                            PATH_OUTPUTS_CUSTOM, PATH_PYTHON_CODE_USER,
                            PATH_USER_SCRIPTS, PATH_WIDGETS_CUSTOM,
-                           SQL_DATABASE_MYCODO)
+                           SQL_DATABASE_MYCODO, DATABASE_PATH)
 from mycodo.config_translations import TRANSLATIONS
-from mycodo.databases.models import Misc
 from mycodo.mycodo_flask.utils.utils_general import (flash_form_errors,
                                                      flash_success_errors)
 from mycodo.scripts.measurement_db import get_influxdb_info
@@ -149,24 +148,24 @@ def thread_import_settings(tmp_folder):
     try:
         # Initialize
         cmd = f"{INSTALL_DIRECTORY}/mycodo/scripts/mycodo_wrapper initialize | ts '[%Y-%m-%d %H:%M:%S]' >> {IMPORT_LOG_FILE} 2>&1"
-        _, _, _ = cmd_output(cmd)
+        _, _, _ = cmd_output(cmd, user="root")
 
         # Upgrade database
         append_to_log(IMPORT_LOG_FILE, f"\n[{datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')}] Upgrading database\n")
         cmd = f"{INSTALL_DIRECTORY}/mycodo/scripts/mycodo_wrapper upgrade_database | ts '[%Y-%m-%d %H:%M:%S]' >> {IMPORT_LOG_FILE} 2>&1"
-        _, _, _ = cmd_output(cmd)
+        _, _, _ = cmd_output(cmd, user="root")
 
         # Install/update dependencies (could take a while)
         append_to_log(IMPORT_LOG_FILE, f"\n[{datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')}] Installing dependencies (this can take a while)...\n")
         cmd = f"{INSTALL_DIRECTORY}/mycodo/scripts/mycodo_wrapper update_dependencies | ts '[%Y-%m-%d %H:%M:%S]' >> {IMPORT_LOG_FILE} 2>&1"
-        _, _, _ = cmd_output(cmd)
+        _, _, _ = cmd_output(cmd, user="root")
 
         # Generate widget HTML
         generate_widget_html()
 
         # Initialize
         cmd = f"{INSTALL_DIRECTORY}/mycodo/scripts/mycodo_wrapper initialize | ts '[%Y-%m-%d %H:%M:%S]' >> {IMPORT_LOG_FILE} 2>&1"
-        _, _, _ = cmd_output(cmd)
+        _, _, _ = cmd_output(cmd, user="root")
 
         # Start Mycodo daemon (backend)
         append_to_log(IMPORT_LOG_FILE, f"\n[{datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')}] Restarting backend")
@@ -174,7 +173,7 @@ def thread_import_settings(tmp_folder):
             subprocess.Popen('docker start mycodo_daemon 2>&1', shell=True)
         else:
             cmd = f"{INSTALL_DIRECTORY}/mycodo/scripts/mycodo_wrapper daemon_restart | ts '[%Y-%m-%d %H:%M:%S]' >> {IMPORT_LOG_FILE} 2>&1"
-            a, b, c = cmd_output(cmd)
+            a, b, c = cmd_output(cmd, user="root")
 
         # Delete tmp directory if it exists
         if os.path.isdir(tmp_folder):
@@ -186,7 +185,7 @@ def thread_import_settings(tmp_folder):
             subprocess.Popen('docker start mycodo_flask 2>&1', shell=True)
         else:
             cmd = f"{INSTALL_DIRECTORY}/mycodo/scripts/mycodo_wrapper frontend_reload | ts '[%Y-%m-%d %H:%M:%S]' >> {IMPORT_LOG_FILE} 2>&1"
-            _, _, _ = cmd_output(cmd)
+            _, _, _ = cmd_output(cmd, user="root")
     except:
         logger.exception("thread_import_settings()")
 
@@ -198,7 +197,7 @@ def import_settings(form):
     """
     Receive a zip file containing a Mycodo settings database that was
     exported with export_settings(), then back up the current Mycodo settings
-    database and implement the one form the zip in its's place.
+    database and implement the one form the zip in its place.
     """
     action = '{action} {controller}'.format(
         action=TRANSLATIONS['import']['title'],
@@ -240,10 +239,10 @@ def import_settings(form):
                     error.append(f"Correct format is: {correct_format}")
                 elif extension != correct_extension:
                     error.append("Extension not 'zip'")
-                elif name_split[1] > MYCODO_VERSION:
+                elif parse(name_split[1]) > parse(MYCODO_VERSION):
                     error.append(
                         f"Invalid Mycodo version: {name_split[1]} > {MYCODO_VERSION}. "
-                        f"Only databases <= {name_split[1]} can only be imported")
+                        f"Only databases <= {name_split[1]} can be imported")
             except Exception as err:
                 error.append(f"Exception while verifying file name: {err}")
 
@@ -256,6 +255,7 @@ def import_settings(form):
             full_path = os.path.join(tmp_folder, filename)
             assure_path_exists(upload_folder)
             assure_path_exists(tmp_folder)
+            append_to_log(IMPORT_LOG_FILE, f"\n\n[{datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')}] Saving {filename} to {tmp_folder}")
             form.settings_import_file.data.save(
                 os.path.join(tmp_folder, filename))
 
@@ -274,6 +274,7 @@ def import_settings(form):
             try:
                 assure_path_exists(tmp_folder)
                 zip_ref = zipfile.ZipFile(full_path, 'r')
+                append_to_log(IMPORT_LOG_FILE, f"\n\n[{datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')}] Extracting {full_path} to {tmp_folder}")
                 zip_ref.extractall(tmp_folder)
                 zip_ref.close()
             except Exception as err:
@@ -288,13 +289,18 @@ def import_settings(form):
                 else:
                     # Stop Mycodo daemon (backend)
                     cmd = f"{INSTALL_DIRECTORY}/mycodo/scripts/mycodo_wrapper daemon_stop"
-                    _, _, _ = cmd_output(cmd)
+                    _, _, _ = cmd_output(cmd, user="root")
 
                 # Backup current database and replace with extracted mycodo.db
                 imported_database = os.path.join(tmp_folder, DATABASE_NAME)
                 backup_name = f"{SQL_DATABASE_MYCODO}.backup_{datetime.datetime.now().strftime('%Y-%m-%d_%H-%M-%S')}"
+                full_path_backup = os.path.join(DATABASE_PATH, backup_name)
 
-                os.rename(SQL_DATABASE_MYCODO, backup_name)  # rename current database to backup name
+                append_to_log(IMPORT_LOG_FILE,
+                              f"\n\n[{datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')}] Renaming {SQL_DATABASE_MYCODO} to {full_path_backup}")
+                os.rename(SQL_DATABASE_MYCODO, full_path_backup)  # rename current database to backup name
+                append_to_log(IMPORT_LOG_FILE,
+                              f"\n\n[{datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')}] Moving {imported_database} to {SQL_DATABASE_MYCODO}")
                 shutil.move(imported_database, SQL_DATABASE_MYCODO)  # move unzipped database to Mycodo
 
                 delete_directories = [
