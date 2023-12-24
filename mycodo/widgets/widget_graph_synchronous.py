@@ -497,6 +497,9 @@ WIDGET_INFORMATION = {
             <div class="input-group-text">
               <select id="series_type-{{widget_variables['colors_graph'][n]['measure_id']}}" name="series_type-{{widget_variables['colors_graph'][n]['measure_id']}}">
                 <option value="line" {% if widget_variables['colors_graph'][n]['series_type'] == "line" %} selected{% endif %}>Line</option>
+                <option value="step-left" {% if widget_variables['colors_graph'][n]['series_type'] == "step-left" %} selected{% endif %}>Line (Step, Left)</option>
+                <option value="step-center" {% if widget_variables['colors_graph'][n]['series_type'] == "step-center" %} selected{% endif %}>Line (Step, Center)</option>
+                <option value="step-right" {% if widget_variables['colors_graph'][n]['series_type'] == "step-right" %} selected{% endif %}>Line (Step, Right)</option>
                 <option value="column" {% if widget_variables['colors_graph'][n]['series_type'] == "column" %} selected{% endif %}>Column</option>
               </select>
             </div>
@@ -1114,7 +1117,15 @@ WIDGET_INFORMATION = {
         {%- endif -%}
 
           )",
+        {% if ns.series_type in ['line', 'column'] -%}
         type: '{{ns.series_type}}',
+        {%- elif ns.series_type == 'step-left' -%}
+        step: 'left',
+        {%- elif ns.series_type == 'step-center' -%}
+        step: 'center',
+        {%- elif ns.series_type == 'step-right' -%}
+        step: 'right',
+        {%- endif %}
         dataGrouping: {
           enabled: {% if ns.disable_data_grouping %}false{% else %}true{% endif %},
           groupPixelWidth: 5
@@ -1181,7 +1192,15 @@ WIDGET_INFORMATION = {
         {%- endif -%}
 
           )",
+        {% if ns.series_type in ['line', 'column'] -%}
         type: '{{ns.series_type}}',
+        {%- elif ns.series_type == 'step-left' -%}
+        step: 'left',
+        {%- elif ns.series_type == 'step-center' -%}
+        step: 'center',
+        {%- elif ns.series_type == 'step-right' -%}
+        step: 'right',
+        {%- endif %}
         dataGrouping: {
           enabled: {% if ns.disable_data_grouping %}false{% else %}true{% endif %},
           groupPixelWidth: 2
@@ -1246,7 +1265,15 @@ WIDGET_INFORMATION = {
         {%- endif -%}
 
         )",
+      {% if ns.series_type in ['line', 'column'] -%}
       type: '{{ns.series_type}}',
+      {%- elif ns.series_type == 'step-left' -%}
+      step: 'left',
+      {%- elif ns.series_type == 'step-center' -%}
+      step: 'center',
+      {%- elif ns.series_type == 'step-right' -%}
+      step: 'right',
+      {%- endif %}
       dataGrouping: {
         enabled: {% if ns.disable_data_grouping %}false{% else %}true{% endif %},
         groupPixelWidth: 2
@@ -1311,7 +1338,15 @@ WIDGET_INFORMATION = {
         {%- endif -%}
 
         )",
+      {% if ns.series_type in ['line', 'column'] -%}
       type: '{{ns.series_type}}',
+      {%- elif ns.series_type == 'step-left' -%}
+      step: 'left',
+      {%- elif ns.series_type == 'step-center' -%}
+      step: 'center',
+      {%- elif ns.series_type == 'step-right' -%}
+      step: 'right',
+      {%- endif %}
       dataGrouping: {
         enabled: {% if ns.disable_data_grouping %}false{% else %}true{% endif %},
         groupPixelWidth: 2
@@ -1443,7 +1478,7 @@ def series_type_graph(form, error):
     for key in form.keys():
         if 'series_type' in key:
             for value in form.getlist(key):
-                if value not in ["column", "line"]:
+                if value not in ["column", "line", "step-left", "step-center", "step-right"]:
                     error.append("Invalid series type")
                 series_types[key[12:]] = value
     return series_types, error

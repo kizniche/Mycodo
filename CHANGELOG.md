@@ -1,3 +1,10 @@
+## 8.15.14 (Unreleased)
+
+### Features
+
+ - Add Step Line Series Type to Graph (Synchronous) Widget
+
+
 ## 8.15.13 (2023.12.24)
 
 ### Bugfixes
