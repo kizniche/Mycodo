@@ -5,6 +5,7 @@
  - Fix inability to properly import settings backup
  - Fix Actions not executing for MQTT, TTN, and Python Code Inputs ([#1336](https://github.com/kizniche/Mycodo/issues/1336))
  - Fix running pylint
+ - Fix display of data from Functions on the Live Page
 
 ### Features
 
