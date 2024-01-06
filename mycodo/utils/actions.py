@@ -135,6 +135,10 @@ def get_condition_value(condition_id):
     :param condition_id: Conditional condition ID
     :return: measurement: multiple types
     """
+    if not condition_id:
+        logger.error("Must provide a Condition ID")
+        return
+
     sql_condition = db_retrieve_table_daemon(ConditionalConditions).filter(
         ConditionalConditions.unique_id == condition_id).first()
 
@@ -235,10 +239,18 @@ def get_condition_value_dict(condition_id):
     :param condition_id: Conditional condition ID
     :return: measurement: dict of float measurements
     """
-    # Check Measurement Conditions
+    if not condition_id:
+        logger.error("Must provide a Condition ID")
+        return
+
     sql_condition = db_retrieve_table_daemon(ConditionalConditions).filter(
         ConditionalConditions.unique_id == condition_id).first()
 
+    if not sql_condition:
+        logger.error("Condition ID not found")
+        return
+
+    # Check Measurement Conditions
     if sql_condition.condition_type == 'measurement_dict':
         device_id = sql_condition.measurement.split(',')[0]
         measurement_id = sql_condition.measurement.split(',')[1]
