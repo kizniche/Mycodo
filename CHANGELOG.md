@@ -4,6 +4,10 @@
 
  - Add Step Line Series Type to Graph (Synchronous) Widget
 
+### Miscellaneous
+
+ - Add endpoint option to RAM Input for when using non-standard IP/port
+
 
 ## 8.15.13 (2023.12.24)
 

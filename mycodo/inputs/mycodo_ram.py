@@ -44,6 +44,17 @@ INPUT_INFORMATION = {
 
     'dependencies_module': [
         ('pip-pypi', 'psutil', 'psutil==5.9.4')
+    ],
+
+    'custom_options': [
+        {
+            'id': 'endpoint_frontend_ram',
+            'type': 'text',
+            'default_value': 'https://127.0.0.1/ram',
+            'required': False,
+            'name': 'Mycodo Frontend RAM Endpoint',
+            'phrase': 'The endpoint to get Mycodo frontend ram usage'
+        }
     ]
 }
 
@@ -57,7 +68,11 @@ class InputModule(AbstractInput):
 
         self.control = None
 
+        self.endpoint_frontend_ram = None
+
         if not testing:
+            self.setup_custom_options(
+                INPUT_INFORMATION['custom_options'], input_dev)
             self.try_initialize()
 
     def initialize(self):
@@ -84,7 +99,7 @@ class InputModule(AbstractInput):
         if self.is_enabled(3):
             try:
                 import requests
-                response = requests.get('https://127.0.0.1/ram', verify=False)
+                response = requests.get(self.endpoint_frontend_ram, verify=False)
                 self.value_set(3, float(response.content))
             except:
                 self.logger.exception("getting frontend ram usage")

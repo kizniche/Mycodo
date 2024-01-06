@@ -58,7 +58,7 @@ INPUT_INFORMATION = {
     'ftdi_location': '/dev/ttyUSB0',
 
     'custom_options': [
-{
+        {
             'id': 'temperature_comp_meas',
             'type': 'select_measurement',
             'default_value': '',
