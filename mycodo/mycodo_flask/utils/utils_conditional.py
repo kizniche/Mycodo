@@ -3,9 +3,9 @@ import logging
 import os
 
 import sqlalchemy
-from flask import Markup
 from flask import current_app
 from flask_babel import gettext
+from markupsafe import Markup
 
 from mycodo.config import PATH_PYTHON_CODE_USER
 from mycodo.config_translations import TRANSLATIONS

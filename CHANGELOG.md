@@ -1,6 +1,8 @@
-## 8.15.14 (Unreleased)
+## 8.16.0 (Unreleased)
 
-This release changes the Desktop grid width from 20 to 24, enabling evenly-spaced 3 or 4 columns. You will need to resize/rearrange Dashboard Widgets after this update to correct for the new width.
+This release updates several python packages that require Python >= 3.8. You can check your Python version prior to upgrading. If you do not have the required version, you should not upgrade, since this will likely break your system. To be able to use this and future Mycodo releases, ensure you are running an updated operating system that supports a modern Python version.
+
+This release also changes the Desktop grid width from 20 to 24, enabling the use of 3 column layouts that are evenly-spaced. You will need to resize/rearrange Dashboard Widgets after this update to correct for the new width. The update of Gridstack to 10.0.1 also now allows the ability to drag Desktop widgets on mobile devices. If you don't like this behavior, you should lock the desktop from the Dashboard Configuration menu to prevent widgets from being dragged/rearranged.
 
 ### Features
 
@@ -9,7 +11,27 @@ This release changes the Desktop grid width from 20 to 24, enabling evenly-space
 ### Miscellaneous
 
  - Change Dashboard grid width from 20 to 24
- - Add endpoint option to RAM Input for when using non-standard IP/port
+ - Add endpoint option to RAM Input for when Mycodo is using a non-standard IP/port
+ - Update Gridstack to 10.0.1
+ - Update alembic to 1.13.1
+ - Update bcrypt to 1.4.2 
+ - Update distro to 1.9.0
+ - Update email_validator to 2.0.0
+ - Update filelock to 3.13.1
+ - Update Flask to 3.0.0
+ - Update Flask_Babel to 4.0.0
+ - Update Flask_Compress to 1.14
+ - Update Flask_Limiter to 3.5.0
+ - Update Flask_Login to 0.6.3
+ - Update Flask_RESTX to 1.3.0
+ - Update Flask_SQLAlchemy to 3.1.1
+ - Update Flask_WTF to 1.2.1
+ - Update marshmallow_sqlalchemy to 0.30.0
+ - Update pyro5 to 5.15
+ - Update setuptools to 69.0.3
+ - Update SQLAlchemy to 2.0.25
+ - Update Werkzeug to 3.0.1
+ - Update WTForms to 3.1.2
 
 
 ## 8.15.13 (2023.12.24)

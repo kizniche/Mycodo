@@ -1,35 +1,35 @@
 # Mycodo base
-alembic==1.11.2
+alembic==1.13.1
 argparse==1.4.0
-bcrypt==3.2.2
-distro==1.8.0
-email_validator==1.3.1
-filelock==3.12.2
-Flask==2.3.2
+bcrypt==4.1.2
+distro==1.9.0
+email_validator==2.1.0.post1
+filelock==3.13.1
+Flask==3.0.0
 Flask_Accept==0.0.6
-Flask_Babel==3.1.0
-Flask_Compress==1.13
-Flask_Limiter==3.3.1
-Flask_Login==0.6.2
+Flask_Babel==4.0.0
+Flask_Compress==1.14
+Flask_Limiter==3.5.0
+Flask_Login==0.6.3
 Flask_Marshmallow==0.15.0
 #Flask_Profiler==1.8.1  # only use when profiling (uncomment and enable in config.py)
-Flask_RESTX==1.1.0  # Flask-Restx 1.0.6 or SQLAlchemy 2.0.3 causes some timeout issue. Investigate later.
+Flask_RESTX==1.3.0
 Flask_Session==0.5.0
-Flask_SQLAlchemy==3.0.5
+Flask_SQLAlchemy==3.1.1
 Flask_Talisman==1.1.0
-Flask_WTF==1.1.1
+Flask_WTF==1.2.1
 geocoder==1.38.1
 gunicorn==21.2.0
 importlib_metadata==6.8.0
 influxdb==5.3.1  # Only used for stats. TODO: update to influxdb_client and remove
 influxdb_client[ciso]==1.37.0
-jsonschema==4.17.3 # Dependency of Flask_RESTX. jsonschema 4.18.x introduces Rust as a dependency. Setting version to avoid this.
-marshmallow_sqlalchemy==0.29.0
-pyro5==5.14
+MarkupSafe==2.1.3
+marshmallow_sqlalchemy==0.30.0
+pyro5==5.15
 pyserial==3.5
 python-dateutil==2.8.2
 requests==2.31.0
-setuptools==68.0.0
-SQLAlchemy==2.0.19
-Werkzeug==2.3.6
-WTForms==3.0.1
+setuptools==69.0.3
+SQLAlchemy==2.0.25
+Werkzeug==3.0.1
+WTForms==3.1.2
