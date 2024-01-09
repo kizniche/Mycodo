@@ -65,7 +65,7 @@
         gs-id="{{each_input.unique_id}}"
         gs-x="0"
         gs-y="{{each_input.position_y}}"
-        gs-w="20"
+        gs-w="24"
         gs-h="1"
         gs-no-resize="true">
         {% include 'pages/data_options/input_entry.html' %}
@@ -85,7 +85,7 @@
     // Grid
     let options = {
       cellHeight: gridstack_item_height + 5,
-      column: 20,
+      column: 24,
       margin: 0,
       draggable: {
         handle: '.panel-heading'
@@ -169,7 +169,7 @@
                   success: function (new_entry) {
                     if (data.data.messages.success.length !== 0) {
                       grid.addWidget('<div class="grid-stack-item" id="gridstack_input_' + data.data.input_id + '" gs-id="' + data.data.input_id + '">' + new_entry + '</div>', {
-                        w: 20,
+                        w: 24,
                         h: 1,
                         y: 999
                       });

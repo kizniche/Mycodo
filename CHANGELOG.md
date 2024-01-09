@@ -1,11 +1,14 @@
 ## 8.15.14 (Unreleased)
 
+This release changes the Desktop grid width from 20 to 24, enabling evenly-spaced 3 or 4 columns. You will need to resize/rearrange Dashboard Widgets after this update to correct for the new width.
+
 ### Features
 
  - Add Step Line Series Type to Graph (Synchronous) Widget
 
 ### Miscellaneous
 
+ - Change Dashboard grid width from 20 to 24
  - Add endpoint option to RAM Input for when using non-standard IP/port
 
 

@@ -77,7 +77,7 @@
         gs-id="{{each_function.unique_id}}"
         gs-x="0"
         gs-y="{{each_function.position_y}}"
-        gs-w="20"
+        gs-w="24"
         gs-h="1"
         gs-no-resize="true">
         {% include 'pages/function_options/conditional_entry.html' %}
@@ -90,7 +90,7 @@
         gs-id="{{each_function.unique_id}}"
         gs-x="0"
         gs-y="{{each_function.position_y}}"
-        gs-w="20"
+        gs-w="24"
         gs-h="1"
         gs-no-resize="true">
         {% include 'pages/function_options/pid_entry.html' %}
@@ -103,7 +103,7 @@
         gs-id="{{each_function.unique_id}}"
         gs-x="0"
         gs-y="{{each_function.position_y}}"
-        gs-w="20"
+        gs-w="24"
         gs-h="1"
         gs-no-resize="true">
         {% include 'pages/function_options/trigger_entry.html' %}
@@ -116,7 +116,7 @@
         gs-id="{{each_function.unique_id}}"
         gs-x="0"
         gs-y="{{each_function.position_y}}"
-        gs-w="20"
+        gs-w="24"
         gs-h="1"
         gs-no-resize="true">
         {% include 'pages/function_options/function_entry.html' %}
@@ -129,7 +129,7 @@
         gs-id="{{each_function.unique_id}}"
         gs-x="0"
         gs-y="{{each_function.position_y}}"
-        gs-w="20"
+        gs-w="24"
         gs-h="1"
         gs-no-resize="true">
         {% include 'pages/function_options/custom_function_entry.html' %}
@@ -149,7 +149,7 @@
     // Grid
     let options = {
       cellHeight: gridstack_item_height + 5,
-      column: 20,
+      column: 24,
       margin: 0,
       draggable: {
         handle: '.panel-heading'
@@ -354,7 +354,7 @@
                   success: function (new_entry) {
                     if (data.data.messages.success.length !== 0) {
                       grid.addWidget('<div class="grid-stack-item" id="gridstack_function_' + data.data.function_id + '" gs-id="' + data.data.function_id + '">' + new_entry + '</div>', {
-                        w: 20,
+                        w: 24,
                         h: 1,
                         y: 999
                       });

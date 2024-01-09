@@ -159,7 +159,7 @@
         gs-id="{{each_output.unique_id}}"
         gs-x="0"
         gs-y="{{each_output.position_y}}"
-        gs-w="20"
+        gs-w="24"
         gs-h="{{each_output.size_y}}"
         data-gs-no-resize="true">
         {% include 'pages/output_entry.html' %}
@@ -179,7 +179,7 @@
     // Grid
     let options = {
       cellHeight: gridstack_item_height,
-      column: 20,
+      column: 24,
       margin: 0,
       draggable: {
         handle: '.panel-heading'
@@ -256,7 +256,7 @@
                   success: function (new_entry) {
                     if (data.data.messages.success.length !== 0) {
                       grid.addWidget('<div class="grid-stack-item" id="gridstack_output_' + data.data.output_id + '" gs-id="' + data.data.output_id + '">' + new_entry + '</div>', {
-                        w: 20,
+                        w: 24,
                         h: data.data.size_y
                       });
                       {% if not hide_tooltips %}$('input[title]').tooltip({placement: 'top'});{% endif %}
