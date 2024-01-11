@@ -47,6 +47,7 @@ class Misc(CRUDMixin, db.Model):
     net_test_port = db.Column(db.Integer, default=53)
     net_test_timeout = db.Column(db.Integer, default=3)
     default_login_page = db.Column(db.String, default='password')
+    hostname_override = db.Column(db.String, default='')
 
     # Measurement database
     db_name = 'influxdb'  # Default

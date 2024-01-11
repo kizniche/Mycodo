@@ -52,6 +52,13 @@ def create_admin():
 
     language = None
 
+    try:
+        host = Misc.query.first().hostname_override
+    except:
+        host = None
+    if not host:
+        host = socket.gethostname()
+
     # Find user-selected language in Mycodo/.language
     try:
         lang_path = os.path.join(INSTALL_DIRECTORY, ".language")
@@ -100,7 +107,7 @@ def create_admin():
                                        form_create_admin=form_create_admin,
                                        form_language=form_language,
                                        form_notice=form_notice,
-                                       host=socket.gethostname(),
+                                       host=host,
                                        language=language,
                                        languages=LANGUAGES)
 
@@ -147,7 +154,7 @@ def create_admin():
                            form_create_admin=form_create_admin,
                            form_language=form_language,
                            form_notice=form_notice,
-                           host=socket.gethostname(),
+                           host=host,
                            language=language,
                            languages=LANGUAGES)
 
@@ -184,6 +191,13 @@ def login_password():
     form_language = forms_authentication.LanguageSelect()
 
     language = None
+
+    try:
+        host = Misc.query.first().hostname_override
+    except:
+        host = None
+    if not host:
+        host = socket.gethostname()
 
     # Find user-selected language in Mycodo/.language
     try:
@@ -256,7 +270,7 @@ def login_password():
                            dict_translation=TRANSLATIONS,
                            form_language=form_language,
                            form_login=form_login,
-                           host=socket.gethostname(),
+                           host=host,
                            language=language,
                            languages=LANGUAGES)
 
@@ -272,6 +286,13 @@ def login_keypad():
               "error")
         return redirect(url_for('routes_general.home'))
 
+    try:
+        host = Misc.query.first().hostname_override
+    except:
+        host = None
+    if not host:
+        host = socket.gethostname()
+
     # Check if the user is banned from logging in (too many incorrect attempts)
     if banned_from_login():
         flash(gettext(
@@ -282,7 +303,7 @@ def login_keypad():
 
     return render_template('login_keypad.html',
                            dict_translation=TRANSLATIONS,
-                           host=socket.gethostname())
+                           host=host)
 
 
 @blueprint.route('/login_keypad_code/', methods=('GET', 'POST'))
@@ -303,6 +324,13 @@ def login_keypad_code(code):
         flash(gettext("Cannot access login page if you're already logged in"),
               "error")
         return redirect(url_for('routes_general.home'))
+
+    try:
+        host = Misc.query.first().hostname_override
+    except:
+        host = None
+    if not host:
+        host = socket.gethostname()
 
     # Check if the user is banned from logging in (too many incorrect attempts)
     if banned_from_login():
@@ -335,7 +363,7 @@ def login_keypad_code(code):
 
     return render_template('login_keypad.html',
                            dict_translation=TRANSLATIONS,
-                           host=socket.gethostname())
+                           host=host)
 
 
 @blueprint.route("/logout")

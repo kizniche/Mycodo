@@ -123,6 +123,12 @@
         </div>
       </div>
       <div class="form-group">
+        {{form_settings_general.hostname_override.label(class_='col-sm-12 control-label checkbox-nopad')}}
+        <div class="col-sm-12">
+          {{form_settings_general.hostname_override(class_='form-control', value=misc.hostname_override, **{'title':_("Override the hostname with this text. Leave blank to use hostname.")})}}
+        </div>
+      </div>
+      <div class="form-group">
         {{form_settings_general.rpyc_timeout.label(class_='col-sm-12 control-label checkbox-nopad')}}
         <div class="col-sm-12">
           {{form_settings_general.rpyc_timeout(class_='form-control', value=misc.rpyc_timeout, **{'title':_("Set the timeout (seconds) for Pyro connections (client-daemon communication). Requires daemon restart.")})}}

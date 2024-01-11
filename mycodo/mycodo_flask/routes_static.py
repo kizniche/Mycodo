@@ -63,6 +63,11 @@ def inject_variables():
                      "{err}".format(err=e))
         daemon_status = '0'
 
+    if misc.hostname_override:
+        host = misc.hostname_override
+    else:
+        host = socket.gethostname()
+
     languages_sorted = sorted(LANGUAGES.items(), key=operator.itemgetter(1))
 
     return dict(current_user=flask_login.current_user,
@@ -74,7 +79,7 @@ def inject_variables():
                 hide_alert_success=misc.hide_alert_success,
                 hide_alert_warning=misc.hide_alert_warning,
                 hide_tooltips=misc.hide_tooltips,
-                host=socket.gethostname(),
+                host=host,
                 languages=languages_sorted,
                 mycodo_version=MYCODO_VERSION,
                 permission_view_settings=user_has_permission('view_settings', silent=True),

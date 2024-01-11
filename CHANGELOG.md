@@ -6,6 +6,7 @@ This release also changes the Desktop grid width from 20 to 24, enabling the use
 
 ### Features
 
+ - Add ability to switch displaying hostname with custom text
  - Add Step Line Series Type to Graph (Synchronous) Widget
 
 ### Miscellaneous

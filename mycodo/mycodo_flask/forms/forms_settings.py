@@ -90,6 +90,7 @@ class SettingsGeneral(FlaskForm):
     index_page = StringField(lazy_gettext('Index Page'))
     language = StringField(lazy_gettext('Language'))
     rpyc_timeout = StringField(lazy_gettext('Pyro Timeout'))
+    hostname_override = StringField(lazy_gettext('Hostname Override'))
     daemon_debug_mode = BooleanField(lazy_gettext('Enable Daemon Debug Logging'))
     force_https = BooleanField(lazy_gettext('Force HTTPS'))
     hide_success = BooleanField(lazy_gettext('Hide success messages'))
