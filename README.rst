@@ -266,7 +266,7 @@ Mycodo has been translated to several laguages. Weblate is now used so anyone ca
 
 The install script will prompt you to select a language. This will be the set language when you first open the web user interface. You may change this at a later time on the settings page at ``[Gear Icon] -> Configure -> General -> Language``.
 
-If you would like to contribute to the translations, you can do so at `http://translate.kylegabriel.com <http://translate.kylegabriel.com:8080/engage/mycodo/>`__. Please read [How To Contribute to Language Translations in Mycodo](https://forum.radicaldiy.com/t/how-to-contribute-to-language-translations-in-mycodo/1162/2) for more information.
+If you would like to contribute to the translations, you can do so at `http://translate.kylegabriel.com <https://translate.kylegabriel.com/engage/mycodo/>`__. Please read [How To Contribute to Language Translations in Mycodo](https://forum.radicaldiy.com/t/how-to-contribute-to-language-translations-in-mycodo/1162/2) for more information.
 
 Thanks
 ------
