@@ -4,9 +4,9 @@ import importlib.util
 import os
 import textwrap
 
-from flask import Markup
 from flask import current_app
 from flask import flash
+from markupsafe import Markup
 
 from mycodo.config import INSTALL_DIRECTORY
 from mycodo.config import PATH_PYTHON_CODE_USER

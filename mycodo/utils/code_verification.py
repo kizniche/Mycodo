@@ -1,7 +1,8 @@
 # -*- coding: utf-8 -*-
 import logging
 import os
-from flask import Markup
+
+from markupsafe import Markup
 
 from mycodo.config import INSTALL_DIRECTORY
 from mycodo.config import PATH_PYTHON_CODE_USER

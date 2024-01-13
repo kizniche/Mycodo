@@ -7,9 +7,9 @@ import importlib.util
 import os
 import textwrap
 
-from flask import Markup
 from flask import current_app
 from flask_babel import lazy_gettext
+from markupsafe import Markup
 from sqlalchemy import and_
 
 from mycodo.config import INSTALL_DIRECTORY
