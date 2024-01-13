@@ -147,8 +147,8 @@ Required:
 
 Recommended:
 
--  `Raspberry Pi <https://www.raspberrypi.org>`__ single-board computer (any version: Zero, 1, 2, 3, or 4)
--  `Raspberry Pi Operating System <https://www.raspberrypi.org/downloads/raspberry-pi-os/>`__ flashed to a micro SD card
+-  `Raspberry Pi <https://www.raspberrypi.org>`__ single-board computer (Zero, 1, 2, 3, 4, or 5, but 3 or above is recommended)
+-  `Raspberry Pi Operating System <https://www.raspberrypi.com/software/>`__ flashed to a micro SD card or SSD
 
 Mycodo has been tested to work with Raspberry Pi OS Lite and Desktop, both 32-bit and 64-bit.
 
@@ -208,14 +208,14 @@ Supported Inputs and Outputs
 
 All supported Inputs, Outputs, and other devices can be found under the `Supported Devices <https://kizniche.github.io/Mycodo/Supported-Inputs-By-Measurement/>`__ section of the manual.
 
-Custom Inputs, Outputs, Functions and Actions
----------------------------------------------
+Custom Inputs, Outputs, Functions, Actions, and Widgets
+-------------------------------------------------------
 
 Mycodo supports importing custom Input, Output, Function, Action, and Widget modules. you can find more information about each in the manual under `Custom Inputs <https://kizniche.github.io/Mycodo/Inputs/#custom-inputs>`__, `Custom Outputs <https://kizniche.github.io/Mycodo/Outputs/#custom-outputs>`__, `Custom Functions <https://kizniche.github.io/Mycodo/Functions/#custom-functions>`__, `Custom Actions <https://kizniche.github.io/Mycodo/Functions/#custom-actions>`__, and `Custom Widgets <https://kizniche.github.io/Mycodo/Data-Viewing/#custom-widgets>`__.
 
 If you would like to add to the list of supported Inputs, Outputs, Functions, Actions, and Widgets, submit a pull request with the module you created or start a `New Issue <https://github.com/kizniche/Mycodo/issues/new?assignees=&labels=&template=feature-request.md&title=>`__.
 
-Additionally, I have another github repository devoted to custom Inputs, Outputs, Functions, Actions, and Widgets that do not necessarily fit with the built-in set and are not included by default with Mycodo, but can be imported. These can be found at `kizniche/Mycodo-custom <https://github.com/kizniche/Mycodo-custom>`__.
+Additionally, I have another github repository devoted to custom modules that do not necessarily fit with the built-in set and are not included by default with Mycodo, but can be imported. These can be found at `kizniche/Mycodo-custom <https://github.com/kizniche/Mycodo-custom>`__.
 
 Links
 -----
