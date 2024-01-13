@@ -9,7 +9,7 @@ Notes to keep track of the steps involved in making a new release.
 - [ ] Run ```sudo /bin/bash ~/Mycodo/mycodo/scripts/generate_all.sh```
    - Generates Input/Output/Function/Widget/API manual pages in Mycodo/docs/, and translatable .po files in Mycodo/mycodo/mycodo_flask/translations, and translated docs.
 - [ ] Verify the Input information was successfully inserted into the Mycodo Manuals.
-- [ ] Pull, translate words/phrases, and submit pull request, at http://translate.kylegabriel.com:8080/projects/mycodo/translations/ then merge into Mycodo repo
+- [ ] Pull, translate words/phrases, and submit pull request, at https://translate.kylegabriel.com/projects/mycodo/translations/ then merge into Mycodo repo
     - Note: f-strings cannot be used with gettext() for translations, use format()
 - [ ] Update config.py variables MYCODO_VERSION and ALEMBIC_VERSION (if applicable).
 - [ ] Update version in README.rst

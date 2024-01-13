@@ -318,10 +318,10 @@ Mycodo is made possible, in part, by the many fine open source libraries, below.
    :target: https://github.com/kizniche/Mycodo/actions/workflows/main.yml
 .. |Codacy Badge| image:: https://app.codacy.com/project/badge/Grade/bb5ffc43e4444231b813ca6e81359336
    :target: https://www.codacy.com/gh/kizniche/Mycodo/dashboard?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=kizniche/Mycodo&amp;utm_campaign=Badge_Grade
-.. |Translation Badge| image:: http://translate.kylegabriel.com:8080/widgets/mycodo/-/svg-badge.svg
-   :target: http://translate.kylegabriel.com:8080/engage/mycodo/
-.. |Translation Table| image:: http://translate.kylegabriel.com:8080/widgets/mycodo/-/multi-auto.svg
-   :target: http://translate.kylegabriel.com:8080/engage/mycodo/
+.. |Translation Badge| image:: https://translate.kylegabriel.com/widgets/mycodo/-/svg-badge.svg
+   :target: https://translate.kylegabriel.com/engage/mycodo/
+.. |Translation Table| image:: https://translate.kylegabriel.com/widgets/mycodo/-/multi-auto.svg
+   :target: https://translate.kylegabriel.com/engage/mycodo/
 .. |DOI| image:: https://zenodo.org/badge/DOI/10.5281/zenodo.824199.svg
    :target: https://doi.org/10.5281/zenodo.824199
 .. |Mycodo| image:: https://kylegabriel.com/projects/wp-content/uploads/sites/3/2016/05/Mycodo-3.6.0-tango-Graph-2016-05-21-11-15-26.png
