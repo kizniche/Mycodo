@@ -239,24 +239,23 @@ runSelfUpgrade() {
 
   BACKUP_DIR="/var/Mycodo-backups/Mycodo-backup-${NOW}-${CURRENT_VERSION}"
 
-  printf "Moving current Mycodo intstall from %s to %s..." "${CURRENT_MYCODO_DIRECTORY}" "${BACKUP_DIR}"
+  printf "Moving current Mycodo install from %s to %s..." "${CURRENT_MYCODO_DIRECTORY}" "${BACKUP_DIR}"
   if ! mv "${CURRENT_MYCODO_DIRECTORY}" "${BACKUP_DIR}" ; then
     printf "Failed: Error while trying to move old Mycodo install from %s to %s.\n" "${CURRENT_MYCODO_DIRECTORY}" "${BACKUP_DIR}"
     error_found
   fi
   printf "Done.\n"
 
-  printf "Moving downloaded Mycodo version from %s to %s/Mycodo..." "${THIS_MYCODO_DIRECTORY}" "${CURRENT_MYCODO_INSTALL_DIRECTORY}"
-  if ! mv "${THIS_MYCODO_DIRECTORY}" "${CURRENT_MYCODO_INSTALL_DIRECTORY}"/Mycodo ; then
-    printf "Failed: Error while trying to move new Mycodo install from %s to %s/Mycodo.\n" "${THIS_MYCODO_DIRECTORY}" "${CURRENT_MYCODO_INSTALL_DIRECTORY}"
+  printf "Moving downloaded Mycodo version from %s to /opt/Mycodo..." "${THIS_MYCODO_DIRECTORY}"
+  if ! mv "${THIS_MYCODO_DIRECTORY}" /opt/Mycodo ; then
+    printf "Failed: Error while trying to move new Mycodo install from %s to /opt/Mycodo.\n" "${THIS_MYCODO_DIRECTORY}"
     error_found
   fi
   printf "Done.\n"
 
   sleep 30
 
-  CURRENT_MYCODO_DIRECTORY=$( cd -P /var/mycodo-root && pwd -P )
-  cd "${CURRENT_MYCODO_DIRECTORY}" || return
+  cd /opt/Mycodo || return
 
   ############################################
   # Begin tests prior to post-upgrade script #
@@ -265,18 +264,18 @@ runSelfUpgrade() {
   if [ "$RELEASE_WIPE" = true ] ; then
     # Instructed to wipe configuration files (database, virtualenv)
 
-    if [ -d "${CURRENT_MYCODO_DIRECTORY}"/env ] ; then
-      printf "Removing virtualenv at %s/env..." "${CURRENT_MYCODO_DIRECTORY}"
-      if ! rm -rf "${CURRENT_MYCODO_DIRECTORY}"/env ; then
-        printf "Failed: Error while trying to delete virtaulenv.\n"
+    if [ -d /opt/Mycodo/env ] ; then
+      printf "Removing virtualenv at /opt/Mycodo/env..."
+      if ! rm -rf /opt/Mycodo/env ; then
+        printf "Failed: Error while trying to delete virtaulenv at /opt/Mycodo/env.\n"
       fi
       printf "Done.\n"
     fi
 
-    if [ -d "${CURRENT_MYCODO_DIRECTORY}"/databases/mycodo.db ] ; then
-      printf "Removing database at %s/databases/mycodo.db..." "${CURRENT_MYCODO_DIRECTORY}"
-      if ! rm -f "${CURRENT_MYCODO_DIRECTORY}"/databases/mycodo.db ; then
-        printf "Failed: Error while trying to delete database.\n"
+    if [ -d /opt/Mycodo/databases/mycodo.db ] ; then
+      printf "Removing database at /opt/Mycodo/databases/mycodo.db..."
+      if ! rm -f /opt/Mycodo/databases/mycodo.db ; then
+        printf "Failed: Error while trying to delete database at /opt/Mycodo/databases/mycodo.db.\n"
       fi
       printf "Done.\n"
     fi
@@ -293,7 +292,7 @@ runSelfUpgrade() {
   TIMER_START_stage_three=$SECONDS
 
   printf "Running post-upgrade script...\n"
-  if ! "${CURRENT_MYCODO_DIRECTORY}"/mycodo/scripts/upgrade_post.sh ; then
+  if ! /opt/Mycodo/mycodo/scripts/upgrade_post.sh ; then
     printf "Failed: Error while running post-upgrade script.\n"
     error_found
   fi
@@ -312,7 +311,7 @@ runSelfUpgrade() {
   # End tests after upgrade #
   ###########################
 
-  echo '0' > "${CURRENT_MYCODO_DIRECTORY}"/.upgrade
+  echo '0' > /opt/Mycodo/.upgrade
 
   exit 0
 }

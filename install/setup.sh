@@ -2,7 +2,7 @@
 #
 #  setup.sh - Mycodo install script
 #
-#  Usage: sudo /bin/bash ~/Mycodo/install/setup.sh
+#  Usage: sudo /bin/bash /opt/Mycodo/install/setup.sh
 #
 
 INSTALL_DIRECTORY=$( cd "$( dirname "${BASH_SOURCE[0]}" )/.." && pwd -P )

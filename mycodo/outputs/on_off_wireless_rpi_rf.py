@@ -35,7 +35,7 @@ OUTPUT_INFORMATION = {
     'output_types': ['on_off'],
 
     'message': 'This output uses a 315 or 433 MHz transmitter to turn wireless power outlets on or off. '
-               'Run ~/Mycodo/mycodo/devices/wireless_rpi_rf.py with a receiver to discover the codes '
+               'Run /opt/Mycodo/mycodo/devices/wireless_rpi_rf.py with a receiver to discover the codes '
                'produced from your remote.',
 
     'options_enabled': [

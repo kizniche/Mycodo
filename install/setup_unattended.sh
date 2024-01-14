@@ -2,7 +2,7 @@
 #
 #  setup_unattended.sh - Mycodo install script (unattended version)
 #
-#  Usage: sudo /bin/bash ~/Mycodo/install/setup_unattended.sh [influx-option]
+#  Usage: sudo /bin/bash /opt/Mycodo/install/setup_unattended.sh [influx-option]
 #  influx-option can be 1 (install influxdb 1.x), 2 (install influxdb 2.x), or 0 (don't install influxdb)
 
 INSTALL_DIRECTORY=$( cd "$( dirname "${BASH_SOURCE[0]}" )/.." && pwd -P )

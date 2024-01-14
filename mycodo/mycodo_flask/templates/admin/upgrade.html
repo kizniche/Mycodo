@@ -49,7 +49,7 @@
 
     <div style="padding: 0.5em 0">
       <p>{{_('Mycodo is currently in the process of an upgrade')}}</p>
-      <p>{{_('If an upgrade is not currently in progress, you may delete the ~/Mycodo/.upgrade file to be able to reinitiate the upgrade process.')}}</p>
+      <p>{{_('If an upgrade is not currently in progress, you may delete the /opt/Mycodo/.upgrade file to be able to reinitiate the upgrade process.')}}</p>
       <p>{{_('An upgrade often takes several minutes, and in some cases longer, to complete. Give the process ample time to run before doing anything. When the upgrade has successfully finished, the daemon status indicator at the top left will change from red to green. Some drivers require the backend to be restarted for them to become active. If you experience an erorr, attempt to restart the backend before creating a new github issue.')}}</p>
       <p>{{_('You can monitor the upgrade progress with the live log view, below, by navigating to Configure -> Mycodo Logs -> Upgrade Log, or by opening /var/log/mycodo/mycodoupgrade.log. Below is the upgrade log, updated every 5 seconds. If an error occurs, it is advisable to inspect the entire log in order to diagnose the issue.')}}</p>
     </div>
@@ -70,7 +70,7 @@
       <br>Major version changes: <a href="https://github.com/kizniche/Mycodo/releases/tag/v{{current_latest_major_version}}.0.0" target="_blank">{{current_latest_major_version}}.0.0</a>
     </p>
     <p style="font-weight: bold; color: red">Major version change detected!</p>
-    <p>A new major version has been released on GitHub: v{{current_latest_major_version}}.x.x (currently at v{{current_latest_release}}). This usually means there are system-breaking changes for some or all users, and if you choose to upgrade, your system settings may not be able to be preserved. It is advisable to backup these settings by either <a href="/export">exporting</a> the settings database (~/Mycodo/databases/mycodo.db) or making note of important information (GPIO pins, PID settings, etc.).</p>
+    <p>A new major version has been released on GitHub: v{{current_latest_major_version}}.x.x (currently at v{{current_latest_release}}). This usually means there are system-breaking changes for some or all users, and if you choose to upgrade, your system settings may not be able to be preserved. It is advisable to backup these settings by either <a href="/export">exporting</a> the settings database (/opt/Mycodo/databases/mycodo.db) or making note of important information (GPIO pins, PID settings, etc.).</p>
     <p>However, there may be cases where the settings database can be preserved during the upgrade. There may be other cases that an upgrade is not possible, even if the settings database is wiped. This will be dependent on both your currently installed version and the current version available for upgrade and won't be known until an upgrade is attempted. The upgrade script will inform you of any of these situations after the upgrade is initiated.</p>
     <p>If you would like to attempt to upgrade Mycodo to v{{current_latest_release}}, select the button below.</p>
     <div class="form-inline" style="padding-bottom: 1em">
@@ -90,16 +90,16 @@
     <div style="padding: 0.5em 0">
       <p>{{_('There was an error that occurred during the upgrade')}}</p>
       <p>{{_('View the upgrade log at /var/log/mycodo/mycodoupgrade.log.')}}</p>
-      <p>{{_('Delete ~/Mycodo/.upgrade to acknowledge this message and restore upgrade functionality.')}}</p>
+      <p>{{_('Delete /opt/Mycodo/.upgrade to acknowledge this message and restore upgrade functionality.')}}</p>
     </div>
 
     {% elif force_upgrade_master %}
 
     <div style="padding: 1em 0 1.5em 0">
       <p>MANUAL UPGRADE MODE</p>
-      <p>FORCE_UPGRADE_MASTER has been set to True in ~/Mycodo/config.py.</p>
+      <p>FORCE_UPGRADE_MASTER has been set to True in /opt/Mycodo/config.py.</p>
       <p>Pressing upgrade below will perform an upgrade from the <a href="https://github.com/kizniche/Mycodo/archive/master.tar.gz">master.tar.gz</a> archive of the <a href="https://github.com/kizniche/Mycodo/tree/master">Mycodo master branch</a> instead of the Release version.</p>
-      <p>If you would like to upgrade to the latest Release version instead, set <code>FORCE_UPGRADE_MASTER = False</code> in ~/Mycodo/mycodo/config.py, restart the web UI with the <code>sudo service mycodoflask restart</code> command, then refresh this page.</p>
+      <p>If you would like to upgrade to the latest Release version instead, set <code>FORCE_UPGRADE_MASTER = False</code> in /opt/Mycodo/mycodo/config.py, restart the web UI with the <code>sudo service mycodoflask restart</code> command, then refresh this page.</p>
     </div>
     <div class="form-inline" style="padding-bottom: 1em">
       <form method="post" action="/admin/upgrade">

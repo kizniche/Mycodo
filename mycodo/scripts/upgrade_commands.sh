@@ -43,7 +43,7 @@ cd "${MYCODO_PATH}" || return
 HELP_OPTIONS="upgrade_commands.sh [option] - Program to execute various mycodo commands
 
 Options:
-  backup-create                 Create a backup of the ~/Mycodo directory
+  backup-create                 Create a backup of the /opt/Mycodo directory
   backup-restore [backup]       Restore [backup] location, which must be the full path to the backup.
                                 Ex.: '/var/Mycodo-backups/Mycodo-backup-2018-03-11_21-19-15-5.6.4/'
   compile-mycodo-wrapper        Compile mycodo_wrapper.c

@@ -165,7 +165,7 @@ Once you have the Raspberry Pi booted, log in and run the following command in a
 Install Notes
 ~~~~~~~~~~~~~
 
-Make sure the install script finishes without errors. A log of the output will be created at ``~/Mycodo/install/setup.log``.
+Make sure the install script finishes without errors. A log of the output will be created at ``/opt/Mycodo/install/setup.log``.
 
 If the install is successful, the web user interface should be accessible by navigating a web browser to ``https://127.0.0.1/``, replacing ``127.0.0.1`` with the IP address of the computer you installed on. Upon your first visit, you will be prompted to create an admin user before being redirected to the login page. Once logged in, check that the time is correct at the top left of the page. Incorrect time can cause a number of issues with measurement storage and retrieval in a time-series database. Also ensure the host name and version number at the top left of the page is green, indicating the daemon is running. If it's red, it indicates the daemon is inactive or unresponsive. Last, ensure any java-blocking plugins of your browser are disabled for all parts of the web interface to function properly.
 

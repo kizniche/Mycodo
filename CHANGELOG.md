@@ -4,6 +4,10 @@ This release updates several python packages that require Python >= 3.8. You can
 
 This release also changes the Desktop grid width from 20 to 24, enabling the use of 3 column layouts that are evenly-spaced. You will need to resize/rearrange Dashboard Widgets after this update to correct for the new width. The update of Gridstack to 10.0.1 also now allows the ability to drag Desktop widgets on mobile devices. If you don't like this behavior, you should lock the desktop from the Dashboard Configuration menu to prevent widgets from being dragged/rearranged.
 
+### Bugfixes
+
+ - Fix some Inputs potentially sending integers to influxdb when it should be float
+
 ### Features
 
  - Add ability to switch displaying hostname with custom text
@@ -11,6 +15,7 @@ This release also changes the Desktop grid width from 20 to 24, enabling the use
 
 ### Miscellaneous
 
+ - Move install location to /opt/Mycodo
  - Change Dashboard grid width from 20 to 24
  - Add endpoint option to RAM Input for when Mycodo is using a non-standard IP/port
  - Update Gridstack to 10.0.1
@@ -29,6 +34,7 @@ This release also changes the Desktop grid width from 20 to 24, enabling the use
  - Update Flask_WTF to 1.2.1
  - Update marshmallow_sqlalchemy to 0.30.0
  - Update pyro5 to 5.15
+ - Update requests to 2.31.0
  - Update setuptools to 69.0.3
  - Update SQLAlchemy to 2.0.25
  - Update Werkzeug to 3.0.1

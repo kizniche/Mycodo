@@ -360,7 +360,7 @@ Conditional Functions are used to perform simple to complex actions based a user
     `Period` must be set longer than the time it takes for your `Run Python Code` to execute, otherwise it will execute again before the previous execution has finished.
 
 !!! note
-    The code is executed within the same Python virtual environment that Mycodo runs from, therefore you must install Python libraries to this environment if you want them to be available to your code. This virtualenv is located at ~/Mycodo/env and if you wanted to install, for example, "my_library" using pip, you would execute "sudo ~/Mycodo/env/bin/pip install my_library".
+    The code is executed within the same Python virtual environment that Mycodo runs from, therefore you must install Python libraries to this environment if you want them to be available to your code. This virtualenv is located at /opt/Mycodo/env and if you wanted to install, for example, "my_library" using pip, you would execute "sudo /opt/Mycodo/env/bin/pip install my_library".
 
 ### Conditional Options
 
@@ -502,7 +502,7 @@ Python 3 is the environment that these conditionals will be executed. The follow
 </tbody>
 </table>
 
-There are additional functions that can be used, but these must use the full UUID (not an abridged version as the functions above). See /home/pi/Mycodo/mycodo/mycodo_client.py for the functions available for use. These may be accessed via the 'control' object. An example, below, will return how long the output has been on (or 0 if it's currently off):
+There are additional functions that can be used, but these must use the full UUID (not an abridged version as the functions above). See /opt/Mycodo/mycodo/mycodo_client.py for the functions available for use. These may be accessed via the 'control' object. An example, below, will return how long the output has been on (or 0 if it's currently off):
 
 `output_on_seconds = control.output_sec_currently_on("1b6ada50-1e69-403a-9fa6-ec748b16dc23")`
 

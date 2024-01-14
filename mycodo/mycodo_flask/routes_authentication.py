@@ -450,7 +450,7 @@ def check_database_version_issue():
     if len(AlembicVersion.query.all()) > 1:
         flash("A check of your database indicates there is an issue with your"
               " database version number. To resolve this issue, move"
-              " your mycodo.db from ~/Mycodo/databases/mycodo.db to a "
+              " your mycodo.db from /opt/Mycodo/databases/mycodo.db to a "
               "different location (or delete it) and a new database will be "
               "generated in its place.", "error")
 

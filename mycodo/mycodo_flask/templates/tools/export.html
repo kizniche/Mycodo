@@ -88,7 +88,7 @@
 
   <p>This will allow a ZIP file containing the Mycodo settings database and custom functions/inputs/outputs/widgets to be uploaded and replace the current settings. Only databases from Mycodo versions equal or prior to the current Mycodo version should be imported. There is no check for this, but if you attempt to import a database from a version higher than the current Mycodo version, there will likely be issues. There may also be issues if the custom controllers are incompatible with the Mycodo version you're importing in to.</p>
 
-  <p>Note 1: This will override all settings, user accounts, and custom functions/inputs/outputs/widgets, and log you out from the web UI. A backup of the current database will be created in the database directory (~/Mycodo/databases/mycodo.db.backup_DATE_TIME).</p>
+  <p>Note 1: This will override all settings, user accounts, and custom functions/inputs/outputs/widgets, and log you out from the web UI. A backup of the current database will be created in the database directory (/opt/Mycodo/databases/mycodo.db.backup_DATE_TIME).</p>
 
   <p>Note 2: During this process, the new database will be upgraded to the current Mycodo version and all unmet dependencies will be installed. This process can take a while to complete if there are a significant number of dependencies to install, so be patient.</p>
 

@@ -316,7 +316,7 @@ The Atlas Scientific peristaltic pump is a peristaltic pump and microcontroller 
 Certain 315/433 MHz wireless relays may be used, however you will need to set the pin of the transmitter (using BCM numbering), pulse length, bit length, protocol, on command, and off command. To determine your On and Off commands, connect a 315/433 MHz receiver to your Pi, then run the receiver script, below, replacing 17 with the pin your receiver is connected to (using BCM numbering), and press one of the buttons on your remote (either on or off) to detect the numeric code associated with that button.
 
 ```bash
-sudo ~/Mycodo/env/bin/python ~/Mycodo/mycodo/devices/wireless_rpi_rf.py -d 2 -g 17
+sudo /opt/Mycodo/env/bin/python /opt/Mycodo/mycodo/devices/wireless_rpi_rf.py -d 2 -g 17
 ```
 
 433 MHz wireless relays have been successfully tested with SMAKN 433MHz RF Transmitters/Receivers and Etekcity Wireless Remote Control Electrical Outlets (see [Issue 88](https://github.com/kizniche/Mycodo/issues/88) for more information). If you have a 315/433 MHz transmitter/receiver and a wireless relay that does not work with the current code, submit a [new issue](https://github.com/kizniche/Mycodo/issues/new) with details of your hardware.

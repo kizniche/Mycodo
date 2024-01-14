@@ -326,7 +326,7 @@ Controls the 4 relays of the relay module.
 - Libraries: rpi-rf
 - Dependencies: [RPi.GPIO](https://pypi.org/project/RPi.GPIO), [rpi_rf](https://pypi.org/project/rpi_rf)
 
-This output uses a 315 or 433 MHz transmitter to turn wireless power outlets on or off. Run ~/Mycodo/mycodo/devices/wireless_rpi_rf.py with a receiver to discover the codes produced from your remote.
+This output uses a 315 or 433 MHz transmitter to turn wireless power outlets on or off. Run /opt/Mycodo/mycodo/devices/wireless_rpi_rf.py with a receiver to discover the codes produced from your remote.
 <table><thead><tr class="header"><th>Option</th><th>Type</th><th>Description</th></tr></thead><tbody><tr><td colspan="3">Channel Options</td></tr><tr><td>Pin: GPIO (BCM)</td><td>Integer</td><td>The pin to control the state of</td></tr><tr><td>On Command</td><td>Text
 - Default Value: 22559</td><td>Command to execute when the output is instructed to turn on</td></tr><tr><td>Off Command</td><td>Text
 - Default Value: 22558</td><td>Command to execute when the output is instructed to turn off</td></tr><tr><td>Protocol</td><td>Select(Options: [<strong>1</strong> | 2 | 3 | 4 | 5] (Default in <strong>bold</strong>)</td><td></td></tr><tr><td>Pulse Length</td><td>Integer

@@ -41,7 +41,7 @@ INPUT_INFORMATION = {
     'options_disabled': ['interface'],
 
     'dependencies_module': [
-        ('pip-pypi', 'requests', 'requests==2.25.1'),
+        ('pip-pypi', 'requests', 'requests==2.31.0'),
     ],
 
     'custom_options': [

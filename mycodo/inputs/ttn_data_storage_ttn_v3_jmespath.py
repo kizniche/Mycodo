@@ -78,7 +78,7 @@ INPUT_INFORMATION = {
     ],
 
     'dependencies_module': [
-        ('pip-pypi', 'requests', 'requests==2.25.1'),
+        ('pip-pypi', 'requests', 'requests==2.31.0'),
         ('pip-pypi', 'jmespath', 'jmespath==0.10.0')
     ],
 
@@ -268,8 +268,12 @@ class InputModule(AbstractInput):
                 measurements[channel] = {}
                 measurements[channel]['measurement'] = self.channels_measurement[channel].measurement
                 measurements[channel]['unit'] = self.channels_measurement[channel].unit
-                measurements[channel]['value'] = value
                 measurements[channel]['timestamp_utc'] = datetime_utc
+
+                try:
+                    measurements[channel]['value'] = float(value)
+                except:
+                    self.logger.error(f"Value doesn't represent float: {value}")
 
                 # Convert value/unit is conversion_id present and valid
                 if self.channels_conversion[channel]:
@@ -286,7 +290,7 @@ class InputModule(AbstractInput):
 
                         measurements[channel]['measurement'] = meas[channel]['measurement']
                         measurements[channel]['unit'] = meas[channel]['unit']
-                        measurements[channel]['value'] = meas[channel]['value']
+                        measurements[channel]['value'] = float(meas[channel]['value'])
 
             if measurements:
                 message, measurements = run_input_actions(self.unique_id, "", measurements, self.log_level_debug)

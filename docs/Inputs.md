@@ -253,9 +253,9 @@ This Input also allows multiple measurements to be stored. You merely have to ch
 
 There are several example Input modules that, in addition to storing the measurements of a sensor in the influx database, will write the measurements to a serial device. This is useful of you have a LoRaWAN transmitter connected via serial to receive measurement information from Mycodo and transmit it to a LoRaWAN gateway (and subsequently to The Things Network). The data on TTN can then be downloaded elsewhere with the TTN Input. These example Input modules are located in the following locations:
 
-`~/Mycodo/mycodo/inputs/examples/bme280_ttn.py`
+`/opt/Mycodo/mycodo/inputs/examples/bme280_ttn.py`
 
-`~/Mycodo/mycodo/inputs/examples/k30_ttn.py`
+`/opt/Mycodo/mycodo/inputs/examples/k30_ttn.py`
 
 For example, the following excerpt from `bme_280.py` will write a set of comma-separated strings to the user-specified serial device with the first string (the letter "B") used to denote the sensor/measurements, followed by the actual measurements (humidity, pressure, and temperature, in this case).
 
@@ -270,6 +270,6 @@ self.serial_send.write(string_send.encode())
 
 This is useful if multiple data strings are to be sent to the same serial device (e.g. if both `bme280_ttn.py` and `k30_ttn.py` are being used at the same time), allowing the serial device to distinguish what data is being received.
 
-The full code used to decode both `bme280_ttn.py` and `k30_ttn.py`, with informative comments, is located at `~/Mycodo/mycodo/inputs/examples/ttn_data_storage_decoder_example.js`.
+The full code used to decode both `bme280_ttn.py` and `k30_ttn.py`, with informative comments, is located at `/opt/Mycodo/mycodo/inputs/examples/ttn_data_storage_decoder_example.js`.
 
 These example Input modules may be modified to suit your needs and imported into Mycodo through the `[Gear Icon] -> Configure -> Custom Inputs` page. After import, they will be available to use on the `Setup -> Input` page.

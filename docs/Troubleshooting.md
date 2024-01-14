@@ -3,7 +3,7 @@
 There are many reasons why the web UI would be inaccessible following an upgrade. Bugs are also continually fixed as they are discovered. Therefore, do not rely on old GitHub Issues or forum posts that have a solution for a similar effect, since the cause of the effect can be something completely different. The first thing that should be done is to review the upgrade log (/var/log/mycodo/mycodoupgrade.log) for any errors. Next, you can attempt to rerun the upgrade by issuing the following command:
 
 ```bash
-sudo ~/Mycodo/mycodo/scripts/upgrade_post.sh
+sudo /opt/Mycodo/mycodo/scripts/upgrade_post.sh
 ```
 
 ## Daemon Not Running
@@ -17,7 +17,7 @@ sudo ~/Mycodo/mycodo/scripts/upgrade_post.sh
 
 - Check the `[Gear Icon] -> System Information` page.
 - If the "Database Version" is green, it is the correct version. An incorrect version wil lbe colored red and indicate the version is incorrect.
-- An incorrect database version means the version stored in the Mycodo settings database (`~/Mycodo/databases/mycodo.db`) is not correct for the latest version of Mycodo, determined in the Mycodo config file (`~/Mycodo/mycodo/config.py`).
+- An incorrect database version means the version stored in the Mycodo settings database (`/opt/Mycodo/databases/mycodo.db`) is not correct for the latest version of Mycodo, determined in the Mycodo config file (`/opt/Mycodo/mycodo/config.py`).
 - This can be caused by an error in the upgrade process from an older database version to a newer version, or from a database that did not upgrade during the Mycodo upgrade process.
 - Check the Upgrade Log for any issues that may have occurred. The log is located at `/var/log/mycodo/mycodoupgrade.log` but may also be accessed from the web UI (if you're able to): select `[Gear Icon] -> Mycodo Logs -> Upgrade Log`.
 - Sometimes issues may not immediately present themselves. It is not uncommon to be experiencing a database issue that was actually introduced several Mycodo versions ago, before the latest upgrade.
@@ -26,7 +26,7 @@ sudo ~/Mycodo/mycodo/scripts/upgrade_post.sh
 It may be much easier to delete your database and start fresh without any configuration. Use the following commands to rename your database and restart the web UI. If both commands are successful, refresh your web UI page in your browser in order to generate a new database and create a new Admin user.
 
 ```bash
-mv ~/Mycodo/databases/mycodo.db ~/Mycodo/databases/mycodo.db.backup
+mv /opt/Mycodo/databases/mycodo.db /opt/Mycodo/databases/mycodo.db.backup
 sudo service mycodoflask restart
 ```
 
