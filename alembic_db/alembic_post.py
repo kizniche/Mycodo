@@ -40,20 +40,6 @@ def upgrade_revision(error, revision):
     # elif revision == 'REPLACE_WITH_ALEMBIC_REVISION_ID':
     #     pass  # Code goes here
 
-    elif revision == '4c77262f15ea':
-        # Move Mycodo install directory
-        # This breaks the virtualenv, so it needs to be regenerated
-        import os
-        import shutil
-
-        from mycodo.config import INSTALL_DIRECTORY
-
-        try:
-            print("Deleting virtualenv...")
-            shutil.rmtree(os.path.join(INSTALL_DIRECTORY, 'env'))
-        except Exception as err:
-            print(f"Error removing env: {err}")
-
     elif revision == 'b354722c9b8b':
         import json
         import os

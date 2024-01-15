@@ -18,6 +18,11 @@ cd "${INSTALL_DIRECTORY}" || exit
 rm -f "${INSTALL_DIRECTORY}"/statistics.csv
 rm -f "${INSTALL_DIRECTORY}"/statistics.id
 
+# Delete /env if Mycodo symlink target isn't /opt/Mycodo
+if [ "$(readlink /var/mycodo-root)" != "/opt/Mycodo" ] ; then
+  rm -rf "${INSTALL_DIRECTORY}"/env
+fi
+
 TIMER_START_initialize=$SECONDS
 ${INSTALL_CMD} initialize
 TIMER_TOTAL_initialize=$((SECONDS - TIMER_START_initialize))
@@ -77,15 +82,6 @@ elif [ "$INFLUXDB_INSTALLED" == "true" ] && [[ ${INFLUXDB_VERSION} == 2* ]]; the
     ${INSTALL_CMD} update-influxdb-2
     TIMER_TOTAL_update_influxdb=$((SECONDS - TIMER_START_update_influxdb))
 fi
-
-# If virtualenv was deleted by alembic upgrade script, regenerate virtualenv
-TIMER_START_update_pip3=$SECONDS
-${INSTALL_CMD} update-pip3
-TIMER_TOTAL_update_pip3=$((SECONDS - TIMER_START_update_pip3))
-
-TIMER_START_update_pip3_packages=$SECONDS
-${INSTALL_CMD} update-pip3-packages
-TIMER_TOTAL_update_pip3_packages=$((SECONDS - TIMER_START_update_pip3_packages))
 
 TIMER_START_update_dependencies=$SECONDS
 ${INSTALL_CMD} update-dependencies
