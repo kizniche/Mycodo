@@ -256,7 +256,7 @@ def extension_session(app):
     # try:
     #     # Remove flask_session directory every time flask starts
     #     import shutil
-    #     shutil.rmtree('/var/mycodo-root/mycodo/flask_session')
+    #     shutil.rmtree('/opt/Mycodo/mycodo/flask_session')
     # except:
     #     pass
 

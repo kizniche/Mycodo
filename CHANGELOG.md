@@ -2,7 +2,9 @@
 
 This release updates several python packages that require Python >= 3.8. You can check your Python version prior to upgrading. If you do not have the required version, you should not upgrade, since this will likely break your system. To be able to use this and future Mycodo releases, ensure you are running an updated operating system that supports a modern Python version.
 
-This release also changes the Desktop grid width from 20 to 24, enabling the use of 3 column layouts that are evenly-spaced. You will need to resize/rearrange Dashboard Widgets after this update to correct for the new width. The update of Gridstack to 10.0.1 also now allows the ability to drag Desktop widgets on mobile devices. If you don't like this behavior, you should lock the desktop from the Dashboard Configuration menu to prevent widgets from being dragged/rearranged.
+This release changes the Desktop grid width from 20 to 24, enabling the use of 3 column layouts that are evenly-spaced. You will need to resize/rearrange Dashboard Widgets after this update to correct for the new width. The update of Gridstack to 10.0.1 also now allows the ability to drag Desktop widgets on mobile devices. If you don't like this behavior, you should lock the desktop from the Dashboard Configuration menu to prevent widgets from being dragged/rearranged.
+
+This release changes the install directory from ~/Mycodo to /opt/Mycodo. This should occur automatically during the upgrade.
 
 ### Bugfixes
 
@@ -15,7 +17,7 @@ This release also changes the Desktop grid width from 20 to 24, enabling the use
 
 ### Miscellaneous
 
- - Move install location to /opt/Mycodo
+ - Move install location from ~/Mycodo to /opt/Mycodo
  - Change Dashboard grid width from 20 to 24
  - Add endpoint option to RAM Input for when Mycodo is using a non-standard IP/port
  - Update Gridstack to 10.0.1

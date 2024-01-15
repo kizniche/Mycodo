@@ -398,7 +398,7 @@ def newremote():
         if User().check_password(
                 pass_word, user.password_hash) == user.password_hash:
             try:
-                with open('/var/mycodo-root/mycodo/mycodo_flask/ssl_certs/cert.pem', 'r') as cert:
+                with open('/opt/Mycodo/mycodo/mycodo_flask/ssl_certs/cert.pem', 'r') as cert:
                     certificate_data = cert.read()
             except Exception:
                 certificate_data = None

@@ -600,7 +600,7 @@ case "${1:-''}" in
         chown -LR mycodo:mycodo "${MYCODO_PATH}"
         chown -R mycodo:mycodo /var/log/mycodo
         chown -R mycodo:mycodo /var/Mycodo-backups
-        chown -R mycodo:mycodo /var/mycodo-root
+        chown -R mycodo:mycodo /opt/Mycodo
 
         find "${MYCODO_PATH}" -type d -exec chmod u+wx,g+wx {} +
         find "${MYCODO_PATH}" -type f -exec chmod u+w,g+w,o+r {} +

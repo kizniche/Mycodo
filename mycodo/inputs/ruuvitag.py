@@ -130,8 +130,8 @@ class InputModule(AbstractInput):
         if lf.lock_acquire(self.lock_file, timeout=3600):
             self.logger.debug("Starting measurement")
             try:
-                cmd = 'timeout -k 11 10 /var/mycodo-root/env/bin/python ' \
-                      '/var/mycodo-root/mycodo/inputs/scripts/ruuvitag_values.py ' \
+                cmd = 'timeout -k 11 10 /opt/Mycodo/env/bin/python ' \
+                      '/opt/Mycodo/mycodo/inputs/scripts/ruuvitag_values.py ' \
                       '--mac_address {mac} --bt_adapter {bta}'.format(
                           mac=self.location, bta=self.bt_adapter)
                 cmd = subprocess.Popen(cmd, stdout=subprocess.PIPE, shell=True)

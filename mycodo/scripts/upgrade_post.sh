@@ -78,6 +78,15 @@ elif [ "$INFLUXDB_INSTALLED" == "true" ] && [[ ${INFLUXDB_VERSION} == 2* ]]; the
     TIMER_TOTAL_update_influxdb=$((SECONDS - TIMER_START_update_influxdb))
 fi
 
+# If virtualenv was deleted by alembic upgrade script, regenerate virtualenv
+TIMER_START_update_pip3=$SECONDS
+${INSTALL_CMD} update-pip3
+TIMER_TOTAL_update_pip3=$((SECONDS - TIMER_START_update_pip3))
+
+TIMER_START_update_pip3_packages=$SECONDS
+${INSTALL_CMD} update-pip3-packages
+TIMER_TOTAL_update_pip3_packages=$((SECONDS - TIMER_START_update_pip3_packages))
+
 TIMER_START_update_dependencies=$SECONDS
 ${INSTALL_CMD} update-dependencies
 TIMER_TOTAL_update_dependencies=$((SECONDS - TIMER_START_update_dependencies))

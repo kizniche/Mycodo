@@ -46,7 +46,7 @@ def save_python_file(custom_options_json, unique_id):
     """Save python file"""
     pre_statement_loop = """import os
 import sys
-sys.path.append(os.path.abspath('/var/mycodo-root'))
+sys.path.append(os.path.abspath('/opt/Mycodo'))
 from mycodo.mycodo_client import DaemonControl
 control = DaemonControl()
 

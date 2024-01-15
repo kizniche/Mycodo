@@ -17,7 +17,7 @@ def generate_code(input_id, python_code):
     error = []
     pre_statement_run = """import os
 import sys
-sys.path.append(os.path.abspath('/var/mycodo-root'))
+sys.path.append(os.path.abspath('/opt/Mycodo'))
 from mycodo.databases.models import Conversion
 from mycodo.mycodo_client import DaemonControl
 from mycodo.utils.database import db_retrieve_table_daemon

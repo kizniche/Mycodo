@@ -92,7 +92,7 @@ INPUT_INFORMATION = {
         ('apt', 'git', 'git'),
         ('bash-commands',
          [
-             '/var/mycodo-root/env/RTIMULib_installed',
+             '/opt/Mycodo/env/RTIMULib_installed',
          ],
          [
              'cd /tmp',
@@ -100,7 +100,7 @@ INPUT_INFORMATION = {
              'cd ./RTIMULib/Linux/python/',
              '/opt/Mycodo/env/bin/python setup.py build',
              '/opt/Mycodo/env/bin/python setup.py install',
-             'touch /var/mycodo-root/env/RTIMULib_installed'
+             'touch /opt/Mycodo/env/RTIMULib_installed'
          ]),
         ('pip-pypi', 'sense_hat', 'sense-hat==2.2.0')
     ],

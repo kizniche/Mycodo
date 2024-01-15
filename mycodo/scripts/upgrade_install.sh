@@ -246,6 +246,8 @@ runSelfUpgrade() {
   fi
   printf "Done.\n"
 
+  mkdir -p /opt
+
   printf "Moving downloaded Mycodo version from %s to /opt/Mycodo..." "${THIS_MYCODO_DIRECTORY}"
   if ! mv "${THIS_MYCODO_DIRECTORY}" /opt/Mycodo ; then
     printf "Failed: Error while trying to move new Mycodo install from %s to /opt/Mycodo.\n" "${THIS_MYCODO_DIRECTORY}"

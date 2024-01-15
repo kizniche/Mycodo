@@ -5,8 +5,8 @@ After=network.target
 [Service]
 User=root
 Group=mycodo
-WorkingDirectory=/var/mycodo-root/mycodo
-ExecStart=/var/mycodo-root/env/bin/python -m gunicorn \
+WorkingDirectory=/opt/Mycodo/mycodo
+ExecStart=/opt/Mycodo/env/bin/python -m gunicorn \
 --workers 1 \
 --worker-class gthread \
 --threads 2 \

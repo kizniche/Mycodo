@@ -61,7 +61,7 @@ int main(int argc, char *argv[]) {
       sprintf(cmd, "service mycodo stop");
       system(cmd);
     } else if (strcmp(argv[1], "delete_upload_dir") == 0) {
-      sprintf(cmd, "rm -rf /var/mycodo-root/upload");
+      sprintf(cmd, "rm -rf /opt/Mycodo/upload");
       system(cmd);
     } else if (strcmp(argv[1], "frontend_reload") == 0) {
       sprintf(cmd, "service mycodoflask reload");

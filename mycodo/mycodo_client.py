@@ -1,4 +1,4 @@
-#!/var/mycodo-root/env/bin/python
+#!/opt/Mycodo/env/bin/python
 # -*- coding: utf-8 -*-
 #
 #  mycodo_client.py - Client to communicate with the Mycodo daemon.

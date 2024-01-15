@@ -8,9 +8,9 @@ StartLimitBurst=5
 Restart=on-failure
 RestartSec=20s
 TimeoutSec=0
-ExecStart=/var/mycodo-root/env/bin/python /var/mycodo-root/mycodo/mycodo_daemon.py
-ExecStop=/var/mycodo-root/env/bin/python /var/mycodo-root/mycodo/mycodo_client.py -t
-ExecReload=/var/mycodo-root/env/bin/python /var/mycodo-root/mycodo/mycodo_client.py -t && /var/mycodo-root/env/bin/python /var/mycodo-root/mycodo/mycodo_daemon.py
+ExecStart=/opt/Mycodo/env/bin/python /opt/Mycodo/mycodo/mycodo_daemon.py
+ExecStop=/opt/Mycodo/env/bin/python /opt/Mycodo/mycodo/mycodo_client.py -t
+ExecReload=/opt/Mycodo/env/bin/python /opt/Mycodo/mycodo/mycodo_client.py -t && /opt/Mycodo/env/bin/python /opt/Mycodo/mycodo/mycodo_daemon.py
 
 [Install]
 WantedBy=multi-user.target

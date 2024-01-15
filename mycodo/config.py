@@ -14,7 +14,7 @@ sys.path.append(os.path.abspath(os.path.dirname(__file__)))
 from config_translations import TRANSLATIONS as T
 
 MYCODO_VERSION = '8.15.13'
-ALEMBIC_VERSION = 'c7942284b74e'
+ALEMBIC_VERSION = '4c77262f15ea'
 
 # FORCE UPGRADE MASTER
 # Set True to enable upgrading to the master branch of the Mycodo repository.
@@ -224,12 +224,12 @@ CAMERA_INFO = {
 
 METHOD_DEP_BASE = [
     ('bash-commands',
-     ['/var/mycodo-root/mycodo/mycodo_flask/static/js/user_js/highcharts-9.1.2.js'],
+     ['/opt/Mycodo/mycodo/mycodo_flask/static/js/user_js/highcharts-9.1.2.js'],
      [
         'wget --no-clobber https://code.highcharts.com/zips/Highcharts-9.1.2.zip',
         'unzip Highcharts-9.1.2.zip -d Highcharts-9.1.2',
-        'cp -rf Highcharts-9.1.2/code/highcharts.js /var/mycodo-root/mycodo/mycodo_flask/static/js/user_js/highcharts-9.1.2.js',
-        'cp -rf Highcharts-9.1.2/code/highcharts.js.map /var/mycodo-root/mycodo/mycodo_flask/static/js/user_js/highcharts.js.map',
+        'cp -rf Highcharts-9.1.2/code/highcharts.js /opt/Mycodo/mycodo/mycodo_flask/static/js/user_js/highcharts-9.1.2.js',
+        'cp -rf Highcharts-9.1.2/code/highcharts.js.map /opt/Mycodo/mycodo/mycodo_flask/static/js/user_js/highcharts.js.map',
         'rm -rf Highcharts-9.1.2'
      ])
 ]
@@ -339,23 +339,23 @@ DEPENDENCIES_GENERAL = {
         'dependencies_module': [
             ('bash-commands',
              [
-                 '/var/mycodo-root/mycodo/mycodo_flask/static/js/user_js/highstock-9.1.2.js',
-                 '/var/mycodo-root/mycodo/mycodo_flask/static/js/user_js/highcharts-more-9.1.2.js',
-                 '/var/mycodo-root/mycodo/mycodo_flask/static/js/user_js/data-9.1.2.js',
-                 '/var/mycodo-root/mycodo/mycodo_flask/static/js/user_js/exporting-9.1.2.js',
-                 '/var/mycodo-root/mycodo/mycodo_flask/static/js/user_js/export-data-9.1.2.js',
-                 '/var/mycodo-root/mycodo/mycodo_flask/static/js/user_js/offline-exporting-9.1.2.js'
+                 '/opt/Mycodo/mycodo/mycodo_flask/static/js/user_js/highstock-9.1.2.js',
+                 '/opt/Mycodo/mycodo/mycodo_flask/static/js/user_js/highcharts-more-9.1.2.js',
+                 '/opt/Mycodo/mycodo/mycodo_flask/static/js/user_js/data-9.1.2.js',
+                 '/opt/Mycodo/mycodo/mycodo_flask/static/js/user_js/exporting-9.1.2.js',
+                 '/opt/Mycodo/mycodo/mycodo_flask/static/js/user_js/export-data-9.1.2.js',
+                 '/opt/Mycodo/mycodo/mycodo_flask/static/js/user_js/offline-exporting-9.1.2.js'
              ],
              [
                  'wget --no-clobber https://code.highcharts.com/zips/Highcharts-Stock-9.1.2.zip',
                  'unzip Highcharts-Stock-9.1.2.zip -d Highcharts-Stock-9.1.2',
-                 'cp -rf Highcharts-Stock-9.1.2/code/highstock.js /var/mycodo-root/mycodo/mycodo_flask/static/js/user_js/highstock-9.1.2.js',
-                 'cp -rf Highcharts-Stock-9.1.2/code/highstock.js.map /var/mycodo-root/mycodo/mycodo_flask/static/js/user_js/highstock.js.map',
-                 'cp -rf Highcharts-Stock-9.1.2/code/highcharts-more.js /var/mycodo-root/mycodo/mycodo_flask/static/js/user_js/highcharts-more-9.1.2.js',
-                 'cp -rf Highcharts-Stock-9.1.2/code/highcharts-more.js.map /var/mycodo-root/mycodo/mycodo_flask/static/js/user_js/highcharts-more.js.map',
-                 'cp -rf Highcharts-Stock-9.1.2/code/modules/data.js /var/mycodo-root/mycodo/mycodo_flask/static/js/user_js/data-9.1.2.js',
-                 'cp -rf Highcharts-Stock-9.1.2/code/modules/data.js.map /var/mycodo-root/mycodo/mycodo_flask/static/js/user_js/data.js.map',
-                 'cp -rf Highcharts-Stock-9.1.2/code/modules/exporting.js /var/mycodo-root/mycodo/mycodo_flask/static/js/user_js/exporting-9.1.2.js',
+                 'cp -rf Highcharts-Stock-9.1.2/code/highstock.js /opt/Mycodo/mycodo/mycodo_flask/static/js/user_js/highstock-9.1.2.js',
+                 'cp -rf Highcharts-Stock-9.1.2/code/highstock.js.map /opt/Mycodo/mycodo/mycodo_flask/static/js/user_js/highstock.js.map',
+                 'cp -rf Highcharts-Stock-9.1.2/code/highcharts-more.js /opt/Mycodo/mycodo/mycodo_flask/static/js/user_js/highcharts-more-9.1.2.js',
+                 'cp -rf Highcharts-Stock-9.1.2/code/highcharts-more.js.map /opt/Mycodo/mycodo/mycodo_flask/static/js/user_js/highcharts-more.js.map',
+                 'cp -rf Highcharts-Stock-9.1.2/code/modules/data.js /opt/Mycodo/mycodo/mycodo_flask/static/js/user_js/data-9.1.2.js',
+                 'cp -rf Highcharts-Stock-9.1.2/code/modules/data.js.map /opt/Mycodo/mycodo/mycodo_flask/static/js/user_js/data.js.map',
+                 'cp -rf Highcharts-Stock-9.1.2/code/modules/exporting.js /opt/Mycodo/mycodo/mycodo_flask/static/js/user_js/exporting-9.1.2.js',
                  'cp -rf Highcharts-Stock-9.1.2/code/modules/exporting.js.map /var/mycodo-root/mycodo/mycodo_flask/static/js/user_js/exporting.js.map',
                  'cp -rf Highcharts-Stock-9.1.2/code/modules/export-data.js /var/mycodo-root/mycodo/mycodo_flask/static/js/user_js/export-data-9.1.2.js',
                  'cp -rf Highcharts-Stock-9.1.2/code/modules/export-data.js.map /var/mycodo-root/mycodo/mycodo_flask/static/js/user_js/export-data.js.map',

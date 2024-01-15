@@ -49,7 +49,7 @@ def save_conditional_code(
     try:
         class_code = """import os
 import sys
-sys.path.append(os.path.abspath('/var/mycodo-root'))
+sys.path.append(os.path.abspath('/opt/Mycodo'))
 from mycodo.controllers.base_conditional import AbstractConditional
 from mycodo.mycodo_client import DaemonControl
 control = DaemonControl(pyro_timeout={timeout})
@@ -123,9 +123,9 @@ class ConditionalRun(AbstractConditional):
                 line=each_line)
 
         if test:
-            cmd_test = 'mkdir -p /var/mycodo-root/.pylint.d && ' \
-                       'export PYTHONPATH=$PYTHONPATH:/var/mycodo-root && ' \
-                       'export PYLINTHOME=/var/mycodo-root/.pylint.d && ' \
+            cmd_test = 'mkdir -p /opt/Mycodo/.pylint.d && ' \
+                       'export PYTHONPATH=$PYTHONPATH:/opt/Mycodo && ' \
+                       'export PYLINTHOME=/opt/Mycodo/.pylint.d && ' \
                        '{dir}/env/bin/python -m pylint -d I,W0621,C0103,C0111,C0301,C0327,C0410,C0413,R0912,R0914,R0915 {path}'.format(
                            dir=INSTALL_DIRECTORY, path=file_run)
             cmd_out, cmd_err, cmd_status = cmd_output(cmd_test, user='root')
