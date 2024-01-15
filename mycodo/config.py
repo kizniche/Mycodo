@@ -356,11 +356,11 @@ DEPENDENCIES_GENERAL = {
                  'cp -rf Highcharts-Stock-9.1.2/code/modules/data.js /opt/Mycodo/mycodo/mycodo_flask/static/js/user_js/data-9.1.2.js',
                  'cp -rf Highcharts-Stock-9.1.2/code/modules/data.js.map /opt/Mycodo/mycodo/mycodo_flask/static/js/user_js/data.js.map',
                  'cp -rf Highcharts-Stock-9.1.2/code/modules/exporting.js /opt/Mycodo/mycodo/mycodo_flask/static/js/user_js/exporting-9.1.2.js',
-                 'cp -rf Highcharts-Stock-9.1.2/code/modules/exporting.js.map /var/mycodo-root/mycodo/mycodo_flask/static/js/user_js/exporting.js.map',
-                 'cp -rf Highcharts-Stock-9.1.2/code/modules/export-data.js /var/mycodo-root/mycodo/mycodo_flask/static/js/user_js/export-data-9.1.2.js',
-                 'cp -rf Highcharts-Stock-9.1.2/code/modules/export-data.js.map /var/mycodo-root/mycodo/mycodo_flask/static/js/user_js/export-data.js.map',
-                 'cp -rf Highcharts-Stock-9.1.2/code/modules/offline-exporting.js /var/mycodo-root/mycodo/mycodo_flask/static/js/user_js/offline-exporting-9.1.2.js',
-                 'cp -rf Highcharts-Stock-9.1.2/code/modules/offline-exporting.js.map /var/mycodo-root/mycodo/mycodo_flask/static/js/user_js/offline-exporting.js.map',
+                 'cp -rf Highcharts-Stock-9.1.2/code/modules/exporting.js.map /opt/Mycodo/mycodo/mycodo_flask/static/js/user_js/exporting.js.map',
+                 'cp -rf Highcharts-Stock-9.1.2/code/modules/export-data.js /opt/Mycodo/mycodo/mycodo_flask/static/js/user_js/export-data-9.1.2.js',
+                 'cp -rf Highcharts-Stock-9.1.2/code/modules/export-data.js.map /opt/Mycodo/mycodo/mycodo_flask/static/js/user_js/export-data.js.map',
+                 'cp -rf Highcharts-Stock-9.1.2/code/modules/offline-exporting.js /opt/Mycodo/mycodo/mycodo_flask/static/js/user_js/offline-exporting-9.1.2.js',
+                 'cp -rf Highcharts-Stock-9.1.2/code/modules/offline-exporting.js.map /opt/Mycodo/mycodo/mycodo_flask/static/js/user_js/offline-exporting.js.map',
                  'rm -rf Highcharts-Stock-9.1.2'
              ])
         ]

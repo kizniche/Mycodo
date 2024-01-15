@@ -4,7 +4,7 @@ This release updates several python packages that require Python >= 3.8. You can
 
 This release changes the Desktop grid width from 20 to 24, enabling the use of 3 column layouts that are evenly-spaced. You will need to resize/rearrange Dashboard Widgets after this update to correct for the new width. The update of Gridstack to 10.0.1 also now allows the ability to drag Desktop widgets on mobile devices. If you don't like this behavior, you should lock the desktop from the Dashboard Configuration menu to prevent widgets from being dragged/rearranged.
 
-This release changes the install directory from ~/Mycodo to /opt/Mycodo. This should occur automatically during the upgrade.
+This release changes the install directory from ~/Mycodo to /opt/Mycodo. This necessitates deleting and regenerating the Python virtual environment. If you have any custom changes to the Mycodo venv, you will need to make those changes again after the upgrade. As a result of moving the install directory, following the upgrade, you will need to either run "sudo service mycodoflask restart" in a terminal or reboot your system for the web interface to become accessible again.
 
 ### Bugfixes
 

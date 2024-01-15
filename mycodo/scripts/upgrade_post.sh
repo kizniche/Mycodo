@@ -20,6 +20,7 @@ rm -f "${INSTALL_DIRECTORY}"/statistics.id
 
 # Delete /env if Mycodo symlink target isn't /opt/Mycodo
 if [ "$(readlink /var/mycodo-root)" != "/opt/Mycodo" ] ; then
+  printf "\n#### Deleting and regenerating virtual environment ####\n\n"
   rm -rf "${INSTALL_DIRECTORY}"/env
 fi
 

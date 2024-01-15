@@ -604,6 +604,7 @@ case "${1:-''}" in
 
         find "${MYCODO_PATH}" -type d -exec chmod u+wx,g+wx {} +
         find "${MYCODO_PATH}" -type f -exec chmod u+w,g+w,o+r {} +
+        chmod 770 /opt/Mycodo  # Exclude other users from viewing files
 
         chown root:mycodo "${MYCODO_PATH}"/mycodo/scripts/mycodo_wrapper
         chmod 4770 "${MYCODO_PATH}"/mycodo/scripts/mycodo_wrapper
