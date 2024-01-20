@@ -2,22 +2,43 @@ version: "3.7"
 
 services:
 
-  mycodo_influxdb:
-    container_name: mycodo_influxdb
-    build:
-      context: ./
-      dockerfile: docker/influxdb/Dockerfile
-    env_file:
-      - 'docker/influxdb/env.influxdb'
-    volumes:
-      - mycodo_influxdb:/var/lib/influxdb
+## Deprecated untill I read the prev config.
 
-  mycodo_nginx:
-    container_name: mycodo_nginx
+#  mycodo_influxdb:
+#    container_name: mycodo_influxdb
+#    build:
+#      context: ./
+#      dockerfile: docker/influxdb/Dockerfile
+#    env_file:
+#      - 'docker/influxdb/env.influxdb'
+#    volumes:
+#      - mycodo_influxdb:/var/lib/influxdb
+#    ports:
+#      - 8086:8086
+
+## InfluxDBv2 setup
+  mycodoinfluxdb:
+    ports:
+      - 8086:8086
+    volumes:
+      - mycodo_influxdb:/var/lib/influxdb2
+    image: influxdb:latest
+    environment:
+      - DOCKER_INFLUXDB_INIT_MODE=setup
+      - DOCKER_INFLUXDB_INIT_USERNAME=mycodo
+      - DOCKER_INFLUXDB_INIT_PASSWORD=mmdu77sj3nIoiajjs
+      - DOCKER_INFLUXDB_INIT_ORG=mycodo
+      - DOCKER_INFLUXDB_INIT_BUCKET=mycodo_db
+
+  mycodonginx:
+#    labels:
+#      - kompose.service.group=sidecar
+    container_name: mycodonginx
     restart: always
-    build:
-      context: ./
-      dockerfile: docker/nginx/Dockerfile
+    image: nargetdev/mycodonginx:c0.0.0-v8.15.1
+#    build:
+#      context: ./
+#      dockerfile: docker/nginx/Dockerfile
     volumes:
       - mycodo:/usr/local/mycodo
       - mycodo_log:/var/log/mycodo
@@ -26,11 +47,16 @@ services:
       - 80:80
       - 443:443
     depends_on:
-      - mycodo_flask
+      - mycodoflask
 
-  mycodo_daemon:
-    container_name: mycodo_daemon
-    image: app
+  mycododaemon:
+    image: nargetdev/mycodoapp:c0.0.2-v8.15.1
+    ports:
+      - "9080"
+#    labels:
+#      - kompose.service.group=sidecar
+    container_name: mycododaemon
+#    image: nargetdev/mycodoflask:c0.0.0-v8.15.1
     restart: always
     environment:
       - TZ=America/New_York  # See https://en.wikipedia.org/wiki/List_of_tz_database_time_zones for valid time zones
@@ -47,22 +73,26 @@ services:
       - mycodo_custom_user_scripts:/home/mycodo/mycodo/user_scripts
       - mycodo_log:/var/log/mycodo
       - mycodo_ssl_certs:/home/mycodo/mycodo/mycodo_flask/ssl_certs
-      - /dev:/dev
-      - /sys:/sys
-      - /opt:/opt
+#      - /dev:/dev
+      - mycodo_sys:/sys
+      - mycodo_opt:/opt
     privileged: true
-    command: bash -c "wget --quiet --no-check-certificate -p http://mycodo_nginx/ -O /dev/null && 
+    command: bash -c "wget --quiet --no-check-certificate -p http://mycodonginx/ -O /dev/null && 
                       PYTHONPATH=/home/mycodo /home/mycodo/env/bin/python mycodo_daemon.py"
     depends_on:
-      - mycodo_flask
+      - mycodoflask
 
-  mycodo_flask:
-    container_name: mycodo_flask
-    image: app
-    hostname: Mycodo  # Change to your desired hostname
-    build:
-      context: ./
-      dockerfile: docker/Dockerfile
+  mycodoflask:
+    image: nargetdev/mycodoapp:c0.0.2-v8.15.1
+    ports:
+      - "9080"
+#    labels:
+#      - kompose.service.group=sidecar
+    container_name: mycodoflask
+    hostname: mycodohost  # Change to your desired hostname
+#    build:
+#      context: ./
+#      dockerfile: docker/Dockerfile
     restart: always
     environment:
       - TZ=America/New_York  # See https://en.wikipedia.org/wiki/List_of_tz_database_time_zones for valid time zones
@@ -82,12 +112,12 @@ services:
       - mycodo_log:/var/log/mycodo
       - mycodo_ssl_certs:/home/mycodo/mycodo/mycodo_flask/ssl_certs
       - mycodo_influxdb:/var/lib/influxdb
-      - /dev:/dev
+#      - /dev:/dev
       - /var/run/docker.sock:/var/run/docker.sock:ro  # Permits container to restart itself
     privileged: true
     command: /home/mycodo/env/bin/python -m gunicorn --workers 1 --bind unix:/usr/local/mycodo/mycodoflask.sock start_flask_ui:app
-    depends_on:
-      - mycodo_influxdb
+#    depends_on:
+#      - mycodoinfluxdb
 
 # Uncomment the following blocks and rebuild to enable Grafana and/or Telegraf
 
@@ -128,3 +158,5 @@ volumes:
   mycodo_log:
   mycodo_influxdb:
   mycodo_grafana:
+  mycodo_opt:
+  mycodo_sys:

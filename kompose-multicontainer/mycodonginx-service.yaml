@@ -1,0 +1,23 @@
+apiVersion: v1
+kind: Service
+metadata:
+  annotations:
+    kompose.cmd: kompose convert --service-group-mode=label -o kompose-multicontainer
+    kompose.service.group: sidecar
+    kompose.version: 1.26.0 (40646f47)
+  creationTimestamp: null
+  labels:
+    io.kompose.service: sidecar
+  name: mycodonginx
+spec:
+  ports:
+    - name: "80"
+      port: 80
+      targetPort: 80
+    - name: "443"
+      port: 443
+      targetPort: 443
+  selector:
+    io.kompose.service: sidecar
+status:
+  loadBalancer: {}

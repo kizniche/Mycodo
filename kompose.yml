@@ -1,0 +1,684 @@
+apiVersion: v1
+items:
+  - apiVersion: v1
+    kind: Service
+    metadata:
+      annotations:
+        kompose.cmd: kompose convert -o kompose.yml
+        kompose.version: 1.26.0 (40646f47)
+      creationTimestamp: null
+      labels:
+        io.kompose.service: mycodoinfluxdb
+      name: mycodoinfluxdb
+    spec:
+      ports:
+        - name: "8086"
+          port: 8086
+          targetPort: 8086
+      selector:
+        io.kompose.service: mycodoinfluxdb
+    status:
+      loadBalancer: {}
+  - apiVersion: v1
+    kind: Service
+    metadata:
+      annotations:
+        kompose.cmd: kompose convert -o kompose.yml
+        kompose.version: 1.26.0 (40646f47)
+      creationTimestamp: null
+      labels:
+        io.kompose.service: mycodonginx
+      name: mycodonginx
+    spec:
+      ports:
+        - name: "80"
+          port: 80
+          targetPort: 80
+        - name: "443"
+          port: 443
+          targetPort: 443
+      selector:
+        io.kompose.service: mycodonginx
+    status:
+      loadBalancer: {}
+  - apiVersion: apps/v1
+    kind: Deployment
+    metadata:
+      annotations:
+        kompose.cmd: kompose convert -o kompose.yml
+        kompose.version: 1.26.0 (40646f47)
+      creationTimestamp: null
+      labels:
+        io.kompose.service: mycododaemon
+      name: mycododaemon
+    spec:
+      replicas: 1
+      selector:
+        matchLabels:
+          io.kompose.service: mycododaemon
+      strategy:
+        type: Recreate
+      template:
+        metadata:
+          annotations:
+            kompose.cmd: kompose convert -o kompose.yml
+            kompose.version: 1.26.0 (40646f47)
+          creationTimestamp: null
+          labels:
+            io.kompose.service: mycododaemon
+        spec:
+          containers:
+            - args:
+                - bash
+                - -c
+                - wget --quiet --no-check-certificate -p http://mycodonginx/ -O /dev/null && PYTHONPATH=/home/mycodo /home/mycodo/env/bin/python mycodo_daemon.py
+              env:
+                - name: TZ
+                  value: America/New_York
+              image: nargetdev/mycodoapp:c0.0.2-v8.15.1
+              name: mycododaemon
+              resources: {}
+              securityContext:
+                privileged: true
+              volumeMounts:
+                - mountPath: /usr/local/mycodo
+                  name: mycodo
+                - mountPath: /home/mycodo/env
+                  name: mycodo-env
+                - mountPath: /home/mycodo/databases
+                  name: mycodo-databases
+                - mountPath: /home/mycodo/cameras
+                  name: mycodo-cameras
+                - mountPath: /home/mycodo/mycodo/functions/custom_functions
+                  name: mycodo-custom-functions
+                - mountPath: /home/mycodo/mycodo/actions/custom_actions
+                  name: mycodo-custom-actions
+                - mountPath: /home/mycodo/mycodo/inputs/custom_inputs
+                  name: mycodo-custom-inputs
+                - mountPath: /home/mycodo/mycodo/outputs/custom_outputs
+                  name: mycodo-custom-outputs
+                - mountPath: /home/mycodo/mycodo/widgets/custom_widgets
+                  name: mycodo-custom-widgets
+                - mountPath: /home/mycodo/mycodo/user_scripts
+                  name: mycodo-custom-user-scripts
+                - mountPath: /var/log/mycodo
+                  name: mycodo-log
+                - mountPath: /home/mycodo/mycodo/mycodo_flask/ssl_certs
+                  name: mycodo-ssl-certs
+                - mountPath: /dev
+                  name: mycododaemon-claim12
+                - mountPath: /sys
+                  name: mycododaemon-claim13
+                - mountPath: /opt
+                  name: mycododaemon-claim14
+          restartPolicy: Always
+          volumes:
+            - name: mycodo
+              persistentVolumeClaim:
+                claimName: mycodo
+            - name: mycodo-env
+              persistentVolumeClaim:
+                claimName: mycodo-env
+            - name: mycodo-databases
+              persistentVolumeClaim:
+                claimName: mycodo-databases
+            - name: mycodo-cameras
+              persistentVolumeClaim:
+                claimName: mycodo-cameras
+            - name: mycodo-custom-functions
+              persistentVolumeClaim:
+                claimName: mycodo-custom-functions
+            - name: mycodo-custom-actions
+              persistentVolumeClaim:
+                claimName: mycodo-custom-actions
+            - name: mycodo-custom-inputs
+              persistentVolumeClaim:
+                claimName: mycodo-custom-inputs
+            - name: mycodo-custom-outputs
+              persistentVolumeClaim:
+                claimName: mycodo-custom-outputs
+            - name: mycodo-custom-widgets
+              persistentVolumeClaim:
+                claimName: mycodo-custom-widgets
+            - name: mycodo-custom-user-scripts
+              persistentVolumeClaim:
+                claimName: mycodo-custom-user-scripts
+            - name: mycodo-log
+              persistentVolumeClaim:
+                claimName: mycodo-log
+            - name: mycodo-ssl-certs
+              persistentVolumeClaim:
+                claimName: mycodo-ssl-certs
+            - name: mycododaemon-claim12
+              persistentVolumeClaim:
+                claimName: mycododaemon-claim12
+            - name: mycododaemon-claim13
+              persistentVolumeClaim:
+                claimName: mycododaemon-claim13
+            - name: mycododaemon-claim14
+              persistentVolumeClaim:
+                claimName: mycododaemon-claim14
+    status: {}
+  - apiVersion: v1
+    kind: PersistentVolumeClaim
+    metadata:
+      creationTimestamp: null
+      labels:
+        io.kompose.service: mycodo
+      name: mycodo
+    spec:
+      accessModes:
+        - ReadWriteOnce
+      resources:
+        requests:
+          storage: 100Mi
+    status: {}
+  - apiVersion: v1
+    kind: PersistentVolumeClaim
+    metadata:
+      creationTimestamp: null
+      labels:
+        io.kompose.service: mycodo-env
+      name: mycodo-env
+    spec:
+      accessModes:
+        - ReadWriteOnce
+      resources:
+        requests:
+          storage: 100Mi
+    status: {}
+  - apiVersion: v1
+    kind: PersistentVolumeClaim
+    metadata:
+      creationTimestamp: null
+      labels:
+        io.kompose.service: mycodo-databases
+      name: mycodo-databases
+    spec:
+      accessModes:
+        - ReadWriteOnce
+      resources:
+        requests:
+          storage: 100Mi
+    status: {}
+  - apiVersion: v1
+    kind: PersistentVolumeClaim
+    metadata:
+      creationTimestamp: null
+      labels:
+        io.kompose.service: mycodo-cameras
+      name: mycodo-cameras
+    spec:
+      accessModes:
+        - ReadWriteOnce
+      resources:
+        requests:
+          storage: 100Mi
+    status: {}
+  - apiVersion: v1
+    kind: PersistentVolumeClaim
+    metadata:
+      creationTimestamp: null
+      labels:
+        io.kompose.service: mycodo-custom-functions
+      name: mycodo-custom-functions
+    spec:
+      accessModes:
+        - ReadWriteOnce
+      resources:
+        requests:
+          storage: 100Mi
+    status: {}
+  - apiVersion: v1
+    kind: PersistentVolumeClaim
+    metadata:
+      creationTimestamp: null
+      labels:
+        io.kompose.service: mycodo-custom-actions
+      name: mycodo-custom-actions
+    spec:
+      accessModes:
+        - ReadWriteOnce
+      resources:
+        requests:
+          storage: 100Mi
+    status: {}
+  - apiVersion: v1
+    kind: PersistentVolumeClaim
+    metadata:
+      creationTimestamp: null
+      labels:
+        io.kompose.service: mycodo-custom-inputs
+      name: mycodo-custom-inputs
+    spec:
+      accessModes:
+        - ReadWriteOnce
+      resources:
+        requests:
+          storage: 100Mi
+    status: {}
+  - apiVersion: v1
+    kind: PersistentVolumeClaim
+    metadata:
+      creationTimestamp: null
+      labels:
+        io.kompose.service: mycodo-custom-outputs
+      name: mycodo-custom-outputs
+    spec:
+      accessModes:
+        - ReadWriteOnce
+      resources:
+        requests:
+          storage: 100Mi
+    status: {}
+  - apiVersion: v1
+    kind: PersistentVolumeClaim
+    metadata:
+      creationTimestamp: null
+      labels:
+        io.kompose.service: mycodo-custom-widgets
+      name: mycodo-custom-widgets
+    spec:
+      accessModes:
+        - ReadWriteOnce
+      resources:
+        requests:
+          storage: 100Mi
+    status: {}
+  - apiVersion: v1
+    kind: PersistentVolumeClaim
+    metadata:
+      creationTimestamp: null
+      labels:
+        io.kompose.service: mycodo-custom-user-scripts
+      name: mycodo-custom-user-scripts
+    spec:
+      accessModes:
+        - ReadWriteOnce
+      resources:
+        requests:
+          storage: 100Mi
+    status: {}
+  - apiVersion: v1
+    kind: PersistentVolumeClaim
+    metadata:
+      creationTimestamp: null
+      labels:
+        io.kompose.service: mycodo-log
+      name: mycodo-log
+    spec:
+      accessModes:
+        - ReadWriteOnce
+      resources:
+        requests:
+          storage: 100Mi
+    status: {}
+  - apiVersion: v1
+    kind: PersistentVolumeClaim
+    metadata:
+      creationTimestamp: null
+      labels:
+        io.kompose.service: mycodo-ssl-certs
+      name: mycodo-ssl-certs
+    spec:
+      accessModes:
+        - ReadWriteOnce
+      resources:
+        requests:
+          storage: 100Mi
+    status: {}
+  - apiVersion: v1
+    kind: PersistentVolumeClaim
+    metadata:
+      creationTimestamp: null
+      labels:
+        io.kompose.service: mycododaemon-claim12
+      name: mycododaemon-claim12
+    spec:
+      accessModes:
+        - ReadWriteOnce
+      resources:
+        requests:
+          storage: 100Mi
+    status: {}
+  - apiVersion: v1
+    kind: PersistentVolumeClaim
+    metadata:
+      creationTimestamp: null
+      labels:
+        io.kompose.service: mycododaemon-claim13
+      name: mycododaemon-claim13
+    spec:
+      accessModes:
+        - ReadWriteOnce
+      resources:
+        requests:
+          storage: 100Mi
+    status: {}
+  - apiVersion: v1
+    kind: PersistentVolumeClaim
+    metadata:
+      creationTimestamp: null
+      labels:
+        io.kompose.service: mycododaemon-claim14
+      name: mycododaemon-claim14
+    spec:
+      accessModes:
+        - ReadWriteOnce
+      resources:
+        requests:
+          storage: 100Mi
+    status: {}
+  - apiVersion: apps/v1
+    kind: Deployment
+    metadata:
+      annotations:
+        kompose.cmd: kompose convert -o kompose.yml
+        kompose.version: 1.26.0 (40646f47)
+      creationTimestamp: null
+      labels:
+        io.kompose.service: mycodoflask
+      name: mycodoflask
+    spec:
+      replicas: 1
+      selector:
+        matchLabels:
+          io.kompose.service: mycodoflask
+      strategy:
+        type: Recreate
+      template:
+        metadata:
+          annotations:
+            kompose.cmd: kompose convert -o kompose.yml
+            kompose.version: 1.26.0 (40646f47)
+          creationTimestamp: null
+          labels:
+            io.kompose.service: mycodoflask
+        spec:
+          containers:
+            - args:
+                - /home/mycodo/env/bin/python
+                - -m
+                - gunicorn
+                - --workers
+                - "1"
+                - --bind
+                - unix:/usr/local/mycodo/mycodoflask.sock
+                - start_flask_ui:app
+              env:
+                - name: TZ
+                  value: America/New_York
+              image: nargetdev/mycodoapp:c0.0.2-v8.15.1
+              name: mycodoflask
+              resources: {}
+              securityContext:
+                privileged: true
+              volumeMounts:
+                - mountPath: /usr/local/mycodo
+                  name: mycodo
+                - mountPath: /home/mycodo/env
+                  name: mycodo-env
+                - mountPath: /home/mycodo/databases
+                  name: mycodo-databases
+                - mountPath: /home/mycodo/cameras
+                  name: mycodo-cameras
+                - mountPath: /home/mycodo/mycodo/functions/custom_functions
+                  name: mycodo-custom-functions
+                - mountPath: /home/mycodo/mycodo/actions/custom_actions
+                  name: mycodo-custom-actions
+                - mountPath: /home/mycodo/mycodo/inputs/custom_inputs
+                  name: mycodo-custom-inputs
+                - mountPath: /home/mycodo/mycodo/outputs/custom_outputs
+                  name: mycodo-custom-outputs
+                - mountPath: /home/mycodo/mycodo/widgets/custom_widgets
+                  name: mycodo-custom-widgets
+                - mountPath: /home/mycodo/mycodo/user_scripts
+                  name: mycodo-custom-user-scripts
+                - mountPath: /home/mycodo/mycodo/mycodo_flask/static/css/user_css
+                  name: mycodo-custom-user-css
+                - mountPath: /home/mycodo/mycodo/mycodo_flask/static/js/user_js
+                  name: mycodo-custom-user-js
+                - mountPath: /var/log/mycodo
+                  name: mycodo-log
+                - mountPath: /home/mycodo/mycodo/mycodo_flask/ssl_certs
+                  name: mycodo-ssl-certs
+                - mountPath: /var/lib/influxdb
+                  name: mycodo-influxdb
+                - mountPath: /dev
+                  name: mycodoflask-claim15
+                - mountPath: /var/run/docker.sock
+                  name: mycodoflask-claim16
+                  readOnly: true
+          hostname: mycodohost
+          restartPolicy: Always
+          volumes:
+            - name: mycodo
+              persistentVolumeClaim:
+                claimName: mycodo
+            - name: mycodo-env
+              persistentVolumeClaim:
+                claimName: mycodo-env
+            - name: mycodo-databases
+              persistentVolumeClaim:
+                claimName: mycodo-databases
+            - name: mycodo-cameras
+              persistentVolumeClaim:
+                claimName: mycodo-cameras
+            - name: mycodo-custom-functions
+              persistentVolumeClaim:
+                claimName: mycodo-custom-functions
+            - name: mycodo-custom-actions
+              persistentVolumeClaim:
+                claimName: mycodo-custom-actions
+            - name: mycodo-custom-inputs
+              persistentVolumeClaim:
+                claimName: mycodo-custom-inputs
+            - name: mycodo-custom-outputs
+              persistentVolumeClaim:
+                claimName: mycodo-custom-outputs
+            - name: mycodo-custom-widgets
+              persistentVolumeClaim:
+                claimName: mycodo-custom-widgets
+            - name: mycodo-custom-user-scripts
+              persistentVolumeClaim:
+                claimName: mycodo-custom-user-scripts
+            - name: mycodo-custom-user-css
+              persistentVolumeClaim:
+                claimName: mycodo-custom-user-css
+            - name: mycodo-custom-user-js
+              persistentVolumeClaim:
+                claimName: mycodo-custom-user-js
+            - name: mycodo-log
+              persistentVolumeClaim:
+                claimName: mycodo-log
+            - name: mycodo-ssl-certs
+              persistentVolumeClaim:
+                claimName: mycodo-ssl-certs
+            - name: mycodo-influxdb
+              persistentVolumeClaim:
+                claimName: mycodo-influxdb
+            - name: mycodoflask-claim15
+              persistentVolumeClaim:
+                claimName: mycodoflask-claim15
+            - name: mycodoflask-claim16
+              persistentVolumeClaim:
+                claimName: mycodoflask-claim16
+                readOnly: true
+    status: {}
+  - apiVersion: v1
+    kind: PersistentVolumeClaim
+    metadata:
+      creationTimestamp: null
+      labels:
+        io.kompose.service: mycodo-custom-user-css
+      name: mycodo-custom-user-css
+    spec:
+      accessModes:
+        - ReadWriteOnce
+      resources:
+        requests:
+          storage: 100Mi
+    status: {}
+  - apiVersion: v1
+    kind: PersistentVolumeClaim
+    metadata:
+      creationTimestamp: null
+      labels:
+        io.kompose.service: mycodo-custom-user-js
+      name: mycodo-custom-user-js
+    spec:
+      accessModes:
+        - ReadWriteOnce
+      resources:
+        requests:
+          storage: 100Mi
+    status: {}
+  - apiVersion: v1
+    kind: PersistentVolumeClaim
+    metadata:
+      creationTimestamp: null
+      labels:
+        io.kompose.service: mycodo-influxdb
+      name: mycodo-influxdb
+    spec:
+      accessModes:
+        - ReadWriteOnce
+      resources:
+        requests:
+          storage: 100Mi
+    status: {}
+  - apiVersion: v1
+    kind: PersistentVolumeClaim
+    metadata:
+      creationTimestamp: null
+      labels:
+        io.kompose.service: mycodoflask-claim15
+      name: mycodoflask-claim15
+    spec:
+      accessModes:
+        - ReadWriteOnce
+      resources:
+        requests:
+          storage: 100Mi
+    status: {}
+  - apiVersion: v1
+    kind: PersistentVolumeClaim
+    metadata:
+      creationTimestamp: null
+      labels:
+        io.kompose.service: mycodoflask-claim16
+      name: mycodoflask-claim16
+    spec:
+      accessModes:
+        - ReadOnlyMany
+      resources:
+        requests:
+          storage: 100Mi
+    status: {}
+  - apiVersion: apps/v1
+    kind: Deployment
+    metadata:
+      annotations:
+        kompose.cmd: kompose convert -o kompose.yml
+        kompose.version: 1.26.0 (40646f47)
+      creationTimestamp: null
+      labels:
+        io.kompose.service: mycodoinfluxdb
+      name: mycodoinfluxdb
+    spec:
+      replicas: 1
+      selector:
+        matchLabels:
+          io.kompose.service: mycodoinfluxdb
+      strategy:
+        type: Recreate
+      template:
+        metadata:
+          annotations:
+            kompose.cmd: kompose convert -o kompose.yml
+            kompose.version: 1.26.0 (40646f47)
+          creationTimestamp: null
+          labels:
+            io.kompose.service: mycodoinfluxdb
+        spec:
+          containers:
+            - env:
+                - name: DOCKER_INFLUXDB_INIT_BUCKET
+                  value: mycodo_db
+                - name: DOCKER_INFLUXDB_INIT_MODE
+                  value: setup
+                - name: DOCKER_INFLUXDB_INIT_ORG
+                  value: mycodo
+                - name: DOCKER_INFLUXDB_INIT_PASSWORD
+                  value: mmdu77sj3nIoiajjs
+                - name: DOCKER_INFLUXDB_INIT_USERNAME
+                  value: mycodo
+              image: influxdb:latest
+              name: mycodoinfluxdb
+              ports:
+                - containerPort: 8086
+              resources: {}
+              volumeMounts:
+                - mountPath: /var/lib/influxdb2
+                  name: mycodo-influxdb
+          restartPolicy: Always
+          volumes:
+            - name: mycodo-influxdb
+              persistentVolumeClaim:
+                claimName: mycodo-influxdb
+    status: {}
+  - apiVersion: apps/v1
+    kind: Deployment
+    metadata:
+      annotations:
+        kompose.cmd: kompose convert -o kompose.yml
+        kompose.version: 1.26.0 (40646f47)
+      creationTimestamp: null
+      labels:
+        io.kompose.service: mycodonginx
+      name: mycodonginx
+    spec:
+      replicas: 1
+      selector:
+        matchLabels:
+          io.kompose.service: mycodonginx
+      strategy:
+        type: Recreate
+      template:
+        metadata:
+          annotations:
+            kompose.cmd: kompose convert -o kompose.yml
+            kompose.version: 1.26.0 (40646f47)
+          creationTimestamp: null
+          labels:
+            io.kompose.service: mycodonginx
+        spec:
+          containers:
+            - image: nargetdev/mycodonginx:c0.0.0-v8.15.1
+              name: mycodonginx
+              ports:
+                - containerPort: 80
+                - containerPort: 443
+              resources: {}
+              volumeMounts:
+                - mountPath: /usr/local/mycodo
+                  name: mycodo
+                - mountPath: /var/log/mycodo
+                  name: mycodo-log
+                - mountPath: /home/mycodo/mycodo/mycodo_flask/ssl_certs
+                  name: mycodo-ssl-certs
+          restartPolicy: Always
+          volumes:
+            - name: mycodo
+              persistentVolumeClaim:
+                claimName: mycodo
+            - name: mycodo-log
+              persistentVolumeClaim:
+                claimName: mycodo-log
+            - name: mycodo-ssl-certs
+              persistentVolumeClaim:
+                claimName: mycodo-ssl-certs
+    status: {}
+kind: List
+metadata: {}
+

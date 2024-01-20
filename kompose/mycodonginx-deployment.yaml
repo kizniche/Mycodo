@@ -1,0 +1,62 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  annotations:
+    kompose.cmd: kompose convert -o kompose
+    kompose.version: 1.26.0 (40646f47)
+  creationTimestamp: null
+  labels:
+    io.kompose.service: mycodonginx
+  name: mycodonginx
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      io.kompose.service: mycodonginx
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      annotations:
+        kompose.cmd: kompose convert -o kompose
+        kompose.version: 1.26.0 (40646f47)
+      creationTimestamp: null
+      labels:
+        io.kompose.service: mycodonginx
+    spec:
+      nodeName: lilgreen
+      containers:
+        - image: nargetdev/mycodonginx:c0.0.0-v8.15.1
+          name: mycodonginx
+          ports:
+            - containerPort: 80
+            - containerPort: 443
+          resources: {}
+          volumeMounts:
+            - mountPath: /usr/local/mycodo
+              name: mycodo
+            - mountPath: /var/log/mycodo
+              name: mycodo-log
+            - mountPath: /home/mycodo/mycodo/mycodo_flask/ssl_certs
+              name: mycodo-ssl-certs
+      restartPolicy: Always
+      volumes:
+        - name: mycodo
+          nfs:
+            server: 192.168.1.247
+            path: /volume2/SSD_500GB/mycodoPVs/mycodo
+#          persistentVolumeClaim:
+#            claimName: mycodo
+        - name: mycodo-log
+          nfs:
+            server: 192.168.1.247
+            path: /volume2/SSD_500GB/mycodoPVs/mycodo-log
+#          persistentVolumeClaim:
+#            claimName: mycodo-log
+        - name: mycodo-ssl-certs
+          nfs:
+            server: 192.168.1.247
+            path: /volume2/SSD_500GB/mycodoPVs/mycodo-ssl-certs
+#          persistentVolumeClaim:
+#            claimName: mycodo-ssl-certs
+status: {}

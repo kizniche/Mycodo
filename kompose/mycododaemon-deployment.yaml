@@ -1,0 +1,209 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  annotations:
+    kompose.cmd: kompose convert -o kompose
+    kompose.version: 1.26.0 (40646f47)
+  creationTimestamp: null
+  labels:
+    io.kompose.service: mycododaemon
+  name: mycododaemon
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      io.kompose.service: mycododaemon
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      annotations:
+        kompose.cmd: kompose convert -o kompose
+        kompose.version: 1.26.0 (40646f47)
+      creationTimestamp: null
+      labels:
+        io.kompose.service: mycododaemon
+    spec:
+      nodeName: lilgreen
+      initContainers:
+        - name: initmycodoapp
+          image: nargetdev/mycodoapp:c0.0.2-v8.15.1
+#          image: nargetdev/mycodoapp:8.15.1
+          args:
+            - /bin/bash
+            - -c
+            - >
+              set -x;
+
+              echo INITIALIZING CERTS VOLUME;
+              CONTAINER_DIR=/home/mycodo/mycodo/mycodo_flask/ssl_certs;
+              TARGET_DIR=/mnt/ssl_certs;
+              cp -rT $CONTAINER_DIR $TARGET_DIR;
+              ls -a $TARGET_DIR;
+
+              echo INITIALIZING DATABASES VOLUME;
+              CONTAINER_DIR=/home/mycodo/databases;
+              TARGET_DIR=/mnt/databases;
+              cp -rT $CONTAINER_DIR $TARGET_DIR;
+              ls -a $TARGET_DIR;
+
+              echo COPYING ENV;
+              CONTAINER_DIR=/home/mycodo/env;
+              TARGET_DIR=/mnt/env;
+              cp -rT $CONTAINER_DIR $TARGET_DIR;
+              ls -a $TARGET_DIR;
+
+              echo COPYING LOCAL;
+              CONTAINER_DIR=/usr/local/mycodo;
+              TARGET_DIR=/mnt/mycodo;
+              cp -rT $CONTAINER_DIR $TARGET_DIR;
+              ls -a $TARGET_DIR;
+
+              echo COPYING OPT;
+              CONTAINER_DIR=/opt;
+              TARGET_DIR=/mnt/opt;
+              cp -rT $CONTAINER_DIR $TARGET_DIR;
+              ls -a $TARGET_DIR;
+
+          volumeMounts:
+            - mountPath: /mnt/ssl_certs
+              name: mycodo-ssl-certs
+            - mountPath: /mnt/databases
+              name: mycodo-databases
+            - mountPath: /mnt/env
+              name: mycodo-env
+            - mountPath: /mnt/mycodo
+              name: mycodo
+            - mountPath: /mnt/opt
+              name: mycodo-opt
+      containers:
+        - args:
+            - bash
+            - -c
+            - wget --quiet --no-check-certificate -p http://mycodonginx/ -O /dev/null && PYTHONPATH=/home/mycodo /home/mycodo/env/bin/python mycodo_daemon.py
+          env:
+            - name: TZ
+              value: America/New_York
+          image: nargetdev/mycodoapp:c0.0.2-v8.15.1
+          name: mycododaemon
+          ports:
+            - containerPort: 9080
+          resources: {}
+          securityContext:
+            privileged: true
+          volumeMounts:
+            - mountPath: /usr/local/mycodo
+              name: mycodo
+            - mountPath: /home/mycodo/env
+              name: mycodo-env
+            - mountPath: /home/mycodo/databases
+              name: mycodo-databases
+            - mountPath: /home/mycodo/cameras
+              name: mycodo-cameras
+            - mountPath: /home/mycodo/mycodo/functions/custom_functions
+              name: mycodo-custom-functions
+            - mountPath: /home/mycodo/mycodo/actions/custom_actions
+              name: mycodo-custom-actions
+            - mountPath: /home/mycodo/mycodo/inputs/custom_inputs
+              name: mycodo-custom-inputs
+            - mountPath: /home/mycodo/mycodo/outputs/custom_outputs
+              name: mycodo-custom-outputs
+            - mountPath: /home/mycodo/mycodo/widgets/custom_widgets
+              name: mycodo-custom-widgets
+            - mountPath: /home/mycodo/mycodo/user_scripts
+              name: mycodo-custom-user-scripts
+            - mountPath: /var/log/mycodo
+              name: mycodo-log
+            - mountPath: /home/mycodo/mycodo/mycodo_flask/ssl_certs
+              name: mycodo-ssl-certs
+            - mountPath: /sys
+              name: mycodo-sys
+            - mountPath: /opt
+              name: mycodo-opt
+      restartPolicy: Always
+      volumes:
+        - name: mycodo
+#          persistentVolumeClaim:
+#            claimName: mycodo
+          nfs:
+            server: 192.168.1.247
+            path: /volume2/SSD_500GB/mycodoPVs/mycodo
+        - name: mycodo-env
+#          persistentVolumeClaim:
+#            claimName: mycodo-env
+          nfs:
+            server: 192.168.1.247
+            path: /volume2/SSD_500GB/mycodoPVs/mycodo-env
+        - name: mycodo-databases
+#          persistentVolumeClaim:
+#            claimName: mycodo-databases
+          nfs:
+            server: 192.168.1.247
+            path: /volume2/SSD_500GB/mycodoPVs/mycodo-databases
+        - name: mycodo-cameras
+          nfs:
+            server: 192.168.1.247
+            path: /volume2/SSD_500GB/mycodoPVs/mycodo-cameras
+#          persistentVolumeClaim:
+#            claimName: mycodo-cameras
+        - name: mycodo-custom-functions
+          nfs:
+            server: 192.168.1.247
+            path: /volume2/SSD_500GB/mycodoPVs/mycodo-custom-functions
+#          persistentVolumeClaim:
+#            claimName: mycodo-custom-functions
+        - name: mycodo-custom-actions
+          nfs:
+            server: 192.168.1.247
+            path: /volume2/SSD_500GB/mycodoPVs/mycodo-custom-actions
+#          persistentVolumeClaim:
+#            claimName: mycodo-custom-actions
+        - name: mycodo-custom-inputs
+          nfs:
+            server: 192.168.1.247
+            path: /volume2/SSD_500GB/mycodoPVs/mycodo-custom-inputs
+#          persistentVolumeClaim:
+#            claimName: mycodo-custom-inputs
+        - name: mycodo-custom-outputs
+          nfs:
+            server: 192.168.1.247
+            path: /volume2/SSD_500GB/mycodoPVs/mycodo-custom-outputs
+#          persistentVolumeClaim:
+#            claimName: mycodo-custom-outputs
+        - name: mycodo-custom-widgets
+          nfs:
+            server: 192.168.1.247
+            path: /volume2/SSD_500GB/mycodoPVs/mycodo-custom-widgets
+#          persistentVolumeClaim:
+#            claimName: mycodo-custom-widgets
+        - name: mycodo-custom-user-scripts
+          nfs:
+            server: 192.168.1.247
+            path: /volume2/SSD_500GB/mycodoPVs/mycodo-custom-user-scripts
+#          persistentVolumeClaim:
+#            claimName: mycodo-custom-user-scripts
+        - name: mycodo-log
+          nfs:
+            server: 192.168.1.247
+            path: /volume2/SSD_500GB/mycodoPVs/mycodo-custom-user-scripts
+#          persistentVolumeClaim:
+#            claimName: mycodo-log
+        - name: mycodo-ssl-certs
+          nfs:
+            server: 192.168.1.247
+            path: /volume2/SSD_500GB/mycodoPVs/mycodo-ssl-certs
+#          persistentVolumeClaim:
+#            claimName: mycodo-ssl-certs
+        - name: mycodo-sys
+          nfs:
+            server: 192.168.1.247
+            path: /volume2/SSD_500GB/mycodoPVs/mycodo-sys
+#          persistentVolumeClaim:
+#            claimName: mycodo-sys
+        - name: mycodo-opt
+          nfs:
+            server: 192.168.1.247
+            path: /volume2/SSD_500GB/mycodoPVs/mycodo-opt
+#          persistentVolumeClaim:
+#            claimName: mycodo-opt
+status: {}

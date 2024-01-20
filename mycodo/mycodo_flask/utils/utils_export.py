@@ -170,7 +170,7 @@ def thread_import_settings(tmp_folder):
         # Start Mycodo daemon (backend)
         append_to_log(IMPORT_LOG_FILE, f"\n[{datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')}] Restarting backend")
         if DOCKER_CONTAINER:
-            subprocess.Popen('docker start mycodo_daemon 2>&1', shell=True)
+            subprocess.Popen('docker start mycododaemon 2>&1', shell=True)
         else:
             cmd = f"{INSTALL_DIRECTORY}/mycodo/scripts/mycodo_wrapper daemon_restart | ts '[%Y-%m-%d %H:%M:%S]' >> {IMPORT_LOG_FILE} 2>&1"
             a, b, c = cmd_output(cmd, user="root")
@@ -285,7 +285,7 @@ def import_settings(form):
             append_to_log(IMPORT_LOG_FILE, f"\n[{datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')}] Stopping daemon and copying files")
             try:
                 if DOCKER_CONTAINER:
-                    subprocess.Popen('docker stop mycodo_daemon 2>&1', shell=True)
+                    subprocess.Popen('docker stop mycododaemon 2>&1', shell=True)
                 else:
                     # Stop Mycodo daemon (backend)
                     cmd = f"{INSTALL_DIRECTORY}/mycodo/scripts/mycodo_wrapper daemon_stop"
