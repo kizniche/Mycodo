@@ -454,7 +454,6 @@ case "${1:-''}" in
             fi
 
             printf "#### Influxdb server file location: ${INSTALL_ADDRESS}${INSTALL_FILE}\n"
-            printf "#### Influxdb client file location: ${INSTALL_ADDRESS}${CLIENT_FILE}\n"
 
             CURRENT_VERSION=$(apt-cache policy influxdb2 | grep 'Installed' | gawk '{print $2}')
 
@@ -473,13 +472,27 @@ case "${1:-''}" in
                 dpkg -i "${INSTALL_FILE}"
                 rm -rf "${INSTALL_FILE}"
 
+                service influxd restart
+            else
+                printf "Correct version of InfluxDB currently installed (v${CORRECT_VERSION}).\n"
+            fi
+
+            printf "#### Influxdb client file location: ${INSTALL_ADDRESS}${CLIENT_FILE}\n"
+
+            CURRENT_VERSION=$(apt-cache policy influxdb2-cli | grep 'Installed' | gawk '{print $2}')
+
+            if [[ "${CURRENT_VERSION}" != "${CORRECT_VERSION}" ]]; then
+                printf "#### Incorrect InfluxDB-Client version (v${CURRENT_VERSION}) installed. Should be v${CORRECT_VERSION}\n"
+
+                printf "#### Installing InfluxDB-Client v${CORRECT_VERSION}...\n"
+
                 wget --quiet "${INSTALL_ADDRESS}${CLIENT_FILE}"
                 dpkg -i "${CLIENT_FILE}"
                 rm -rf "${CLIENT_FILE}"
 
                 service influxd restart
             else
-                printf "Correct version of InfluxDB currently installed (v${CORRECT_VERSION}).\n"
+                printf "Correct version of InfluxDB-Client currently installed (v${CORRECT_VERSION}).\n"
             fi
         else
             printf "ERROR: Could not detect 64-bit architecture (x86_64/arm64) to install Influxdb 2.x (found ${UNAME_TYPE}/${MACHINE_TYPE}).\n"

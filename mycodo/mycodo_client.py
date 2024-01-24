@@ -128,6 +128,12 @@ class DaemonControl:
     def controller_deactivate(self, controller_id):
         return self.proxy().controller_deactivate(controller_id)
 
+    def controller_restart(self, controller_id):
+        msg = []
+        msg.append(self.proxy().controller_deactivate(controller_id))
+        msg.append(self.proxy().controller_activate(controller_id))
+        return msg
+
     def refresh_daemon_conditional_settings(self, unique_id):
         return self.proxy().refresh_daemon_conditional_settings(unique_id)
 

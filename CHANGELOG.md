@@ -9,11 +9,13 @@ This release changes the install directory from ~/Mycodo to /opt/Mycodo. This ne
 ### Bugfixes
 
  - Fix some Inputs potentially sending integers to influxdb when it should be float
+ - Fix influxdb client install if server is already installed
 
 ### Features
 
  - Add ability to switch displaying hostname with custom text
  - Add Step Line Series Type to Graph (Synchronous) Widget
+ - Add controller_restart as client endpoint
 
 ### Miscellaneous
 

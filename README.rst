@@ -147,15 +147,15 @@ Required:
 
 Recommended:
 
--  `Raspberry Pi <https://www.raspberrypi.org>`__ single-board computer (Zero, 1, 2, 3, 4, or 5, but 3 or above is recommended)
+-  `Raspberry Pi <https://www.raspberrypi.org>`__ single-board computer: Zero, 1, 2, 3, 4, or 5 (3 or above is recommended)
 -  `Raspberry Pi Operating System <https://www.raspberrypi.com/software/>`__ flashed to a micro SD card or SSD
 
-Mycodo has been tested to work with Raspberry Pi OS Lite and Desktop, both 32-bit and 64-bit.
+Mycodo has been tested to work with Raspberry Pi OS 12 (Bookworm release), Lite and Desktop, 32-bit and 64-bit.
 
 Install Command
 ~~~~~~~~~~~~~~~
 
-Once you have the Raspberry Pi booted, log in and run the following command in a terminal to initiate the Mycodo install:
+Once you have the Raspberry Pi booted, log in and run the following command in a terminal to initiate the Mycodo install to /opt/Mycodo:
 
 .. code:: bash
 
