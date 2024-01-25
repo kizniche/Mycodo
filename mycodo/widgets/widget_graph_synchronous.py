@@ -248,7 +248,7 @@ WIDGET_INFORMATION = {
         ("/past/<unique_id>/<measure_type>/<measurement_id>/<past_seconds>", "past", past_data, ["GET"]),
     ],
 
-    'widget_width': 20,
+    'widget_width': 24,
     'widget_height': 15,
 
     'custom_options': [
