@@ -92,9 +92,9 @@
   text-align: center;
 }
 
-.widget-title span {
-  padding: 0 0.5em;
-}
+/*.widget-title span {*/
+/*  padding: 0 0.5em;*/
+/*}*/
 
 .widget-settings {
   position: absolute;
