@@ -359,6 +359,24 @@ class DaemonController:
             return 1, message
 
 
+    def controller_restart(self, cont_id):
+        """
+        Restart a currently-active controller
+
+        :return: 0 for success, 1 for fail, with success or error message
+        :rtype: int, str
+
+        :param cont_id: Unique ID for controller
+        :type cont_id: str
+        """
+        status_deactivate, msg_deactivate = self.controller_deactivate(cont_id)
+        status_activate, msg_activate = self.controller_activate(cont_id)
+        if not status_deactivate and not status_activate:
+            return 0, f"Successfully restarted controller with ID {cont_id}"
+        else:
+            return 1, ", ".join([msg_deactivate, msg_activate])
+
+
     def controller_is_active(self, cont_id):
         """
         Checks if a controller is active
