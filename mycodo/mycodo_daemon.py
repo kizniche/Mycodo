@@ -1178,6 +1178,15 @@ class PyroServer(object):
             self.logger.exception(message)
             return 1, message
 
+    def controller_restart(self, cont_id):
+        """Restart a controller."""
+        try:
+            return self.mycodo.controller_restart(cont_id)
+        except Exception as except_msg:
+            message = f"Could not restart controller with ID {cont_id}: {except_msg}"
+            self.logger.exception(message)
+            return 1, message
+
     def controller_is_active(self, cont_id):
         """Checks if a controller is active."""
         return self.mycodo.controller_is_active(cont_id)
