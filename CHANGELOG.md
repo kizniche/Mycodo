@@ -22,6 +22,7 @@ This release changes the install directory from ~/Mycodo to /opt/Mycodo. This ne
  - Move install location from ~/Mycodo to /opt/Mycodo
  - Change Dashboard grid width from 20 to 24
  - Add endpoint option to RAM Input for when Mycodo is using a non-standard IP/port
+ - Add self.control to the Python 3 Code Action
  - Update Gridstack to 10.0.1
  - Update alembic to 1.13.1
  - Update bcrypt to 1.4.2 

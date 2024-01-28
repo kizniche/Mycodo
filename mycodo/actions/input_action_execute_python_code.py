@@ -29,6 +29,7 @@ class PythonActionRun:
     def __init__(self, logger, action_id):
         self.logger = logger
         self.action_id = action_id
+        self.control = control
 
     def python_code_run(self, dict_vars):
 """
