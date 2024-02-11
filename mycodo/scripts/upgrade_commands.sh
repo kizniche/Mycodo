@@ -215,7 +215,7 @@ case "${1:-''}" in
     'setup-virtualenv')
         printf "\n#### Checking Python 3 virtual environment\n"
         if [[ ! -e ${MYCODO_PATH}/env/bin/python ]]; then
-            printf "#### Creating virtual environment at "${MYCODO_PATH}"/env\n"
+            printf "#### Creating virtual environment at ${MYCODO_PATH}/env\n"
             rm -rf "${MYCODO_PATH}"/env
             python3 -m venv "${MYCODO_PATH}"/env
         fi

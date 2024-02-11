@@ -147,7 +147,7 @@ Required:
 
 Recommended:
 
--  `Raspberry Pi <https://www.raspberrypi.org>`__ single-board computer: Zero, 1, 2, 3, 4, or 5 (3 or above is recommended)
+-  `Raspberry Pi <https://www.raspberrypi.org>`__ single-board computer: 3, 4, or 5 (Zero, 1, and 2 are no longer recommended)
 -  `Raspberry Pi Operating System <https://www.raspberrypi.com/software/>`__ flashed to a micro SD card or SSD
 
 Mycodo has been tested to work with Raspberry Pi OS 12 (Bookworm release), Lite and Desktop, 32-bit and 64-bit.
