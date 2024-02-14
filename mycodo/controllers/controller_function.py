@@ -150,7 +150,12 @@ class FunctionController(AbstractController, threading.Thread):
     def call_module_function(self, button_id, args_dict, thread=True, return_from_function=False):
         """Execute function from custom action button press."""
         try:
-            run_command = getattr(self.run_function, button_id)
+            try:
+                run_command = getattr(self.run_function, button_id)
+            except AttributeError:
+                msg = f"{button_id}() not found in module. Module may currently be initializing or may be missing the function."
+                self.logger.error(msg)
+                return 1, msg
             if not thread or return_from_function:
                 return_val = run_command(args_dict)
                 if return_from_function:
