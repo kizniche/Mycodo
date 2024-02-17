@@ -213,6 +213,10 @@ MEASUREMENTS = {
         'name': lazy_gettext('PID D-Value'),
         'meas': 'pid_value',
         'units': ['pid_value']},
+    'position_open': {
+        'name': lazy_gettext('Position Open'),
+        'meas': 'position_open',
+        'units': ['percent']},
     'power': {
         'name': lazy_gettext('Power'),
         'meas': 'power',
