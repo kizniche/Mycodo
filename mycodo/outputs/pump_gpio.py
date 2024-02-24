@@ -45,7 +45,7 @@ channels_dict = {
 # Output information
 OUTPUT_INFORMATION = {
     'output_name_unique': 'peristaltic_pump',
-    'output_name': "{}: Raspberry Pi GPIO".format(lazy_gettext('Peristaltic Pump')),
+    'output_name': "{}: Raspberry Pi GPIO (Pi <= 4)".format(lazy_gettext('Peristaltic Pump')),
     'output_library': 'RPi.GPIO',
     'measurements_dict': measurements_dict,
     'channels_dict': channels_dict,

@@ -13,6 +13,18 @@ MACHINE_TYPE=$(dpkg --print-architecture)
 INFLUX_A='NONE'
 INFLUX_B='NONE'
 
+if [[ "$INSTALL_DIRECTORY" == "/opt/Mycodo" ]]; then
+  printf "## Currently installing with /opt/Mycodo/install/setup.sh\n"
+elif [[ "$INSTALL_DIRECTORY" != "/opt/Mycodo" && ! -d /opt/Mycodo ]]; then
+  printf "## Current install directory (${INSTALL_DIRECTORY}) is not /opt/Mycodo and /opt/Mycodo doesn't exist. Copying and installing...\n"
+  sudo cp -Rp "${INSTALL_DIRECTORY}" /opt/Mycodo
+  sudo /opt/Mycodo/install/setup.sh
+  exit 1
+elif [[ "$INSTALL_DIRECTORY" != "/opt/Mycodo" && -d /opt/Mycodo ]]; then
+  printf "## Error: Install aborted. /opt/Mycodo exists and you're running setup from ${INSTALL_DIRECTORY}. Install not possible if a previous install is detected. Move or delete /opt/Mycodo and rerun this script or run /opt/Mycodo/install/setup.sh\n"
+  exit 1
+fi
+
 # Fix for below issue(s)
 # https://github.com/pypa/setuptools/issues/3278
 # https://github.com/kizniche/Mycodo/issues/1149
