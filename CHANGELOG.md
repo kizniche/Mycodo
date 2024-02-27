@@ -15,6 +15,7 @@ This release changes the install directory from ~/Mycodo to /opt/Mycodo. This ne
 
  - Add Output: GPIO On/Off using pinctrl (First Pi 5-compatible Output)
  - Add Output: PWM MQTT Publish
+ - Add API Endpoint: /notes/create to create a Note ([#1357](https://github.com/kizniche/Mycodo/issues/1357))
  - Add ability to switch displaying hostname with custom text
  - Add Step Line Series Type to Graph (Synchronous) Widget
  - Add controller_restart as client endpoint
