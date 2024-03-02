@@ -136,7 +136,7 @@ class InputModule(AbstractInput):
         self.return_dict = copy.deepcopy(measurements_dict)
 
         time.sleep(0.01)
-        # trigger measurement 
+        # trigger measurement
         self.dht20.write_i2c_block_data(self.i2c_address,0xAC,[0x33,0x00])
         time.sleep(0.08)
 
