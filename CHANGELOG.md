@@ -13,6 +13,7 @@ This release changes the install directory from ~/Mycodo to /opt/Mycodo. This ne
 
 ### Features
 
+ - Add Input: DHT20
  - Add Output: GPIO On/Off using pinctrl (First Pi 5-compatible Output)
  - Add Output: PWM MQTT Publish
  - Add API Endpoint: /notes/create to create a Note ([#1357](https://github.com/kizniche/Mycodo/issues/1357))
