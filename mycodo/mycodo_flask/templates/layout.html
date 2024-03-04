@@ -169,6 +169,10 @@
 
   </script>
 
+  {% if misc.custom_css %}
+    <link href="/custom.css" rel="stylesheet">
+  {% endif %}
+
   {% block head %}{% endblock %}
   </head>
   <body>
@@ -217,7 +221,7 @@
               <a class="dropdown-item{% if active_page == 'notes' %} active{% endif %}" href="{{url_for('routes_page.page_notes')}}"><i class="fas fa-edit"></i> {{dict_translation['note']['title']}}</a>
               <a class="dropdown-item{% if active_page == 'export' %} active{% endif %}" href="{{url_for('routes_page.page_export')}}"><i class="fas fa-save"></i> {{dict_translation['export']['title'] + ' ' + dict_translation['import']['title']}}</a>
               <a class="dropdown-item{% if active_page == 'energy_usage_outputs' %} active{% endif %}" href="{{url_for('routes_page.page_energy_usage_outputs')}}"><i class="fas fa-sliders-h"></i> {{_('Energy Usage')}} ({{_('Outputs')}})</a>
-              <a class="dropdown-item{% if active_page == 'energy_usage_inputs_amps' %} active{% endif %}" href="{{url_for('routes_page.page_energy_usage_input_amps')}}"><i class="fas fa-sliders-h"></i> {{_('Energy Usage')}} ({{_('Amp Measure')}})</a>
+              <a id="energy_usage_inputs_amps" class="dropdown-item{% if active_page == 'energy_usage_inputs_amps' %} active{% endif %}" href="{{url_for('routes_page.page_energy_usage_input_amps')}}"><i class="fas fa-sliders-h"></i> {{_('Energy Usage')}} ({{_('Amp Measure')}})</a>
             </div>
           </li>
         {% for each_dash in dashboards if each_dash.unique_id == dashboard_id %}

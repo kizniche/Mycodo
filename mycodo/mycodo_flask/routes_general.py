@@ -81,6 +81,18 @@ def index_page():
     return clear_cookie_auth()
 
 
+@blueprint.route('/custom.css')
+@flask_login.login_required
+def custom_css():
+    """Load custom CSS"""
+    try:
+        settings = Misc.query.first()
+        if settings and settings.custom_css:
+            return settings.custom_css
+    except:
+        return ""
+
+
 @blueprint.route('/settings', methods=('GET', 'POST'))
 @flask_login.login_required
 def page_settings():

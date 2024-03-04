@@ -19,6 +19,7 @@ from wtforms.fields import EmailField
 from wtforms.validators import DataRequired
 from wtforms.validators import Optional
 from wtforms.widgets import NumberInput
+from wtforms.widgets import TextArea
 
 from mycodo.config_translations import TRANSLATIONS
 
@@ -90,6 +91,7 @@ class SettingsGeneral(FlaskForm):
     index_page = StringField(lazy_gettext('Index Page'))
     language = StringField(lazy_gettext('Language'))
     rpyc_timeout = StringField(lazy_gettext('Pyro Timeout'))
+    custom_css = StringField(lazy_gettext('Custom CSS'), widget=TextArea())
     hostname_override = StringField(lazy_gettext('Hostname Override'))
     daemon_debug_mode = BooleanField(lazy_gettext('Enable Daemon Debug Logging'))
     force_https = BooleanField(lazy_gettext('Force HTTPS'))

@@ -19,6 +19,7 @@ This release changes the install directory from ~/Mycodo to /opt/Mycodo. This ne
  - Add ability to switch displaying hostname with custom text
  - Add Step Line Series Type to Graph (Synchronous) Widget
  - Add controller_restart as client endpoint
+ - Add option for custom CSS
 
 ### Miscellaneous
 
