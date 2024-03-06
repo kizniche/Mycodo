@@ -71,6 +71,7 @@ def inject_variables():
     languages_sorted = sorted(LANGUAGES.items(), key=operator.itemgetter(1))
 
     return dict(current_user=flask_login.current_user,
+                custom_css=misc.custom_css,
                 dark_themes=THEMES_DARK,
                 daemon_status=daemon_status,
                 dashboards=dashboards,
