@@ -30,7 +30,7 @@ channels_dict = {
 # Output information
 OUTPUT_INFORMATION = {
     'output_name_unique': 'stepper_uln2003',
-    'output_name': "{}: ULN2003 {}, {}".format(lazy_gettext('Motor'), lazy_gettext('Stepper Motor'), lazy_gettext('Unipolar')),
+    'output_name': "{}: ULN2003 {}, {} (Pi <= 4)".format(lazy_gettext('Motor'), lazy_gettext('Stepper Motor'), lazy_gettext('Unipolar')),
     'output_manufacturer': 'STMicroelectronics',
     'output_library': 'RPi.GPIO, rpimotorlib',
     'measurements_dict': measurements_dict,

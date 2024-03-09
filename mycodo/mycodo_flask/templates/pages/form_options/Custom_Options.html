@@ -79,14 +79,17 @@
       <option value="">{{dict_translation['select_one']['title']}}</option>
       {% for each_set in each_option['options_select'] %}
       <option value="{{each_set[0]}}"
-        {%- if (channel_options and each_set[0] == custom_options_values[unique_id][channel][each_option['id']]) or (custom_options_values and each_set[0] == custom_options_values[unique_id][each_option['id']]) -%}
-          {{' selected'}}
-        {%- elif custom_options_values and
-               (each_set[0] == custom_options_values[unique_id][each_option['id']] or
-                (force_default_value and
-                'default_value' in each_option and
-                each_set[0] == each_option['default_value'])) %}
-          {{' selected'}}
+        {%- if channel_options -%}
+              {%- if each_set[0] == custom_options_values[unique_id][channel][each_option['id']] -%}
+                  {{' selected'}}
+              {%- endif -%}
+        {%- elif custom_options_values -%}
+            {% if (each_set[0] == custom_options_values[unique_id][each_option['id']] or
+                    (force_default_value and
+                    'default_value' in each_option and
+                    each_set[0] == each_option['default_value'])) %}
+                {{' selected'}}
+            {%- endif -%}
         {%- endif -%}
       >{{each_set[1]}}</option>
       {% endfor %}

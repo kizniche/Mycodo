@@ -37,8 +37,8 @@ channels_dict = {
 
 OUTPUT_INFORMATION = {
     'output_name_unique': 'OUTPUT_GP8403_DAC_0_10_VDC',
-    'output_name': "{}: GP8403 2-Channel DAC: 0-10 VDC".format(lazy_gettext('Value')),
-    'output_library': 'DFRobot-GP8403',
+    'output_name': "{}: GP8403 2-Channel DAC: 0-10 VDC (Pi <= 4)".format(lazy_gettext('Value')),
+    'output_library': 'DFRobot-GP8403, RPi.GPIO',
     'output_manufacturer': 'Mycodo',
     'measurements_dict': measurements_dict,
     'channels_dict': channels_dict,
@@ -49,6 +49,7 @@ OUTPUT_INFORMATION = {
     'message': 'Output a 0 to 10 VDC signal.',
 
     'dependencies_module': [
+        ('pip-pypi', 'RPi.GPIO', 'RPi.GPIO==0.7.1'),
         ('pip-pypi', 'DFRobot.DAC', 'DFRobot-GP8403==0.1.1')
     ],
 

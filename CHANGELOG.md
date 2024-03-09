@@ -10,6 +10,7 @@ This release changes the install directory from ~/Mycodo to /opt/Mycodo. This ne
 
  - Fix some Inputs potentially sending integers to influxdb when it should be float
  - Fix influxdb client install if server is already installed
+ - Fix Select options of web UI not properly displaying the saved value
 
 ### Features
 
