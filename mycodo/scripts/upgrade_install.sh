@@ -191,6 +191,15 @@ runSelfUpgrade() {
     printf "Done.\n"
   fi
 
+  if [ -d "${CURRENT_MYCODO_DIRECTORY}"/mycodo/note_attachments ] ; then
+    printf "Copying mycodo/note_attachments..."
+    if ! cp -r "${CURRENT_MYCODO_DIRECTORY}"/mycodo/note_attachments "${THIS_MYCODO_DIRECTORY}"/mycodo/ ; then
+      printf "Failed: Error while trying to copy mycodo/note_attachments"
+      error_found
+    fi
+    printf "Done.\n"
+  fi
+
   if [ -d "${CURRENT_MYCODO_DIRECTORY}"/mycodo/mycodo_flask/static/js/user_js ] ; then
     printf "Copying mycodo/mycodo_flask/static/js/user_js..."
     if ! cp -r "${CURRENT_MYCODO_DIRECTORY}"/mycodo/mycodo_flask/static/js/user_js "${THIS_MYCODO_DIRECTORY}"/mycodo/mycodo_flask/static/js/ ; then
