@@ -321,7 +321,7 @@ case "${1:-''}" in
         /bin/bash "${MYCODO_PATH}"/mycodo/scripts/upgrade_commands.sh build-pigpiod
         /bin/bash "${MYCODO_PATH}"/mycodo/scripts/upgrade_commands.sh disable-pigpiod
         /bin/bash "${MYCODO_PATH}"/mycodo/scripts/upgrade_commands.sh enable-pigpiod-high
-        mkdir -p /opt/mycodo
+        mkdir -p /opt/Mycodo
         touch /opt/Mycodo/pigpio_installed
     ;;
     'uninstall-pigpiod')

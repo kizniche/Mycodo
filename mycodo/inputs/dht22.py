@@ -46,7 +46,7 @@ INPUT_INFORMATION = {
     'options_disabled': ['interface'],
 
     'dependencies_module': [
-        ('internal', 'file-exists /opt/mycodo/pigpio_installed', 'pigpio'),
+        ('internal', 'file-exists /opt/Mycodo/pigpio_installed', 'pigpio'),
         ('pip-pypi', 'pigpio', 'pigpio==1.78')
     ],
 
