@@ -120,7 +120,7 @@ case "${1:-''}" in
     'compile-translations')
         printf "\n#### Compiling Translations\n"
         cd "${MYCODO_PATH}"/mycodo || return
-        "${MYCODO_PATH}"/env/bin/pybabel compile -d mycodo_flask/translations
+        "${MYCODO_PATH}"/env/bin/python -m pybabel compile -d mycodo_flask/translations
     ;;
     'create-files-directories')
         printf "\n#### Creating files and directories\n"
@@ -259,7 +259,7 @@ case "${1:-''}" in
     'update-alembic')
         printf "\n#### Upgrading Mycodo database with alembic (if needed)\n"
         cd "${MYCODO_PATH}"/alembic_db || return
-        "${MYCODO_PATH}"/env/bin/alembic upgrade head
+        "${MYCODO_PATH}"/env/bin/python -m alembic upgrade head
     ;;
     'update-alembic-post')
         printf "\n#### Executing post-alembic script\n"
@@ -770,7 +770,7 @@ case "${1:-''}" in
     'docker-compile-translations')
         printf "\n#### Compiling Translations\n"
         cd "${MYCODO_PATH}"/mycodo || exit
-        "${MYCODO_PATH}"/env/bin/pybabel compile -d mycodo_flask/translations
+        "${MYCODO_PATH}"/env/bin/python -m pybabel compile -d mycodo_flask/translations
     ;;
     'docker-update-pip')
         printf "\n#### Updating pip\n"
