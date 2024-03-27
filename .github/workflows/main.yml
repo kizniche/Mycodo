@@ -54,7 +54,6 @@ jobs:
           sleep 10
           wget --no-check-certificate -p https://127.0.0.1 -O /dev/null
           printf "\n# Installing npm\n"
-          sudo apt install npm
           sudo mkdir -p /etc/apt/keyrings
           curl -fsSL https://deb.nodesource.com/gpgkey/nodesource-repo.gpg.key | sudo gpg --dearmor -o /etc/apt/keyrings/nodesource.gpg
           NODE_MAJOR=20
