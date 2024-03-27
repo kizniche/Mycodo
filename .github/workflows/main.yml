@@ -53,8 +53,11 @@ jobs:
           sudo env/bin/python mycodo/start_flask_ui.py &
           sleep 10
           wget --no-check-certificate -p https://127.0.0.1 -O /dev/null
-          sudo apt install npm
+          printf "\n# Installing npm\n"
+          sudo apt update && sudo apt install npm
+          printf "\n# Installing redoc-cli\n"
           sudo npm install -g redoc-cli
+          printf "\n# Generating manual\n"
           sudo bash mycodo/scripts/generate_manual_api.sh
       - name: Test with pytest
         run: |
