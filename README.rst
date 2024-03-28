@@ -9,8 +9,8 @@ Mycodo is open source software for the Raspberry Pi that couples inputs and outp
 
 |Build Status| |Codacy Badge| |Translation Badge| |DOI|
 
+
 .. contents:: Table of Contents
-   :depth: 1
 
 
 Quick Install
