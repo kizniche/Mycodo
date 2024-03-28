@@ -303,11 +303,6 @@ WIDGET_INFORMATION = {
           getLastDataGaugeAngular('{{each_widget.unique_id}}', '{{device_id}}', 'input', '{{measurement_id}}', {{widget_options['max_measure_age']}});
           repeatLastDataGaugeAngular('{{each_widget.unique_id}}', '{{device_id}}', 'input', '{{measurement_id}}', {{widget_options['refresh_seconds']}}, {{widget_options['max_measure_age']}});
           {%- endfor -%}
-
-          {% for each_math in math if each_math.unique_id == device_id %}
-          getLastDataGaugeAngular('{{each_widget.unique_id}}', '{{device_id}}', 'math', '{{measurement_id}}', {{widget_options['max_measure_age']}});
-          repeatLastDataGaugeAngular('{{each_widget.unique_id}}', '{{device_id}}', 'math', '{{measurement_id}}', {{widget_options['refresh_seconds']}}, {{widget_options['max_measure_age']}});
-          {%- endfor -%}
           
           {% for each_function in function if each_function.unique_id == device_id %}
           getLastDataGaugeAngular('{{each_widget.unique_id}}', '{{device_id}}', 'function', '{{measurement_id}}', {{widget_options['max_measure_age']}});
@@ -401,10 +396,6 @@ WIDGET_INFORMATION = {
             {%- endif -%}
           {%- endif -%}
         {%- endfor -%}
-
-        {%- for each_math in math if each_math.unique_id == device_id -%}
-          {{each_math.measure|safe}}
-        {%- endfor -%}
         
         {%- for each_function in function if each_function.unique_id == device_id -%}
           {{each_function.measure|safe}}
@@ -434,10 +425,6 @@ WIDGET_INFORMATION = {
             valueSuffix: '
         {%- for each_input in input if each_input.unique_id == device_id -%}
           {{' ' + dict_units[device_measurements_dict[measurement_id].unit]['unit']}}
-        {%- endfor -%}
-
-        {%- for each_math in math if each_math.unique_id == device_id -%}
-          {{' ' + each_math.measure_units|safe}}
         {%- endfor -%}
         
         {%- for each_function in function if each_function.unique_id == device_id -%}

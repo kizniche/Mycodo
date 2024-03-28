@@ -142,7 +142,7 @@ WIDGET_INFORMATION = {
 
     'widget_dashboard_head': """<!-- No head content -->""",
 
-    'widget_dashboard_title_bar': """<span style="padding-right: 0.5em; font-size: {{each_widget.font_em_name}}em">{{each_widget.name}}</span>""",
+    'widget_dashboard_title_bar': """<span class="widget-title-bar" style="padding-right: 0.5em; font-size: {{each_widget.font_em_name}}em">{{each_widget.name}}</span>""",
 
     'widget_dashboard_body': """
   {%- set device_id = widget_options['measurement'].split(",")[0] -%}
@@ -152,7 +152,7 @@ WIDGET_INFORMATION = {
   
   {%- for each_input in input if each_input.unique_id == device_id and measurement_id in device_measurements_dict -%}
   
-    <span style="font-size: {{widget_options['font_em_value']}}em" id="value-{{each_widget.unique_id}}"></span><span style="font-size: {{widget_options['font_em_unit']}}em">
+    <span class="widget-measurement-value" style="font-size: {{widget_options['font_em_value']}}em" id="value-{{each_widget.unique_id}}"></span><span class="widget-measurement-unit" style="font-size: {{widget_options['font_em_unit']}}em">
         {%- if dict_measure_units[measurement_id] in dict_units and
                dict_units[dict_measure_units[measurement_id]]['unit'] and
                widget_options['enable_unit'] -%}
@@ -166,40 +166,6 @@ WIDGET_INFORMATION = {
     
         {%- if widget_options['enable_name'] -%}
           {{each_input.name + ' '}}
-        {%- endif -%}
-        {%- if widget_options['enable_channel'] or widget_options['enable_measurement'] -%}
-          {{'('}}
-        {%- endif -%}
-        {%- if not device_measurements_dict[measurement_id].single_channel and widget_options['enable_channel'] -%}
-          {{'CH' + (device_measurements_dict[measurement_id].channel|int)|string}}
-        {%- endif -%}
-        {%- if widget_options['enable_channel'] and widget_options['enable_measurement'] -%}
-          {{', '}}
-        {%- endif -%}
-        {%- if widget_options['enable_measurement'] and device_measurements_dict[measurement_id].measurement -%}
-          {{dict_measurements[device_measurements_dict[measurement_id].measurement]['name']}}
-        {%- endif -%}
-        {%- if widget_options['enable_channel'] or widget_options['enable_measurement'] -%}
-          {{')'}}
-        {%- endif -%}
-  {%- endfor -%}
-
-  {%- for each_math in math if each_math.unique_id == device_id and measurement_id in device_measurements_dict -%}
-
-    <span style="font-size: {{widget_options['font_em_value']}}em" id="value-{{each_widget.unique_id}}"></span><span style="font-size: {{widget_options['font_em_unit']}}em">
-        {%- if dict_measure_units[measurement_id] in dict_units and
-               dict_units[dict_measure_units[measurement_id]]['unit'] and
-               widget_options['enable_unit'] -%}
-          {{' ' + dict_units[dict_measure_units[measurement_id]]['unit']}}
-        {%- endif -%}
-    </span>
-
-        {%- if widget_options['enable_name'] or widget_options['enable_channel'] or widget_options['enable_measurement'] -%}
-    <br/><span style="font-size: {{widget_options['font_em_timestamp']}}em">
-        {%- endif -%}
-
-        {%- if widget_options['enable_name'] -%}
-          {{each_math.name + ' '}}
         {%- endif -%}
         {%- if widget_options['enable_channel'] or widget_options['enable_measurement'] -%}
           {{'('}}
@@ -412,11 +378,6 @@ WIDGET_INFORMATION = {
   {% for each_input in input if each_input.unique_id == device_id %}
   getLastDataMeasurement('{{each_widget.unique_id}}', '{{each_input.unique_id}}', 'input', '{{measurement_id}}', {{widget_options['measurement_max_age']}}, {{widget_options['decimal_places']}});
   repeatLastDataMeasurement('{{each_widget.unique_id}}', '{{each_input.unique_id}}', 'input', '{{measurement_id}}', {{widget_options['refresh_seconds']}}, {{widget_options['measurement_max_age']}}, {{widget_options['decimal_places']}});
-  {%- endfor -%}
-
-  {% for each_math in math if each_math.unique_id == device_id %}
-  getLastDataMeasurement('{{each_widget.unique_id}}', '{{each_math.unique_id}}', 'math', '{{measurement_id}}', {{widget_options['measurement_max_age']}}, {{widget_options['decimal_places']}});
-  repeatLastDataMeasurement('{{each_widget.unique_id}}', '{{each_math.unique_id}}', 'math', '{{measurement_id}}', {{widget_options['refresh_seconds']}}, {{widget_options['measurement_max_age']}}, {{widget_options['decimal_places']}});
   {%- endfor -%}
   
   {% for each_function in function if each_function.unique_id == device_id %}

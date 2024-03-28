@@ -197,11 +197,6 @@ WIDGET_INFORMATION = {
   repeatLastDataIndicator('{{each_widget.unique_id}}', '{{each_input.unique_id}}', 'input', '{{measurement_id}}', {{widget_options['refresh_seconds']}}, {{widget_options['measurement_max_age']}}, {{each_widget.decimal_places}}, {{widget_options['option_invert']|int}});
   {%- endfor -%}
 
-  {% for each_math in math if each_math.unique_id == device_id %}
-  getLastDataIndicator('{{each_widget.unique_id}}', '{{each_math.unique_id}}', 'math', '{{measurement_id}}', {{widget_options['measurement_max_age']}}, {{widget_options['decimal_places']}}, {{widget_options['option_invert']|int}});
-  repeatLastDataIndicator('{{each_widget.unique_id}}', '{{each_math.unique_id}}', 'math', '{{measurement_id}}', {{widget_options['refresh_seconds']}}, {{widget_options['measurement_max_age']}}, {{each_widget.decimal_places}}, {{widget_options['option_invert']|int}});
-  {%- endfor -%}
-
   {% for each_output in output if each_output.unique_id == device_id %}
   getLastDataIndicator('{{each_widget.unique_id}}', '{{each_output.unique_id}}', 'output', '{{channel_id}}', {{widget_options['measurement_max_age']}}, {{widget_options['decimal_places']}}, {{widget_options['option_invert']|int}});
   repeatLastDataIndicator('{{each_widget.unique_id}}', '{{each_output.unique_id}}', 'output', '{{channel_id}}', {{widget_options['refresh_seconds']}}, {{widget_options['measurement_max_age']}}, {{each_widget.decimal_places}}, {{widget_options['option_invert']|int}});

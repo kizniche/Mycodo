@@ -315,11 +315,6 @@ WIDGET_INFORMATION = {
           getLastDataGaugeSolid('{{each_widget.unique_id}}', '{{device_id}}', 'input', '{{measurement_id}}', {{widget_options['max_measure_age']}});
           repeatLastDataGaugeSolid('{{each_widget.unique_id}}', '{{device_id}}', 'input', '{{measurement_id}}', {{widget_options['refresh_seconds']}}, {{widget_options['max_measure_age']}});
           {%- endfor -%}
-
-          {% for each_math in math if each_math.unique_id == device_id %}
-          getLastDataGaugeSolid('{{each_widget.unique_id}}', '{{device_id}}', 'math', '{{measurement_id}}', {{widget_options['max_measure_age']}});
-          repeatLastDataGaugeSolid('{{each_widget.unique_id}}', '{{device_id}}', 'math', '{{measurement_id}}', {{widget_options['refresh_seconds']}}, {{widget_options['max_measure_age']}});
-          {%- endfor -%}
           
           {% for each_function in function if each_function.unique_id == device_id %}
           getLastDataGaugeSolid('{{each_widget.unique_id}}', '{{device_id}}', 'function', '{{measurement_id}}', {{widget_options['max_measure_age']}});
@@ -408,16 +403,6 @@ WIDGET_INFORMATION = {
           {{', ' + dict_measurements[device_measurements_dict[measurement_id].measurement]['name']}}
             {%- endif -%}
         {%- endfor -%}
-
-        {%- for each_math in math if each_math.unique_id == device_id and measurement_id in device_measurements_dict -%}
-          {{each_math.name}} (
-            {%- if not device_measurements_dict[measurement_id].single_channel -%}
-              {{'CH' + (device_measurements_dict[measurement_id].channel|int)|string}}
-            {%- endif -%}
-            {%- if device_measurements_dict[measurement_id].measurement -%}
-          {{', ' + dict_measurements[device_measurements_dict[measurement_id].measurement]['name']}}
-            {%- endif -%}
-        {%- endfor -%}
         
         {%- for each_function in function if each_function.unique_id == device_id and measurement_id in device_measurements_dict -%}
           {{each_function.name}} (
@@ -451,12 +436,6 @@ WIDGET_INFORMATION = {
             return this.series.name + ':<b> ' + Highcharts.numberFormat(this.y, 2) + ' {{dict_units[device_measurements_dict[measurement_id].unit]['unit']}}</b><br>';
         },
         {%- endfor -%}
-
-        {%- for each_math in math if each_math.unique_id == device_id %}
-        pointFormatter: function () {
-            return this.series.name + '</span>:<b> ' + Highcharts.numberFormat(this.y, 2) + ' {{dict_units[device_measurements_dict[measurement_id].unit]['unit']}}</b><br>';
-        },
-        {%- endfor -%}
         
         {%- for each_function in function if each_function.unique_id == device_id %}
         pointFormatter: function () {
@@ -469,10 +448,6 @@ WIDGET_INFORMATION = {
             {{' ' + dict_units[device_measurements_dict[measurement_id].unit]['unit']}}
         {%- endfor -%}
 
-        {%- for each_math in math if each_math.unique_id == device_id -%}
-            {{' ' + dict_units[device_measurements_dict[measurement_id].unit]['unit']}}
-        {%- endfor -%}
-        
         {%- for each_function in function if each_function.unique_id == device_id -%}
             {{' ' + dict_units[device_measurements_dict[measurement_id].unit]['unit']}}
         {%- endfor -%}
