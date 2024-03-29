@@ -405,7 +405,7 @@ WIDGET_INFORMATION = {
     } else if (document.getElementById(name + '-timestamp-' + widget_id)) {
       document.getElementById(name + '-timestamp-' + widget_id).innerHTML = 'MAX AGE EXCEEDED';
     }
-    if (document.getElementById(name + '-' + widget_id)) {
+    if (data[name][1] != null && document.getElementById(name + '-' + widget_id)) {
       const value = parseFloat(data[name][1]).toFixed(decimal_places);
       document.getElementById(name + '-' + widget_id).innerHTML = value + units;
     } else if (document.getElementById(name + '-' + widget_id)) {
@@ -552,11 +552,11 @@ WIDGET_INFORMATION = {
             document.getElementById('button-hold-' + widget_id).style.display = "none";
             document.getElementById('setpoint-' + widget_id).innerHTML = 'NONE';
             document.getElementById('setpoint-timestamp-' + widget_id).innerHTML = 'INACTIVE';
-            document.getElementById('pid_p_value-' + widget_id).innerHTML = '0';
-            document.getElementById('pid_i_value-' + widget_id).innerHTML = '0';
-            document.getElementById('pid_d_value-' + widget_id).innerHTML = '0';
-            document.getElementById('pid_pid_value-' + widget_id).innerHTML = '0';
-            document.getElementById('duration_time-' + widget_id).innerHTML = '0';
+            document.getElementById('pid_p_value-' + widget_id).innerHTML = 'NONE';
+            document.getElementById('pid_i_value-' + widget_id).innerHTML = 'NONE';
+            document.getElementById('pid_d_value-' + widget_id).innerHTML = 'NONE';
+            document.getElementById('pid_pid_value-' + widget_id).innerHTML = 'NONE';
+            document.getElementById('duration_time-' + widget_id).innerHTML = 'NONE';
             document.getElementById('duty_cycle-' + widget_id).innerHTML = '';
             print_pid_value(data, 'actual', widget_id, decimal_places, ' ' + units);
           }
