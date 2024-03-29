@@ -405,7 +405,7 @@ WIDGET_INFORMATION = {
     } else if (document.getElementById(name + '-timestamp-' + widget_id)) {
       document.getElementById(name + '-timestamp-' + widget_id).innerHTML = 'MAX AGE EXCEEDED';
     }
-    if (data[name][1] >= 0 && document.getElementById(name + '-' + widget_id)) {
+    if (document.getElementById(name + '-' + widget_id)) {
       const value = parseFloat(data[name][1]).toFixed(decimal_places);
       document.getElementById(name + '-' + widget_id).innerHTML = value + units;
     } else if (document.getElementById(name + '-' + widget_id)) {
