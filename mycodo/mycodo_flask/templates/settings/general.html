@@ -28,56 +28,6 @@
       "showMethod": "fadeIn",
       "hideMethod": "fadeOut"
     }
-
-    $('form').submit(function (e) {
-      let submitter_btn = $(e.originalEvent.submitter);
-
-      if (submitter_btn.attr("name") === 'settings_general_save') {
-        toastr['info']('Command sent. Please wait...');
-        $.ajax({
-          type: "POST",
-          url: '/settings/general_submit',
-          data: $(this).serialize()
-              + '&'
-              + submitter_btn.attr("name")
-              + '='
-              + submitter_btn.attr("value"),
-          success: function (data) {
-            if (data.data.messages.error.length === 0) {
-              {% if not misc.hide_alert_warning %}
-              if ('warning' in data.data.messages && data.data.messages.warning.length !== 0) {
-                toastr['warning']('Warning: ' + data.data.messages.warning.join(", "));
-              }
-              {% endif %}
-              {% if not misc.hide_alert_info %}
-              if ('info' in data.data.messages && data.data.messages.info.length !== 0) {
-                toastr['info']('Info: ' + data.data.messages.info.join(", "));
-              }
-              {% endif %}
-              {% if not misc.hide_alert_success %}
-              if ('success' in data.data.messages && data.data.messages.success.length !== 0) {
-                toastr['success']('Success: ' + data.data.messages.success.join(", "));
-              }
-              {% endif %}
-            } else {
-              toastr['error']('Error: ' + data.data.messages.error.join(", "));
-            }
-          },
-          error: function() {
-            toastr['error']('Error: Could not communicate with server');
-          }
-        });
-        e.preventDefault();
-      }
-    });
-
-    $.ajaxSetup({
-      beforeSend: function (xhr, settings) {
-        if (!/^(GET|HEAD|OPTIONS|TRACE)$/i.test(settings.type) && !this.crossDomain) {
-          xhr.setRequestHeader("X-CSRFToken", "{{form_settings_general.csrf_token._value()}}")
-        }
-      }
-    })
   });
 </script>
 {% endblock %}
@@ -87,7 +37,7 @@
   <div class="container">
     <h3 style="text-align: right; padding-bottom: 1.3em;"><a href="https://kizniche.github.io/Mycodo/Configuration-Settings/#general-settings" target="_blank"><span style="font-size: 16px" class="fas fa-question-circle"></span></a> {{_('General Settings')}}</h3>
 
-    <form class="form-horizontal" method="post" action="/settings/general">
+    <form class="form-horizontal" method="post" action="/settings/general" enctype=multipart/form-data>
       <input type="hidden" name="form-name" value="General">
       {{form_settings_general.csrf_token}}
       <div class="form-group">
@@ -123,27 +73,58 @@
         </div>
       </div>
       <div class="form-group">
+        {{form_settings_general.brand_display.label(class_='col-sm-12 control-label')}}
+        <div class="col-sm-12">
+          <select class="form-control form-tooltip form-dropdown" data-placement="top" id="brand_display" name="brand_display" title="{{_('What to display in the top-left corner of the UI')}}">
+            <option value="hostname"{% if settings.brand_display == 'hostname' %} selected{% endif %}>{{_('Hostname')}}</option>
+            <option value="brand_text"{% if settings.brand_display == 'brand_text' %} selected{% endif %}>{{_('Brand Text')}}</option>
+            <option value="brand_image"{% if settings.brand_display == 'brand_image' %} selected{% endif %}>{{_('Brand Image')}}</option>
+          </select>
+        </div>
+      </div>
+      <div class="form-group">
+        {{form_settings_general.title_display.label(class_='col-sm-12 control-label')}}
+        <div class="col-sm-12">
+          <select class="form-control form-tooltip form-dropdown" data-placement="top" id="title_display" name="title_display" title="{{_('What to display as the page title of the UI')}}">
+            <option value="hostname"{% if settings.title_display == 'hostname' %} selected{% endif %}>{{_('Hostname')}}</option>
+            <option value="brand_text"{% if settings.title_display == 'brand_text' %} selected{% endif %}>{{_('Brand Text')}}</option>
+          </select>
+        </div>
+      </div>
+      <div class="form-group">
         {{form_settings_general.hostname_override.label(class_='col-sm-12 control-label checkbox-nopad')}}
         <div class="col-sm-12">
-          {{form_settings_general.hostname_override(class_='form-control', value=misc.hostname_override, **{'title':_("Override the hostname with this text. Leave blank to use hostname.")})}}
+          {{form_settings_general.hostname_override(class_='form-control', value=settings.hostname_override, **{'title':_("Override the hostname with this text. Leave blank to use hostname.")})}}
+        </div>
+      </div>
+      <div class="form-group">
+        {{form_settings_general.brand_image.label(class_='col-sm-12 control-label checkbox-nopad')}}
+        <div class="col-sm-12">
+          <span class="btn btn-sm btn-file"><input id="brand_image" name="brand_image" type="file" /></span> Data Saved: {% if settings.brand_image %}True{% else %}False{% endif %}
+        </div>
+      </div>
+      <div class="form-group">
+        {{form_settings_general.brand_image_height.label(class_='col-sm-12 control-label checkbox-nopad')}}
+        <div class="col-sm-12">
+          {{form_settings_general.brand_image_height(class_='form-control', value=settings.brand_image_height, **{'title':_("Height of the brand image, in pixels.")})}}
         </div>
       </div>
       <div class="form-group">
         {{form_settings_general.rpyc_timeout.label(class_='col-sm-12 control-label checkbox-nopad')}}
         <div class="col-sm-12">
-          {{form_settings_general.rpyc_timeout(class_='form-control', value=misc.rpyc_timeout, **{'title':_("Set the timeout (seconds) for Pyro connections (client-daemon communication). Requires daemon restart.")})}}
+          {{form_settings_general.rpyc_timeout(class_='form-control', value=settings.rpyc_timeout, **{'title':_("Set the timeout (seconds) for Pyro connections (client-daemon communication). Requires daemon restart.")})}}
         </div>
       </div>
       <div class="form-group">
         {{form_settings_general.custom_css.label(class_='col-sm-12 control-label checkbox-nopad')}}
         <div class="col-sm-12">
-          <textarea class="form-control" id="custom_css" name="custom_css" title="Set custom CSS" rows="4">{{misc.custom_css}}</textarea>
+          <textarea class="form-control" id="custom_css" name="custom_css" title="Set custom CSS" rows="4">{{settings.custom_css}}</textarea>
         </div>
       </div>
       <div class="form-group">
         {{form_settings_general.daemon_debug_mode.label(class_='col-sm-12 control-label checkbox-nopad')}}
         <div class="col-sm-12">
-          {%- if misc.daemon_debug_mode == true -%}
+          {%- if settings.daemon_debug_mode == true -%}
             {{form_settings_general.daemon_debug_mode(checked=True)}}
           {%- else -%}
             {{form_settings_general.daemon_debug_mode()}}
@@ -154,7 +135,7 @@
       <div class="form-group">
         {{form_settings_general.force_https.label(class_='col-sm-12 control-label checkbox-nopad')}}
         <div class="col-sm-12">
-          {%- if misc.force_https == true -%}
+          {%- if settings.force_https == true -%}
             {{form_settings_general.force_https(checked=True)}}
           {%- else -%}
             {{form_settings_general.force_https()}}
@@ -165,7 +146,7 @@
       <div class="form-group">
         {{form_settings_general.hide_success.label(class_='col-sm-12 control-label checkbox-nopad')}}
         <div class="col-sm-12">
-          {%- if misc.hide_alert_success == true -%}
+          {%- if settings.hide_alert_success == true -%}
             {{form_settings_general.hide_success(checked=True)}}
           {%- else -%}
             {{form_settings_general.hide_success()}}
@@ -176,7 +157,7 @@
       <div class="form-group">
         {{form_settings_general.hide_info.label(class_='col-sm-12 control-label checkbox-nopad')}}
         <div class="col-sm-12">
-          {%- if misc.hide_alert_info == true -%}
+          {%- if settings.hide_alert_info == true -%}
             {{form_settings_general.hide_info(checked=True)}}
           {%- else -%}
             {{form_settings_general.hide_info()}}
@@ -187,7 +168,7 @@
       <div class="form-group">
         {{form_settings_general.hide_warning.label(class_='col-sm-12 control-label checkbox-nopad')}}
         <div class="col-sm-12">
-          {%- if misc.hide_alert_warning == true -%}
+          {%- if settings.hide_alert_warning == true -%}
             {{form_settings_general.hide_warning(checked=True)}}
           {%- else -%}
             {{form_settings_general.hide_warning()}}
@@ -198,7 +179,7 @@
       <div class="form-group">
         {{form_settings_general.hide_tooltips.label(class_='col-sm-12 control-label checkbox-nopad')}}
         <div class="col-sm-12">
-          {%- if misc.hide_tooltips == true -%}
+          {%- if settings.hide_tooltips == true -%}
             {{form_settings_general.hide_tooltips(checked=True)}}
           {%- else -%}
             {{form_settings_general.hide_tooltips()}}
@@ -209,7 +190,7 @@
       <div class="form-group">
         {{form_settings_general.stats_opt_out.label(class_='col-sm-12 control-label checkbox-nopad')}}
         <div class="col-sm-12">
-          {%- if misc.stats_opt_out == true -%}
+          {%- if settings.stats_opt_out == true -%}
             {{form_settings_general.stats_opt_out(checked=True)}}
           {%- else -%}
             {{form_settings_general.stats_opt_out()}}
@@ -228,39 +209,39 @@
         {{form_settings_general.use_database.label(class_='col-sm-12 control-label checkbox-nopad')}}
         <div class="col-sm-12">
           <select class="form-control form-tooltip form-dropdown" id="use_database" name="use_database" title="">
-            <option value="influxdb_1"{% if misc.measurement_db_name == 'influxdb' and misc.measurement_db_version == '1' %} selected{% endif %}>Influxdb 1.x</option>
-            <option value="influxdb_2"{% if misc.measurement_db_name == 'influxdb' and misc.measurement_db_version == '2' %} selected{% endif %}>Influxdb 2.x</option>
+            <option value="influxdb_1"{% if settings.measurement_db_name == 'influxdb' and settings.measurement_db_version == '1' %} selected{% endif %}>Influxdb 1.x</option>
+            <option value="influxdb_2"{% if settings.measurement_db_name == 'influxdb' and settings.measurement_db_version == '2' %} selected{% endif %}>Influxdb 2.x</option>
           </select>
         </div>
       </div>
       <div class="form-group">
         {{form_settings_general.measurement_db_retention_policy.label(class_='col-sm-12 control-label checkbox-nopad')}}
         <div class="col-sm-12">
-          {{form_settings_general.measurement_db_retention_policy(class_='form-control', value=misc.measurement_db_retention_policy)}}
+          {{form_settings_general.measurement_db_retention_policy(class_='form-control', value=settings.measurement_db_retention_policy)}}
         </div>
       </div>
       <div class="form-group">
         {{form_settings_general.measurement_db_host.label(class_='col-sm-12 control-label checkbox-nopad')}}
         <div class="col-sm-12">
-          {{form_settings_general.measurement_db_host(class_='form-control', value=misc.measurement_db_host)}}
+          {{form_settings_general.measurement_db_host(class_='form-control', value=settings.measurement_db_host)}}
         </div>
       </div>
       <div class="form-group">
         {{form_settings_general.measurement_db_port.label(class_='col-sm-12 control-label checkbox-nopad')}}
         <div class="col-sm-12">
-          {{form_settings_general.measurement_db_port(class_='form-control', value=misc.measurement_db_port)}}
+          {{form_settings_general.measurement_db_port(class_='form-control', value=settings.measurement_db_port)}}
         </div>
       </div>
       <div class="form-group">
         {{form_settings_general.measurement_db_dbname.label(class_='col-sm-12 control-label checkbox-nopad')}}
         <div class="col-sm-12">
-          {{form_settings_general.measurement_db_dbname(class_='form-control', value=misc.measurement_db_dbname)}}
+          {{form_settings_general.measurement_db_dbname(class_='form-control', value=settings.measurement_db_dbname)}}
         </div>
       </div>
       <div class="form-group">
         {{form_settings_general.measurement_db_user.label(class_='col-sm-12 control-label checkbox-nopad')}}
         <div class="col-sm-12">
-          {{form_settings_general.measurement_db_user(class_='form-control', value=misc.measurement_db_user)}}
+          {{form_settings_general.measurement_db_user(class_='form-control', value=settings.measurement_db_user)}}
         </div>
       </div>
       <div class="form-group">
@@ -278,7 +259,7 @@
       <div class="form-group">
         {{form_settings_general.grid_cell_height.label(class_='col-sm-12 control-label checkbox-nopad')}}
         <div class="col-sm-12">
-          {{form_settings_general.grid_cell_height(class_='form-control', value=misc.grid_cell_height, **{'title':_("The heigth of the grid cell, in pixels.")})}}
+          {{form_settings_general.grid_cell_height(class_='form-control', value=settings.grid_cell_height, **{'title':_("The heigth of the grid cell, in pixels.")})}}
         </div>
       </div>
       <div class="form-group">
@@ -289,25 +270,25 @@
       <div class="form-group">
         {{form_settings_general.net_test_ip.label(class_='col-sm-12 control-label checkbox-nopad')}}
         <div class="col-sm-12">
-          {{form_settings_general.net_test_ip(class_='form-control', value=misc.net_test_ip, **{'title':_("The IP address to test if there is an active internet connection required to allow upgrading.")})}}
+          {{form_settings_general.net_test_ip(class_='form-control', value=settings.net_test_ip, **{'title':_("The IP address to test if there is an active internet connection required to allow upgrading.")})}}
         </div>
       </div>
       <div class="form-group">
         {{form_settings_general.net_test_port.label(class_='col-sm-12 control-label checkbox-nopad')}}
         <div class="col-sm-12">
-          {{form_settings_general.net_test_port(class_='form-control', value=misc.net_test_port, **{'title':_("The port of the internet test IP address.")})}}
+          {{form_settings_general.net_test_port(class_='form-control', value=settings.net_test_port, **{'title':_("The port of the internet test IP address.")})}}
         </div>
       </div>
       <div class="form-group">
         {{form_settings_general.net_test_timeout.label(class_='col-sm-12 control-label checkbox-nopad')}}
         <div class="col-sm-12">
-          {{form_settings_general.net_test_timeout(class_='form-control', value=misc.net_test_timeout, **{'title':_("The timeout period (seconds) for testing the internet connection.")})}}
+          {{form_settings_general.net_test_timeout(class_='form-control', value=settings.net_test_timeout, **{'title':_("The timeout period (seconds) for testing the internet connection.")})}}
         </div>
       </div>
       <div class="form-group">
         {{form_settings_general.enable_upgrade_check.label(class_='col-sm-12 control-label checkbox-nopad')}}
         <div class="col-sm-12">
-          {%- if misc.enable_upgrade_check == true -%}
+          {%- if settings.enable_upgrade_check == true -%}
             {{form_settings_general.enable_upgrade_check(checked=True)}}
           {%- else -%}
             {{form_settings_general.enable_upgrade_check()}}
@@ -323,37 +304,37 @@
       <div class="form-group">
         {{form_settings_general.max_amps.label(class_='col-sm-12 control-label checkbox-nopad')}}
         <div class="col-sm-12">
-          {{form_settings_general.max_amps(class_='form-control', value=misc.max_amps, **{'title':_("Set the maximum allowed amperage to be switched on at any given time")})}}
+          {{form_settings_general.max_amps(class_='form-control', value=settings.max_amps, **{'title':_("Set the maximum allowed amperage to be switched on at any given time")})}}
         </div>
       </div>
       <div class="form-group">
         {{form_settings_general.output_stats_volts.label(class_='col-sm-12 control-label checkbox-nopad')}}
         <div class="col-sm-12">
-          {{form_settings_general.output_stats_volts(class_='form-control', value=misc.output_usage_volts, **{'title':_('Set the voltage used to power the devices powered by the outputs')})}}
+          {{form_settings_general.output_stats_volts(class_='form-control', value=settings.output_usage_volts, **{'title':_('Set the voltage used to power the devices powered by the outputs')})}}
         </div>
       </div>
       <div class="form-group">
         {{form_settings_general.output_stats_cost.label(class_='col-sm-12 control-label checkbox-nopad')}}
         <div class="col-sm-12">
-          {{form_settings_general.output_stats_cost(class_='form-control', value=misc.output_usage_cost, **{'title':_('Set the cost per kilowatt-hour')})}}
+          {{form_settings_general.output_stats_cost(class_='form-control', value=settings.output_usage_cost, **{'title':_('Set the cost per kilowatt-hour')})}}
         </div>
       </div>
       <div class="form-group">
         {{form_settings_general.output_stats_currency.label(class_='col-sm-12 control-label checkbox-nopad')}}
         <div class="col-sm-12">
-          {{form_settings_general.output_stats_currency(class_='form-control', value=misc.output_usage_currency, **{'title':_('Set the unit of currency used to pay for the electricity')})}}
+          {{form_settings_general.output_stats_currency(class_='form-control', value=settings.output_usage_currency, **{'title':_('Set the unit of currency used to pay for the electricity')})}}
         </div>
       </div>
       <div class="form-group">
         {{form_settings_general.output_stats_day_month.label(class_='col-sm-12 control-label checkbox-nopad')}}
         <div class="col-sm-12">
-          {{form_settings_general.output_stats_day_month(class_='form-control', value=misc.output_usage_dayofmonth, **{'title':_('Set a day of the month to calculate monthly power usage')})}}
+          {{form_settings_general.output_stats_day_month(class_='form-control', value=settings.output_usage_dayofmonth, **{'title':_('Set a day of the month to calculate monthly power usage')})}}
         </div>
       </div>
       <div class="form-group">
         {{form_settings_general.output_usage_report_gen.label(class_='col-sm-12 control-label checkbox-nopad')}}
         <div class="col-sm-12">
-          {%- if misc.output_usage_report_gen == true -%}
+          {%- if settings.output_usage_report_gen == true -%}
             {{form_settings_general.output_usage_report_gen(checked=True)}}
           {%- else -%}
             {{form_settings_general.output_usage_report_gen()}}
@@ -365,22 +346,22 @@
         {{form_settings_general.output_usage_report_span.label(class_='col-sm-12 control-label checkbox-nopad')}}
         <div class="col-sm-12">
           <select class="form-control form-tooltip form-dropdown" id="output_usage_report_span" name="output_usage_report_span" title="" data-original-title="{{_('How often to generate a report')}}">
-            <option value="monthly"{% if misc.output_usage_report_span == 'monthly' %} selected{% endif %}>Monthly</option>
-            <option value="weekly"{% if misc.output_usage_report_span == 'weekly' %} selected{% endif %}>Weekly</option>
-            <option value="daily"{% if misc.output_usage_report_span == 'daily' %} selected{% endif %}>Daily</option>
+            <option value="monthly"{% if settings.output_usage_report_span == 'monthly' %} selected{% endif %}>Monthly</option>
+            <option value="weekly"{% if settings.output_usage_report_span == 'weekly' %} selected{% endif %}>Weekly</option>
+            <option value="daily"{% if settings.output_usage_report_span == 'daily' %} selected{% endif %}>Daily</option>
           </select>
         </div>
       </div>
       <div class="form-group">
         {{form_settings_general.output_usage_report_day.label(class_='col-sm-12 control-label checkbox-nopad')}}
         <div class="col-sm-12">
-          {{form_settings_general.output_usage_report_day(class_='form-control', value=misc.output_usage_report_day, **{'title':_('Day Options: Daily: 1-7 (1=Monday), Monthly: 1-28')})}}
+          {{form_settings_general.output_usage_report_day(class_='form-control', value=settings.output_usage_report_day, **{'title':_('Day Options: Daily: 1-7 (1=Monday), Monthly: 1-28')})}}
         </div>
       </div>
       <div class="form-group">
         {{form_settings_general.output_usage_report_hour.label(class_='col-sm-12 control-label checkbox-nopad')}}
         <div class="col-sm-12">
-          {{form_settings_general.output_usage_report_hour(class_='form-control', value=misc.output_usage_report_hour, **{'title':_('Hour Options: 0-23')})}}
+          {{form_settings_general.output_usage_report_hour(class_='form-control', value=settings.output_usage_report_hour, **{'title':_('Hour Options: 0-23')})}}
         </div>
       </div>
 
@@ -393,37 +374,37 @@
       <div class="form-group">
         {{form_settings_general.sample_rate_controller_conditional.label(class_='col-sm-12 control-label')}}
         <div class="col-sm-12">
-          {{form_settings_general.sample_rate_controller_conditional(class_='form-control', value=misc.sample_rate_controller_conditional)}}
+          {{form_settings_general.sample_rate_controller_conditional(class_='form-control', value=settings.sample_rate_controller_conditional)}}
         </div>
       </div>
       <div class="form-group">
         {{form_settings_general.sample_rate_controller_function.label(class_='col-sm-12 control-label')}}
         <div class="col-sm-12">
-          {{form_settings_general.sample_rate_controller_function(class_='form-control', value=misc.sample_rate_controller_function)}}
+          {{form_settings_general.sample_rate_controller_function(class_='form-control', value=settings.sample_rate_controller_function)}}
         </div>
       </div>
       <div class="form-group">
         {{form_settings_general.sample_rate_controller_input.label(class_='col-sm-12 control-label')}}
         <div class="col-sm-12">
-          {{form_settings_general.sample_rate_controller_input(class_='form-control', value=misc.sample_rate_controller_input)}}
+          {{form_settings_general.sample_rate_controller_input(class_='form-control', value=settings.sample_rate_controller_input)}}
         </div>
       </div>
       <div class="form-group">
         {{form_settings_general.sample_rate_controller_output.label(class_='col-sm-12 control-label')}}
         <div class="col-sm-12">
-          {{form_settings_general.sample_rate_controller_output(class_='form-control', value=misc.sample_rate_controller_output)}}
+          {{form_settings_general.sample_rate_controller_output(class_='form-control', value=settings.sample_rate_controller_output)}}
         </div>
       </div>
       <div class="form-group">
         {{form_settings_general.sample_rate_controller_pid.label(class_='col-sm-12 control-label')}}
         <div class="col-sm-12">
-          {{form_settings_general.sample_rate_controller_pid(class_='form-control', value=misc.sample_rate_controller_pid)}}
+          {{form_settings_general.sample_rate_controller_pid(class_='form-control', value=settings.sample_rate_controller_pid)}}
         </div>
       </div>
       <div class="form-group">
         {{form_settings_general.sample_rate_controller_widget.label(class_='col-sm-12 control-label')}}
         <div class="col-sm-12">
-          {{form_settings_general.sample_rate_controller_widget(class_='form-control', value=misc.sample_rate_controller_widget)}}
+          {{form_settings_general.sample_rate_controller_widget(class_='form-control', value=settings.sample_rate_controller_widget)}}
         </div>
       </div>
 

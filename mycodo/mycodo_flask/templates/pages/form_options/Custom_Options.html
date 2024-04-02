@@ -346,7 +346,7 @@
     {% elif each_option['type'] == 'button' %}
 
   <div class="col-auto small-gutters">
-      <input onclick="return $(this).processRequest(this, 'custom_button_{{each_option['id']}}');" name="custom_button_{{each_option['id']}}" title="{{each_option['phrase']}}" class="form-control btn btn-primary btn-sm btn-block" type="button" value="{{each_option['name']}}"
+      <input onclick="return $(this).processRequest(this, 'custom_button_{{each_option['id']}}');" name="custom_button_{{each_option['id']}}" title="{{each_option['phrase']}}" class="form-control btn btn-primary btn-block" type="button" value="{{each_option['name']}}"
       {%- if 'disabled' in each_option and each_option['disabled'] %} disabled{% endif -%}
       />
   </div>

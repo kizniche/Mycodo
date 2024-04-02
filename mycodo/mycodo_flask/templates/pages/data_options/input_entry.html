@@ -25,7 +25,7 @@
       <input id="input_name_{{each_input.unique_id}}" class="form-control" disabled="" value="{{each_input.name}}" type="text">
     </div>
     <div class="col-4">
-      <input class="form-control btn btn-primary btn-sm btn-block" type="button" onclick="setClipboard('{{each_input.unique_id}}')" title="UUID: {{each_input.unique_id}}, {{dict_translation['copy_to_clipboard']['phrase']}}" value="
+      <input class="form-control btn btn-primary btn-block" type="button" onclick="setClipboard('{{each_input.unique_id}}')" title="UUID: {{each_input.unique_id}}, {{dict_translation['copy_to_clipboard']['phrase']}}" value="
   {%- if each_input.device in dict_inputs -%}
     {%- if 'input_name_short' in dict_inputs[each_input.device] -%}
       {{dict_inputs[each_input.device]['input_name_short']}}
@@ -36,8 +36,8 @@
     ">
     </div>
     <div class="col-3">
-      <input {% if each_input.is_activated -%}style="display: none"{% endif %} onclick="return $(this).processRequest(this, 'input_activate');" name="input_activate" id="input_activate_{{each_input.unique_id}}" class="form-control btn btn-primary btn-sm" type="button" value="{{_('Activate')}}"/>
-      <input {% if not each_input.is_activated -%}style="display: none"{% endif %} onclick="return $(this).processRequest(this, 'input_deactivate');" name="input_deactivate" id="input_deactivate_{{each_input.unique_id}}" class="form-control btn btn-primary btn-sm" type="button" value="{{_('Deactivate')}}"/>
+      <input {% if each_input.is_activated -%}style="display: none"{% endif %} onclick="return $(this).processRequest(this, 'input_activate');" name="input_activate" id="input_activate_{{each_input.unique_id}}" class="form-control btn btn-primary" type="button" value="{{_('Activate')}}"/>
+      <input {% if not each_input.is_activated -%}style="display: none"{% endif %} onclick="return $(this).processRequest(this, 'input_deactivate');" name="input_deactivate" id="input_deactivate_{{each_input.unique_id}}" class="form-control btn btn-primary" type="button" value="{{_('Deactivate')}}"/>
     </div>
   </div> <!-- grid-stack-item-content -->
 

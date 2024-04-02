@@ -27,12 +27,12 @@
 
   {% if 'custom_options' in dict_options and unique_id in custom_options_values %}
       <div class="col-auto">
-        <input onclick="return $(this).processRequest(this, 'save_action');" name="save_action" value="{{_('Save')}}" class="form-control btn btn-primary btn-sm btn-block" type="button"/>
+        <input onclick="return $(this).processRequest(this, 'save_action');" name="save_action" value="{{_('Save')}}" class="form-control btn btn-primary btn-block" type="button"/>
       </div>
   {% endif %}
 
       <div class="col-auto">
-        <input onclick="return confirm('{{_('Are you sure you want to delete this?')}}') && $(this).processRequest(this, 'delete_action');" name="delete_action" value="{{_('Delete')}}" class="form-control btn btn-primary btn-sm btn-block" type="button"/>
+        <input onclick="return confirm('{{_('Are you sure you want to delete this?')}}') && $(this).processRequest(this, 'delete_action');" name="delete_action" value="{{_('Delete')}}" class="form-control btn btn-primary btn-block" type="button"/>
       </div>
 
   {% if 'custom_options' in dict_options and unique_id in custom_options_values %}

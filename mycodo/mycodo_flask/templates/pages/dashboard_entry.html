@@ -29,7 +29,7 @@
 {% endif %}
   </div>
 
-  <div id="container-graph-{{each_widget.id}}" style="position: relative; flex-grow: 1; padding: 0.35em">
+  <div id="container-graph-{{each_widget.id}}" style="position: relative; flex-grow: 1">
 {% if each_widget.graph_type in list_html_files_body %}
     <!-- Widget {{each_widget.graph_type}} widget_dashboard_body template for {{each_widget.unique_id}} begin -->
     {% include 'user_templates/{}'.format(list_html_files_body[each_widget.graph_type]) %}

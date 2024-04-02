@@ -19,11 +19,13 @@ This release changes the install directory from ~/Mycodo to /opt/Mycodo. This ne
  - Add Output: GPIO On/Off using pinctrl (First Pi 5-compatible Output)
  - Add Output: PWM MQTT Publish
  - Add Output: GP8403 2-Channel DAC (0-10 VDC) ([#1354](https://github.com/kizniche/Mycodo/issues/1354))
+ - Add Output: GP8XXX (8403) 2-Channel DAC (0-10 VDC) ([#1354](https://github.com/kizniche/Mycodo/issues/1354))
  - Add API Endpoint: /notes/create to create a Note ([#1357](https://github.com/kizniche/Mycodo/issues/1357))
  - Add ability to switch displaying hostname with custom text
  - Add Step Line Series Type to Graph (Synchronous) Widget
  - Add controller_restart as client endpoint
  - Add option for custom CSS
+ - Add options for changing title and brand text
 
 ### Miscellaneous
 
@@ -31,6 +33,7 @@ This release changes the install directory from ~/Mycodo to /opt/Mycodo. This ne
  - Change Dashboard grid width from 20 to 24
  - Add endpoint option to RAM Input for when Mycodo is using a non-standard IP/port
  - Add self.control to the Python 3 Code Action
+ - Update adafruit-circuitpython-ads1x15 to 2.2.25
  - Update Gridstack to 10.0.1
  - Update alembic to 1.13.1
  - Update bcrypt to 1.4.2 

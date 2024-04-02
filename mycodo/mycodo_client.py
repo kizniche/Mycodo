@@ -280,7 +280,7 @@ class DaemonControl:
             return self.proxy(timeout=timeout).module_function(
                 controller_type, unique_id, button_id, args_dict, thread=thread, return_from_function=return_from_function)
         except Exception:
-            return 0, traceback.format_exc()
+            return 1, traceback.format_exc()
 
     def widget_add_refresh(self, unique_id):
         return self.proxy().widget_add_refresh(unique_id)

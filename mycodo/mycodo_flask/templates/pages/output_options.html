@@ -11,13 +11,13 @@
 
     <div class="row small-gutters">
       <div class="col-auto">
-        <button type="button" class="form-control btn btn-primary btn-sm btn-block" data-dismiss="modal">{{_('Close')}}</button>
+        <button type="button" class="form-control btn btn-primary btn-block" data-dismiss="modal">{{_('Close')}}</button>
       </div>
       <div class="col-auto">
-        <input onclick="return $(this).processRequest(this, 'output_mod');" name="output_mod" value="{{_('Save')}}" class="form-control btn btn-primary btn-sm btn-block" type="button"/>
+        <input onclick="return $(this).processRequest(this, 'output_mod');" name="output_mod" value="{{_('Save')}}" class="form-control btn btn-primary btn-block" type="button"/>
       </div>
       <div class="col-auto">
-        <input onclick="return confirm('{{_('Are you sure you want to delete this?')}}') && $(this).processRequest(this, 'output_delete');" name="output_delete" value="{{_('Delete')}}" class="form-control btn btn-primary btn-sm btn-block" type="button"/>
+        <input onclick="return confirm('{{_('Are you sure you want to delete this?')}}') && $(this).processRequest(this, 'output_delete');" name="output_delete" value="{{_('Delete')}}" class="form-control btn btn-primary btn-block" type="button"/>
       </div>
     </div>
 

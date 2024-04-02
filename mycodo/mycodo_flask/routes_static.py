@@ -63,11 +63,6 @@ def inject_variables():
                      "{err}".format(err=e))
         daemon_status = '0'
 
-    if misc.hostname_override:
-        host = misc.hostname_override
-    else:
-        host = socket.gethostname()
-
     languages_sorted = sorted(LANGUAGES.items(), key=operator.itemgetter(1))
 
     return dict(current_user=flask_login.current_user,
@@ -80,11 +75,12 @@ def inject_variables():
                 hide_alert_success=misc.hide_alert_success,
                 hide_alert_warning=misc.hide_alert_warning,
                 hide_tooltips=misc.hide_tooltips,
-                host=host,
+                host=socket.gethostname(),
                 languages=languages_sorted,
                 mycodo_version=MYCODO_VERSION,
                 permission_view_settings=user_has_permission('view_settings', silent=True),
                 dict_translation=TRANSLATIONS,
+                settings=misc,
                 template_exists=template_exists,
                 themes=THEMES,
                 upgrade_available=misc.mycodo_upgrade_available)
@@ -135,22 +131,12 @@ def page_error(error):
     except:
         model_output = None
 
-    try:
-        firmware = subprocess.Popen(
-            "/opt/vc/bin/vcgencmd version", stdout=subprocess.PIPE, shell=True)
-        (firmware_output, _) = firmware.communicate()
-        firmware.wait()
-        if firmware_output:
-            firmware_output = firmware_output.decode("latin1").replace("\n", "<br/>")
-    except:
-        firmware_output = None
-
     dict_return = {
         "trace": trace,
         "version_mycodo": MYCODO_VERSION,
         "version_alembic":  ALEMBIC_VERSION,
         "lsb_release": lsb_release_output,
-        "model": model_output,
-        "firmware": firmware_output
+        "model": model_output
     }
+
     return render_template('500.html', dict_return=dict_return), 500

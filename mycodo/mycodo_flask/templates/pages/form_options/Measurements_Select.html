@@ -31,7 +31,7 @@
     {% if each_measurement.unit and each_measurement.measurement %}
 
   <div class="col-auto">
-    <input class="form-control btn btn-primary btn-sm btn-block" type="button" onclick="setClipboard('{{each_measurement.unique_id}}')" title="UUID: {{each_measurement.unique_id}}, {{dict_translation['copy_to_clipboard']['phrase']}}" value="
+    <input class="form-control btn btn-primary btn-block" type="button" onclick="setClipboard('{{each_measurement.unique_id}}')" title="UUID: {{each_measurement.unique_id}}, {{dict_translation['copy_to_clipboard']['phrase']}}" value="
     {%- if each_measurement.channel != None -%}
       CH{{each_measurement.channel}}
     {%- endif -%}
@@ -47,7 +47,7 @@
     {% else %}
 
   <div class="col-auto">
-    <input class="form-control btn btn-primary btn-sm btn-block" type="button" onclick="setClipboard('{{each_measurement.unique_id}}')" title="UUID: {{each_measurement.unique_id}}, {{dict_translation['copy_to_clipboard']['phrase']}}" value="
+    <input class="form-control btn btn-primary btn-block" type="button" onclick="setClipboard('{{each_measurement.unique_id}}')" title="UUID: {{each_measurement.unique_id}}, {{dict_translation['copy_to_clipboard']['phrase']}}" value="
     {%- if each_measurement.channel != None -%}
       CH{{each_measurement.channel}}
     {%- endif -%}

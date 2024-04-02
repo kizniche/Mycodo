@@ -4,7 +4,8 @@ import logging
 import os
 
 import flask_login
-from flask import flash, jsonify, redirect, render_template, request, url_for
+from io import BytesIO
+from flask import flash, jsonify, send_file, redirect, render_template, request, url_for
 from flask.blueprints import Blueprint
 
 from mycodo.config import (PATH_ACTIONS_CUSTOM, PATH_FUNCTIONS_CUSTOM,
@@ -63,10 +64,22 @@ def settings_alerts():
                            form_email_alert=form_email_alert)
 
 
-@blueprint.route('/settings/general_submit', methods=['POST'])
+@blueprint.route('/logo.jpg', methods=['GET'])
 @flask_login.login_required
-def settings_general_submit():
-    """Submit form for General Settings page"""
+def brand_logo():
+    """Return logo from database"""
+    misc = Misc.query.first()
+    if misc.brand_image:
+        return send_file(
+            BytesIO(misc.brand_image),
+            mimetype='image/jpg'
+        )
+
+
+@blueprint.route('/settings/general', methods=('GET', 'POST'))
+@flask_login.login_required
+def settings_general():
+    """Display general settings."""
     messages = {
         "success": [],
         "info": [],
@@ -74,32 +87,29 @@ def settings_general_submit():
         "error": []
     }
 
-    form_settings_general = forms_settings.SettingsGeneral()
-
-    if not utils_general.user_has_permission('edit_settings'):
-        messages["error"].append("Your permissions do not allow this action")
-
-    if not messages["error"]:
-        messages = utils_settings.settings_general_mod(form_settings_general)
-
-    return jsonify(data={
-        'messages': messages,
-    })
-
-
-@blueprint.route('/settings/general', methods=('GET', 'POST'))
-@flask_login.login_required
-def settings_general():
-    """Display general settings."""
     if not utils_general.user_has_permission('view_settings'):
         return redirect(url_for('routes_general.home'))
 
-    misc = Misc.query.first()
     form_settings_general = forms_settings.SettingsGeneral()
+
+    if request.method == 'POST':
+        if not utils_general.user_has_permission('edit_settings'):
+            messages["error"].append("Your permissions do not allow this action")
+
+        if not messages["error"]:
+            messages = utils_settings.settings_general_mod(form_settings_general)
+
+        for each_error in messages["error"]:
+            flash(each_error, "error")
+        for each_warn in messages["warning"]:
+            flash(each_warn, "warning")
+        for each_info in messages["info"]:
+            flash(each_info, "info")
+        for each_success in messages["success"]:
+            flash(each_success, "success")
 
     return render_template('settings/general.html',
                            form_settings_general=form_settings_general,
-                           misc=misc,
                            report_path=os.path.normpath(USAGE_REPORTS_PATH))
 
 

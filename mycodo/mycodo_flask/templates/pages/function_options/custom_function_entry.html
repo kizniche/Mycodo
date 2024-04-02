@@ -29,15 +29,15 @@
       {{form_function.name(class_='form-control', disabled=True, id='function_name_' + each_function.unique_id, value=each_function.name)}}
     </div>
     <div class="col-4">
-      <input class="form-control btn btn-primary btn-sm" type="button" onclick="setClipboard('{{each_function.unique_id}}')" title="UUID: {{each_function.unique_id}}, {{dict_translation['copy_to_clipboard']['phrase']}}" value="{% if 'function_name_short' in dict_controllers[each_function.device] %}{{dict_controllers[each_function.device]['function_name_short']}}{% else %}{{dict_controllers[each_function.device]['function_name']}}{% endif %}
+      <input class="form-control btn btn-primary" type="button" onclick="setClipboard('{{each_function.unique_id}}')" title="UUID: {{each_function.unique_id}}, {{dict_translation['copy_to_clipboard']['phrase']}}" value="{% if 'function_name_short' in dict_controllers[each_function.device] %}{{dict_controllers[each_function.device]['function_name_short']}}{% else %}{{dict_controllers[each_function.device]['function_name']}}{% endif %}
         {%- if each_function.is_activated %} [{{_('Active')}}]
         {%- else %} [{{_('Inactive')}}]
         {%- endif -%}
       ">
     </div>
     <div class="col-3">
-      <input {% if each_function.is_activated -%}style="display: none"{% endif %} onclick="return $(this).processRequest(this, 'function_activate');" name="function_activate" id="function_activate_{{each_function.unique_id}}" class="form-control btn btn-primary btn-sm" type="button" value="{{_('Activate')}}"/>
-      <input {% if not each_function.is_activated -%}style="display: none"{% endif %} onclick="return $(this).processRequest(this, 'function_deactivate');" name="function_deactivate" id="function_deactivate_{{each_function.unique_id}}" class="form-control btn btn-primary btn-sm" type="button" value="{{_('Deactivate')}}"/>
+      <input {% if each_function.is_activated -%}style="display: none"{% endif %} onclick="return $(this).processRequest(this, 'function_activate');" name="function_activate" id="function_activate_{{each_function.unique_id}}" class="form-control btn btn-primary" type="button" value="{{_('Activate')}}"/>
+      <input {% if not each_function.is_activated -%}style="display: none"{% endif %} onclick="return $(this).processRequest(this, 'function_deactivate');" name="function_deactivate" id="function_deactivate_{{each_function.unique_id}}" class="form-control btn btn-primary" type="button" value="{{_('Deactivate')}}"/>
     </div>
   </div> <!-- grid-stack-item-content -->
 </form>

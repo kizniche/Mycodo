@@ -72,11 +72,11 @@
 
   {% if not this_dashboard.locked %}
 
-  <div class="container-fluid" style="padding-bottom: 1em">
+  <div class="container-fluid" style="padding-bottom: 1em; margin-left: 0.5em">
 
     <div class="form-inline" style="padding-bottom: 1em;">
       <div class="form-group">
-        {{form_base.widget_type(class_='selectpicker', **{'data-style': 'btn btn-sm btn-primary'})}}
+        {{form_base.widget_type(class_='selectpicker', **{'data-style': 'btn btn-primary'})}}
       </div>
     </div>
 
@@ -193,6 +193,8 @@
     <!-- Widget {{widget_type}} widget_dashboard_js_ready template end -->
   {% endfor %}
   });
+
+  $('.selectpicker').selectpicker();
 </script>
 
 {% endblock %}

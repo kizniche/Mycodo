@@ -1,6 +1,6 @@
 # coding=utf-8
 #
-# value_gp8403_dac_p8403.py - Output for controlling the GP8403 2-channel DAC (0-10 VDC)
+# value_gp8403_dac_gp8xxx_iic.py - Output for controlling the GP8403 2-channel DAC (0-10 VDC)
 #
 import copy
 import time
@@ -36,9 +36,9 @@ channels_dict = {
 }
 
 OUTPUT_INFORMATION = {
-    'output_name_unique': 'OUTPUT_GP8403_DAC_0_10_VDC',
-    'output_name': "{}: GP8403 2-Channel DAC: 0-10 VDC (Pi <= 4)".format(lazy_gettext('Value')),
-    'output_library': 'DFRobot-GP8403, RPi.GPIO',
+    'output_name_unique': 'OUTPUT_GP8XXX_IIC_DAC_0_10_VDC',
+    'output_name': "{}: GP8XXX (8403) 2-Channel DAC: 0-10 VDC".format(lazy_gettext('Value')),
+    'output_library': 'GP8XXX-IIC',
     'output_manufacturer': 'Mycodo',
     'measurements_dict': measurements_dict,
     'channels_dict': channels_dict,
@@ -49,8 +49,8 @@ OUTPUT_INFORMATION = {
     'message': 'Output a 0 to 10 VDC signal.',
 
     'dependencies_module': [
-        ('pip-pypi', 'RPi.GPIO', 'RPi.GPIO==0.7.1'),
-        ('pip-pypi', 'DFRobot.DAC', 'DFRobot-GP8403==0.1.1')
+        ('pip-pypi', 'smbus2', 'smbus2==0.4.1'),
+        ('pip-pypi', 'GP8XXX_IIC', 'GP8XXX-IIC==0.0.1')
     ],
 
     'options_enabled': [
@@ -127,9 +127,9 @@ class OutputModule(AbstractOutput):
             OUTPUT_INFORMATION['custom_channel_options'], output_channels)
 
     def initialize(self):
-        from DFRobot.DAC import GP8403
+        from GP8XXX_IIC import GP8403
 
-        self.GP8403 = GP8403(bus=self.output.i2c_bus, addr=int(str(self.output.i2c_location), 16))
+        self.GP8403 = GP8403(i2c_addr=int(str(self.output.i2c_location), 16), bus=self.output.i2c_bus, auto_range=True)
 
         self.setup_output_variables(OUTPUT_INFORMATION)
 
@@ -141,18 +141,11 @@ class OutputModule(AbstractOutput):
                 return
             time.sleep(1)
 
-        self.GP8403.set_DAC_outrange(self.GP8403.OUTPUT_RANGE_10V)
+        self.GP8403.set_dac_outrange(GP8403.OUTPUT_RANGE_10V)
 
         # Set start channel values
         for channel in channels_dict:
             value_volts = None
-
-            if channel == 0:
-                chan = self.GP8403.CHANNEL0
-            elif channel == 1:
-                chan = self.GP8403.CHANNEL1
-            else:
-                return
 
             if (self.options_channels['state_start'][channel] == "value" and
                     self.options_channels['state_start_value'][channel]):
@@ -170,7 +163,7 @@ class OutputModule(AbstractOutput):
                     value = 0
                 else:
                     value = value_volts / 10 * 4096
-                self.GP8403.set_DAC_out_voltage(value, chan)
+                self.GP8403.set_dac_out_voltage(voltage=value, channel=channel)
 
         self.output_setup = True
 
@@ -178,14 +171,6 @@ class OutputModule(AbstractOutput):
         measure_dict = copy.deepcopy(measurements_dict)
 
         try:
-            if output_channel == 0:
-                chan = self.GP8403.CHANNEL0
-            elif output_channel == 1:
-                chan = self.GP8403.CHANNEL1
-            else:
-                self.logger.error(f"Invalid channel: {output_channel}")
-                return
-
             if state == 'on' and amount is not None:
                 if amount > 10:
                     self.logger.error(f"Startup value cannot be greater than 10 VDC. Value provided: {amount}")
@@ -196,13 +181,14 @@ class OutputModule(AbstractOutput):
                 else:
                     value = amount / 10 * 4096
 
-                self.GP8403.set_DAC_out_voltage(value, chan)
+                self.GP8403.set_dac_out_voltage(voltage=value, channel=output_channel)
                 self.output_states[output_channel] = amount
                 measure_dict[output_channel]['value'] = amount
 
                 self.set_custom_option(f"saved_channel_{output_channel}_value", amount)
             elif state == 'off':
-                self.GP8403.set_DAC_out_voltage(self.options_channels['off_value'][output_channel], chan)
+                self.GP8403.set_dac_out_voltage(
+                    voltage=self.options_channels['off_value'][output_channel], channel=output_channel)
                 if self.options_channels['off_value'][output_channel]:
                     self.output_states[output_channel] = self.options_channels['off_value'][output_channel]
                 else:
@@ -232,13 +218,6 @@ class OutputModule(AbstractOutput):
             for channel in channels_dict:
                 value_volts = None
 
-                if channel == 0:
-                    chan = self.GP8403.CHANNEL0
-                elif channel == 1:
-                    chan = self.GP8403.CHANNEL1
-                else:
-                    continue
-
                 if (self.options_channels['state_shutdown'][channel] == "value" and
                         self.options_channels['state_shutdown_value'][channel]):
                     value_volts = self.options_channels['state_shutdown_value'][channel]
@@ -256,6 +235,6 @@ class OutputModule(AbstractOutput):
                     else:
                         value = value_volts / 10 * 4096
 
-                    self.GP8403.set_DAC_out_voltage(value, chan)
+                    self.GP8403.set_dac_out_voltage(voltage=value, channel=channel)
 
         self.running = False

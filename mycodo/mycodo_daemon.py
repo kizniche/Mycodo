@@ -479,7 +479,7 @@ class DaemonController:
             message = "Cannot execute custom action. Is the controller activated? " \
                       "If it is and this error is still occurring, check the Daemon Log."
             self.logger.exception(message)
-        return 1, message
+        return 0, message
 
 
     def input_force_measurements(self, input_id):

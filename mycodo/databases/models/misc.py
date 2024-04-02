@@ -47,7 +47,11 @@ class Misc(CRUDMixin, db.Model):
     net_test_port = db.Column(db.Integer, default=53)
     net_test_timeout = db.Column(db.Integer, default=3)
     default_login_page = db.Column(db.String, default='password')
+    brand_display = db.Column(db.String, default='hostname')
+    title_display = db.Column(db.String, default='hostname')
     hostname_override = db.Column(db.String, default='')
+    brand_image = db.Column(db.BLOB, default='')
+    brand_image_height = db.Column(db.Integer, default=55)
     custom_css = db.Column(db.String, default='')
 
     # Measurement database

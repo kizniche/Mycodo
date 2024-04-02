@@ -21,7 +21,7 @@
       {{form_mod_pid_base.name(class_='form-control', disabled=True, id='function_name_' + each_function.unique_id, value=each_function.name)}}
     </div>
     <div class="col-4">
-      <input id="pid_activity_indicator_{{each_function.unique_id}}" class="form-control btn btn-primary btn-sm" type="button" onclick="setClipboard('{{each_function.unique_id}}')" title="UUID: {{each_function.unique_id}}, {{dict_translation['copy_to_clipboard']['phrase']}}" value="PID Controller
+      <input id="pid_activity_indicator_{{each_function.unique_id}}" class="form-control btn btn-primary" type="button" onclick="setClipboard('{{each_function.unique_id}}')" title="UUID: {{each_function.unique_id}}, {{dict_translation['copy_to_clipboard']['phrase']}}" value="PID Controller
       {%- if each_function.is_activated and not each_function.is_paused %} [{{_('Active')}}]
       {%- elif each_function.is_activated and each_function.is_paused %} [{{_('Paused')}}]
       {%- elif each_function.is_held %} [{{_('On Hold')}}]
@@ -31,19 +31,19 @@
     </div>
 
     <div id="pid_deactivate_{{each_function.unique_id}}" class="col-1" style="{%- if not each_function.is_activated %}display: none{% endif %}">
-      <input onclick="return $(this).processRequest(this, 'function_deactivate');" name="function_deactivate" value="{{_('Deactivate')}}" class="form-control btn btn-primary btn-sm" type="button"/>
+      <input onclick="return $(this).processRequest(this, 'function_deactivate');" name="function_deactivate" value="{{_('Deactivate')}}" class="form-control btn btn-primary" type="button"/>
     </div>
     <div id="pid_resume_{{each_function.unique_id}}" class="col-1" style="{%- if not each_function.is_paused and not each_function.is_held %}display: none{% endif %}">
-      <input onclick="return $(this).processRequest(this, 'pid_resume');" name="pid_resume" value="{{_('Resume')}}" class="form-control btn btn-primary btn-sm" type="button"/>
+      <input onclick="return $(this).processRequest(this, 'pid_resume');" name="pid_resume" value="{{_('Resume')}}" class="form-control btn btn-primary" type="button"/>
     </div>
     <div id="pid_pause_{{each_function.unique_id}}" class="col-1" style="{%- if not each_function.is_activated or each_function.is_paused %}display: none{% endif %}">
-      <input onclick="return $(this).processRequest(this, 'pid_pause');" name="pid_pause" value="{{_('Pause')}}" class="form-control btn btn-primary btn-sm" type="button"/>
+      <input onclick="return $(this).processRequest(this, 'pid_pause');" name="pid_pause" value="{{_('Pause')}}" class="form-control btn btn-primary" type="button"/>
     </div>
     <div id="pid_hold_{{each_function.unique_id}}" class="col-1" style="{%- if not each_function.is_activated or each_function.is_held %}display: none{% endif %}">
-      <input onclick="return $(this).processRequest(this, 'pid_hold');" name="pid_hold" value="{{_('Hold')}}" class="form-control btn btn-primary btn-sm" type="button"/>
+      <input onclick="return $(this).processRequest(this, 'pid_hold');" name="pid_hold" value="{{_('Hold')}}" class="form-control btn btn-primary" type="button"/>
     </div>
     <div id="pid_activate_{{each_function.unique_id}}" class="col-3" style="{%- if each_function.is_activated %}display: none{% endif %}">
-      <input onclick="return $(this).processRequest(this, 'function_activate');" name="function_activate" value="{{_('Activate')}}" class="form-control btn btn-primary btn-sm" type="button"/>
+      <input onclick="return $(this).processRequest(this, 'function_activate');" name="function_activate" value="{{_('Activate')}}" class="form-control btn btn-primary" type="button"/>
     </div>
 
   </div> <!-- grid-stack-item-content -->

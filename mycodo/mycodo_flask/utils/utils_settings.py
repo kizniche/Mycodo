@@ -388,7 +388,12 @@ def settings_general_mod(form):
                 mod_misc.force_https = form.force_https.data
                 mod_misc.rpyc_timeout = form.rpyc_timeout.data
                 mod_misc.custom_css = form.custom_css.data
+                mod_misc.brand_display = form.brand_display.data
+                mod_misc.title_display = form.title_display.data
                 mod_misc.hostname_override = form.hostname_override.data
+                if form.brand_image.data:
+                    mod_misc.brand_image = form.brand_image.data.read()
+                mod_misc.brand_image_height = form.brand_image_height.data
                 mod_misc.daemon_debug_mode = form.daemon_debug_mode.data
                 mod_misc.hide_alert_success = form.hide_success.data
                 mod_misc.hide_alert_info = form.hide_info.data
