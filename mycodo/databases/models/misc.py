@@ -50,7 +50,7 @@ class Misc(CRUDMixin, db.Model):
     brand_display = db.Column(db.String, default='hostname')
     title_display = db.Column(db.String, default='hostname')
     hostname_override = db.Column(db.String, default='')
-    brand_image = db.Column(db.BLOB, default='')
+    brand_image = db.Column(db.BLOB, default=b'')
     brand_image_height = db.Column(db.Integer, default=55)
     custom_css = db.Column(db.String, default='')
 
