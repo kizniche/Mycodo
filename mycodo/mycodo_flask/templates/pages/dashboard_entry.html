@@ -1,13 +1,13 @@
 {% set widget_options = custom_options_values_widgets[each_widget.unique_id] %}
 {% set widget_variables = custom_widget_variables[each_widget.unique_id] %}
 
-<div class="grid-stack-item-content" style="display: flex; flex-flow: column; padding: 0; border: 1px solid #ddd; border-radius: 5px">
+<div class="grid-stack-item-content widget-outer" style="display: flex; flex-flow: column; padding: 0; border: 1px solid #ddd; border-radius: 5px">
 
   <div class="d-flex justify-content-between widget-heading{% if not this_dashboard.locked %} panel-heading{% endif %}">
 {% if not this_dashboard.locked %}
     <div class="my-auto widget-drag-handle">
   {% if each_widget.enable_drag_handle -%}
-      <i style="font-size: 1.5em" class="fas fa-grip-horizontal" title="{{_('Drag')}}"></i>
+      <i style="font-size: 1.5em" class="fas fa-grip-horizontal widget-drag-icon" title="{{_('Drag')}}"></i>
   {%- endif %}
     </div>
 {% endif %}
@@ -23,7 +23,7 @@
 {% if not this_dashboard.locked %}
     <div class="my-auto widget-settings">
       <a class="btn" data-toggle="modal" data-target="#modal_config_{{each_widget.unique_id}}">
-        <i style="font-size: 1.5em" class="fas fa-cog" title="{{_('Configure')}}"></i>
+        <i style="font-size: 1.5em" class="fas fa-cog widget-cog-icon" title="{{_('Configure')}}"></i>
       </a>
     </div>
 {% endif %}
