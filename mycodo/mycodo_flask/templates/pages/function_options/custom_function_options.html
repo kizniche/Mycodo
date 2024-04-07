@@ -128,6 +128,7 @@
       <div class="col-12" style="padding-top: 1em"></div>
       <div class="col-12">
         <h5>{{_('Commands')}}</h5>
+        <hr class="entry-break">
       </div>
       {% include 'pages/form_options/Custom_Actions_Message.html' %}
       {% if each_function.device in custom_commands and custom_commands[each_function.device] %}
@@ -145,6 +146,7 @@
     <div class="row small-gutters" style="padding: 0.5em">
       <div class="col-12">
         <h5>{{_('Options')}}</h5>
+        <hr class="entry-break">
       </div>
       <div class="col-auto">
         {{form_function.name.label(class_='control-label')}}
@@ -187,6 +189,7 @@
     <div class="row small-gutters" style="padding: 1em 0 0 0.5em">
       <div class="col-12">
         <h5>{{_('Channel Options')}}</h5>
+        <hr class="entry-break">
       </div>
     </div>
 
@@ -247,9 +250,10 @@
 
     {% if show_measurement_settings %}
 
-    <div class="row small-gutters" style="border-bottom: 1px solid #ddd; padding: 0.5em 0.5em 0 0.5em">
+    <div class="row small-gutters" style="padding: 0.5em 0.5em 0 0.5em">
       <div class="col-12">
         <h5>{{_('Measurement Settings')}}</h5>
+        <hr class="entry-break">
       </div>
     </div>
 
