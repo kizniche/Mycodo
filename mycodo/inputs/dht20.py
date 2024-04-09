@@ -95,7 +95,7 @@ class InputModule(AbstractInput):
         self.dht20 = SMBus(self.input_dev.i2c_bus)
 
         # Check if Sensor is ready
-        status_word = self.dht20.read_byte(self.self.i2c_address)
+        status_word = self.dht20.read_byte(self.i2c_address)
         if status_word != 0x18:
             buffer = bytearray(b'\x00\x00')
             # Initialize the 0x1B, 0x1C, 0x1E registers
