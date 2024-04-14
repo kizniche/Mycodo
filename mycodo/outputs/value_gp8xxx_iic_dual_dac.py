@@ -56,7 +56,7 @@ OUTPUT_INFORMATION = {
 
     'dependencies_module': [
         ('pip-pypi', 'smbus2', 'smbus2==0.4.1'),
-        ('pip-pypi', 'GP8XXX_IIC', 'GP8XXX-IIC==0.0.3')
+        ('pip-pypi', 'GP8XXX_IIC', 'GP8XXX-IIC==0.0.4')
     ],
 
     'options_enabled': [
