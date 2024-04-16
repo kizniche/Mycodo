@@ -23,7 +23,7 @@ Install Command:
 
 .. code:: bash
 
-    curl -L https://kizniche.github.io/Mycodo/install | bash
+    curl -L https://meowzth.github.io/Mycodo/install | bash
 
 
 See the `Install Mycodo <#install-mycodo>`__ section for more details.

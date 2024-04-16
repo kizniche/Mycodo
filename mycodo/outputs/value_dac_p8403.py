@@ -49,7 +49,7 @@ OUTPUT_INFORMATION = {
     'message': 'Output a 0 to 10 VDC signal.',
 
     'dependencies_module': [
-        ('pip-pypi', 'RPi.GPIO', 'RPi.GPIO==0.7.1'),
+        ('pip-pypi', 'lgpio', 'lgpio==0.2.2.0'),
         ('pip-pypi', 'DFRobot.DAC', 'DFRobot-GP8403==0.1.1')
     ],
 

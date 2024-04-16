@@ -65,7 +65,7 @@ INPUT_INFORMATION = {
     'options_disabled': ['interface'],
 
     'dependencies_module': [
-        ('pip-pypi', 'RPi.GPIO', 'RPi.GPIO==0.7.1')
+        ('pip-pypi', 'lgpio', 'lgpio==0.2.2.0')
     ],
 
     'interfaces': ['UART'],
