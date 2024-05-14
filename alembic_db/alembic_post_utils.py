@@ -19,5 +19,5 @@ def read_revision_file():
 
 
 def write_revision_post_alembic(revision):
-    with open(ALEMBIC_UPGRADE_POST, 'a') as versions_file:
+    with open(ALEMBIC_UPGRADE_POST, 'a+') as versions_file:
         versions_file.write('{}\n'.format(revision))

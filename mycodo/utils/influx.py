@@ -395,6 +395,8 @@ def read_influxdb_single(unique_id, unit, channel,
     except requests.exceptions.ConnectionError:
         logger.debug("Failed to establish a new influxdb connection. Ensure influxdb is running.")
 
+    return [None, None]
+
 
 def get_past_measurements(device_id, measurement_id, max_age=None):
     device_measurement = db_retrieve_table_daemon(

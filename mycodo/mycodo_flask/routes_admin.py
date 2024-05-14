@@ -171,7 +171,7 @@ def install_dependencies(dependencies):
     for each_dependency in dependencies:
         if each_dependency[0] not in dependency_list:
             dependency_list.append(each_dependency[0])
-    with open(DEPENDENCY_LOG_FILE, 'a') as f:
+    with open(DEPENDENCY_LOG_FILE, 'a+') as f:
         f.write("\n[{time}] Dependency installation beginning. Installing: {deps}\n\n".format(
             time=now, deps=", ".join(dependency_list)))
 
@@ -179,7 +179,7 @@ def install_dependencies(dependencies):
         if each_dep[2] == 'bash-commands':
             for each_command in each_dep[1]:
                 try:
-                    with open(DEPENDENCY_LOG_FILE, 'a') as f:
+                    with open(DEPENDENCY_LOG_FILE, 'a+') as f:
                         now = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
                         f.write(f"\n[{now}] Executing command: {each_command}\n")
 
@@ -189,7 +189,7 @@ def install_dependencies(dependencies):
                     cmd_out, cmd_err, cmd_status = cmd_output(
                         command, user='root', timeout=600, cwd="/tmp")
 
-                    with open(DEPENDENCY_LOG_FILE, 'a') as f:
+                    with open(DEPENDENCY_LOG_FILE, 'a+') as f:
                         now = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
                         f.write(f"\n[{now}] Command returned: out: {cmd_out}, error: {cmd_err}, status: {cmd_status}\n")
                 except:
@@ -203,7 +203,7 @@ def install_dependencies(dependencies):
             dep = subprocess.Popen(cmd, shell=True)
             dep.wait()
             now = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-            with open(DEPENDENCY_LOG_FILE, 'a') as f:
+            with open(DEPENDENCY_LOG_FILE, 'a+') as f:
                 f.write("\n[{time}] End install of {dep}\n\n".format(
                     time=now, dep=each_dep[0]))
 
@@ -215,7 +215,7 @@ def install_dependencies(dependencies):
     init.wait()
 
     now = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-    with open(DEPENDENCY_LOG_FILE, 'a') as f:
+    with open(DEPENDENCY_LOG_FILE, 'a+') as f:
         f.write("\n[{time}] #### Dependencies installed. Restarting frontend and backend...".format(time=now))
 
     with open(DEPENDENCY_INIT_FILE, 'w') as f:
@@ -236,7 +236,7 @@ def install_dependencies(dependencies):
     init.wait()
 
     now = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-    with open(DEPENDENCY_LOG_FILE, 'a') as f:
+    with open(DEPENDENCY_LOG_FILE, 'a+') as f:
         f.write("\n\n[{time}] #### Dependency install complete.\n\n".format(time=now))
 
 

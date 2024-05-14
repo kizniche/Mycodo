@@ -487,7 +487,7 @@ def failed_login():
 
 def login_log(user, group, ip, status):
     """Write to login log."""
-    with open(LOGIN_LOG_FILE, 'a') as log_file:
+    with open(LOGIN_LOG_FILE, 'a+') as log_file:
         log_file.write(
             '{dt:%Y-%m-%d %H:%M:%S}: {stat} {user} ({grp}), {ip}\n'.format(
                 dt=datetime.datetime.now(), stat=status,
