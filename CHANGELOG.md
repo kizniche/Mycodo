@@ -13,6 +13,7 @@ This release changes the install directory from ~/Mycodo to /opt/Mycodo. This ne
  - Fix Select options of web UI not properly displaying the saved value
  - Fix note attachments not being copied during upgrade
  - Fix display of values <=0 in PID Widget ([#1372](https://github.com/kizniche/Mycodo/issues/1372))
+ - Fix MCP23017 Pump Output KeyError
 
 ### Features
 

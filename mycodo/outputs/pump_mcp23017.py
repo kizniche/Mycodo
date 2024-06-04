@@ -189,6 +189,7 @@ class OutputModule(AbstractOutput):
             self.pins.append(self.sensor.get_pin(pin))
 
         for channel in channels_dict:
+            self.currently_dispensing[channel] = False
             if self.options_channels['state_startup'][channel] == 1:
                 self.turn_on_off(channel, "on")
             elif self.options_channels['state_startup'][channel] == 0:
