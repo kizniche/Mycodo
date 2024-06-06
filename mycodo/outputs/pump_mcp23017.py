@@ -304,6 +304,9 @@ class OutputModule(AbstractOutput):
             self.logger.error("Amount cannot be less than 0")
             return
 
+        if output_channel not in self.currently_dispensing:
+            self.currently_dispensing[output_channel] = False
+
         self.logger.debug(f"state: {state}, output_type: {output_type}, amount: {amount}")
 
         if state == 'off':
