@@ -31,6 +31,7 @@ from flask import flash
 from flask import jsonify
 from flask_babel import lazy_gettext
 from flask_login import current_user
+from pytz import timezone
 
 from mycodo.config import THEMES_DARK
 from mycodo.databases.models import Conversion
@@ -69,7 +70,7 @@ def past_data(unique_id, measure_type, measurement_id, past_seconds):
         for each_note in notes:
             if tag.unique_id in each_note.tags.split(','):
                 notes_list.append(
-                    [each_note.date_time.strftime("%Y-%m-%dT%H:%M:%S.000000000Z"), each_note.name, each_note.note])
+                    [each_note.date_time.replace(tzinfo=timezone('UTC')).timestamp(), each_note.name, each_note.note])
 
         if notes_list:
             return jsonify(notes_list)
