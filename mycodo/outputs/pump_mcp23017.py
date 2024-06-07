@@ -171,9 +171,9 @@ class OutputModule(AbstractOutput):
         from adafruit_mcp230xx.mcp23017 import MCP23017
         from adafruit_extended_bus import ExtendedI2C
 
-        self.setup_output_variables(OUTPUT_INFORMATION)
-
         try:
+            self.setup_output_variables(OUTPUT_INFORMATION)
+
             self.logger.debug(f"I2C: Address: {self.output.i2c_location}, Bus: {self.output.i2c_bus}")
             if self.output.i2c_location:
                 self.sensor = MCP23017(
@@ -186,16 +186,25 @@ class OutputModule(AbstractOutput):
             return
 
         for pin in range(0, 16):
-            self.pins.append(self.sensor.get_pin(pin))
+            try:
+                self.pins.append(self.sensor.get_pin(pin))
+            except:
+                self.logger.exception("Setting pin")
+                return
 
         for channel in channels_dict:
-            self.currently_dispensing[channel] = False
-            if self.options_channels['state_startup'][channel] == 1:
-                self.turn_on_off(channel, "on")
-            elif self.options_channels['state_startup'][channel] == 0:
-                self.turn_on_off(channel, "off")
-            else:  # Default state: Off
-                self.turn_on_off(channel, "off")
+            try:
+                self.currently_dispensing[channel] = False
+                self.output_states[channel] = False
+                if self.options_channels['state_startup'][channel] == 1:
+                    self.turn_on_off(channel, "on")
+                elif self.options_channels['state_startup'][channel] == 0:
+                    self.turn_on_off(channel, "off")
+                else:  # Default state: Off
+                    self.turn_on_off(channel, "off")
+            except:
+                self.logger.exception("Initializing startup state")
+                return
 
         self.output_setup = True
 
