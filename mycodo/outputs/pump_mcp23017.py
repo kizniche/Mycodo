@@ -195,13 +195,7 @@ class OutputModule(AbstractOutput):
         for channel in channels_dict:
             try:
                 self.currently_dispensing[channel] = False
-                self.output_states[channel] = False
-                if self.options_channels['state_startup'][channel] == 1:
-                    self.turn_on_off(channel, "on")
-                elif self.options_channels['state_startup'][channel] == 0:
-                    self.turn_on_off(channel, "off")
-                else:  # Default state: Off
-                    self.turn_on_off(channel, "off")
+                self.turn_on_off(channel, "off")
             except:
                 self.logger.exception("Initializing startup state")
                 return
@@ -312,9 +306,6 @@ class OutputModule(AbstractOutput):
         if amount is not None and amount < 0:
             self.logger.error("Amount cannot be less than 0")
             return
-
-        if output_channel not in self.currently_dispensing:
-            self.currently_dispensing[output_channel] = False
 
         self.logger.debug(f"state: {state}, output_type: {output_type}, amount: {amount}")
 
