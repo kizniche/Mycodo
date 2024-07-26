@@ -34,13 +34,12 @@ INPUT_INFORMATION = {
         'pre_output'
     ],
     'options_disabled': ['interface'],
-
     'dependencies_module': [
         ('pip-pypi', 'adafruit_max31855', 'adafruit-circuitpython-max31855==3.2.21')
     ],
 
     'interfaces': ['SPI'],
-    
+
     'custom_options': [
         {
             'id': 'cs_pin',
