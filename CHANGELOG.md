@@ -15,6 +15,7 @@ This release changes the install directory from ~/Mycodo to /opt/Mycodo. This ne
  - Fix display of values <=0 in PID Widget ([#1372](https://github.com/kizniche/Mycodo/issues/1372))
  - Fix MCP23017 Pump Output KeyError
  - Fix displaying Tags on Highcharts Widget
+ - Fix dependencies of Mijia LYWSD03MMC
 
 ### Features
 
@@ -37,6 +38,7 @@ This release changes the install directory from ~/Mycodo to /opt/Mycodo. This ne
  - Change Dashboard grid width from 20 to 24
  - Add endpoint option to RAM Input for when Mycodo is using a non-standard IP/port
  - Add self.control to the Python 3 Code Action
+ - Run widget HTML regeneration in thread
  - Update adafruit-circuitpython-ads1x15 to 2.2.25
  - Update Gridstack to 10.0.1
  - Update alembic to 1.13.1

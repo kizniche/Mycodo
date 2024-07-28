@@ -1993,25 +1993,23 @@ def settings_diagnostic_install_dependencies():
 
 
 def settings_regenerate_widget_html():
-    action = gettext("Regenerate Widget HTML")
-    error = []
+    try:
+        time.sleep(2)
 
-    if not error:
-        try:
-            command = f'/bin/bash {INSTALL_DIRECTORY}/mycodo/scripts/upgrade_commands.sh generate-widget-html'
-            p = subprocess.Popen(command, shell=True)
-            p.communicate()
+        cmd = f'/bin/bash {INSTALL_DIRECTORY}/mycodo/scripts/upgrade_commands.sh generate-widget-html'
+        out, err, status = cmd_output(cmd, stdout_pipe=False, user='root')
+        logger.info(
+            "Regenerate Widget HTML: "
+            f"cmd: {cmd}; out: {out}; error: {err}; status: {status}")
 
-            cmd = f"{INSTALL_DIRECTORY}/mycodo/scripts/mycodo_wrapper frontend_reload" \
-                  f" | ts '[%Y-%m-%d %H:%M:%S]' >> {DEPENDENCY_LOG_FILE} 2>&1"
-            p = subprocess.Popen(cmd, shell=True)
-            p.communicate()
-        except Exception as except_msg:
-            error.append(except_msg)
-
-    flash("Widget HTML Regeneration complete.", "success")
-    flash_success_errors(
-        error, action, url_for('routes_settings.settings_diagnostic'))
+        cmd = f"{INSTALL_DIRECTORY}/mycodo/scripts/mycodo_wrapper frontend_reload" \
+              f" | ts '[%Y-%m-%d %H:%M:%S]' >> {DEPENDENCY_LOG_FILE} 2>&1"
+        out, err, status = cmd_output(cmd, stdout_pipe=False, user='root')
+        logger.info(
+            "Frontend reload: "
+            f"cmd: {cmd}; out: {out}; error: {err}; status: {status}")
+    except Exception:
+        logger.exception("Regenerating widget HTML")
 
 
 def settings_diagnostic_upgrade_master():

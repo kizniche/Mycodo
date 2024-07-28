@@ -2,8 +2,8 @@
 """collection of Page endpoints."""
 import logging
 import os
-
 import flask_login
+import threading
 from io import BytesIO
 from flask import flash, jsonify, send_file, redirect, render_template, request, url_for
 from flask.blueprints import Blueprint
@@ -636,7 +636,11 @@ def settings_diagnostic():
         elif form_settings_diagnostic.install_dependencies.data:
             utils_settings.settings_diagnostic_install_dependencies()
         elif form_settings_diagnostic.regenerate_widget_html.data:
-            utils_settings.settings_regenerate_widget_html()
+            regen_widget_html = threading.Thread(target=utils_settings.settings_regenerate_widget_html)
+            regen_widget_html.start()
+            flash("Widget HTML Regeneration started in the background. "
+                  "It may take a few seconds to complete. "
+                  "Any errors will appear in the Web Log.", "success")
         elif form_settings_diagnostic.upgrade_master.data:
             utils_settings.settings_diagnostic_upgrade_master()
 
