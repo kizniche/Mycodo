@@ -20,6 +20,7 @@ This release changes the install directory from ~/Mycodo to /opt/Mycodo. This ne
 ### Features
 
  - Add Input: DHT20
+ - Add Input: MAX31855 CircuitPython
  - Add Output: GPIO On/Off using pinctrl (First Pi 5-compatible Output)
  - Add Output: PWM MQTT Publish
  - Add Output: GP8403 2-Channel DAC (0-10 VDC) ([#1354](https://github.com/kizniche/Mycodo/issues/1354))
