@@ -239,7 +239,7 @@ case "${1:-''}" in
         openssl req -new -key server.key -out server.csr \
             -subj "/O=mycodo/OU=mycodo/CN=mycodo"
         openssl x509 -req \
-            -days 3653 \
+            -days 365 \
             -in server.csr \
             -signkey server.key \
             -out server.crt
