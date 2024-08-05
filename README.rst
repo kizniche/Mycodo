@@ -42,8 +42,6 @@ Documentation
 
 `Mycodo Custom Module Repository <https://github.com/kizniche/Mycodo-custom>`__
 
-`Mycodo Support Android App <https://play.google.com/store/apps/details?id=com.mycodo.mycododocs>`__
-
 Discussion
 ~~~~~~~~~~
 
