@@ -40,6 +40,7 @@ This release changes the install directory from ~/Mycodo to /opt/Mycodo. This ne
  - Add endpoint option to RAM Input for when Mycodo is using a non-standard IP/port
  - Add self.control to the Python 3 Code Action
  - Run widget HTML regeneration in thread
+ - Update InfluxDB 2.x to v2.7.8
  - Update adafruit-circuitpython-ads1x15 to 2.2.25
  - Update Gridstack to 10.0.1
  - Update alembic to 1.13.1
