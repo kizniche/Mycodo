@@ -26,6 +26,7 @@ This release changes the install directory from ~/Mycodo to /opt/Mycodo. This ne
  - Add Output: GP8403 2-Channel DAC (0-10 VDC) ([#1354](https://github.com/kizniche/Mycodo/issues/1354))
  - Add Output: GP8XXX (8403) 2-Channel DAC (0-10 VDC) ([#1354](https://github.com/kizniche/Mycodo/issues/1354))
  - Add Output: XL9535 16-Channel On/Off IO-Expander
+ - Add Widget: Measurement (2 Values)
  - Add API Endpoint: /notes/create to create a Note ([#1357](https://github.com/kizniche/Mycodo/issues/1357))
  - Add ability to switch displaying hostname with custom text
  - Add Step Line Series Type to Graph (Synchronous) Widget

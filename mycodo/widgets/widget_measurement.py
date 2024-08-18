@@ -32,7 +32,7 @@ logger = logging.getLogger(__name__)
 
 WIDGET_INFORMATION = {
     'widget_name_unique': 'widget_measurement',
-    'widget_name': 'Measurement',
+    'widget_name': 'Measurement (1 Value)',
     'widget_library': '',
     'no_class': True,
 
@@ -324,15 +324,6 @@ WIDGET_INFORMATION = {
           const measurement = data[1];
           if (document.getElementById('value-' + widget_id)) {
             document.getElementById('value-' + widget_id).innerHTML = measurement.toFixed(decimal_places);
-          }
-          const range_exists = document.getElementById("range_" + widget_id);
-          if (range_exists != null) {  // Update range slider value
-            if (document.getElementById("range_" + widget_id)) {
-              document.getElementById("range_" + widget_id).value = measurement.toFixed(0);
-            }
-            if (document.getElementById("range_val_" + widget_id)) {
-              document.getElementById("range_val_" + widget_id).innerHTML = measurement.toFixed(0);
-            }
           }
           if (document.getElementById('timestamp-' + widget_id)) {
             document.getElementById('timestamp-' + widget_id).innerHTML = formattedTime;
