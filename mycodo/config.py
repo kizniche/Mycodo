@@ -14,7 +14,7 @@ sys.path.append(os.path.abspath(os.path.dirname(__file__)))
 from config_translations import TRANSLATIONS as T
 
 MYCODO_VERSION = '8.15.13'
-ALEMBIC_VERSION = 'd6b624da47f4'
+ALEMBIC_VERSION = '9bdb60d2a2cd'
 
 # FORCE UPGRADE MASTER
 # Set True to enable upgrading to the master branch of the Mycodo repository.
@@ -55,8 +55,11 @@ PATH_ACTIONS_CUSTOM = os.path.join(PATH_ACTIONS, 'custom_actions')
 PATH_INPUTS_CUSTOM = os.path.join(PATH_INPUTS, 'custom_inputs')
 PATH_OUTPUTS_CUSTOM = os.path.join(PATH_OUTPUTS, 'custom_outputs')
 PATH_WIDGETS_CUSTOM = os.path.join(PATH_WIDGETS, 'custom_widgets')
+PATH_TEMPLATE = os.path.join(INSTALL_DIRECTORY, 'mycodo/mycodo_flask/templates')
+PATH_TEMPLATE_LAYOUT = os.path.join(PATH_TEMPLATE, 'layout.html')
+PATH_TEMPLATE_LAYOUT_DEFAULT = os.path.join(PATH_TEMPLATE, 'layout_default.html')
+PATH_TEMPLATE_USER = os.path.join(PATH_TEMPLATE, 'user_templates')
 PATH_USER_SCRIPTS = os.path.join(INSTALL_DIRECTORY, 'mycodo/user_scripts')
-PATH_HTML_USER = os.path.join(INSTALL_DIRECTORY, 'mycodo/mycodo_flask/templates/user_templates')
 PATH_PYTHON_CODE_USER = os.path.join(INSTALL_DIRECTORY, 'mycodo/user_python_code')
 PATH_MEASUREMENTS_BACKUP = os.path.join(INSTALL_DIRECTORY, 'mycodo/backup_measurements')
 PATH_SETTINGS_BACKUP = os.path.join(INSTALL_DIRECTORY, 'mycodo/backup_settings')

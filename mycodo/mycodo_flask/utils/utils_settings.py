@@ -27,6 +27,7 @@ from mycodo.config import PATH_ACTIONS_CUSTOM
 from mycodo.config import PATH_FUNCTIONS_CUSTOM
 from mycodo.config import PATH_INPUTS_CUSTOM
 from mycodo.config import PATH_OUTPUTS_CUSTOM
+from mycodo.config import PATH_TEMPLATE_USER
 from mycodo.config import PATH_WIDGETS_CUSTOM
 from mycodo.config import UPGRADE_INIT_FILE
 from mycodo.config_devices_units import MEASUREMENTS
@@ -65,6 +66,7 @@ from mycodo.utils.actions import parse_action_information
 from mycodo.utils.database import db_retrieve_table
 from mycodo.utils.functions import parse_function_information
 from mycodo.utils.inputs import parse_input_information
+from mycodo.utils.layouts import update_layout
 from mycodo.utils.modules import load_module_from_file
 from mycodo.utils.outputs import parse_output_information
 from mycodo.utils.send_data import send_email
@@ -363,6 +365,7 @@ def user_del(form):
 # Settings modifications
 #
 
+
 def settings_general_mod(form):
     """Modify General settings."""
     messages = {
@@ -382,12 +385,22 @@ def settings_general_mod(form):
 
         if not messages["error"]:
             try:
+                reload_frontend = False
                 mod_misc = Misc.query.first()
 
-                force_https = mod_misc.force_https
-                mod_misc.force_https = form.force_https.data
+                if mod_misc.force_https != form.force_https.data:
+                    mod_misc.force_https = form.force_https.data
+                    reload_frontend = True
+
                 mod_misc.rpyc_timeout = form.rpyc_timeout.data
                 mod_misc.custom_css = form.custom_css.data
+
+                if mod_misc.custom_layout != form.custom_layout.data:
+                    mod_misc.custom_layout = form.custom_layout.data
+                    assure_path_exists(PATH_TEMPLATE_USER)
+                    update_layout(mod_misc.custom_layout)
+                    reload_frontend = True
+
                 mod_misc.brand_display = form.brand_display.data
                 mod_misc.title_display = form.title_display.data
                 mod_misc.hostname_override = form.hostname_override.data
@@ -452,11 +465,10 @@ def settings_general_mod(form):
                     action=TRANSLATIONS['modify']['title'],
                     controller=gettext("General Settings")))
 
-                if force_https != form.force_https.data:
-                    # Force HTTPS option changed.
-                    # Reload web server with new settings.
-                    cmd = '{path}/mycodo/scripts/mycodo_wrapper frontend_reload 2>&1'.format(
-                        path=INSTALL_DIRECTORY)
+                if reload_frontend:
+                    # Reload web server
+                    logger.info("Reloading frontend in 10 seconds")
+                    cmd = f"sleep 10 && {INSTALL_DIRECTORY}/mycodo/scripts/mycodo_wrapper frontend_reload 2>&1"
                     subprocess.Popen(cmd, shell=True)
 
             except Exception as except_msg:

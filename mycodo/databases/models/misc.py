@@ -53,6 +53,7 @@ class Misc(CRUDMixin, db.Model):
     brand_image = db.Column(db.BLOB, default=b'')
     brand_image_height = db.Column(db.Integer, default=55)
     custom_css = db.Column(db.String, default='')
+    custom_layout = db.Column(db.String, default='')
 
     # Measurement database
     db_name = 'influxdb'  # Default

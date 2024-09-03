@@ -92,6 +92,7 @@ class SettingsGeneral(FlaskForm):
     language = StringField(lazy_gettext('Language'))
     rpyc_timeout = StringField(lazy_gettext('Pyro Timeout'))
     custom_css = StringField(lazy_gettext('Custom CSS'), widget=TextArea())
+    custom_layout = StringField(lazy_gettext('Custom Layout'), widget=TextArea())
     brand_display = StringField(lazy_gettext('Brand Display'))
     title_display = StringField(lazy_gettext('Title Display'))
     hostname_override = StringField(lazy_gettext('Brand Text'))

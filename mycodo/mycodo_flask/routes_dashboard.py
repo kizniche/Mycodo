@@ -9,7 +9,7 @@ from flask.blueprints import Blueprint
 from sqlalchemy import and_
 
 from mycodo.config import INSTALL_DIRECTORY
-from mycodo.config import PATH_HTML_USER
+from mycodo.config import PATH_TEMPLATE_USER
 from mycodo.databases.models import (PID, Camera, Conditional, Conversion,
                                      CustomController, Dashboard,
                                      DeviceMeasurements, Input, Measurement,
@@ -206,37 +206,37 @@ def page_dashboard(dashboard_id):
 
     for each_widget_type in widget_types_on_dashboard:
         file_html_head = "widget_template_{}_head.html".format(each_widget_type)
-        path_html_head = os.path.join(PATH_HTML_USER, file_html_head)
+        path_html_head = os.path.join(PATH_TEMPLATE_USER, file_html_head)
         if os.path.exists(path_html_head):
             list_html_files_head[each_widget_type] = file_html_head
 
         file_html_title_bar = "widget_template_{}_title_bar.html".format(each_widget_type)
-        path_html_title_bar = os.path.join(PATH_HTML_USER, file_html_title_bar)
+        path_html_title_bar = os.path.join(PATH_TEMPLATE_USER, file_html_title_bar)
         if os.path.exists(path_html_title_bar):
             list_html_files_title_bar[each_widget_type] = file_html_title_bar
 
         file_html_body = "widget_template_{}_body.html".format(each_widget_type)
-        path_html_body = os.path.join(PATH_HTML_USER, file_html_body)
+        path_html_body = os.path.join(PATH_TEMPLATE_USER, file_html_body)
         if os.path.exists(path_html_body):
             list_html_files_body[each_widget_type] = file_html_body
 
         file_html_configure_options = "widget_template_{}_configure_options.html".format(each_widget_type)
-        path_html_configure_options = os.path.join(PATH_HTML_USER, file_html_configure_options)
+        path_html_configure_options = os.path.join(PATH_TEMPLATE_USER, file_html_configure_options)
         if os.path.exists(path_html_configure_options):
             list_html_files_configure_options[each_widget_type] = file_html_configure_options
 
         file_html_js = "widget_template_{}_js.html".format(each_widget_type)
-        path_html_js = os.path.join(PATH_HTML_USER, file_html_js)
+        path_html_js = os.path.join(PATH_TEMPLATE_USER, file_html_js)
         if os.path.exists(path_html_js):
             list_html_files_js[each_widget_type] = file_html_js
 
         file_html_js_ready = "widget_template_{}_js_ready.html".format(each_widget_type)
-        path_html_js_ready = os.path.join(PATH_HTML_USER, file_html_js_ready)
+        path_html_js_ready = os.path.join(PATH_TEMPLATE_USER, file_html_js_ready)
         if os.path.exists(path_html_js_ready):
             list_html_files_js_ready[each_widget_type] = file_html_js_ready
 
         file_html_js_ready_end = "widget_template_{}_js_ready_end.html".format(each_widget_type)
-        path_html_js_ready_end = os.path.join(PATH_HTML_USER, file_html_js_ready_end)
+        path_html_js_ready_end = os.path.join(PATH_TEMPLATE_USER, file_html_js_ready_end)
         if os.path.exists(path_html_js_ready_end):
             list_html_files_js_ready_end[each_widget_type] = file_html_js_ready_end
 
@@ -330,11 +330,9 @@ def page_dashboard(dashboard_id):
 @flask_login.login_required
 def restart_flask_auto_advance_page(dashboard_id=""):
     """Wait then automatically load next page"""
-    logger.info("Reloading frontend in 5 seconds")
-
+    logger.info("Reloading frontend in 10 seconds")
     cmd = f"sleep 10 && {INSTALL_DIRECTORY}/mycodo/scripts/mycodo_wrapper frontend_reload 2>&1"
     subprocess.Popen(cmd, shell=True)
-    logger.info("Rendering wait page")
 
     return render_template('pages/wait_and_autoload.html',
                            dashboard_id=dashboard_id)

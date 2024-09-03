@@ -27,6 +27,7 @@ from mycodo.mycodo_flask import (routes_admin, routes_authentication,
 from mycodo.mycodo_flask.api import api_blueprint, init_api
 from mycodo.mycodo_flask.extensions import db
 from mycodo.mycodo_flask.utils.utils_general import get_ip_address
+from mycodo.utils.layouts import update_layout
 from mycodo.utils.widgets import parse_widget_information
 
 logger = logging.getLogger(__name__)
@@ -78,9 +79,13 @@ def register_extensions(app):
     if app.config['SQLALCHEMY_DATABASE_URI'] != 'sqlite://':
         with session_scope(app.config['SQLALCHEMY_DATABASE_URI']) as new_session:
             misc = new_session.query(Misc).first()
-            if misc and misc.force_https:
-                csp = {'default-src': ['*', '\'unsafe-inline\'', '\'unsafe-eval\'']}
-                Talisman(app, content_security_policy=csp)
+            if misc:
+                # Ensure layout.html is present, by generating it at startup
+                update_layout(misc.custom_layout)
+
+                if misc.force_https:
+                    csp = {'default-src': ['*', '\'unsafe-inline\'', '\'unsafe-eval\'']}
+                    Talisman(app, content_security_policy=csp)
 
 
 def register_blueprints(app):

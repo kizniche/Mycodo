@@ -16,7 +16,7 @@ from werkzeug.utils import secure_filename
 from mycodo.config import (ALEMBIC_VERSION, DATABASE_NAME, DOCKER_CONTAINER, IMPORT_LOG_FILE,
                            INSTALL_DIRECTORY, MYCODO_VERSION,
                            PATH_ACTIONS_CUSTOM, PATH_FUNCTIONS_CUSTOM,
-                           PATH_HTML_USER, PATH_INPUTS_CUSTOM,
+                           PATH_TEMPLATE_USER, PATH_INPUTS_CUSTOM,
                            PATH_OUTPUTS_CUSTOM, PATH_PYTHON_CODE_USER,
                            PATH_USER_SCRIPTS, PATH_WIDGETS_CUSTOM,
                            SQL_DATABASE_MYCODO, DATABASE_PATH)
@@ -310,7 +310,7 @@ def import_settings(form):
                     PATH_OUTPUTS_CUSTOM,
                     PATH_WIDGETS_CUSTOM,
                     PATH_USER_SCRIPTS,
-                    PATH_HTML_USER,
+                    PATH_TEMPLATE_USER,
                     PATH_PYTHON_CODE_USER
                 ]
 
@@ -336,7 +336,7 @@ def import_settings(form):
                     (PATH_OUTPUTS_CUSTOM, "custom_outputs"),
                     (PATH_WIDGETS_CUSTOM, "custom_widgets"),
                     (PATH_USER_SCRIPTS, "user_scripts"),
-                    (PATH_HTML_USER, "user_html"),
+                    (PATH_TEMPLATE_USER, "user_html"),
                     (PATH_PYTHON_CODE_USER, "user_python_code")
                 ]
 

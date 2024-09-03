@@ -122,6 +122,12 @@
         </div>
       </div>
       <div class="form-group">
+        {{form_settings_general.custom_layout.label(class_='col-sm-12 control-label checkbox-nopad')}}
+        <div class="col-sm-12">
+          <textarea class="form-control" id="custom_layout" name="custom_layout" title="Set custom Layout HTML" rows="4">{{settings.custom_layout}}</textarea>
+        </div>
+      </div>
+      <div class="form-group">
         {{form_settings_general.daemon_debug_mode.label(class_='col-sm-12 control-label checkbox-nopad')}}
         <div class="col-sm-12">
           {%- if settings.daemon_debug_mode == true -%}
