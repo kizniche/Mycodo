@@ -238,7 +238,7 @@ WIDGET_INFORMATION = {
 
     'widget_dashboard_js': """
   // Retrieve the latest/last measurement for Measurement widget
-  function getLastDataMeasurement(measurement_num,
+  function getLastDataMeasurement_multi2(measurement_num,
                        widget_id,
                        unique_id,
                        measure_type,
@@ -283,7 +283,7 @@ WIDGET_INFORMATION = {
   }
 
   // Repeat function for getLastData()
-  function repeatLastDataMeasurement(measurement_num,
+  function repeatLastDataMeasurement_multi2(measurement_num,
                           widget_id,
                           dev_id,
                           measure_type,
@@ -292,7 +292,7 @@ WIDGET_INFORMATION = {
                           max_measure_age_sec,
                           decimal_places) {
     setInterval(function () {
-      getLastDataMeasurement(measurement_num,
+      getLastDataMeasurement_multi2(measurement_num,
                   widget_id,
                   dev_id,
                   measure_type,
@@ -313,49 +313,49 @@ WIDGET_INFORMATION = {
 
   {% for each_input in input %}
     {% if each_input.unique_id == device_id_1 %}
-  getLastDataMeasurement('1', '{{each_widget.unique_id}}', '{{each_input.unique_id}}', 'input', '{{measurement_id_1}}', {{widget_options['measurement_1_max_age']}}, {{widget_options['decimal_places_1']}});
-  repeatLastDataMeasurement('1', '{{each_widget.unique_id}}', '{{each_input.unique_id}}', 'input', '{{measurement_id_1}}', {{widget_options['refresh_seconds']}}, {{widget_options['measurement_1_max_age']}}, {{widget_options['decimal_places_1']}});
+  getLastDataMeasurement_multi2('1', '{{each_widget.unique_id}}', '{{each_input.unique_id}}', 'input', '{{measurement_id_1}}', {{widget_options['measurement_1_max_age']}}, {{widget_options['decimal_places_1']}});
+  repeatLastDataMeasurement_multi2('1', '{{each_widget.unique_id}}', '{{each_input.unique_id}}', 'input', '{{measurement_id_1}}', {{widget_options['refresh_seconds']}}, {{widget_options['measurement_1_max_age']}}, {{widget_options['decimal_places_1']}});
     {%- endif -%}
 
     {% if each_input.unique_id == device_id_2 %}
-  getLastDataMeasurement('2', '{{each_widget.unique_id}}', '{{each_input.unique_id}}', 'input', '{{measurement_id_2}}', {{widget_options['measurement_2_max_age']}}, {{widget_options['decimal_places_2']}});
-  repeatLastDataMeasurement('2', '{{each_widget.unique_id}}', '{{each_input.unique_id}}', 'input', '{{measurement_id_2}}', {{widget_options['refresh_seconds']}}, {{widget_options['measurement_2_max_age']}}, {{widget_options['decimal_places_2']}});
+  getLastDataMeasurement_multi2('2', '{{each_widget.unique_id}}', '{{each_input.unique_id}}', 'input', '{{measurement_id_2}}', {{widget_options['measurement_2_max_age']}}, {{widget_options['decimal_places_2']}});
+  repeatLastDataMeasurement_multi2('2', '{{each_widget.unique_id}}', '{{each_input.unique_id}}', 'input', '{{measurement_id_2}}', {{widget_options['refresh_seconds']}}, {{widget_options['measurement_2_max_age']}}, {{widget_options['decimal_places_2']}});
     {% endif %}
   {%- endfor -%}
 
   {% for each_function in function %}
     {% if each_function.unique_id == device_id_1 %}
-  getLastDataMeasurement('1', '{{each_widget.unique_id}}', '{{each_function.unique_id}}', 'function', '{{measurement_id_1}}', {{widget_options['measurement_1_max_age']}}, {{widget_options['decimal_places_1']}});
-  repeatLastDataMeasurement('1', '{{each_widget.unique_id}}', '{{each_function.unique_id}}', 'function', '{{measurement_id_1}}', {{widget_options['refresh_seconds']}}, {{widget_options['measurement_1_max_age']}}, {{widget_options['decimal_places_1']}});
+  getLastDataMeasurement_multi2('1', '{{each_widget.unique_id}}', '{{each_function.unique_id}}', 'function', '{{measurement_id_1}}', {{widget_options['measurement_1_max_age']}}, {{widget_options['decimal_places_1']}});
+  repeatLastDataMeasurement_multi2('1', '{{each_widget.unique_id}}', '{{each_function.unique_id}}', 'function', '{{measurement_id_1}}', {{widget_options['refresh_seconds']}}, {{widget_options['measurement_1_max_age']}}, {{widget_options['decimal_places_1']}});
     {% endif %}
 
     {% if each_function.unique_id == device_id_2 %}
-  getLastDataMeasurement('2', '{{each_widget.unique_id}}', '{{each_function.unique_id}}', 'function', '{{measurement_id_2}}', {{widget_options['measurement_2_max_age']}}, {{widget_options['decimal_places_2']}});
-  repeatLastDataMeasurement('2', '{{each_widget.unique_id}}', '{{each_function.unique_id}}', 'function', '{{measurement_id_2}}', {{widget_options['refresh_seconds']}}, {{widget_options['measurement_2_max_age']}}, {{widget_options['decimal_places_2']}});
+  getLastDataMeasurement_multi2('2', '{{each_widget.unique_id}}', '{{each_function.unique_id}}', 'function', '{{measurement_id_2}}', {{widget_options['measurement_2_max_age']}}, {{widget_options['decimal_places_2']}});
+  repeatLastDataMeasurement_multi2('2', '{{each_widget.unique_id}}', '{{each_function.unique_id}}', 'function', '{{measurement_id_2}}', {{widget_options['refresh_seconds']}}, {{widget_options['measurement_2_max_age']}}, {{widget_options['decimal_places_2']}});
     {% endif %}
   {%- endfor -%}
 
   {% for each_output in output %}
     {% if each_output.unique_id == device_id_1 %}
-  getLastDataMeasurement('1', '{{each_widget.unique_id}}', '{{each_output.unique_id}}', 'output', '{{measurement_id_1}}', {{widget_options['measurement_1_max_age']}}, {{widget_options['decimal_places_1']}});
-  repeatLastDataMeasurement('1', '{{each_widget.unique_id}}', '{{each_output.unique_id}}', 'output', '{{measurement_id_1}}', {{widget_options['refresh_seconds']}}, {{widget_options['measurement_1_max_age']}}, {{widget_options['decimal_places_1']}});
+  getLastDataMeasurement_multi2('1', '{{each_widget.unique_id}}', '{{each_output.unique_id}}', 'output', '{{measurement_id_1}}', {{widget_options['measurement_1_max_age']}}, {{widget_options['decimal_places_1']}});
+  repeatLastDataMeasurement_multi2('1', '{{each_widget.unique_id}}', '{{each_output.unique_id}}', 'output', '{{measurement_id_1}}', {{widget_options['refresh_seconds']}}, {{widget_options['measurement_1_max_age']}}, {{widget_options['decimal_places_1']}});
     {% endif %}
 
     {% if each_output.unique_id == device_id_2 %}
-  getLastDataMeasurement('2', '{{each_widget.unique_id}}', '{{each_output.unique_id}}', 'output', '{{measurement_id_2}}', {{widget_options['measurement_2_max_age']}}, {{widget_options['decimal_places_2']}});
-  repeatLastDataMeasurement('2', '{{each_widget.unique_id}}', '{{each_output.unique_id}}', 'output', '{{measurement_id_2}}', {{widget_options['refresh_seconds']}}, {{widget_options['measurement_2_max_age']}}, {{widget_options['decimal_places_2']}});
+  getLastDataMeasurement_multi2('2', '{{each_widget.unique_id}}', '{{each_output.unique_id}}', 'output', '{{measurement_id_2}}', {{widget_options['measurement_2_max_age']}}, {{widget_options['decimal_places_2']}});
+  repeatLastDataMeasurement_multi2('2', '{{each_widget.unique_id}}', '{{each_output.unique_id}}', 'output', '{{measurement_id_2}}', {{widget_options['refresh_seconds']}}, {{widget_options['measurement_2_max_age']}}, {{widget_options['decimal_places_2']}});
     {% endif %}
   {%- endfor -%}
 
   {% for each_pid in pid %}
     {% if each_pid.unique_id == device_id_1 %}
-  getLastDataMeasurement('1', '{{each_widget.unique_id}}', '{{each_pid.unique_id}}', 'pid', '{{measurement_id_1}}', {{widget_options['measurement_1_max_age']}}, {{widget_options['decimal_places_1']}});
-  repeatLastDataMeasurement('1', '{{each_widget.unique_id}}', '{{each_pid.unique_id}}', 'pid', '{{measurement_id_1}}', {{widget_options['refresh_seconds']}}, {{widget_options['measurement_1_max_age']}}, {{widget_options['decimal_places_1']}});
+  getLastDataMeasurement_multi2('1', '{{each_widget.unique_id}}', '{{each_pid.unique_id}}', 'pid', '{{measurement_id_1}}', {{widget_options['measurement_1_max_age']}}, {{widget_options['decimal_places_1']}});
+  repeatLastDataMeasurement_multi2('1', '{{each_widget.unique_id}}', '{{each_pid.unique_id}}', 'pid', '{{measurement_id_1}}', {{widget_options['refresh_seconds']}}, {{widget_options['measurement_1_max_age']}}, {{widget_options['decimal_places_1']}});
     {% endif %}
 
     {% if each_pid.unique_id == device_id_2 %}
-  getLastDataMeasurement('2', '{{each_widget.unique_id}}', '{{each_pid.unique_id}}', 'pid', '{{measurement_id_2}}', {{widget_options['measurement_2_max_age']}}, {{widget_options['decimal_places_2']}});
-  repeatLastDataMeasurement('2', '{{each_widget.unique_id}}', '{{each_pid.unique_id}}', 'pid', '{{measurement_id_2}}', {{widget_options['refresh_seconds']}}, {{widget_options['measurement_2_max_age']}}, {{widget_options['decimal_places_2']}});
+  getLastDataMeasurement_multi2('2', '{{each_widget.unique_id}}', '{{each_pid.unique_id}}', 'pid', '{{measurement_id_2}}', {{widget_options['measurement_2_max_age']}}, {{widget_options['decimal_places_2']}});
+  repeatLastDataMeasurement_multi2('2', '{{each_widget.unique_id}}', '{{each_pid.unique_id}}', 'pid', '{{measurement_id_2}}', {{widget_options['refresh_seconds']}}, {{widget_options['measurement_2_max_age']}}, {{widget_options['decimal_places_2']}});
     {% endif %}
   {%- endfor -%}
 """

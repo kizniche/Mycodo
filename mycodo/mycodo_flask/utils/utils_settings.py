@@ -2014,12 +2014,9 @@ def settings_regenerate_widget_html():
             "Regenerate Widget HTML: "
             f"cmd: {cmd}; out: {out}; error: {err}; status: {status}")
 
-        cmd = f"{INSTALL_DIRECTORY}/mycodo/scripts/mycodo_wrapper frontend_reload" \
-              f" | ts '[%Y-%m-%d %H:%M:%S]' >> {DEPENDENCY_LOG_FILE} 2>&1"
-        out, err, status = cmd_output(cmd, stdout_pipe=False, user='root')
-        logger.info(
-            "Frontend reload: "
-            f"cmd: {cmd}; out: {out}; error: {err}; status: {status}")
+        logger.info("Reloading frontend in 10 seconds")
+        cmd = f"sleep 10 && {INSTALL_DIRECTORY}/mycodo/scripts/mycodo_wrapper frontend_reload 2>&1"
+        subprocess.Popen(cmd, shell=True)
     except Exception:
         logger.exception("Regenerating widget HTML")
 
