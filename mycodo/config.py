@@ -374,6 +374,8 @@ DEPENDENCIES_GENERAL = {
 CONDITIONAL_CONDITIONS = [
     ('measurement',
      f"{T['measurement']['title']} ({T['single']['title']}, {T['last']['title']})"),
+    ('measurement_and_ts',
+     f"{T['measurement']['title']} ({T['single']['title']}, {T['last']['title']}, with Timestamp)"),
     ('measurement_past_average',
      f"{T['measurement']['title']} ({T['single']['title']}, {T['past']['title']}, {T['average']['title']})"),
     ('measurement_past_sum',

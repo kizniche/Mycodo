@@ -1,0 +1,29 @@
+<div class="col-12">
+  <strong>[{{_('Condition')}}] {{_('Measurement')}} ({{_('Single')}}, {{_('Last')}}, with Timestamp)</strong>: <strong>self.condition("{{each_condition.unique_id.split('-')[0]}}")</strong> {{_('returns a dictionary with the last timestamp and value found within the Max Age, otherwise returns a dictionary {"time": None, "value": None}.')}}
+</div>
+<div class="col-auto">
+  {{form_conditional_conditions.measurement.label(class_='control-label')}}
+  <div>
+    <select class="form-control form-tooltip form-dropdown" id="measurement" name="measurement" style="width: 100%;" title="" data-original-title="{{_('Select the measurement to use as the input')}}">
+        <option value="">{{dict_translation['select_one']['title']}}</option>
+      {% for each_input_form in choices_input if each_input_form['value'].split(',')[1] != 'edge' -%}
+        <option value="{{each_input_form['value']}}"{% if each_condition.measurement == each_input_form['value'] %} selected{% endif %}>{{each_input_form['item']}}</option>
+      {% endfor -%}
+      {% for each_output_form in choices_output -%}
+        <option value="{{each_output_form['value']}}"{% if each_condition.measurement == each_output_form['value'] %} selected{% endif %}>{{each_output_form['item']}}</option>
+      {% endfor -%}
+      {% for each_function_form in choices_function -%}
+        <option value="{{each_function_form['value']}}"{% if each_condition.measurement == each_function_form['value'] %} selected{% endif %}>{{each_function_form['item']}}</option>
+      {% endfor -%}
+      {% for each_pid_form in choices_pid -%}
+        <option value="{{each_pid_form['value']}}"{% if each_condition.measurement == each_pid_form['value'] %} selected{% endif %}>{{each_pid_form['item']}}</option>
+      {% endfor -%}
+      </select>
+  </div>
+</div>
+<div class="col-auto">
+  {{form_conditional_conditions.max_age.label(class_='control-label')}}
+  <div>
+    {{form_conditional_conditions.max_age(class_='form-control', value=each_condition.max_age, **{'title':_('Do not accept measurements older than this age')})}}
+  </div>
+</div>

@@ -20,6 +20,7 @@ This release changes the install directory from ~/Mycodo to /opt/Mycodo. This ne
 
 ### Features
 
+ - Add Action: Measurement (Single, Last, with Timestamp)
  - Add Input: DHT20
  - Add Input: MAX31855 CircuitPython
  - Add Output: GPIO On/Off using pinctrl (First Pi 5-compatible Output)

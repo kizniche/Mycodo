@@ -14,6 +14,8 @@
 
     {% if each_condition.condition_type == 'measurement' %}
       {% include 'pages/function_options/conditional_options/measurement.html' %}
+    {% elif each_condition.condition_type == 'measurement_and_ts' %}
+      {% include 'pages/function_options/conditional_options/measurement_and_ts.html' %}
     {% elif each_condition.condition_type == 'measurement_past_average' %}
       {% include 'pages/function_options/conditional_options/measurement_past_average.html' %}
     {% elif each_condition.condition_type == 'measurement_past_sum' %}

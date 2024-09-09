@@ -136,7 +136,6 @@ class DaemonController:
         state = 'disabled' if self.opt_out_statistics else 'enabled'
         self.logger.debug(f"Anonymous statistics {state}")
 
-
     def run(self):
         self.load_actions()
 
@@ -201,16 +200,13 @@ class DaemonController:
         # Wait for the client to receive the response before it disconnects
         time.sleep(1)
 
-
     @staticmethod
     def get_condition_measurement(condition_id):
         return get_condition_value(condition_id)
 
-
     @staticmethod
     def get_condition_measurement_dict(condition_id):
         return get_condition_value_dict(condition_id)
-
 
     @staticmethod
     def determine_controller_type(unique_id):
@@ -224,7 +220,6 @@ class DaemonController:
         for each_type in db_tables:
             if db_tables[each_type]:
                 return each_type
-
 
     def controller_activate(self, cont_id):
         """
@@ -287,7 +282,6 @@ class DaemonController:
         message = f"{cont_type} controller with ID {cont_id} activated."
         self.logger.debug(message)
         return 0, message
-
 
     def controller_deactivate(self, cont_id):
         """
@@ -358,7 +352,6 @@ class DaemonController:
             self.logger.error(message)
             return 1, message
 
-
     def controller_restart(self, cont_id):
         """
         Restart a currently-active controller
@@ -375,7 +368,6 @@ class DaemonController:
             return 0, f"Successfully restarted controller with ID {cont_id}"
         else:
             return 1, ", ".join([msg_deactivate, msg_activate])
-
 
     def controller_is_active(self, cont_id):
         """
@@ -405,7 +397,6 @@ class DaemonController:
             self.logger.exception(message)
             return False
 
-
     def check_daemon(self):
         try:
             for cond_id in self.controller['Conditional']:
@@ -431,7 +422,6 @@ class DaemonController:
             message = f"Could not check running threads: {except_msg}"
             self.logger.exception(message)
             return f"Exception: {except_msg}"
-
 
     def module_function(self, controller_type, unique_id, button_id, args_dict, thread=True, return_from_function=False):
         """
@@ -481,7 +471,6 @@ class DaemonController:
             self.logger.exception(message)
         return 0, message
 
-
     def input_force_measurements(self, input_id):
         """
         Force Input measurements to be acquired
@@ -499,7 +488,6 @@ class DaemonController:
             message = f"Cannot force acquisition of Input measurements: {except_msg}"
             self.logger.exception(message)
             return 1, message
-
 
     def function_status(self, function_id):
         if function_id in self.controller["Function"]:
@@ -519,7 +507,6 @@ class DaemonController:
                 return {'error': [f"Error getting Function status: {traceback.format_exc()}"]}
         else:
             return {'error': [f"Function ID not found. Is the Function activated?"]}
-
 
     def lcd_reset(self, lcd_id):
         """
@@ -542,7 +529,6 @@ class DaemonController:
         except Exception as except_msg:
             message = f"Could not reset display: {except_msg}"
             self.logger.exception(message)
-
 
     def lcd_backlight(self, lcd_id, state):
         """
@@ -571,7 +557,6 @@ class DaemonController:
             message = f"Cannot change display backlight: {except_msg}"
             self.logger.exception(message)
 
-
     def display_backlight_color(self, lcd_id, color):
         """
         Set the LCD backlight color
@@ -595,7 +580,6 @@ class DaemonController:
         except Exception as except_msg:
             message = f"Cannot change display color: {except_msg}"
             self.logger.exception(message)
-
 
     def lcd_flash(self, lcd_id, state):
         """
@@ -622,7 +606,6 @@ class DaemonController:
             self.logger.exception(message)
             return 0, message
 
-
     def pid_hold(self, pid_id):
         try:
             return self.controller['PID'][pid_id].pid_hold()
@@ -633,7 +616,6 @@ class DaemonController:
         except Exception as except_msg:
             message = f"Could not hold PID: {except_msg}"
             self.logger.exception(message)
-
 
     def pid_mod(self, pid_id):
         try:
@@ -646,7 +628,6 @@ class DaemonController:
             message = f"Could not modify PID: {except_msg}"
             self.logger.exception(message)
 
-
     def pid_pause(self, pid_id):
         try:
             return self.controller['PID'][pid_id].pid_pause()
@@ -658,7 +639,6 @@ class DaemonController:
             message = f"Could not pause PID: {except_msg}"
             self.logger.exception(message)
 
-
     def pid_resume(self, pid_id):
         try:
             return self.controller['PID'][pid_id].pid_resume()
@@ -669,7 +649,6 @@ class DaemonController:
         except Exception as except_msg:
             message = f"Could not resume PID: {except_msg}"
             self.logger.exception(message)
-
 
     def pid_get(self, pid_id, setting):
         try:
@@ -695,7 +674,6 @@ class DaemonController:
             message = f"Could not get PID {setting}: {except_msg}"
             self.logger.exception(message)
 
-
     def pid_set(self, pid_id, setting, value):
         try:
             if setting == 'setpoint':
@@ -716,14 +694,12 @@ class DaemonController:
             message = f"Could not set PID {setting}: {except_msg}"
             self.logger.exception(message)
 
-
     def refresh_daemon_conditional_settings(self, unique_id):
         try:
             return self.controller['Conditional'][unique_id].refresh_settings()
         except Exception as except_msg:
             message = f"Could not refresh conditional settings: {except_msg}"
             self.logger.exception(message)
-
 
     def refresh_daemon_misc_settings(self):
         try:
@@ -738,13 +714,11 @@ class DaemonController:
         except Exception:
             self.logger.exception("Could not refresh misc settings")
 
-
     def refresh_daemon_trigger_settings(self, unique_id):
         try:
             return self.controller['Trigger'][unique_id].refresh_settings()
         except Exception:
             self.logger.exception("Could not refresh trigger settings")
-
 
     def output_off(self, output_id, output_channel=None, trigger_conditionals=True):
         """
@@ -767,7 +741,6 @@ class DaemonController:
             message = f"Could not turn output off: {except_msg}"
             self.logger.exception(message)
             return 1, message
-
 
     def output_on(self,
                   output_id,
@@ -810,7 +783,6 @@ class DaemonController:
             self.logger.exception(message)
             return 1, message
 
-
     def output_setup(self, action, output_id):
         """
         Setup output in running output controller
@@ -829,7 +801,6 @@ class DaemonController:
             message = f"Could not set up output: {except_msg}"
             self.logger.exception(message)
 
-
     def output_state(self, output_id, output_channel):
         """
         Return the output state, whether "on" or "off"
@@ -844,7 +815,6 @@ class DaemonController:
         except Exception:
             self.logger.exception("Could not query output state")
 
-
     def output_states_all(self):
         """
         Return all output states, whether "on" or "off"
@@ -854,7 +824,6 @@ class DaemonController:
         except Exception:
             self.logger.exception(f"Could not query all output state")
 
-
     def startup_stats(self):
         """Ensure existence of statistics file and save daemon startup time."""
         # if statistics file doesn't exist, create it
@@ -863,10 +832,8 @@ class DaemonController:
             recreate_stat_file()
         add_update_csv(STATS_CSV, 'daemon_startup_seconds', self.startup_time)
 
-
     def load_actions(self):
         self.actions = parse_action_information()
-
 
     def start_all_controllers(self):
         """
@@ -932,7 +899,6 @@ class DaemonController:
 
         time.sleep(0.5)
 
-
     def stop_all_controllers(self):
         """Stop all running controllers."""
         controller_running = {}
@@ -972,7 +938,6 @@ class DaemonController:
         except Exception as err:
             self.logger.info(f"Widget controller had an issue stopping: {err}")
 
-
     def trigger_action(self, action_id, value={}, debug=False):
         try:
             return trigger_action(
@@ -984,7 +949,6 @@ class DaemonController:
             message = f"Could not trigger Conditional Actions: {err}"
             self.logger.exception(message)
 
-
     def trigger_all_actions(self, function_id, message='', debug=False):
         try:
             return trigger_controller_actions(
@@ -994,7 +958,6 @@ class DaemonController:
             self.logger.exception(message)
             return message
 
-
     def terminate_daemon(self):
         """Instruct the daemon to shut down."""
         self.thread_shutdown_timer = timeit.default_timer()
@@ -1003,7 +966,6 @@ class DaemonController:
         while not self.terminated:
             time.sleep(0.1)
         return 1
-
 
     #
     # Timed functions
@@ -1039,7 +1001,6 @@ class DaemonController:
                     new_session.commit()
         except Exception:
             self.logger.exception("Mycodo Upgrade Check ERROR")
-
 
     def check_all_timelapses(self, now):
         with session_scope(MYCODO_DB_PATH) as new_session:
@@ -1080,7 +1041,6 @@ class DaemonController:
                 except Exception:
                     self.logger.exception("Could not execute timelapse")
 
-
     def generate_usage_report(self):
         """Generate an Output usage report."""
         try:
@@ -1100,7 +1060,6 @@ class DaemonController:
                 self.logger.debug(f"Generating next output usage report {str_next_report}")
         except:
             self.logger.exception("Calculating next report time")
-
 
     def send_stats(self):
         """Collect and send statistics."""

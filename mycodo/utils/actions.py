@@ -147,7 +147,40 @@ def get_condition_value(condition_id):
         return
 
     # Check Measurement Conditions
-    if sql_condition.condition_type in ['measurement',
+    if sql_condition.condition_type == 'measurement_and_ts':
+        device_id = sql_condition.measurement.split(',')[0]
+        measurement_id = sql_condition.measurement.split(',')[1]
+
+        device_measurement = db_retrieve_table_daemon(
+            DeviceMeasurements, unique_id=measurement_id)
+        if device_measurement:
+            conversion = db_retrieve_table_daemon(
+                Conversion, unique_id=device_measurement.conversion_id)
+        else:
+            conversion = None
+        channel, unit, measurement = return_measurement_info(
+            device_measurement, conversion)
+
+        if None in [channel, unit]:
+            logger.error(
+                "Could not determine channel or unit from measurement ID: "
+                "{}".format(measurement_id))
+            return {"time": None, "value": None}
+
+        max_age = sql_condition.max_age
+
+        influx_return = get_last_measurement(
+            device_id, measurement_id, max_age=max_age)
+        if influx_return is not None:
+            return_ts = influx_return[0]
+            return_measurement = influx_return[1]
+        else:
+            return_ts = None
+            return_measurement = None
+
+        return {"time": return_ts, "value": return_measurement}
+
+    elif sql_condition.condition_type in ['measurement',
                                         'measurement_past_average',
                                         'measurement_past_sum']:
         device_id = sql_condition.measurement.split(',')[0]

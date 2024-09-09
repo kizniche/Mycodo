@@ -226,6 +226,7 @@ def conditional_condition_mod(form):
             Conditional.unique_id == cond_mod.conditional_id).first()
 
         if cond_mod.condition_type in ['measurement',
+                                       'measurement_and_ts',
                                        'measurement_past_average',
                                        'measurement_past_sum',
                                        'measurement_dict']:
