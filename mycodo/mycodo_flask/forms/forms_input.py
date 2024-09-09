@@ -79,6 +79,10 @@ class InputMod(FlaskForm):
         TRANSLATIONS['name']['title'],
         validators=[DataRequired()]
     )
+    unique_id = StringField(
+        TRANSLATIONS['unique_id']['title'],
+        validators=[DataRequired()]
+    )
     period = DecimalField(
         TRANSLATIONS['period']['title'],
         validators=[DataRequired(),

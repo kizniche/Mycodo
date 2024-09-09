@@ -304,7 +304,7 @@ class OutputModule(AbstractOutput):
 
             self.output_states[output_channel] = amount
 
-            measure_dict[0]['value'] = amount
+            measure_dict[0]['value'] = float(amount)
             add_measurements_influxdb(self.unique_id, measure_dict)
 
             return "success"

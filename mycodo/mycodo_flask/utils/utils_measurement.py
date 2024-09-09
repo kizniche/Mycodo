@@ -54,6 +54,20 @@ def measurement_mod_form(messages, page_refresh, form):
                     f"{gettext('Deactivate controller before modifying its settings')}: {mod_device.name}")
                 break
 
+            if ("measurement_id_{}".format(each_meas_id) in form and
+                    form["measurement_id_{}".format(each_meas_id)] and
+                    mod_meas.unique_id != form["measurement_id_{}".format(each_meas_id)]):
+                test_meas_id = DeviceMeasurements.query.filter(
+                    DeviceMeasurements.unique_id == form["measurement_id_{}".format(each_meas_id)]).first()
+                if test_meas_id:
+                    messages["error"].append(
+                        f"Measurement ID must be unique. "
+                        f"ID already exists: '{form['measurement_id_{}'.format(each_meas_id)]}'")
+                elif not form["measurement_id_{}".format(each_meas_id)]:
+                    messages["error"].append(f"Measurement ID is required")
+                else:
+                    mod_meas.unique_id = form["measurement_id_{}".format(each_meas_id)]
+
             if ("measurement_meas_name_{}".format(each_meas_id) in form and
                     form["measurement_meas_name_{}".format(each_meas_id)]):
                 mod_meas.name = form["measurement_meas_name_{}".format(each_meas_id)]

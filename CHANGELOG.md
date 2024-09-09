@@ -17,6 +17,7 @@ This release changes the install directory from ~/Mycodo to /opt/Mycodo. This ne
  - Fix displaying Tags on Highcharts Widget
  - Fix dependencies of Mijia LYWSD03MMC
  - Fix Restart Frontend returning an error
+ - Fix PWM Outputs not recording values of 0 to database
 
 ### Features
 
@@ -36,6 +37,7 @@ This release changes the install directory from ~/Mycodo to /opt/Mycodo. This ne
  - Add controller_restart as client endpoint
  - Add option for custom CSS
  - Add options for changing title and brand text
+ - Add ability to edit Input and Input Measurement unique_id
 
 ### Miscellaneous
 

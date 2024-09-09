@@ -398,7 +398,7 @@ class OutputModule(AbstractOutput):
             if self.options_channels['pwm_invert_stored_signal'][0]:
                 amount = 100.0 - abs(amount)
 
-            measure_dict[0]['value'] = amount
+            measure_dict[0]['value'] = float(amount)
             add_measurements_influxdb(self.unique_id, measure_dict)
 
     def is_on(self, output_channel=None):

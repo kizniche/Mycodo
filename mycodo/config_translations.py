@@ -416,6 +416,9 @@ TRANSLATIONS = {
     'uart_location': {
         'title': lazy_gettext('UART Device'),
         'phrase': lazy_gettext('The UART device location (e.g. /dev/ttyUSB1)')},
+    'unique_id': {
+        'title': lazy_gettext('Unique ID'),
+        'phrase': lazy_gettext('A unique ID to distinguish this from others')},
     'use_pylint': {
         'title': lazy_gettext('Analyze Python with Pylint'),
         'phrase': lazy_gettext('Analyze the Python code with pylint and return the output')},

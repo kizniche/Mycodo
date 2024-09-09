@@ -366,6 +366,17 @@ def input_mod(form_mod, request_form):
         mod_input.name = form_mod.name.data
         messages["name"] = form_mod.name.data
 
+        if mod_input.unique_id != form_mod.unique_id.data:
+            test_unique_id = Input.query.filter(Input.unique_id == form_mod.unique_id.data).first()
+            if test_unique_id:
+                messages["error"].append(
+                    f"Input ID must be unique. "
+                    f"ID already exists: '{form_mod.unique_id.data}'")
+            elif not form_mod.unique_id.data:
+                messages["error"].append(f"Input ID is required")
+            else:
+                mod_input.unique_id = form_mod.unique_id.data
+
         if form_mod.location.data:
             mod_input.location = form_mod.location.data
         if form_mod.i2c_location.data:
