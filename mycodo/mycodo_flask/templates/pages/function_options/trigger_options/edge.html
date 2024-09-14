@@ -5,7 +5,8 @@
       <option value="">{{dict_translation['select_one']['title']}}</option>
     {% set edge_sensor = [] %}
     {% for each_input_form in choices_input -%}
-      {%- if table_input.query.filter(table_input.unique_id == each_input_form['value'].split(',')[0]).first().device == 'EDGE' -%}
+      {% set input_ = table_input.query.filter(table_input.unique_id == each_input_form['value'].split(',')[0]).first() %}
+      {% if input_ and input_.device in dict_inputs and 'edge_input' in dict_inputs[input_.device] and dict_inputs[input_.device]['edge_input'] %}
         {% do edge_sensor.append(1) %}
       <option value="{{each_input_form['value'].split(',')[0]}}"{% if each_function.measurement == each_input_form['value'].split(',')[0] %} selected{% endif %}>{{each_input_form['item']}}</option>
       {%- endif -%}

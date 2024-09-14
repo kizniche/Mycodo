@@ -226,6 +226,7 @@ def parse_input_information(exclude_custom=False):
             dict_inputs = dict_has_value(dict_inputs, input_custom, 'measurements_use_same_timestamp')
             dict_inputs = dict_has_value(dict_inputs, input_custom, 'measurements_rescale')
             dict_inputs = dict_has_value(dict_inputs, input_custom, 'do_not_run_periodically')
+            dict_inputs = dict_has_value(dict_inputs, input_custom, 'edge_input')
             dict_inputs = dict_has_value(dict_inputs, input_custom, 'message')
 
             dict_inputs = dict_has_value(dict_inputs, input_custom, 'url_datasheet', force_type='list')

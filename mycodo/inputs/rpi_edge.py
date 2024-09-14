@@ -26,6 +26,8 @@ INPUT_INFORMATION = {
     'measurements_name': 'Rising/Falling Edge',
     'measurements_dict': measurements_dict,
 
+    'edge_input': True,  # Treat as an Edge Detection Input
+
     'options_enabled': [
         'gpio_location',
         'pre_output'

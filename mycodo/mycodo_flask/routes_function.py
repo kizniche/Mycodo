@@ -31,6 +31,7 @@ from mycodo.mycodo_flask.utils.utils_general import generate_form_action_list
 from mycodo.mycodo_flask.utils.utils_misc import determine_controller_type
 from mycodo.utils.actions import parse_action_information
 from mycodo.utils.functions import parse_function_information
+from mycodo.utils.inputs import parse_input_information
 from mycodo.utils.outputs import output_types, parse_output_information
 from mycodo.utils.sunriseset import suntime_calculate_next_sunrise_sunset_epoch
 from mycodo.utils.system_pi import (
@@ -381,6 +382,7 @@ def page_function():
     dict_measurements = add_custom_measurements(Measurement.query.all())
     dict_units = add_custom_units(Unit.query.all())
 
+    dict_inputs = parse_input_information()
     dict_outputs = parse_output_information()
 
     custom_options_values_controllers = parse_custom_option_values(
@@ -545,6 +547,7 @@ def page_function():
                                custom_options_values_function_channels=custom_options_values_function_channels,
                                dict_actions=dict_actions,
                                dict_controllers=dict_controllers,
+                               dict_inputs=dict_inputs,
                                dict_measurements=dict_measurements,
                                dict_outputs=dict_outputs,
                                dict_units=dict_units,

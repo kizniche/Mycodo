@@ -38,6 +38,7 @@ This release changes the install directory from ~/Mycodo to /opt/Mycodo. This ne
  - Add option for custom CSS
  - Add options for changing title and brand text
  - Add ability to edit Input and Input Measurement unique_id
+ - Add "edge_input" Input option for use in Edge Trigger Functions
 
 ### Miscellaneous
 
