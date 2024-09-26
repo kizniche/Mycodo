@@ -30,6 +30,7 @@ def assure_path_exists(path):
 
 def generate_widget_html():
     """Generate all HTML files for all widgets."""
+    error = []
     dict_widgets = parse_widget_information()
     assure_path_exists(PATH_TEMPLATE_USER)
 
@@ -111,8 +112,11 @@ def generate_widget_html():
                 fw.write(html_js_ready_end)
                 fw.close()
             set_user_grp(path_js_ready_end, 'mycodo', 'mycodo')
-        except Exception:
+        except Exception as err:
             logger.exception(f"Generating widget HTML for widget: {widget_name}")
+            error.append(f"Exception generating widget HTML for '{widget_name}' (see Web Log for full traceback): {err}")
+
+    return error
 
 
 if __name__ == "__main__":

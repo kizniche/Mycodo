@@ -136,6 +136,7 @@ case "${1:-''}" in
         mkdir -p "${MYCODO_PATH}"/mycodo/mycodo_flask/ssl_certs
         mkdir -p "${MYCODO_PATH}"/mycodo/mycodo_flask/static/js/user_js
         mkdir -p "${MYCODO_PATH}"/mycodo/mycodo_flask/static/css/user_css
+        mkdir -p "${MYCODO_PATH}"/mycodo/mycodo_flask/static/fonts/user_fonts
 
         if [[ ! -e /var/log/mycodo/mycodo.log ]]; then
             touch /var/log/mycodo/mycodo.log
@@ -735,6 +736,7 @@ case "${1:-''}" in
         mkdir -p "${MYCODO_PATH}"/mycodo/scripts
         mkdir -p "${MYCODO_PATH}"/mycodo/mycodo_flask/static/js/user_js
         mkdir -p "${MYCODO_PATH}"/mycodo/mycodo_flask/static/css/user_css
+        mkdir -p "${MYCODO_PATH}"/mycodo/mycodo_flask/static/fonts/user_fonts
 
         if [[ ! -e /var/log/mycodo/mycodo.log ]]; then
             touch /var/log/mycodo/mycodo.log

@@ -25,7 +25,7 @@
   <script src="/static/js/popper.min.js"></script>
 
   {% if current_user.theme != '' %}
-    <link href="/static/css/bootstrap-4-themes/{{current_user.theme}}.css" rel="stylesheet">
+    <link href="{{current_user.theme}}" rel="stylesheet">
   {% endif %}
 
   {% block head %}{% endblock %}

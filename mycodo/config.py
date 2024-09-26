@@ -3,6 +3,7 @@
 # config.py - Global Mycodo settings
 #
 import binascii
+import logging
 import sys
 from datetime import timedelta
 
@@ -13,8 +14,10 @@ from flask_babel import lazy_gettext as lg
 sys.path.append(os.path.abspath(os.path.dirname(__file__)))
 from config_translations import TRANSLATIONS as T
 
+logger = logging.getLogger("mycodo.config")
+
 MYCODO_VERSION = '8.15.13'
-ALEMBIC_VERSION = '9bdb60d2a2cd'
+ALEMBIC_VERSION = '435f35958689'
 
 # FORCE UPGRADE MASTER
 # Set True to enable upgrading to the master branch of the Mycodo repository.
@@ -59,6 +62,10 @@ PATH_TEMPLATE = os.path.join(INSTALL_DIRECTORY, 'mycodo/mycodo_flask/templates')
 PATH_TEMPLATE_LAYOUT = os.path.join(PATH_TEMPLATE, 'layout.html')
 PATH_TEMPLATE_LAYOUT_DEFAULT = os.path.join(PATH_TEMPLATE, 'layout_default.html')
 PATH_TEMPLATE_USER = os.path.join(PATH_TEMPLATE, 'user_templates')
+PATH_CSS = os.path.join(INSTALL_DIRECTORY, 'mycodo/mycodo_flask/static/css')
+PATH_CSS_USER = os.path.join(PATH_CSS, 'user_css')
+PATH_JS_USER = os.path.join(INSTALL_DIRECTORY, 'mycodo/mycodo_flask/static/js/user_js')
+PATH_FONTS_USER = os.path.join(INSTALL_DIRECTORY, 'mycodo/mycodo_flask/static/fonts/user_fonts')
 PATH_USER_SCRIPTS = os.path.join(INSTALL_DIRECTORY, 'mycodo/user_scripts')
 PATH_PYTHON_CODE_USER = os.path.join(INSTALL_DIRECTORY, 'mycodo/user_python_code')
 PATH_MEASUREMENTS_BACKUP = os.path.join(INSTALL_DIRECTORY, 'mycodo/backup_measurements')
@@ -482,30 +489,50 @@ USER_ROLES = [
 
 # Web UI themes
 THEMES = [
-    ('cerulean', 'Cerulean'),
-    ('cosmo', 'Cosmo'),
-    ('cyborg', 'Cyborg'),
-    ('darkly', 'Darkly'),
-    ('flatly', 'Flatly'),
-    ('journal', 'Journal'),
-    ('literia', 'Literia'),
-    ('lumen', 'Lumen'),
-    ('lux', 'Lux'),
-    ('materia', 'Materia'),
-    ('minty', 'Minty'),
-    ('pulse', 'Pulse'),
-    ('sandstone', 'Sandstone'),
-    ('simplex', 'Simplex'),
-    ('slate', 'Slate'),
-    ('solar', 'Solar'),
-    ('spacelab', 'Spacelab'),
-    ('superhero', 'Superhero'),
-    ('united', 'United'),
-    ('yeti', 'Yeti')
+    ('/static/css/bootstrap-4-themes/cerulean.css', 'Cerulean'),
+    ('/static/css/bootstrap-4-themes/cosmo.css', 'Cosmo'),
+    ('/static/css/bootstrap-4-themes/cyborg.css', 'Cyborg'),
+    ('/static/css/bootstrap-4-themes/darkly.css', 'Darkly'),
+    ('/static/css/bootstrap-4-themes/flatly.css', 'Flatly'),
+    ('/static/css/bootstrap-4-themes/journal.css', 'Journal'),
+    ('/static/css/bootstrap-4-themes/literia.css', 'Literia'),
+    ('/static/css/bootstrap-4-themes/lumen.css', 'Lumen'),
+    ('/static/css/bootstrap-4-themes/lux.css', 'Lux'),
+    ('/static/css/bootstrap-4-themes/materia.css', 'Materia'),
+    ('/static/css/bootstrap-4-themes/minty.css', 'Minty'),
+    ('/static/css/bootstrap-4-themes/pulse.css', 'Pulse'),
+    ('/static/css/bootstrap-4-themes/sandstone.css', 'Sandstone'),
+    ('/static/css/bootstrap-4-themes/simplex.css', 'Simplex'),
+    ('/static/css/bootstrap-4-themes/slate.css', 'Slate'),
+    ('/static/css/bootstrap-4-themes/solar.css', 'Solar'),
+    ('/static/css/bootstrap-4-themes/spacelab.css', 'Spacelab'),
+    ('/static/css/bootstrap-4-themes/superhero.css', 'Superhero'),
+    ('/static/css/bootstrap-4-themes/united.css', 'United'),
+    ('/static/css/bootstrap-4-themes/yeti.css', 'Yeti')
 ]
 
-THEMES_DARK = ['cyborg', 'darkly', 'slate', 'solar', 'superhero']
+THEMES_DARK = [
+    '/static/css/bootstrap-4-themes/cyborg.css',
+    '/static/css/bootstrap-4-themes/darkly.css',
+    '/static/css/bootstrap-4-themes/slate.css',
+    '/static/css/bootstrap-4-themes/solar.css',
+    '/static/css/bootstrap-4-themes/superhero.css'
+]
 
+try:
+    user_themes = os.path.join(PATH_CSS_USER, "bootstrap-4-themes")
+    for file in os.listdir(os.fsencode(user_themes)):
+        filename = os.fsdecode(file)
+        if filename.endswith(".css"):
+            theme_location = f"/static/css/user_css/bootstrap-4-themes/{filename}"
+            logger.info(f"Adding custom theme: {theme_location}")
+            theme_display = filename.split('.')[0].replace('-', ' ').replace('_', ' ').title()
+            THEMES.append((theme_location, theme_display))
+
+            if 'dark' in filename.lower():
+                THEMES_DARK.append(theme_location)
+except:
+    pass
 
 class ProdConfig(object):
     """Production Configuration."""

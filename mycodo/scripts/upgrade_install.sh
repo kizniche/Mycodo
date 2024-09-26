@@ -218,6 +218,24 @@ runSelfUpgrade() {
     printf "Done.\n"
   fi
 
+  if [ -d "${CURRENT_MYCODO_DIRECTORY}"/mycodo/mycodo_flask/static/fonts/user_fonts ] ; then
+    printf "Copying mycodo/mycodo_flask/static/fonts/user_fonts..."
+    if ! cp -r "${CURRENT_MYCODO_DIRECTORY}"/mycodo/mycodo_flask/static/fonts/user_fonts "${THIS_MYCODO_DIRECTORY}"/mycodo/mycodo_flask/static/fonts/ ; then
+      printf "Failed: Error while trying to copy mycodo/mycodo_flask/static/fonts/user_fonts"
+      error_found
+    fi
+    printf "Done.\n"
+  fi
+
+  if [ -d "${CURRENT_MYCODO_DIRECTORY}"/mycodo/user_scripts ] ; then
+    printf "Copying mycodo/user_scripts..."
+    if ! cp -r "${CURRENT_MYCODO_DIRECTORY}"/mycodo/user_scripts "${THIS_MYCODO_DIRECTORY}"/mycodo/user_scripts/ ; then
+      printf "Failed: Error while trying to copy mycodo/user_scripts"
+      error_found
+    fi
+    printf "Done.\n"
+  fi
+
   if [ -d "${CURRENT_MYCODO_DIRECTORY}"/output_usage_reports ] ; then
     printf "Moving output_usage_reports directory..."
     if ! mv "${CURRENT_MYCODO_DIRECTORY}"/output_usage_reports "${THIS_MYCODO_DIRECTORY}" ; then

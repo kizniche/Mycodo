@@ -40,6 +40,19 @@ def upgrade_revision(error, revision):
     # elif revision == 'REPLACE_WITH_ALEMBIC_REVISION_ID':
     #     pass  # Code goes here
 
+    elif revision == '435f35958689':
+        from mycodo.databases.models import User
+
+        try:
+            with session_scope(MYCODO_DB_PATH) as session:
+                # Update output widget custom option format for output selection
+                users = session.query(User).all()
+                for each_user in users:
+                    each_user.theme = f"/static/css/bootstrap-4-themes/{each_user.theme}.css"
+                session.commit()
+        except:
+            print(f"Exception processing 435f35958689: {traceback.format_exc()}")
+
     elif revision == 'b354722c9b8b':
         import json
         import os

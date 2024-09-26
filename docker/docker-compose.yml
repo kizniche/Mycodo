@@ -79,6 +79,7 @@ services:
       - mycodo_custom_user_scripts:/home/mycodo/mycodo/user_scripts
       - mycodo_custom_user_css:/home/mycodo/mycodo/mycodo_flask/static/css/user_css
       - mycodo_custom_user_js:/home/mycodo/mycodo/mycodo_flask/static/js/user_js
+      - mycodo_custom_user_fonts:/home/mycodo/mycodo/mycodo_flask/static/fonts/user_fonts
       - mycodo_log:/var/log/mycodo
       - mycodo_ssl_certs:/home/mycodo/mycodo/mycodo_flask/ssl_certs
       - mycodo_influxdb:/var/lib/influxdb
@@ -123,6 +124,7 @@ volumes:
   mycodo_custom_user_scripts:
   mycodo_custom_user_css:
   mycodo_custom_user_js:
+  mycodo_custom_user_fonts:
   mycodo_databases:
   mycodo_ssl_certs:
   mycodo_log:
