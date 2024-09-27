@@ -3,7 +3,6 @@
 # config.py - Global Mycodo settings
 #
 import binascii
-import logging
 import sys
 from datetime import timedelta
 
@@ -13,8 +12,6 @@ from flask_babel import lazy_gettext as lg
 # Append proper path for other software reading this config file
 sys.path.append(os.path.abspath(os.path.dirname(__file__)))
 from config_translations import TRANSLATIONS as T
-
-logger = logging.getLogger("mycodo.config")
 
 MYCODO_VERSION = '8.15.13'
 ALEMBIC_VERSION = '435f35958689'
@@ -525,7 +522,6 @@ try:
         filename = os.fsdecode(file)
         if filename.endswith(".css"):
             theme_location = f"/static/css/user_css/bootstrap-4-themes/{filename}"
-            logger.info(f"Adding custom theme: {theme_location}")
             theme_display = filename.split('.')[0].replace('-', ' ').replace('_', ' ').title()
             THEMES.append((theme_location, theme_display))
 
