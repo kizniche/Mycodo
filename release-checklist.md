@@ -5,6 +5,7 @@ Notes to keep track of the steps involved in making a new release.
 - [ ] Check that the IP address in /mycodo/scripts/generate_manual_api.sh is accessible and is the latest yet-to-be released version of Mycodo.
 - [ ] Ensure the virtualenv exists with ```sudo /opt/Mycodo/mycodo/scripts/upgrade_commands.sh setup-virtualenv-full```
 - [ ] Update pip packages in virtualenv with ```/opt/Mycodo/env/bin/pip install --break-system-packages -r /opt/Mycodo/docs/requirements.txt```
+- [ ] Install the dependencies listed at the top of generate_manual_api.sh
 - [ ] Activate the virtualenv with ```source /opt/Mycodo/env/bin/activate```
 - [ ] Run ```sudo /bin/bash /opt/Mycodo/mycodo/scripts/generate_all.sh```
    - Generates Input/Output/Function/Widget/API manual pages in Mycodo/docs/, and translatable .po files in Mycodo/mycodo/mycodo_flask/translations, and translated docs.

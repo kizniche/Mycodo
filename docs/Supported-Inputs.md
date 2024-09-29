@@ -873,7 +873,7 @@ A single topic is subscribed to and the returned JSON payload contains one or mo
 - Default Value: 1883</td><td>Host port number</td></tr><tr><td>Topic</td><td>Text
 - Default Value: mqtt/test/input</td><td>The topic to subscribe to</td></tr><tr><td>Keep Alive</td><td>Integer
 - Default Value: 60</td><td>Maximum amount of time between received signals. Set to 0 to disable.</td></tr><tr><td>Client ID</td><td>Text
-- Default Value: client_tmlvtFa7</td><td>Unique client ID for connecting to the server</td></tr><tr><td>Use Login</td><td>Boolean</td><td>Send login credentials</td></tr><tr><td>Use TLS</td><td>Boolean</td><td>Send login credentials using TLS</td></tr><tr><td>Username</td><td>Text
+- Default Value: client_FGIg092m</td><td>Unique client ID for connecting to the server</td></tr><tr><td>Use Login</td><td>Boolean</td><td>Send login credentials</td></tr><tr><td>Use TLS</td><td>Boolean</td><td>Send login credentials using TLS</td></tr><tr><td>Username</td><td>Text
 - Default Value: user</td><td>Username for connecting to the server</td></tr><tr><td>Password</td><td>Text</td><td>Password for connecting to the server. Leave blank to disable.</td></tr><tr><td>Use Websockets</td><td>Boolean</td><td>Use websockets to connect to the server.</td></tr><tr><td colspan="3">Channel Options</td></tr><tr><td>Name</td><td>Text</td><td>A name to distinguish this from others</td></tr><tr><td>JMESPATH Expression</td><td>Text</td><td>JMESPATH expression to find value in JSON response</td></tr></tbody></table>
 
 ### MQTT: MQTT Subscribe (Value payload)
@@ -889,7 +889,7 @@ A topic is subscribed to for each channel Subscription Topic and the returned pa
 - Default Value: localhost</td><td>Host or IP address</td></tr><tr><td>Port</td><td>Integer
 - Default Value: 1883</td><td>Host port number</td></tr><tr><td>Keep Alive</td><td>Integer
 - Default Value: 60</td><td>Maximum amount of time between received signals. Set to 0 to disable.</td></tr><tr><td>Client ID</td><td>Text
-- Default Value: client_Rgcz7S8I</td><td>Unique client ID for connecting to the server</td></tr><tr><td>Use Login</td><td>Boolean</td><td>Send login credentials</td></tr><tr><td>Use TLS</td><td>Boolean</td><td>Send login credentials using TLS</td></tr><tr><td>Username</td><td>Text
+- Default Value: client_mqUgXLvM</td><td>Unique client ID for connecting to the server</td></tr><tr><td>Use Login</td><td>Boolean</td><td>Send login credentials</td></tr><tr><td>Use TLS</td><td>Boolean</td><td>Send login credentials using TLS</td></tr><tr><td>Username</td><td>Text
 - Default Value: user</td><td>Username for connecting to the server</td></tr><tr><td>Password</td><td>Text</td><td>Password for connecting to the server. Leave blank to disable.</td></tr><tr><td>Use Websockets</td><td>Boolean</td><td>Use websockets to connect to the server.</td></tr><tr><td colspan="3">Channel Options</td></tr><tr><td>Name</td><td>Text</td><td>A name to distinguish this from others</td></tr><tr><td>Subscription Topic</td><td>Text</td><td>The MQTT topic to subscribe to</td></tr></tbody></table>
 
 ### Melexis: MLX90393
@@ -1339,7 +1339,7 @@ This Input module allows the use of any temperature/humidity sensor with the TH1
 This measures from several Kasa power devices (plugs/strips) capable of measuring energy consumption. These include, but are not limited to the KP115 and HS600.
 <table><thead><tr class="header"><th>Option</th><th>Type</th><th>Description</th></tr></thead><tbody><tr><td>Measurements Enabled</td><td>Multi-Select</td><td>The measurements to record</td></tr><tr><td>Period (Seconds)</td><td>Decimal</td><td>The duration between measurements or actions</td></tr><tr><td>Pre Output</td><td>Select</td><td>Turn the selected output on before taking every measurement</td></tr><tr><td>Pre Out Duration (Seconds)</td><td>Decimal</td><td>If a Pre Output is selected, set the duration to turn the Pre Output on for before every measurement is acquired.</td></tr><tr><td>Pre During Measure</td><td>Boolean</td><td>Check to turn the output off after (opposed to before) the measurement is complete</td></tr><tr><td>Device Type</td><td>Select</td><td>The type of Kasa device</td></tr><tr><td>Host</td><td>Text
 - Default Value: 0.0.0.0</td><td>Host or IP address</td></tr><tr><td>Asyncio RPC Port</td><td>Integer
-- Default Value: 18808</td><td>The port to start the asyncio RPC server. Must be unique from other Kasa Outputs.</td></tr><tr><td colspan="3">Commands</td></tr><tr><td colspan="3">The total kWh can be cleared with the following button or with the Clear Total kWh Function Action. This will also clear all energy stats on the device, not just the total kWh.</td></tr><tr><td>Clear Total: Kilowatt-hour</td><td>Button</td><td></td></tr></tbody></table>
+- Default Value: 18108</td><td>The port to start the asyncio RPC server. Must be unique from other Kasa Outputs.</td></tr><tr><td colspan="3">Commands</td></tr><tr><td colspan="3">The total kWh can be cleared with the following button or with the Clear Total kWh Function Action. This will also clear all energy stats on the device, not just the total kWh.</td></tr><tr><td>Clear Total: Kilowatt-hour</td><td>Button</td><td></td></tr></tbody></table>
 
 ### Tasmota: Tasmota Outlet Energy Monitor (HTTP)
 

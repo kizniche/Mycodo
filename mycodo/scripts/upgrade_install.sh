@@ -229,7 +229,7 @@ runSelfUpgrade() {
 
   if [ -d "${CURRENT_MYCODO_DIRECTORY}"/mycodo/user_scripts ] ; then
     printf "Copying mycodo/user_scripts..."
-    if ! cp -r "${CURRENT_MYCODO_DIRECTORY}"/mycodo/user_scripts "${THIS_MYCODO_DIRECTORY}"/mycodo/user_scripts/ ; then
+    if ! cp -r "${CURRENT_MYCODO_DIRECTORY}"/mycodo/user_scripts "${THIS_MYCODO_DIRECTORY}"/mycodo/ ; then
       printf "Failed: Error while trying to copy mycodo/user_scripts"
       error_found
     fi

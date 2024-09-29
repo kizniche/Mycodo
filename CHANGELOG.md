@@ -1,3 +1,11 @@
+## 8.16.1 (Unreleased)
+
+### Bugfixes
+
+ - Fix restoring mycodo/user_scripts during upgrade
+ - Fix documentation generation
+
+
 ## 8.16.0 (2024.09.29)
 
 This release updates several python packages that require Python >= 3.8. You can check your Python version prior to upgrading. If you do not have the required version, you should not upgrade, since this will likely break your system. To be able to use this and future Mycodo releases, ensure you are running an updated operating system that supports a modern Python version.
