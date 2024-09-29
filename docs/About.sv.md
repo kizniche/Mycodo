@@ -12,4 +12,4 @@ När ingångar och utgångar kombineras kan funktionskontroller användas för a
 
 Utlösare kan ställas in för att aktivera händelser baserat på specifika datum och tider, enligt tidsperioder eller vid soluppgång/solnedgång på en specifik latitud och longitud.
 
-Mycodo har översatts till flera språk. Som standard avgör webbläsarens språk vilket språk som används, men det kan åsidosättas i de allmänna inställningarna på sidan `[Gear Icon] -> Configure -> General`. Om du upptäcker ett problem och vill korrigera en översättning eller vill lägga till ett annat språk kan detta göras på [https://translate.kylegabriel.com](http://translate.kylegabriel.com:8080/engage/mycodo/).
+Mycodo has been translated to several languages. By default, the language of the browser will determine which language is used, but may be overridden in the General Settings, on the `[Gear Icon] -> Configure -> General` page. If you find an issue and would like to correct a translation or would like to add another language, this can be done at [https://translate.kylegabriel.com](https://translate.kylegabriel.com/engage/mycodo/).

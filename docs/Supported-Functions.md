@@ -71,7 +71,7 @@ A simple bang-bang control for controlling one PWM output from one input. Select
 
 ### Camera: libcamera: Image/Video
 
-- Dependencies: [libcamera-apps-lite](https://packages.debian.org/search?keywords=libcamera-apps-lite), [ffmpeg](https://packages.debian.org/search?keywords=ffmpeg)
+- Dependencies: [libcamera-apps](https://packages.debian.org/search?keywords=libcamera-apps), [ffmpeg](https://packages.debian.org/search?keywords=ffmpeg)
 
 NOTE: THIS IS CURRENTLY EXPERIMENTAL - USE AT YOUR OWN RISK UNTIL THIS NOTICE IS REMOVED. Capture images and videos from a camera using libcamera-still and libcamera-vid. The Function must be activated in order to capture still and timelapse images and use the Camera Widget.
 <table><thead><tr class="header"><th>Option</th><th>Type</th><th>Description</th></tr></thead><tbody><tr><td>Status Period (seconds)</td><td>Integer
@@ -339,7 +339,8 @@ This function acquires a measurement and uses it within a user-set equation and 
 - Dependencies: [build-essential](https://packages.debian.org/search?keywords=build-essential)
 
 This is an example Function Module that showcases all the different type of UI options. It is not useful beyond showing how to develop new custom Function modules.This message will appear above the Function options. It will retrieve the last selected measurement, turn the selected output on for 15 seconds, then deactivate itself. Study the code to develop your own Function Module that can be imported on the Function Import page.
-<table><thead><tr class="header"><th>Option</th><th>Type</th><th>Description</th></tr></thead><tbody><tr><td colspan="3">The following fields are for text, integers, and decimal inputs. This message will automatically create a new line for the options that come after it. Alternatively, a new line can be created instead without a message, which are what separates each of the following three inputs.</td></tr><tr><td>Text Input</td><td>Text
+<table><thead><tr class="header"><th>Option</th><th>Type</th><th>Description</th></tr></thead><tbody><tr><td>Period (Seconds)</td><td>Decimal
+- Default Value: 60</td><td>The duration between measurements or actions</td></tr><tr><td colspan="3">The following fields are for text, integers, and decimal inputs. This message will automatically create a new line for the options that come after it. Alternatively, a new line can be created instead without a message, which are what separates each of the following three inputs.</td></tr><tr><td>Text Input</td><td>Text
 - Default Value: Text_1</td><td>Type in text</td></tr><tr><td>Integer Input</td><td>Integer
 - Default Value: 100</td><td>Type in an Integer</td></tr><tr><td>Devimal Input</td><td>Decimal
 - Default Value: 50.2</td><td>Type in a decimal value</td></tr><tr><td colspan="3">A boolean value can be made using a checkbox.</td></tr><tr><td>Boolean Value</td><td>Boolean
@@ -357,6 +358,22 @@ This function calculates the humidity based on wet and dry bulb temperature meas
 - Default Value: 360</td><td>The maximum age of the measurement to use</td></tr><tr><td>Wet Bulb Temperature</td><td>Select Measurement (Input, Function)</td><td>Wet Bulb temperature measurement</td></tr><tr><td>Wet Bulb: Max Age (Seconds)</td><td>Integer
 - Default Value: 360</td><td>The maximum age of the measurement to use</td></tr><tr><td>Pressure</td><td>Select Measurement (Input, Function)</td><td>Pressure measurement</td></tr><tr><td>Pressure: Max Age (Seconds)</td><td>Integer
 - Default Value: 360</td><td>The maximum age of the measurement to use</td></tr></tbody></table>
+
+### Neokey 4x1 Neopixel Keyboard (Execute Actions)
+
+- Dependencies: [pyusb](https://pypi.org/project/pyusb), [Adafruit-extended-bus](https://pypi.org/project/Adafruit-extended-bus), [adafruit-circuitpython-neokey](https://pypi.org/project/adafruit-circuitpython-neokey)
+
+This Function executes actions when a key is pressed. Add actions at the bottom of this module, then enter one or more short action IDs for each key, separated by commas. The Action ID is found next to the Action (for example, the Action "[Action 0559689e] Controller: Activate" has an Action ID of 0559689e. When entering Action ID(s), separate multiple IDs by commas (for example, "asdf1234" or "asdf1234,qwer5678,zxcv0987"). Actions will be executed in the order they are entered in the text string. Enter Action IDs to execute those actions when the key is pressed. If enable Toggling Actions, every other key press will execute Actions listed in Toggled Action IDs. The LED color of the key before being pressed, after being pressed, and while the last action is running. Color is an RGB string, with 0-255 for each color. For example, red is "255, 0, 0" and blue is "0, 0, 255".
+<table><thead><tr class="header"><th>Option</th><th>Type</th><th>Description</th></tr></thead><tbody><tr><td>I2C Address</td><td>Text
+- Default Value: 0x30</td><td></td></tr><tr><td>I2C Bus</td><td>Integer
+- Default Value: 1</td><td></td></tr><tr><td>LED Brightness (0.0-1.0)</td><td>Decimal
+- Default Value: 0.2</td><td>The brightness of the LEDs</td></tr><tr><td>LED Flash Period (Seconds)</td><td>Decimal
+- Default Value: 1.0</td><td>Set the period if the LED begins flashing</td></tr><tr><td colspan="3">Channel Options</td></tr><tr><td>Name</td><td>Text</td><td>A name to distinguish this from others</td></tr><tr><td>LED Delay (Seconds)</td><td>Decimal
+- Default Value: 1.5</td><td>How long to leave the LED on after the last action executes.</td></tr><tr><td>Action ID(s)</td><td>Text</td><td>Set which action(s) execute when the key is pressed. Enter one or more Action IDs, separated by commas</td></tr><tr><td>Enable Toggling Actions</td><td>Boolean</td><td>Alternate between executing two sets of Actions</td></tr><tr><td>Toggled Action ID(s)</td><td>Text</td><td>Set which action(s) execute when the key is pressed on even presses. Enter one or more Action IDs, separated by commas</td></tr><tr><td>Resting LED Color (RGB)</td><td>Text
+- Default Value: 0, 0, 0</td><td>The RGB color while no actions are running (e.g 10, 0, 0)</td></tr><tr><td>Actions Running LED Color: (RGB)</td><td>Text
+- Default Value: 0, 255, 0</td><td>The RGB color while all but the last action is running (e.g 10, 0, 0)</td></tr><tr><td>Last Action LED Color (RGB)</td><td>Text
+- Default Value: 0, 0, 255</td><td>The RGB color while the last action is running (e.g 10, 0, 0)</td></tr><tr><td>Shutdown LED Color (RGB)</td><td>Text
+- Default Value: 0, 0, 0</td><td>The RGB color when the Function is disabled (e.g 10, 0, 0)</td></tr></tbody></table>
 
 ### PID Autotune
 
@@ -439,7 +456,7 @@ This function acquires the last measurement of those that are selected, sums the
 This function acquires the past measurements (within Max Age) for the selected measurement, sums them, then stores the resulting value as the selected measurement and unit.
 <table><thead><tr class="header"><th>Option</th><th>Type</th><th>Description</th></tr></thead><tbody><tr><td>Period (Seconds)</td><td>Decimal
 - Default Value: 60</td><td>The duration between measurements or actions</td></tr><tr><td>Start Offset (Seconds)</td><td>Integer
-- Default Value: 10</td><td>The duration to wait before the first operation</td></tr><tr><td>Measurement</td><td>Select Measurement (Input, Function)</td><td>Measurement to replace "x" in the equation</td></tr><tr><td>Max Age (Seconds)</td><td>Integer
+- Default Value: 10</td><td>The duration to wait before the first operation</td></tr><tr><td>Measurement</td><td>Select Measurement (Input, Function, Output)</td><td>Measurement to replace "x" in the equation</td></tr><tr><td>Max Age (Seconds)</td><td>Integer
 - Default Value: 360</td><td>The maximum age of the measurement to use</td></tr></tbody></table>
 
 ### Vapor Pressure Deficit

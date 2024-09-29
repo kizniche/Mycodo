@@ -97,21 +97,21 @@ Measurements
 
 ## Altitude
 
-### [BOSCH: BME280](/Mycodo/Supported-Inputs/#bosch-bme280)
+### [BOSCH: BME280 (Adafruit_BME280)](/Mycodo/Supported-Inputs/#bosch-bme280-adafruit_bme280)
 
-### [BOSCH: BME280](/Mycodo/Supported-Inputs/#bosch-bme280)
+### [BOSCH: BME280 (Adafruit_CircuitPython_BME280)](/Mycodo/Supported-Inputs/#bosch-bme280-adafruit_circuitpython_bme280)
 
-### [BOSCH: BME280](/Mycodo/Supported-Inputs/#bosch-bme280)
+### [BOSCH: BME280 (RPi.bme280)](/Mycodo/Supported-Inputs/#bosch-bme280-rpibme280)
 
-### [BOSCH: BME680](/Mycodo/Supported-Inputs/#bosch-bme680)
+### [BOSCH: BME680 (Adafruit_CircuitPython_BME680)](/Mycodo/Supported-Inputs/#bosch-bme680-adafruit_circuitpython_bme680)
 
-### [BOSCH: BME680](/Mycodo/Supported-Inputs/#bosch-bme680)
+### [BOSCH: BME680 (bme680)](/Mycodo/Supported-Inputs/#bosch-bme680-bme680)
 
 ### [BOSCH: BMP180](/Mycodo/Supported-Inputs/#bosch-bmp180)
 
-### [BOSCH: BMP280](/Mycodo/Supported-Inputs/#bosch-bmp280)
+### [BOSCH: BMP280 (Adafruit_GPIO)](/Mycodo/Supported-Inputs/#bosch-bmp280-adafruit_gpio)
 
-### [BOSCH: BMP280](/Mycodo/Supported-Inputs/#bosch-bmp280)
+### [BOSCH: BMP280 (bmp280-python)](/Mycodo/Supported-Inputs/#bosch-bmp280-bmp280-python)
 
 ### [Senseair: K96](/Mycodo/Supported-Inputs/#senseair-k96)
 
@@ -153,9 +153,9 @@ Measurements
 
 ### [Sensirion: SCD-4x (40, 41)](/Mycodo/Supported-Inputs/#sensirion-scd-4x-40-41)
 
-### [Sensirion: SCD30](/Mycodo/Supported-Inputs/#sensirion-scd30)
+### [Sensirion: SCD30 (Adafruit_CircuitPython_SCD30)](/Mycodo/Supported-Inputs/#sensirion-scd30-adafruit_circuitpython_scd30)
 
-### [Sensirion: SCD30](/Mycodo/Supported-Inputs/#sensirion-scd30)
+### [Sensirion: SCD30 (scd30_i2c)](/Mycodo/Supported-Inputs/#sensirion-scd30-scd30_i2c)
 
 ### [Winsen: MH-Z14A](/Mycodo/Supported-Inputs/#winsen-mh-z14a)
 
@@ -207,19 +207,21 @@ Measurements
 
 ### [AOSONG: DHT11](/Mycodo/Supported-Inputs/#aosong-dht11)
 
+### [AOSONG: DHT20](/Mycodo/Supported-Inputs/#aosong-dht20)
+
 ### [AOSONG: DHT22](/Mycodo/Supported-Inputs/#aosong-dht22)
 
 ### [Atlas Scientific: Atlas Humidity](/Mycodo/Supported-Inputs/#atlas-scientific-atlas-humidity)
 
-### [BOSCH: BME280](/Mycodo/Supported-Inputs/#bosch-bme280)
+### [BOSCH: BME280 (Adafruit_BME280)](/Mycodo/Supported-Inputs/#bosch-bme280-adafruit_bme280)
 
-### [BOSCH: BME280](/Mycodo/Supported-Inputs/#bosch-bme280)
+### [BOSCH: BME280 (Adafruit_CircuitPython_BME280)](/Mycodo/Supported-Inputs/#bosch-bme280-adafruit_circuitpython_bme280)
 
-### [BOSCH: BME280](/Mycodo/Supported-Inputs/#bosch-bme280)
+### [BOSCH: BME280 (RPi.bme280)](/Mycodo/Supported-Inputs/#bosch-bme280-rpibme280)
 
-### [BOSCH: BME680](/Mycodo/Supported-Inputs/#bosch-bme680)
+### [BOSCH: BME680 (Adafruit_CircuitPython_BME680)](/Mycodo/Supported-Inputs/#bosch-bme680-adafruit_circuitpython_bme680)
 
-### [BOSCH: BME680](/Mycodo/Supported-Inputs/#bosch-bme680)
+### [BOSCH: BME680 (bme680)](/Mycodo/Supported-Inputs/#bosch-bme680-bme680)
 
 ### [Cozir: Cozir CO2](/Mycodo/Supported-Inputs/#cozir-cozir-co2)
 
@@ -231,15 +233,15 @@ Measurements
 
 ### [Sensirion: SCD-4x (40, 41)](/Mycodo/Supported-Inputs/#sensirion-scd-4x-40-41)
 
-### [Sensirion: SCD30](/Mycodo/Supported-Inputs/#sensirion-scd30)
+### [Sensirion: SCD30 (Adafruit_CircuitPython_SCD30)](/Mycodo/Supported-Inputs/#sensirion-scd30-adafruit_circuitpython_scd30)
 
-### [Sensirion: SCD30](/Mycodo/Supported-Inputs/#sensirion-scd30)
+### [Sensirion: SCD30 (scd30_i2c)](/Mycodo/Supported-Inputs/#sensirion-scd30-scd30_i2c)
 
 ### [Sensirion: SHT1x/7x](/Mycodo/Supported-Inputs/#sensirion-sht1x-7x)
 
-### [Sensirion: SHT2x](/Mycodo/Supported-Inputs/#sensirion-sht2x)
+### [Sensirion: SHT2x (sht20)](/Mycodo/Supported-Inputs/#sensirion-sht2x-sht20)
 
-### [Sensirion: SHT2x](/Mycodo/Supported-Inputs/#sensirion-sht2x)
+### [Sensirion: SHT2x (smbus2)](/Mycodo/Supported-Inputs/#sensirion-sht2x-smbus2)
 
 ### [Sensirion: SHT31-D](/Mycodo/Supported-Inputs/#sensirion-sht31-d)
 
@@ -257,9 +259,9 @@ Measurements
 
 ### [Sonoff: TH16/10 (Tasmota firmware) with AM2301](/Mycodo/Supported-Inputs/#sonoff-th16-10-tasmota-firmware-with-am2301)
 
-### [TE Connectivity: HTU21D](/Mycodo/Supported-Inputs/#te-connectivity-htu21d)
+### [TE Connectivity: HTU21D (Adafruit_CircuitPython_HTU21D)](/Mycodo/Supported-Inputs/#te-connectivity-htu21d-adafruit_circuitpython_htu21d)
 
-### [TE Connectivity: HTU21D](/Mycodo/Supported-Inputs/#te-connectivity-htu21d)
+### [TE Connectivity: HTU21D (pigpio)](/Mycodo/Supported-Inputs/#te-connectivity-htu21d-pigpio)
 
 ### [Texas Instruments: HDC1000](/Mycodo/Supported-Inputs/#texas-instruments-hdc1000)
 
@@ -279,13 +281,15 @@ Measurements
 
 ### [Mycodo: Free Space](/Mycodo/Supported-Inputs/#mycodo-free-space)
 
-### [Mycodo: Mycodo RAM](/Mycodo/Supported-Inputs/#mycodo-mycodo-ram)
+### [Mycodo: System and Mycodo RAM](/Mycodo/Supported-Inputs/#mycodo-system-and-mycodo-ram)
 
 ## Dissolved Oxygen
 
 ### [Atlas Scientific: Atlas DO](/Mycodo/Supported-Inputs/#atlas-scientific-atlas-do)
 
 ## Duration
+
+### [Mycodo: Uptime](/Mycodo/Supported-Inputs/#mycodo-uptime)
 
 ### [Weather: OpenWeatherMap (Lat/Lon, Current/Future)](/Mycodo/Supported-Inputs/#weather-openweathermap-lat-lon-current-future)
 
@@ -321,9 +325,9 @@ Measurements
 
 ## Electrical Potential
 
-### [Microchip: MCP3008](/Mycodo/Supported-Inputs/#microchip-mcp3008)
+### [Microchip: MCP3008 (Adafruit_CircuitPython_MCP3xxx)](/Mycodo/Supported-Inputs/#microchip-mcp3008-adafruit_circuitpython_mcp3xxx)
 
-### [Microchip: MCP3008](/Mycodo/Supported-Inputs/#microchip-mcp3008)
+### [Microchip: MCP3008 (Adafruit_MCP3008)](/Mycodo/Supported-Inputs/#microchip-mcp3008-adafruit_mcp3008)
 
 ### [Microchip: MCP3208](/Mycodo/Supported-Inputs/#microchip-mcp3208)
 
@@ -367,21 +371,23 @@ Measurements
 
 ### [AOSONG: DHT11](/Mycodo/Supported-Inputs/#aosong-dht11)
 
+### [AOSONG: DHT20](/Mycodo/Supported-Inputs/#aosong-dht20)
+
 ### [AOSONG: DHT22](/Mycodo/Supported-Inputs/#aosong-dht22)
 
 ### [ASAIR: AHTx0](/Mycodo/Supported-Inputs/#asair-ahtx0)
 
 ### [Atlas Scientific: Atlas Humidity](/Mycodo/Supported-Inputs/#atlas-scientific-atlas-humidity)
 
-### [BOSCH: BME280](/Mycodo/Supported-Inputs/#bosch-bme280)
+### [BOSCH: BME280 (Adafruit_BME280)](/Mycodo/Supported-Inputs/#bosch-bme280-adafruit_bme280)
 
-### [BOSCH: BME280](/Mycodo/Supported-Inputs/#bosch-bme280)
+### [BOSCH: BME280 (Adafruit_CircuitPython_BME280)](/Mycodo/Supported-Inputs/#bosch-bme280-adafruit_circuitpython_bme280)
 
-### [BOSCH: BME280](/Mycodo/Supported-Inputs/#bosch-bme280)
+### [BOSCH: BME280 (RPi.bme280)](/Mycodo/Supported-Inputs/#bosch-bme280-rpibme280)
 
-### [BOSCH: BME680](/Mycodo/Supported-Inputs/#bosch-bme680)
+### [BOSCH: BME680 (Adafruit_CircuitPython_BME680)](/Mycodo/Supported-Inputs/#bosch-bme680-adafruit_circuitpython_bme680)
 
-### [BOSCH: BME680](/Mycodo/Supported-Inputs/#bosch-bme680)
+### [BOSCH: BME680 (bme680)](/Mycodo/Supported-Inputs/#bosch-bme680-bme680)
 
 ### [Cozir: Cozir CO2](/Mycodo/Supported-Inputs/#cozir-cozir-co2)
 
@@ -395,15 +401,15 @@ Measurements
 
 ### [Sensirion: SCD-4x (40, 41)](/Mycodo/Supported-Inputs/#sensirion-scd-4x-40-41)
 
-### [Sensirion: SCD30](/Mycodo/Supported-Inputs/#sensirion-scd30)
+### [Sensirion: SCD30 (Adafruit_CircuitPython_SCD30)](/Mycodo/Supported-Inputs/#sensirion-scd30-adafruit_circuitpython_scd30)
 
-### [Sensirion: SCD30](/Mycodo/Supported-Inputs/#sensirion-scd30)
+### [Sensirion: SCD30 (scd30_i2c)](/Mycodo/Supported-Inputs/#sensirion-scd30-scd30_i2c)
 
 ### [Sensirion: SHT1x/7x](/Mycodo/Supported-Inputs/#sensirion-sht1x-7x)
 
-### [Sensirion: SHT2x](/Mycodo/Supported-Inputs/#sensirion-sht2x)
+### [Sensirion: SHT2x (sht20)](/Mycodo/Supported-Inputs/#sensirion-sht2x-sht20)
 
-### [Sensirion: SHT2x](/Mycodo/Supported-Inputs/#sensirion-sht2x)
+### [Sensirion: SHT2x (smbus2)](/Mycodo/Supported-Inputs/#sensirion-sht2x-smbus2)
 
 ### [Sensirion: SHT31-D](/Mycodo/Supported-Inputs/#sensirion-sht31-d)
 
@@ -421,9 +427,9 @@ Measurements
 
 ### [Sonoff: TH16/10 (Tasmota firmware) with AM2301](/Mycodo/Supported-Inputs/#sonoff-th16-10-tasmota-firmware-with-am2301)
 
-### [TE Connectivity: HTU21D](/Mycodo/Supported-Inputs/#te-connectivity-htu21d)
+### [TE Connectivity: HTU21D (Adafruit_CircuitPython_HTU21D)](/Mycodo/Supported-Inputs/#te-connectivity-htu21d-adafruit_circuitpython_htu21d)
 
-### [TE Connectivity: HTU21D](/Mycodo/Supported-Inputs/#te-connectivity-htu21d)
+### [TE Connectivity: HTU21D (pigpio)](/Mycodo/Supported-Inputs/#te-connectivity-htu21d-pigpio)
 
 ### [Texas Instruments: HDC1000](/Mycodo/Supported-Inputs/#texas-instruments-hdc1000)
 
@@ -541,21 +547,21 @@ Measurements
 
 ### [Atlas Scientific: Atlas Pressure](/Mycodo/Supported-Inputs/#atlas-scientific-atlas-pressure)
 
-### [BOSCH: BME280](/Mycodo/Supported-Inputs/#bosch-bme280)
+### [BOSCH: BME280 (Adafruit_BME280)](/Mycodo/Supported-Inputs/#bosch-bme280-adafruit_bme280)
 
-### [BOSCH: BME280](/Mycodo/Supported-Inputs/#bosch-bme280)
+### [BOSCH: BME280 (Adafruit_CircuitPython_BME280)](/Mycodo/Supported-Inputs/#bosch-bme280-adafruit_circuitpython_bme280)
 
-### [BOSCH: BME280](/Mycodo/Supported-Inputs/#bosch-bme280)
+### [BOSCH: BME280 (RPi.bme280)](/Mycodo/Supported-Inputs/#bosch-bme280-rpibme280)
 
-### [BOSCH: BME680](/Mycodo/Supported-Inputs/#bosch-bme680)
+### [BOSCH: BME680 (Adafruit_CircuitPython_BME680)](/Mycodo/Supported-Inputs/#bosch-bme680-adafruit_circuitpython_bme680)
 
-### [BOSCH: BME680](/Mycodo/Supported-Inputs/#bosch-bme680)
+### [BOSCH: BME680 (bme680)](/Mycodo/Supported-Inputs/#bosch-bme680-bme680)
 
 ### [BOSCH: BMP180](/Mycodo/Supported-Inputs/#bosch-bmp180)
 
-### [BOSCH: BMP280](/Mycodo/Supported-Inputs/#bosch-bmp280)
+### [BOSCH: BMP280 (Adafruit_GPIO)](/Mycodo/Supported-Inputs/#bosch-bmp280-adafruit_gpio)
 
-### [BOSCH: BMP280](/Mycodo/Supported-Inputs/#bosch-bmp280)
+### [BOSCH: BMP280 (bmp280-python)](/Mycodo/Supported-Inputs/#bosch-bmp280-bmp280-python)
 
 ### [Infineon: DPS310](/Mycodo/Supported-Inputs/#infineon-dps310)
 
@@ -581,9 +587,9 @@ Measurements
 
 ## Resistance
 
-### [BOSCH: BME680](/Mycodo/Supported-Inputs/#bosch-bme680)
+### [BOSCH: BME680 (Adafruit_CircuitPython_BME680)](/Mycodo/Supported-Inputs/#bosch-bme680-adafruit_circuitpython_bme680)
 
-### [BOSCH: BME680](/Mycodo/Supported-Inputs/#bosch-bme680)
+### [BOSCH: BME680 (bme680)](/Mycodo/Supported-Inputs/#bosch-bme680-bme680)
 
 ## Revolutions
 
@@ -613,6 +619,8 @@ Measurements
 
 ### [AOSONG: DHT11](/Mycodo/Supported-Inputs/#aosong-dht11)
 
+### [AOSONG: DHT20](/Mycodo/Supported-Inputs/#aosong-dht20)
+
 ### [AOSONG: DHT22](/Mycodo/Supported-Inputs/#aosong-dht22)
 
 ### [ASAIR: AHTx0](/Mycodo/Supported-Inputs/#asair-ahtx0)
@@ -625,21 +633,21 @@ Measurements
 
 ### [Atlas Scientific: Atlas PT-1000](/Mycodo/Supported-Inputs/#atlas-scientific-atlas-pt-1000)
 
-### [BOSCH: BME280](/Mycodo/Supported-Inputs/#bosch-bme280)
+### [BOSCH: BME280 (Adafruit_BME280)](/Mycodo/Supported-Inputs/#bosch-bme280-adafruit_bme280)
 
-### [BOSCH: BME280](/Mycodo/Supported-Inputs/#bosch-bme280)
+### [BOSCH: BME280 (Adafruit_CircuitPython_BME280)](/Mycodo/Supported-Inputs/#bosch-bme280-adafruit_circuitpython_bme280)
 
-### [BOSCH: BME280](/Mycodo/Supported-Inputs/#bosch-bme280)
+### [BOSCH: BME280 (RPi.bme280)](/Mycodo/Supported-Inputs/#bosch-bme280-rpibme280)
 
-### [BOSCH: BME680](/Mycodo/Supported-Inputs/#bosch-bme680)
+### [BOSCH: BME680 (Adafruit_CircuitPython_BME680)](/Mycodo/Supported-Inputs/#bosch-bme680-adafruit_circuitpython_bme680)
 
-### [BOSCH: BME680](/Mycodo/Supported-Inputs/#bosch-bme680)
+### [BOSCH: BME680 (bme680)](/Mycodo/Supported-Inputs/#bosch-bme680-bme680)
 
 ### [BOSCH: BMP180](/Mycodo/Supported-Inputs/#bosch-bmp180)
 
-### [BOSCH: BMP280](/Mycodo/Supported-Inputs/#bosch-bmp280)
+### [BOSCH: BMP280 (Adafruit_GPIO)](/Mycodo/Supported-Inputs/#bosch-bmp280-adafruit_gpio)
 
-### [BOSCH: BMP280](/Mycodo/Supported-Inputs/#bosch-bmp280)
+### [BOSCH: BMP280 (bmp280-python)](/Mycodo/Supported-Inputs/#bosch-bmp280-bmp280-python)
 
 ### [Catnip Electronics: Chirp](/Mycodo/Supported-Inputs/#catnip-electronics-chirp)
 
@@ -651,9 +659,9 @@ Measurements
 
 ### [MAXIM: DS1825](/Mycodo/Supported-Inputs/#maxim-ds1825)
 
-### [MAXIM: DS18B20](/Mycodo/Supported-Inputs/#maxim-ds18b20)
+### [MAXIM: DS18B20 (ow-shell)](/Mycodo/Supported-Inputs/#maxim-ds18b20-ow-shell)
 
-### [MAXIM: DS18B20](/Mycodo/Supported-Inputs/#maxim-ds18b20)
+### [MAXIM: DS18B20 (w1thermsensor)](/Mycodo/Supported-Inputs/#maxim-ds18b20-w1thermsensor)
 
 ### [MAXIM: DS18S20](/Mycodo/Supported-Inputs/#maxim-ds18s20)
 
@@ -661,17 +669,19 @@ Measurements
 
 ### [MAXIM: MAX31850K](/Mycodo/Supported-Inputs/#maxim-max31850k)
 
-### [MAXIM: MAX31855 (Gravity PT100)](/Mycodo/Supported-Inputs/#maxim-max31855-gravity-pt100)
+### [MAXIM: MAX31855 (Gravity PT100) (smbus2)](/Mycodo/Supported-Inputs/#maxim-max31855-gravity-pt100--smbus2)
 
-### [MAXIM: MAX31855 (Gravity PT100)](/Mycodo/Supported-Inputs/#maxim-max31855-gravity-pt100)
+### [MAXIM: MAX31855 (Gravity PT100) (wiringpi)](/Mycodo/Supported-Inputs/#maxim-max31855-gravity-pt100--wiringpi)
 
-### [MAXIM: MAX31855](/Mycodo/Supported-Inputs/#maxim-max31855)
+### [MAXIM: MAX31855 (Adafruit_MAX31855)](/Mycodo/Supported-Inputs/#maxim-max31855-adafruit_max31855)
+
+### [MAXIM: MAX31855 (adafruit-circuitpython-max31855)](/Mycodo/Supported-Inputs/#maxim-max31855-adafruit-circuitpython-max31855)
 
 ### [MAXIM: MAX31856](/Mycodo/Supported-Inputs/#maxim-max31856)
 
-### [MAXIM: MAX31865](/Mycodo/Supported-Inputs/#maxim-max31865)
+### [MAXIM: MAX31865 (Adafruit-CircuitPython-MAX31865)](/Mycodo/Supported-Inputs/#maxim-max31865-adafruit-circuitpython-max31865)
 
-### [MAXIM: MAX31865](/Mycodo/Supported-Inputs/#maxim-max31865)
+### [MAXIM: MAX31865 (RPi.GPIO)](/Mycodo/Supported-Inputs/#maxim-max31865-rpigpio)
 
 ### [Melexis: MLX90614](/Mycodo/Supported-Inputs/#melexis-mlx90614)
 
@@ -691,15 +701,15 @@ Measurements
 
 ### [Sensirion: SCD-4x (40, 41)](/Mycodo/Supported-Inputs/#sensirion-scd-4x-40-41)
 
-### [Sensirion: SCD30](/Mycodo/Supported-Inputs/#sensirion-scd30)
+### [Sensirion: SCD30 (Adafruit_CircuitPython_SCD30)](/Mycodo/Supported-Inputs/#sensirion-scd30-adafruit_circuitpython_scd30)
 
-### [Sensirion: SCD30](/Mycodo/Supported-Inputs/#sensirion-scd30)
+### [Sensirion: SCD30 (scd30_i2c)](/Mycodo/Supported-Inputs/#sensirion-scd30-scd30_i2c)
 
 ### [Sensirion: SHT1x/7x](/Mycodo/Supported-Inputs/#sensirion-sht1x-7x)
 
-### [Sensirion: SHT2x](/Mycodo/Supported-Inputs/#sensirion-sht2x)
+### [Sensirion: SHT2x (sht20)](/Mycodo/Supported-Inputs/#sensirion-sht2x-sht20)
 
-### [Sensirion: SHT2x](/Mycodo/Supported-Inputs/#sensirion-sht2x)
+### [Sensirion: SHT2x (smbus2)](/Mycodo/Supported-Inputs/#sensirion-sht2x-smbus2)
 
 ### [Sensirion: SHT31-D](/Mycodo/Supported-Inputs/#sensirion-sht31-d)
 
@@ -719,9 +729,9 @@ Measurements
 
 ### [Sonoff: TH16/10 (Tasmota firmware) with DS18B20](/Mycodo/Supported-Inputs/#sonoff-th16-10-tasmota-firmware-with-ds18b20)
 
-### [TE Connectivity: HTU21D](/Mycodo/Supported-Inputs/#te-connectivity-htu21d)
+### [TE Connectivity: HTU21D (Adafruit_CircuitPython_HTU21D)](/Mycodo/Supported-Inputs/#te-connectivity-htu21d-adafruit_circuitpython_htu21d)
 
-### [TE Connectivity: HTU21D](/Mycodo/Supported-Inputs/#te-connectivity-htu21d)
+### [TE Connectivity: HTU21D (pigpio)](/Mycodo/Supported-Inputs/#te-connectivity-htu21d-pigpio)
 
 ### [Texas Instruments: HDC1000](/Mycodo/Supported-Inputs/#texas-instruments-hdc1000)
 
@@ -745,17 +755,19 @@ Measurements
 
 ### [AOSONG: DHT11](/Mycodo/Supported-Inputs/#aosong-dht11)
 
+### [AOSONG: DHT20](/Mycodo/Supported-Inputs/#aosong-dht20)
+
 ### [AOSONG: DHT22](/Mycodo/Supported-Inputs/#aosong-dht22)
 
-### [BOSCH: BME280](/Mycodo/Supported-Inputs/#bosch-bme280)
+### [BOSCH: BME280 (Adafruit_BME280)](/Mycodo/Supported-Inputs/#bosch-bme280-adafruit_bme280)
 
-### [BOSCH: BME280](/Mycodo/Supported-Inputs/#bosch-bme280)
+### [BOSCH: BME280 (Adafruit_CircuitPython_BME280)](/Mycodo/Supported-Inputs/#bosch-bme280-adafruit_circuitpython_bme280)
 
-### [BOSCH: BME280](/Mycodo/Supported-Inputs/#bosch-bme280)
+### [BOSCH: BME280 (RPi.bme280)](/Mycodo/Supported-Inputs/#bosch-bme280-rpibme280)
 
-### [BOSCH: BME680](/Mycodo/Supported-Inputs/#bosch-bme680)
+### [BOSCH: BME680 (Adafruit_CircuitPython_BME680)](/Mycodo/Supported-Inputs/#bosch-bme680-adafruit_circuitpython_bme680)
 
-### [BOSCH: BME680](/Mycodo/Supported-Inputs/#bosch-bme680)
+### [BOSCH: BME680 (bme680)](/Mycodo/Supported-Inputs/#bosch-bme680-bme680)
 
 ### [Ruuvi: RuuviTag](/Mycodo/Supported-Inputs/#ruuvi-ruuvitag)
 
@@ -765,15 +777,15 @@ Measurements
 
 ### [Sensirion: SCD-4x (40, 41)](/Mycodo/Supported-Inputs/#sensirion-scd-4x-40-41)
 
-### [Sensirion: SCD30](/Mycodo/Supported-Inputs/#sensirion-scd30)
+### [Sensirion: SCD30 (Adafruit_CircuitPython_SCD30)](/Mycodo/Supported-Inputs/#sensirion-scd30-adafruit_circuitpython_scd30)
 
-### [Sensirion: SCD30](/Mycodo/Supported-Inputs/#sensirion-scd30)
+### [Sensirion: SCD30 (scd30_i2c)](/Mycodo/Supported-Inputs/#sensirion-scd30-scd30_i2c)
 
 ### [Sensirion: SHT1x/7x](/Mycodo/Supported-Inputs/#sensirion-sht1x-7x)
 
-### [Sensirion: SHT2x](/Mycodo/Supported-Inputs/#sensirion-sht2x)
+### [Sensirion: SHT2x (sht20)](/Mycodo/Supported-Inputs/#sensirion-sht2x-sht20)
 
-### [Sensirion: SHT2x](/Mycodo/Supported-Inputs/#sensirion-sht2x)
+### [Sensirion: SHT2x (smbus2)](/Mycodo/Supported-Inputs/#sensirion-sht2x-smbus2)
 
 ### [Sensirion: SHT31-D](/Mycodo/Supported-Inputs/#sensirion-sht31-d)
 
@@ -791,9 +803,9 @@ Measurements
 
 ### [Sonoff: TH16/10 (Tasmota firmware) with AM2301](/Mycodo/Supported-Inputs/#sonoff-th16-10-tasmota-firmware-with-am2301)
 
-### [TE Connectivity: HTU21D](/Mycodo/Supported-Inputs/#te-connectivity-htu21d)
+### [TE Connectivity: HTU21D (Adafruit_CircuitPython_HTU21D)](/Mycodo/Supported-Inputs/#te-connectivity-htu21d-adafruit_circuitpython_htu21d)
 
-### [TE Connectivity: HTU21D](/Mycodo/Supported-Inputs/#te-connectivity-htu21d)
+### [TE Connectivity: HTU21D (pigpio)](/Mycodo/Supported-Inputs/#te-connectivity-htu21d-pigpio)
 
 ### [Texas Instruments: HDC1000](/Mycodo/Supported-Inputs/#texas-instruments-hdc1000)
 

@@ -12,4 +12,4 @@ Cuando se combinan las Entradas y las Salidas, los controladores de funciones pu
 
 Los disparadores se pueden configurar para activar eventos basados en fechas y horas específicas, según duraciones de tiempo, o la salida/puesta del sol en una latitud y longitud específicas.
 
-Mycodo ha sido traducido a varios idiomas. Por defecto, el idioma del navegador determinará qué idioma se utiliza, pero se puede anular en la Configuración General, en la página `[Icono del engranaje] -> Configurar -> General`. Si encuentras un problema y quieres corregir una traducción o quieres añadir otro idioma, puedes hacerlo en [https://translate.kylegabriel.com](http://translate.kylegabriel.com:8080/engage/mycodo/).
+Mycodo has been translated to several languages. By default, the language of the browser will determine which language is used, but may be overridden in the General Settings, on the `[Gear Icon] -> Configure -> General` page. If you find an issue and would like to correct a translation or would like to add another language, this can be done at [https://translate.kylegabriel.com](https://translate.kylegabriel.com/engage/mycodo/).

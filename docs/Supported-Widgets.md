@@ -41,10 +41,15 @@ Displays a synchronous graph (all data is downloaded for the selected period on 
 
 Displays a red or green circular image based on a measurement value. Useful for showing if an Output is on or off.
 
-### Measurement
+### Measurement (1 Value)
 
 
 Displays a measurement value and timestamp.
+
+### Measurement (2 Values)
+
+
+Displays two measurement values and timestamps.
 
 ### Output (PWM Slider)
 

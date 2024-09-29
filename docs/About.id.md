@@ -12,4 +12,4 @@ Ketika Input dan Output digabungkan, Pengontrol fungsi dapat digunakan untuk mem
 
 Pemicu bisa ditetapkan untuk mengaktifkan peristiwa berdasarkan tanggal dan waktu tertentu, menurut durasi waktu, atau matahari terbit/terbenam pada garis lintang dan garis bujur tertentu.
 
-Mycodo telah diterjemahkan ke beberapa bahasa. Secara default, bahasa browser akan menentukan bahasa mana yang digunakan, tetapi dapat diganti di Pengaturan Umum, pada `[Ikon Roda Gigi] -> Konfigurasi -> Halaman Umum`. Jika Anda menemukan masalah dan ingin mengoreksi terjemahan atau ingin menambahkan bahasa lain, hal ini dapat dilakukan di [https://translate.kylegabriel.com](http://translate.kylegabriel.com:8080/engage/mycodo/).
+Mycodo has been translated to several languages. By default, the language of the browser will determine which language is used, but may be overridden in the General Settings, on the `[Gear Icon] -> Configure -> General` page. If you find an issue and would like to correct a translation or would like to add another language, this can be done at [https://translate.kylegabriel.com](https://translate.kylegabriel.com/engage/mycodo/).

@@ -12,4 +12,4 @@ Gdy wejścia i wyjścia są połączone, sterowniki funkcyjne mogą być używan
 
 Wyzwalacze można ustawić tak, aby aktywowały zdarzenia w oparciu o określone daty i godziny, według czasu trwania lub wschodu/zachodu słońca na określonej szerokości i długości geograficznej.
 
-Mycodo zostało przetłumaczone na kilka języków. Domyślnie język przeglądarki określa, który język jest używany, ale może być nadpisany w ustawieniach ogólnych, na stronie `[Gear Icon] -> Configure -> General`. Jeśli znajdziesz jakiś problem i chciałbyś poprawić tłumaczenie lub chciałbyś dodać kolejny język, można to zrobić na stronie [https://translate.kylegabriel.com](http://translate.kylegabriel.com:8080/engage/mycodo/).
+Mycodo has been translated to several languages. By default, the language of the browser will determine which language is used, but may be overridden in the General Settings, on the `[Gear Icon] -> Configure -> General` page. If you find an issue and would like to correct a translation or would like to add another language, this can be done at [https://translate.kylegabriel.com](https://translate.kylegabriel.com/engage/mycodo/).

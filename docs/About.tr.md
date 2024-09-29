@@ -12,4 +12,4 @@ Girişler ve Çıkışlar birleştirildiğinde, Fonksiyon kontrolörleri, Giriş
 
 Tetikleyiciler, belirli tarih ve saatlere, zaman sürelerine veya belirli bir enlem ve boylamda güneşin doğuşuna/ batışına göre olayları etkinleştirmek üzere ayarlanabilir.
 
-Mycodo çeşitli dillere çevrilmiştir. Varsayılan olarak, tarayıcının dili hangi dilin kullanılacağını belirleyecektir, ancak `[Dişli Simgesi] -> Yapılandır -> Genel` sayfasındaki Genel Ayarlar'da geçersiz kılınabilir. Bir sorunla karşılaşırsanız ve bir çeviriyi düzeltmek ya da başka bir dil eklemek isterseniz, bunu [https://translate.kylegabriel.com](http://translate.kylegabriel.com:8080/engage/mycodo/) adresinden yapabilirsiniz.
+Mycodo has been translated to several languages. By default, the language of the browser will determine which language is used, but may be overridden in the General Settings, on the `[Gear Icon] -> Configure -> General` page. If you find an issue and would like to correct a translation or would like to add another language, this can be done at [https://translate.kylegabriel.com](https://translate.kylegabriel.com/engage/mycodo/).

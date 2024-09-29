@@ -12,7 +12,7 @@ This Input will execute a command in the shell and store the output as a float v
 - Default Value: mycodo</td><td>The user to execute the command</td></tr><tr><td>Current Working Directory</td><td>Text
 - Default Value: /home/pi</td><td>The current working directory of the shell environment.</td></tr></tbody></table>
 
-### Linux: Python 3 Code
+### Linux: Python 3 Code (v1.0)
 
 - Manufacturer: Linux
 - Measurements: Store Value(s)
@@ -21,6 +21,17 @@ This Input will execute a command in the shell and store the output as a float v
 
 All channels require a Measurement Unit to be selected and saved in order to store values to the database. Your code is executed from the same Python virtual environment that Mycodo runs from. Therefore, you must install Python libraries to this environment if you want them to be available to your code. This virtualenv is located at /opt/Mycodo/env and if you wanted to install a library, for example "my_library" using pip, you would execute "sudo /opt/Mycodo/env/bin/pip install my_library".
 <table><thead><tr class="header"><th>Option</th><th>Type</th><th>Description</th></tr></thead><tbody><tr><td>Measurements Enabled</td><td>Multi-Select</td><td>The measurements to record</td></tr><tr><td>Period (Seconds)</td><td>Decimal</td><td>The duration between measurements or actions</td></tr><tr><td>Pre Output</td><td>Select</td><td>Turn the selected output on before taking every measurement</td></tr><tr><td>Pre Out Duration (Seconds)</td><td>Decimal</td><td>If a Pre Output is selected, set the duration to turn the Pre Output on for before every measurement is acquired.</td></tr><tr><td>Pre During Measure</td><td>Boolean</td><td>Check to turn the output off after (opposed to before) the measurement is complete</td></tr><tr><td>Analyze Python Code with Pylint</td><td>Boolean
+- Default Value: True</td><td>Analyze your Python code with pylint when saving</td></tr></tbody></table>
+
+### Linux: Python 3 Code (v2.0)
+
+- Manufacturer: Linux
+- Measurements: Store Value(s)
+- Interfaces: Mycodo
+- Dependencies: [pylint](https://pypi.org/project/pylint)
+
+This is an alternate Python 3 Code Input that uses a different method for storing values to the database. This was created because the Python 3 Code v1.0 Input does not allow the use of Input Actions. This method does allow the use of Input Actions. (11/21/2023 Update: The Python 3 Code (v1.0) Input now allows the execution of Actions). All channels require a Measurement Unit to be selected and saved in order to store values to the database. Your code is executed from the same Python virtual environment that Mycodo runs from. Therefore, you must install Python libraries to this environment if you want them to be available to your code. This virtualenv is located at /opt/Mycodo/env and if you wanted to install a library, for example "my_library" using pip, you would execute "sudo /opt/Mycodo/env/bin/pip install my_library".
+<table><thead><tr class="header"><th>Option</th><th>Type</th><th>Description</th></tr></thead><tbody><tr><td>Measurements Enabled</td><td>Multi-Select</td><td>The measurements to record</td></tr><tr><td>Period (Seconds)</td><td>Decimal</td><td>The duration between measurements or actions</td></tr><tr><td>Pre Output</td><td>Select</td><td>Turn the selected output on before taking every measurement</td></tr><tr><td>Pre Out Duration (Seconds)</td><td>Decimal</td><td>If a Pre Output is selected, set the duration to turn the Pre Output on for before every measurement is acquired.</td></tr><tr><td>Pre During Measure</td><td>Boolean</td><td>Check to turn the output off after (opposed to before) the measurement is complete</td></tr><tr><td>Python 3 Code</td></td><td>The code to execute. Must return a value.</td></tr><tr><td>Analyze Python Code with Pylint</td><td>Boolean
 - Default Value: True</td><td>Analyze your Python code with pylint when saving</td></tr></tbody></table>
 
 ### Mycodo: CPU Load
@@ -35,13 +46,6 @@ All channels require a Measurement Unit to be selected and saved in order to sto
 - Manufacturer: Mycodo
 - Measurements: Unallocated Disk Space
 - Libraries: os.statvfs()
-<table><thead><tr class="header"><th>Option</th><th>Type</th><th>Description</th></tr></thead><tbody><tr><td>Period (Seconds)</td><td>Decimal</td><td>The duration between measurements or actions</td></tr></tbody></table>
-
-### Mycodo: Mycodo RAM
-
-- Manufacturer: Mycodo
-- Measurements: Daemon RAM Allocation
-- Libraries: resource.getrusage()
 <table><thead><tr class="header"><th>Option</th><th>Type</th><th>Description</th></tr></thead><tbody><tr><td>Period (Seconds)</td><td>Decimal</td><td>The duration between measurements or actions</td></tr></tbody></table>
 
 ### Mycodo: Mycodo Version
@@ -84,6 +88,15 @@ A spacer to organize Inputs.
 <table><thead><tr class="header"><th>Option</th><th>Type</th><th>Description</th></tr></thead><tbody><tr><td>Color</td><td>Text
 - Default Value: #000000</td><td>The color of the name text</td></tr></tbody></table>
 
+### Mycodo: System and Mycodo RAM
+
+- Manufacturer: Mycodo
+- Measurements: RAM Allocation
+- Libraries: psutil, resource.getrusage()
+- Dependencies: [psutil](https://pypi.org/project/psutil)
+<table><thead><tr class="header"><th>Option</th><th>Type</th><th>Description</th></tr></thead><tbody><tr><td>Measurements Enabled</td><td>Multi-Select</td><td>The measurements to record</td></tr><tr><td>Period (Seconds)</td><td>Decimal</td><td>The duration between measurements or actions</td></tr><tr><td>Mycodo Frontend RAM Endpoint</td><td>Text
+- Default Value: https://127.0.0.1/ram</td><td>The endpoint to get Mycodo frontend ram usage</td></tr></tbody></table>
+
 ### Mycodo: Test Input: Save your own measurement value
 
 - Manufacturer: Mycodo
@@ -92,6 +105,12 @@ A spacer to organize Inputs.
 This is a simple test Input that allows you to save any value as a measurement, that will be stored in the measurement database. It can be useful for testing other parts of Mycodo, such as PIDs, Bang-Bang, and Conditional Functions, since you can be completely in control of what values the input provides to the Functions. Note 1: Select and save the Name and Measurement Unit for each channel. Once the unit has been saved, you can convert to other units in the Convert Measurement section. Note 2: Activate the Input before storing measurements.
 <table><thead><tr class="header"><th>Option</th><th>Type</th><th>Description</th></tr></thead><tbody><tr><td>Measurements Enabled</td><td>Multi-Select</td><td>The measurements to record</td></tr><tr><td colspan="3">Channel Options</td></tr><tr><td>Name</td><td>Text</td><td>A name to distinguish this from others</td></tr><tr><td colspan="3">Commands</td></tr><tr><td colspan="3">Enter the Value you want to store as a measurement, then press Store Measurement.</td></tr><tr><td>Channel</td><td>Integer</td><td>This is the channel to save the measurement value to</td></tr><tr><td>Value</td><td>Decimal
 - Default Value: 10.0</td><td>This is the measurement value to save for this Input</td></tr><tr><td>Store Measurement</td><td>Button</td><td></td></tr></tbody></table>
+
+### Mycodo: Uptime
+
+- Manufacturer: Mycodo
+- Measurements: Seconds Since System Startup
+<table><thead><tr class="header"><th>Option</th><th>Type</th><th>Description</th></tr></thead><tbody><tr><td>Period (Seconds)</td><td>Decimal</td><td>The duration between measurements or actions</td></tr></tbody></table>
 
 ### Raspberry Pi: CPU/GPU Temperature
 
@@ -241,6 +260,18 @@ This is an alternate method to calculate RPM from pulses on a pin using pigpio, 
 - Dependencies: pigpio, [pigpio](https://pypi.org/project/pigpio)
 - Datasheet URL: [Link](http://www.adafruit.com/datasheets/DHT11-chinese.pdf)
 - Product URL: [Link](https://www.adafruit.com/product/386)
+<table><thead><tr class="header"><th>Option</th><th>Type</th><th>Description</th></tr></thead><tbody><tr><td>Measurements Enabled</td><td>Multi-Select</td><td>The measurements to record</td></tr><tr><td>Period (Seconds)</td><td>Decimal</td><td>The duration between measurements or actions</td></tr><tr><td>Pre Output</td><td>Select</td><td>Turn the selected output on before taking every measurement</td></tr><tr><td>Pre Out Duration (Seconds)</td><td>Decimal</td><td>If a Pre Output is selected, set the duration to turn the Pre Output on for before every measurement is acquired.</td></tr><tr><td>Pre During Measure</td><td>Boolean</td><td>Check to turn the output off after (opposed to before) the measurement is complete</td></tr></tbody></table>
+
+### AOSONG: DHT20
+
+- Manufacturer: AOSONG
+- Measurements: Humidity/Temperature
+- Interfaces: I<sup>2</sup>C
+- Libraries: smbus2
+- Dependencies: [smbus2](https://pypi.org/project/smbus2)
+- Manufacturer URL: [Link](https://asairsensors.com/product/dht20-sip-packaged-temperature-and-humidity-sensor/)
+- Datasheet URL: [Link](http://www.aosong.com/userfiles/files/media/Data%20Sheet%20DHT20%20%20A1.pdf)
+- Product URLs: [Link 1](https://www.seeedstudio.com/Grove-Temperature-Humidity-Sensor-V2-0-DHT20-p-4967.html), [Link 2](https://www.antratek.de/humidity-and-temperature-sensor-dht20), [Link 3](https://www.adafruit.com/product/5183)
 <table><thead><tr class="header"><th>Option</th><th>Type</th><th>Description</th></tr></thead><tbody><tr><td>Measurements Enabled</td><td>Multi-Select</td><td>The measurements to record</td></tr><tr><td>Period (Seconds)</td><td>Decimal</td><td>The duration between measurements or actions</td></tr><tr><td>Pre Output</td><td>Select</td><td>Turn the selected output on before taking every measurement</td></tr><tr><td>Pre Out Duration (Seconds)</td><td>Decimal</td><td>If a Pre Output is selected, set the duration to turn the Pre Output on for before every measurement is acquired.</td></tr><tr><td>Pre During Measure</td><td>Boolean</td><td>Check to turn the output off after (opposed to before) the measurement is complete</td></tr></tbody></table>
 
 ### AOSONG: DHT22
@@ -498,7 +529,7 @@ Calibration Measurement is an optional setting that provides a temperature measu
 - Default Value: 10.0</td><td>The pH of the high point calibration solution</td></tr><tr><td>Calibrate High</td><td>Button</td><td></td></tr><tr><td colspan="3">Calibration Export/Import: Export calibration to a series of strings. These can later be imported to restore the calibration. Watch the Daemon Log for the output.</td></tr><tr><td>Export Calibration</td><td>Button</td><td></td></tr><tr><td>Calibration String</td><td>Text</td><td>The calibration string to import</td></tr><tr><td>Import Calibration</td><td>Button</td><td></td></tr><tr><td colspan="3">The I2C address can be changed. Enter a new address in the 0xYY format (e.g. 0x22, 0x50), then press Set I2C Address. Remember to deactivate and change the I2C address option after setting the new address.</td></tr><tr><td>New I2C Address</td><td>Text
 - Default Value: 0x63</td><td>The new I2C to set the device to</td></tr><tr><td>Set I2C Address</td><td>Button</td><td></td></tr></tbody></table>
 
-### BOSCH: BME280
+### BOSCH: BME280 (Adafruit_BME280)
 
 - Manufacturer: BOSCH
 - Measurements: Pressure/Humidity/Temperature
@@ -510,7 +541,7 @@ Calibration Measurement is an optional setting that provides a temperature measu
 - Product URLs: [Link 1](https://www.adafruit.com/product/2652), [Link 2](https://www.sparkfun.com/products/13676)
 <table><thead><tr class="header"><th>Option</th><th>Type</th><th>Description</th></tr></thead><tbody><tr><td>I<sup>2</sup>C Address</td><td>Text</td><td>The address of the I<sup>2</sup>C device.</td></tr><tr><td>I<sup>2</sup>C Bus</td><td>Integer</td><td>The Bus the I<sup>2</sup>C device is connected.</td></tr><tr><td>Measurements Enabled</td><td>Multi-Select</td><td>The measurements to record</td></tr><tr><td>Period (Seconds)</td><td>Decimal</td><td>The duration between measurements or actions</td></tr><tr><td>Pre Output</td><td>Select</td><td>Turn the selected output on before taking every measurement</td></tr><tr><td>Pre Out Duration (Seconds)</td><td>Decimal</td><td>If a Pre Output is selected, set the duration to turn the Pre Output on for before every measurement is acquired.</td></tr><tr><td>Pre During Measure</td><td>Boolean</td><td>Check to turn the output off after (opposed to before) the measurement is complete</td></tr></tbody></table>
 
-### BOSCH: BME280
+### BOSCH: BME280 (Adafruit_CircuitPython_BME280)
 
 - Manufacturer: BOSCH
 - Measurements: Pressure/Humidity/Temperature
@@ -522,7 +553,7 @@ Calibration Measurement is an optional setting that provides a temperature measu
 - Product URLs: [Link 1](https://www.adafruit.com/product/2652), [Link 2](https://www.sparkfun.com/products/13676)
 <table><thead><tr class="header"><th>Option</th><th>Type</th><th>Description</th></tr></thead><tbody><tr><td>I<sup>2</sup>C Address</td><td>Text</td><td>The address of the I<sup>2</sup>C device.</td></tr><tr><td>I<sup>2</sup>C Bus</td><td>Integer</td><td>The Bus the I<sup>2</sup>C device is connected.</td></tr><tr><td>Measurements Enabled</td><td>Multi-Select</td><td>The measurements to record</td></tr><tr><td>Period (Seconds)</td><td>Decimal</td><td>The duration between measurements or actions</td></tr><tr><td>Pre Output</td><td>Select</td><td>Turn the selected output on before taking every measurement</td></tr><tr><td>Pre Out Duration (Seconds)</td><td>Decimal</td><td>If a Pre Output is selected, set the duration to turn the Pre Output on for before every measurement is acquired.</td></tr><tr><td>Pre During Measure</td><td>Boolean</td><td>Check to turn the output off after (opposed to before) the measurement is complete</td></tr></tbody></table>
 
-### BOSCH: BME280
+### BOSCH: BME280 (RPi.bme280)
 
 - Manufacturer: BOSCH
 - Measurements: Pressure/Humidity/Temperature
@@ -534,7 +565,7 @@ Calibration Measurement is an optional setting that provides a temperature measu
 - Product URLs: [Link 1](https://www.adafruit.com/product/2652), [Link 2](https://www.sparkfun.com/products/13676)
 <table><thead><tr class="header"><th>Option</th><th>Type</th><th>Description</th></tr></thead><tbody><tr><td>I<sup>2</sup>C Address</td><td>Text</td><td>The address of the I<sup>2</sup>C device.</td></tr><tr><td>I<sup>2</sup>C Bus</td><td>Integer</td><td>The Bus the I<sup>2</sup>C device is connected.</td></tr><tr><td>Measurements Enabled</td><td>Multi-Select</td><td>The measurements to record</td></tr><tr><td>Period (Seconds)</td><td>Decimal</td><td>The duration between measurements or actions</td></tr><tr><td>Pre Output</td><td>Select</td><td>Turn the selected output on before taking every measurement</td></tr><tr><td>Pre Out Duration (Seconds)</td><td>Decimal</td><td>If a Pre Output is selected, set the duration to turn the Pre Output on for before every measurement is acquired.</td></tr><tr><td>Pre During Measure</td><td>Boolean</td><td>Check to turn the output off after (opposed to before) the measurement is complete</td></tr></tbody></table>
 
-### BOSCH: BME680
+### BOSCH: BME680 (Adafruit_CircuitPython_BME680)
 
 - Manufacturer: BOSCH
 - Measurements: Temperature/Humidity/Pressure/Gas
@@ -547,7 +578,7 @@ Calibration Measurement is an optional setting that provides a temperature measu
 <table><thead><tr class="header"><th>Option</th><th>Type</th><th>Description</th></tr></thead><tbody><tr><td>I<sup>2</sup>C Address</td><td>Text</td><td>The address of the I<sup>2</sup>C device.</td></tr><tr><td>I<sup>2</sup>C Bus</td><td>Integer</td><td>The Bus the I<sup>2</sup>C device is connected.</td></tr><tr><td>Measurements Enabled</td><td>Multi-Select</td><td>The measurements to record</td></tr><tr><td>Period (Seconds)</td><td>Decimal</td><td>The duration between measurements or actions</td></tr><tr><td>Pre Output</td><td>Select</td><td>Turn the selected output on before taking every measurement</td></tr><tr><td>Pre Out Duration (Seconds)</td><td>Decimal</td><td>If a Pre Output is selected, set the duration to turn the Pre Output on for before every measurement is acquired.</td></tr><tr><td>Pre During Measure</td><td>Boolean</td><td>Check to turn the output off after (opposed to before) the measurement is complete</td></tr><tr><td>Humidity Oversampling</td><td>Select(Options: [NONE | 1X | <strong>2X</strong> | 4X | 8X | 16X] (Default in <strong>bold</strong>)</td><td>A higher oversampling value means more stable readings with less noise and jitter. However each step of oversampling adds ~2 ms latency, causing a slower response time to fast transients.</td></tr><tr><td>Temperature Oversampling</td><td>Select(Options: [NONE | 1X | 2X | 4X | <strong>8X</strong> | 16X] (Default in <strong>bold</strong>)</td><td>A higher oversampling value means more stable readings with less noise and jitter. However each step of oversampling adds ~2 ms latency, causing a slower response time to fast transients.</td></tr><tr><td>Pressure Oversampling</td><td>Select(Options: [NONE | 1X | 2X | <strong>4X</strong> | 8X | 16X] (Default in <strong>bold</strong>)</td><td>A higher oversampling value means more stable readings with less noise and jitter. However each step of oversampling adds ~2 ms latency, causing a slower response time to fast transients.</td></tr><tr><td>IIR Filter Size</td><td>Select(Options: [0 | 1 | <strong>3</strong> | 7 | 15 | 31 | 63 | 127] (Default in <strong>bold</strong>)</td><td>Optionally remove short term fluctuations from the temperature and pressure readings, increasing their resolution but reducing their bandwidth.</td></tr><tr><td>Temperature Offset</td><td>Decimal</td><td>The amount to offset the temperature, either negative or positive</td></tr><tr><td>Sea Level Pressure (ha)</td><td>Decimal
 - Default Value: 1013.25</td><td>The pressure at sea level for the sensor location</td></tr></tbody></table>
 
-### BOSCH: BME680
+### BOSCH: BME680 (bme680)
 
 - Manufacturer: BOSCH
 - Measurements: Temperature/Humidity/Pressure/Gas
@@ -571,7 +602,7 @@ Calibration Measurement is an optional setting that provides a temperature measu
 - Datasheet URL: [Link](https://ae-bst.resource.bosch.com/media/_tech/media/product_flyer/BST-BMP180-FL000.pdf)
 <table><thead><tr class="header"><th>Option</th><th>Type</th><th>Description</th></tr></thead><tbody><tr><td>Measurements Enabled</td><td>Multi-Select</td><td>The measurements to record</td></tr><tr><td>Period (Seconds)</td><td>Decimal</td><td>The duration between measurements or actions</td></tr><tr><td>Pre Output</td><td>Select</td><td>Turn the selected output on before taking every measurement</td></tr><tr><td>Pre Out Duration (Seconds)</td><td>Decimal</td><td>If a Pre Output is selected, set the duration to turn the Pre Output on for before every measurement is acquired.</td></tr><tr><td>Pre During Measure</td><td>Boolean</td><td>Check to turn the output off after (opposed to before) the measurement is complete</td></tr></tbody></table>
 
-### BOSCH: BMP280
+### BOSCH: BMP280 (Adafruit_GPIO)
 
 - Manufacturer: BOSCH
 - Measurements: Pressure/Temperature
@@ -583,7 +614,7 @@ Calibration Measurement is an optional setting that provides a temperature measu
 - Product URL: [Link](https://www.adafruit.com/product/2651)
 <table><thead><tr class="header"><th>Option</th><th>Type</th><th>Description</th></tr></thead><tbody><tr><td>I<sup>2</sup>C Address</td><td>Text</td><td>The address of the I<sup>2</sup>C device.</td></tr><tr><td>I<sup>2</sup>C Bus</td><td>Integer</td><td>The Bus the I<sup>2</sup>C device is connected.</td></tr><tr><td>Measurements Enabled</td><td>Multi-Select</td><td>The measurements to record</td></tr><tr><td>Period (Seconds)</td><td>Decimal</td><td>The duration between measurements or actions</td></tr><tr><td>Pre Output</td><td>Select</td><td>Turn the selected output on before taking every measurement</td></tr><tr><td>Pre Out Duration (Seconds)</td><td>Decimal</td><td>If a Pre Output is selected, set the duration to turn the Pre Output on for before every measurement is acquired.</td></tr><tr><td>Pre During Measure</td><td>Boolean</td><td>Check to turn the output off after (opposed to before) the measurement is complete</td></tr></tbody></table>
 
-### BOSCH: BMP280
+### BOSCH: BMP280 (bmp280-python)
 
 - Manufacturer: BOSCH
 - Measurements: Pressure/Temperature
@@ -601,11 +632,11 @@ This is similar to the other BMP280 Input, except it uses a different library, w
 
 - Manufacturer: CO2Meter
 - Measurements: CO2
-- Interfaces: UART
-- Libraries: serial
+- Interfaces: I<sup>2</sup>C, UART
+- Libraries: serial (UART)
 - Manufacturer URL: [Link](https://www.co2meter.com/products/k-30-co2-sensor-module)
 - Datasheet URL: [Link](http://co2meters.com/Documentation/Datasheets/DS_SE_0118_CM_0024_Revised9%20(1).pdf)
-<table><thead><tr class="header"><th>Option</th><th>Type</th><th>Description</th></tr></thead><tbody><tr><td>UART Device</td><td>Text</td><td>The UART device location (e.g. /dev/ttyUSB1)</td></tr><tr><td>Period (Seconds)</td><td>Decimal</td><td>The duration between measurements or actions</td></tr><tr><td>Pre Output</td><td>Select</td><td>Turn the selected output on before taking every measurement</td></tr><tr><td>Pre Out Duration (Seconds)</td><td>Decimal</td><td>If a Pre Output is selected, set the duration to turn the Pre Output on for before every measurement is acquired.</td></tr><tr><td>Pre During Measure</td><td>Boolean</td><td>Check to turn the output off after (opposed to before) the measurement is complete</td></tr></tbody></table>
+<table><thead><tr class="header"><th>Option</th><th>Type</th><th>Description</th></tr></thead><tbody><tr><td>I<sup>2</sup>C Address</td><td>Text</td><td>The address of the I<sup>2</sup>C device.</td></tr><tr><td>I<sup>2</sup>C Bus</td><td>Integer</td><td>The Bus the I<sup>2</sup>C device is connected.</td></tr><tr><td>UART Device</td><td>Text</td><td>The UART device location (e.g. /dev/ttyUSB1)</td></tr><tr><td>Period (Seconds)</td><td>Decimal</td><td>The duration between measurements or actions</td></tr><tr><td>Pre Output</td><td>Select</td><td>Turn the selected output on before taking every measurement</td></tr><tr><td>Pre Out Duration (Seconds)</td><td>Decimal</td><td>If a Pre Output is selected, set the duration to turn the Pre Output on for before every measurement is acquired.</td></tr><tr><td>Pre During Measure</td><td>Boolean</td><td>Check to turn the output off after (opposed to before) the measurement is complete</td></tr></tbody></table>
 
 ### Catnip Electronics: Chirp
 
@@ -674,7 +705,7 @@ This is similar to the other BMP280 Input, except it uses a different library, w
 - Datasheet URL: [Link](https://datasheets.maximintegrated.com/en/ds/DS1825.pdf)
 <table><thead><tr class="header"><th>Option</th><th>Type</th><th>Description</th></tr></thead><tbody><tr><td>Period (Seconds)</td><td>Decimal</td><td>The duration between measurements or actions</td></tr><tr><td>Pre Output</td><td>Select</td><td>Turn the selected output on before taking every measurement</td></tr><tr><td>Pre Out Duration (Seconds)</td><td>Decimal</td><td>If a Pre Output is selected, set the duration to turn the Pre Output on for before every measurement is acquired.</td></tr><tr><td>Pre During Measure</td><td>Boolean</td><td>Check to turn the output off after (opposed to before) the measurement is complete</td></tr><tr><td colspan="3">Commands</td></tr><tr><td colspan="3">Set the resolution, precision, and response time for the sensor. This setting will be written to the EEPROM to allow persistence after power loss. The EEPROM has a limited amount of writes (>50k).</td></tr><tr><td>Resolution</td><td>Select</td><td>Select the resolution for the sensor</td></tr><tr><td>Set Resolution</td><td>Button</td><td></td></tr></tbody></table>
 
-### MAXIM: DS18B20
+### MAXIM: DS18B20 (ow-shell)
 
 - Manufacturer: MAXIM
 - Measurements: Temperature
@@ -689,7 +720,7 @@ This is similar to the other BMP280 Input, except it uses a different library, w
 Warning: Counterfeit DS18B20 sensors are common and can cause a host of issues. Review the Additional URL for more information about how to determine if your sensor is authentic.
 <table><thead><tr class="header"><th>Option</th><th>Type</th><th>Description</th></tr></thead><tbody><tr><td>Period (Seconds)</td><td>Decimal</td><td>The duration between measurements or actions</td></tr><tr><td>Pre Output</td><td>Select</td><td>Turn the selected output on before taking every measurement</td></tr><tr><td>Pre Out Duration (Seconds)</td><td>Decimal</td><td>If a Pre Output is selected, set the duration to turn the Pre Output on for before every measurement is acquired.</td></tr><tr><td>Pre During Measure</td><td>Boolean</td><td>Check to turn the output off after (opposed to before) the measurement is complete</td></tr></tbody></table>
 
-### MAXIM: DS18B20
+### MAXIM: DS18B20 (w1thermsensor)
 
 - Manufacturer: MAXIM
 - Measurements: Temperature
@@ -738,7 +769,7 @@ Warning: Counterfeit DS18B20 sensors are common and can cause a host of issues. 
 - Product URL: [Link](https://www.adafruit.com/product/1727)
 <table><thead><tr class="header"><th>Option</th><th>Type</th><th>Description</th></tr></thead><tbody><tr><td>Period (Seconds)</td><td>Decimal</td><td>The duration between measurements or actions</td></tr><tr><td>Pre Output</td><td>Select</td><td>Turn the selected output on before taking every measurement</td></tr><tr><td>Pre Out Duration (Seconds)</td><td>Decimal</td><td>If a Pre Output is selected, set the duration to turn the Pre Output on for before every measurement is acquired.</td></tr><tr><td>Pre During Measure</td><td>Boolean</td><td>Check to turn the output off after (opposed to before) the measurement is complete</td></tr><tr><td colspan="3">Commands</td></tr><tr><td colspan="3">Set the resolution, precision, and response time for the sensor. This setting will be written to the EEPROM to allow persistence after power loss. The EEPROM has a limited amount of writes (>50k).</td></tr><tr><td>Resolution</td><td>Select</td><td>Select the resolution for the sensor</td></tr><tr><td>Set Resolution</td><td>Button</td><td></td></tr></tbody></table>
 
-### MAXIM: MAX31855 (Gravity PT100)
+### MAXIM: MAX31855 (Gravity PT100) (smbus2)
 
 - Manufacturer: MAXIM
 - Measurements: Temperature
@@ -750,7 +781,7 @@ Warning: Counterfeit DS18B20 sensors are common and can cause a host of issues. 
 - Product URL: [Link](https://www.dfrobot.com/product-1753.html)
 <table><thead><tr class="header"><th>Option</th><th>Type</th><th>Description</th></tr></thead><tbody><tr><td>Period (Seconds)</td><td>Decimal</td><td>The duration between measurements or actions</td></tr><tr><td>Pre Output</td><td>Select</td><td>Turn the selected output on before taking every measurement</td></tr><tr><td>Pre Out Duration (Seconds)</td><td>Decimal</td><td>If a Pre Output is selected, set the duration to turn the Pre Output on for before every measurement is acquired.</td></tr><tr><td>Pre During Measure</td><td>Boolean</td><td>Check to turn the output off after (opposed to before) the measurement is complete</td></tr></tbody></table>
 
-### MAXIM: MAX31855 (Gravity PT100)
+### MAXIM: MAX31855 (Gravity PT100) (wiringpi)
 
 - Manufacturer: MAXIM
 - Measurements: Temperature
@@ -762,7 +793,7 @@ Warning: Counterfeit DS18B20 sensors are common and can cause a host of issues. 
 - Product URL: [Link](https://www.dfrobot.com/product-1753.html)
 <table><thead><tr class="header"><th>Option</th><th>Type</th><th>Description</th></tr></thead><tbody><tr><td>Period (Seconds)</td><td>Decimal</td><td>The duration between measurements or actions</td></tr><tr><td>Pre Output</td><td>Select</td><td>Turn the selected output on before taking every measurement</td></tr><tr><td>Pre Out Duration (Seconds)</td><td>Decimal</td><td>If a Pre Output is selected, set the duration to turn the Pre Output on for before every measurement is acquired.</td></tr><tr><td>Pre During Measure</td><td>Boolean</td><td>Check to turn the output off after (opposed to before) the measurement is complete</td></tr></tbody></table>
 
-### MAXIM: MAX31855
+### MAXIM: MAX31855 (Adafruit_MAX31855)
 
 - Manufacturer: MAXIM
 - Measurements: Temperature (Object/Die)
@@ -773,6 +804,19 @@ Warning: Counterfeit DS18B20 sensors are common and can cause a host of issues. 
 - Datasheet URL: [Link](https://datasheets.maximintegrated.com/en/ds/MAX31855.pdf)
 - Product URL: [Link](https://www.adafruit.com/product/269)
 <table><thead><tr class="header"><th>Option</th><th>Type</th><th>Description</th></tr></thead><tbody><tr><td>Pin: Cable Select</td><td>Integer</td><td>GPIO (using BCM numbering): Pin: Cable Select</td></tr><tr><td>Measurements Enabled</td><td>Multi-Select</td><td>The measurements to record</td></tr><tr><td>Period (Seconds)</td><td>Decimal</td><td>The duration between measurements or actions</td></tr><tr><td>Pre Output</td><td>Select</td><td>Turn the selected output on before taking every measurement</td></tr><tr><td>Pre Out Duration (Seconds)</td><td>Decimal</td><td>If a Pre Output is selected, set the duration to turn the Pre Output on for before every measurement is acquired.</td></tr><tr><td>Pre During Measure</td><td>Boolean</td><td>Check to turn the output off after (opposed to before) the measurement is complete</td></tr></tbody></table>
+
+### MAXIM: MAX31855 (adafruit-circuitpython-max31855)
+
+- Manufacturer: MAXIM
+- Measurements: Temperature (Object/Die)
+- Interfaces: SPI
+- Libraries: adafruit-circuitpython-max31855
+- Dependencies: [adafruit-circuitpython-max31855](https://pypi.org/project/adafruit-circuitpython-max31855)
+- Manufacturer URL: [Link](https://www.maximintegrated.com/en/products/interface/sensor-interface/MAX31855.html)
+- Datasheet URL: [Link](https://datasheets.maximintegrated.com/en/ds/MAX31855.pdf)
+- Product URL: [Link](https://www.adafruit.com/product/269)
+<table><thead><tr class="header"><th>Option</th><th>Type</th><th>Description</th></tr></thead><tbody><tr><td>Measurements Enabled</td><td>Multi-Select</td><td>The measurements to record</td></tr><tr><td>Period (Seconds)</td><td>Decimal</td><td>The duration between measurements or actions</td></tr><tr><td>Pre Output</td><td>Select</td><td>Turn the selected output on before taking every measurement</td></tr><tr><td>Pre Out Duration (Seconds)</td><td>Decimal</td><td>If a Pre Output is selected, set the duration to turn the Pre Output on for before every measurement is acquired.</td></tr><tr><td>Pre During Measure</td><td>Boolean</td><td>Check to turn the output off after (opposed to before) the measurement is complete</td></tr><tr><td>Chip Select Pin</td><td>Integer
+- Default Value: 5</td><td>Enter the GPIO Chip Select Pin for your device.</td></tr></tbody></table>
 
 ### MAXIM: MAX31856
 
@@ -786,7 +830,7 @@ Warning: Counterfeit DS18B20 sensors are common and can cause a host of issues. 
 - Product URL: [Link](https://www.adafruit.com/product/3263)
 <table><thead><tr class="header"><th>Option</th><th>Type</th><th>Description</th></tr></thead><tbody><tr><td>Pin: Cable Select</td><td>Integer</td><td>GPIO (using BCM numbering): Pin: Cable Select</td></tr><tr><td>Measurements Enabled</td><td>Multi-Select</td><td>The measurements to record</td></tr><tr><td>Period (Seconds)</td><td>Decimal</td><td>The duration between measurements or actions</td></tr><tr><td>Pre Output</td><td>Select</td><td>Turn the selected output on before taking every measurement</td></tr><tr><td>Pre Out Duration (Seconds)</td><td>Decimal</td><td>If a Pre Output is selected, set the duration to turn the Pre Output on for before every measurement is acquired.</td></tr><tr><td>Pre During Measure</td><td>Boolean</td><td>Check to turn the output off after (opposed to before) the measurement is complete</td></tr></tbody></table>
 
-### MAXIM: MAX31865
+### MAXIM: MAX31865 (Adafruit-CircuitPython-MAX31865)
 
 - Manufacturer: MAXIM
 - Measurements: Temperature
@@ -801,7 +845,7 @@ This module was added to allow support for multiple sensors to be connected at t
 <table><thead><tr class="header"><th>Option</th><th>Type</th><th>Description</th></tr></thead><tbody><tr><td>Period (Seconds)</td><td>Decimal</td><td>The duration between measurements or actions</td></tr><tr><td>Pre Output</td><td>Select</td><td>Turn the selected output on before taking every measurement</td></tr><tr><td>Pre Out Duration (Seconds)</td><td>Decimal</td><td>If a Pre Output is selected, set the duration to turn the Pre Output on for before every measurement is acquired.</td></tr><tr><td>Pre During Measure</td><td>Boolean</td><td>Check to turn the output off after (opposed to before) the measurement is complete</td></tr><tr><td>Chip Select Pin</td><td>Integer
 - Default Value: 8</td><td>Enter the GPIO Chip Select Pin for your device.</td></tr><tr><td>Number of wires</td><td>Select(Options: [<strong>2 Wires</strong> | 3 Wires | 4 Wires] (Default in <strong>bold</strong>)</td><td>Select the number of wires your thermocouple has.</td></tr></tbody></table>
 
-### MAXIM: MAX31865
+### MAXIM: MAX31865 (RPi.GPIO)
 
 - Manufacturer: MAXIM
 - Measurements: Temperature
@@ -829,8 +873,8 @@ A single topic is subscribed to and the returned JSON payload contains one or mo
 - Default Value: 1883</td><td>Host port number</td></tr><tr><td>Topic</td><td>Text
 - Default Value: mqtt/test/input</td><td>The topic to subscribe to</td></tr><tr><td>Keep Alive</td><td>Integer
 - Default Value: 60</td><td>Maximum amount of time between received signals. Set to 0 to disable.</td></tr><tr><td>Client ID</td><td>Text
-- Default Value: client_xwGF2wFt</td><td>Unique client ID for connecting to the server</td></tr><tr><td>Use Login</td><td>Boolean</td><td>Send login credentials</td></tr><tr><td>Use TLS</td><td>Boolean</td><td>Send login credentials using TLS</td></tr><tr><td>Username</td><td>Text
-- Default Value: user</td><td>Username for connecting to the server</td></tr><tr><td>Password</td><td>Text</td><td>Password for connecting to the server. Leave blank to disable.</td></tr><tr><td>Use Websockets</td><td>Boolean</td><td>Use websockets to connect to the server.</td></tr><tr><td colspan="3">Channel Options</td></tr><tr><td>Name</td><td>Text</td><td>A name to distinguish this from others</td></tr><tr><td>JSON Key</td><td>Text</td><td>JMES Path expression to find value in JSON response</td></tr></tbody></table>
+- Default Value: client_tmlvtFa7</td><td>Unique client ID for connecting to the server</td></tr><tr><td>Use Login</td><td>Boolean</td><td>Send login credentials</td></tr><tr><td>Use TLS</td><td>Boolean</td><td>Send login credentials using TLS</td></tr><tr><td>Username</td><td>Text
+- Default Value: user</td><td>Username for connecting to the server</td></tr><tr><td>Password</td><td>Text</td><td>Password for connecting to the server. Leave blank to disable.</td></tr><tr><td>Use Websockets</td><td>Boolean</td><td>Use websockets to connect to the server.</td></tr><tr><td colspan="3">Channel Options</td></tr><tr><td>Name</td><td>Text</td><td>A name to distinguish this from others</td></tr><tr><td>JMESPATH Expression</td><td>Text</td><td>JMESPATH expression to find value in JSON response</td></tr></tbody></table>
 
 ### MQTT: MQTT Subscribe (Value payload)
 
@@ -845,7 +889,7 @@ A topic is subscribed to for each channel Subscription Topic and the returned pa
 - Default Value: localhost</td><td>Host or IP address</td></tr><tr><td>Port</td><td>Integer
 - Default Value: 1883</td><td>Host port number</td></tr><tr><td>Keep Alive</td><td>Integer
 - Default Value: 60</td><td>Maximum amount of time between received signals. Set to 0 to disable.</td></tr><tr><td>Client ID</td><td>Text
-- Default Value: client_t3h9zD1a</td><td>Unique client ID for connecting to the server</td></tr><tr><td>Use Login</td><td>Boolean</td><td>Send login credentials</td></tr><tr><td>Use TLS</td><td>Boolean</td><td>Send login credentials using TLS</td></tr><tr><td>Username</td><td>Text
+- Default Value: client_Rgcz7S8I</td><td>Unique client ID for connecting to the server</td></tr><tr><td>Use Login</td><td>Boolean</td><td>Send login credentials</td></tr><tr><td>Use TLS</td><td>Boolean</td><td>Send login credentials using TLS</td></tr><tr><td>Username</td><td>Text
 - Default Value: user</td><td>Username for connecting to the server</td></tr><tr><td>Password</td><td>Text</td><td>Password for connecting to the server. Leave blank to disable.</td></tr><tr><td>Use Websockets</td><td>Boolean</td><td>Use websockets to connect to the server.</td></tr><tr><td colspan="3">Channel Options</td></tr><tr><td>Name</td><td>Text</td><td>A name to distinguish this from others</td></tr><tr><td>Subscription Topic</td><td>Text</td><td>The MQTT topic to subscribe to</td></tr></tbody></table>
 
 ### Melexis: MLX90393
@@ -872,7 +916,7 @@ A topic is subscribed to for each channel Subscription Topic and the returned pa
 - Product URL: [Link](https://www.sparkfun.com/products/9570)
 <table><thead><tr class="header"><th>Option</th><th>Type</th><th>Description</th></tr></thead><tbody><tr><td>I<sup>2</sup>C Address</td><td>Text</td><td>The address of the I<sup>2</sup>C device.</td></tr><tr><td>I<sup>2</sup>C Bus</td><td>Integer</td><td>The Bus the I<sup>2</sup>C device is connected.</td></tr><tr><td>Measurements Enabled</td><td>Multi-Select</td><td>The measurements to record</td></tr><tr><td>Period (Seconds)</td><td>Decimal</td><td>The duration between measurements or actions</td></tr><tr><td>Pre Output</td><td>Select</td><td>Turn the selected output on before taking every measurement</td></tr><tr><td>Pre Out Duration (Seconds)</td><td>Decimal</td><td>If a Pre Output is selected, set the duration to turn the Pre Output on for before every measurement is acquired.</td></tr><tr><td>Pre During Measure</td><td>Boolean</td><td>Check to turn the output off after (opposed to before) the measurement is complete</td></tr></tbody></table>
 
-### Microchip: MCP3008
+### Microchip: MCP3008 (Adafruit_CircuitPython_MCP3xxx)
 
 - Manufacturer: Microchip
 - Measurements: Voltage (Analog-to-Digital Converter)
@@ -885,7 +929,7 @@ A topic is subscribed to for each channel Subscription Topic and the returned pa
 <table><thead><tr class="header"><th>Option</th><th>Type</th><th>Description</th></tr></thead><tbody><tr><td>Pin: Cable Select</td><td>Integer</td><td>GPIO (using BCM numbering): Pin: Cable Select</td></tr><tr><td>Measurements Enabled</td><td>Multi-Select</td><td>The measurements to record</td></tr><tr><td>Period (Seconds)</td><td>Decimal</td><td>The duration between measurements or actions</td></tr><tr><td>Pre Output</td><td>Select</td><td>Turn the selected output on before taking every measurement</td></tr><tr><td>Pre Out Duration (Seconds)</td><td>Decimal</td><td>If a Pre Output is selected, set the duration to turn the Pre Output on for before every measurement is acquired.</td></tr><tr><td>Pre During Measure</td><td>Boolean</td><td>Check to turn the output off after (opposed to before) the measurement is complete</td></tr><tr><td>VREF (volts)</td><td>Decimal
 - Default Value: 3.3</td><td>Set the VREF voltage</td></tr></tbody></table>
 
-### Microchip: MCP3008
+### Microchip: MCP3008 (Adafruit_MCP3008)
 
 - Manufacturer: Microchip
 - Measurements: Voltage (Analog-to-Digital Converter)
@@ -1092,7 +1136,7 @@ Enter the Grove Pi+ GPIO pin connected to the sensor and select the sensor type.
 - Default Value: True</td><td>Settings will persist after powering off</td></tr><tr><td colspan="3">Commands</td></tr><tr><td colspan="3">You can force the CO2 calibration for a specific CO2 concentration value (in ppmv). The sensor needs to be active for at least 3 minutes prior to calibration.</td></tr><tr><td>CO2 Concentration (ppmv)</td><td>Decimal
 - Default Value: 400.0</td><td>Calibrate to this CO2 concentration that the sensor is being exposed to (in ppmv)</td></tr><tr><td>Calibrate CO2</td><td>Button</td><td></td></tr></tbody></table>
 
-### Sensirion: SCD30
+### Sensirion: SCD30 (Adafruit_CircuitPython_SCD30)
 
 - Manufacturer: Sensirion
 - Measurements: CO2/Humidity/Temperature
@@ -1108,7 +1152,7 @@ Enter the Grove Pi+ GPIO pin connected to the sensor and select the sensor type.
 - Default Value: 100</td><tr><td colspan="3">Commands</td></tr><tr><td colspan="3">A soft reset restores factory default values.</td></tr><tr><td>Soft Reset</td><td>Button</td><td></td></tr><tr><td colspan="3">Forced Re-Calibration: The SCD-30 is placed in an environment with a known CO2 concentration, this concentration value is entered in the CO2 Concentration (ppmv) field, then the Foce Calibration button is pressed. But how do you come up with that known value? That is a caveat of this approach and Sensirion suggests three approaches: 1. Using a separate secondary calibrated CO2 sensor to provide the value. 2. Exposing the SCD-30 to a controlled environment with a known value. 3. Exposing the SCD-30 to fresh outside air and using a value of 400 ppm.</td></tr><tr><td>CO2 Concentration (ppmv)</td><td>Integer
 - Default Value: 800</td><td>The CO2 concentration of the sensor environment when forcing calibration</td></tr><tr><td>Force Recalibration</td><td>Button</td><td></td></tr></tbody></table>
 
-### Sensirion: SCD30
+### Sensirion: SCD30 (scd30_i2c)
 
 - Manufacturer: Sensirion
 - Measurements: CO2/Humidity/Temperature
@@ -1130,7 +1174,7 @@ Enter the Grove Pi+ GPIO pin connected to the sensor and select the sensor type.
 - Manufacturer URLs: [Link 1](https://www.sensirion.com/en/environmental-sensors/humidity-sensors/digital-humidity-sensors-for-accurate-measurements/), [Link 2](https://www.sensirion.com/en/environmental-sensors/humidity-sensors/pintype-digital-humidity-sensors/)
 <table><thead><tr class="header"><th>Option</th><th>Type</th><th>Description</th></tr></thead><tbody><tr><td>Measurements Enabled</td><td>Multi-Select</td><td>The measurements to record</td></tr><tr><td>Period (Seconds)</td><td>Decimal</td><td>The duration between measurements or actions</td></tr><tr><td>Pre Output</td><td>Select</td><td>Turn the selected output on before taking every measurement</td></tr><tr><td>Pre Out Duration (Seconds)</td><td>Decimal</td><td>If a Pre Output is selected, set the duration to turn the Pre Output on for before every measurement is acquired.</td></tr><tr><td>Pre During Measure</td><td>Boolean</td><td>Check to turn the output off after (opposed to before) the measurement is complete</td></tr></tbody></table>
 
-### Sensirion: SHT2x
+### Sensirion: SHT2x (sht20)
 
 - Manufacturer: Sensirion
 - Measurements: Humidity/Temperature
@@ -1140,7 +1184,7 @@ Enter the Grove Pi+ GPIO pin connected to the sensor and select the sensor type.
 - Manufacturer URL: [Link](https://www.sensirion.com/en/environmental-sensors/humidity-sensors/humidity-temperature-sensor-sht2x-digital-i2c-accurate/)
 <table><thead><tr class="header"><th>Option</th><th>Type</th><th>Description</th></tr></thead><tbody><tr><td>Measurements Enabled</td><td>Multi-Select</td><td>The measurements to record</td></tr><tr><td>Period (Seconds)</td><td>Decimal</td><td>The duration between measurements or actions</td></tr><tr><td>Pre Output</td><td>Select</td><td>Turn the selected output on before taking every measurement</td></tr><tr><td>Pre Out Duration (Seconds)</td><td>Decimal</td><td>If a Pre Output is selected, set the duration to turn the Pre Output on for before every measurement is acquired.</td></tr><tr><td>Pre During Measure</td><td>Boolean</td><td>Check to turn the output off after (opposed to before) the measurement is complete</td></tr><tr><td>Temperature Resolution</td><td>Select(Options: [11-bit | 12-bit | 13-bit | <strong>14-bit</strong>] (Default in <strong>bold</strong>)</td><td>The resolution of the temperature measurement</td></tr></tbody></table>
 
-### Sensirion: SHT2x
+### Sensirion: SHT2x (smbus2)
 
 - Manufacturer: Sensirion
 - Measurements: Humidity/Temperature
@@ -1259,7 +1303,7 @@ This Input module allows the use of any temperature/humidity sensor with the TH1
 <table><thead><tr class="header"><th>Option</th><th>Type</th><th>Description</th></tr></thead><tbody><tr><td>Measurements Enabled</td><td>Multi-Select</td><td>The measurements to record</td></tr><tr><td>Period (Seconds)</td><td>Decimal</td><td>The duration between measurements or actions</td></tr><tr><td>Pre Output</td><td>Select</td><td>Turn the selected output on before taking every measurement</td></tr><tr><td>Pre Out Duration (Seconds)</td><td>Decimal</td><td>If a Pre Output is selected, set the duration to turn the Pre Output on for before every measurement is acquired.</td></tr><tr><td>Pre During Measure</td><td>Boolean</td><td>Check to turn the output off after (opposed to before) the measurement is complete</td></tr><tr><td>IP Address</td><td>Text
 - Default Value: 192.168.0.100</td><td>The IP address of the device</td></tr></tbody></table>
 
-### TE Connectivity: HTU21D
+### TE Connectivity: HTU21D (Adafruit_CircuitPython_HTU21D)
 
 - Manufacturer: TE Connectivity
 - Measurements: Humidity/Temperature
@@ -1271,7 +1315,7 @@ This Input module allows the use of any temperature/humidity sensor with the TH1
 - Product URL: [Link](https://www.adafruit.com/product/1899)
 <table><thead><tr class="header"><th>Option</th><th>Type</th><th>Description</th></tr></thead><tbody><tr><td>I<sup>2</sup>C Address</td><td>Text</td><td>The address of the I<sup>2</sup>C device.</td></tr><tr><td>I<sup>2</sup>C Bus</td><td>Integer</td><td>The Bus the I<sup>2</sup>C device is connected.</td></tr><tr><td>Measurements Enabled</td><td>Multi-Select</td><td>The measurements to record</td></tr><tr><td>Period (Seconds)</td><td>Decimal</td><td>The duration between measurements or actions</td></tr><tr><td>Pre Output</td><td>Select</td><td>Turn the selected output on before taking every measurement</td></tr><tr><td>Pre Out Duration (Seconds)</td><td>Decimal</td><td>If a Pre Output is selected, set the duration to turn the Pre Output on for before every measurement is acquired.</td></tr><tr><td>Pre During Measure</td><td>Boolean</td><td>Check to turn the output off after (opposed to before) the measurement is complete</td></tr><tr><td>Temperature Offset</td><td>Decimal</td><td>The temperature offset (degrees Celsius) to apply</td></tr></tbody></table>
 
-### TE Connectivity: HTU21D
+### TE Connectivity: HTU21D (pigpio)
 
 - Manufacturer: TE Connectivity
 - Measurements: Humidity/Temperature
@@ -1295,7 +1339,7 @@ This Input module allows the use of any temperature/humidity sensor with the TH1
 This measures from several Kasa power devices (plugs/strips) capable of measuring energy consumption. These include, but are not limited to the KP115 and HS600.
 <table><thead><tr class="header"><th>Option</th><th>Type</th><th>Description</th></tr></thead><tbody><tr><td>Measurements Enabled</td><td>Multi-Select</td><td>The measurements to record</td></tr><tr><td>Period (Seconds)</td><td>Decimal</td><td>The duration between measurements or actions</td></tr><tr><td>Pre Output</td><td>Select</td><td>Turn the selected output on before taking every measurement</td></tr><tr><td>Pre Out Duration (Seconds)</td><td>Decimal</td><td>If a Pre Output is selected, set the duration to turn the Pre Output on for before every measurement is acquired.</td></tr><tr><td>Pre During Measure</td><td>Boolean</td><td>Check to turn the output off after (opposed to before) the measurement is complete</td></tr><tr><td>Device Type</td><td>Select</td><td>The type of Kasa device</td></tr><tr><td>Host</td><td>Text
 - Default Value: 0.0.0.0</td><td>Host or IP address</td></tr><tr><td>Asyncio RPC Port</td><td>Integer
-- Default Value: 18846</td><td>The port to start the asyncio RPC server. Must be unique from other Kasa Outputs.</td></tr><tr><td colspan="3">Commands</td></tr><tr><td colspan="3">The total kWh can be cleared with the following button or with the Clear Total kWh Function Action. This will also clear all energy stats on the device, not just the total kWh.</td></tr><tr><td>Clear Total: Kilowatt-hour</td><td>Button</td><td></td></tr></tbody></table>
+- Default Value: 18808</td><td>The port to start the asyncio RPC server. Must be unique from other Kasa Outputs.</td></tr><tr><td colspan="3">Commands</td></tr><tr><td colspan="3">The total kWh can be cleared with the following button or with the Clear Total kWh Function Action. This will also clear all energy stats on the device, not just the total kWh.</td></tr><tr><td>Clear Total: Kilowatt-hour</td><td>Button</td><td></td></tr></tbody></table>
 
 ### Tasmota: Tasmota Outlet Energy Monitor (HTTP)
 
@@ -1575,7 +1619,7 @@ This is the B version of the sensor that includes the ability to conduct automat
 - Measurements: Battery/Humidity/Temperature
 - Interfaces: BT
 - Libraries: bluepy/bluez
-- Dependencies: [bluez](https://packages.debian.org/search?keywords=bluez), [bluetooth](https://packages.debian.org/search?keywords=bluetooth), [libbluetooth-dev](https://packages.debian.org/search?keywords=libbluetooth-dev), [bluepy](https://pypi.org/project/bluepy), [bluetooth](https://github.com/pybluez/pybluez)
+- Dependencies: [libglib2.0](https://packages.debian.org/search?keywords=libglib2.0), [bluez](https://packages.debian.org/search?keywords=bluez), [bluetooth](https://packages.debian.org/search?keywords=bluetooth), [libbluetooth-dev](https://packages.debian.org/search?keywords=libbluetooth-dev), [bluepy](https://pypi.org/project/bluepy), [bluetooth](https://github.com/pybluez/pybluez)
 
 More information about ATC mode can be found at https://github.com/JsBergbau/MiTemperature2
 <table><thead><tr class="header"><th>Option</th><th>Type</th><th>Description</th></tr></thead><tbody><tr><td>Bluetooth MAC (XX:XX:XX:XX:XX:XX)</td><td>Text</td><td>The Hci location of the Bluetooth device.</td></tr><tr><td>Bluetooth Adapter (hci[X])</td><td>Text</td><td>The adapter of the Bluetooth device.</td></tr><tr><td>Measurements Enabled</td><td>Multi-Select</td><td>The measurements to record</td></tr><tr><td>Period (Seconds)</td><td>Decimal</td><td>The duration between measurements or actions</td></tr><tr><td>Pre Output</td><td>Select</td><td>Turn the selected output on before taking every measurement</td></tr><tr><td>Pre Out Duration (Seconds)</td><td>Decimal</td><td>If a Pre Output is selected, set the duration to turn the Pre Output on for before every measurement is acquired.</td></tr><tr><td>Pre During Measure</td><td>Boolean</td><td>Check to turn the output off after (opposed to before) the measurement is complete</td></tr><tr><td>Enable ATC Mode</td><td>Boolean</td><td>Enable sensor ATC mode</td></tr></tbody></table>

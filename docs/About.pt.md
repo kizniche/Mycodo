@@ -12,4 +12,4 @@ Quando as Entradas e Saídas são combinadas, os controladores de funções pode
 
 Os gatilhos podem ser definidos para activar eventos com base em datas e horas específicas, de acordo com durações de tempo, ou o nascer/pôr-do-sol a uma latitude e longitude específicas.
 
-Mycodo foi traduzido para várias línguas. Por defeito, o idioma do navegador irá determinar qual o idioma utilizado, mas pode ser anulado nas Configurações Gerais, na página `[Ícone do Equipamento] -> Configurar -> Geral'. Se encontrar um problema e quiser corrigir uma tradução ou quiser acrescentar outra língua, isto pode ser feito em [https://translate.kylegabriel.com](http://translate.kylegabriel.com:8080/engage/mycodo/).
+Mycodo has been translated to several languages. By default, the language of the browser will determine which language is used, but may be overridden in the General Settings, on the `[Gear Icon] -> Configure -> General` page. If you find an issue and would like to correct a translation or would like to add another language, this can be done at [https://translate.kylegabriel.com](https://translate.kylegabriel.com/engage/mycodo/).

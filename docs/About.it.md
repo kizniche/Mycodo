@@ -12,4 +12,4 @@ Quando gli ingressi e le uscite sono combinati, i controllori di funzione posson
 
 I trigger possono essere impostati per attivare eventi in base a date e orari specifici, in base alla durata del tempo o all'alba/tramonto a una specifica latitudine e longitudine.
 
-Mycodo è stato tradotto in diverse lingue. Per impostazione predefinita, la lingua del browser determina la lingua da utilizzare, ma può essere sovrascritta nelle Impostazioni generali, nella pagina `[Icona ingranaggio] -> Configura -> Generale`. Se si riscontra un problema e si desidera correggere una traduzione o aggiungere un'altra lingua, è possibile farlo all'indirizzo [https://translate.kylegabriel.com](http://translate.kylegabriel.com:8080/engage/mycodo/).
+Mycodo has been translated to several languages. By default, the language of the browser will determine which language is used, but may be overridden in the General Settings, on the `[Gear Icon] -> Configure -> General` page. If you find an issue and would like to correct a translation or would like to add another language, this can be done at [https://translate.kylegabriel.com](https://translate.kylegabriel.com/engage/mycodo/).

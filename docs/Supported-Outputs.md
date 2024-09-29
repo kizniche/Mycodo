@@ -15,10 +15,27 @@ Publish "on" or "off" (or any other strings of your choosing) to an MQTT server.
 - Default Value: 1883</td><td>The port of the MQTT server</td></tr><tr><td>Topic</td><td>Text
 - Default Value: paho/test/single</td><td>The topic to publish with</td></tr><tr><td>Keep Alive</td><td>Integer
 - Default Value: 60</td><td>The keepalive timeout value for the client. Set to 0 to disable.</td></tr><tr><td>Client ID</td><td>Text
-- Default Value: client_fvRl2Nvy</td><td>Unique client ID for connecting to the MQTT server</td></tr><tr><td>On Payload</td><td>Text
+- Default Value: client_DI7N4lrX</td><td>Unique client ID for connecting to the MQTT server</td></tr><tr><td>On Payload</td><td>Text
 - Default Value: on</td><td>The payload to send when turned on</td></tr><tr><td>Off Payload</td><td>Text
 - Default Value: off</td><td>The payload to send when turned off</td></tr><tr><td>Startup State</td><td>Select</td><td>Set the state when Mycodo starts</td></tr><tr><td>Shutdown State</td><td>Select</td><td>Set the state when Mycodo shuts down</td></tr><tr><td>Trigger Functions at Startup</td><td>Boolean</td><td>Whether to trigger functions when the output switches at startup</td></tr><tr><td>Force Command</td><td>Boolean</td><td>Always send the command if instructed, regardless of the current state</td></tr><tr><td>Current (Amps)</td><td>Decimal</td><td>The current draw of the device being controlled</td></tr><tr><td>Use Login</td><td>Boolean</td><td>Send login credentials</td></tr><tr><td>Username</td><td>Text
 - Default Value: user</td><td>Username for connecting to the server</td></tr><tr><td>Password</td><td>Text</td><td>Password for connecting to the server. Leave blank to disable.</td></tr><tr><td>Use Websockets</td><td>Boolean</td><td>Use websockets to connect to the server.</td></tr></tbody></table>
+
+### PWM: MQTT Publish
+
+- Manufacturer: Mycodo
+- Output Types: PWM
+- Libraries: paho-mqtt
+- Dependencies: [paho-mqtt](https://pypi.org/project/paho-mqtt)
+- Additional URL: [Link](http://www.eclipse.org/paho/)
+
+Publish a PWM value to an MQTT server.
+<tr><td colspan="3">Channel Options</td></tr><tr><td>Hostname</td><td>Text
+- Default Value: localhost</td><td>The hostname of the MQTT server</td></tr><tr><td>Port</td><td>Integer
+- Default Value: 1883</td><td>The port of the MQTT server</td></tr><tr><td>Topic</td><td>Text
+- Default Value: paho/test/single</td><td>The topic to publish with</td></tr><tr><td>Keep Alive</td><td>Integer
+- Default Value: 60</td><td>The keepalive timeout value for the client. Set to 0 to disable.</td></tr><tr><td>Client ID</td><td>Text
+- Default Value: client_9EhhN6Uc</td><td>Unique client ID for connecting to the MQTT server</td></tr><tr><td>Use Login</td><td>Boolean</td><td>Send login credentials</td></tr><tr><td>Username</td><td>Text
+- Default Value: user</td><td>Username for connecting to the server</td></tr><tr><td>Password</td><td>Text</td><td>Password for connecting to the server.</td></tr><tr><td>Use Websockets</td><td>Boolean</td><td>Use websockets to connect to the server.</td></tr><tr><td>Startup State</td><td>Select</td><td>Set the state when Mycodo starts</td></tr><tr><td>Startup Value</td><td>Decimal</td><td>The value when Mycodo starts</td></tr><tr><td>Shutdown State</td><td>Select</td><td>Set the state when Mycodo shuts down</td></tr><tr><td>Shutdown Value</td><td>Decimal</td><td>The value when Mycodo shuts down</td></tr><tr><td>Invert Signal</td><td>Boolean</td><td>Invert the PWM signal</td></tr><tr><td>Invert Stored Signal</td><td>Boolean</td><td>Invert the value that is saved to the measurement database</td></tr><tr><td>Current (Amps)</td><td>Decimal</td><td>The current draw of the device being controlled</td></tr><tr><td colspan="3">Commands</td></tr><tr><td colspan="3">Set the Duty Cycle.</td></tr><tr><td>Duty Cycle</td><td>Decimal</td><td>The duty cycle to set</td></tr><tr><td>Set Duty Cycle</td><td>Button</td><td></td></tr>
 
 ### Value: MQTT Publish
 
@@ -34,7 +51,7 @@ Publish a value to an MQTT server.
 - Default Value: 1883</td><td>The port of the MQTT server</td></tr><tr><td>Topic</td><td>Text
 - Default Value: paho/test/single</td><td>The topic to publish with</td></tr><tr><td>Keep Alive</td><td>Integer
 - Default Value: 60</td><td>The keepalive timeout value for the client. Set to 0 to disable.</td></tr><tr><td>Client ID</td><td>Text
-- Default Value: client_svc1di4g</td><td>Unique client ID for connecting to the MQTT server</td></tr><tr><td>Off Value</td><td>Integer</td><td>The value to send when an Off command is given</td></tr><tr><td>Use Login</td><td>Boolean</td><td>Send login credentials</td></tr><tr><td>Username</td><td>Text
+- Default Value: client_82H6IR1O</td><td>Unique client ID for connecting to the MQTT server</td></tr><tr><td>Off Value</td><td>Integer</td><td>The value to send when an Off command is given</td></tr><tr><td>Use Login</td><td>Boolean</td><td>Send login credentials</td></tr><tr><td>Username</td><td>Text
 - Default Value: user</td><td>Username for connecting to the server</td></tr><tr><td>Password</td><td>Text</td><td>Password for connecting to the server.</td></tr><tr><td>Use Websockets</td><td>Boolean</td><td>Use websockets to connect to the server.</td></tr></tbody></table>
 
 ## Built-In Outputs (Devices)
@@ -64,7 +81,7 @@ The DS3502 can generate a 0 - 10k Ohm resistance with 7-bit precision. This equa
 <table><thead><tr class="header"><th>Option</th><th>Type</th><th>Description</th></tr></thead><tbody><tr><td>I<sup>2</sup>C Address</td><td>Text</td><td>The address of the I<sup>2</sup>C device.</td></tr><tr><td>I<sup>2</sup>C Bus</td><td>Integer</td><td>The Bus the I<sup>2</sup>C device is connected.</td></tr><tr><td>VREF (volts)</td><td>Decimal
 - Default Value: 4.096</td><td>Set the VREF voltage</td></tr><tr><td colspan="3">Channel Options</td></tr><tr><td>Name</td><td>Text</td><td>A name to distinguish this from others</td></tr><tr><td>VREF</td><td>Select(Options: [<strong>Internal</strong> | VDD] (Default in <strong>bold</strong>)</td><td>Select the channel VREF</td></tr><tr><td>Gain</td><td>Select(Options: [<strong>1X</strong> | 2X] (Default in <strong>bold</strong>)</td><td>Select the channel Gain</td></tr><tr><td>Start State</td><td>Select(Options: [<strong>Previously-Saved State</strong> | Specified Value] (Default in <strong>bold</strong>)</td><td>Select the channel start state</td></tr><tr><td>Start Value (volts)</td><td>Decimal</td><td>If Specified Value is selected, set the start state value</td></tr><tr><td>Shutdown State</td><td>Select(Options: [<strong>Previously-Saved Value</strong> | Specified Value] (Default in <strong>bold</strong>)</td><td>Select the channel shutdown state</td></tr><tr><td>Shutdown Value (volts)</td><td>Decimal</td><td>If Specified Value is selected, set the shutdown state value</td></tr></tbody></table>
 
-### Motor: Stepper Motor, Bipolar (Generic)
+### Motor: Stepper Motor, Bipolar (Generic) (Pi <= 4)
 
 - Interfaces: GPIO
 - Output Types: Value
@@ -78,7 +95,7 @@ This is a generic module for bipolar stepper motor drivers such as the DRV8825, 
 <table><thead><tr class="header"><th>Option</th><th>Type</th><th>Description</th></tr></thead><tbody><tr><td colspan="3">Channel Options</td></tr><tr><td colspan="3">If the Direction or Enable pins are not used, make sure you pull the appropriate pins on your driver high or low to set the proper direction and enable the stepper motor to be energized. Note: For Enable Mode, always having the motor energized will use more energy and produce more heat.</td></tr><tr><td>Step Pin</td><td>Integer</td><td>The Step pin of the controller (BCM numbering)</td></tr><tr><td>Full Step Delay</td><td>Decimal
 - Default Value: 0.005</td><td>The Full Step Delay of the controller</td></tr><tr><td>Direction Pin</td><td>Integer</td><td>The Direction pin of the controller (BCM numbering). Set to None to disable.</td></tr><tr><td>Enable Pin</td><td>Integer</td><td>The Enable pin of the controller (BCM numbering). Set to None to disable.</td></tr><tr><td>Enable Mode</td><td>Select(Options: [<strong>Only When Turning</strong> | Always] (Default in <strong>bold</strong>)</td><td>Choose when to pull the enable pin high to energize the motor.</td></tr><tr><td>Enable at Shutdown</td><td>Select(Options: [Enable | <strong>Disable</strong>] (Default in <strong>bold</strong>)</td><td>Choose whether the enable pin in pulled high (Enable) or low (Disable) when Mycodo shuts down.</td></tr><tr><td colspan="3">If using a Step Resolution other than Full, and all three Mode Pins are set, they will be set high (1) or how (0) according to the values in parentheses to the right of the selected Step Resolution, e.g. (Mode Pin 1, Mode Pin 2, Mode Pin 3).</td></tr><tr><td>Step Resolution</td><td>Select(Options: [<strong>Full (modes 0, 0, 0)</strong> | Half (modes 1, 0, 0) | 1/4 (modes 0, 1, 0) | 1/8 (modes 1, 1, 0) | 1/16 (modes 0, 0, 1) | 1/32 (modes 1, 0, 1)] (Default in <strong>bold</strong>)</td><td>The Step Resolution of the controller</td></tr><tr><td>Mode Pin 1</td><td>Integer</td><td>The Mode Pin 1 of the controller (BCM numbering). Set to None to disable.</td></tr><tr><td>Mode Pin 2</td><td>Integer</td><td>The Mode Pin 2 of the controller (BCM numbering). Set to None to disable.</td></tr><tr><td>Mode Pin 3</td><td>Integer</td><td>The Mode Pin 3 of the controller (BCM numbering). Set to None to disable.</td></tr></tbody></table>
 
-### Motor: ULN2003 Stepper Motor, Unipolar
+### Motor: ULN2003 Stepper Motor, Unipolar (Pi <= 4)
 
 - Manufacturer: STMicroelectronics
 - Interfaces: GPIO
@@ -136,7 +153,7 @@ This output controls the 6 outlets of the Kasa HS300 Smart WiFi Power Strip. Thi
 <table><thead><tr class="header"><th>Option</th><th>Type</th><th>Description</th></tr></thead><tbody><tr><td>Host</td><td>Text
 - Default Value: 0.0.0.0</td><td>Host or IP address</td></tr><tr><td>Status Update (Seconds)</td><td>Integer
 - Default Value: 300</td><td>The period between checking if connected and output states. 0 disables.</td></tr><tr><td>Asyncio RPC Port</td><td>Integer
-- Default Value: 18554</td><td>The port to start the asyncio RPC server. Must be unique from other Kasa Outputs.</td></tr><tr><td colspan="3">Channel Options</td></tr><tr><td>Name</td><td>Text
+- Default Value: 18477</td><td>The port to start the asyncio RPC server. Must be unique from other Kasa Outputs.</td></tr><tr><td colspan="3">Channel Options</td></tr><tr><td>Name</td><td>Text
 - Default Value: Outlet Name</td><td>A name to distinguish this from others</td></tr><tr><td>Startup State</td><td>Select</td><td>Set the state when Mycodo starts</td></tr><tr><td>Shutdown State</td><td>Select</td><td>Set the state when Mycodo shuts down</td></tr><tr><td>Trigger Functions at Startup</td><td>Boolean</td><td>Whether to trigger functions when the output switches at startup</td></tr><tr><td>Force Command</td><td>Boolean</td><td>Always send the command if instructed, regardless of the current state</td></tr><tr><td>Current (Amps)</td><td>Decimal</td><td>The current draw of the device being controlled</td></tr></tbody></table>
 
 ### On/Off: Kasa KP303 3-Outlet WiFi Power Strip (old library, deprecated)
@@ -165,7 +182,7 @@ This output controls the 3 outlets of the Kasa KP303 Smart WiFi Power Strip. Thi
 <table><thead><tr class="header"><th>Option</th><th>Type</th><th>Description</th></tr></thead><tbody><tr><td>Host</td><td>Text
 - Default Value: 0.0.0.0</td><td>Host or IP address</td></tr><tr><td>Status Update (Seconds)</td><td>Integer
 - Default Value: 300</td><td>The period between checking if connected and output states. 0 disables.</td></tr><tr><td>Asyncio RPC Port</td><td>Integer
-- Default Value: 18496</td><td>The port to start the asyncio RPC server. Must be unique from other Kasa Outputs.</td></tr><tr><td colspan="3">Channel Options</td></tr><tr><td>Name</td><td>Text
+- Default Value: 18315</td><td>The port to start the asyncio RPC server. Must be unique from other Kasa Outputs.</td></tr><tr><td colspan="3">Channel Options</td></tr><tr><td>Name</td><td>Text
 - Default Value: Outlet Name</td><td>A name to distinguish this from others</td></tr><tr><td>Startup State</td><td>Select</td><td>Set the state when Mycodo starts</td></tr><tr><td>Shutdown State</td><td>Select</td><td>Set the state when Mycodo shuts down</td></tr><tr><td>Trigger Functions at Startup</td><td>Boolean</td><td>Whether to trigger functions when the output switches at startup</td></tr><tr><td>Force Command</td><td>Boolean</td><td>Always send the command if instructed, regardless of the current state</td></tr><tr><td>Current (Amps)</td><td>Decimal</td><td>The current draw of the device being controlled</td></tr></tbody></table>
 
 ### On/Off: Kasa WiFi Power Plug
@@ -180,7 +197,7 @@ This output controls Kasa WiFi Power Plugs, including the KP105, KP115, KP125, K
 <table><thead><tr class="header"><th>Option</th><th>Type</th><th>Description</th></tr></thead><tbody><tr><td>Host</td><td>Text
 - Default Value: 0.0.0.0</td><td>Host or IP address</td></tr><tr><td>Status Update (Seconds)</td><td>Integer
 - Default Value: 300</td><td>The period between checking if connected and output states. 0 disables.</td></tr><tr><td>Asyncio RPC Port</td><td>Integer
-- Default Value: 18443</td><td>The port to start the asyncio RPC server. Must be unique from other Kasa Outputs.</td></tr><tr><td colspan="3">Channel Options</td></tr><tr><td>Startup State</td><td>Select</td><td>Set the state when Mycodo starts</td></tr><tr><td>Shutdown State</td><td>Select</td><td>Set the state when Mycodo shuts down</td></tr><tr><td>Trigger Functions at Startup</td><td>Boolean</td><td>Whether to trigger functions when the output switches at startup</td></tr><tr><td>Force Command</td><td>Boolean</td><td>Always send the command if instructed, regardless of the current state</td></tr><tr><td>Current (Amps)</td><td>Decimal</td><td>The current draw of the device being controlled</td></tr></tbody></table>
+- Default Value: 18734</td><td>The port to start the asyncio RPC server. Must be unique from other Kasa Outputs.</td></tr><tr><td colspan="3">Channel Options</td></tr><tr><td>Startup State</td><td>Select</td><td>Set the state when Mycodo starts</td></tr><tr><td>Shutdown State</td><td>Select</td><td>Set the state when Mycodo shuts down</td></tr><tr><td>Trigger Functions at Startup</td><td>Boolean</td><td>Whether to trigger functions when the output switches at startup</td></tr><tr><td>Force Command</td><td>Boolean</td><td>Always send the command if instructed, regardless of the current state</td></tr><tr><td>Current (Amps)</td><td>Decimal</td><td>The current draw of the device being controlled</td></tr></tbody></table>
 
 ### On/Off: Kasa WiFi RGB Light Bulb
 
@@ -194,7 +211,7 @@ This output controls the the Kasa WiFi Light Bulbs, including the KL125, KL130, 
 <table><thead><tr class="header"><th>Option</th><th>Type</th><th>Description</th></tr></thead><tbody><tr><td>Host</td><td>Text
 - Default Value: 0.0.0.0</td><td>Host or IP address</td></tr><tr><td>Status Update (Seconds)</td><td>Integer
 - Default Value: 300</td><td>The period between checking if connected and output states. 0 disables.</td></tr><tr><td>Asyncio RPC Port</td><td>Integer
-- Default Value: 18656</td><td>The port to start the asyncio RPC server. Must be unique from other Kasa Outputs.</td></tr><tr><td colspan="3">Channel Options</td></tr><tr><td>Startup State</td><td>Select</td><td>Set the state when Mycodo starts</td></tr><tr><td>Shutdown State</td><td>Select</td><td>Set the state when Mycodo shuts down</td></tr><tr><td>Trigger Functions at Startup</td><td>Boolean</td><td>Whether to trigger functions when the output switches at startup</td></tr><tr><td>Force Command</td><td>Boolean</td><td>Always send the command if instructed, regardless of the current state</td></tr><tr><td>Current (Amps)</td><td>Decimal</td><td>The current draw of the device being controlled</td></tr><tr><td colspan="3">Commands</td></tr><tr><td>Transition (Milliseconds)</td><td>Integer
+- Default Value: 18364</td><td>The port to start the asyncio RPC server. Must be unique from other Kasa Outputs.</td></tr><tr><td colspan="3">Channel Options</td></tr><tr><td>Startup State</td><td>Select</td><td>Set the state when Mycodo starts</td></tr><tr><td>Shutdown State</td><td>Select</td><td>Set the state when Mycodo shuts down</td></tr><tr><td>Trigger Functions at Startup</td><td>Boolean</td><td>Whether to trigger functions when the output switches at startup</td></tr><tr><td>Force Command</td><td>Boolean</td><td>Always send the command if instructed, regardless of the current state</td></tr><tr><td>Current (Amps)</td><td>Decimal</td><td>The current draw of the device being controlled</td></tr><tr><td colspan="3">Commands</td></tr><tr><td>Transition (Milliseconds)</td><td>Integer
 - Default Value: 0</td><td>The hsv transition period</td></tr><tr><td>Brightness (Percent)</td><td>Integer</td><td>The brightness to set, in percent (0 - 100)</td></tr><tr><td>Set</td><td>Button</td><td></td></tr><tr><td>Transition (Milliseconds)</td><td>Integer
 - Default Value: 0</td><td>The hsv transition period</td></tr><tr><td>Hue (Degree)</td><td>Integer</td><td>The hue to set, in degrees (0 - 360)</td></tr><tr><td>Set</td><td>Button</td><td></td></tr><tr><td>Transition (Milliseconds)</td><td>Integer
 - Default Value: 0</td><td>The hsv transition period</td></tr><tr><td>Saturation (Percent)</td><td>Integer</td><td>The saturation to set, in percent (0 - 100)</td></tr><tr><td>Set</td><td>Button</td><td></td></tr><tr><td>Transition (Milliseconds)</td><td>Integer
@@ -231,7 +248,7 @@ Control the LEDs of a neopixel light strip. USE WITH CAUTION: This library uses 
 - Default Value: 30, 30, 30</td><td>The Color when turning on in Single Color Mode, RGB format (red, green, blue), 0 - 255 each.</td></tr><tr><td>Rainbow Speed (Seconds)</td><td>Decimal
 - Default Value: 0.01</td><td>The speed to change colors in Rainbow Mode</td></tr><tr><td>Rainbow Brightness</td><td>Integer
 - Default Value: 20</td><td>The maximum brightness of LEDs in Rainbow Mode (1 - 255)</td></tr><tr><td>Rainbow Mode</td><td>Select(Options: [All LEDs change at once | <strong>One LED Changes at a time</strong>] (Default in <strong>bold</strong>)</td><td>How the rainbow is displayed</td></tr><tr><td colspan="3">Channel Options</td></tr><tr><td>Startup State</td><td>Select</td><td>Set the state when Mycodo starts</td></tr><tr><td>Shutdown State</td><td>Select</td><td>Set the state when Mycodo shuts down</td></tr><tr><td>Trigger Functions at Startup</td><td>Boolean</td><td>Whether to trigger functions when the output switches at startup</td></tr><tr><td>Force Command</td><td>Boolean</td><td>Always send the command if instructed, regardless of the current state</td></tr><tr><td colspan="3">Commands</td></tr><tr><td>LED Position</td><td>Integer</td><td>Which LED in the strip to change</td></tr><tr><td>RGB Color</td><td>Text
-- Default Value: 10, 0, 0</td><td>The color (e.g 10, 0 0)</td></tr><tr><td>Set</td><td>Button</td><td></td></tr></tbody></table>
+- Default Value: 10, 0, 0</td><td>The color (e.g 10, 0, 0)</td></tr><tr><td>Set</td><td>Button</td><td></td></tr></tbody></table>
 
 ### On/Off: PCF8574 8-Channel I/O Expander
 
@@ -271,7 +288,16 @@ Python 3 code will be executed when this output is turned on or off.
 <table><thead><tr class="header"><th>Option</th><th>Type</th><th>Description</th></tr></thead><tbody><tr><td>Analyze Python Code with Pylint</td><td>Boolean
 - Default Value: True</td><td>Analyze your Python code with pylint when saving</td></tr><tr><td colspan="3">Channel Options</td></tr><tr><td>On Command</td></td><td>Python code to execute when the output is instructed to turn on</td></tr><tr><td>Off Command</td></td><td>Python code to execute when the output is instructed to turn off</td></tr><tr><td>Startup State</td><td>Select</td><td>Set the state when Mycodo starts</td></tr><tr><td>Shutdown State</td><td>Select</td><td>Set the state when Mycodo shuts down</td></tr><tr><td>Trigger Functions at Startup</td><td>Boolean</td><td>Whether to trigger functions when the output switches at startup</td></tr><tr><td>Force Command</td><td>Boolean</td><td>Always send the command if instructed, regardless of the current state</td></tr><tr><td>Current (Amps)</td><td>Decimal</td><td>The current draw of the device being controlled</td></tr></tbody></table>
 
-### On/Off: Raspberry Pi GPIO
+### On/Off: Raspberry Pi GPIO (Pi 5)
+
+- Interfaces: GPIO
+- Output Types: On/Off
+- Libraries: pinctrl
+
+The specified GPIO pin will be set HIGH (3.3 volts) or LOW (0 volts) when turned on or off, depending on the On State option.
+<table><thead><tr class="header"><th>Option</th><th>Type</th><th>Description</th></tr></thead><tbody><tr><td colspan="3">Channel Options</td></tr><tr><td>Pin: GPIO (BCM)</td><td>Integer</td><td>The pin to control the state of</td></tr><tr><td>Startup State</td><td>Select</td><td>Set the state when Mycodo starts</td></tr><tr><td>Shutdown State</td><td>Select</td><td>Set the state when Mycodo shuts down</td></tr><tr><td>On State</td><td>Select(Options: [<strong>HIGH</strong> | LOW] (Default in <strong>bold</strong>)</td><td>The state of the GPIO that corresponds to an On state</td></tr><tr><td>Trigger Functions at Startup</td><td>Boolean</td><td>Whether to trigger functions when the output switches at startup</td></tr><tr><td>Current (Amps)</td><td>Decimal</td><td>The current draw of the device being controlled</td></tr></tbody></table>
+
+### On/Off: Raspberry Pi GPIO (Pi <= 4)
 
 - Interfaces: GPIO
 - Output Types: On/Off
@@ -319,7 +345,7 @@ Commands will be executed in the Linux shell by the specified user when this out
 Controls the 4 relays of the relay module.
 <table><thead><tr class="header"><th>Option</th><th>Type</th><th>Description</th></tr></thead><tbody><tr><td>I<sup>2</sup>C Address</td><td>Text</td><td>The address of the I<sup>2</sup>C device.</td></tr><tr><td>I<sup>2</sup>C Bus</td><td>Integer</td><td>The Bus the I<sup>2</sup>C device is connected.</td></tr><tr><td colspan="3">Channel Options</td></tr><tr><td>Name</td><td>Text</td><td>A name to distinguish this from others</td></tr><tr><td>Startup State</td><td>Select</td><td>Set the state of the GPIO when Mycodo starts</td></tr><tr><td>Shutdown State</td><td>Select</td><td>Set the state of the GPIO when Mycodo shuts down</td></tr><tr><td>On State</td><td>Select(Options: [<strong>HIGH</strong> | LOW] (Default in <strong>bold</strong>)</td><td>The state of the GPIO that corresponds to an On state</td></tr><tr><td>Trigger Functions at Startup</td><td>Boolean</td><td>Whether to trigger functions when the output switches at startup</td></tr><tr><td>Current (Amps)</td><td>Decimal</td><td>The current draw of the device being controlled</td></tr></tbody></table>
 
-### On/Off: Wireless 315/433 MHz
+### On/Off: Wireless 315/433 MHz (Pi <= 4)
 
 - Interfaces: GPIO
 - Output Types: On/Off
@@ -331,6 +357,20 @@ This output uses a 315 or 433 MHz transmitter to turn wireless power outlets on 
 - Default Value: 22559</td><td>Command to execute when the output is instructed to turn on</td></tr><tr><td>Off Command</td><td>Text
 - Default Value: 22558</td><td>Command to execute when the output is instructed to turn off</td></tr><tr><td>Protocol</td><td>Select(Options: [<strong>1</strong> | 2 | 3 | 4 | 5] (Default in <strong>bold</strong>)</td><td></td></tr><tr><td>Pulse Length</td><td>Integer
 - Default Value: 189</td><td></td></tr><tr><td>Startup State</td><td>Select</td><td>Set the state when Mycodo starts</td></tr><tr><td>Shutdown State</td><td>Select</td><td>Set the state when Mycodo shuts down</td></tr><tr><td>Trigger Functions at Startup</td><td>Boolean</td><td>Whether to trigger functions when the output switches at startup</td></tr><tr><td>Force Command</td><td>Boolean</td><td>Always send the command, regardless of the current state</td></tr><tr><td>Current (Amps)</td><td>Decimal</td><td>The current draw of the device being controlled</td></tr></tbody></table>
+
+### On/Off: XL9535 16-Channel I/O Expander
+
+- Manufacturer: Texas Instruments
+- Interfaces: I<sup>2</sup>C
+- Output Types: On/Off
+- Libraries: smbus2
+- Dependencies: [smbus2](https://pypi.org/project/smbus2)
+- Manufacturer URL: [Link]()
+- Datasheet URL: [Link]()
+- Product URL: [Link]()
+
+Controls the 16 channels of the XL9535.
+<table><thead><tr class="header"><th>Option</th><th>Type</th><th>Description</th></tr></thead><tbody><tr><td>I<sup>2</sup>C Address</td><td>Text</td><td>The address of the I<sup>2</sup>C device.</td></tr><tr><td>I<sup>2</sup>C Bus</td><td>Integer</td><td>The Bus the I<sup>2</sup>C device is connected.</td></tr><tr><td colspan="3">Channel Options</td></tr><tr><td>Name</td><td>Text</td><td>A name to distinguish this from others</td></tr><tr><td>Startup State</td><td>Select</td><td>Set the state of the GPIO when Mycodo starts</td></tr><tr><td>Shutdown State</td><td>Select</td><td>Set the state of the GPIO when Mycodo shuts down</td></tr><tr><td>On State</td><td>Select(Options: [<strong>HIGH</strong> | LOW] (Default in <strong>bold</strong>)</td><td>The state of the GPIO that corresponds to an On state</td></tr><tr><td>Trigger Functions at Startup</td><td>Boolean</td><td>Whether to trigger functions when the output switches at startup</td></tr><tr><td>Current (Amps)</td><td>Decimal</td><td>The current draw of the device being controlled</td></tr></tbody></table>
 
 ### PWM: PCA9685 16-Channel LED Controller
 
@@ -358,7 +398,7 @@ Python 3 code will be executed when this output is turned on or off. The "duty_c
 - Default Value: True</td><td>Analyze your Python code with pylint when saving</td></tr><tr><td colspan="3">Channel Options</td></tr><tr><td>Python 3 Code</td></td><td>Python code to execute to set the PWM duty cycle (%)</td></tr><tr><td>User</td><td>Text
 - Default Value: mycodo</td><td>The user to execute the command</td></tr><tr><td>Startup State</td><td>Select</td><td>Set the state when Mycodo starts</td></tr><tr><td>Startup Value</td><td>Decimal</td><td>The value when Mycodo starts</td></tr><tr><td>Shutdown State</td><td>Select</td><td>Set the state when Mycodo shuts down</td></tr><tr><td>Shutdown Value</td><td>Decimal</td><td>The value when Mycodo shuts down</td></tr><tr><td>Invert Signal</td><td>Boolean</td><td>Invert the PWM signal</td></tr><tr><td>Invert Stored Signal</td><td>Boolean</td><td>Invert the value that is saved to the measurement database</td></tr><tr><td>Force Command</td><td>Boolean</td><td>Always send the command if instructed, regardless of the current state</td></tr><tr><td>Current (Amps)</td><td>Decimal</td><td>The current draw of the device being controlled</td></tr><tr><td colspan="3">Commands</td></tr><tr><td colspan="3">Set the Duty Cycle.</td></tr><tr><td>Duty Cycle</td><td>Decimal</td><td>The duty cycle to set</td></tr><tr><td>Set Duty Cycle</td><td>Button</td><td></td></tr></tbody></table>
 
-### PWM: Raspberry Pi GPIO
+### PWM: Raspberry Pi GPIO (Pi <= 4)
 
 - Interfaces: GPIO
 - Output Types: PWM
@@ -429,7 +469,7 @@ Controls the Grove I2C Motor Driver Board (v1.3). Both motors will turn at the s
 - Default Value: 1.0</td><td>The minimum duration the pump turns on for every 60 second period (only used for Specify Flow Rate mode).</td></tr><tr><td colspan="3">Commands</td></tr><tr><td>New I2C Address</td><td>Text
 - Default Value: 0x14</td><td>The new I2C to set the sensor to</td></tr><tr><td>Set I2C Address</td><td>Button</td><td></td></tr></tbody></table>
 
-### Peristaltic Pump: L298N DC Motor Controller
+### Peristaltic Pump: L298N DC Motor Controller (Pi <= 4)
 
 - Manufacturer: STMicroelectronics
 - Interfaces: GPIO
@@ -477,7 +517,7 @@ Controls the 8 channels of the PCF8574 with a relay and peristaltic pump connect
 - Default Value: 1.0</td><td>The minimum duration the pump should be turned on for every 60 second period</td></tr><tr><td>Flow Rate Method</td><td>Select(Options: [<strong>Fastest Flow Rate</strong> | Specify Flow Rate] (Default in <strong>bold</strong>)</td><td>The flow rate to use when pumping a volume</td></tr><tr><td>Desired Flow Rate (ml/min)</td><td>Decimal
 - Default Value: 10.0</td><td>Desired flow rate in ml/minute when Specify Flow Rate set</td></tr><tr><td>Current (Amps)</td><td>Decimal</td><td>The current draw of the device being controlled</td></tr></tbody></table>
 
-### Peristaltic Pump: Raspberry Pi GPIO
+### Peristaltic Pump: Raspberry Pi GPIO (Pi <= 4)
 
 - Interfaces: GPIO
 - Output Types: Volume, On/Off
@@ -518,4 +558,17 @@ This Output allows remote control of another Mycodo PWM Output over a network us
 A spacer to organize Outputs.
 <table><thead><tr class="header"><th>Option</th><th>Type</th><th>Description</th></tr></thead><tbody><tr><td>Color</td><td>Text
 - Default Value: #000000</td><td>The color of the name text</td></tr></tbody></table>
+
+### Value: GP8XXX (8413, 8403) 2-Channel DAC: 0-10 VDC
+
+- Manufacturer: DFRobot
+- Interfaces: I<sup>2</sup>C
+- Output Types: Value
+- Libraries: GP8XXX-IIC
+- Dependencies: [smbus2](https://pypi.org/project/smbus2), [GP8XXX-IIC](https://pypi.org/project/GP8XXX-IIC)
+- Datasheet URLs: [Link 1](https://wiki.dfrobot.com/SKU_DFR0971_2_Channel_I2C_0_10V_DAC_Module), [Link 2](https://wiki.dfrobot.com/SKU_DFR1073_2_Channel_15bit_I2C_to_0-10V_DAC)
+- Product URLs: [Link 1](https://www.dfrobot.com/product-2613.html), [Link 2](https://www.dfrobot.com/product-2756.html)
+
+Output 0 to 10 VDC signal.                GP8403: 12bit DAC Dual Channel I2C to 0-5V/0-10V |                GP8413: 15bit DAC Dual Channel I2C to 0-10V
+<table><thead><tr class="header"><th>Option</th><th>Type</th><th>Description</th></tr></thead><tbody><tr><td>I<sup>2</sup>C Address</td><td>Text</td><td>The address of the I<sup>2</sup>C device.</td></tr><tr><td>I<sup>2</sup>C Bus</td><td>Integer</td><td>The Bus the I<sup>2</sup>C device is connected.</td></tr><tr><td>Device</td><td>Select(Options: [<strong>GP8403 12-bit</strong> | GP8413 15-bit] (Default in <strong>bold</strong>)</td><td>Select your GP8XXX device</td></tr><tr><td colspan="3">Channel Options</td></tr><tr><td>Start State</td><td>Select(Options: [Previously-Saved State | <strong>Specified Value</strong>] (Default in <strong>bold</strong>)</td><td>Select the channel start state</td></tr><tr><td>Start Value (volts)</td><td>Decimal</td><td>If Specified Value is selected, set the start state value</td></tr><tr><td>Shutdown State</td><td>Select(Options: [Previously-Saved Value | <strong>Specified Value</strong>] (Default in <strong>bold</strong>)</td><td>Select the channel shutdown state</td></tr><tr><td>Shutdown Value (volts)</td><td>Decimal</td><td>If Specified Value is selected, set the shutdown state value</td></tr><tr><td>Off Value (volts)</td><td>Decimal</td><td>If Specified Value to apply when turned off</td></tr></tbody></table>
 

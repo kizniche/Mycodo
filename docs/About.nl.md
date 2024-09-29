@@ -12,4 +12,4 @@ Wanneer ingangen en uitgangen worden gecombineerd, kunnen functieregelaars worde
 
 Triggers kunnen worden ingesteld om gebeurtenissen te activeren op basis van specifieke data en tijden, volgens tijdsduur, of de zonsopgang/ondergang op een specifieke breedte- en lengtegraad.
 
-Mycodo is vertaald naar verschillende talen. Standaard zal de taal van de browser bepalen welke taal wordt gebruikt, maar kan worden overruled in de Algemene Instellingen, op de `[Gear Icon] -> Configuratie -> Algemeen` pagina. Als je een probleem vindt en een vertaling wilt corrigeren of een andere taal wilt toevoegen, dan kan dit via [https://translate.kylegabriel.com](http://translate.kylegabriel.com:8080/engage/mycodo/).
+Mycodo has been translated to several languages. By default, the language of the browser will determine which language is used, but may be overridden in the General Settings, on the `[Gear Icon] -> Configure -> General` page. If you find an issue and would like to correct a translation or would like to add another language, this can be done at [https://translate.kylegabriel.com](https://translate.kylegabriel.com/engage/mycodo/).

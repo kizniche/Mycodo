@@ -12,4 +12,4 @@ Mycodo можно использовать по-разному. Некоторы
 
 Триггеры могут быть установлены для активации событий на основе определенных дат и времени, в соответствии с продолжительностью времени или восходом/закатом солнца на определенной широте и долготе.
 
-Mycodo переведен на несколько языков. По умолчанию язык браузера определяет, какой язык будет использоваться, но его можно переопределить в Общих настройках, на странице `[Значок шестеренки] -> Настроить -> Общие`. Если вы обнаружили проблему и хотите исправить перевод или добавить другой язык, это можно сделать по адресу [https://translate.kylegabriel.com](http://translate.kylegabriel.com:8080/engage/mycodo/).
+Mycodo has been translated to several languages. By default, the language of the browser will determine which language is used, but may be overridden in the General Settings, on the `[Gear Icon] -> Configure -> General` page. If you find an issue and would like to correct a translation or would like to add another language, this can be done at [https://translate.kylegabriel.com](https://translate.kylegabriel.com/engage/mycodo/).

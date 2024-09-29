@@ -12,4 +12,4 @@ Mycodo有许多不同的用途。一些用户只是简单地存储传感器的�
 
 触发器可以被设置为根据特定的日期和时间，根据时间的长短，或特定经纬度的日出/日落来激活事件。
 
-Mycodo已经被翻译成多种语言。默认情况下，浏览器的语言将决定使用哪种语言，但可以在 "常规设置 "中，在"[齿轮图标]->配置->常规 "页面中进行覆盖。如果你发现一个问题，想纠正一个翻译，或想添加另一种语言，可以在[https://translate.kylegabriel.com](http://translate.kylegabriel.com:8080/engage/mycodo/)进行。
+Mycodo has been translated to several languages. By default, the language of the browser will determine which language is used, but may be overridden in the General Settings, on the `[Gear Icon] -> Configure -> General` page. If you find an issue and would like to correct a translation or would like to add another language, this can be done at [https://translate.kylegabriel.com](https://translate.kylegabriel.com/engage/mycodo/).
