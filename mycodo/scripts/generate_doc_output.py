@@ -70,7 +70,10 @@ def generate_controller_doc(out_file, each_data):
     if 'usage' in each_data and each_data['usage']:
         out_file.write(f"\nUsage: {each_data['usage']}\n")
 
-    if 'options_enabled' in each_data or 'custom_options' in each_data:
+    if ('options_enabled' in each_data or
+            'custom_options' in each_data or
+            'custom_channel_options' in each_data or
+            'custom_commands' in each_data):
         out_file.write('<table><thead><tr class="header"><th>Option</th><th>Type</th><th>Description</th></tr></thead><tbody>')
 
     if 'options_enabled' in each_data and 'i2c_location' in each_data['options_enabled']:
@@ -248,7 +251,10 @@ def generate_controller_doc(out_file, each_data):
                     if 'phrase' in each_option:
                         out_file.write(f"<td>{each_option['phrase']}</td></tr>")
 
-    if 'options_enabled' in each_data or 'custom_options' in each_data:
+    if ('options_enabled' in each_data or
+            'custom_options' in each_data or
+            'custom_channel_options' in each_data or
+            'custom_commands' in each_data):
         out_file.write('</tbody></table>')
 
     out_file.write("\n\n")
