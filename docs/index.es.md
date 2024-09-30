@@ -35,7 +35,6 @@ https://127.0.0.1
 *   [Mycodo API](https://kizniche.github.io/Mycodo/mycodo-api.html)
 *   [Foro de discusion](https://forum.radicaldiy.com)
 *   [Preguntas frecuentes](https://forum.radicaldiy.com/docs?category=23&tags=mycodo)
-*   [Mycodo Support](https://play.google.com/store/apps/details?id=com.mycodo.mycododocs) (Android App)
 
 ### Donar
 
