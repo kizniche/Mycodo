@@ -5895,13 +5895,6 @@ msgstr "Енергоспоживання з ідентифікатором %(id)
 msgid "File"
 msgstr "Файл"
 
-#: mycodo_flask/utils/utils_output.py:412
-#: mycodo_flask/utils/utils_output.py:418
-#: mycodo_flask/utils/utils_output.py:422
-#, python-format
-msgid "%(err)s"
-msgstr "%(msg)s"
-
 #: mycodo_flask/utils/utils_pid.py:276
 msgid "Raise and lower outputs cannot be the same"
 msgstr ""
