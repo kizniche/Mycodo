@@ -316,9 +316,9 @@ Mycodo is made possible, in part, by the many fine open source libraries, below.
    :target: https://github.com/kizniche/Mycodo/actions/workflows/main.yml
 .. |Codacy Badge| image:: https://app.codacy.com/project/badge/Grade/bb5ffc43e4444231b813ca6e81359336
    :target: https://www.codacy.com/gh/kizniche/Mycodo/dashboard?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=kizniche/Mycodo&amp;utm_campaign=Badge_Grade
-.. |Translation Badge| image:: https://translate.kylegabriel.com/widgets/mycodo/-/svg-badge.svg
+.. |Translation Badge| image:: https://translate.kylegabriel.com/widget/mycodo/git-translation/svg-badge.svg
    :target: https://translate.kylegabriel.com/engage/mycodo/
-.. |Translation Table| image:: https://translate.kylegabriel.com/widgets/mycodo/-/multi-auto.svg
+.. |Translation Table| image:: https://translate.kylegabriel.com/widget/mycodo/git-translation/multi-auto.svg
    :target: https://translate.kylegabriel.com/engage/mycodo/
 .. |DOI| image:: https://zenodo.org/badge/DOI/10.5281/zenodo.824199.svg
    :target: https://doi.org/10.5281/zenodo.824199
