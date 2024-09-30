@@ -35,8 +35,8 @@ cd /opt
 
 # Download and install
 curl -s https://api.github.com/repos/kizniche/Mycodo/releases/latest | \
-jq -r '.tarball_url' | wget -i - -O mycodo-latest.tar.gz
-tar xzf mycodo-latest.tar.gz -C Mycodo --strip-components=1
-rm -f mycodo-latest.tar.gz
+jq -r '.tarball_url' | sudo wget -i - -O mycodo-latest.tar.gz
+sudo tar xzf mycodo-latest.tar.gz -C Mycodo --strip-components=1
+sudo rm -f mycodo-latest.tar.gz
 cd Mycodo/install
 sudo /bin/bash ./setup.sh
