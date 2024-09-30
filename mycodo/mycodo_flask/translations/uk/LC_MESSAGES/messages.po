@@ -1,25 +1,24 @@
-# Translations template for Mycodo.
-# Copyright (C) 2023 Kyle T. Gabriel
+# Ukrainian translations for Mycodo.
+# Copyright (C) 2024 Kyle T. Gabriel
 # This file is distributed under the same license as the Mycodo project.
-# FIRST AUTHOR <EMAIL@ADDRESS>, 2023.
-# R Y <axesigon@gmail.com>, 2024.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2024.
+#
 msgid ""
 msgstr ""
 "Project-Id-Version: Mycodo 8.15.0\n"
 "Report-Msgid-Bugs-To: mycodo@kylegabriel.com\n"
-"POT-Creation-Date: 2023-01-13 19:49-0500\n"
+"POT-Creation-Date: 2024-09-29 22:12-0400\n"
 "PO-Revision-Date: 2024-05-10 20:02+0000\n"
 "Last-Translator: R Y <axesigon@gmail.com>\n"
-"Language-Team: Ukrainian <http://translate.kylegabriel.com/projects/mycodo/"
-"translations/uk/>\n"
 "Language: uk\n"
+"Language-Team: Ukrainian "
+"<http://translate.kylegabriel.com/projects/mycodo/translations/uk/>\n"
+"Plural-Forms: nplurals=3; plural=n%10==1 && n%100!=11 ? 0 : n%10>=2 && "
+"n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2;\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=3; plural=n%10==1 && n%100!=11 ? 0 : n%10>=2 && "
-"n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2;\n"
-"X-Generator: Weblate 5.4.3\n"
-"Generated-By: Babel 2.11.0\n"
+"Generated-By: Babel 2.14.0\n"
 
 #: config_devices_units.py:13 config_devices_units.py:17
 #: config_devices_units.py:21 config_devices_units.py:25
@@ -42,7 +41,7 @@ msgstr "Кут"
 msgid "Battery"
 msgstr "Батарея"
 
-#: config_devices_units.py:45 config_devices_units.py:347
+#: config_devices_units.py:45 config_devices_units.py:351
 msgid "Boolean"
 msgstr "Boolean"
 
@@ -81,11 +80,11 @@ msgid "Color Temperature"
 msgstr "Температура кольору"
 
 #: config_devices_units.py:85 config_devices_units.py:89
-#: config_devices_units.py:93 config_devices_units.py:365
+#: config_devices_units.py:93 config_devices_units.py:369
 msgid "CPU Load"
 msgstr "Навантаження на процесор"
 
-#: config_devices_units.py:85 config_devices_units.py:455
+#: config_devices_units.py:85 config_devices_units.py:462
 msgid "Minute"
 msgstr "Хвилина"
 
@@ -172,7 +171,7 @@ msgstr "Вологість"
 msgid "Humidity Ratio"
 msgstr "Коефіцієнт вологості"
 
-#: config_devices_units.py:161 config_devices_units.py:494
+#: config_devices_units.py:161 config_devices_units.py:501
 msgid "Ion Concentration"
 msgstr "Концентрація іонів"
 
@@ -219,54 +218,58 @@ msgid "PID D-Value"
 msgstr "PID D-Value"
 
 #: config_devices_units.py:217
+msgid "Position Open"
+msgstr ""
+
+#: config_devices_units.py:221
 msgid "Power"
 msgstr "Сила"
 
-#: config_devices_units.py:221
+#: config_devices_units.py:225
 msgid "Apparent Power"
 msgstr "Видима потужність"
 
-#: config_devices_units.py:225
+#: config_devices_units.py:229
 msgid "Power Factor"
 msgstr "Коефіцієнт потужності"
 
-#: config_devices_units.py:229
+#: config_devices_units.py:233
 msgid "Reactive Power"
 msgstr "Реактивна потужність"
 
-#: config_devices_units.py:233 functions/humidity_wet_dry_bulb.py:147
+#: config_devices_units.py:237 functions/humidity_wet_dry_bulb.py:147
 msgid "Pressure"
 msgstr "Тиск"
 
-#: config_devices_units.py:237
+#: config_devices_units.py:241
 msgid "Pulse Width"
 msgstr "Ширина імпульсу"
 
-#: config_devices_units.py:241
+#: config_devices_units.py:245
 msgid "Radiation Dose Rate"
 msgstr "Потужність дози радіації"
 
-#: config_devices_units.py:245
+#: config_devices_units.py:249
 msgid "Volume Flow Rate"
 msgstr "Об'ємна швидкість потоку"
 
-#: config_devices_units.py:249
+#: config_devices_units.py:253
 msgid "Resistance"
 msgstr "Опір"
 
-#: config_devices_units.py:253
+#: config_devices_units.py:257
 msgid "Rotation"
 msgstr "Ротація"
 
-#: config_devices_units.py:257
+#: config_devices_units.py:261
 msgid "Revolutions"
 msgstr "Обертів"
 
-#: config_devices_units.py:261
+#: config_devices_units.py:265
 msgid "Salinity"
 msgstr "Солоність"
 
-#: actions/led_kasa_bulb_change_color.py:52 config_devices_units.py:265
+#: actions/led_kasa_bulb_change_color.py:52 config_devices_units.py:269
 #: functions/camera_libcamera.py:275 mycodo_flask/forms/forms_camera.py:67
 #: outputs/on_off_kasa_rgb_bulbs.py:143
 msgid "Saturation"
@@ -274,335 +277,342 @@ msgstr "Насиченість"
 
 #: actions/pid_setpoint.py:17 actions/pid_setpoint.py:49
 #: actions/pid_setpoint_lower.py:17 actions/pid_setpoint_raise.py:17
-#: config_devices_units.py:269 config_devices_units.py:518
+#: config_devices_units.py:273 config_devices_units.py:525
 #: config_translations.py:178 functions/bang_bang.py:73
 #: functions/bang_bang_on_off.py:82 functions/bang_bang_pwm.py:70
 #: functions/pid_autotune.py:97
 msgid "Setpoint"
 msgstr "Заданне значення"
 
-#: config_devices_units.py:273
+#: config_devices_units.py:277
 msgid "Band Min"
 msgstr ""
 
-#: config_devices_units.py:277
+#: config_devices_units.py:281
 msgid "Band Max"
 msgstr ""
 
-#: config_devices_units.py:281
+#: config_devices_units.py:285
 msgid "Specific Enthalpy"
 msgstr ""
 
-#: config_devices_units.py:285
+#: config_devices_units.py:289
 msgid "Specific Gravity"
 msgstr "Питома вага"
 
-#: config_devices_units.py:289
+#: config_devices_units.py:293
 msgid "Specific Volume"
 msgstr "Питомий обсяг"
 
-#: config_devices_units.py:293
+#: config_devices_units.py:297
 msgid "Speed"
 msgstr "Швидкість"
 
-#: config_devices_units.py:297 functions/vapor_pressure_deficit.py:94
+#: config_devices_units.py:301 functions/vapor_pressure_deficit.py:94
 #: inputs/atlas_pt1000.py:76
 msgid "Temperature"
 msgstr "Температура"
 
-#: config_devices_units.py:301
+#: config_devices_units.py:305
 msgid "Total Dissolved Solids"
 msgstr "Загальний вміст розчинених речовин"
 
-#: config_devices_units.py:305 config_devices_units.py:329
-#: config_devices_units.py:482
+#: config_devices_units.py:309 config_devices_units.py:333
+#: config_devices_units.py:489
 msgid "Unitless"
 msgstr "\"Без одиниці\""
 
-#: config_devices_units.py:309
+#: config_devices_units.py:313
 msgid "Vapor Pressure Deficit"
 msgstr "Дефіцит тиску пари"
 
-#: config_devices_units.py:313
+#: config_devices_units.py:317
 msgid "Version"
 msgstr "Версія"
 
-#: config_devices_units.py:317
+#: config_devices_units.py:321
 msgid "VOC"
 msgstr ""
 
 #: actions/clear_total_volume.py:13 actions/output_volume.py:48
-#: config_devices_units.py:321 config_translations.py:214
+#: config_devices_units.py:325 config_translations.py:214
 #: config_translations.py:316 config_translations.py:317
 #: inputs/atlas_flow.py:204 inputs/hall_flow.py:61
 msgid "Volume"
 msgstr "Обсяг"
 
-#: config_devices_units.py:332
+#: config_devices_units.py:336
 msgid "Microsecond"
 msgstr "Мікросекунда"
 
-#: config_devices_units.py:335
+#: config_devices_units.py:339
 msgid "Microsiemens per centimeter"
 msgstr "Мікросіменс на сантиметр"
 
-#: config_devices_units.py:338
+#: config_devices_units.py:342
 msgid "Microsieverts per hour"
 msgstr "Мікрозівертів на годину"
 
-#: config_devices_units.py:341 mycodo_flask/forms/forms_misc.py:27
+#: config_devices_units.py:345 mycodo_flask/forms/forms_misc.py:27
 #: mycodo_flask/forms/forms_misc.py:35
 msgid "Amp"
 msgstr ""
 
-#: config_devices_units.py:344
+#: config_devices_units.py:348
 msgid "Bearing"
 msgstr ""
 
-#: config_devices_units.py:350
+#: config_devices_units.py:354
 msgid "Celsius"
 msgstr "За Цельсієм"
 
-#: config_devices_units.py:353
+#: config_devices_units.py:357
 msgid "CIE"
 msgstr ""
 
-#: config_devices_units.py:356
+#: config_devices_units.py:360
 msgid "Centimeter"
 msgstr "Сантиметр"
 
-#: config_devices_units.py:359
+#: config_devices_units.py:363
 msgid "Centimeters of water"
 msgstr "Сантиметри води"
 
-#: config_devices_units.py:362
+#: config_devices_units.py:366
 msgid "Counts per minute"
 msgstr "Кількість підрахунків за хвилину"
 
-#: config_devices_units.py:368
+#: config_devices_units.py:372
+#, fuzzy
+msgid "Day"
+msgstr "Дисплей"
+
+#: config_devices_units.py:375
 msgid "Decimal"
 msgstr "Десятковий"
 
-#: actions/led_kasa_bulb_change_color.py:44 config_devices_units.py:371
+#: actions/led_kasa_bulb_change_color.py:44 config_devices_units.py:378
 #: outputs/on_off_kasa_rgb_bulbs.py:120
 msgid "Degree"
 msgstr ""
 
-#: config_devices_units.py:374
+#: config_devices_units.py:381
 msgid "8-Bit Color"
 msgstr "8-бітний колір"
 
-#: config_devices_units.py:377
+#: config_devices_units.py:384
 msgid "Fahrenheit"
 msgstr "Фаренгейт"
 
-#: config_devices_units.py:380
+#: config_devices_units.py:387
 msgid "Foot"
 msgstr "фут"
 
-#: config_devices_units.py:383
+#: config_devices_units.py:390
 msgid "Full"
 msgstr "Повний"
 
-#: config_devices_units.py:386
+#: config_devices_units.py:393
 msgid "G-Force"
 msgstr "Сила G"
 
-#: config_devices_units.py:389
+#: config_devices_units.py:396
 msgid "Gigabyte"
 msgstr "Гігабайт"
 
-#: config_devices_units.py:392
+#: config_devices_units.py:399
 msgid "Hour"
 msgstr "Година."
 
-#: config_devices_units.py:395
+#: config_devices_units.py:402
 msgid "Hectopascals"
 msgstr "Гектопаскалі"
 
-#: config_devices_units.py:398 config_translations.py:351
+#: config_devices_units.py:405 config_translations.py:351
 msgid "Hertz"
 msgstr "Герц"
 
-#: config_devices_units.py:401
+#: config_devices_units.py:408
 msgid "Infrared"
 msgstr "Інфрачервоне"
 
-#: config_devices_units.py:404 outputs/on_off_kasa_rgb_bulbs.py:166
+#: config_devices_units.py:411 outputs/on_off_kasa_rgb_bulbs.py:166
 msgid "Kelvin"
 msgstr "Кельвін"
 
-#: config_devices_units.py:407
+#: config_devices_units.py:414
 msgid "Kilobyte"
 msgstr "Кілобайт"
 
-#: config_devices_units.py:410
+#: config_devices_units.py:417
 msgid "Kilogram per kilogram"
 msgstr "Кілограм на кілограм"
 
-#: config_devices_units.py:413
+#: config_devices_units.py:420
 msgid "Kilohertz"
 msgstr "Кілогерц"
 
-#: config_devices_units.py:416
+#: config_devices_units.py:423
 msgid "Kilojoule per kilogram"
 msgstr "Кілоджоуль на кілограм"
 
-#: config_devices_units.py:419
+#: config_devices_units.py:426
 msgid "Knot"
 msgstr "Вузол."
 
-#: config_devices_units.py:422
+#: config_devices_units.py:429
 msgid "Kilopascal"
 msgstr "Кілопаскаль"
 
-#: actions/clear_total_kWh.py:13 config_devices_units.py:425
+#: actions/clear_total_kWh.py:13 config_devices_units.py:432
 #: inputs/kasa_energy_meter.py:77
 msgid "Kilowatt-hour"
 msgstr "Кіловат-годину"
 
-#: config_devices_units.py:428
+#: config_devices_units.py:435
 msgid "Liter"
 msgstr "Літр"
 
-#: config_devices_units.py:431
+#: config_devices_units.py:438
 msgid "Liters per Hour"
 msgstr "Літрів на годину"
 
-#: config_devices_units.py:434
+#: config_devices_units.py:441
 msgid "Liters per Minute"
 msgstr "Літрів за хвилину"
 
-#: config_devices_units.py:437
+#: config_devices_units.py:444
 msgid "Liters Per Second"
 msgstr "Літрів на секунду"
 
-#: config_devices_units.py:440
+#: config_devices_units.py:447
 msgid "Lux"
 msgstr "Лакс."
 
-#: config_devices_units.py:443
+#: config_devices_units.py:450
 msgid "Meter"
 msgstr ""
 
-#: config_devices_units.py:446
+#: config_devices_units.py:453
 msgid "Meters per second"
 msgstr "Метри в секунду"
 
-#: config_devices_units.py:449
+#: config_devices_units.py:456
 msgid "Meters per second per second"
 msgstr "Метри в секунду в секунду в секунду"
 
-#: config_devices_units.py:452
+#: config_devices_units.py:459
 msgid "Milligram per Liter"
 msgstr "Міліграм на літр"
 
-#: config_devices_units.py:458
+#: config_devices_units.py:465
 msgid "Milliamp"
 msgstr "Міліампер"
 
-#: config_devices_units.py:461
+#: config_devices_units.py:468
 msgid "Milliliter"
 msgstr "Мілілітр"
 
-#: config_devices_units.py:464
+#: config_devices_units.py:471
 msgid "Millimeter"
 msgstr "Міліметр"
 
-#: config_devices_units.py:467
+#: config_devices_units.py:474
 msgid "Miles per hour"
 msgstr "Милі на годину"
 
-#: config_devices_units.py:470
+#: config_devices_units.py:477
 msgid "Millivolt"
 msgstr "Мілівольт"
 
-#: config_devices_units.py:473
+#: config_devices_units.py:480
 msgid "Cubic meters per kilogram"
 msgstr "Кубічні метри на кілограм"
 
-#: config_devices_units.py:476
+#: config_devices_units.py:483
 msgid "Megahertz"
 msgstr "Мегагерц"
 
-#: config_devices_units.py:479
+#: config_devices_units.py:486
 msgid "Megabyte"
 msgstr "Мегабайт"
 
-#: config_devices_units.py:485 config_translations.py:358
+#: config_devices_units.py:492 config_translations.py:358
 msgid "Ohm"
 msgstr "Ом"
 
-#: config_devices_units.py:488
+#: config_devices_units.py:495
 msgid "Pascal"
 msgstr "Паскаль"
 
 #: actions/led_kasa_bulb_change_color.py:52
-#: actions/led_kasa_bulb_change_color.py:60 config_devices_units.py:491
+#: actions/led_kasa_bulb_change_color.py:60 config_devices_units.py:498
 #: outputs/on_off_kasa_rgb_bulbs.py:97 outputs/on_off_kasa_rgb_bulbs.py:143
 msgid "Percent"
 msgstr "Відсоток"
 
-#: config_devices_units.py:497
+#: config_devices_units.py:504
 msgid "PID values"
 msgstr "Значення PID"
 
-#: config_devices_units.py:500
+#: config_devices_units.py:507
 msgid "Parts per billion"
 msgstr "Частинок на мільярд"
 
-#: config_devices_units.py:503
+#: config_devices_units.py:510
 msgid "Parts per million"
 msgstr "Частинок на мільйон"
 
-#: config_devices_units.py:506
+#: config_devices_units.py:513
 msgid "Parts per thousand"
 msgstr "Частин на тисячу"
 
-#: config_devices_units.py:509
+#: config_devices_units.py:516
 msgid "Pounds per square inch"
 msgstr "Фунтів на квадратний дюйм"
 
-#: config_devices_units.py:512
+#: config_devices_units.py:519
 msgid "Revolutions per minute"
 msgstr "Обертів за хвилину"
 
-#: config_devices_units.py:515
+#: config_devices_units.py:522
 msgid "Second"
 msgstr "Секунда"
 
-#: config_devices_units.py:521
+#: config_devices_units.py:528
 msgid "Steps"
 msgstr "Кроки"
 
-#: config_devices_units.py:524
+#: config_devices_units.py:531
 msgid "Microgram per cubic meter"
 msgstr "Мікрограм на кубічний метр"
 
-#: config_devices_units.py:527
+#: config_devices_units.py:534
 msgid "Microtesla"
 msgstr "Мікротесла"
 
-#: config_devices_units.py:536
+#: config_devices_units.py:543
 msgid "Volt"
 msgstr "Вольт."
 
-#: config_devices_units.py:539
+#: config_devices_units.py:546
 msgid "Watt"
 msgstr "Ватт"
 
 #: config_translations.py:12 mycodo_flask/templates/layout-settings.html:37
-#: mycodo_flask/templates/pages/data_options/input_options.html:289
+#: mycodo_flask/templates/pages/data_options/input_options.html:301
 #: mycodo_flask/templates/pages/function_options/conditional_options.html:143
+#: mycodo_flask/templates/pages/function_options/custom_function_options.html:273
 #: mycodo_flask/templates/pages/function_options/trigger_options.html:70
 msgid "Actions"
 msgstr "Дії"
 
 #: config_translations.py:14 mycodo_flask/forms/forms_conditional.py:53
-#: mycodo_flask/templates/pages/data_options/input_options.html:306
+#: mycodo_flask/templates/pages/data_options/input_options.html:318
 #: mycodo_flask/templates/pages/function.html:64
 #: mycodo_flask/templates/pages/function_options/conditional_options.html:131
 #: mycodo_flask/templates/pages/function_options/conditional_options.html:160
+#: mycodo_flask/templates/pages/function_options/custom_function_options.html:290
 #: mycodo_flask/templates/pages/function_options/function_options.html:71
 #: mycodo_flask/templates/pages/function_options/trigger_options.html:87
 #: mycodo_flask/templates/pages/input.html:54
@@ -652,8 +662,9 @@ msgstr "Розрахувати"
 #: actions/camera_timelapse_pause.py:38 actions/camera_timelapse_resume.py:38
 #: actions/photo.py:36 actions/photo_email.py:40 config_translations.py:32
 #: functions/camera_libcamera.py:81 functions/camera_libcamera.py:82
-#: mycodo_flask/templates/layout.html:216
-#: mycodo_flask/templates/pages/camera.html:5 widgets/widget_camera.py:248
+#: mycodo_flask/templates/layout.html:220
+#: mycodo_flask/templates/layout_default.html:220
+#: mycodo_flask/templates/pages/camera.html:5 widgets/widget_camera.py:245
 msgid "Camera"
 msgstr "Камера"
 
@@ -676,7 +687,7 @@ msgstr "Команди"
 msgid "Completed"
 msgstr "Завершено"
 
-#: config_translations.py:42 mycodo_flask/forms/forms_settings.py:140
+#: config_translations.py:42 mycodo_flask/forms/forms_settings.py:148
 msgid "Conditional"
 msgstr "Умовний"
 
@@ -684,11 +695,12 @@ msgstr "Умовний"
 #: actions/controller_activate.py:45 actions/controller_deactivate.py:45
 #: actions/examples/example_action_for_function.py:46
 #: actions/led_kasa_bulb_change_color.py:36
-#: actions/led_neopixel_change_color.py:36 actions/pid_method.py:41
+#: actions/led_neopixel_change_color.py:39 actions/led_neopixel_flash_off.py:37
+#: actions/led_neopixel_flash_on.py:37 actions/pid_method.py:41
 #: actions/pid_pause.py:40 actions/pid_resume.py:40 actions/pid_setpoint.py:41
 #: actions/pid_setpoint_lower.py:40 actions/pid_setpoint_raise.py:40
 #: config_translations.py:44
-#: widgets/widget_controller_activate_deactivate.py:131
+#: widgets/widget_controller_activate_deactivate.py:138
 msgid "Controller"
 msgstr "Контролер"
 
@@ -708,13 +720,14 @@ msgid "Custom"
 msgstr "Нестандартний"
 
 #: config_translations.py:50 config_translations_docs.py:56
-#: mycodo_flask/templates/settings/general.html:108
-#: mycodo_flask/templates/settings/general.html:119
+#: mycodo_flask/templates/settings/general.html:58
+#: mycodo_flask/templates/settings/general.html:69
 msgid "Dashboard"
 msgstr "Дашборд"
 
 #: config_translations.py:52 config_translations_docs.py:52
-#: mycodo_flask/templates/layout.html:189
+#: mycodo_flask/templates/layout.html:193
+#: mycodo_flask/templates/layout_default.html:193
 msgid "Data"
 msgstr "Дані"
 
@@ -751,7 +764,7 @@ msgstr "Пристрій"
 msgid "Diagnostic"
 msgstr "Діагностика"
 
-#: actions/display_backlight_color.py:37 actions/display_backlight_off.py:37
+#: actions/display_backlight_color.py:37 actions/display_backlight_off.py:38
 #: actions/display_backlight_on.py:37 actions/display_flash_off.py:37
 #: actions/display_flash_on.py:37 config_translations.py:64
 msgid "Display"
@@ -767,7 +780,7 @@ msgid "Duplicate"
 msgstr "Дублікат"
 
 #: config_translations.py:72 config_translations.py:399
-#: mycodo_flask/forms/forms_input.py:153
+#: mycodo_flask/forms/forms_input.py:157
 msgid "Edge"
 msgstr ""
 
@@ -779,8 +792,10 @@ msgstr "Редагувати"
 msgid "E-Mail"
 msgstr "Електронна пошта"
 
-#: config_translations.py:78 mycodo_flask/templates/layout.html:219
-#: mycodo_flask/templates/layout.html:220
+#: config_translations.py:78 mycodo_flask/templates/layout.html:223
+#: mycodo_flask/templates/layout.html:224
+#: mycodo_flask/templates/layout_default.html:223
+#: mycodo_flask/templates/layout_default.html:224
 #: mycodo_flask/templates/pages/energy_usage_input_amps.html:3
 #: mycodo_flask/templates/pages/energy_usage_input_amps.html:5
 #: mycodo_flask/templates/pages/energy_usage_input_amps.html:30
@@ -791,6 +806,10 @@ msgid "Energy Usage"
 msgstr "Використання енергії"
 
 #: config_translations.py:80 mycodo_flask/templates/flash_messages.html:46
+#: mycodo_flask/templates/user_templates/widget_template_widget_measurement_js.html:40
+#: mycodo_flask/templates/user_templates/widget_template_widget_measurement_multi_js.html:41
+#: mycodo_flask/templates/user_templates/widget_template_widget_output_js.html:58
+#: mycodo_flask/templates/user_templates/widget_template_widget_output_pwm_slider_js.html:73
 msgid "Error"
 msgstr "Помилка"
 
@@ -802,9 +821,9 @@ msgstr "Експорт"
 msgid "Fail"
 msgstr "Неуспішно"
 
-#: config_translations.py:86 mycodo_flask/forms/forms_settings.py:143
+#: config_translations.py:86 mycodo_flask/forms/forms_settings.py:151
 #: mycodo_flask/templates/pages/function.html:56
-#: widgets/widget_function_status.py:54 widgets/widget_graph_synchronous.py:372
+#: widgets/widget_function_status.py:54 widgets/widget_graph_synchronous.py:373
 msgid "Function"
 msgstr "Функція"
 
@@ -835,21 +854,21 @@ msgstr "Інвертувати"
 
 #: config_translations.py:100 mycodo_flask/templates/tools/notes.html:138
 #: mycodo_flask/utils/utils_notes.py:453
-#: mycodo_flask/utils/utils_settings.py:473
-#: mycodo_flask/utils/utils_settings.py:568
-#: mycodo_flask/utils/utils_settings.py:603
-#: mycodo_flask/utils/utils_settings.py:698
-#: mycodo_flask/utils/utils_settings.py:732
-#: mycodo_flask/utils/utils_settings.py:867
-#: mycodo_flask/utils/utils_settings.py:901
-#: mycodo_flask/utils/utils_settings.py:1018
-#: mycodo_flask/utils/utils_settings.py:1051
-#: mycodo_flask/utils/utils_settings.py:1144
+#: mycodo_flask/utils/utils_settings.py:492
+#: mycodo_flask/utils/utils_settings.py:587
+#: mycodo_flask/utils/utils_settings.py:622
+#: mycodo_flask/utils/utils_settings.py:717
+#: mycodo_flask/utils/utils_settings.py:751
+#: mycodo_flask/utils/utils_settings.py:886
+#: mycodo_flask/utils/utils_settings.py:920
+#: mycodo_flask/utils/utils_settings.py:1037
+#: mycodo_flask/utils/utils_settings.py:1070
+#: mycodo_flask/utils/utils_settings.py:1163
 msgid "Import"
 msgstr "Імпорт"
 
-#: actions/input_force_measurements.py:13 config_translations.py:102
-#: mycodo_flask/forms/forms_settings.py:146
+#: actions/force_input_measurements.py:13 config_translations.py:102
+#: mycodo_flask/forms/forms_settings.py:154
 #: mycodo_flask/templates/layout-remote.html:50
 #: mycodo_flask/templates/pages/function_options/pid_options.html:273
 msgid "Input"
@@ -861,6 +880,7 @@ msgstr "Неправильний"
 
 #: config_translations.py:106
 #: mycodo_flask/templates/pages/function_options/conditional_options/measurement.html:2
+#: mycodo_flask/templates/pages/function_options/conditional_options/measurement_and_ts.html:2
 msgid "Last"
 msgstr "Останній"
 
@@ -885,35 +905,36 @@ msgid "Math"
 msgstr "Математика"
 
 #: actions/examples/example_action_for_input.py:35
-#: actions/mqtt_publish_input.py:13 actions/mqtt_publish_input.py:36
-#: config_translations.py:118 functions/average_past_single.py:89
-#: functions/bang_bang.py:45 functions/bang_bang.py:53
-#: functions/bang_bang_on_off.py:43 functions/bang_bang_on_off.py:51
-#: functions/bang_bang_pwm.py:42 functions/bang_bang_pwm.py:50
-#: functions/difference.py:75 functions/difference.py:83
-#: functions/difference.py:94 functions/difference.py:102
-#: functions/equation_multi.py:76 functions/equation_multi.py:84
-#: functions/equation_multi.py:96 functions/equation_multi.py:104
-#: functions/pid_autotune.py:68 functions/verification.py:74
-#: functions/verification.py:82 functions/verification.py:93
-#: functions/verification.py:101 inputs/ads1115_analog_ph_ec.py:138
-#: inputs/ads1256_analog_ph_ec.py:222 inputs/anyleaf_ph.py:62
-#: inputs/atlas_do.py:68 inputs/atlas_ec.py:80 inputs/atlas_o2.py:69
-#: inputs/atlas_orp.py:67 inputs/atlas_ph.py:71
+#: actions/input_action_equation.py:30 actions/input_action_mqtt_publish.py:13
+#: actions/input_action_mqtt_publish.py:36 config_translations.py:118
+#: functions/average_past_single.py:89 functions/bang_bang.py:45
+#: functions/bang_bang.py:53 functions/bang_bang_on_off.py:43
+#: functions/bang_bang_on_off.py:51 functions/bang_bang_pwm.py:42
+#: functions/bang_bang_pwm.py:50 functions/difference.py:75
+#: functions/difference.py:83 functions/difference.py:94
+#: functions/difference.py:102 functions/equation_multi.py:76
+#: functions/equation_multi.py:84 functions/equation_multi.py:96
+#: functions/equation_multi.py:104 functions/pid_autotune.py:68
+#: functions/verification.py:74 functions/verification.py:82
+#: functions/verification.py:93 functions/verification.py:101
+#: inputs/ads1115_analog_ph_ec.py:138 inputs/ads1256_analog_ph_ec.py:222
+#: inputs/anyleaf_ph.py:62 inputs/atlas_do.py:68 inputs/atlas_ec.py:80
+#: inputs/atlas_o2.py:69 inputs/atlas_orp.py:67 inputs/atlas_ph.py:71
 #: mycodo_flask/forms/forms_misc.py:27 mycodo_flask/forms/forms_misc.py:35
 #: mycodo_flask/templates/pages/function_options/conditional_options/measurement.html:2
+#: mycodo_flask/templates/pages/function_options/conditional_options/measurement_and_ts.html:2
 #: mycodo_flask/templates/pages/function_options/conditional_options/measurement_dict.html:2
 #: mycodo_flask/templates/pages/function_options/conditional_options/measurement_past_average.html:2
 #: mycodo_flask/templates/pages/function_options/conditional_options/measurement_past_sum.html:2
-#: mycodo_flask/templates/pages/live.html:106
-#: mycodo_flask/templates/pages/live.html:161
+#: mycodo_flask/templates/pages/live.html:108
+#: mycodo_flask/templates/pages/live.html:163
 #: widgets/widget_gauge_angular.py:152 widgets/widget_gauge_solid.py:174
 #: widgets/widget_indicator.py:55 widgets/widget_measurement.py:55
 msgid "Measurement"
 msgstr "Вимір"
 
 #: actions/pid_method.py:51 config_translations.py:120
-#: mycodo_flask/routes_method.py:225
+#: mycodo_flask/routes_method.py:216
 #: mycodo_flask/templates/pages/function_options/pid_options.html:272
 #: mycodo_flask/templates/pages/method-list.html:41
 msgid "Method"
@@ -936,20 +957,24 @@ msgstr "Нема доступних"
 msgid "Note"
 msgstr "Примітка"
 
-#: actions/display_backlight_off.py:14 actions/display_flash_off.py:14
-#: config_translations.py:130 outputs/on_off_kasa_rgb_bulbs.py:228
+#: actions/display_backlight_off.py:15 actions/display_flash_off.py:14
+#: actions/led_neopixel_flash_off.py:14 config_translations.py:130
+#: mycodo_flask/templates/user_templates/widget_template_widget_indicator_js.html:24
+#: outputs/on_off_kasa_rgb_bulbs.py:228
 msgid "Off"
 msgstr "Вимкнено"
 
 #: actions/display_backlight_on.py:14 actions/display_flash_on.py:14
-#: config_translations.py:132 outputs/on_off_kasa_rgb_bulbs.py:212
+#: actions/led_neopixel_flash_on.py:14 config_translations.py:132
+#: mycodo_flask/templates/user_templates/widget_template_widget_indicator_js.html:22
+#: outputs/on_off_kasa_rgb_bulbs.py:212
 msgid "On"
 msgstr "Увімкнути"
 
 #: config_translations.py:134 functions/bang_bang.py:65
 #: functions/bang_bang_pwm.py:62 functions/pid_autotune.py:79
 #: mycodo_flask/forms/forms_pid.py:101 mycodo_flask/forms/forms_pid.py:103
-#: mycodo_flask/forms/forms_settings.py:149 widgets/widget_output.py:52
+#: mycodo_flask/forms/forms_settings.py:157 widgets/widget_output.py:52
 #: widgets/widget_output_pwm_slider.py:52
 msgid "Output"
 msgstr "Вивід"
@@ -961,11 +986,10 @@ msgstr "Вивід"
 msgid "Past"
 msgstr "Попередні"
 
-#: actions/mqtt_publish.py:116 actions/mqtt_publish_input.py:100
+#: actions/input_action_mqtt_publish.py:100 actions/mqtt_publish.py:116
 #: config_translations.py:138 inputs/mqtt_paho.py:118
-#: inputs/mqtt_paho_json.py:134 mycodo_flask/forms/forms_settings.py:106
-#: mycodo_flask/templates/settings/users.html:117 outputs/on_off_mqtt.py:176
-#: outputs/value_mqtt.py:121
+#: inputs/mqtt_paho_json.py:133 mycodo_flask/templates/settings/users.html:117
+#: outputs/on_off_mqtt.py:176 outputs/pwm_mqtt.py:133 outputs/value_mqtt.py:121
 msgid "Password"
 msgstr "Пароль"
 
@@ -974,7 +998,7 @@ msgstr "Пароль"
 msgid "Pause"
 msgstr "Пауза"
 
-#: config_translations.py:142 mycodo_flask/forms/forms_settings.py:152
+#: config_translations.py:142 mycodo_flask/forms/forms_settings.py:160
 msgid "PID"
 msgstr "PID"
 
@@ -985,18 +1009,18 @@ msgstr "PID"
 #: config_translations.py:331 config_translations.py:332
 #: inputs/rpi_signal_revolutions_pigpio_callback.py:52
 #: mycodo_flask/forms/forms_conditional.py:71 outputs/on_off_gpio.py:58
-#: outputs/on_off_wireless_rpi_rf.py:61 outputs/pump_gpio.py:84
-#: outputs/pwm_gpio.py:81
+#: outputs/on_off_pinctrl.py:55 outputs/on_off_wireless_rpi_rf.py:61
+#: outputs/pump_gpio.py:84 outputs/pwm_gpio.py:81
 msgid "Pin"
 msgstr "Pin"
 
-#: actions/mqtt_publish.py:12 actions/mqtt_publish_input.py:13
+#: actions/input_action_mqtt_publish.py:13 actions/mqtt_publish.py:12
 #: config_translations.py:146
 msgid "Publish"
 msgstr "Опублікувати"
 
-#: config_translations.py:148 outputs/pwm_gpio.py:36 outputs/pwm_pca9685.py:57
-#: outputs/pwm_python.py:167 outputs/pwm_shell.py:37
+#: config_translations.py:148 outputs/pwm_gpio.py:36 outputs/pwm_mqtt.py:36
+#: outputs/pwm_pca9685.py:57 outputs/pwm_python.py:167 outputs/pwm_shell.py:37
 #: outputs/remote_output_pwm.py:36
 msgid "PWM"
 msgstr ""
@@ -1014,6 +1038,7 @@ msgid "Reorder"
 msgstr "Пересортувати"
 
 #: config_translations.py:156
+#: mycodo_flask/templates/user_templates/widget_template_widget_graph_synchronous_title_bar.html:11
 msgid "Reset"
 msgstr "Перезавантаження"
 
@@ -1022,8 +1047,9 @@ msgstr "Перезавантаження"
 msgid "Resume"
 msgstr "Продовжити"
 
-#: config_translations.py:160 mycodo_flask/forms/forms_settings.py:313
-#: mycodo_flask/templates/layout.html:319
+#: config_translations.py:160 mycodo_flask/forms/forms_settings.py:321
+#: mycodo_flask/templates/layout.html:323
+#: mycodo_flask/templates/layout_default.html:323
 #: mycodo_flask/templates/pages/actions.html:30
 #: mycodo_flask/templates/pages/data_options/input_options.html:21
 #: mycodo_flask/templates/pages/function_options/conditional_condition.html:9
@@ -1079,6 +1105,7 @@ msgstr "Налаштування"
 
 #: config_translations.py:182
 #: mycodo_flask/templates/pages/function_options/conditional_options/measurement.html:2
+#: mycodo_flask/templates/pages/function_options/conditional_options/measurement_and_ts.html:2
 #: mycodo_flask/templates/pages/function_options/conditional_options/measurement_past_average.html:2
 #: mycodo_flask/templates/pages/function_options/conditional_options/measurement_past_sum.html:2
 msgid "Single"
@@ -1109,10 +1136,11 @@ msgstr "Тег"
 msgid "Text"
 msgstr "Текст"
 
-#: config_translations.py:196 mycodo_flask/forms/forms_settings.py:346
-#: mycodo_flask/forms/forms_settings.py:352
-#: mycodo_flask/forms/forms_settings.py:392
-#: mycodo_flask/templates/layout.html:301
+#: config_translations.py:196 mycodo_flask/forms/forms_settings.py:354
+#: mycodo_flask/forms/forms_settings.py:360
+#: mycodo_flask/forms/forms_settings.py:400
+#: mycodo_flask/templates/layout.html:305
+#: mycodo_flask/templates/layout_default.html:305
 msgid "Theme"
 msgstr "Тема"
 
@@ -1144,17 +1172,19 @@ msgstr "Користувач"
 
 #: actions/output_value.py:47 config_translations.py:210
 #: config_translations.py:310 config_translations.py:311
-#: inputs/mycodo_test_input_save_value.py:72 outputs/value_mqtt.py:32
+#: inputs/mycodo_test_input_save_value.py:72
+#: mycodo_flask/templates/user_templates/widget_template_widget_indicator_js.html:60
+#: outputs/value_gp8xxx_iic_dual_dac.py:40 outputs/value_mqtt.py:32
 msgid "Value"
 msgstr "Значення"
 
 #: config_translations.py:212 config_translations.py:313
 #: config_translations.py:314 config_translations.py:381
-#: inputs/anyleaf_orp.py:52 mycodo_flask/forms/forms_settings.py:113
+#: inputs/anyleaf_orp.py:52 mycodo_flask/forms/forms_settings.py:121
 msgid "Voltage"
 msgstr "Напруга"
 
-#: config_translations.py:216 mycodo_flask/forms/forms_settings.py:155
+#: config_translations.py:216 mycodo_flask/forms/forms_settings.py:163
 msgid "Widget"
 msgstr "Віджет"
 
@@ -1222,7 +1252,7 @@ msgstr "Дедлайн"
 #: functions/average_last_multiple.py:67 functions/average_last_multiple.py:75
 #: functions/average_last_multiple.py:83 functions/average_past_single.py:70
 #: functions/average_past_single.py:78 functions/average_past_single.py:97
-#: functions/backup_rsync.py:73 functions/backup_rsync.py:81
+#: functions/backup_rsync.py:70 functions/backup_rsync.py:78
 #: functions/bang_bang.py:54 functions/bang_bang.py:103
 #: functions/bang_bang_on_off.py:52 functions/bang_bang_on_off.py:113
 #: functions/bang_bang_pwm.py:51 functions/bang_bang_pwm.py:101
@@ -1253,6 +1283,7 @@ msgstr "Дедлайн"
 #: functions/display_ssd1309_oled_128x64_i2c.py:272 functions/equation.py:64
 #: functions/equation.py:84 functions/equation_multi.py:64
 #: functions/equation_multi.py:84 functions/equation_multi.py:104
+#: functions/example_function_all_options.py:74
 #: functions/examples/custom_function_multiple_channels.py:73
 #: functions/examples/custom_function_simple_loop_with_status.py:62
 #: functions/examples/custom_function_simple_loop_with_status.py:70
@@ -1268,7 +1299,7 @@ msgstr "Дедлайн"
 #: functions/statistics_past_single.py:108 functions/sum_last_multiple.py:68
 #: functions/sum_last_multiple.py:76 functions/sum_last_multiple.py:84
 #: functions/sum_past_single.py:68 functions/sum_past_single.py:76
-#: functions/sum_past_single.py:95 functions/vapor_pressure_deficit.py:66
+#: functions/sum_past_single.py:96 functions/vapor_pressure_deficit.py:66
 #: functions/vapor_pressure_deficit.py:74
 #: functions/vapor_pressure_deficit.py:94
 #: functions/vapor_pressure_deficit.py:114 functions/verification.py:63
@@ -1285,24 +1316,26 @@ msgstr "Дедлайн"
 #: mycodo_flask/forms/forms_method.py:58 mycodo_flask/forms/forms_method.py:61
 #: mycodo_flask/forms/forms_method.py:119
 #: mycodo_flask/forms/forms_method.py:122 mycodo_flask/forms/forms_pid.py:108
-#: mycodo_flask/forms/forms_settings.py:140
-#: mycodo_flask/forms/forms_settings.py:143
-#: mycodo_flask/forms/forms_settings.py:146
-#: mycodo_flask/forms/forms_settings.py:149
-#: mycodo_flask/forms/forms_settings.py:152
-#: mycodo_flask/forms/forms_settings.py:155
+#: mycodo_flask/forms/forms_settings.py:148
+#: mycodo_flask/forms/forms_settings.py:151
+#: mycodo_flask/forms/forms_settings.py:154
+#: mycodo_flask/forms/forms_settings.py:157
+#: mycodo_flask/forms/forms_settings.py:160
+#: mycodo_flask/forms/forms_settings.py:163
 #: mycodo_flask/forms/forms_trigger.py:48
 #: mycodo_flask/forms/forms_trigger.py:50
-#: mycodo_flask/forms/forms_trigger.py:63 widgets/widget_camera.py:269
-#: widgets/widget_camera.py:277
-#: widgets/widget_controller_activate_deactivate.py:139
+#: mycodo_flask/forms/forms_trigger.py:63 widgets/widget_camera.py:266
+#: widgets/widget_camera.py:274
+#: widgets/widget_controller_activate_deactivate.py:146
 #: widgets/widget_function_status.py:62 widgets/widget_gauge_angular.py:161
 #: widgets/widget_gauge_angular.py:169 widgets/widget_gauge_solid.py:183
-#: widgets/widget_gauge_solid.py:191 widgets/widget_graph_synchronous.py:260
+#: widgets/widget_gauge_solid.py:191 widgets/widget_graph_synchronous.py:261
 #: widgets/widget_indicator.py:64 widgets/widget_indicator.py:72
 #: widgets/widget_measurement.py:64 widgets/widget_measurement.py:72
-#: widgets/widget_output.py:60 widgets/widget_output.py:68
-#: widgets/widget_output_pwm_slider.py:60
+#: widgets/widget_measurement_multi.py:41
+#: widgets/widget_measurement_multi.py:70
+#: widgets/widget_measurement_multi.py:85 widgets/widget_output.py:60
+#: widgets/widget_output.py:68 widgets/widget_output_pwm_slider.py:60
 #: widgets/widget_output_pwm_slider.py:68 widgets/widget_pid.py:236
 #: widgets/widget_pid.py:244 widgets/widget_python_code.py:161
 #: widgets/widget_python_code.py:169
@@ -1361,8 +1394,8 @@ msgstr "Пристрій FTDI, підключений до входу/виход
 #: config_translations.py:265
 #: inputs/rpi_signal_revolutions_pigpio_callback.py:52
 #: mycodo_flask/forms/forms_conditional.py:71 outputs/on_off_gpio.py:58
-#: outputs/on_off_wireless_rpi_rf.py:61 outputs/pump_gpio.py:84
-#: outputs/pwm_gpio.py:81
+#: outputs/on_off_pinctrl.py:55 outputs/on_off_wireless_rpi_rf.py:61
+#: outputs/pump_gpio.py:84 outputs/pwm_gpio.py:81
 msgid "GPIO"
 msgstr "GPIO"
 
@@ -1433,13 +1466,13 @@ msgstr "Показати налагоджувальні рядки у лозі �
 #: functions/humidity_wet_dry_bulb.py:147 functions/regulate_ph_ec.py:221
 #: functions/regulate_ph_ec.py:243 functions/statistics_last_multiple.py:109
 #: functions/statistics_past_single.py:108 functions/sum_last_multiple.py:84
-#: functions/sum_past_single.py:95 functions/vapor_pressure_deficit.py:94
+#: functions/sum_past_single.py:96 functions/vapor_pressure_deficit.py:94
 #: functions/vapor_pressure_deficit.py:114 functions/verification.py:82
 #: functions/verification.py:101 inputs/ads1115_analog_ph_ec.py:147
 #: inputs/ads1256_analog_ph_ec.py:231 inputs/anyleaf_ph.py:71
 #: inputs/atlas_do.py:77 inputs/atlas_ec.py:89 inputs/atlas_o2.py:78
 #: inputs/atlas_orp.py:76 inputs/atlas_ph.py:80
-#: mycodo_flask/forms/forms_pid.py:108 widgets/widget_camera.py:269
+#: mycodo_flask/forms/forms_pid.py:108 widgets/widget_camera.py:266
 #: widgets/widget_gauge_angular.py:161 widgets/widget_gauge_solid.py:183
 #: widgets/widget_indicator.py:64 widgets/widget_measurement.py:64
 #: widgets/widget_output.py:60 widgets/widget_output_pwm_slider.py:60
@@ -1512,9 +1545,11 @@ msgstr "Команда для виконання, коли вихід отрим
 #: config_translations.py:304 outputs/on_off_gpio.py:91
 #: outputs/on_off_grove_multichannel_relay.py:163
 #: outputs/on_off_mcp23017.py:100 outputs/on_off_pcf8574.py:99
-#: outputs/on_off_pcf8575.py:99 outputs/on_off_sequent_8_relay_hat.py:121
-#: outputs/on_off_sparkfun_board_4_relays.py:102 outputs/pump_gpio.py:95
-#: outputs/pump_mcp23017.py:104 outputs/pump_pcf8574.py:97
+#: outputs/on_off_pcf8575.py:99 outputs/on_off_pinctrl.py:88
+#: outputs/on_off_sequent_8_relay_hat.py:121
+#: outputs/on_off_sparkfun_board_4_relays.py:102 outputs/on_off_xl9535.py:99
+#: outputs/pump_gpio.py:95 outputs/pump_mcp23017.py:104
+#: outputs/pump_pcf8574.py:97
 msgid "On State"
 msgstr "В стані"
 
@@ -1528,7 +1563,7 @@ msgid "Send to output controller"
 msgstr "Надіслати на вихідний контролер"
 
 #: config_translations.py:319 functions/average_last_multiple.py:67
-#: functions/average_past_single.py:70 functions/backup_rsync.py:73
+#: functions/average_past_single.py:70 functions/backup_rsync.py:70
 #: functions/bang_bang.py:103 functions/bang_bang_on_off.py:113
 #: functions/bang_bang_pwm.py:101 functions/difference.py:64
 #: functions/display_generic_lcd_16x2_i2c.py:227
@@ -1543,7 +1578,7 @@ msgstr "Надіслати на вихідний контролер"
 #: functions/display_ssd1306_oled_128x64_spi.py:195
 #: functions/display_ssd1306_oled_128x64_spi_4lines.py:195
 #: functions/display_ssd1309_oled_128x64_i2c.py:198 functions/equation.py:64
-#: functions/equation_multi.py:64
+#: functions/equation_multi.py:64 functions/example_function_all_options.py:74
 #: functions/examples/custom_function_multiple_channels.py:73
 #: functions/examples/custom_function_simple_loop_with_status.py:62
 #: functions/humidity_wet_dry_bulb.py:79 functions/pid_autotune.py:88
@@ -1557,7 +1592,7 @@ msgid "Period"
 msgstr "Крапка"
 
 #: config_translations.py:320 functions/average_last_multiple.py:68
-#: functions/average_past_single.py:71 functions/backup_rsync.py:74
+#: functions/average_past_single.py:71 functions/backup_rsync.py:71
 #: functions/bang_bang.py:104 functions/bang_bang_on_off.py:114
 #: functions/bang_bang_pwm.py:102 functions/difference.py:65
 #: functions/display_generic_lcd_16x2_i2c.py:228
@@ -1572,7 +1607,7 @@ msgstr "Крапка"
 #: functions/display_ssd1306_oled_128x64_spi.py:196
 #: functions/display_ssd1306_oled_128x64_spi_4lines.py:196
 #: functions/display_ssd1309_oled_128x64_i2c.py:199 functions/equation.py:65
-#: functions/equation_multi.py:65
+#: functions/equation_multi.py:65 functions/example_function_all_options.py:75
 #: functions/examples/custom_function_multiple_channels.py:74
 #: functions/examples/custom_function_simple_loop_with_status.py:63
 #: functions/humidity_wet_dry_bulb.py:80 functions/redundancy.py:64
@@ -1598,9 +1633,9 @@ msgstr "MISO"
 msgid "MOSI"
 msgstr "MOSI"
 
-#: actions/mqtt_publish.py:47 actions/mqtt_publish_input.py:52
-#: config_translations.py:334 mycodo_flask/forms/forms_settings.py:103
-#: outputs/on_off_mqtt.py:66 outputs/value_mqtt.py:65
+#: actions/input_action_mqtt_publish.py:52 actions/mqtt_publish.py:47
+#: config_translations.py:334 mycodo_flask/forms/forms_settings.py:111
+#: outputs/on_off_mqtt.py:66 outputs/pwm_mqtt.py:85 outputs/value_mqtt.py:65
 msgid "Port"
 msgstr "Порт"
 
@@ -1665,13 +1700,14 @@ msgstr ""
 msgid "Reference Resistance"
 msgstr ""
 
-#: config_translations.py:360 widgets/widget_camera.py:277
-#: widgets/widget_controller_activate_deactivate.py:139
+#: config_translations.py:360 widgets/widget_camera.py:274
+#: widgets/widget_controller_activate_deactivate.py:146
 #: widgets/widget_function_status.py:62 widgets/widget_gauge_angular.py:169
-#: widgets/widget_gauge_solid.py:191 widgets/widget_graph_synchronous.py:260
+#: widgets/widget_gauge_solid.py:191 widgets/widget_graph_synchronous.py:261
 #: widgets/widget_indicator.py:72 widgets/widget_measurement.py:72
-#: widgets/widget_output.py:68 widgets/widget_output_pwm_slider.py:68
-#: widgets/widget_pid.py:244 widgets/widget_python_code.py:169
+#: widgets/widget_measurement_multi.py:85 widgets/widget_output.py:68
+#: widgets/widget_output_pwm_slider.py:68 widgets/widget_pid.py:244
+#: widgets/widget_python_code.py:169
 msgid "Refresh"
 msgstr "Оновити"
 
@@ -1691,8 +1727,7 @@ msgstr "Імпульсів на оборот"
 msgid ""
 "The number of pulses per revolution to calculate revolutions per minute "
 "(RPM)"
-msgstr ""
-"Кількість імпульсів на один оберт для розрахунку обертів за хвилину (RPM)"
+msgstr "Кількість імпульсів на один оберт для розрахунку обертів за хвилину (RPM)"
 
 #: config_translations.py:372
 msgid "Sample Time"
@@ -1722,7 +1757,7 @@ msgstr ""
 msgid "The input voltage to the sensor"
 msgstr "Вхідна напруга на датчик"
 
-#: config_translations.py:384 outputs/pwm_gpio.py:122
+#: config_translations.py:384 outputs/pwm_gpio.py:122 outputs/pwm_mqtt.py:182
 #: outputs/pwm_pca9685.py:154 outputs/pwm_python.py:273
 #: outputs/pwm_shell.py:109
 msgid "Shutdown Value"
@@ -1733,7 +1768,7 @@ msgid "The output value to set when Mycodo shuts down"
 msgstr "Вихідне значення, яке потрібно встановити, коли Mycodo вимкнеться"
 
 #: config_translations.py:387 functions/average_last_multiple.py:75
-#: functions/average_past_single.py:78 functions/backup_rsync.py:81
+#: functions/average_past_single.py:78 functions/backup_rsync.py:78
 #: functions/examples/custom_function_simple_loop_with_status.py:70
 #: functions/humidity_wet_dry_bulb.py:87 functions/regulate_ph_ec.py:190
 #: functions/sum_last_multiple.py:76 functions/sum_past_single.py:76
@@ -1744,7 +1779,7 @@ msgid "Start Offset"
 msgstr ""
 
 #: config_translations.py:388 functions/average_last_multiple.py:76
-#: functions/average_past_single.py:79 functions/backup_rsync.py:82
+#: functions/average_past_single.py:79 functions/backup_rsync.py:79
 #: functions/examples/custom_function_simple_loop_with_status.py:71
 #: functions/humidity_wet_dry_bulb.py:88 functions/regulate_ph_ec.py:191
 #: functions/sum_last_multiple.py:77 functions/sum_past_single.py:77
@@ -1753,7 +1788,7 @@ msgstr ""
 msgid "The duration to wait before the first operation"
 msgstr "Тривалість очікування до першої операції"
 
-#: config_translations.py:390 outputs/pwm_gpio.py:102
+#: config_translations.py:390 outputs/pwm_gpio.py:102 outputs/pwm_mqtt.py:162
 #: outputs/pwm_pca9685.py:133 outputs/pwm_python.py:253 outputs/pwm_shell.py:89
 msgid "Startup Value"
 msgstr "Початкове значення"
@@ -1770,12 +1805,13 @@ msgstr "Вихідне значення, яке потрібно встанов�
 #: outputs/on_off_mcp23017.py:89 outputs/on_off_mqtt.py:131
 #: outputs/on_off_neopixel_rgb.py:162 outputs/on_off_neopixel_rgb_spi.py:154
 #: outputs/on_off_pcf8574.py:88 outputs/on_off_pcf8575.py:88
-#: outputs/on_off_python.py:244 outputs/on_off_sequent_8_relay_hat.py:110
-#: outputs/on_off_shell.py:91 outputs/on_off_sparkfun_board_4_relays.py:91
-#: outputs/on_off_wireless_rpi_rf.py:124 outputs/pwm_gpio.py:114
-#: outputs/pwm_pca9685.py:145 outputs/pwm_python.py:265
-#: outputs/pwm_shell.py:101 outputs/remote_output_on_off.py:109
-#: outputs/remote_output_pwm.py:137
+#: outputs/on_off_pinctrl.py:77 outputs/on_off_python.py:244
+#: outputs/on_off_sequent_8_relay_hat.py:110 outputs/on_off_shell.py:91
+#: outputs/on_off_sparkfun_board_4_relays.py:91
+#: outputs/on_off_wireless_rpi_rf.py:124 outputs/on_off_xl9535.py:88
+#: outputs/pwm_gpio.py:114 outputs/pwm_mqtt.py:174 outputs/pwm_pca9685.py:145
+#: outputs/pwm_python.py:265 outputs/pwm_shell.py:101
+#: outputs/remote_output_on_off.py:109 outputs/remote_output_pwm.py:137
 msgid "Shutdown State"
 msgstr "Вимкнений стан"
 
@@ -1791,10 +1827,12 @@ msgstr ""
 #: outputs/on_off_mcp23017.py:78 outputs/on_off_mqtt.py:119
 #: outputs/on_off_neopixel_rgb.py:150 outputs/on_off_neopixel_rgb_spi.py:142
 #: outputs/on_off_pcf8574.py:77 outputs/on_off_pcf8575.py:77
-#: outputs/on_off_python.py:232 outputs/on_off_sequent_8_relay_hat.py:99
-#: outputs/on_off_shell.py:79 outputs/on_off_sparkfun_board_4_relays.py:80
-#: outputs/on_off_wireless_rpi_rf.py:112 outputs/pwm_gpio.py:94
-#: outputs/pwm_pca9685.py:124 outputs/pwm_python.py:245 outputs/pwm_shell.py:81
+#: outputs/on_off_pinctrl.py:66 outputs/on_off_python.py:232
+#: outputs/on_off_sequent_8_relay_hat.py:99 outputs/on_off_shell.py:79
+#: outputs/on_off_sparkfun_board_4_relays.py:80
+#: outputs/on_off_wireless_rpi_rf.py:112 outputs/on_off_xl9535.py:77
+#: outputs/pwm_gpio.py:94 outputs/pwm_mqtt.py:154 outputs/pwm_pca9685.py:124
+#: outputs/pwm_python.py:245 outputs/pwm_shell.py:81
 #: outputs/remote_output_on_off.py:97 outputs/remote_output_pwm.py:118
 msgid "Startup State"
 msgstr "Стартовий стан"
@@ -1822,7 +1860,7 @@ msgstr "Мілісекунди"
 msgid "The amount of time to bounce the input signal"
 msgstr ""
 
-#: config_translations.py:405 mycodo_flask/forms/forms_input.py:157
+#: config_translations.py:405 mycodo_flask/forms/forms_input.py:161
 msgid "Reset Period"
 msgstr ""
 
@@ -1865,29 +1903,39 @@ msgid "The UART device location (e.g. /dev/ttyUSB1)"
 msgstr "Розташування пристрою UART (наприклад, /dev/ttyUSB1)"
 
 #: config_translations.py:420
+#, fuzzy
+msgid "Unique ID"
+msgstr "Ідентифікатор одиниці"
+
+#: config_translations.py:421
+#, fuzzy
+msgid "A unique ID to distinguish this from others"
+msgstr "Ім'я, щоб відрізнити його від інших"
+
+#: config_translations.py:423
 msgid "Analyze Python with Pylint"
 msgstr ""
 
-#: config_translations.py:421
+#: config_translations.py:424
 msgid "Analyze the Python code with pylint and return the output"
 msgstr ""
 
-#: config_translations.py:423
+#: config_translations.py:426
 msgid "Weighting"
 msgstr ""
 
-#: config_translations.py:424
+#: config_translations.py:427
 msgid ""
 "The weighting of the previous measurement on the current measurement. "
 "Range: 0.0 - 1.0. Used for smoothing measurements. 0.0 means no "
 "weighting."
 msgstr ""
 
-#: config_translations.py:430 config_translations.py:433
+#: config_translations.py:433 config_translations.py:436
 msgid "Always Min"
 msgstr ""
 
-#: actions/pid_setpoint_raise.py:17 config_translations.py:430
+#: actions/pid_setpoint_raise.py:17 config_translations.py:433
 #: mycodo_flask/forms/forms_pid.py:34 mycodo_flask/forms/forms_pid.py:101
 #: mycodo_flask/forms/forms_pid.py:102 mycodo_flask/forms/forms_pid.py:118
 #: mycodo_flask/forms/forms_pid.py:126 mycodo_flask/forms/forms_pid.py:134
@@ -1897,11 +1945,11 @@ msgstr ""
 msgid "Raise"
 msgstr ""
 
-#: config_translations.py:431 config_translations.py:434
+#: config_translations.py:434 config_translations.py:437
 msgid "Never allow duty cycle to go below Min."
 msgstr ""
 
-#: actions/pid_setpoint_lower.py:17 config_translations.py:433
+#: actions/pid_setpoint_lower.py:17 config_translations.py:436
 #: mycodo_flask/forms/forms_pid.py:35 mycodo_flask/forms/forms_pid.py:103
 #: mycodo_flask/forms/forms_pid.py:104 mycodo_flask/forms/forms_pid.py:145
 #: mycodo_flask/forms/forms_pid.py:153 mycodo_flask/forms/forms_pid.py:161
@@ -1922,10 +1970,11 @@ msgid ""
 "computers (SBCs). It couples inputs and outputs in interesting ways to "
 "sense and manipulate the environment."
 msgstr ""
-"Mycodo - це програмне забезпечення з відкритим вихідним кодом, призначене "
-"для роботи на [Raspberry Pi] (https://en.wikipedia.org/wiki/Raspberry_Pi) та "
-"інших одноплатних комп'ютерах (SBC). Воно поєднує входи та виходи у цікавий "
-"спосіб, щоб сприймати та керувати навколишнім середовищем."
+"Mycodo - це програмне забезпечення з відкритим вихідним кодом, призначене"
+" для роботи на [Raspberry Pi] "
+"(https://en.wikipedia.org/wiki/Raspberry_Pi) та інших одноплатних "
+"комп'ютерах (SBC). Воно поєднує входи та виходи у цікавий спосіб, щоб "
+"сприймати та керувати навколишнім середовищем."
 
 #: config_translations_docs.py:14
 msgid "Information"
@@ -1936,9 +1985,9 @@ msgid ""
 "See the [README](https://github.com/kizniche/Mycodo#uses) for features, "
 "projects using Mycodo, screenshots, and other information."
 msgstr ""
-"Дивіться [README] (https://github.com/kizniche/Mycodo#uses) для ознайомлення "
-"з можливостями, проектами з використанням Mycodo, скріншотами та іншою "
-"інформацією."
+"Дивіться [README] (https://github.com/kizniche/Mycodo#uses) для "
+"ознайомлення з можливостями, проектами з використанням Mycodo, "
+"скріншотами та іншою інформацією."
 
 #: config_translations_docs.py:17
 msgid "Prerequisites"
@@ -1949,8 +1998,8 @@ msgid ""
 "Single-board computer (Recommended: [Raspberry "
 "Pi](https://www.raspberrypi.org/), any version: Zero, 1, 2, 3, or 4)"
 msgstr ""
-"Одноплатний комп'ютер (Рекомендовано: [Raspberry Pi] (https://www.raspberrypi"
-".org/), будь-яка версія: Zero, 1, 2, 3 або 4)"
+"Одноплатний комп'ютер (Рекомендовано: [Raspberry Pi] "
+"(https://www.raspberrypi.org/), будь-яка версія: Zero, 1, 2, 3 або 4)"
 
 #: config_translations_docs.py:19
 msgid "Debian-based operating system"
@@ -1985,7 +2034,8 @@ msgstr ""
 msgid "Support"
 msgstr "Підтримка"
 
-#: config_translations_docs.py:27 mycodo_flask/templates/layout.html:245
+#: config_translations_docs.py:27 mycodo_flask/templates/layout.html:249
+#: mycodo_flask/templates/layout_default.html:249
 msgid "Discussion Forum"
 msgstr "Дискусійний форум"
 
@@ -1993,7 +2043,8 @@ msgstr "Дискусійний форум"
 msgid "Frequently Asked Questions"
 msgstr "Поширені запитання"
 
-#: config_translations_docs.py:30 mycodo_flask/templates/layout.html:248
+#: config_translations_docs.py:30 mycodo_flask/templates/layout.html:252
+#: mycodo_flask/templates/layout_default.html:252
 msgid "Donate"
 msgstr "Пожертвувати"
 
@@ -2011,10 +2062,10 @@ msgid ""
 "that was built to run on single-board computers, specifically the "
 "[Raspberry Pi](https://en.wikipedia.org/wiki/Raspberry_Pi)."
 msgstr ""
-"Mycodo - це система моніторингу та регулювання навколишнього середовища з "
-"відкритим вихідним кодом, яка була створена для роботи на одноплатних "
-"комп'ютерах, зокрема на [Raspberry Pi] (https://en.wikipedia.org/wiki/"
-"Raspberry_Pi)."
+"Mycodo - це система моніторингу та регулювання навколишнього середовища з"
+" відкритим вихідним кодом, яка була створена для роботи на одноплатних "
+"комп'ютерах, зокрема на [Raspberry Pi] "
+"(https://en.wikipedia.org/wiki/Raspberry_Pi)."
 
 #: config_translations_docs.py:37
 msgid ""
@@ -2030,17 +2081,18 @@ msgid ""
 "conditions, and more. The frontend hosts a web interface that enables "
 "viewing and configuration from any browser-enabled device."
 msgstr ""
-"Спочатку розроблена для вирощування їстівних грибів, Mycodo розширила свої "
-"можливості. Система складається з двох частин: серверної частини (демона) та "
-"інтерфейсу (веб-сервера). Бекенд виконує такі завдання, як збір вимірювань з "
-"датчиків і пристроїв та координація різноманітних реакцій на ці вимірювання, "
-"включаючи можливість модулювати виходи (перемикати реле, генерувати PWM-"
-"сигнали, керувати насосами, перемикати бездротові розетки, публікувати/"
-"підписуватися на MQTT тощо), регулювати умови навколишнього середовища за "
-"допомогою PID-регулятора, планувати таймери, робити фотографії та "
-"транслювати відео, запускати дії, коли вимірювання відповідають певним "
-"умовам, та багато іншого. Фронтенд містить веб-інтерфейс, який дозволяє "
-"переглядати та конфігурувати з будь-якого пристрою з підтримкою браузера."
+"Спочатку розроблена для вирощування їстівних грибів, Mycodo розширила "
+"свої можливості. Система складається з двох частин: серверної частини "
+"(демона) та інтерфейсу (веб-сервера). Бекенд виконує такі завдання, як "
+"збір вимірювань з датчиків і пристроїв та координація різноманітних "
+"реакцій на ці вимірювання, включаючи можливість модулювати виходи "
+"(перемикати реле, генерувати PWM-сигнали, керувати насосами, перемикати "
+"бездротові розетки, публікувати/підписуватися на MQTT тощо), регулювати "
+"умови навколишнього середовища за допомогою PID-регулятора, планувати "
+"таймери, робити фотографії та транслювати відео, запускати дії, коли "
+"вимірювання відповідають певним умовам, та багато іншого. Фронтенд "
+"містить веб-інтерфейс, який дозволяє переглядати та конфігурувати з "
+"будь-якого пристрою з підтримкою браузера."
 
 #: config_translations_docs.py:38
 msgid ""
@@ -2049,10 +2101,10 @@ msgid ""
 "environmental conditions of a physical space, while others capture "
 "motion-activated or time-lapse photography, among other uses."
 msgstr ""
-"Mycodo можна використовувати по-різному. Деякі користувачі просто зберігають "
-"вимірювання датчиків для віддаленого моніторингу умов, інші регулюють умови "
-"навколишнього середовища у фізичному просторі, а треті роблять активовану "
-"рухом або сповільнену фотозйомку, серед іншого."
+"Mycodo можна використовувати по-різному. Деякі користувачі просто "
+"зберігають вимірювання датчиків для віддаленого моніторингу умов, інші "
+"регулюють умови навколишнього середовища у фізичному просторі, а треті "
+"роблять активовану рухом або сповільнену фотозйомку, серед іншого."
 
 #: config_translations_docs.py:39
 msgid ""
@@ -2092,9 +2144,9 @@ msgid ""
 " according to durations of time, or the sunrise/sunset at a specific "
 "latitude and longitude."
 msgstr ""
-"Тригери можна налаштувати на активацію подій на основі певних дат і часу, "
-"відповідно до тривалості часу або сходу/заходу сонця на певній широті та "
-"довготі."
+"Тригери можна налаштувати на активацію подій на основі певних дат і часу,"
+" відповідно до тривалості часу або сходу/заходу сонця на певній широті та"
+" довготі."
 
 #: config_translations_docs.py:43
 msgid ""
@@ -2103,14 +2155,15 @@ msgid ""
 "overridden in the General Settings, on the `[Gear Icon] -> Configure -> "
 "General` page. If you find an issue and would like to correct a "
 "translation or would like to add another language, this can be done at "
-"[https://translate.kylegabriel.com](http://translate.kylegabriel.com:8080/engage/mycodo/)."
+"[https://translate.kylegabriel.com](https://translate.kylegabriel.com/engage/mycodo/)."
 msgstr ""
 
-#: config_translations_docs.py:47 mycodo_flask/templates/layout.html:191
+#: config_translations_docs.py:47 mycodo_flask/templates/layout.html:195
+#: mycodo_flask/templates/layout_default.html:195
 #: mycodo_flask/templates/pages/live.html:3
 #: mycodo_flask/templates/pages/live.html:5
-#: mycodo_flask/templates/settings/general.html:109
-#: mycodo_flask/templates/settings/general.html:120
+#: mycodo_flask/templates/settings/general.html:59
+#: mycodo_flask/templates/settings/general.html:70
 msgid "Live Measurements"
 msgstr "Виміри в реальному часі"
 
@@ -2124,13 +2177,14 @@ msgid ""
 "from the measurement database."
 msgstr ""
 "Сторінка \"Виміри в реальному часі\" - це перша сторінка, яку бачить "
-"користувач після входу в Mycodo. На ній відображаються поточні вимірювання, "
-"отримані від контролерів входів та функцій. Якщо на сторінці `Live` нічого "
-"не відображається, переконайтеся, що вхідний або функціональний контролер "
-"правильно сконфігурований і активований. Дані будуть автоматично "
-"оновлюватися на сторінці з бази даних вимірювань."
+"користувач після входу в Mycodo. На ній відображаються поточні "
+"вимірювання, отримані від контролерів входів та функцій. Якщо на сторінці"
+" `Live` нічого не відображається, переконайтеся, що вхідний або "
+"функціональний контролер правильно сконфігурований і активований. Дані "
+"будуть автоматично оновлюватися на сторінці з бази даних вимірювань."
 
-#: config_translations_docs.py:50 mycodo_flask/templates/layout.html:192
+#: config_translations_docs.py:50 mycodo_flask/templates/layout.html:196
+#: mycodo_flask/templates/layout_default.html:196
 #: mycodo_flask/templates/pages/graph-async.html:3
 #: mycodo_flask/templates/pages/graph-async.html:26
 msgid "Asynchronous Graphs"
@@ -2166,8 +2220,8 @@ msgid ""
 "Input/Output/Function/etc. needs to be added and activated in order to "
 "display data."
 msgstr ""
-"Графіки вимагають вимірювань, тому для відображення даних необхідно додати "
-"та активувати принаймні один вхід/вихід/функцію тощо."
+"Графіки вимагають вимірювань, тому для відображення даних необхідно "
+"додати та активувати принаймні один вхід/вихід/функцію тощо."
 
 #: config_translations_docs.py:57
 msgid ""
@@ -2205,9 +2259,9 @@ msgid ""
 msgstr ""
 "У Mycodo існує система імпорту кастомних віджетів, яка дозволяє "
 "використовувати створені користувачем віджети в системі Mycodo. Кастомні "
-"віджети можна завантажити на сторінці `[Іконка шестерні] -> Налаштування -> "
-"Кастомні віджети`. Після імпорту вони будуть доступні для використання на "
-"сторінці `Налаштування -> Віджет`."
+"віджети можна завантажити на сторінці `[Іконка шестерні] -> Налаштування "
+"-> Кастомні віджети`. Після імпорту вони будуть доступні для використання"
+" на сторінці `Налаштування -> Віджет`."
 
 #: config_translations_docs.py:64
 msgid ""
@@ -2216,10 +2270,11 @@ msgid ""
 "=feature-request.md&title=New%20Module) or pull request, and it may be "
 "included in the built-in set."
 msgstr ""
-"Якщо ви розробляєте робочий модуль, будь ласка, розгляньте можливість ["
-"створення нового питання GitHub](https://github.com/kizniche/Mycodo/issues/"
-"new?assignees=&labels=&template=feature-request.md&title=New%20Module) або "
-"пуд реквест, і він може бути включений до вбудованого набору."
+"Якщо ви розробляєте робочий модуль, будь ласка, розгляньте можливість "
+"[створення нового питання "
+"GitHub](https://github.com/kizniche/Mycodo/issues/new?assignees=&labels=&template"
+"=feature-request.md&title=New%20Module) або пуд реквест, і він може бути "
+"включений до вбудованого набору."
 
 #: config_translations_docs.py:65
 msgid ""
@@ -2229,12 +2284,12 @@ msgid ""
 "Widgets in the directory "
 "[Mycodo/mycodo/widgets/examples](https://github.com/kizniche/Mycodo/tree/master/mycodo/widgets/examples)."
 msgstr ""
-"Відкрийте будь-який з вбудованих модулів віджетів, розташованих у каталозі ["
-"Mycodo/mycodo/widgets](https://github.com/kizniche/Mycodo/tree/master/mycodo/"
-"widgets/), щоб побачити приклади правильного форматування. Приклади "
-"користувацьких віджетів також можна знайти в каталозі [Mycodo/mycodo/widgets/"
-"examples](https://github.com/kizniche/Mycodo/tree/master/mycodo/widgets/"
-"examples)."
+"Відкрийте будь-який з вбудованих модулів віджетів, розташованих у "
+"каталозі "
+"[Mycodo/mycodo/widgets](https://github.com/kizniche/Mycodo/tree/master/mycodo/widgets/),"
+" щоб побачити приклади правильного форматування. Приклади користувацьких "
+"віджетів також можна знайти в каталозі "
+"[Mycodo/mycodo/widgets/examples](https://github.com/kizniche/Mycodo/tree/master/mycodo/widgets/examples)."
 
 #: config_translations_docs.py:66
 msgid ""
@@ -2243,11 +2298,11 @@ msgid ""
 " address this, and follow the following brief structure of the dashboard "
 "page that would be generated with multiple widgets being displayed."
 msgstr ""
-"Створення кастомного модуля віджетів часто вимагає специфічного розміщення "
-"та виконання Javascript. Для вирішення цієї проблеми в кожному модулі було "
-"створено кілька змінних, які відповідають наведеній нижче короткій структурі "
-"сторінки інформаційної панелі, яка буде згенерована при відображенні "
-"декількох віджетів."
+"Створення кастомного модуля віджетів часто вимагає специфічного "
+"розміщення та виконання Javascript. Для вирішення цієї проблеми в кожному"
+" модулі було створено кілька змінних, які відповідають наведеній нижче "
+"короткій структурі сторінки інформаційної панелі, яка буде згенерована "
+"при відображенні декількох віджетів."
 
 #: actions/clear_total_kWh.py:13 actions/clear_total_volume.py:13
 msgid "Flow Meter"
@@ -2288,40 +2343,51 @@ msgstr "Створити нотатку з вибраним тегом."
 msgid "Tags"
 msgstr "Теги"
 
-#: actions/display_backlight_color.py:14 actions/display_backlight_off.py:14
+#: actions/display_backlight_color.py:14 actions/display_backlight_off.py:15
 #: actions/display_backlight_on.py:14
 msgid "Backlight"
 msgstr "Підсвічування"
 
 #: actions/display_flash_off.py:14 actions/display_flash_on.py:14
+#: actions/led_neopixel_flash_off.py:14 actions/led_neopixel_flash_on.py:14
 msgid "Flashing"
 msgstr ""
 
-#: actions/input_force_measurements.py:13
+#: actions/force_input_measurements.py:13
 msgid "Force Measurements"
 msgstr ""
 
-#: actions/input_force_measurements.py:23
+#: actions/force_input_measurements.py:23
 msgid "Force measurements to be conducted for an input"
 msgstr ""
 
-#: actions/mqtt_publish.py:39 actions/mqtt_publish_input.py:44
-#: mycodo_flask/forms/forms_settings.py:102
-#: mycodo_flask/forms/forms_settings.py:416 outputs/on_off_mqtt.py:58
-#: outputs/value_mqtt.py:57
+#: actions/input_action_equation.py:11 actions/input_action_equation.py:38
+#: functions/equation.py:45 functions/equation_multi.py:112
+#: mycodo_flask/forms/forms_settings.py:285
+#: mycodo_flask/forms/forms_settings.py:293
+#: mycodo_flask/templates/pages/form_options/Measurements_Configure.html:15
+#: mycodo_flask/templates/pages/form_options/Measurements_Configure.html:101
+#: mycodo_flask/templates/pages/form_options/Measurements_Configure.html:118
+msgid "Equation"
+msgstr "Рівняння"
+
+#: actions/input_action_mqtt_publish.py:44 actions/mqtt_publish.py:39
+#: mycodo_flask/forms/forms_settings.py:422
+#: mycodo_flask/templates/settings/general.html:79
+#: mycodo_flask/templates/settings/general.html:89 outputs/on_off_mqtt.py:58
+#: outputs/pwm_mqtt.py:77 outputs/value_mqtt.py:57
 msgid "Hostname"
 msgstr "Hostname"
 
-#: actions/mqtt_publish.py:85 actions/mqtt_publish_input.py:69
-#: inputs/mqtt_paho.py:80 inputs/mqtt_paho_json.py:96 outputs/on_off_mqtt.py:83
-#: outputs/value_mqtt.py:82
+#: actions/input_action_mqtt_publish.py:69 actions/mqtt_publish.py:85
+#: inputs/mqtt_paho.py:80 inputs/mqtt_paho_json.py:95 outputs/on_off_mqtt.py:83
+#: outputs/pwm_mqtt.py:102 outputs/value_mqtt.py:82
 msgid "Keep Alive"
 msgstr "Keep Alive"
 
-#: actions/mqtt_publish.py:108 actions/mqtt_publish_input.py:92
-#: inputs/mqtt_paho.py:110 inputs/mqtt_paho_json.py:126
-#: mycodo_flask/forms/forms_settings.py:105 outputs/on_off_mqtt.py:168
-#: outputs/value_mqtt.py:113
+#: actions/input_action_mqtt_publish.py:92 actions/mqtt_publish.py:108
+#: inputs/mqtt_paho.py:110 inputs/mqtt_paho_json.py:125
+#: outputs/on_off_mqtt.py:168 outputs/pwm_mqtt.py:125 outputs/value_mqtt.py:113
 msgid "Username"
 msgstr "Ім'я користувача"
 
@@ -2366,8 +2432,8 @@ msgstr ""
 #: actions/pause_actions.py:24
 msgid "Set a delay between executing Actions when self.run_all_actions() is used."
 msgstr ""
-"Встановлення затримки між виконанням Дій при використанні self."
-"run_all_actions()."
+"Встановлення затримки між виконанням Дій при використанні "
+"self.run_all_actions()."
 
 #: actions/photo.py:13
 msgid "Capture Photo"
@@ -2456,7 +2522,7 @@ msgstr "Webhook"
 #: functions/regulate_ph_ec.py:222 functions/regulate_ph_ec.py:244
 #: functions/statistics_last_multiple.py:110
 #: functions/statistics_past_single.py:109 functions/sum_last_multiple.py:85
-#: functions/sum_past_single.py:96 functions/vapor_pressure_deficit.py:95
+#: functions/sum_past_single.py:97 functions/vapor_pressure_deficit.py:95
 #: functions/vapor_pressure_deficit.py:115 functions/verification.py:83
 #: functions/verification.py:102 inputs/ads1115_analog_ph_ec.py:148
 #: inputs/ads1256_analog_ph_ec.py:232 inputs/anyleaf_ph.py:72
@@ -2549,14 +2615,6 @@ msgstr "Повернути"
 msgid "Degrees"
 msgstr "Градуси"
 
-#: functions/equation_multi.py:112 mycodo_flask/forms/forms_settings.py:277
-#: mycodo_flask/forms/forms_settings.py:285
-#: mycodo_flask/templates/pages/form_options/Measurements_Configure.html:15
-#: mycodo_flask/templates/pages/form_options/Measurements_Configure.html:94
-#: mycodo_flask/templates/pages/form_options/Measurements_Configure.html:111
-msgid "Equation"
-msgstr "Рівняння"
-
 #: functions/humidity_wet_dry_bulb.py:62
 msgid "Wet/Dry-Bulb"
 msgstr ""
@@ -2592,8 +2650,8 @@ msgid ""
 "The number of times to measure each channel. An average of the "
 "measurements will be stored."
 msgstr ""
-"Кількість разів вимірювання кожного каналу. Буде збережено середнє значення "
-"вимірювань."
+"Кількість разів вимірювання кожного каналу. Буде збережено середнє "
+"значення вимірювань."
 
 #: inputs/ads1115_analog_ph_ec.py:138 inputs/ads1115_analog_ph_ec.py:147
 #: inputs/ads1256_analog_ph_ec.py:222 inputs/ads1256_analog_ph_ec.py:231
@@ -2696,7 +2754,8 @@ msgstr "Увімкнено лише під час вимірювання"
 msgid "LED Mode"
 msgstr "Світлодіодний режим"
 
-#: inputs/atlas_o2.py:87 mycodo_flask/templates/layout.html:239
+#: inputs/atlas_o2.py:87 mycodo_flask/templates/layout.html:243
+#: mycodo_flask/templates/layout_default.html:243
 msgid "Manual"
 msgstr "Посібник"
 
@@ -2721,7 +2780,7 @@ msgstr ""
 msgid "Current Working Directory"
 msgstr "Поточний робочий каталог"
 
-#: inputs/mqtt_paho.py:111 inputs/mqtt_paho_json.py:127
+#: inputs/mqtt_paho.py:111 inputs/mqtt_paho_json.py:126
 msgid "Username for connecting to the server"
 msgstr "Ім'я користувача для підключення до сервера"
 
@@ -2735,8 +2794,8 @@ msgstr ""
 
 #: inputs/rpi_signal_revolutions_pigpio_callback.py:52
 #: mycodo_flask/forms/forms_conditional.py:71 outputs/on_off_gpio.py:58
-#: outputs/on_off_wireless_rpi_rf.py:61 outputs/pump_gpio.py:84
-#: outputs/pwm_gpio.py:81
+#: outputs/on_off_pinctrl.py:55 outputs/on_off_wireless_rpi_rf.py:61
+#: outputs/pump_gpio.py:84 outputs/pwm_gpio.py:81
 msgid "BCM"
 msgstr ""
 
@@ -2771,23 +2830,23 @@ msgstr "Час"
 msgid "City"
 msgstr "Місто"
 
-#: mycodo_flask/app.py:237
+#: mycodo_flask/app.py:250
 msgid "Please log in to access this page"
 msgstr "Будь ласка, увійдіть, щоб отримати доступ до цієї сторінки"
 
-#: mycodo_flask/routes_admin.py:110
+#: mycodo_flask/routes_admin.py:90
 msgid "Backup in progress"
 msgstr "Виконується резервне копіювання"
 
-#: mycodo_flask/routes_admin.py:169
+#: mycodo_flask/routes_admin.py:149
 msgid "Deletion of backup in progress"
 msgstr "Видалення резервної копії в процесі"
 
-#: mycodo_flask/routes_admin.py:179
+#: mycodo_flask/routes_admin.py:159
 msgid "Restore in progress"
 msgstr "Відновлення триває"
 
-#: mycodo_flask/routes_admin.py:508
+#: mycodo_flask/routes_admin.py:497
 msgid ""
 "There was an error encountered during the upgrade process. Check the "
 "upgrade log for details."
@@ -2795,108 +2854,105 @@ msgstr ""
 "Під час оновлення виникла помилка. Докладні відомості див. у журналі "
 "оновлень."
 
-#: mycodo_flask/routes_admin.py:593
+#: mycodo_flask/routes_admin.py:582
 msgid "The upgrade (from master branch) has started"
 msgstr "Оновлення (з головної гілки) розпочато"
 
-#: mycodo_flask/routes_admin.py:611
+#: mycodo_flask/routes_admin.py:600
 msgid "The upgrade has started"
 msgstr "Оновлення розпочато"
 
-#: mycodo_flask/routes_admin.py:631
+#: mycodo_flask/routes_admin.py:620
 msgid "The major version upgrade has started"
 msgstr "Розпочато оновлення версії (major)"
 
-#: mycodo_flask/routes_admin.py:634
+#: mycodo_flask/routes_admin.py:623
 msgid "You cannot upgrade if an upgrade is not available"
 msgstr "Ви не можете оновитися, якщо оновлення недоступне"
 
-#: mycodo_flask/routes_authentication.py:52
+#: mycodo_flask/routes_authentication.py:39
 msgid "Cannot access admin creation form if an admin user already exists."
 msgstr ""
-"Неможливо отримати доступ до форми створення адміністратора, якщо користувач "
-"адміністратора вже існує."
+"Неможливо отримати доступ до форми створення адміністратора, якщо "
+"користувач адміністратора вже існує."
 
-#: mycodo_flask/routes_authentication.py:94
-#: mycodo_flask/utils/utils_settings.py:202
-#: mycodo_flask/utils/utils_settings.py:305
+#: mycodo_flask/routes_authentication.py:88
+#: mycodo_flask/utils/utils_settings.py:204
+#: mycodo_flask/utils/utils_settings.py:307
 msgid "Passwords do not match. Please try again."
 msgstr "Паролі не збігаються. Спробуйте ще раз."
 
-#: mycodo_flask/routes_authentication.py:98
+#: mycodo_flask/routes_authentication.py:92
 msgid ""
 "Invalid username. Must be between 3 and 64 characters and only contain "
 "letters and numbers."
 msgstr ""
-"Неправильне ім'я користувача. Повинно бути від 3 до 64 символів і містити "
-"лише літери та цифри."
+"Неправильне ім'я користувача. Повинно бути від 3 до 64 символів і містити"
+" лише літери та цифри."
 
-#: mycodo_flask/routes_authentication.py:104
+#: mycodo_flask/routes_authentication.py:98
 msgid ""
 "Invalid password. Must be between 4 and 64 characters and only contain "
 "letters and numbers."
 msgstr ""
-"Неправильний пароль. Повинен містити від 4 до 64 символів і лише літери та "
-"цифри."
+"Неправильний пароль. Повинен містити від 4 до 64 символів і лише літери "
+"та цифри."
 
-#: mycodo_flask/routes_authentication.py:144
+#: mycodo_flask/routes_authentication.py:138
 #, python-format
 msgid "User '%(user)s' successfully created. Please log in below."
 msgstr "Користувача '%(user)s' успішно створено. Будь ласка, увійдіть нижче."
 
-#: mycodo_flask/routes_authentication.py:149
+#: mycodo_flask/routes_authentication.py:143
 #, python-format
 msgid "Failed to create user '%(user)s': %(err)s"
 msgstr "Не вдалося створити користувача '%(user)s': %(err)s"
 
-#: mycodo_flask/routes_authentication.py:174
-#: mycodo_flask/routes_authentication.py:192
-#: mycodo_flask/routes_authentication.py:284
-#: mycodo_flask/routes_authentication.py:316
+#: mycodo_flask/routes_authentication.py:168
+#: mycodo_flask/routes_authentication.py:186
+#: mycodo_flask/routes_authentication.py:285
+#: mycodo_flask/routes_authentication.py:324
 msgid "Cannot access login page if you're already logged in"
 msgstr "Неможливо отримати доступ до сторінки входу, якщо ви вже ввійшли"
 
-#: mycodo_flask/routes_authentication.py:220
-#: mycodo_flask/routes_authentication.py:293
-#: mycodo_flask/routes_authentication.py:325
+#: mycodo_flask/routes_authentication.py:221
+#: mycodo_flask/routes_authentication.py:301
+#: mycodo_flask/routes_authentication.py:340
 #, python-format
 msgid ""
 "Too many failed login attempts. Please wait %(min)s minutes before "
 "attempting to log in again"
 msgstr ""
-"Занадто багато невдалих спроб входу. Будь ласка, зачекайте %(min)s хвилин "
-"перед повторною спробою входу"
+"Занадто багато невдалих спроб входу. Будь ласка, зачекайте %(min)s хвилин"
+" перед повторною спробою входу"
 
-#: mycodo_flask/routes_authentication.py:369
+#: mycodo_flask/routes_authentication.py:384
 msgid "Successfully logged out"
 msgstr "Вихід успішний"
 
-#: mycodo_flask/routes_general.py:843
+#: mycodo_flask/routes_general.py:855
 msgid "System rebooting in 10 seconds"
 msgstr "Перезавантаження системи через 10 секунд"
 
-#: mycodo_flask/routes_general.py:845
+#: mycodo_flask/routes_general.py:857
 msgid "System shutting down in 10 seconds"
 msgstr "Вимкнення системи через 10 секунд"
 
-#: mycodo_flask/routes_general.py:847
+#: mycodo_flask/routes_general.py:859
 msgid "Command to restart the daemon sent"
 msgstr "Команду на перезапуск демона надіслано"
 
-#: mycodo_flask/routes_general.py:849
-msgid "Command to reload the frontend sent"
-msgstr "Команда на перезавантаження фронтенду відправлена"
+#: mycodo_flask/routes_general.py:861
+#, fuzzy
+msgid "Frontend reloading in 10 seconds"
+msgstr "Перезавантаження системи через 10 секунд"
 
-#: mycodo_flask/routes_page.py:206
-msgid "Cannot start time-lapse if stream is active."
-msgstr "Неможливо запустити таймлапс, якщо потік активний."
-
-#: mycodo_flask/routes_page.py:236
+#: mycodo_flask/routes_page.py:239
 msgid "Cannot start stream if time-lapse is active."
 msgstr "Неможливо запустити потік, якщо активний таймлапс."
 
-#: mycodo_flask/routes_password_reset.py:130
-#: mycodo_flask/utils/utils_settings.py:197
+#: mycodo_flask/routes_password_reset.py:124
+#: mycodo_flask/utils/utils_settings.py:199
 msgid ""
 "Invalid password. Must be between 6 and 64 characters and only contain "
 "letters, numbers, and symbols."
@@ -2904,16 +2960,17 @@ msgstr ""
 "Неправильний пароль. Повинен містити від 6 до 64 символів і лише літери, "
 "цифри та символи."
 
-#: mycodo_flask/routes_password_reset.py:135
+#: mycodo_flask/routes_password_reset.py:129
 msgid "Code expired or invalid"
 msgstr "Термін дії коду закінчився або він недійсний"
 
 #: mycodo_flask/forms/forms_authentication.py:23
-#: mycodo_flask/forms/forms_settings.py:91
-#: mycodo_flask/forms/forms_settings.py:353
+#: mycodo_flask/forms/forms_settings.py:92
+#: mycodo_flask/forms/forms_settings.py:361
 #: mycodo_flask/templates/create_admin.html:39
 #: mycodo_flask/templates/create_admin.html:85
-#: mycodo_flask/templates/layout.html:290
+#: mycodo_flask/templates/layout.html:294
+#: mycodo_flask/templates/layout_default.html:294
 #: mycodo_flask/templates/login_password.html:40
 msgid "Language"
 msgstr "Мова"
@@ -2922,9 +2979,9 @@ msgstr "Мова"
 #: mycodo_flask/forms/forms_authentication.py:45
 #: mycodo_flask/forms/forms_authentication.py:93
 #: mycodo_flask/forms/forms_authentication.py:94
-#: mycodo_flask/forms/forms_settings.py:339
-#: mycodo_flask/forms/forms_settings.py:381
-#: mycodo_flask/forms/forms_settings.py:382
+#: mycodo_flask/forms/forms_settings.py:347
+#: mycodo_flask/forms/forms_settings.py:389
+#: mycodo_flask/forms/forms_settings.py:390
 msgid "Repeat Password"
 msgstr "Повторити пароль"
 
@@ -3031,8 +3088,8 @@ msgstr "Експозиція"
 
 #: mycodo_flask/forms/forms_camera.py:70
 #: mycodo_flask/templates/pages/dashboard.html:102
-#: mycodo_flask/templates/pages/data_options/input_options.html:197
-#: mycodo_flask/templates/pages/output_options.html:144
+#: mycodo_flask/templates/pages/data_options/input_options.html:206
+#: mycodo_flask/templates/pages/output_options.html:146
 msgid "Custom Options"
 msgstr ""
 
@@ -3173,7 +3230,7 @@ msgid "Timeout"
 msgstr ""
 
 #: mycodo_flask/forms/forms_custom_controller.py:26
-#: mycodo_flask/forms/forms_input.py:101
+#: mycodo_flask/forms/forms_input.py:105
 msgid "Number of Measurements"
 msgstr "Кількість вимірювань"
 
@@ -3197,24 +3254,24 @@ msgstr "Встановлення всіх залежностей"
 msgid "Execute All Actions"
 msgstr "Виконати всі дії"
 
-#: mycodo_flask/forms/forms_input.py:102 mycodo_flask/forms/forms_output.py:57
+#: mycodo_flask/forms/forms_input.py:106 mycodo_flask/forms/forms_output.py:57
 msgid "Location"
 msgstr "Місцезнаходження"
 
-#: mycodo_flask/forms/forms_input.py:109
+#: mycodo_flask/forms/forms_input.py:113
 msgid "Power Output"
 msgstr ""
 
-#: mycodo_flask/forms/forms_input.py:110
+#: mycodo_flask/forms/forms_input.py:114
 msgid "Calibration Measurement"
 msgstr ""
 
-#: mycodo_flask/forms/forms_input.py:155
+#: mycodo_flask/forms/forms_input.py:159
 msgid "Bounce Time (ms)"
 msgstr ""
 
-#: mycodo_flask/forms/forms_input.py:189
-#: mycodo_flask/templates/pages/data_options/input_options.html:116
+#: mycodo_flask/forms/forms_input.py:193
+#: mycodo_flask/templates/pages/data_options/input_options.html:117
 msgid "Acquire Measurements Now"
 msgstr "Здійснити вимірювання зараз"
 
@@ -3322,35 +3379,40 @@ msgstr ""
 msgid "Number of lines should be greater than 0"
 msgstr ""
 
-#: mycodo_flask/forms/forms_misc.py:90
+#: mycodo_flask/forms/forms_misc.py:90 mycodo_flask/forms/forms_misc.py:91
+#: mycodo_flask/templates/tools/notes.html:154
+msgid "Search"
+msgstr "Пошук"
+
+#: mycodo_flask/forms/forms_misc.py:92
 msgid "Log"
 msgstr "Журнал"
 
-#: mycodo_flask/forms/forms_misc.py:91
+#: mycodo_flask/forms/forms_misc.py:93
 msgid "View Log"
 msgstr "Переглянути журнал"
 
-#: mycodo_flask/forms/forms_misc.py:99
+#: mycodo_flask/forms/forms_misc.py:101
 msgid "Upgrade Mycodo"
 msgstr "Оновити Mycodo"
 
-#: mycodo_flask/forms/forms_misc.py:100
+#: mycodo_flask/forms/forms_misc.py:102
 msgid "Upgrade Mycodo to Next Major Version"
 msgstr "Оновити Mycodo до наступної великої версії"
 
-#: mycodo_flask/forms/forms_misc.py:109
+#: mycodo_flask/forms/forms_misc.py:111
 msgid "Download Backup"
 msgstr "Завантажити резервну копію"
 
-#: mycodo_flask/forms/forms_misc.py:110
+#: mycodo_flask/forms/forms_misc.py:112
 msgid "Create Backup"
 msgstr "Створити резервну копію"
 
-#: mycodo_flask/forms/forms_misc.py:111
+#: mycodo_flask/forms/forms_misc.py:113
 msgid "Restore Backup"
 msgstr "Відновити резервну копію"
 
-#: mycodo_flask/forms/forms_misc.py:112
+#: mycodo_flask/forms/forms_misc.py:114
 msgid "Delete Backup"
 msgstr "Видалити резервну копію"
 
@@ -3403,7 +3465,7 @@ msgid "Turn On"
 msgstr "Увімкнути"
 
 #: mycodo_flask/forms/forms_pid.py:36
-#: mycodo_flask/templates/pages/function_options/trigger_options/edge.html:27
+#: mycodo_flask/templates/pages/function_options/trigger_options/edge.html:28
 msgid "Both"
 msgstr "Обидва"
 
@@ -3441,8 +3503,9 @@ msgstr ""
 
 #: mycodo_flask/forms/forms_pid.py:102 mycodo_flask/forms/forms_pid.py:104
 #: mycodo_flask/templates/pages/actions.html:18
-#: mycodo_flask/templates/pages/data_options/input_options.html:299
+#: mycodo_flask/templates/pages/data_options/input_options.html:311
 #: mycodo_flask/templates/pages/function_options/conditional_options.html:153
+#: mycodo_flask/templates/pages/function_options/custom_function_options.html:283
 #: mycodo_flask/templates/pages/function_options/function_options.html:64
 #: mycodo_flask/templates/pages/function_options/trigger_options.html:80
 msgid "Action"
@@ -3484,440 +3547,478 @@ msgstr ""
 msgid "Max Duty Cycle"
 msgstr ""
 
-#: mycodo_flask/forms/forms_settings.py:32
 #: mycodo_flask/forms/forms_settings.py:33
+#: mycodo_flask/forms/forms_settings.py:34
 msgid "SMTP Host"
 msgstr "Хост SMTP"
 
-#: mycodo_flask/forms/forms_settings.py:37
+#: mycodo_flask/forms/forms_settings.py:38
 msgid "SMTP Port"
 msgstr "Порт SMTP"
 
-#: mycodo_flask/forms/forms_settings.py:41
+#: mycodo_flask/forms/forms_settings.py:42
 msgid "SMTP Protocol"
 msgstr "Протокол SMTP"
 
-#: mycodo_flask/forms/forms_settings.py:46
 #: mycodo_flask/forms/forms_settings.py:47
+#: mycodo_flask/forms/forms_settings.py:48
 msgid "SMTP User"
 msgstr "Користувач SMTP"
 
-#: mycodo_flask/forms/forms_settings.py:51
+#: mycodo_flask/forms/forms_settings.py:52
 msgid "SMTP Password"
 msgstr "Пароль SMTP"
 
-#: mycodo_flask/forms/forms_settings.py:55
+#: mycodo_flask/forms/forms_settings.py:56
 msgid "From Email"
 msgstr "З електронної пошти"
 
-#: mycodo_flask/forms/forms_settings.py:63
 #: mycodo_flask/forms/forms_settings.py:64
+#: mycodo_flask/forms/forms_settings.py:65
 msgid "Max emails (per hour)"
 msgstr "Максимум імейлів (на годину)"
 
-#: mycodo_flask/forms/forms_settings.py:67
+#: mycodo_flask/forms/forms_settings.py:68
 msgid "Must have at least one message able to be sent per hour."
-msgstr ""
-"Повинно бути принаймні одне повідомлення, яке можна надсилати на годину."
+msgstr "Повинно бути принаймні одне повідомлення, яке можна надсилати на годину."
 
-#: mycodo_flask/forms/forms_settings.py:72
+#: mycodo_flask/forms/forms_settings.py:73
 msgid "Send Test Email"
 msgstr "Надіслати тестовий лист"
 
-#: mycodo_flask/forms/forms_settings.py:74
+#: mycodo_flask/forms/forms_settings.py:75
 msgid "Test Email To"
 msgstr "Тестовий лист на адресу"
 
-#: mycodo_flask/forms/forms_settings.py:75
+#: mycodo_flask/forms/forms_settings.py:76
 msgid "To Email Address"
 msgstr "На електронну адресу"
 
-#: mycodo_flask/forms/forms_settings.py:89
+#: mycodo_flask/forms/forms_settings.py:90
 msgid "Landing Page"
 msgstr ""
 
-#: mycodo_flask/forms/forms_settings.py:90
+#: mycodo_flask/forms/forms_settings.py:91
 msgid "Index Page"
 msgstr "Індексна сторінка"
 
-#: mycodo_flask/forms/forms_settings.py:92
+#: mycodo_flask/forms/forms_settings.py:93
 msgid "Pyro Timeout"
 msgstr ""
 
-#: mycodo_flask/forms/forms_settings.py:93
+#: mycodo_flask/forms/forms_settings.py:94
+#, fuzzy
+msgid "Custom CSS"
+msgstr "Нестандартний"
+
+#: mycodo_flask/forms/forms_settings.py:95
+#, fuzzy
+msgid "Custom Layout"
+msgstr "Нестандартний"
+
+#: mycodo_flask/forms/forms_settings.py:96
+#, fuzzy
+msgid "Brand Display"
+msgstr "Дисплей"
+
+#: mycodo_flask/forms/forms_settings.py:97
+#, fuzzy
+msgid "Title Display"
+msgstr "Дисплей"
+
+#: mycodo_flask/forms/forms_settings.py:98
+#: mycodo_flask/templates/settings/general.html:80
+#: mycodo_flask/templates/settings/general.html:90
+msgid "Brand Text"
+msgstr ""
+
+#: mycodo_flask/forms/forms_settings.py:99
+#: mycodo_flask/templates/settings/general.html:81
+#, fuzzy
+msgid "Brand Image"
+msgstr "Повернути зображення"
+
+#: mycodo_flask/forms/forms_settings.py:100
+msgid "Brand Image Height"
+msgstr ""
+
+#: mycodo_flask/forms/forms_settings.py:101
 msgid "Enable Daemon Debug Logging"
 msgstr ""
 
-#: mycodo_flask/forms/forms_settings.py:94
+#: mycodo_flask/forms/forms_settings.py:102
 msgid "Force HTTPS"
 msgstr "Примусити HTTPS"
 
-#: mycodo_flask/forms/forms_settings.py:95
+#: mycodo_flask/forms/forms_settings.py:103
 msgid "Hide success messages"
 msgstr "Приховати повідомлення про успіх"
 
-#: mycodo_flask/forms/forms_settings.py:96
+#: mycodo_flask/forms/forms_settings.py:104
 msgid "Hide info messages"
 msgstr "Приховати інформаційні повідомлення"
 
-#: mycodo_flask/forms/forms_settings.py:97
+#: mycodo_flask/forms/forms_settings.py:105
 msgid "Hide warning messages"
 msgstr "Приховати попереджувальні повідомлення"
 
-#: mycodo_flask/forms/forms_settings.py:98
+#: mycodo_flask/forms/forms_settings.py:106
 msgid "Hide Form Tooltips"
 msgstr "Приховати підказки форми"
 
-#: mycodo_flask/forms/forms_settings.py:100
+#: mycodo_flask/forms/forms_settings.py:108
 msgid "Database"
 msgstr "База даних"
 
-#: mycodo_flask/forms/forms_settings.py:101
+#: mycodo_flask/forms/forms_settings.py:109
 msgid "Retention Policy"
 msgstr ""
 
-#: mycodo_flask/forms/forms_settings.py:104
+#: mycodo_flask/forms/forms_settings.py:110
+#, fuzzy
+msgid "Database Hostname"
+msgstr "Назва бази даних"
+
+#: mycodo_flask/forms/forms_settings.py:112
 msgid "Database Name"
 msgstr "Назва бази даних"
 
-#: mycodo_flask/forms/forms_settings.py:109
+#: mycodo_flask/forms/forms_settings.py:113
+#, fuzzy
+msgid "Database Username"
+msgstr "Назва бази даних"
+
+#: mycodo_flask/forms/forms_settings.py:114
+#, fuzzy
+msgid "Database Password"
+msgstr "Скинути пароль"
+
+#: mycodo_flask/forms/forms_settings.py:117
 msgid "Grid Cell Height (px)"
 msgstr "Висота комірки сітки (px)"
 
-#: mycodo_flask/forms/forms_settings.py:111
+#: mycodo_flask/forms/forms_settings.py:119
 msgid "Max Amps"
 msgstr ""
 
-#: mycodo_flask/forms/forms_settings.py:115
+#: mycodo_flask/forms/forms_settings.py:123
 msgid "Cost per kWh"
 msgstr "Вартість за кВт-год"
 
-#: mycodo_flask/forms/forms_settings.py:116
+#: mycodo_flask/forms/forms_settings.py:124
 msgid "Currency Unit"
 msgstr "Грошова одиниця"
 
-#: mycodo_flask/forms/forms_settings.py:117
+#: mycodo_flask/forms/forms_settings.py:125
 msgid "Day of Month"
 msgstr "День місяця"
 
-#: mycodo_flask/forms/forms_settings.py:118
+#: mycodo_flask/forms/forms_settings.py:126
 msgid "Generate Usage/Cost Report"
 msgstr "Згенерувати звіт про використання/витрати"
 
-#: mycodo_flask/forms/forms_settings.py:119
+#: mycodo_flask/forms/forms_settings.py:127
 msgid "Time Span to Generate"
 msgstr "Часовий проміжок для генерації"
 
-#: mycodo_flask/forms/forms_settings.py:121
+#: mycodo_flask/forms/forms_settings.py:129
 msgid "Day of Week/Month to Generate"
 msgstr "День тижня/місяць для генерації"
 
-#: mycodo_flask/forms/forms_settings.py:123
+#: mycodo_flask/forms/forms_settings.py:131
 msgid "Hour of Day to Generate"
 msgstr "Година дня для генерації"
 
-#: mycodo_flask/forms/forms_settings.py:127
-#: mycodo_flask/templates/settings/general.html:371
+#: mycodo_flask/forms/forms_settings.py:135
+#: mycodo_flask/templates/settings/general.html:370
 msgid "Hour Options: 0-23"
 msgstr "Опції години: 0-23"
 
-#: mycodo_flask/forms/forms_settings.py:131
+#: mycodo_flask/forms/forms_settings.py:139
 msgid "Opt-out of statistics"
 msgstr ""
 
-#: mycodo_flask/forms/forms_settings.py:132
+#: mycodo_flask/forms/forms_settings.py:140
 msgid "Check for Updates"
 msgstr "Перевірте наявність оновлень"
 
-#: mycodo_flask/forms/forms_settings.py:133
+#: mycodo_flask/forms/forms_settings.py:141
 msgid "Internet Test IP Address"
 msgstr "Тестова IP-адреса Інтернету"
 
-#: mycodo_flask/forms/forms_settings.py:135
+#: mycodo_flask/forms/forms_settings.py:143
 msgid "Internet Test Port"
 msgstr "Тестовий порт Інтернету"
 
-#: mycodo_flask/forms/forms_settings.py:137
+#: mycodo_flask/forms/forms_settings.py:145
 msgid "Internet Test Timeout"
 msgstr "Тайм-аут тесту Інтернету"
 
-#: mycodo_flask/forms/forms_settings.py:140
-#: mycodo_flask/forms/forms_settings.py:143
-#: mycodo_flask/forms/forms_settings.py:146
-#: mycodo_flask/forms/forms_settings.py:149
-#: mycodo_flask/forms/forms_settings.py:152
-#: mycodo_flask/forms/forms_settings.py:155
+#: mycodo_flask/forms/forms_settings.py:148
+#: mycodo_flask/forms/forms_settings.py:151
+#: mycodo_flask/forms/forms_settings.py:154
+#: mycodo_flask/forms/forms_settings.py:157
+#: mycodo_flask/forms/forms_settings.py:160
+#: mycodo_flask/forms/forms_settings.py:163
 msgid "Sample Rate"
 msgstr ""
 
-#: mycodo_flask/forms/forms_settings.py:167
+#: mycodo_flask/forms/forms_settings.py:175
 msgid "Import Controller Module"
 msgstr ""
 
-#: mycodo_flask/forms/forms_settings.py:181
+#: mycodo_flask/forms/forms_settings.py:189
 #: mycodo_flask/templates/settings/action.html:13
 msgid "Import Action Module"
 msgstr ""
 
-#: mycodo_flask/forms/forms_settings.py:195
+#: mycodo_flask/forms/forms_settings.py:203
 #: mycodo_flask/templates/settings/input.html:13
 msgid "Import Input Module"
 msgstr ""
 
-#: mycodo_flask/forms/forms_settings.py:209
+#: mycodo_flask/forms/forms_settings.py:217
 #: mycodo_flask/templates/settings/output.html:13
 msgid "Import Output Module"
 msgstr ""
 
-#: mycodo_flask/forms/forms_settings.py:223
+#: mycodo_flask/forms/forms_settings.py:231
 #: mycodo_flask/templates/settings/widget.html:13
 msgid "Import Widget Module"
 msgstr ""
 
-#: mycodo_flask/forms/forms_settings.py:237
-#: mycodo_flask/forms/forms_settings.py:246
+#: mycodo_flask/forms/forms_settings.py:245
+#: mycodo_flask/forms/forms_settings.py:254
 msgid "Measurement ID"
 msgstr "Ідентифікатор вимірювання"
 
-#: mycodo_flask/forms/forms_settings.py:239
 #: mycodo_flask/forms/forms_settings.py:247
+#: mycodo_flask/forms/forms_settings.py:255
 msgid "Measurement Name"
 msgstr "Назва виміру"
 
-#: mycodo_flask/forms/forms_settings.py:240
 #: mycodo_flask/forms/forms_settings.py:248
+#: mycodo_flask/forms/forms_settings.py:256
 msgid "Measurement Units"
 msgstr "Одиниці виміру"
 
-#: mycodo_flask/forms/forms_settings.py:241
+#: mycodo_flask/forms/forms_settings.py:249
 #: mycodo_flask/templates/settings/measurement.html:13
 msgid "Add Measurement"
 msgstr "Додати вимір"
 
-#: mycodo_flask/forms/forms_settings.py:254
-#: mycodo_flask/forms/forms_settings.py:264
+#: mycodo_flask/forms/forms_settings.py:262
+#: mycodo_flask/forms/forms_settings.py:272
 msgid "Unit ID"
 msgstr "Ідентифікатор одиниці"
 
-#: mycodo_flask/forms/forms_settings.py:256
-#: mycodo_flask/forms/forms_settings.py:265
+#: mycodo_flask/forms/forms_settings.py:264
+#: mycodo_flask/forms/forms_settings.py:273
 msgid "Unit Name"
 msgstr "Назва одиниці"
 
-#: mycodo_flask/forms/forms_settings.py:258
 #: mycodo_flask/forms/forms_settings.py:266
+#: mycodo_flask/forms/forms_settings.py:274
 msgid "Unit Abbreviation"
 msgstr "Абревіатура одиниці"
 
-#: mycodo_flask/forms/forms_settings.py:259
+#: mycodo_flask/forms/forms_settings.py:267
 #: mycodo_flask/templates/settings/measurement.html:50
 msgid "Add Unit"
 msgstr "Додати одиниці"
 
-#: mycodo_flask/forms/forms_settings.py:273
-#: mycodo_flask/forms/forms_settings.py:283
+#: mycodo_flask/forms/forms_settings.py:281
+#: mycodo_flask/forms/forms_settings.py:291
 msgid "Convert From Unit"
 msgstr "Перетворити з одиниці"
 
-#: mycodo_flask/forms/forms_settings.py:275
-msgid "Convert To Measurement"
-msgstr ""
+#: mycodo_flask/forms/forms_settings.py:283
+#: mycodo_flask/forms/forms_settings.py:292
+msgid "Convert To Unit"
+msgstr "Перетворити на одиницю"
 
-#: mycodo_flask/forms/forms_settings.py:278
+#: mycodo_flask/forms/forms_settings.py:286
 #: mycodo_flask/templates/settings/measurement.html:83
 msgid "Add Conversion"
 msgstr "Додати конверсію"
 
-#: mycodo_flask/forms/forms_settings.py:284
-msgid "Convert To Unit"
-msgstr "Перетворити на одиницю"
-
-#: mycodo_flask/forms/forms_settings.py:296
+#: mycodo_flask/forms/forms_settings.py:304
 msgid "Role Name"
 msgstr "Назва ролі"
 
-#: mycodo_flask/forms/forms_settings.py:297
+#: mycodo_flask/forms/forms_settings.py:305
 #: mycodo_flask/templates/tools/logview.html:3
 msgid "View Logs"
 msgstr ""
 
-#: mycodo_flask/forms/forms_settings.py:298
+#: mycodo_flask/forms/forms_settings.py:306
 msgid "View Stats"
 msgstr "Переглянути статистику"
 
-#: mycodo_flask/forms/forms_settings.py:299
+#: mycodo_flask/forms/forms_settings.py:307
 msgid "View Camera"
 msgstr ""
 
-#: mycodo_flask/forms/forms_settings.py:300
+#: mycodo_flask/forms/forms_settings.py:308
 msgid "View Settings"
 msgstr "Перегляд налаштувань"
 
-#: mycodo_flask/forms/forms_settings.py:301
+#: mycodo_flask/forms/forms_settings.py:309
 msgid "Edit Users"
 msgstr "Редагувати користувачів"
 
-#: mycodo_flask/forms/forms_settings.py:302
+#: mycodo_flask/forms/forms_settings.py:310
 msgid "Edit Controllers"
 msgstr "Редагувати контролери"
 
-#: mycodo_flask/forms/forms_settings.py:303
+#: mycodo_flask/forms/forms_settings.py:311
 msgid "Edit Settings"
 msgstr "Редагувати налаштування"
 
-#: mycodo_flask/forms/forms_settings.py:304
+#: mycodo_flask/forms/forms_settings.py:312
 #: mycodo_flask/templates/forgot_password.html:26
 #: mycodo_flask/templates/reset_password.html:26
 msgid "Reset Password"
 msgstr "Скинути пароль"
 
-#: mycodo_flask/forms/forms_settings.py:306
+#: mycodo_flask/forms/forms_settings.py:314
 msgid "Add Role"
 msgstr "Додати роль"
 
-#: mycodo_flask/forms/forms_settings.py:312
+#: mycodo_flask/forms/forms_settings.py:320
 msgid "Default Login Page"
 msgstr "Сторінка входу за замовчуванням"
 
-#: mycodo_flask/forms/forms_settings.py:331
-#: mycodo_flask/forms/forms_settings.py:372
+#: mycodo_flask/forms/forms_settings.py:339
+#: mycodo_flask/forms/forms_settings.py:380
 msgid "Passwords must match"
 msgstr "Паролі повинні збігатися"
 
-#: mycodo_flask/forms/forms_settings.py:334
-#: mycodo_flask/forms/forms_settings.py:376
+#: mycodo_flask/forms/forms_settings.py:342
+#: mycodo_flask/forms/forms_settings.py:384
 msgid "Password must be 6 or more characters"
 msgstr "Пароль повинен містити 6 або більше символів"
 
-#: mycodo_flask/forms/forms_settings.py:341
-#: mycodo_flask/forms/forms_settings.py:384
-#: mycodo_flask/forms/forms_settings.py:385
+#: mycodo_flask/forms/forms_settings.py:349
+#: mycodo_flask/forms/forms_settings.py:392
+#: mycodo_flask/forms/forms_settings.py:393
 msgid "Keypad Code"
 msgstr "Код клавіатури"
 
-#: mycodo_flask/forms/forms_settings.py:342
+#: mycodo_flask/forms/forms_settings.py:350
 msgid "Optional"
 msgstr "Опціонально"
 
-#: mycodo_flask/forms/forms_settings.py:344
+#: mycodo_flask/forms/forms_settings.py:352
 msgid "Role"
 msgstr "Роль"
 
-#: mycodo_flask/forms/forms_settings.py:347
+#: mycodo_flask/forms/forms_settings.py:355
 #: mycodo_flask/templates/settings/users.html:130
 msgid "Add User"
 msgstr "Додати користувача"
 
-#: mycodo_flask/forms/forms_settings.py:367
+#: mycodo_flask/forms/forms_settings.py:375
 msgid "New Password"
 msgstr "Новий пароль"
 
-#: mycodo_flask/forms/forms_settings.py:388
+#: mycodo_flask/forms/forms_settings.py:396
 msgid "Role ID"
 msgstr "Ідентифікатор ролі"
 
-#: mycodo_flask/forms/forms_settings.py:404
+#: mycodo_flask/forms/forms_settings.py:412
 msgid "Enable I2C"
 msgstr "Увімкнути I2C"
 
-#: mycodo_flask/forms/forms_settings.py:405
+#: mycodo_flask/forms/forms_settings.py:413
 msgid "Disable I2C"
 msgstr "Вимкнути I2C"
 
-#: mycodo_flask/forms/forms_settings.py:406
+#: mycodo_flask/forms/forms_settings.py:414
 msgid "Enable 1-Wire"
 msgstr ""
 
-#: mycodo_flask/forms/forms_settings.py:407
+#: mycodo_flask/forms/forms_settings.py:415
 msgid "Disable 1-Wire"
 msgstr ""
 
-#: mycodo_flask/forms/forms_settings.py:408
+#: mycodo_flask/forms/forms_settings.py:416
 msgid "Enable Serial"
 msgstr ""
 
-#: mycodo_flask/forms/forms_settings.py:409
+#: mycodo_flask/forms/forms_settings.py:417
 msgid "Disable Serial"
 msgstr ""
 
-#: mycodo_flask/forms/forms_settings.py:410
+#: mycodo_flask/forms/forms_settings.py:418
 msgid "Enable SPI"
 msgstr "Увімкнути SPI"
 
-#: mycodo_flask/forms/forms_settings.py:411
+#: mycodo_flask/forms/forms_settings.py:419
 msgid "Disable SPI"
 msgstr "Вимкнути SPI"
 
-#: mycodo_flask/forms/forms_settings.py:412
+#: mycodo_flask/forms/forms_settings.py:420
 msgid "Enable SSH"
 msgstr "Увімкнути SSH"
 
-#: mycodo_flask/forms/forms_settings.py:413
+#: mycodo_flask/forms/forms_settings.py:421
 msgid "Disable SSH"
 msgstr "Вимкнути SSH"
 
-#: mycodo_flask/forms/forms_settings.py:414
-msgid "Enable Pi Camera"
-msgstr "Увімкнути Pi-камеру"
-
-#: mycodo_flask/forms/forms_settings.py:415
-msgid "Disable Pi Camera"
-msgstr "Вимкнути камеру Pi"
-
-#: mycodo_flask/forms/forms_settings.py:417
+#: mycodo_flask/forms/forms_settings.py:423
 msgid "Change Hostname"
 msgstr "Змінити ім'я хоста"
 
-#: mycodo_flask/forms/forms_settings.py:418
+#: mycodo_flask/forms/forms_settings.py:424
 msgid "Configure pigpiod"
 msgstr "Налаштувати pigpiod"
 
-#: mycodo_flask/forms/forms_settings.py:419
+#: mycodo_flask/forms/forms_settings.py:425
 msgid "Reconfigure"
 msgstr "Переналаштувати"
 
-#: mycodo_flask/forms/forms_settings.py:427
+#: mycodo_flask/forms/forms_settings.py:433
 msgid "Delete All Dashboards"
 msgstr "Видалити всі інформаційні панелі"
 
-#: mycodo_flask/forms/forms_settings.py:428
+#: mycodo_flask/forms/forms_settings.py:434
 msgid "Delete All Inputs"
 msgstr ""
 
-#: mycodo_flask/forms/forms_settings.py:429
+#: mycodo_flask/forms/forms_settings.py:435
 msgid "Delete All Notes and Note Tags"
 msgstr "Видалити всі нотатки та теги нотаток"
 
-#: mycodo_flask/forms/forms_settings.py:430
+#: mycodo_flask/forms/forms_settings.py:436
 msgid "Delete All Outputs"
 msgstr ""
 
-#: mycodo_flask/forms/forms_settings.py:431
+#: mycodo_flask/forms/forms_settings.py:437
 msgid "Delete Settings Database"
 msgstr "Видалити базу даних налаштувань"
 
-#: mycodo_flask/forms/forms_settings.py:432
-#: mycodo_flask/forms/forms_settings.py:433
+#: mycodo_flask/forms/forms_settings.py:438
+#: mycodo_flask/forms/forms_settings.py:439
 msgid "Delete File"
 msgstr "Видалити файл"
 
-#: mycodo_flask/forms/forms_settings.py:434
-#: mycodo_flask/utils/utils_settings.py:1909
+#: mycodo_flask/forms/forms_settings.py:442
+#: mycodo_flask/utils/utils_settings.py:1945
 msgid "Reset Email Counter"
 msgstr "Скинути лічильник імейлів"
 
-#: mycodo_flask/forms/forms_settings.py:435
-#: mycodo_flask/utils/utils_settings.py:1926
+#: mycodo_flask/forms/forms_settings.py:443
+#: mycodo_flask/utils/utils_settings.py:1962
 msgid "Install Dependencies"
 msgstr "Встановити залежності"
 
-#: mycodo_flask/forms/forms_settings.py:436
-#: mycodo_flask/utils/utils_settings.py:1963
+#: mycodo_flask/forms/forms_settings.py:444
 msgid "Regenerate Widget HTML"
 msgstr "Регенерувати HTML віджетів"
 
-#: mycodo_flask/forms/forms_settings.py:437
-#: mycodo_flask/utils/utils_settings.py:1985
+#: mycodo_flask/forms/forms_settings.py:445
+#: mycodo_flask/utils/utils_settings.py:2016
 msgid "Set to Upgrade to Master"
 msgstr ""
 
@@ -4035,9 +4136,9 @@ msgid ""
 "Mycodo collects anonymous usage statistics to aid with development. You "
 "can opt-out at any time from the Configuration page, after you log in."
 msgstr ""
-"Mycodo збирає анонімну статистику використання, щоб допомогти в розробці. Ви "
-"можете відмовитися від цього в будь-який час на сторінці конфігурації після "
-"входу в систему."
+"Mycodo збирає анонімну статистику використання, щоб допомогти в розробці."
+" Ви можете відмовитися від цього в будь-який час на сторінці конфігурації"
+" після входу в систему."
 
 #: mycodo_flask/templates/create_admin.html:95
 msgid "Login information is stored locally"
@@ -4048,8 +4149,8 @@ msgid ""
 "Usernames must be 3 to 64 characters, passwords >3 characters, and "
 "contain only letters and numbers"
 msgstr ""
-"Імена користувачів повинні містити від 3 до 64 символів, паролі >3 символів "
-"і містити тільки літери та цифри"
+"Імена користувачів повинні містити від 3 до 64 символів, паролі >3 "
+"символів і містити тільки літери та цифри"
 
 #: mycodo_flask/templates/flash_messages.html:20
 msgid "Info"
@@ -4060,7 +4161,8 @@ msgid "Warning"
 msgstr "Попередження"
 
 #: mycodo_flask/templates/layout-remote.html:47
-#: mycodo_flask/templates/layout.html:204
+#: mycodo_flask/templates/layout.html:208
+#: mycodo_flask/templates/layout_default.html:208
 msgid "Setup"
 msgstr "Налаштування"
 
@@ -4069,15 +4171,16 @@ msgid "Exit"
 msgstr "Вихід"
 
 #: mycodo_flask/templates/layout-settings.html:34
-#: widgets/widget_graph_synchronous.py:362
+#: widgets/widget_graph_synchronous.py:363
 msgid "Inputs"
 msgstr ""
 
 #: mycodo_flask/templates/layout-settings.html:35
-#: mycodo_flask/templates/layout.html:219
+#: mycodo_flask/templates/layout.html:223
+#: mycodo_flask/templates/layout_default.html:223
 #: mycodo_flask/templates/pages/energy_usage_outputs.html:5
 #: mycodo_flask/templates/pages/energy_usage_outputs.html:30
-#: widgets/widget_graph_synchronous.py:382
+#: widgets/widget_graph_synchronous.py:383
 msgid "Outputs"
 msgstr ""
 
@@ -4115,75 +4218,97 @@ msgid "Diagnostics"
 msgstr "Діагностика"
 
 #: mycodo_flask/templates/layout.html:89 mycodo_flask/templates/layout.html:98
-#: mycodo_flask/templates/layout.html:181
+#: mycodo_flask/templates/layout.html:185
+#: mycodo_flask/templates/layout_default.html:89
+#: mycodo_flask/templates/layout_default.html:98
+#: mycodo_flask/templates/layout_default.html:185
 msgid "Daemon is Not Running"
 msgstr "Демон не працює"
 
-#: mycodo_flask/templates/layout.html:94 mycodo_flask/templates/layout.html:181
+#: mycodo_flask/templates/layout.html:94 mycodo_flask/templates/layout.html:185
+#: mycodo_flask/templates/layout_default.html:94
+#: mycodo_flask/templates/layout_default.html:185
 msgid "Daemon is Running"
 msgstr "Демон працює"
 
 #: mycodo_flask/templates/layout.html:104
+#: mycodo_flask/templates/layout_default.html:104
 msgid "Cannot Check Daemon Status"
 msgstr "Не вдається перевірити стан демона"
 
 #: mycodo_flask/templates/layout.html:125
+#: mycodo_flask/templates/layout_default.html:125
 #: mycodo_flask/templates/pages/output.html:112
+#: mycodo_flask/templates/user_templates/widget_template_widget_output_js.html:105
+#: mycodo_flask/templates/user_templates/widget_template_widget_output_pwm_slider_js.html:137
 msgid "No Connection"
 msgstr "Немає зв'язку"
 
-#: mycodo_flask/templates/layout.html:194
+#: mycodo_flask/templates/layout.html:198
+#: mycodo_flask/templates/layout_default.html:198
 msgid "Dashboards"
 msgstr "Інформаційні панелі"
 
-#: mycodo_flask/templates/layout.html:199
+#: mycodo_flask/templates/layout.html:203
+#: mycodo_flask/templates/layout_default.html:203
 msgid "Add Dashboard"
 msgstr "Додати інформаційну панель"
 
-#: mycodo_flask/templates/layout.html:214
+#: mycodo_flask/templates/layout.html:218
+#: mycodo_flask/templates/layout_default.html:218
 msgid "More"
 msgstr "Більше"
 
-#: mycodo_flask/templates/layout.html:220
+#: mycodo_flask/templates/layout.html:224
+#: mycodo_flask/templates/layout_default.html:224
 #: mycodo_flask/templates/pages/energy_usage_input_amps.html:5
 #: mycodo_flask/templates/pages/energy_usage_input_amps.html:30
 msgid "Amp Measure"
 msgstr ""
 
-#: mycodo_flask/templates/layout.html:237
+#: mycodo_flask/templates/layout.html:241
+#: mycodo_flask/templates/layout_default.html:241
 #: mycodo_flask/templates/pages/function_options/conditional_options.html:21
 msgid "Help"
 msgstr "Допомога"
 
-#: mycodo_flask/templates/layout.html:239
+#: mycodo_flask/templates/layout.html:243
+#: mycodo_flask/templates/layout_default.html:243
 msgid "Online"
 msgstr "Онлайн"
 
-#: mycodo_flask/templates/layout.html:240
+#: mycodo_flask/templates/layout.html:244
+#: mycodo_flask/templates/layout_default.html:244
 msgid "API Info"
 msgstr "Інформація про API"
 
-#: mycodo_flask/templates/layout.html:241
+#: mycodo_flask/templates/layout.html:245
+#: mycodo_flask/templates/layout_default.html:245
 msgid "API Docs"
 msgstr "API-документація"
 
-#: mycodo_flask/templates/layout.html:243
+#: mycodo_flask/templates/layout.html:247
+#: mycodo_flask/templates/layout_default.html:247
 msgid "Mycodo on Github"
 msgstr "Mycodo на Github"
 
-#: mycodo_flask/templates/layout.html:244
+#: mycodo_flask/templates/layout.html:248
+#: mycodo_flask/templates/layout_default.html:248
 msgid "Submit an Issue"
 msgstr ""
 
-#: mycodo_flask/templates/layout.html:246
+#: mycodo_flask/templates/layout.html:250
+#: mycodo_flask/templates/layout_default.html:250
 msgid "Edit Translations"
 msgstr "Редагувати переклади"
 
-#: mycodo_flask/templates/layout.html:247
+#: mycodo_flask/templates/layout.html:251
+#: mycodo_flask/templates/layout_default.html:251
 msgid "Changelog"
 msgstr "Журнал змін"
 
-#: mycodo_flask/templates/layout.html:255
+#: mycodo_flask/templates/layout.html:259
+#: mycodo_flask/templates/layout_default.html:259
 #: mycodo_flask/templates/pages/dashboard_entry.html:26
 #: mycodo_flask/templates/pages/data_options/input_entry.html:21
 #: mycodo_flask/templates/pages/data_options/input_spacer.html:17
@@ -4198,70 +4323,85 @@ msgstr "Журнал змін"
 msgid "Configure"
 msgstr "Налаштувати"
 
-#: mycodo_flask/templates/layout.html:256
+#: mycodo_flask/templates/layout.html:260
+#: mycodo_flask/templates/layout_default.html:260
 msgid "Mycodo Logs"
 msgstr "Журнали Mycodo"
 
-#: mycodo_flask/templates/layout.html:257
+#: mycodo_flask/templates/layout.html:261
+#: mycodo_flask/templates/layout_default.html:261
 #: mycodo_flask/templates/pages/info.html:3
 #: mycodo_flask/templates/pages/info.html:5
-#: mycodo_flask/templates/settings/general.html:110
-#: mycodo_flask/templates/settings/general.html:121
+#: mycodo_flask/templates/settings/general.html:60
+#: mycodo_flask/templates/settings/general.html:71
 msgid "System Information"
 msgstr "Інформація про систему"
 
 #: mycodo_flask/templates/admin/dependencies.html:3
 #: mycodo_flask/templates/admin/dependencies.html:5
 #: mycodo_flask/templates/admin/dependencies.html:44
-#: mycodo_flask/templates/layout.html:259
+#: mycodo_flask/templates/layout.html:263
+#: mycodo_flask/templates/layout_default.html:263
 msgid "Dependencies"
 msgstr "Залежності"
 
-#: mycodo_flask/templates/layout.html:261
+#: mycodo_flask/templates/layout.html:265
+#: mycodo_flask/templates/layout_default.html:265
 msgid "Upgrade"
 msgstr "Оновлення"
 
 #: mycodo_flask/templates/admin/backup.html:3
 #: mycodo_flask/templates/admin/backup.html:5
 #: mycodo_flask/templates/admin/backup.html:12
-#: mycodo_flask/templates/layout.html:262
+#: mycodo_flask/templates/layout.html:266
+#: mycodo_flask/templates/layout_default.html:266
 msgid "Backup Restore"
 msgstr ""
 
-#: mycodo_flask/templates/layout.html:264
+#: mycodo_flask/templates/layout.html:268
+#: mycodo_flask/templates/layout_default.html:268
 msgid "Restart Backend"
 msgstr "Перезапустити бекенд"
 
-#: mycodo_flask/templates/layout.html:265
+#: mycodo_flask/templates/layout.html:269
+#: mycodo_flask/templates/layout_default.html:269
 msgid "Restart Frontend"
 msgstr "Перезапустити фронтенд"
 
-#: mycodo_flask/templates/layout.html:267
+#: mycodo_flask/templates/layout.html:271
+#: mycodo_flask/templates/layout_default.html:271
 msgid "Restart System"
 msgstr "Перезапустити систему"
 
-#: mycodo_flask/templates/layout.html:268
+#: mycodo_flask/templates/layout.html:272
+#: mycodo_flask/templates/layout_default.html:272
 msgid "Shutdown System"
 msgstr "Вимкнути Систему"
 
-#: mycodo_flask/templates/layout.html:270
-#: mycodo_flask/templates/layout.html:284
+#: mycodo_flask/templates/layout.html:274
+#: mycodo_flask/templates/layout.html:288
+#: mycodo_flask/templates/layout_default.html:274
+#: mycodo_flask/templates/layout_default.html:288
 msgid "Preferences"
 msgstr "Налаштування"
 
-#: mycodo_flask/templates/layout.html:271
+#: mycodo_flask/templates/layout.html:275
+#: mycodo_flask/templates/layout_default.html:275
 msgid "Logout"
 msgstr "Вийти з системи"
 
-#: mycodo_flask/templates/layout.html:292
-#: mycodo_flask/templates/settings/general.html:96
+#: mycodo_flask/templates/layout.html:296
+#: mycodo_flask/templates/layout_default.html:296
+#: mycodo_flask/templates/settings/general.html:46
 msgid "Selecting a language will override the web browser's language"
 msgstr "Вибір мови замінить мову веб-браузера"
 
 #: mycodo_flask/templates/admin/dependencies_install.html:18
 #: mycodo_flask/templates/admin/dependencies_install.html:35
-#: mycodo_flask/templates/layout.html:316
-#: mycodo_flask/templates/layout.html:354
+#: mycodo_flask/templates/layout.html:320
+#: mycodo_flask/templates/layout.html:358
+#: mycodo_flask/templates/layout_default.html:320
+#: mycodo_flask/templates/layout_default.html:358
 #: mycodo_flask/templates/pages/dashboard_options.html:10
 #: mycodo_flask/templates/pages/data_options/input_options.html:18
 #: mycodo_flask/templates/pages/function_options/conditional_options.html:9
@@ -4310,8 +4450,8 @@ msgid ""
 " to the Export / Import page."
 msgstr ""
 "Резервні копії можна створювати для збереження налаштувань Mycodo або "
-"відновлення їх пізніше. Резервні копії зображень з камери не створюються. "
-"Щоб зберегти дані вимірювань, перейдіть на сторінку Експорт/Імпорт."
+"відновлення їх пізніше. Резервні копії зображень з камери не створюються."
+" Щоб зберегти дані вимірювань, перейдіть на сторінку Експорт/Імпорт."
 
 #: mycodo_flask/templates/admin/dependencies.html:45
 msgid ""
@@ -4338,20 +4478,22 @@ msgid ""
 "No internet connection detected. To upgrade Mycodo automatically, you "
 "will need an internet connection. Refresh the page when one is connected."
 msgstr ""
-"Не виявлено з'єднання з Інтернетом. Для автоматичного оновлення Mycodo вам "
-"знадобиться з'єднання з Інтернетом. Оновіть сторінку після підключення."
+"Не виявлено з'єднання з Інтернетом. Для автоматичного оновлення Mycodo "
+"вам знадобиться з'єднання з Інтернетом. Оновіть сторінку після "
+"підключення."
 
 #: mycodo_flask/templates/admin/upgrade.html:51
 msgid "Mycodo is currently in the process of an upgrade"
 msgstr "Наразі Mycodo знаходиться в процесі оновлення"
 
 #: mycodo_flask/templates/admin/upgrade.html:52
+#, fuzzy
 msgid ""
 "If an upgrade is not currently in progress, you may delete the "
-"~/Mycodo/.upgrade file to be able to reinitiate the upgrade process."
+"/opt/Mycodo/.upgrade file to be able to reinitiate the upgrade process."
 msgstr ""
-"Якщо оновлення не виконується, ви можете видалити файл ~/Mycodo/.upgrade, "
-"щоб відновити процес оновлення."
+"Якщо оновлення не виконується, ви можете видалити файл ~/Mycodo/.upgrade,"
+" щоб відновити процес оновлення."
 
 #: mycodo_flask/templates/admin/upgrade.html:53
 msgid ""
@@ -4362,12 +4504,12 @@ msgid ""
 " to be restarted for them to become active. If you experience an erorr, "
 "attempt to restart the backend before creating a new github issue."
 msgstr ""
-"Оновлення часто займає кілька хвилин, а в деяких випадках і більше. Перш ніж "
-"щось робити, зачекайте, доки процес завершиться. Після успішного завершення "
-"оновлення індикатор стану демона у верхньому лівому куті зміниться з "
-"червоного на зелений. Деякі драйвери потребують перезапуску серверної "
-"частини, щоб активуватись. Якщо у вас виникла помилка, спробуйте "
-"перезапустити бекенд, перш ніж звертатись через github."
+"Оновлення часто займає кілька хвилин, а в деяких випадках і більше. Перш "
+"ніж щось робити, зачекайте, доки процес завершиться. Після успішного "
+"завершення оновлення індикатор стану демона у верхньому лівому куті "
+"зміниться з червоного на зелений. Деякі драйвери потребують перезапуску "
+"серверної частини, щоб активуватись. Якщо у вас виникла помилка, "
+"спробуйте перезапустити бекенд, перш ніж звертатись через github."
 
 #: mycodo_flask/templates/admin/upgrade.html:54
 msgid ""
@@ -4384,13 +4526,13 @@ msgstr "Під час оновлення виникла помилка"
 
 #: mycodo_flask/templates/admin/upgrade.html:92
 msgid "View the upgrade log at /var/log/mycodo/mycodoupgrade.log."
-msgstr ""
-"Перегляньте журнал оновлення за адресою /var/log/mycodo/mycodoupgrade.log."
+msgstr "Перегляньте журнал оновлення за адресою /var/log/mycodo/mycodoupgrade.log."
 
 #: mycodo_flask/templates/admin/upgrade.html:93
+#, fuzzy
 msgid ""
-"Delete ~/Mycodo/.upgrade to acknowledge this message and restore upgrade "
-"functionality."
+"Delete /opt/Mycodo/.upgrade to acknowledge this message and restore "
+"upgrade functionality."
 msgstr ""
 "Видаліть ~/Mycodo/.upgrade, щоб підтвердити це повідомлення і відновити "
 "функціональність оновлення."
@@ -4456,9 +4598,9 @@ msgid ""
 "it using the Raspberry Pi configuration or with the command 'sudo raspi-"
 "config'"
 msgstr ""
-"Здається, підтримку камери Raspberry Pi не ввімкнено. Будь ласка, увімкніть "
-"її за допомогою конфігурації Raspberry Pi або за допомогою команди 'sudo "
-"raspi-config'"
+"Здається, підтримку камери Raspberry Pi не ввімкнено. Будь ласка, "
+"увімкніть її за допомогою конфігурації Raspberry Pi або за допомогою "
+"команди 'sudo raspi-config'"
 
 #: mycodo_flask/templates/pages/camera.html:212
 #: mycodo_flask/templates/pages/camera.html:216
@@ -4489,8 +4631,8 @@ msgstr ""
 #: mycodo_flask/templates/pages/camera.html:270
 msgid "Path to save still image files. Leave blank to use default location."
 msgstr ""
-"Шлях для збереження файлів зображень. Залиште порожнім, щоб використовувати "
-"місце за замовчуванням."
+"Шлях для збереження файлів зображень. Залиште порожнім, щоб "
+"використовувати місце за замовчуванням."
 
 #: mycodo_flask/templates/pages/camera.html:276
 msgid "Path to save timelapse image files. Leave blank to use default location."
@@ -4501,8 +4643,8 @@ msgstr ""
 #: mycodo_flask/templates/pages/camera.html:283
 msgid "Path to save video files. Leave blank to use default location."
 msgstr ""
-"Шлях для збереження відеофайлів. Залиште порожнім, щоб використовувати місце "
-"за замовчуванням."
+"Шлях для збереження відеофайлів. Залиште порожнім, щоб використовувати "
+"місце за замовчуванням."
 
 #: mycodo_flask/templates/pages/camera.html:327
 msgid "Video Stream"
@@ -4551,13 +4693,14 @@ msgstr "Виберіть вимір з одиницею виміру"
 #: outputs/on_off_kasa_plugs.py:136 outputs/on_off_kasa_rgb_bulbs.py:305
 #: outputs/on_off_mcp23017.py:115 outputs/on_off_mqtt.py:153
 #: outputs/on_off_pcf8574.py:114 outputs/on_off_pcf8575.py:114
-#: outputs/on_off_python.py:266 outputs/on_off_sequent_8_relay_hat.py:136
-#: outputs/on_off_shell.py:113 outputs/on_off_sparkfun_board_4_relays.py:117
-#: outputs/on_off_wireless_rpi_rf.py:146 outputs/pump_atlas_ezo_pmp.py:101
-#: outputs/pump_gpio.py:138 outputs/pump_mcp23017.py:147
-#: outputs/pump_pcf8574.py:140 outputs/pwm_gpio.py:164
-#: outputs/pwm_pca9685.py:176 outputs/pwm_python.py:302
-#: outputs/pwm_shell.py:138
+#: outputs/on_off_pinctrl.py:103 outputs/on_off_python.py:266
+#: outputs/on_off_sequent_8_relay_hat.py:136 outputs/on_off_shell.py:113
+#: outputs/on_off_sparkfun_board_4_relays.py:117
+#: outputs/on_off_wireless_rpi_rf.py:146 outputs/on_off_xl9535.py:114
+#: outputs/pump_atlas_ezo_pmp.py:101 outputs/pump_gpio.py:138
+#: outputs/pump_mcp23017.py:147 outputs/pump_pcf8574.py:140
+#: outputs/pwm_gpio.py:164 outputs/pwm_mqtt.py:204 outputs/pwm_pca9685.py:176
+#: outputs/pwm_python.py:302 outputs/pwm_shell.py:138
 msgid "Amps"
 msgstr ""
 
@@ -4701,31 +4844,31 @@ msgstr "Фронтенду використання RAM"
 msgid "Frontend Virtualenv"
 msgstr "Фронтенд Virtualenv"
 
-#: mycodo_flask/templates/pages/live.html:87
+#: mycodo_flask/templates/pages/live.html:89
 msgid "No Inputs/Functions Activated"
 msgstr ""
 
-#: mycodo_flask/templates/pages/live.html:100
+#: mycodo_flask/templates/pages/live.html:102
 #, python-format
 msgid "Input (%(type)s), %(sec)s second interval"
 msgstr ""
 
-#: mycodo_flask/templates/pages/live.html:106
-#: mycodo_flask/templates/pages/live.html:161
+#: mycodo_flask/templates/pages/live.html:108
+#: mycodo_flask/templates/pages/live.html:163
 msgid "Timestamp"
 msgstr "Відмітка часу"
 
-#: mycodo_flask/templates/pages/live.html:126
-#: mycodo_flask/templates/pages/live.html:181
+#: mycodo_flask/templates/pages/live.html:128
+#: mycodo_flask/templates/pages/live.html:183
 msgid "Please wait"
 msgstr "Будь ласка, зачекайте"
 
-#: mycodo_flask/templates/pages/live.html:153
+#: mycodo_flask/templates/pages/live.html:155
 #, python-format
 msgid "Function (%(type)s), %(sec)s second interval"
 msgstr "Функція (%(type)s), %(sec)s другий інтервал"
 
-#: mycodo_flask/templates/pages/live.html:155
+#: mycodo_flask/templates/pages/live.html:157
 #, python-format
 msgid "Function (%(type)s)"
 msgstr "Функція (%(type)s)"
@@ -4760,6 +4903,13 @@ msgstr "Збережені методи"
 #: mycodo_flask/templates/pages/function_options/trigger_entry.html:24
 #: mycodo_flask/templates/pages/output.html:95
 #: mycodo_flask/templates/pages/output.html:97
+#: mycodo_flask/templates/user_templates/widget_template_widget_controller_activate_deactivate_js.html:41
+#: mycodo_flask/templates/user_templates/widget_template_widget_output_js.html:92
+#: mycodo_flask/templates/user_templates/widget_template_widget_output_js.html:94
+#: mycodo_flask/templates/user_templates/widget_template_widget_output_pwm_slider_js.html:116
+#: mycodo_flask/templates/user_templates/widget_template_widget_output_pwm_slider_js.html:122
+#: mycodo_flask/templates/user_templates/widget_template_widget_output_pwm_slider_js.html:124
+#: mycodo_flask/templates/user_templates/widget_template_widget_pid_js.html:132
 msgid "Active"
 msgstr "Активний"
 
@@ -4768,6 +4918,11 @@ msgstr "Активний"
 #: mycodo_flask/templates/pages/function_options/pid_entry.html:28
 #: mycodo_flask/templates/pages/function_options/trigger_entry.html:25
 #: mycodo_flask/templates/pages/output.html:101
+#: mycodo_flask/templates/user_templates/widget_template_widget_controller_activate_deactivate_js.html:46
+#: mycodo_flask/templates/user_templates/widget_template_widget_output_js.html:99
+#: mycodo_flask/templates/user_templates/widget_template_widget_output_pwm_slider_js.html:112
+#: mycodo_flask/templates/user_templates/widget_template_widget_output_pwm_slider_js.html:129
+#: mycodo_flask/templates/user_templates/widget_template_widget_pid_js.html:167
 msgid "Inactive"
 msgstr "Неактивний"
 
@@ -4817,22 +4972,23 @@ msgstr "Продукт"
 msgid "Additional"
 msgstr "Додатково"
 
-#: mycodo_flask/templates/pages/data_options/input_options.html:132
-#: mycodo_flask/templates/pages/function_options/custom_function_options.html:147
-#: mycodo_flask/templates/pages/output_options.html:104
+#: mycodo_flask/templates/pages/data_options/input_options.html:133
+#: mycodo_flask/templates/pages/function_options/custom_function_options.html:148
+#: mycodo_flask/templates/pages/output_options.html:105
+#: mycodo_flask/templates/user_templates/widget_template_widget_graph_synchronous_title_bar.html:18
 msgid "Options"
 msgstr "Параметри"
 
-#: mycodo_flask/templates/pages/data_options/input_options.html:219
-#: mycodo_flask/templates/pages/function_options/custom_function_options.html:189
-#: mycodo_flask/templates/pages/output_options.html:168
+#: mycodo_flask/templates/pages/data_options/input_options.html:229
+#: mycodo_flask/templates/pages/function_options/custom_function_options.html:191
+#: mycodo_flask/templates/pages/output_options.html:171
 msgid "Channel Options"
 msgstr "Параметри каналу"
 
-#: mycodo_flask/templates/pages/output_options.html:237
-#: mycodo_flask/templates/pages/output_options.html:251
-#: mycodo_flask/templates/pages/output_options.html:265
-#: mycodo_flask/templates/pages/output_options.html:279
+#: mycodo_flask/templates/pages/output_options.html:241
+#: mycodo_flask/templates/pages/output_options.html:255
+#: mycodo_flask/templates/pages/output_options.html:269
+#: mycodo_flask/templates/pages/output_options.html:283
 msgid "Send"
 msgstr "Надіслати"
 
@@ -4840,8 +4996,8 @@ msgstr "Надіслати"
 msgid "Are you sure you want to do this?"
 msgstr "Ви впевнені, що хочете це зробити?"
 
-#: mycodo_flask/templates/pages/data_options/input_options.html:277
-#: mycodo_flask/templates/pages/function_options/custom_function_options.html:252
+#: mycodo_flask/templates/pages/data_options/input_options.html:288
+#: mycodo_flask/templates/pages/function_options/custom_function_options.html:255
 #: mycodo_flask/templates/settings/measurement.html:4
 #: mycodo_flask/templates/settings/measurement.html:6
 #: mycodo_flask/templates/settings/measurement.html:11
@@ -4859,23 +5015,23 @@ msgid "Address"
 msgstr "Адреса"
 
 #: mycodo_flask/templates/pages/form_options/Measurements_Configure.html:15
-#: mycodo_flask/templates/pages/form_options/Measurements_Configure.html:93
+#: mycodo_flask/templates/pages/form_options/Measurements_Configure.html:100
 msgid "Linear"
 msgstr "Лінійний"
 
-#: mycodo_flask/templates/pages/form_options/Measurements_Configure.html:90
+#: mycodo_flask/templates/pages/form_options/Measurements_Configure.html:97
 msgid "Rescale Method"
 msgstr "Метод зміни масштабу"
 
-#: mycodo_flask/templates/pages/form_options/Measurements_Configure.html:117
+#: mycodo_flask/templates/pages/form_options/Measurements_Configure.html:124
 msgid "Rescaled Measurement"
 msgstr ""
 
-#: mycodo_flask/templates/pages/form_options/Measurements_Configure.html:120
+#: mycodo_flask/templates/pages/form_options/Measurements_Configure.html:127
 msgid "Do Not Rescale"
 msgstr "Не змінювати масштаб"
 
-#: mycodo_flask/templates/pages/form_options/Measurements_Configure.html:156
+#: mycodo_flask/templates/pages/form_options/Measurements_Configure.html:163
 msgid "Do Not Convert"
 msgstr "Не конвертувати"
 
@@ -4917,12 +5073,13 @@ msgstr "Умови"
 #: mycodo_flask/templates/pages/function_options/conditional_options/controller_status.html:2
 #: mycodo_flask/templates/pages/function_options/conditional_options/gpio_state.html:2
 #: mycodo_flask/templates/pages/function_options/conditional_options/measurement.html:2
+#: mycodo_flask/templates/pages/function_options/conditional_options/measurement_and_ts.html:2
 #: mycodo_flask/templates/pages/function_options/conditional_options/measurement_dict.html:2
 #: mycodo_flask/templates/pages/function_options/conditional_options/measurement_past_average.html:2
 #: mycodo_flask/templates/pages/function_options/conditional_options/measurement_past_sum.html:2
 #: mycodo_flask/templates/pages/function_options/conditional_options/output_duration_on.html:2
 #: mycodo_flask/templates/pages/function_options/conditional_options/output_state.html:2
-#: mycodo_flask/utils/utils_conditional.py:201
+#: mycodo_flask/utils/utils_conditional.py:200
 #: mycodo_flask/utils/utils_conditional.py:252
 #: mycodo_flask/utils/utils_conditional.py:298
 msgid "Condition"
@@ -4933,6 +5090,7 @@ msgid "Activated Status"
 msgstr "Активований статус"
 
 #: mycodo_flask/templates/pages/function_options/pid_entry.html:26
+#: mycodo_flask/templates/user_templates/widget_template_widget_pid_js.html:61
 msgid "Paused"
 msgstr "Призупинено"
 
@@ -4941,6 +5099,7 @@ msgid "On Hold"
 msgstr "На утриманні"
 
 #: mycodo_flask/templates/pages/function_options/conditional_options/measurement.html:7
+#: mycodo_flask/templates/pages/function_options/conditional_options/measurement_and_ts.html:7
 #: mycodo_flask/templates/pages/function_options/conditional_options/measurement_dict.html:7
 #: mycodo_flask/templates/pages/function_options/conditional_options/measurement_past_average.html:7
 #: mycodo_flask/templates/pages/function_options/conditional_options/measurement_past_sum.html:7
@@ -5062,19 +5221,30 @@ msgstr ""
 "повертає None."
 
 #: mycodo_flask/templates/pages/function_options/conditional_options/measurement.html:27
+#: mycodo_flask/templates/pages/function_options/conditional_options/measurement_and_ts.html:27
 #: mycodo_flask/templates/pages/function_options/conditional_options/measurement_dict.html:27
 #: mycodo_flask/templates/pages/function_options/conditional_options/measurement_past_average.html:27
 #: mycodo_flask/templates/pages/function_options/conditional_options/measurement_past_sum.html:27
 msgid "Do not accept measurements older than this age"
 msgstr "Не приймайте розміри старше цього віку"
 
+#: mycodo_flask/templates/pages/function_options/conditional_options/measurement_and_ts.html:2
+#, fuzzy
+msgid ""
+"returns a dictionary with the last timestamp and value found within the "
+"Max Age, otherwise returns a dictionary {\"time\": None, \"value\": "
+"None}."
+msgstr ""
+"повертає список словників з парами ключів \"time\" та \"value\", "
+"знайдених у межах максимального віку, інакше повертає None."
+
 #: mycodo_flask/templates/pages/function_options/conditional_options/measurement_dict.html:2
 msgid ""
 "returns a list of dictionaries with \"time\" and \"value\" key pairs "
 "found within the Max Age, otherwise returns None."
 msgstr ""
-"повертає список словників з парами ключів \"time\" та \"value\", знайдених у "
-"межах максимального віку, інакше повертає None."
+"повертає список словників з парами ключів \"time\" та \"value\", "
+"знайдених у межах максимального віку, інакше повертає None."
 
 #: mycodo_flask/templates/pages/function_options/conditional_options/measurement_dict.html:2
 msgid "Example"
@@ -5085,16 +5255,16 @@ msgid ""
 "returns the average of the values found within the Max Age, otherwise "
 "returns None."
 msgstr ""
-"повертає середнє арифметичне значень, знайдених в межах максимального віку, "
-"інакше повертає None."
+"повертає середнє арифметичне значень, знайдених в межах максимального "
+"віку, інакше повертає None."
 
 #: mycodo_flask/templates/pages/function_options/conditional_options/measurement_past_sum.html:2
 msgid ""
 "returns the sum of the values found within the Max Age, otherwise returns"
 " None."
 msgstr ""
-"повертає суму значень, знайдених у межах максимального віку, інакше повертає "
-"None."
+"повертає суму значень, знайдених у межах максимального віку, інакше "
+"повертає None."
 
 #: mycodo_flask/templates/pages/function_options/conditional_options/output_duration_on.html:2
 msgid "Output Duration On"
@@ -5173,8 +5343,8 @@ msgid ""
 "The maximum duty cycle (in %%). If a duty cycle is below this value, this"
 " is the value that will be used."
 msgstr ""
-"Максимальний робочий цикл (у %%). Якщо робочий цикл нижче цього значення, "
-"буде використано саме це значення."
+"Максимальний робочий цикл (у %%). Якщо робочий цикл нижче цього значення,"
+" буде використано саме це значення."
 
 #: mycodo_flask/templates/pages/function_options/pid_options/output_pwm_raise.html:11
 #, python-format
@@ -5182,8 +5352,8 @@ msgid ""
 "The maximum duty cycle (in %%). If a duty cycle is above this value, this"
 " is the value that will be used."
 msgstr ""
-"Максимальний робочий цикл (у %%). Якщо робочий цикл перевищує це значення, "
-"буде використано саме це значення."
+"Максимальний робочий цикл (у %%). Якщо робочий цикл перевищує це "
+"значення, буде використано саме це значення."
 
 #: mycodo_flask/templates/pages/function_options/pid_options/output_value_lower.html:5
 msgid ""
@@ -5237,17 +5407,17 @@ msgid ""
 "amount. 0 is disabled."
 msgstr ""
 
-#: mycodo_flask/templates/pages/function_options/trigger_options/edge.html:23
+#: mycodo_flask/templates/pages/function_options/trigger_options/edge.html:24
 msgid "Detect low to high (rising), high to low (falling), or both?"
 msgstr ""
 "Виявляти переходи від низького до високого (зростання), від високого до "
 "низького (падіння) або і те, і інше?"
 
-#: mycodo_flask/templates/pages/function_options/trigger_options/edge.html:25
+#: mycodo_flask/templates/pages/function_options/trigger_options/edge.html:26
 msgid "Rising"
 msgstr ""
 
-#: mycodo_flask/templates/pages/function_options/trigger_options/edge.html:26
+#: mycodo_flask/templates/pages/function_options/trigger_options/edge.html:27
 msgid "Falling"
 msgstr ""
 
@@ -5425,8 +5595,8 @@ msgstr ""
 #: mycodo_flask/templates/pages/method_options/build_date.html:3
 msgid "Define the setpoint over a period of time based on specific times/dates."
 msgstr ""
-"Визначте задане значення протягом певного періоду часу на основі конкретних "
-"дат/часу."
+"Визначте задане значення протягом певного періоду часу на основі "
+"конкретних дат/часу."
 
 #: mycodo_flask/templates/pages/method_options/build_duration.html:9
 msgid ""
@@ -5474,8 +5644,7 @@ msgstr "Налештування сповіщень"
 
 #: mycodo_flask/templates/settings/alerts.html:28
 msgid "Leave blank to use default port for protocol"
-msgstr ""
-"Залиште порожнім, щоб використовувати порт за замовчуванням для протоколу"
+msgstr "Залиште порожнім, щоб використовувати порт за замовчуванням для протоколу"
 
 #: mycodo_flask/templates/settings/alerts.html:34
 msgid "Email protocol to send with"
@@ -5505,48 +5674,65 @@ msgstr ""
 msgid "Imported Function Modules"
 msgstr ""
 
-#: mycodo_flask/templates/settings/general.html:88
-#: mycodo_flask/utils/utils_settings.py:446
+#: mycodo_flask/templates/settings/general.html:38
+#: mycodo_flask/utils/utils_settings.py:466
 msgid "General Settings"
 msgstr "Загальні налаштування"
 
-#: mycodo_flask/templates/settings/general.html:107
+#: mycodo_flask/templates/settings/general.html:57
 msgid "Which page to land on after logging in"
 msgstr "На яку сторінку потрапити після входу в систему"
 
-#: mycodo_flask/templates/settings/general.html:117
+#: mycodo_flask/templates/settings/general.html:67
 msgid "Which page to land on after clicking brand link (top-corner link)"
 msgstr ""
-"На яку сторінку перенаправити після переходу за посиланням на бренд ("
-"посилання у верхньому куті)"
+"На яку сторінку перенаправити після переходу за посиланням на бренд "
+"(посилання у верхньому куті)"
 
-#: mycodo_flask/templates/settings/general.html:118
+#: mycodo_flask/templates/settings/general.html:68
 msgid "Same as Landing Page"
 msgstr "Те саме, що й Landing Page"
 
-#: mycodo_flask/templates/settings/general.html:128
+#: mycodo_flask/templates/settings/general.html:78
+msgid "What to display in the top-left corner of the UI"
+msgstr ""
+
+#: mycodo_flask/templates/settings/general.html:88
+msgid "What to display as the page title of the UI"
+msgstr ""
+
+#: mycodo_flask/templates/settings/general.html:97
+msgid "Override the hostname with this text. Leave blank to use hostname."
+msgstr ""
+
+#: mycodo_flask/templates/settings/general.html:109
+#, fuzzy
+msgid "Height of the brand image, in pixels."
+msgstr "Висота комірки сітки, в пікселях."
+
+#: mycodo_flask/templates/settings/general.html:115
 msgid ""
 "Set the timeout (seconds) for Pyro connections (client-daemon "
 "communication). Requires daemon restart."
 msgstr ""
 
-#: mycodo_flask/templates/settings/general.html:139
+#: mycodo_flask/templates/settings/general.html:138
 msgid ""
 "Enable Daemon debug logging for diagnosing issues. Requires Daemon "
 "restart."
 msgstr ""
-"Увімкнути ведення журналу налагодження демона для діагностування проблем. "
-"Потребує перезапуску демона."
+"Увімкнути ведення журналу налагодження демона для діагностування проблем."
+" Потребує перезапуску демона."
 
-#: mycodo_flask/templates/settings/general.html:150
+#: mycodo_flask/templates/settings/general.html:149
 msgid ""
 "Check to force all web connections to use SSL (port 443) for greater "
 "security."
 msgstr ""
-"Встановіть прапорець, щоб змусити всі веб-з'єднання використовувати SSL ("
-"порт 443) для більшої безпеки."
+"Встановіть прапорець, щоб змусити всі веб-з'єднання використовувати SSL "
+"(порт 443) для більшої безпеки."
 
-#: mycodo_flask/templates/settings/general.html:161
+#: mycodo_flask/templates/settings/general.html:160
 msgid ""
 "Check to prevent Success alert messages from appearing at the top of the "
 "page."
@@ -5554,15 +5740,15 @@ msgstr ""
 "Установіть цей прапорець, щоб запобігти появі повідомлень про успішне "
 "завершення у верхній частині сторінки."
 
-#: mycodo_flask/templates/settings/general.html:172
+#: mycodo_flask/templates/settings/general.html:171
 msgid ""
 "Check to prevent Info alert messages from appearing at the top of the "
 "page."
 msgstr ""
-"Установіть цей прапорець, щоб запобігти появі інформаційних повідомлень у "
-"верхній частині сторінки."
+"Установіть цей прапорець, щоб запобігти появі інформаційних повідомлень у"
+" верхній частині сторінки."
 
-#: mycodo_flask/templates/settings/general.html:183
+#: mycodo_flask/templates/settings/general.html:182
 msgid ""
 "Check to prevent Warning alert messages from appearing at the top of the "
 "page."
@@ -5570,77 +5756,77 @@ msgstr ""
 "Установіть прапорець, щоб попереджувальні повідомлення не з'являлися у "
 "верхній частині сторінки."
 
-#: mycodo_flask/templates/settings/general.html:194
+#: mycodo_flask/templates/settings/general.html:193
 msgid "Hide tooltips that pop up over form inputs."
-msgstr ""
-"Приховати спливаючі підказки, які з'являються при введенні даних у формі."
+msgstr "Приховати спливаючі підказки, які з'являються при введенні даних у формі."
 
-#: mycodo_flask/templates/settings/general.html:205
+#: mycodo_flask/templates/settings/general.html:204
 msgid "Check if you do not wish to send anonymous usage statistics."
 msgstr "Позначте якщо не бажаєте надсилати анонімну статистику використання."
 
-#: mycodo_flask/templates/settings/general.html:205
+#: mycodo_flask/templates/settings/general.html:204
 msgid "View collected statistics"
 msgstr "Перегляд зібраної статистики"
 
-#: mycodo_flask/templates/settings/general.html:269
+#: mycodo_flask/templates/settings/general.html:268
 msgid "The heigth of the grid cell, in pixels."
 msgstr "Висота комірки сітки, в пікселях."
 
-#: mycodo_flask/templates/settings/general.html:280
+#: mycodo_flask/templates/settings/general.html:279
 msgid ""
 "The IP address to test if there is an active internet connection required"
 " to allow upgrading."
 msgstr ""
-"IP-адреса для перевірки наявності активного інтернет-з'єднання, необхідного "
-"для оновлення."
+"IP-адреса для перевірки наявності активного інтернет-з'єднання, "
+"необхідного для оновлення."
 
-#: mycodo_flask/templates/settings/general.html:286
+#: mycodo_flask/templates/settings/general.html:285
 msgid "The port of the internet test IP address."
 msgstr ""
 
-#: mycodo_flask/templates/settings/general.html:292
+#: mycodo_flask/templates/settings/general.html:291
 msgid "The timeout period (seconds) for testing the internet connection."
 msgstr "Період очікування (в секундах) для тестування інтернет-з'єднання."
 
-#: mycodo_flask/templates/settings/general.html:303
+#: mycodo_flask/templates/settings/general.html:302
 msgid "Check if you would like Mycodo to automatically check for upgrades."
 msgstr ""
-"Перевірте, чи хочете ви, щоб Mycodo автоматично перевіряв наявність оновлень."
+"Перевірте, чи хочете ви, щоб Mycodo автоматично перевіряв наявність "
+"оновлень."
 
-#: mycodo_flask/templates/settings/general.html:314
+#: mycodo_flask/templates/settings/general.html:313
 msgid "Set the maximum allowed amperage to be switched on at any given time"
 msgstr ""
 
-#: mycodo_flask/templates/settings/general.html:320
+#: mycodo_flask/templates/settings/general.html:319
 msgid "Set the voltage used to power the devices powered by the outputs"
 msgstr ""
 
-#: mycodo_flask/templates/settings/general.html:326
+#: mycodo_flask/templates/settings/general.html:325
 msgid "Set the cost per kilowatt-hour"
 msgstr "Встановіть вартість кіловат-години"
 
-#: mycodo_flask/templates/settings/general.html:332
+#: mycodo_flask/templates/settings/general.html:331
 msgid "Set the unit of currency used to pay for the electricity"
-msgstr ""
-"Встановіть грошову одиницю, в якій ви будете сплачувати за електроенергію"
+msgstr "Встановіть грошову одиницю, в якій ви будете сплачувати за електроенергію"
 
-#: mycodo_flask/templates/settings/general.html:338
+#: mycodo_flask/templates/settings/general.html:337
 msgid "Set a day of the month to calculate monthly power usage"
 msgstr ""
-"Встановіть день місяця для розрахунку щомісячного споживання електроенергії"
+"Встановіть день місяця для розрахунку щомісячного споживання "
+"електроенергії"
 
-#: mycodo_flask/templates/settings/general.html:349
+#: mycodo_flask/templates/settings/general.html:348
 msgid ""
 "Automatically generate output usage reports on a daily/weekly/monthly "
 "schedule"
 msgstr ""
 
-#: mycodo_flask/templates/settings/general.html:355
+#: mycodo_flask/templates/settings/general.html:354
 msgid "How often to generate a report"
 msgstr "Як часто генерувати звіт"
 
-#: mycodo_flask/templates/settings/general.html:365
+#: mycodo_flask/templates/settings/general.html:364
 msgid "Day Options: Daily: 1-7 (1=Monday), Monthly: 1-28"
 msgstr ""
 
@@ -5708,10 +5894,6 @@ msgstr ""
 msgid "Export Import"
 msgstr "Експорт Імпорт"
 
-#: mycodo_flask/templates/tools/logview.html:10
-msgid "Select the number of lines to display from the end of a log"
-msgstr "Виберіть кількість рядків для відображення з кінця журналу"
-
 #: mycodo_flask/templates/tools/note_edit.html:3
 #: mycodo_flask/templates/tools/note_edit.html:12
 #: mycodo_flask/templates/tools/notes.html:3
@@ -5736,15 +5918,70 @@ msgstr "Керувати"
 msgid "Select one or more tags"
 msgstr "Виберіть один або кілька тегів"
 
-#: mycodo_flask/templates/tools/notes.html:154
-msgid "Search"
-msgstr "Пошук"
-
 #: mycodo_flask/templates/tools/notes.html:221
 msgid "Found"
 msgstr "Знайдено"
 
-#: mycodo_flask/utils/utils_conditional.py:93
+#: mycodo_flask/templates/user_templates/widget_template_widget_graph_synchronous_title_bar.html:8
+#, fuzzy
+msgid "Update"
+msgstr "Дублікат"
+
+#: mycodo_flask/templates/user_templates/widget_template_widget_graph_synchronous_title_bar.html:14
+#, fuzzy
+msgid "Hide"
+msgstr "Відео"
+
+#: mycodo_flask/templates/user_templates/widget_template_widget_output_body.html:79
+#, fuzzy
+msgid "Seconds On"
+msgstr "Секунди"
+
+#: mycodo_flask/templates/user_templates/widget_template_widget_output_body.html:92
+#, fuzzy
+msgid "Set PWM"
+msgstr "Налаштування"
+
+#: mycodo_flask/templates/user_templates/widget_template_widget_output_body.html:105
+#, fuzzy
+msgid "Send Volume"
+msgstr "Обсяг"
+
+#: mycodo_flask/templates/user_templates/widget_template_widget_output_body.html:118
+#, fuzzy
+msgid "Send Value"
+msgstr "Увімкнути значення"
+
+#: mycodo_flask/templates/user_templates/widget_template_widget_output_pwm_slider_body.html:49
+#, fuzzy
+msgid "PWM On"
+msgstr "PWM команда"
+
+#: mycodo_flask/templates/user_templates/widget_template_widget_pid_body.html:67
+msgid "A numerical value to set the PID setpoint"
+msgstr ""
+
+#: mycodo_flask/templates/user_templates/widget_template_widget_pid_body.html:70
+#, fuzzy
+msgid "Set Setpoint"
+msgstr "Заданне значення"
+
+#: mycodo_flask/templates/user_templates/widget_template_widget_pid_js.html:97
+#, fuzzy
+msgid "Held"
+msgstr "Зачекай"
+
+#: mycodo_flask/templates/user_templates/widget_template_widget_python_code_js.html:10
+msgid "NO DATA ERROR"
+msgstr ""
+
+#: mycodo_flask/templates/user_templates/widget_template_widget_python_code_js.html:13
+#: mycodo_flask/templates/user_templates/widget_template_widget_python_code_js.html:17
+#, fuzzy
+msgid "CONNECTION ERROR"
+msgstr "Немає зв'язку"
+
+#: mycodo_flask/utils/utils_conditional.py:92
 #: mycodo_flask/utils/utils_conditional.py:258
 #: mycodo_flask/utils/utils_trigger.py:147
 #, python-format
@@ -5752,16 +5989,16 @@ msgid "Daemon response: %(resp)s"
 msgstr "Відповідь демона: %(resp)s"
 
 #: mycodo_flask/utils/utils_controller.py:51
-#: mycodo_flask/utils/utils_input.py:376
+#: mycodo_flask/utils/utils_input.py:339
 msgid "Deactivate controller before modifying its settings"
 msgstr "Вимкніть контролер перед зміною його налаштувань"
 
-#: mycodo_flask/utils/utils_dashboard.py:51
+#: mycodo_flask/utils/utils_dashboard.py:42
 #, python-format
 msgid "Dashboard with ID %(id)s successfully added"
 msgstr "Панель управління з ідентифікатором %(id)s успішно додано"
 
-#: mycodo_flask/utils/utils_dashboard.py:244
+#: mycodo_flask/utils/utils_dashboard.py:243
 #, python-format
 msgid "{dev} with ID %(id)s successfully added"
 msgstr "{dev} з ідентифікатором %(id)s успішно додано"
@@ -5781,8 +6018,8 @@ msgstr "Запис з ідентифікатором %(id)s не знайден�
 
 #: mycodo_flask/utils/utils_general.py:1256
 #: mycodo_flask/utils/utils_general.py:1267
-#: mycodo_flask/utils/utils_input.py:311
-#: mycodo_flask/utils/utils_settings.py:462
+#: mycodo_flask/utils/utils_input.py:274
+#: mycodo_flask/utils/utils_settings.py:481
 #, python-format
 msgid "Error in the %(field)s field - %(err)s"
 msgstr "Помилка в полі %(field)s - %(err)s"
@@ -5795,7 +6032,7 @@ msgstr "Неможливо переміститися вище першого е
 msgid "Cannot move below the last item in the list"
 msgstr "Неможливо переміститися нижче останнього елемента в списку"
 
-#: mycodo_flask/utils/utils_input.py:381
+#: mycodo_flask/utils/utils_input.py:344
 msgid ""
 "Choose a Read Period equal to or greater than 7. The AM2315 may become "
 "unresponsive if the period is below 7."
@@ -5803,19 +6040,19 @@ msgstr ""
 "Виберіть Період зчитування, що дорівнює або перевищує 7. AM2315 може не "
 "відповідати, якщо період менше 7."
 
-#: mycodo_flask/utils/utils_input.py:390
+#: mycodo_flask/utils/utils_input.py:353
 msgid "The Read Period cannot be less than the Pre Output Duration"
 msgstr ""
 
-#: mycodo_flask/utils/utils_input.py:395 mycodo_flask/utils/utils_output.py:240
+#: mycodo_flask/utils/utils_input.py:358 mycodo_flask/utils/utils_output.py:244
 msgid "Invalid device or improper permissions to read device"
 msgstr "Недійсний пристрій або неправильні дозволи на читання пристрою"
 
-#: mycodo_flask/utils/utils_input.py:401
+#: mycodo_flask/utils/utils_input.py:364
 msgid "Pin (GPIO) must be set"
 msgstr "Пін (GPIO) повинен бути встановлений"
 
-#: mycodo_flask/utils/utils_input.py:803
+#: mycodo_flask/utils/utils_input.py:853
 msgid ""
 "Activate controller before attempting to force the acquisition of "
 "measurements"
@@ -5836,8 +6073,8 @@ msgstr "Час закінчення повинен бути після часу 
 #: mycodo_flask/utils/utils_method.py:205
 msgid "Error: Angle Shift is out of range. It must be <= 0 and <= 360."
 msgstr ""
-"Помилка: Кутовий зсув знаходиться поза діапазоном. Він повинен бути <= 0 і "
-"<= 360."
+"Помилка: Кутовий зсув знаходиться поза діапазоном. Він повинен бути <= 0 "
+"і <= 360."
 
 #: mycodo_flask/utils/utils_method.py:209
 msgid "Error: X0 must be greater than X3."
@@ -5873,8 +6110,8 @@ msgid ""
 "The entry start time (%(st)s) cannot overlap the previous entry's end "
 "time (%(et)s)"
 msgstr ""
-"Час початку запису (%(st)s) не може перекривати час закінчення попереднього "
-"запису (%(et)s)"
+"Час початку запису (%(st)s) не може перекривати час закінчення "
+"попереднього запису (%(et)s)"
 
 #: mycodo_flask/utils/utils_method.py:396
 #, python-format
@@ -5882,8 +6119,8 @@ msgid ""
 "The entry end time (%(et)s) cannot overlap the next entry's start time "
 "(%(st)s)"
 msgstr ""
-"Час завершення запису (%(et)s) не може перекривати час початку наступного "
-"запису (%(st)s)"
+"Час завершення запису (%(et)s) не може перекривати час початку наступного"
+" запису (%(st)s)"
 
 #: mycodo_flask/utils/utils_misc.py:38
 #, python-format
@@ -5891,9 +6128,16 @@ msgid "Energy Usage with ID %(id)s (%(uuid)s) successfully added"
 msgstr "Енергоспоживання з ідентифікатором %(id)s (%(uuid)s) успішно додано"
 
 #: mycodo_flask/utils/utils_notes.py:217 mycodo_flask/utils/utils_notes.py:258
-#: mycodo_flask/utils/utils_settings.py:1884
+#: mycodo_flask/utils/utils_settings.py:1888
 msgid "File"
 msgstr "Файл"
+
+#: mycodo_flask/utils/utils_output.py:416
+#: mycodo_flask/utils/utils_output.py:422
+#: mycodo_flask/utils/utils_output.py:426
+#, fuzzy, python-format
+msgid "%(err)s"
+msgstr "Помилка: %(err)s"
 
 #: mycodo_flask/utils/utils_pid.py:276
 msgid "Raise and lower outputs cannot be the same"
@@ -5917,7 +6161,8 @@ msgstr ""
 #, python-format
 msgid "Remote Host %(host)s with ID %(id)s (%(uuid)s) successfully added"
 msgstr ""
-"Віддалений хост %(host)s з ідентифікатором %(id)s (%(uuid)s) успішно додано"
+"Віддалений хост %(host)s з ідентифікатором %(id)s (%(uuid)s) успішно "
+"додано"
 
 #: mycodo_flask/utils/utils_remote_host.py:158
 #: mycodo_flask/utils/utils_remote_host.py:162
@@ -5927,75 +6172,79 @@ msgstr ""
 msgid "Error: %(err)s"
 msgstr "Помилка: %(err)s"
 
-#: mycodo_flask/utils/utils_settings.py:113
-#: mycodo_flask/utils/utils_settings.py:132
-#: mycodo_flask/utils/utils_settings.py:146
+#: mycodo_flask/utils/utils_settings.py:115
+#: mycodo_flask/utils/utils_settings.py:134
+#: mycodo_flask/utils/utils_settings.py:148
 msgid "User Role"
 msgstr "Роль користувача"
 
-#: mycodo_flask/utils/utils_settings.py:187
+#: mycodo_flask/utils/utils_settings.py:189
 msgid ""
 "Invalid user name. Must be between 2 and 64 characters and only contain "
 "letters and numbers."
 msgstr ""
-"Неправильне ім'я користувача. Повинно містити від 2 до 64 символів і лише "
-"літери та цифри."
+"Неправильне ім'я користувача. Повинно містити від 2 до 64 символів і лише"
+" літери та цифри."
 
-#: mycodo_flask/utils/utils_settings.py:193
+#: mycodo_flask/utils/utils_settings.py:195
 msgid "Another user already has that email address."
 msgstr "Інший користувач вже має цю адресу електронної пошти."
 
-#: mycodo_flask/utils/utils_settings.py:303
+#: mycodo_flask/utils/utils_settings.py:305
 msgid "Invalid password"
 msgstr "Неправильний пароль"
 
-#: mycodo_flask/utils/utils_settings.py:1195
+#: mycodo_flask/utils/utils_settings.py:1214
 #, python-format
 msgid "Measurement with ID %(id)s (%(uuid)s) successfully added"
 msgstr "Вимір з ідентифікатором %(id)s (%(uuid)s) успішно додано"
 
-#: mycodo_flask/utils/utils_settings.py:1284
-#: mycodo_flask/utils/utils_settings.py:1324
-#: mycodo_flask/utils/utils_settings.py:1377
+#: mycodo_flask/utils/utils_settings.py:1303
+#: mycodo_flask/utils/utils_settings.py:1343
+#: mycodo_flask/utils/utils_settings.py:1396
 msgid "Unit"
 msgstr "Одиниця"
 
-#: mycodo_flask/utils/utils_settings.py:1305
+#: mycodo_flask/utils/utils_settings.py:1324
 #, python-format
 msgid "Unit with ID %(id)s (%(uuid)s) successfully added"
 msgstr "Одиницю з ідентифікатором %(id)s (%(uuid)s) успішно додано"
 
-#: mycodo_flask/utils/utils_settings.py:1415
-#: mycodo_flask/utils/utils_settings.py:1457
-#: mycodo_flask/utils/utils_settings.py:1490
+#: mycodo_flask/utils/utils_settings.py:1434
+#: mycodo_flask/utils/utils_settings.py:1476
+#: mycodo_flask/utils/utils_settings.py:1509
 msgid "Conversion"
 msgstr "Конвертація"
 
-#: mycodo_flask/utils/utils_settings.py:1438
+#: mycodo_flask/utils/utils_settings.py:1457
 #, python-format
 msgid "Conversion with ID %(id)s (%(uuid)s) successfully added"
 msgstr "Конверсію з ідентифікатором %(id)s (%(uuid)s) успішно додано"
 
-#: mycodo_flask/utils/utils_settings.py:1690
+#: mycodo_flask/utils/utils_settings.py:1694
 msgid "Pi Settings"
 msgstr "Налаштування Pi"
 
-#: mycodo_flask/utils/utils_settings.py:1700
+#: mycodo_flask/utils/utils_settings.py:1704
 msgid "Alert Settings"
 msgstr "Налаштування сповіщень"
 
-#: mycodo_flask/utils/utils_settings.py:1712
+#: mycodo_flask/utils/utils_settings.py:1716
 #, python-format
 msgid ""
 "Test email sent to %(recip)s. Check your inbox to see if it was "
 "successful."
 msgstr ""
-"Тестовий лист надіслано на адресу %(recip)s. Перевірте поштову скриньку, щоб "
-"переконатися, що він пройшов успішно."
+"Тестовий лист надіслано на адресу %(recip)s. Перевірте поштову скриньку, "
+"щоб переконатися, що він пройшов успішно."
 
-#: outputs/dac_mcp4728.py:60
-msgid "Digital-to-Analog Converter"
-msgstr "Цифро-аналоговий перетворювач"
+#: mycodo_flask/utils/utils_settings.py:1913
+msgid "Recreate InfluxDB 1.x Database"
+msgstr ""
+
+#: mycodo_flask/utils/utils_settings.py:1929
+msgid "Recreate InfluxDB 2.x Database"
+msgstr ""
 
 #: outputs/motor_stepper_bipolar_generic.py:35
 #: outputs/motor_stepper_uln2003.py:33
@@ -6034,14 +6283,17 @@ msgstr "Однополярний"
 #: outputs/on_off_mcp23017.py:31 outputs/on_off_mqtt.py:29
 #: outputs/on_off_neopixel_rgb.py:32 outputs/on_off_neopixel_rgb_spi.py:32
 #: outputs/on_off_pcf8574.py:31 outputs/on_off_pcf8575.py:31
-#: outputs/on_off_python.py:168 outputs/on_off_sequent_8_relay_hat.py:33
-#: outputs/on_off_shell.py:30 outputs/on_off_sparkfun_board_4_relays.py:30
-#: outputs/on_off_wireless_rpi_rf.py:31 outputs/remote_output_on_off.py:32
+#: outputs/on_off_pinctrl.py:31 outputs/on_off_python.py:168
+#: outputs/on_off_sequent_8_relay_hat.py:33 outputs/on_off_shell.py:30
+#: outputs/on_off_sparkfun_board_4_relays.py:30
+#: outputs/on_off_wireless_rpi_rf.py:31 outputs/on_off_xl9535.py:31
+#: outputs/remote_output_on_off.py:32
 msgid "On/Off"
 msgstr "Увімкнено/вимкнено"
 
-#: outputs/on_off_gpio.py:59 outputs/on_off_wireless_rpi_rf.py:62
-#: outputs/pump_gpio.py:85 outputs/pwm_gpio.py:82
+#: outputs/on_off_gpio.py:59 outputs/on_off_pinctrl.py:56
+#: outputs/on_off_wireless_rpi_rf.py:62 outputs/pump_gpio.py:85
+#: outputs/pwm_gpio.py:82
 msgid "The pin to control the state of"
 msgstr "Пін для контролю стану"
 
@@ -6052,9 +6304,11 @@ msgstr "Пін для контролю стану"
 #: outputs/on_off_mcp23017.py:107 outputs/on_off_mqtt.py:138
 #: outputs/on_off_neopixel_rgb.py:169 outputs/on_off_neopixel_rgb_spi.py:161
 #: outputs/on_off_pcf8574.py:106 outputs/on_off_pcf8575.py:106
-#: outputs/on_off_python.py:251 outputs/on_off_sequent_8_relay_hat.py:128
-#: outputs/on_off_shell.py:98 outputs/on_off_sparkfun_board_4_relays.py:109
-#: outputs/on_off_wireless_rpi_rf.py:131 outputs/remote_output_on_off.py:123
+#: outputs/on_off_pinctrl.py:95 outputs/on_off_python.py:251
+#: outputs/on_off_sequent_8_relay_hat.py:128 outputs/on_off_shell.py:98
+#: outputs/on_off_sparkfun_board_4_relays.py:109
+#: outputs/on_off_wireless_rpi_rf.py:131 outputs/on_off_xl9535.py:106
+#: outputs/remote_output_on_off.py:123
 msgid "Trigger Functions at Startup"
 msgstr ""
 
@@ -6064,19 +6318,20 @@ msgstr ""
 #: outputs/on_off_kasa_plugs.py:136 outputs/on_off_kasa_rgb_bulbs.py:305
 #: outputs/on_off_mcp23017.py:115 outputs/on_off_mqtt.py:153
 #: outputs/on_off_pcf8574.py:114 outputs/on_off_pcf8575.py:114
-#: outputs/on_off_python.py:266 outputs/on_off_sequent_8_relay_hat.py:136
-#: outputs/on_off_shell.py:113 outputs/on_off_sparkfun_board_4_relays.py:117
-#: outputs/on_off_wireless_rpi_rf.py:146 outputs/pump_atlas_ezo_pmp.py:101
-#: outputs/pump_gpio.py:138 outputs/pump_mcp23017.py:147
-#: outputs/pump_pcf8574.py:140 outputs/pwm_gpio.py:164
-#: outputs/pwm_pca9685.py:176 outputs/pwm_python.py:302
-#: outputs/pwm_shell.py:138
+#: outputs/on_off_pinctrl.py:103 outputs/on_off_python.py:266
+#: outputs/on_off_sequent_8_relay_hat.py:136 outputs/on_off_shell.py:113
+#: outputs/on_off_sparkfun_board_4_relays.py:117
+#: outputs/on_off_wireless_rpi_rf.py:146 outputs/on_off_xl9535.py:114
+#: outputs/pump_atlas_ezo_pmp.py:101 outputs/pump_gpio.py:138
+#: outputs/pump_mcp23017.py:147 outputs/pump_pcf8574.py:140
+#: outputs/pwm_gpio.py:164 outputs/pwm_mqtt.py:204 outputs/pwm_pca9685.py:176
+#: outputs/pwm_python.py:302 outputs/pwm_shell.py:138
 msgid "Current"
 msgstr ""
 
 #: outputs/on_off_mcp23017.py:31 outputs/on_off_pcf8574.py:31
-#: outputs/on_off_pcf8575.py:31 outputs/pump_mcp23017.py:51
-#: outputs/pump_pcf8574.py:50
+#: outputs/on_off_pcf8575.py:31 outputs/on_off_xl9535.py:31
+#: outputs/pump_mcp23017.py:51 outputs/pump_pcf8574.py:50
 msgid "I/O Expander"
 msgstr "Розширювач вводу/виводу"
 
@@ -6150,13 +6405,15 @@ msgstr "Перистальтичний насос"
 msgid "Frequency (Hertz)"
 msgstr "Частота (Герц)"
 
-#: outputs/pwm_gpio.py:149 outputs/pwm_pca9685.py:161 outputs/pwm_python.py:280
-#: outputs/pwm_shell.py:116 outputs/remote_output_pwm.py:151
+#: outputs/pwm_gpio.py:149 outputs/pwm_mqtt.py:189 outputs/pwm_pca9685.py:161
+#: outputs/pwm_python.py:280 outputs/pwm_shell.py:116
+#: outputs/remote_output_pwm.py:151
 msgid "Invert Signal"
 msgstr "Інвертований сигнал"
 
-#: outputs/pwm_gpio.py:156 outputs/pwm_pca9685.py:168 outputs/pwm_python.py:287
-#: outputs/pwm_shell.py:123 outputs/remote_output_pwm.py:158
+#: outputs/pwm_gpio.py:156 outputs/pwm_mqtt.py:196 outputs/pwm_pca9685.py:168
+#: outputs/pwm_python.py:287 outputs/pwm_shell.py:123
+#: outputs/remote_output_pwm.py:158
 msgid "Invert Stored Signal"
 msgstr "Інвертувати збережений сигнал"
 
@@ -6192,40 +6449,46 @@ msgstr "Хост або IP-адреса віддаленого Mycodo"
 msgid "The API key of the remote Mycodo"
 msgstr "Ключ API віддаленого Mycodo"
 
+#: outputs/value_dac_mcp4728.py:60
+msgid "Digital-to-Analog Converter"
+msgstr "Цифро-аналоговий перетворювач"
+
 #: outputs/value_mqtt.py:98
 msgid "Off Value"
 msgstr ""
 
-#: widgets/widget_camera.py:249
+#: widgets/widget_camera.py:246
 msgid "Select the camera to display"
 msgstr "Виберіть камеру для відображення"
 
-#: widgets/widget_camera.py:256
+#: widgets/widget_camera.py:253
 msgid "Acquire Image (and save new file)"
 msgstr "Отримати зображення (і зберегти новий файл)"
 
-#: widgets/widget_camera.py:257
-msgid "Acquire Image (and erase last file)"
-msgstr "Отримати зображення (і стерти останній файл)"
+#: widgets/widget_camera.py:254
+#, fuzzy
+msgid "Acquire Image (and save temporary file)"
+msgstr "Отримати зображення (і зберегти новий файл)"
 
-#: widgets/widget_camera.py:258
+#: widgets/widget_camera.py:255
 msgid "Display Live Video Stream"
 msgstr "Відображення потокового відео в реальному часі"
 
-#: widgets/widget_camera.py:259
+#: widgets/widget_camera.py:256
 msgid "Display Latest Timelapse Image"
 msgstr "Відобразити останнє зображення з таймлапсом"
 
-#: widgets/widget_camera.py:284 widgets/widget_measurement.py:138
+#: widgets/widget_camera.py:281 widgets/widget_measurement.py:138
+#: widgets/widget_measurement_multi.py:144
 msgid "Show Timestamp"
 msgstr "Показати мітку часу"
 
-#: widgets/widget_camera.py:285 widgets/widget_output.py:76
+#: widgets/widget_camera.py:282 widgets/widget_output.py:76
 #: widgets/widget_output_pwm_slider.py:76 widgets/widget_pid.py:252
 msgid "Show the timestamp on the widget"
 msgstr "Показати мітку часу на віджеті"
 
-#: widgets/widget_controller_activate_deactivate.py:132
+#: widgets/widget_controller_activate_deactivate.py:139
 msgid "Select the Controller to Activate or Deactivate"
 msgstr "Виберіть контролер для активації або деактивації"
 
@@ -6238,57 +6501,97 @@ msgstr ""
 msgid "Select a measurement to display"
 msgstr "Виберіть вимір для відображення"
 
-#: widgets/widget_graph_synchronous.py:363
-#: widgets/widget_graph_synchronous.py:373
-#: widgets/widget_graph_synchronous.py:383
-#: widgets/widget_graph_synchronous.py:393
-#: widgets/widget_graph_synchronous.py:403
+#: widgets/widget_graph_synchronous.py:364
+#: widgets/widget_graph_synchronous.py:374
+#: widgets/widget_graph_synchronous.py:384
+#: widgets/widget_graph_synchronous.py:394
+#: widgets/widget_graph_synchronous.py:404
 msgid "Select measurements to display"
 msgstr "Виберіть вимірювання для відображення"
 
-#: widgets/widget_graph_synchronous.py:392
+#: widgets/widget_graph_synchronous.py:393
 msgid "PIDs"
 msgstr "PIDи"
 
-#: widgets/widget_graph_synchronous.py:402
+#: widgets/widget_graph_synchronous.py:403
 msgid "Note Tags"
 msgstr "Теги приміток"
 
-#: widgets/widget_measurement.py:110
+#: widgets/widget_measurement.py:110 widgets/widget_measurement_multi.py:116
 msgid "Show Unit"
 msgstr "Показати одиницю виміру"
 
-#: widgets/widget_measurement.py:111
+#: widgets/widget_measurement.py:111 widgets/widget_measurement_multi.py:117
 msgid "Show the unit"
 msgstr "Показати одиницю виміру"
 
-#: widgets/widget_measurement.py:117
+#: widgets/widget_measurement.py:117 widgets/widget_measurement_multi.py:123
 msgid "Show Name"
 msgstr "Показати ім'я"
 
-#: widgets/widget_measurement.py:118
+#: widgets/widget_measurement.py:118 widgets/widget_measurement_multi.py:124
 msgid "Show the name"
 msgstr "Показати ім'я"
 
-#: widgets/widget_measurement.py:124
+#: widgets/widget_measurement.py:124 widgets/widget_measurement_multi.py:130
 msgid "Show Channel"
 msgstr "Показати канал"
 
-#: widgets/widget_measurement.py:125
+#: widgets/widget_measurement.py:125 widgets/widget_measurement_multi.py:131
 msgid "Show the channel"
 msgstr "Показати канал"
 
-#: widgets/widget_measurement.py:131
+#: widgets/widget_measurement.py:131 widgets/widget_measurement_multi.py:137
 msgid "Show Measurement"
 msgstr "Показати вимір"
 
-#: widgets/widget_measurement.py:132
+#: widgets/widget_measurement.py:132 widgets/widget_measurement_multi.py:138
 msgid "Show the measurement"
 msgstr "Показати вимірювання"
 
-#: widgets/widget_measurement.py:139
+#: widgets/widget_measurement.py:139 widgets/widget_measurement_multi.py:145
 msgid "Show the timestamp"
 msgstr "Показати мітку часу"
+
+#: widgets/widget_measurement_multi.py:32
+#, fuzzy
+msgid "Measurement 1"
+msgstr "Вимір"
+
+#: widgets/widget_measurement_multi.py:33
+#, fuzzy
+msgid "Select the first measurement to display"
+msgstr "Виберіть вимір для відображення"
+
+#: widgets/widget_measurement_multi.py:41
+#, fuzzy
+msgid "Max Age 1"
+msgstr "Максимальний вік"
+
+#: widgets/widget_measurement_multi.py:42
+#, fuzzy
+msgid "The maximum age of the first measurement to use"
+msgstr "Максимально допустимий вік вимірювання"
+
+#: widgets/widget_measurement_multi.py:61
+#, fuzzy
+msgid "Measurement 2"
+msgstr "Вимір"
+
+#: widgets/widget_measurement_multi.py:62
+#, fuzzy
+msgid "Select the second measurement to display"
+msgstr "Виберіть вимір для відображення"
+
+#: widgets/widget_measurement_multi.py:70
+#, fuzzy
+msgid "Max Age 2"
+msgstr "Максимальний вік"
+
+#: widgets/widget_measurement_multi.py:71
+#, fuzzy
+msgid "The maximum age of the second measurement to use"
+msgstr "Максимально допустимий вік вимірювання"
 
 #: widgets/widget_output.py:75 widgets/widget_output_pwm_slider.py:75
 #: widgets/widget_pid.py:251
@@ -6410,3 +6713,4 @@ msgstr "Код Python (при оновленні)"
 #: widgets/widget_python_code.py:212
 msgid "Python code to execute every dashboard/widget refresh"
 msgstr "Код на Python для виконання кожного оновлення дашборду/віджету"
+
