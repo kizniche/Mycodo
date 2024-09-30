@@ -37,14 +37,14 @@ fi
 
 printf "Checking Python version...\n"
 if hash python3 2>/dev/null; then
-  if ! python3 "${INSTALL_DIRECTORY}"/mycodo/scripts/upgrade_check.py --min_python_version "3.6"; then
-    printf "Error: Incorrect Python version found. Mycodo requires Python >= 3.6.\n"
+  if ! python3 "${INSTALL_DIRECTORY}"/mycodo/scripts/upgrade_check.py --min_python_version "3.8"; then
+    printf "Error: Incorrect Python version found. Mycodo requires Python >= 3.8.\n"
     exit 1
   else
-    printf "Python >= 3.6 found.\n"
+    printf "Python >= 3.8 found.\n"
   fi
 else
-  printf "\nError: correct python version not found. Python >= 3.6 required in PATH to proceed with the install.\n"
+  printf "\nError: correct python version not found. Python >= 3.8 required in PATH to proceed with the install.\n"
   exit 1
 fi
 
