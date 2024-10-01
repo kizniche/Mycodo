@@ -9,6 +9,7 @@
 
  - Allow deletion of the last remaining Dashboard
  - Add custom favicon
+ - Make output state color (yellow/red/green) more prominent
 
 
 ## 8.16.0 (2024.09.29)

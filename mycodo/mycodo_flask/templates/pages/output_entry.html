@@ -45,7 +45,7 @@
         " type="text">
       </div>
       <div class="col-4">
-        <input class="form-control btn btn-primary btn-sm btn-block" type="button" onclick="setClipboard('{{each_output.unique_id}}')" id="{{each_output.unique_id}}-{{each_output_channel}}-input-output-state" title="[{{'%02d' % each_output.id}}] UUID: {{each_output.unique_id}}, {{dict_translation['copy_to_clipboard']['phrase']}}" value="{{ _('Unconfigured')}}">
+        <input class="form-control btn btn-primary btn-sm btn-block pause-background" type="button" onclick="setClipboard('{{each_output.unique_id}}')" id="{{each_output.unique_id}}-{{each_output_channel}}-input-output-state" title="[{{'%02d' % each_output.id}}] UUID: {{each_output.unique_id}}, {{dict_translation['copy_to_clipboard']['phrase']}}" value="{{ _('Unconfigured')}}">
       </div>
       {% if 'button_on' in dict_options['options_enabled'] -%}
       <div class="col-2">
