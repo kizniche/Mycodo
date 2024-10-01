@@ -129,11 +129,11 @@ def dashboard_del(form):
         action=TRANSLATIONS['delete']['title'],
         controller=TRANSLATIONS['dashboard']['title'])
     error = []
+    create_new_dash = False
 
     dashboards = Dashboard.query.all()
     if len(dashboards) == 1:
-        flash('Cannot delete the only remaining dashboard.', 'error')
-        return
+        create_new_dash = True
 
     widgets = Widget.query.filter(
         Widget.dashboard_id == form.dashboard_id.data).all()
@@ -141,6 +141,11 @@ def dashboard_del(form):
         delete_entry_with_id(Widget, each_widget.unique_id)
 
     delete_entry_with_id(Dashboard, form.dashboard_id.data)
+
+    if create_new_dash:
+        new_dash = Dashboard()
+        new_dash.name = 'New Dashboard'
+        new_dash.save()
 
     flash_success_errors(
         error, action, url_for('routes_dashboard.page_dashboard_default'))

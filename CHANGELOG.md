@@ -5,6 +5,10 @@
  - Fix restoring mycodo/user_scripts during upgrade
  - Fix documentation generation
 
+### Miscellaneous
+
+ - Allow deletion of the last remaining Dashboard
+
 
 ## 8.16.0 (2024.09.29)
 
