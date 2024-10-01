@@ -8,6 +8,7 @@
 ### Miscellaneous
 
  - Allow deletion of the last remaining Dashboard
+ - Add custom favicon
 
 
 ## 8.16.0 (2024.09.29)

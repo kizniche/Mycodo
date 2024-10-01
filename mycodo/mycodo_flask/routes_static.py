@@ -5,14 +5,17 @@ import os
 import socket
 import subprocess
 import traceback
+from io import BytesIO
 
 import flask_login
 from flask import (current_app, redirect, render_template, request,
                    send_from_directory, url_for)
+from flask import send_file
 from flask.blueprints import Blueprint
 
 from mycodo.config import (ALEMBIC_VERSION, INSTALL_DIRECTORY, LANGUAGES,
                            MYCODO_VERSION, THEMES, THEMES_DARK)
+from mycodo.config import PATH_STATIC
 from mycodo.config_translations import TRANSLATIONS
 from mycodo.databases.models import Dashboard, Misc
 from mycodo.mycodo_client import DaemonControl
@@ -84,6 +87,25 @@ def inject_variables():
                 template_exists=template_exists,
                 themes=THEMES,
                 upgrade_available=misc.mycodo_upgrade_available)
+
+
+@blueprint.app_errorhandler(404)
+def not_found(error):
+    return render_template('404.html', error=error), 404
+
+
+@blueprint.route('/favicon.png')
+def favicon():
+    """Return favicon image"""
+    misc = Misc.query.first()
+
+    if misc.favicon_display == 'default':
+        return send_from_directory(os.path.join(PATH_STATIC, 'img'), "favicon.png")
+    else:
+        return send_file(
+            BytesIO(misc.brand_favicon),
+            mimetype='image/png'
+        )
 
 
 @blueprint.route('/robots.txt')

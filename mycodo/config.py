@@ -14,7 +14,7 @@ sys.path.append(os.path.abspath(os.path.dirname(__file__)))
 from config_translations import TRANSLATIONS as T
 
 MYCODO_VERSION = '8.16.0'
-ALEMBIC_VERSION = '435f35958689'
+ALEMBIC_VERSION = '5966b3569c89'
 
 # FORCE UPGRADE MASTER
 # Set True to enable upgrading to the master branch of the Mycodo repository.
@@ -59,10 +59,10 @@ PATH_TEMPLATE = os.path.join(INSTALL_DIRECTORY, 'mycodo/mycodo_flask/templates')
 PATH_TEMPLATE_LAYOUT = os.path.join(PATH_TEMPLATE, 'layout.html')
 PATH_TEMPLATE_LAYOUT_DEFAULT = os.path.join(PATH_TEMPLATE, 'layout_default.html')
 PATH_TEMPLATE_USER = os.path.join(PATH_TEMPLATE, 'user_templates')
-PATH_CSS = os.path.join(INSTALL_DIRECTORY, 'mycodo/mycodo_flask/static/css')
-PATH_CSS_USER = os.path.join(PATH_CSS, 'user_css')
-PATH_JS_USER = os.path.join(INSTALL_DIRECTORY, 'mycodo/mycodo_flask/static/js/user_js')
-PATH_FONTS_USER = os.path.join(INSTALL_DIRECTORY, 'mycodo/mycodo_flask/static/fonts/user_fonts')
+PATH_STATIC = os.path.join(INSTALL_DIRECTORY, 'mycodo/mycodo_flask/static')
+PATH_CSS_USER = os.path.join(PATH_STATIC, 'css/user_css')
+PATH_JS_USER = os.path.join(PATH_STATIC, 'js/user_js')
+PATH_FONTS_USER = os.path.join(PATH_STATIC, 'fonts/user_fonts')
 PATH_USER_SCRIPTS = os.path.join(INSTALL_DIRECTORY, 'mycodo/user_scripts')
 PATH_PYTHON_CODE_USER = os.path.join(INSTALL_DIRECTORY, 'mycodo/user_python_code')
 PATH_MEASUREMENTS_BACKUP = os.path.join(INSTALL_DIRECTORY, 'mycodo/backup_measurements')

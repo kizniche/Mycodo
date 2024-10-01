@@ -110,6 +110,21 @@
         </div>
       </div>
       <div class="form-group">
+        {{form_settings_general.favicon_display.label(class_='col-sm-12 control-label')}}
+        <div class="col-sm-12">
+          <select class="form-control form-tooltip form-dropdown" data-placement="top" id="favicon_display" name="favicon_display" title="{{_('What to display as the favicon')}}">
+            <option value="default"{% if settings.favicon_display == 'default' %} selected{% endif %}>{{_('Default')}}</option>
+            <option value="brand_favicon"{% if settings.favicon_display == 'brand_favicon' %} selected{% endif %}>{{_('Brand Icon')}}</option>
+          </select>
+        </div>
+      </div>
+      <div class="form-group">
+        {{form_settings_general.brand_favicon.label(class_='col-sm-12 control-label checkbox-nopad')}}
+        <div class="col-sm-12">
+          <span class="btn btn-sm btn-file"><input id="brand_favicon" name="brand_favicon" type="file" /></span> Data Saved: {% if settings.brand_favicon %}True{% else %}False{% endif %}
+        </div>
+      </div>
+      <div class="form-group">
         {{form_settings_general.rpyc_timeout.label(class_='col-sm-12 control-label checkbox-nopad')}}
         <div class="col-sm-12">
           {{form_settings_general.rpyc_timeout(class_='form-control', value=settings.rpyc_timeout, **{'title':_("Set the timeout (seconds) for Pyro connections (client-daemon communication). Requires daemon restart.")})}}

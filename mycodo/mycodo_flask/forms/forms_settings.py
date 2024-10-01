@@ -98,6 +98,8 @@ class SettingsGeneral(FlaskForm):
     hostname_override = StringField(lazy_gettext('Brand Text'))
     brand_image = FileField(lazy_gettext('Brand Image'))
     brand_image_height = IntegerField(lazy_gettext('Brand Image Height'))
+    favicon_display = StringField(lazy_gettext('Favicon Display'))
+    brand_favicon = FileField(lazy_gettext('Favicon Image'))
     daemon_debug_mode = BooleanField(lazy_gettext('Enable Daemon Debug Logging'))
     force_https = BooleanField(lazy_gettext('Force HTTPS'))
     hide_success = BooleanField(lazy_gettext('Hide success messages'))
