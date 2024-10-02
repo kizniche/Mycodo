@@ -5,6 +5,10 @@
  - Fix restoring mycodo/user_scripts during upgrade
  - Fix documentation generation
 
+### Features
+
+ - Add Output: PWM Raspberry Pi GPIO (RPi.GPIO) (for Pi <= 4, since pigpiod is deprecated)
+
 ### Miscellaneous
 
  - Allow deletion of the last remaining Dashboard
