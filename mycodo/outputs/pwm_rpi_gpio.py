@@ -247,6 +247,7 @@ class OutputModule(AbstractOutput):
                 amount = 0
 
         self.pwm_output.ChangeDutyCycle(amount)
+        self.duty_cycle = amount
 
         self.logger.debug("Duty cycle set to {dc:.2f} %".format(dc=amount))
 
