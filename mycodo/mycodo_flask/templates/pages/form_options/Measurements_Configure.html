@@ -66,7 +66,7 @@
     {% endif %}
 
   <div class="col-auto">
-    <label class="control-label" for="measurement_id_{{each_measurement.unique_id}}">{{dict_translation['name']['title']}}</label>
+    <label class="control-label" for="measurement_id_{{each_measurement.unique_id}}">{{dict_translation['unique_id']['title']}}</label>
     <div>
       <input class="form-control" id="measurement_id_{{each_measurement.unique_id}}" name="measurement_id_{{each_measurement.unique_id}}" title="{{dict_translation['unique_id']['phrase']}}" type="text" value="{{each_measurement.unique_id}}">
     </div>
