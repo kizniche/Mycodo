@@ -61,7 +61,7 @@
 
     <div class="row align-items-end small-gutters" style="border-bottom: 1px solid #ddd; padding: 1.5em 0 0.2em 0.1em">
       <div class="col-auto">
-        <select class="selectpicker" data-live-search="true" title="{{_('Action')}}: {{dict_translation['select_one']['title']}}" id="action_type_{{each_function.unique_id}}" name="action_type">
+        <select class="selectpicker" data-style="btn btn-primary" data-live-search="true" title="{{_('Action')}}: {{dict_translation['select_one']['title']}}" id="action_type_{{each_function.unique_id}}" name="action_type">
         {% for value, name in choices_actions %}
           <option value="{{value}}">{{name}}</option>
         {% endfor %}

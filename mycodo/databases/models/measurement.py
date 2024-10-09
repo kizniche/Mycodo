@@ -13,7 +13,7 @@ class Measurement(CRUDMixin, db.Model):
     __table_args__ = {'extend_existing': True}
 
     id = db.Column(db.Integer, unique=True, primary_key=True)
-    unique_id = db.Column(db.String, nullable=False, unique=True, default=set_uuid)
+    unique_id = db.Column(db.String(36), nullable=False, unique=True, default=set_uuid)
     name_safe = db.Column(db.Text)
     name = db.Column(db.Text)
     units = db.Column(db.Text)
@@ -32,7 +32,7 @@ class Unit(CRUDMixin, db.Model):
     __table_args__ = {'extend_existing': True}
 
     id = db.Column(db.Integer, unique=True, primary_key=True)
-    unique_id = db.Column(db.String, nullable=False, unique=True, default=set_uuid)
+    unique_id = db.Column(db.String(36), nullable=False, unique=True, default=set_uuid)
     name_safe = db.Column(db.Text)
     name = db.Column(db.Text)
     unit = db.Column(db.Text)
@@ -51,7 +51,7 @@ class Conversion(CRUDMixin, db.Model):
     __table_args__ = {'extend_existing': True}
 
     id = db.Column(db.Integer, unique=True, primary_key=True)
-    unique_id = db.Column(db.String, nullable=False, unique=True, default=set_uuid)
+    unique_id = db.Column(db.String(36), nullable=False, unique=True, default=set_uuid)
     convert_unit_from = db.Column(db.Text)
     convert_unit_to = db.Column(db.Text)
     equation = db.Column(db.Text)
@@ -71,11 +71,11 @@ class DeviceMeasurements(CRUDMixin, db.Model):
     __table_args__ = {'extend_existing': True}
 
     id = db.Column(db.Integer, unique=True, primary_key=True)
-    unique_id = db.Column(db.String, nullable=False, unique=True, default=set_uuid)
+    unique_id = db.Column(db.String(36), nullable=False, unique=True, default=set_uuid)
 
     name = db.Column(db.Text, default='')
     device_type = db.Column(db.Text, default=None)
-    device_id = db.Column(db.Text, default=None)
+    device_id = db.Column(db.String(36), default=None)
 
     # Default measurement/unit
     is_enabled = db.Column(db.Boolean, default=True)
@@ -95,9 +95,7 @@ class DeviceMeasurements(CRUDMixin, db.Model):
     scale_to_min = db.Column(db.Float, default=0)
     scale_to_max = db.Column(db.Float, default=20)
 
-    conversion_id = db.Column(db.Text, db.ForeignKey('conversion.unique_id'), default='')
-
-    conversion = relationship("Conversion", foreign_keys="DeviceMeasurements.conversion_id")
+    conversion_id = db.Column(db.String(36), default='')
 
 
 class DeviceMeasurementsSchema(ma.SQLAlchemyAutoSchema):

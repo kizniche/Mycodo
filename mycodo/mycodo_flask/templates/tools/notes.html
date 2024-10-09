@@ -39,7 +39,7 @@
 
     <div class="row small-gutters align-items-end mt-3">
       <div class="col-auto">
-        <select class="selectpicker" id="tag_unique_id" name="tag_unique_id" title="" data-original-title="Select the tag to delete">
+        <select class="selectpicker" data-style="btn btn-primary" id="tag_unique_id" name="tag_unique_id" title="" data-original-title="Select the tag to delete">
           {%- for each_tag in tags -%}
             <option value="{{each_tag.unique_id}}">{{each_tag.name}}</option>
           {%- endfor -%}
@@ -192,13 +192,13 @@
     <div class="col-auto">
       {{form_note_show.sort_by.label(class_='control-label')}}
       <div>
-        {{form_note_show.sort_by(class_='selectpicker')}}
+        {{form_note_show.sort_by(class_='selectpicker', **{'data-style': 'btn btn-primary'})}}
       </div>
     </div>
     <div class="col-auto">
       {{form_note_show.sort_direction.label(class_='control-label')}}
       <div>
-        {{form_note_show.sort_direction(class_='selectpicker')}}
+        {{form_note_show.sort_direction(class_='selectpicker', **{'data-style': 'btn btn-primary'})}}
       </div>
     </div>
     <div class="col-auto">

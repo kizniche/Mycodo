@@ -112,6 +112,14 @@ runSelfUpgrade() {
   fi
   printf "Done.\n"
 
+  if [ -f "${CURRENT_MYCODO_DIRECTORY}"/config_override.py ] ; then
+    printf "Copying config_override.py..."
+    if ! cp "${CURRENT_MYCODO_DIRECTORY}"/config_override.py "${THIS_MYCODO_DIRECTORY}" ; then
+      printf "Failed: Error while trying to copy config_override.py."
+    fi
+    printf "Done.\n"
+  fi
+
   printf "Copying flask_secret_key..."
   if ! cp "${CURRENT_MYCODO_DIRECTORY}"/databases/flask_secret_key "${THIS_MYCODO_DIRECTORY}"/databases ; then
     printf "Failed: Error while trying to copy flask_secret_key."

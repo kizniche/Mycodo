@@ -145,7 +145,7 @@
       {{form_add_output.hidden_tag()}}
       <div class="row small-gutters" style="padding-left: 0.75em">
         <div class="col-auto">
-          {{form_add_output.output_type(class_='selectpicker', **{'data-live-search': 'true', 'title': dict_translation['output']['title'] + ': ' + dict_translation['select_one']['title']})}}
+          {{form_add_output.output_type(class_='selectpicker', **{'data-style': 'btn btn-primary', 'data-live-search': 'true', 'title': dict_translation['output']['title'] + ': ' + dict_translation['select_one']['title']})}}
         </div>
         <div class="col-auto">
           <input onclick="return $(this).processRequest(this, 'output_add');" name="output_add" value="{{_('Add')}}" class="btn btn-primary" type="button"/>

@@ -10,7 +10,7 @@ class Input(CRUDMixin, db.Model):
     __table_args__ = {'extend_existing': True}
 
     id = db.Column(db.Integer, unique=True, primary_key=True)
-    unique_id = db.Column(db.String, nullable=False, unique=True, default=set_uuid)
+    unique_id = db.Column(db.String(36), nullable=False, unique=True, default=set_uuid)
     device = db.Column(db.Text, default='')  # Device name, such as DHT11, DHT22, DS18B20
     is_activated = db.Column(db.Boolean, default=False)
 
@@ -22,7 +22,7 @@ class Input(CRUDMixin, db.Model):
     interface = db.Column(db.Text, default=None)  # Communication interface (I2C, UART, etc.)
     period = db.Column(db.Float, default=15.0)  # Duration between readings
     start_offset = db.Column(db.Float, default=0.0)
-    power_output_id = db.Column(db.String, default=None)
+    power_output_id = db.Column(db.String(36), default=None)
     resolution = db.Column(db.Integer, default=0)
     resolution_2 = db.Column(db.Integer, default=0)
     sensitivity = db.Column(db.Integer, default=0)
@@ -57,7 +57,7 @@ class Input(CRUDMixin, db.Model):
     switch_reset_period = db.Column(db.Integer, default=10)
 
     # Pre-measurement output options
-    pre_output_id = db.Column(db.String, db.ForeignKey('output.unique_id'), default=None)  # Output to turn on before sensor read
+    pre_output_id = db.Column(db.String(36), default=None)  # Output to turn on before sensor read
     pre_output_duration = db.Column(db.Float, default=10.0)  # Duration to turn output on before sensor read
     pre_output_during_measure = db.Column(db.Boolean, default=True)
 
@@ -108,8 +108,8 @@ class InputChannel(CRUDMixin, db.Model):
     __table_args__ = {'extend_existing': True}
 
     id = db.Column(db.Integer, unique=True, primary_key=True)
-    unique_id = db.Column(db.String, nullable=False, unique=True, default=set_uuid)
-    input_id = db.Column(db.Text, default=None)
+    unique_id = db.Column(db.String(36), nullable=False, unique=True, default=set_uuid)
+    input_id = db.Column(db.String(36), default=None)
     channel = db.Column(db.Integer, default=None)
     name = db.Column(db.Text, default='')
 

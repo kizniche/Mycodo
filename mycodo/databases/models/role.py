@@ -10,8 +10,8 @@ class Role(CRUDMixin, db.Model):
     # __abstract__ = True
 
     id = db.Column(db.Integer, unique=True, primary_key=True)
-    unique_id = db.Column(db.String, nullable=False, unique=True, default=set_uuid)
-    name = db.Column(db.String, nullable=False, unique=True)
+    unique_id = db.Column(db.String(36), nullable=False, unique=True, default=set_uuid)
+    name = db.Column(db.String(36), nullable=False, unique=True)
     edit_settings = db.Column(db.Boolean, nullable=False, default=False)
     edit_controllers = db.Column(db.Boolean, nullable=False, default=False)
     edit_users = db.Column(db.Boolean, nullable=False, default=False)

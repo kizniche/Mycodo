@@ -9,7 +9,7 @@ class Camera(CRUDMixin, db.Model):
     __table_args__ = {'extend_existing': True}
 
     id = db.Column(db.Integer, unique=True, primary_key=True)
-    unique_id = db.Column(db.String, nullable=False, unique=True, default=set_uuid)
+    unique_id = db.Column(db.String(36), nullable=False, unique=True, default=set_uuid)
     name = db.Column(db.Text, unique=True, nullable=False)
     library = db.Column(db.Text, nullable=False)
     device = db.Column(db.Text, nullable=False, default='/dev/video0')
@@ -25,7 +25,7 @@ class Camera(CRUDMixin, db.Model):
     saturation = db.Column(db.Float, default=0)
     white_balance = db.Column(db.Float, default=0.0)
     custom_options = db.Column(db.Text, default='')
-    output_id = db.Column(db.String, db.ForeignKey('output.unique_id'), default=None)  # Turn output on during capture
+    output_id = db.Column(db.String(36), default=None)  # Turn output on during capture
     output_duration = db.Column(db.Float, default=3.0)
     cmd_pre_camera = db.Column(db.Text, default='')  # Command to execute before capture
     cmd_post_camera = db.Column(db.Text, default='')  # Command to execute after capture

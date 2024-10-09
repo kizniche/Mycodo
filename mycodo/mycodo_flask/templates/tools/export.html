@@ -29,7 +29,7 @@
     <div class="col-auto">
       {{form_export_measurements.measurement.label(class_='control-label')}}
       <div>
-        <select class="selectpicker" id="measurement" name="measurement">
+        <select class="selectpicker" data-style="btn btn-primary" id="measurement" name="measurement">
         {% for each_input_form in choices_input -%}
           <option value="{{each_input_form['value']}}">{{each_input_form['item']}}</option>
         {% endfor -%}

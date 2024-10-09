@@ -1,12 +1,16 @@
 ## 8.16.1 (Unreleased)
 
+This release introduces the ability to override MYCODO_DB_PATH, SQLALCHEMY_DATABASE_URI, and ALEMBIC_URL in mycodo/config.py to use an alternate settings database. This is accomplished by creating these variables in mycodo/config_override.py. This new config file will be checked on startup and will persist after upgrades.
+
 ### Bugfixes
 
  - Fix restoring mycodo/user_scripts during upgrade
  - Fix documentation generation
+ - Fix theming on selection inputs
 
 ### Features
 
+ - Add ability to use alternate mysql server using config_override.py
  - Add Output: PWM Raspberry Pi GPIO (RPi.GPIO) (for Pi <= 4, since pigpiod is deprecated)
 
 ### Miscellaneous

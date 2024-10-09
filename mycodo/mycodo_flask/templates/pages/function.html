@@ -53,7 +53,7 @@
 
     <div class="row small-gutters" style="padding-left: 0.75em">
       <div class="col-auto">
-        <select class="selectpicker" data-live-search="true" title="{{_('Function')}}: {{dict_translation['select_one']['title']}}" id="function_type" name="function_type">
+        <select class="selectpicker" data-style="btn btn-primary" data-live-search="true" title="{{_('Function')}}: {{dict_translation['select_one']['title']}}" id="function_type" name="function_type">
         {% for each_controller in choices_functions_add -%}
           <option value="{{each_controller['value']}}">{{each_controller['item']}}</option>
         {% endfor -%}

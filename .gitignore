@@ -5,6 +5,7 @@ site/
 env/
 .venv
 /databases/flask_secret_key
+/mycodo/config_override.py
 *.db
 *.pem
 *.bak

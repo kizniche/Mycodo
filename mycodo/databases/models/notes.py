@@ -11,7 +11,7 @@ class Notes(CRUDMixin, db.Model):
     __table_args__ = {'extend_existing': True}
 
     id = db.Column(db.Integer, unique=True, primary_key=True)
-    unique_id = db.Column(db.String, nullable=False, unique=True, default=set_uuid)  # ID for influxdb entries
+    unique_id = db.Column(db.String(36), nullable=False, unique=True, default=set_uuid)  # ID for influxdb entries
     date_time = db.Column(db.DateTime, default=datetime.datetime.utcnow)
     name = db.Column(db.Text, default=None)
     tags = db.Column(db.Text, default=None)
@@ -27,7 +27,7 @@ class NoteTags(CRUDMixin, db.Model):
     __table_args__ = {'extend_existing': True}
 
     id = db.Column(db.Integer, unique=True, primary_key=True)
-    unique_id = db.Column(db.String, nullable=False, unique=True, default=set_uuid)  # ID for influxdb entries
+    unique_id = db.Column(db.String(36), nullable=False, unique=True, default=set_uuid)  # ID for influxdb entries
     name = db.Column(db.Text, default=None)
 
     def __repr__(self):

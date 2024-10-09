@@ -10,7 +10,7 @@ class Function(CRUDMixin, db.Model):
     __table_args__ = {'extend_existing': True}
 
     id = db.Column(db.Integer, unique=True, primary_key=True)
-    unique_id = db.Column(db.String, nullable=False, unique=True, default=set_uuid)
+    unique_id = db.Column(db.String(36), nullable=False, unique=True, default=set_uuid)
     function_type = db.Column(db.Text, default='')
     name = db.Column(db.Text, default='Function Name')
     position_y = db.Column(db.Integer, default=0)
@@ -22,7 +22,7 @@ class Conditional(CRUDMixin, db.Model):
     __table_args__ = {'extend_existing': True}
 
     id = db.Column(db.Integer, unique=True, primary_key=True)
-    unique_id = db.Column(db.String, nullable=False, unique=True, default=set_uuid)
+    unique_id = db.Column(db.String(36), nullable=False, unique=True, default=set_uuid)
     name = db.Column(db.Text, default='Conditional')
     position_y = db.Column(db.Integer, default=0)
 
@@ -46,8 +46,8 @@ class ConditionalConditions(CRUDMixin, db.Model):
     __table_args__ = {'extend_existing': True}
 
     id = db.Column(db.Integer, unique=True, primary_key=True)
-    unique_id = db.Column(db.String, nullable=False, unique=True, default=set_uuid)
-    conditional_id = db.Column(db.String, db.ForeignKey('conditional.unique_id'), default=None)
+    unique_id = db.Column(db.String(36), nullable=False, unique=True, default=set_uuid)
+    conditional_id = db.Column(db.String(36), default=None)
     condition_type = db.Column(db.Text, default=None)
 
     # Sensor
@@ -58,10 +58,10 @@ class ConditionalConditions(CRUDMixin, db.Model):
     gpio_pin = db.Column(db.Integer, default=0)
 
     # Output State
-    output_id = db.Column(db.Text, default='')
+    output_id = db.Column(db.String(36), default='')
 
     # Controller
-    controller_id = db.Column(db.Text, default='')
+    controller_id = db.Column(db.String(36), default='')
 
     def __repr__(self):
         return "<{cls}(id={s.id})>".format(s=self, cls=self.__class__.__name__)
@@ -72,7 +72,7 @@ class Trigger(CRUDMixin, db.Model):
     __table_args__ = {'extend_existing': True}
 
     id = db.Column(db.Integer, unique=True, primary_key=True)
-    unique_id = db.Column(db.String, nullable=False, unique=True, default=set_uuid)
+    unique_id = db.Column(db.String(36), nullable=False, unique=True, default=set_uuid)
     trigger_type = db.Column(db.Text, default=None)
     name = db.Column(db.Text, default='Trigger Name')
     position_y = db.Column(db.Integer, default=0)
@@ -80,9 +80,9 @@ class Trigger(CRUDMixin, db.Model):
     log_level_debug = db.Column(db.Boolean, default=False)
 
     # Used to hold unique IDs
-    unique_id_1 = db.Column(db.String, default=None)
-    unique_id_2 = db.Column(db.String, default=None)
-    unique_id_3 = db.Column(db.String, default=None)
+    unique_id_1 = db.Column(db.String(36), default=None)
+    unique_id_2 = db.Column(db.String(36), default=None)
+    unique_id_3 = db.Column(db.String(36), default=None)
 
     # Output
     output_state = db.Column(db.Text, default='')  # What action to watch output for
@@ -130,8 +130,8 @@ class Actions(CRUDMixin, db.Model):
     __table_args__ = {'extend_existing': True}
 
     id = db.Column(db.Integer, unique=True, primary_key=True)
-    unique_id = db.Column(db.String, nullable=False, unique=True, default=set_uuid)
-    function_id = db.Column(db.String, default=None)
+    unique_id = db.Column(db.String(36), nullable=False, unique=True, default=set_uuid)
+    function_id = db.Column(db.String(36), default=None)
     function_type = db.Column(db.Text, default='')
     action_type = db.Column(db.Text, default='')  # what action, such as 'email', 'execute command', 'flash LCD'
 
@@ -139,7 +139,7 @@ class Actions(CRUDMixin, db.Model):
 
     # Actions
     pause_duration = db.Column(db.Float, default=5.0)
-    do_unique_id = db.Column(db.Text, default='')
+    do_unique_id = db.Column(db.String(36), default='')
     do_action_string = db.Column(db.Text, default='')  # string, such as the email address or command
     do_output_state = db.Column(db.Text, default='')  # 'on' or 'off'
     do_output_amount = db.Column(db.Float, default=0.0)

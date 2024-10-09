@@ -10,7 +10,7 @@ class CustomController(CRUDMixin, db.Model):
     __table_args__ = {'extend_existing': True}
 
     id = db.Column(db.Integer, unique=True, primary_key=True)
-    unique_id = db.Column(db.String, nullable=False, unique=True, default=set_uuid)
+    unique_id = db.Column(db.String(36), nullable=False, unique=True, default=set_uuid)
     name = db.Column(db.Text, default='Custom Function')
     position_y = db.Column(db.Integer, default=0)
     device = db.Column(db.Text, default='')
@@ -41,8 +41,8 @@ class FunctionChannel(CRUDMixin, db.Model):
     __table_args__ = {'extend_existing': True}
 
     id = db.Column(db.Integer, unique=True, primary_key=True)
-    unique_id = db.Column(db.String, nullable=False, unique=True, default=set_uuid)
-    function_id = db.Column(db.Text, default=None)
+    unique_id = db.Column(db.String(36), nullable=False, unique=True, default=set_uuid)
+    function_id = db.Column(db.String(36), default=None)
     channel = db.Column(db.Integer, default=None)
     name = db.Column(db.Text, default='')
 

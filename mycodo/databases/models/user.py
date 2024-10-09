@@ -13,13 +13,13 @@ class User(UserMixin, CRUDMixin, db.Model):
     __table_args__ = {'extend_existing': True}
 
     id = db.Column(db.Integer, primary_key=True)
-    unique_id = db.Column(db.String, nullable=False, unique=True, default=set_uuid)
+    unique_id = db.Column(db.String(36), nullable=False, unique=True, default=set_uuid)
     name = db.Column(db.VARCHAR(64), unique=True, index=True)
     password_hash = db.Column(db.VARCHAR(255))
     code = db.Column(db.Integer, default=None)
     api_key = db.Column(db.BLOB, unique=True)
     email = db.Column(db.VARCHAR(64), unique=True, index=True)
-    role_id = db.Column(db.Integer, db.ForeignKey('roles.id'), default=None)
+    role_id = db.Column(db.Integer, default=None)
     theme = db.Column(db.VARCHAR(64))
     landing_page = db.Column(db.Text, default='live')
     index_page = db.Column(db.Text, default='landing')
@@ -27,8 +27,6 @@ class User(UserMixin, CRUDMixin, db.Model):
     password_reset_code = db.Column(db.Text, default=None)
     password_reset_code_expiration = db.Column(db.DateTime, default=None)
     password_reset_last_request = db.Column(db.DateTime, default=None)
-
-    # roles = db.relationship("Role", back_populates="user")
 
     def __repr__(self):
         output = "<User: <name='{name}', email='{email}' is_admin='{isadmin}'>"

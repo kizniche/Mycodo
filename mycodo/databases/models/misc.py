@@ -43,19 +43,19 @@ class Misc(CRUDMixin, db.Model):
     mycodo_upgrade_available = db.Column(db.Boolean, default=False)  # Stores if an upgrade is available
     rpyc_timeout = db.Column(db.Integer, default=30)
     daemon_debug_mode = db.Column(db.Boolean, default=False)
-    net_test_ip = db.Column(db.String, default='8.8.8.8')
+    net_test_ip = db.Column(db.String(16), default='8.8.8.8')
     net_test_port = db.Column(db.Integer, default=53)
     net_test_timeout = db.Column(db.Integer, default=3)
-    default_login_page = db.Column(db.String, default='password')
-    brand_display = db.Column(db.String, default='hostname')
-    title_display = db.Column(db.String, default='hostname')
-    hostname_override = db.Column(db.String, default='')
+    default_login_page = db.Column(db.String(16), default='password')
+    brand_display = db.Column(db.String(36), default='hostname')
+    title_display = db.Column(db.String(36), default='hostname')
+    hostname_override = db.Column(db.String(36), default='')
     brand_image = db.Column(db.BLOB, default=b'')
     brand_image_height = db.Column(db.Integer, default=55)
-    favicon_display = db.Column(db.String, default='default')
+    favicon_display = db.Column(db.String(16), default='default')
     brand_favicon = db.Column(db.BLOB, default=b'')
-    custom_css = db.Column(db.String, default='')
-    custom_layout = db.Column(db.String, default='')
+    custom_css = db.Column(db.Text, default='')
+    custom_layout = db.Column(db.Text, default='')
 
     # Measurement database
     db_name = 'influxdb'  # Default
@@ -83,14 +83,14 @@ class Misc(CRUDMixin, db.Model):
     except:
         logger.exception("Determining influxdb version")
 
-    measurement_db_retention_policy = db.Column(db.String, default=db_retention_policy)
-    measurement_db_name = db.Column(db.String, default=db_name)
-    measurement_db_version = db.Column(db.String, default=db_version)
-    measurement_db_host = db.Column(db.String, default=db_host)
-    measurement_db_port = db.Column(db.String, default=db_port)
-    measurement_db_user = db.Column(db.String, default='mycodo')
-    measurement_db_password = db.Column(db.String, default='mmdu77sj3nIoiajjs')
-    measurement_db_dbname = db.Column(db.String, default='mycodo_db')
+    measurement_db_retention_policy = db.Column(db.String(36), default=db_retention_policy)
+    measurement_db_name = db.Column(db.String(36), default=db_name)
+    measurement_db_version = db.Column(db.String(36), default=db_version)
+    measurement_db_host = db.Column(db.String(36), default=db_host)
+    measurement_db_port = db.Column(db.String(36), default=db_port)
+    measurement_db_user = db.Column(db.String(36), default='mycodo')
+    measurement_db_password = db.Column(db.String(36), default='mmdu77sj3nIoiajjs')
+    measurement_db_dbname = db.Column(db.String(36), default='mycodo_db')
 
     def __repr__(self):
         return "<{cls}(id={s.id})>".format(s=self, cls=self.__class__.__name__)
@@ -101,7 +101,7 @@ class EnergyUsage(CRUDMixin, db.Model):
     __table_args__ = {'extend_existing': True}
 
     id = db.Column(db.Integer, unique=True, primary_key=True)
-    unique_id = db.Column(db.String, nullable=False, unique=True, default=set_uuid)  # ID for influxdb entries
+    unique_id = db.Column(db.String(36), nullable=False, unique=True, default=set_uuid)  # ID for influxdb entries
     name = db.Column(db.Text, default='Name')
-    device_id = db.Column(db.Text, default='')
-    measurement_id = db.Column(db.Text, db.ForeignKey('device_measurements.unique_id'), default='')
+    device_id = db.Column(db.String(36), default='')
+    measurement_id = db.Column(db.String(36), default='')

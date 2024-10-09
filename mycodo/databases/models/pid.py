@@ -10,7 +10,7 @@ class PID(CRUDMixin, db.Model):
     __table_args__ = {'extend_existing': True}
 
     id = db.Column(db.Integer, unique=True, primary_key=True)
-    unique_id = db.Column(db.String, nullable=False, unique=True, default=set_uuid)  # ID for influxdb entries
+    unique_id = db.Column(db.String(36), nullable=False, unique=True, default=set_uuid)  # ID for influxdb entries
     name = db.Column(db.Text, default='PID')
     position_y = db.Column(db.Integer, default=0)
 
@@ -33,8 +33,8 @@ class PID(CRUDMixin, db.Model):
     d = db.Column(db.Float, default=0.0)  # Kd gain
     integrator_min = db.Column(db.Float, default=-100.0)
     integrator_max = db.Column(db.Float, default=100.0)
-    raise_output_id = db.Column(db.String, db.ForeignKey('output.unique_id'), default=None)  # Output to raise the condition
-    raise_output_type = db.Column(db.String, default=None)
+    raise_output_id = db.Column(db.String(36), default=None)  # Output to raise the condition
+    raise_output_type = db.Column(db.String(36), default=None)
 
     # TODO: Change "duration" to more general "amount"
     raise_min_duration = db.Column(db.Float, default=0.0)
@@ -42,8 +42,8 @@ class PID(CRUDMixin, db.Model):
     raise_min_off_duration = db.Column(db.Float, default=0.0)
 
     raise_always_min_pwm = db.Column(db.Boolean, default=False)
-    lower_output_id = db.Column(db.String, db.ForeignKey('output.unique_id'), default=None)  # Output to lower the condition
-    lower_output_type = db.Column(db.String, default=None)
+    lower_output_id = db.Column(db.String(36), default=None)  # Output to lower the condition
+    lower_output_type = db.Column(db.String(36), default=None)
 
     # TODO: Change "duration" to more general "amount"
     lower_min_duration = db.Column(db.Float, default=0.0)
@@ -56,7 +56,7 @@ class PID(CRUDMixin, db.Model):
 
     # Setpoint tracking
     setpoint_tracking_type = db.Column(db.Text, default='')
-    setpoint_tracking_id = db.Column(db.Text, default='')
+    setpoint_tracking_id = db.Column(db.String(36), default='')
     setpoint_tracking_max_age = db.Column(db.Float, default=120.0)
     method_start_time = db.Column(db.Text, default=None)
     method_end_time = db.Column(db.Text, default=None)
