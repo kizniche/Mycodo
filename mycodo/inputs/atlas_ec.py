@@ -1,5 +1,6 @@
 # coding=utf-8
 import copy
+import logging
 import time
 
 from flask_babel import lazy_gettext
@@ -271,20 +272,16 @@ class InputModule(AbstractInput):
                     else:
                         out_value = last_measurement[1]
 
-                    self.logger.debug(
-                        "Latest temperature used to calibrate: {temp}".format(
-                            temp=out_value))
+                    self.logger.debug(f"Latest temperature used to calibrate: {out_value}")
 
-                    ret_value, ret_msg = self.atlas_command.calibrate(
-                        'temperature', set_amount=out_value)
+                    ret_value, ret_msg = self.atlas_command.calibrate('temperature', set_amount=out_value)
                     time.sleep(0.5)
 
-                    self.logger.debug("Calibration returned: {val}, {msg}".format(
-                        val=ret_value, msg=ret_msg))
+                    self.logger.debug(f"Calibration returned: '{ret_value}', '{ret_msg}'")
+                    if logging.getLevelName(self.logger.level) == "DEBUG":
+                        self.logger.debug(f"Stored temperature value: {self.atlas_device.query('T,?')}")
             else:
-                self.logger.error(
-                    "Calibration measurement not found within the past "
-                    "{} seconds".format(self.max_age))
+                self.logger.error(f"Calibration measurement not found within the past {self.max_age} seconds")
 
         # Read device
         atlas_status, atlas_return = self.atlas_device.query('R')
