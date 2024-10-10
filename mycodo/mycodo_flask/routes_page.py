@@ -21,7 +21,7 @@ from flask_babel import gettext
 from sqlalchemy import and_
 
 from mycodo.config import (ALEMBIC_VERSION, BACKUP_LOG_FILE, CAMERA_INFO,
-                           DAEMON_LOG_FILE, DAEMON_PID_FILE,
+                           DAEMON_LOG_FILE,
                            DEPENDENCY_LOG_FILE, DOCKER_CONTAINER,
                            FRONTEND_PID_FILE, HTTP_ACCESS_LOG_FILE,
                            HTTP_ERROR_LOG_FILE, IMPORT_LOG_FILE,
@@ -606,8 +606,6 @@ def page_info():
 
     virtualenv_flask = False
     virtualenv_daemon = False
-    daemon_pid = None
-    pstree_daemon_output = None
     top_daemon_output = None
     frontend_pid = None
     pstree_frontend_output = None
@@ -695,10 +693,6 @@ def page_info():
     if hasattr(sys, 'real_prefix') or sys.base_prefix != sys.prefix:
         virtualenv_flask = True
 
-    if os.path.exists(DAEMON_PID_FILE):
-        with open(DAEMON_PID_FILE, 'r') as pid_file:
-            daemon_pid = int(pid_file.read())
-
     if not current_app.config['TESTING']:
         daemon_up = daemon_active()
     else:
@@ -708,8 +702,6 @@ def page_info():
         control = DaemonControl()
         ram_use_daemon = control.ram_use()
         virtualenv_daemon = control.is_in_virtualenv()
-
-        pstree_daemon_output, top_daemon_output = output_pstree_top(daemon_pid)
     else:
         ram_use_daemon = 0
 
@@ -726,7 +718,6 @@ def page_info():
     python_version = sys.version
 
     return render_template('pages/info.html',
-                           daemon_pid=daemon_pid,
                            daemon_up=daemon_up,
                            gpio_readall=gpio_output,
                            database_version=database_version,
@@ -738,7 +729,6 @@ def page_info():
                            frontend_pid=frontend_pid,
                            i2c_devices_sorted=i2c_devices_sorted,
                            ifconfig=ifconfig_output,
-                           pstree_daemon=pstree_daemon_output,
                            pstree_frontend=pstree_frontend_output,
                            python_version=python_version,
                            ram_use_daemon=ram_use_daemon,

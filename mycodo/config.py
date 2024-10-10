@@ -111,7 +111,6 @@ LOCK_FILE_STREAM = os.path.join(LOCK_PATH, 'mycodo-camera-stream.pid')
 # Run files
 RUN_PATH = '/var/run'
 FRONTEND_PID_FILE = os.path.join(RUN_PATH, 'mycodoflask.pid')
-DAEMON_PID_FILE = os.path.join(RUN_PATH, 'mycodo.pid')
 
 # Remote admin
 STORED_SSL_CERTIFICATE_PATH = os.path.join(
