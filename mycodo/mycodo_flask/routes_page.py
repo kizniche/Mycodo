@@ -25,8 +25,9 @@ from mycodo.config import (ALEMBIC_VERSION, BACKUP_LOG_FILE, CAMERA_INFO,
                            DEPENDENCY_LOG_FILE, DOCKER_CONTAINER,
                            FRONTEND_PID_FILE, HTTP_ACCESS_LOG_FILE,
                            HTTP_ERROR_LOG_FILE, IMPORT_LOG_FILE,
-                           KEEPUP_LOG_FILE, LOGIN_LOG_FILE, MYCODO_VERSION,
-                           RESTORE_LOG_FILE, THEMES_DARK, UPGRADE_LOG_FILE)
+                           KEEPUP_LOG_FILE, LOGIN_LOG_FILE, MYCODO_DB_PATH,
+                           MYCODO_VERSION, RESTORE_LOG_FILE, THEMES_DARK,
+                           UPGRADE_LOG_FILE)
 from mycodo.config_devices_units import MEASUREMENTS
 from mycodo.databases.models import (PID, AlembicVersion, Camera, Conversion,
                                      CustomController, DeviceMeasurements,
@@ -730,6 +731,7 @@ def page_info():
                            gpio_readall=gpio_output,
                            database_version=database_version,
                            correct_database_version=correct_database_version,
+                           database_url=MYCODO_DB_PATH,
                            df=df_output,
                            dmesg_output=dmesg_output,
                            free=free_output,

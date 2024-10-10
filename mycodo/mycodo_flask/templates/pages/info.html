@@ -3,7 +3,19 @@
 {% set help_page = ["https://kizniche.github.io/Mycodo/System-Information/", _('System Information')] %}
 
 {% block title %} - {{_('System Information')}}{% endblock %}
+{% block head %}
+<style>
+  .hide {
+    color: black;
+    background-color: black;
+  }
 
+  .hide:hover {
+    color: #4E9258;
+    background-color: inherit;
+  }
+</style>
+{% endblock %}
 {% block body %}
   <!-- Route: /info -->
   <div class="container"> 
@@ -17,6 +29,7 @@
         {%- if database_version == correct_database_version -%}<span style="color: #4E9258; font-weight: bold;">{{database_version}}</span>
             {%- else -%}<span style="color: #F70D1A; font-weight: bold;">{{database_version}}</span> (Incorrect Version. Should be {{correct_database_version}}) <a href="https://kizniche.github.io/Mycodo/Troubleshooting/#incorrect-database-version"><span style="font-size: 16px" class="fas fa-question-circle"></span></a>
             {%- endif -%}
+        <br>{{_('Database URL')}}: <span class="hide" style="font-weight: bold;">{{database_url}}</span>
         <br>{{_('Daemon Status')}}:&nbsp
         {%- if daemon_status == "alive" %}<span style="color: #4E9258; font-weight: bold;">{{_('Running')}}</span>
         {%- else %}<span style="color: #F70D1A; font-weight: bold;">{{_('Not Running')}}</span> <a href="https://kizniche.github.io/Mycodo/Troubleshooting/#daemon-not-running"><span style="font-size: 16px" class="fas fa-question-circle"></span></a>
