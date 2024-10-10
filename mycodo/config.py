@@ -3,21 +3,16 @@
 # config.py - Global Mycodo settings
 #
 import binascii
-import sys
+import os
 import subprocess
+import sys
 from datetime import timedelta
 
-import os
 from flask_babel import lazy_gettext as lg
 
 # Append proper path for other software reading this config file
 sys.path.append(os.path.abspath(os.path.dirname(__file__)))
-
 from config_translations import TRANSLATIONS as T
-try:
-    import config_override
-except:
-    pass
 
 MYCODO_VERSION = '8.16.0'
 ALEMBIC_VERSION = '5966b3569c89'
@@ -40,25 +35,21 @@ ENABLE_FLASK_PROFILER = False
 # Install path (the parent directory of this file)
 INSTALL_DIRECTORY = os.path.abspath(os.path.dirname(os.path.realpath(__file__)) + '/..')
 
-# Database
+# Settings database
 DATABASE_PATH = os.path.join(INSTALL_DIRECTORY, 'databases')
 DATABASE_NAME = "mycodo.db"
 SQL_DATABASE_MYCODO = os.path.join(DATABASE_PATH, DATABASE_NAME)
+ALEMBIC_PATH = os.path.join(INSTALL_DIRECTORY, 'alembic_db')
+ALEMBIC_UPGRADE_POST = os.path.join(ALEMBIC_PATH, 'alembic_post_upgrade_versions')
+
 try:
+    import config_override
     MYCODO_DB_PATH = config_override.MYCODO_DB_PATH
 except:
     MYCODO_DB_PATH = f'sqlite:///{SQL_DATABASE_MYCODO}'
 
-# Alembic
-ALEMBIC_PATH = os.path.join(INSTALL_DIRECTORY, 'alembic_db')
-ALEMBIC_UPGRADE_POST = os.path.join(ALEMBIC_PATH, 'alembic_post_upgrade_versions')
-try:  # Ensure the correct alembic url is set
-    ALEMBIC_URL = config_override.ALEMBIC_URL
-    cmd = f'/opt/Mycodo/env/bin/crudini --set /opt/Mycodo/alembic_db/alembic.ini alembic sqlalchemy.url {ALEMBIC_URL}'
-    subprocess.Popen(cmd, shell=True)
-except:
-    cmd = '/opt/Mycodo/env/bin/crudini --set /opt/Mycodo/alembic_db/alembic.ini alembic sqlalchemy.url sqlite:///../databases/mycodo.db'
-    subprocess.Popen(cmd, shell=True)
+cmd = f'/opt/Mycodo/env/bin/crudini --set /opt/Mycodo/alembic_db/alembic.ini alembic sqlalchemy.url {MYCODO_DB_PATH}'
+subprocess.Popen(cmd, shell=True)
 
 # Misc paths
 PATH_1WIRE = '/sys/bus/w1/devices/'

@@ -13,7 +13,6 @@ sys.path.append(os.path.abspath(os.path.join(__file__, "../../../..")))
 
 from alembic_db.alembic_post_utils import write_revision_post_alembic
 
-from mycodo.config import SQL_DATABASE_MYCODO
 from mycodo.config import ID_FILE
 from mycodo.config import STATS_CSV
 
@@ -23,8 +22,6 @@ revision = 'ef49f6644e0c'
 down_revision = '65271370a3a9'
 branch_labels = None
 depends_on = None
-
-MYCODO_DB_PATH = f'sqlite:///{SQL_DATABASE_MYCODO}'
 
 
 def upgrade():

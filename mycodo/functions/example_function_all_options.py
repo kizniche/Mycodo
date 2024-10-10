@@ -374,7 +374,7 @@ class CustomModule(AbstractFunction):
             # Deactivate controller in the SQL database
             self.logger.debug(
                 "Deactivating (SQL) Custom controller select_device_2 with ID {}".format(self.select_device_2_id))
-            from mycodo.config import MYCODO_DB_PATH, SQL_DATABASE_MYCODO
+            from mycodo.config import MYCODO_DB_PATH
             from mycodo.databases.utils import session_scope
             with session_scope(MYCODO_DB_PATH) as new_session:
                 mod_cont = new_session.query(CustomController).filter(

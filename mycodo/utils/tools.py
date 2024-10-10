@@ -86,8 +86,12 @@ def create_settings_export(save_path=None):
     try:
         data = io.BytesIO()
         with zipfile.ZipFile(data, mode='w') as z:
-            z.write(SQL_DATABASE_MYCODO,
-                    os.path.basename(SQL_DATABASE_MYCODO))
+            try:
+                z.write(SQL_DATABASE_MYCODO,
+                        os.path.basename(SQL_DATABASE_MYCODO))
+            except:
+                logger.error(f"Could not find database file {SQL_DATABASE_MYCODO}")
+
             export_directories = [
                 (PATH_FUNCTIONS_CUSTOM, "custom_functions"),
                 (PATH_ACTIONS_CUSTOM, "custom_actions"),
