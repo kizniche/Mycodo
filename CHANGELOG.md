@@ -4,6 +4,7 @@ This release introduces the ability to override MYCODO_DB_PATH, SQLALCHEMY_DATAB
 
 ### Bugfixes
 
+ - Fix Atlas EC and pH Inputs losing measurements when calibration temperature is None
  - Fix restoring mycodo/user_scripts during upgrade
  - Fix documentation generation
  - Fix theming on selection inputs
