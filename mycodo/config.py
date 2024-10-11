@@ -48,8 +48,11 @@ try:
 except:
     MYCODO_DB_PATH = f'sqlite:///{SQL_DATABASE_MYCODO}'
 
-cmd = f'/opt/Mycodo/env/bin/crudini --set /opt/Mycodo/alembic_db/alembic.ini alembic sqlalchemy.url {MYCODO_DB_PATH}'
-subprocess.Popen(cmd, shell=True)
+try:
+    cmd = f'/opt/Mycodo/env/bin/crudini --set /opt/Mycodo/alembic_db/alembic.ini alembic sqlalchemy.url {MYCODO_DB_PATH}'
+    subprocess.Popen(cmd, shell=True)
+except:
+    pass
 
 # Misc paths
 PATH_1WIRE = '/sys/bus/w1/devices/'
@@ -540,11 +543,7 @@ except:
 
 class ProdConfig(object):
     """Production Configuration."""
-    try:
-        SQLALCHEMY_DATABASE_URI = config_override.MYCODO_DB_PATH
-    except:
-        SQLALCHEMY_DATABASE_URI = MYCODO_DB_PATH
-
+    SQLALCHEMY_DATABASE_URI = MYCODO_DB_PATH
     SQLALCHEMY_TRACK_MODIFICATIONS = False
 
     FLASK_PROFILER = {
