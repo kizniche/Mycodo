@@ -48,12 +48,6 @@ try:
 except:
     MYCODO_DB_PATH = f'sqlite:///{SQL_DATABASE_MYCODO}'
 
-try:
-    cmd = f'/opt/Mycodo/env/bin/crudini --set /opt/Mycodo/alembic_db/alembic.ini alembic sqlalchemy.url {MYCODO_DB_PATH}'
-    subprocess.Popen(cmd, shell=True)
-except:
-    pass
-
 # Misc paths
 PATH_1WIRE = '/sys/bus/w1/devices/'
 PATH_CONTROLLERS = os.path.join(INSTALL_DIRECTORY, 'mycodo/controllers')

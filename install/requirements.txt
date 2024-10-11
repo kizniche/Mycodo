@@ -2,7 +2,6 @@
 alembic==1.13.1
 argparse==1.4.0
 bcrypt==4.1.2
-crudini==0.9.5
 distro==1.9.0
 email_validator==2.1.0.post1
 filelock==3.13.1
