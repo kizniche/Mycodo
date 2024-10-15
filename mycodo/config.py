@@ -4,7 +4,6 @@
 #
 import binascii
 import os
-import subprocess
 import sys
 from datetime import timedelta
 

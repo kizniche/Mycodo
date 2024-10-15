@@ -1,4 +1,6 @@
 # -*- coding: utf-8 -*-
+from sqlalchemy.dialects.mysql import LONGTEXT
+
 from mycodo.databases import CRUDMixin
 from mycodo.databases import set_uuid
 from mycodo.mycodo_flask.extensions import db
@@ -85,7 +87,7 @@ class Input(CRUDMixin, db.Model):
     # The Things Network: Data Storage
     datetime = db.Column(db.DateTime, default=None)
 
-    custom_options = db.Column(db.Text, default='')
+    custom_options = db.Column(LONGTEXT, default='')
 
     def is_active(self):
         """
@@ -113,7 +115,7 @@ class InputChannel(CRUDMixin, db.Model):
     channel = db.Column(db.Integer, default=None)
     name = db.Column(db.Text, default='')
 
-    custom_options = db.Column(db.Text, default='')
+    custom_options = db.Column(LONGTEXT, default='')
 
     def __repr__(self):
         return "<{cls}(id={s.id})>".format(s=self, cls=self.__class__.__name__)
