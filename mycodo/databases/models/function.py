@@ -30,17 +30,17 @@ class Conditional(CRUDMixin, db.Model):
 
     is_activated = db.Column(db.Boolean, default=False)
     log_level_debug = db.Column(db.Boolean, default=False)
-    conditional_statement = db.Column(LONGTEXT, default='')
-    conditional_import = db.Column(LONGTEXT, default='')
-    conditional_initialize = db.Column(LONGTEXT, default='')
-    conditional_status = db.Column(LONGTEXT, default='')
+    conditional_statement = db.Column(db.Text().with_variant(LONGTEXT, "mysql", "mariadb"), default='')
+    conditional_import = db.Column(db.Text().with_variant(LONGTEXT, "mysql", "mariadb"), default='')
+    conditional_initialize = db.Column(db.Text().with_variant(LONGTEXT, "mysql", "mariadb"), default='')
+    conditional_status = db.Column(db.Text().with_variant(LONGTEXT, "mysql", "mariadb"), default='')
     period = db.Column(db.Float, default=60.0)
     start_offset = db.Column(db.Float, default=10.0)
     pyro_timeout = db.Column(db.Float, default=30.0)
     use_pylint = db.Column(db.Boolean, default=True)
     message_include_code = db.Column(db.Boolean, default=False)
 
-    custom_options = db.Column(LONGTEXT, default='')
+    custom_options = db.Column(db.Text().with_variant(LONGTEXT, "mysql", "mariadb"), default='')
 
 
 class ConditionalConditions(CRUDMixin, db.Model):
@@ -137,7 +137,7 @@ class Actions(CRUDMixin, db.Model):
     function_type = db.Column(db.Text, default='')
     action_type = db.Column(db.Text, default='')  # what action, such as 'email', 'execute command', 'flash LCD'
 
-    custom_options = db.Column(LONGTEXT, default='{}')
+    custom_options = db.Column(db.Text().with_variant(LONGTEXT, "mysql", "mariadb"), default='{}')
 
     # Actions
     pause_duration = db.Column(db.Float, default=5.0)

@@ -32,7 +32,7 @@ class Widget(CRUDMixin, db.Model):
     position_y = db.Column(db.Integer, default=999)
     width = db.Column(db.Integer, default=6)
     height = db.Column(db.Integer, default=6)
-    custom_options = db.Column(LONGTEXT, default='')
+    custom_options = db.Column(db.Text().with_variant(LONGTEXT, "mysql", "mariadb"), default='')
 
     # TODO: next major revision: delete all below, no longer used
     enable_header_buttons = db.Column(db.Boolean, default=True)
