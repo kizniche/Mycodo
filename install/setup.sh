@@ -41,10 +41,10 @@ if hash python3 2>/dev/null; then
     printf "Error: Incorrect Python version found. Mycodo requires Python >= 3.8.\n"
     exit 1
   else
-    printf "Python >= 3.8 found.\n"
+    printf "Python >= 3.8 found. Continuing with the install.\n"
   fi
 else
-  printf "\nError: correct python version not found. Python >= 3.8 required in PATH to proceed with the install.\n"
+  printf "\nError: python3 binary required in PATH to proceed with the install.\n"
   exit 1
 fi
 

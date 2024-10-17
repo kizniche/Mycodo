@@ -8,6 +8,7 @@ This release introduces the ability to override MYCODO_DB_PATH, SQLALCHEMY_DATAB
  - Fix restoring mycodo/user_scripts during upgrade
  - Fix documentation generation
  - Fix theming on selection inputs
+ - Fix minimum Python version for upgrade
 
 ### Features
 
