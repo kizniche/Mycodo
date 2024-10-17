@@ -1,6 +1,6 @@
 # coding=utf-8
-from mycodo.mycodo_flask.extensions import db
 from mycodo.databases import CRUDMixin
+from mycodo.mycodo_flask.extensions import db
 
 
 class DisplayOrder(CRUDMixin, db.Model):

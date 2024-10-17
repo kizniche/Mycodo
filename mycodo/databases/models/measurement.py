@@ -1,6 +1,5 @@
 # coding=utf-8
 from marshmallow_sqlalchemy.fields import Nested
-from sqlalchemy.orm import relationship
 
 from mycodo.databases import CRUDMixin
 from mycodo.databases import set_uuid

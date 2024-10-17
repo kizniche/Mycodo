@@ -1,7 +1,7 @@
 # coding=utf-8
 import logging
 
-import requests
+from sqlalchemy.dialects.mysql import LONGTEXT
 
 from mycodo.databases import CRUDMixin, set_uuid
 from mycodo.mycodo_flask.extensions import db
@@ -54,8 +54,8 @@ class Misc(CRUDMixin, db.Model):
     brand_image_height = db.Column(db.Integer, default=55)
     favicon_display = db.Column(db.String(16), default='default')
     brand_favicon = db.Column(db.BLOB, default=b'')
-    custom_css = db.Column(db.Text, default='')
-    custom_layout = db.Column(db.Text, default='')
+    custom_css = db.Column(db.Text().with_variant(LONGTEXT, "mysql", "mariadb"), default='')
+    custom_layout = db.Column(db.Text().with_variant(LONGTEXT, "mysql", "mariadb"), default='')
 
     # Measurement database
     db_name = 'influxdb'  # Default
