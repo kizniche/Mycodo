@@ -111,9 +111,9 @@ runSelfUpgrade() {
   fi
   printf "Done.\n"
 
-  if [ -f "${CURRENT_MYCODO_DIRECTORY}"/config_override.py ] ; then
+  if [ -f "${CURRENT_MYCODO_DIRECTORY}"/mycodo/config_override.py ] ; then
     printf "Copying config_override.py..."
-    if ! cp "${CURRENT_MYCODO_DIRECTORY}"/config_override.py "${THIS_MYCODO_DIRECTORY}" ; then
+    if ! cp "${CURRENT_MYCODO_DIRECTORY}"/mycodo/config_override.py "${THIS_MYCODO_DIRECTORY}/mycodo/" ; then
       printf "Failed: Error while trying to copy config_override.py."
     fi
     printf "Done.\n"
