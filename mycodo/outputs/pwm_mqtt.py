@@ -3,6 +3,7 @@
 # pwm_mqtt.py - Output for publishing PWM via MQTT
 #
 import copy
+import math
 
 from flask_babel import lazy_gettext
 from sqlalchemy import and_
@@ -140,6 +141,19 @@ OUTPUT_INFORMATION = {
             'required': False,
             'name': 'Use Websockets',
             'phrase': 'Use websockets to connect to the server.'
+        },
+        {
+            'id': 'round_integer',
+            'type': 'select',
+            'default_value': 'no',
+            'options_select': [
+                ('no', 'No Rounding'),
+                ('near', 'Round Nearest Whole'),
+                ('up', 'Round Up'),
+                ('down', 'Round Down')
+            ],
+            'name': 'Round Integer',
+            'phrase': 'Round the payload value to an integer.'
         },
         {
             'id': 'state_startup',
@@ -286,6 +300,14 @@ class OutputModule(AbstractOutput):
                     amount = 100
                 else:
                     amount = 0
+
+            # Round before sending payload
+            if self.options_channels['round_integer'][0] == "near":
+                amount = int(round(amount))
+            elif self.options_channels['round_integer'][0] == "up":
+                amount = int(math.ceil(amount))
+            elif self.options_channels['round_integer'][0] == "down":
+                amount = int(math.floor(amount))
 
             self.publish.single(
                 self.options_channels['topic'][0],
