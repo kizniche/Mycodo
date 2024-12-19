@@ -64,6 +64,11 @@ LICENSE=$(dialog --title "Mycodo Installer: License Agreement" \
                    --yesno "Mycodo is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.\n\nMycodo is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.\n\nYou should have received a copy of the GNU General Public License along with Mycodo. If not, see gnu.org/licenses\n\nDo you agree to the license terms?" \
                    20 68 \
                    3>&1 1>&2 2>&3)
+exitstatus=$?
+if [ $exitstatus != 0 ]; then
+    printf "Mycodo install cancelled by user\n" 2>&1 | tee -a "${LOG_LOCATION}"
+    exit 1
+fi
 
 clear
 LANGUAGE=$(dialog --title "Mycodo Installer" \
