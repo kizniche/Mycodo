@@ -108,9 +108,9 @@ TIMER_START_restart_daemon=$SECONDS
 ${INSTALL_CMD} restart-daemon
 TIMER_TOTAL_restart_daemon=$((SECONDS - TIMER_START_restart_daemon))
 
-TIMER_START_web_server_reload=$SECONDS
-${INSTALL_CMD} web-server-reload
-TIMER_TOTAL_web_server_reload=$((SECONDS - TIMER_START_web_server_reload))
+TIMER_START_web_server_restart=$SECONDS
+${INSTALL_CMD} web-server-restart
+TIMER_TOTAL_web_server_restart=$((SECONDS - TIMER_START_web_server_restart))
 
 TIMER_START_web_server_connect=$SECONDS
 ${INSTALL_CMD} web-server-connect
@@ -135,5 +135,5 @@ printf "\ncompile-translations:         %s s" "${TIMER_TOTAL_compile_translation
 printf "\ngenerate-widget-html:         %s s" "${TIMER_TOTAL_generate_widget_html}"
 printf "\nupdate-permissions:           %s s" "${TIMER_TOTAL_update_permissions}"
 printf "\nrestart-daemon:               %s s" "${TIMER_TOTAL_restart_daemon}"
-printf "\nweb-server_reload:            %s s" "${TIMER_TOTAL_web_server_reload}"
+printf "\nweb-server_restart:           %s s" "${TIMER_TOTAL_web_server_restart}"
 printf "\nweb-server-connect:           %s s\n" "${TIMER_TOTAL_web_server_connect}"
