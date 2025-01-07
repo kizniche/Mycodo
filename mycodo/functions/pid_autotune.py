@@ -231,7 +231,7 @@ class CustomModule(AbstractFunction):
             self.logger.info('state: {0}'.format(self.autotune.state))
 
             if self.autotune.state == PIDAutotune.STATE_SUCCEEDED:
-                self.logger.info('Autotube was successful')
+                self.logger.info('Autotune was successful')
                 for rule in self.autotune.tuning_rules:
                     params = self.autotune.get_pid_parameters(rule)
                     self.logger.info('')
