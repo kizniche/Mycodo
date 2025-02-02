@@ -162,25 +162,9 @@ class OutputModule(AbstractOutput):
     def output_switch(self, state, output_type=None, amount=None, output_channel=0):
         try:
             if state == 'on':
-                if self.options_channels['on_state'][output_channel]:
-                    set_opt = "dh"
-                else:
-                    set_opt = "dl"
-                cmd = f"pinctrl set {self.options_channels['pin'][0]} {set_opt}"
-                cmd_return, cmd_error, cmd_status = cmd_output(cmd, user="root")
-                self.logger.debug(
-                    f"GPIO {self.options_channels['pin'][0]} set ON with '{cmd}': "
-                    f"Status: {cmd_status}, Return: {cmd_return}, Error: {cmd_error}")
+                self.switch_pin(self.options_channels['pin'][0], self.options_channels['on_state'][output_channel])
             elif state == 'off':
-                if not self.options_channels['on_state'][output_channel]:
-                    set_opt = "dh"
-                else:
-                    set_opt = "dl"
-                cmd = f"pinctrl set {self.options_channels['pin'][0]} {set_opt}"
-                cmd_return, cmd_error, cmd_status = cmd_output(cmd, user="root")
-                self.logger.debug(
-                    f"GPIO {self.options_channels['pin'][0]} set OFF with '{cmd}': "
-                    f"Status: {cmd_status}, Return: {cmd_return}, Error: {cmd_error}")
+                self.switch_pin(self.options_channels['pin'][0], not self.options_channels['on_state'][output_channel])
 
             msg = "success"
         except Exception as e:
@@ -214,3 +198,15 @@ class OutputModule(AbstractOutput):
             elif self.options_channels['state_shutdown'][0] == 0:
                 self.output_switch('off', output_channel=0)
         self.running = False
+
+    @staticmethod
+    def switch_pin(pin, state):
+        if state:
+            set_opt = "dh"
+        else:
+            set_opt = "dl"
+        cmd = f"pinctrl set {pin} {set_opt}"
+        cmd_return, cmd_error, cmd_status = cmd_output(cmd, user="root")
+        self.logger.debug(
+            f"GPIO {self.options_channels['pin'][0]} set ON with '{cmd}': "
+            f"Status: {cmd_status}, Return: {cmd_return}, Error: {cmd_error}")
