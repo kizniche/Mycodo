@@ -199,8 +199,7 @@ class OutputModule(AbstractOutput):
                 self.output_switch('off', output_channel=0)
         self.running = False
 
-    @staticmethod
-    def switch_pin(pin, state):
+    def switch_pin(self, pin, state):
         if state:
             set_opt = "dh"
         else:

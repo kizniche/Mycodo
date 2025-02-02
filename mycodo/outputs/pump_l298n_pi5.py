@@ -2,10 +2,9 @@
 #
 # pump_l298n.py - Output for L298N DC motor controller
 #
+import copy
 import threading
 import time
-
-import copy
 from flask_babel import lazy_gettext
 
 from mycodo.config_translations import TRANSLATIONS
@@ -16,6 +15,7 @@ from mycodo.utils.constraints_pass import constraints_pass_positive_or_zero_valu
 from mycodo.utils.constraints_pass import constraints_pass_positive_value
 from mycodo.utils.database import db_retrieve_table_daemon
 from mycodo.utils.influx import add_measurements_influxdb
+from mycodo.utils.system_pi import cmd_output
 
 # Measurements
 measurements_dict = {
@@ -52,7 +52,7 @@ channels_dict = {
 
 # Output information
 OUTPUT_INFORMATION = {
-    'output_name_unique': 'DC_MOTOR_L298N',
+    'output_name_unique': 'DC_MOTOR_L298N_2',
     'output_name': "{}: L298N DC Motor Controller (Pi 5)".format(lazy_gettext('Peristaltic Pump')),
     'output_manufacturer': 'STMicroelectronics',
     'output_library': 'pinctrl',
@@ -273,8 +273,7 @@ class OutputModule(AbstractOutput):
             if self.is_setup(channel=channel):
                 self.stop(channel)
 
-    @staticmethod
-    def switch_pin(pin, state):
+    def switch_pin(self, pin, state):
         if state:
             set_opt = "dh"
         else:
