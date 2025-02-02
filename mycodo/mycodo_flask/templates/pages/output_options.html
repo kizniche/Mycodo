@@ -34,7 +34,9 @@
     {{_("Library")}}:
     {% for each_lib in dict_outputs[each_output.output_type]['dependencies_module'] -%}
       {%- if each_lib[0] == 'pip-pypi' -%}
-        {%- if "==" in each_lib[2] -%}
+        {%- if each_lib[2].startswith("git+") -%}
+      {{each_lib[2]}}
+        {%- elif "==" in each_lib[2] -%}
       <a href="https://pypi.org/project/{{each_lib[2].split('==')[0]}}/{{each_lib[2].split('==')[1]}}" target="_blank">{{each_lib[2].split('==')[0]}}</a>
         {%- else -%}
       <a href="https://pypi.org/project/{{each_lib[2]}}" target="_blank">{{each_lib[2]}}</a>
