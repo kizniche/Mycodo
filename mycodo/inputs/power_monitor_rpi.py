@@ -37,8 +37,8 @@ for ct in range(1, 7):
 INPUT_INFORMATION = {
     'input_name_unique': 'input_rpi_power_monitor',
     'input_manufacturer': 'Power Monitor',
-    'input_name': 'RPi Power Monitor (6 Channels)',
-    'input_name_short': 'RPi Power Monitor',
+    'input_name': 'RPi 6-Channel Power Monitor (v0.1.0)',
+    'input_name_short': 'RPi Power Monitor v0.1.0',
     'input_library': 'rpi-power-monitor',
     'measurements_name': 'AC Voltage, Power, Current, Power Factor',
     'measurements_dict': measurements_dict,
@@ -185,16 +185,6 @@ INPUT_INFORMATION = {
 
 class InputModule(AbstractInput):
     """ Input module to read the Raspberry Pi Power Monitor HAT """
-    # Pins
-    ct1_channel = 0
-    ct2_channel = 1
-    ct3_channel = 2
-    ct4_channel = 3
-    board_voltage_channel = 4  # Board 3.3 VDC
-    v_sensor_channel = 5  # Transformer 9 VAC
-    ct5_channel = 6
-    ct6_channel = 7
-
     def __init__(self, input_dev, testing=False):
         super().__init__(input_dev, testing=testing, name=__name__)
 
