@@ -206,6 +206,7 @@ class OutputModule(AbstractOutput):
             set_opt = "dl"
         cmd = f"pinctrl set {pin} {set_opt}"
         cmd_return, cmd_error, cmd_status = cmd_output(cmd, user="root")
+        state_text = 'ON' if state else 'OFF'
         self.logger.debug(
-            f"GPIO {self.options_channels['pin'][0]} set ON with '{cmd}': "
+            f"GPIO {pin} set {state_text} with '{cmd}': "
             f"Status: {cmd_status}, Return: {cmd_return}, Error: {cmd_error}")
