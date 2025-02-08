@@ -150,14 +150,17 @@ def admin_backup():
                   "success")
 
         elif form_backup.restore.data:
-            cmd = "{pth}/mycodo/scripts/mycodo_wrapper backup-restore {backup}" \
-                  " | ts '[%Y-%m-%d %H:%M:%S]'" \
-                  " >> {log} 2>&1".format(pth=INSTALL_DIRECTORY,
-                                          backup=form_backup.full_path.data,
-                                          log=RESTORE_LOG_FILE)
-            subprocess.Popen(cmd, shell=True)
-            flash(gettext("Restore in progress"),
-                  "success")
+            if not os.path.isdir(form_backup.full_path.data):
+                flash("Directory not found: {}".format(form_backup.full_path.data), "error")
+            else:
+                cmd = "{pth}/mycodo/scripts/mycodo_wrapper backup-restore {backup}" \
+                      " | ts '[%Y-%m-%d %H:%M:%S]'" \
+                      " >> {log} 2>&1".format(pth=INSTALL_DIRECTORY,
+                                              backup=form_backup.full_path.data,
+                                              log=RESTORE_LOG_FILE)
+                subprocess.Popen(cmd, shell=True)
+                flash(gettext("Restore in progress"),
+                      "success")
 
     return render_template('admin/backup.html',
                            form_backup=form_backup,

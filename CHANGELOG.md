@@ -10,6 +10,7 @@ This release introduces the ability to override MYCODO_DB_PATH, SQLALCHEMY_DATAB
  - Fix theming on selection inputs
  - Fix minimum Python version for upgrade
  - Fix generating library hyperlinks when pip uses a git source
+ - Fix directory validation
  - Add Output: L298N Peristaltic Pump (Pi 5)
  - Add Input: Raspberry Pi 6-Channel Power Monitor (v0.4.0)
 
