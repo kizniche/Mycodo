@@ -43,8 +43,6 @@ jobs:
       fail-fast: false
       matrix:
         include:
-        - language: c-cpp
-          build-mode: autobuild
         - language: javascript-typescript
           build-mode: none
         - language: python
