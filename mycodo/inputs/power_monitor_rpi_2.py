@@ -275,11 +275,12 @@ class InputModule(AbstractInput):
 
         results = self.sensor.get_power_measurements(duration=0.5)
 
+        if self.is_enabled(0):
+            self.value_set(0, results['voltage'])
+
         chan = 1
         for measure_channel in range(1, 7):
             if self.is_enabled(measure_channel - 1) and measure_channel in results:
-                if not self.value_get(0):
-                    self.value_set(0, results[measure_channel]['voltage'])
                 self.value_set(chan, results[measure_channel]['power'])
                 self.value_set(chan + 1, results[measure_channel]['current'])
                 self.value_set(chan + 2, results[measure_channel]['pf'])
