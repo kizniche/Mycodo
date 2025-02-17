@@ -1,8 +1,8 @@
 # coding=utf-8
 import copy
+import time
 from collections import OrderedDict
-from datetime import datetime
-from math import sqrt
+from mycodo.utils.lockfile import LockFile
 
 from mycodo.inputs.base_input import AbstractInput
 
@@ -19,6 +19,11 @@ for ct in range(1, 7):
         'unit': 'W',
         'name': f'CT{ct}'
     }
+    measurements_dict[channel] = {
+        'measurement': 'energy',
+        'unit': 'kWh',
+        'name': f'CT{ct} Total'
+    }
     measurements_dict[channel + 1] = {
         'measurement': 'electrical_current',
         'unit': 'A',
@@ -29,7 +34,7 @@ for ct in range(1, 7):
         'unit': 'unitless',
         'name': f'CT{ct}'
     }
-    channel += 3
+    channel += 4
 
 # Input information
 INPUT_INFORMATION = {
@@ -38,7 +43,7 @@ INPUT_INFORMATION = {
     'input_name': 'RPi 6-Channel Power Monitor (v0.4.0)',
     'input_name_short': 'RPi Power Monitor v0.4.0',
     'input_library': 'rpi-power-monitor',
-    'measurements_name': 'AC Voltage, Power, Current, Power Factor',
+    'measurements_name': 'AC Voltage, Power, Energy, Current, Power Factor',
     'measurements_dict': measurements_dict,
     'url_manufacturer': 'https://github.com/David00/rpi-power-monitor',
     'url_product_purchase': 'https://power-monitor.dalbrecht.tech/',
@@ -57,7 +62,45 @@ INPUT_INFORMATION = {
         ('pip-pypi', 'rpi_power_monitor', 'git+https://github.com/David00/rpi-power-monitor.git@eeb3143fba6452de916407ae94a0a6e8834a7d67')
     ],
 
+    'custom_commands': [
+        {
+            'type': 'message',
+            'default_value': """Clear the running kWh totals."""
+        },
+        {
+            'id': 'channel_to_clear',
+            'type': 'select',
+            'default_value': '1',
+            'options_select': [
+                ('all', 'All Channels'),
+                ('1', 'Channel 1'),
+                ('2', 'Channel 2'),
+                ('3', 'Channel 3'),
+                ('4', 'Channel 4'),
+                ('5', 'Channel 5'),
+                ('6', 'Channel 6')
+
+            ],
+            'name': 'Channel to Clear',
+            'phrase': 'The channel(s) to clear the kWh total and start back at 0.'
+        },
+        {
+            'id': 'clear_channel',
+            'type': 'button',
+            'wait_for_return': True,
+            'name': 'Clear kWh Total'
+        }
+    ],
+
     'custom_options': [
+        {
+            'id': 'kwh_measure_period_sec',
+            'type': 'integer',
+            'default_value': 5,
+            'required': True,
+            'name': 'Period (Seconds) for kWh Measuring',
+            'phrase': 'How often to acquire measurements to calculate kWh'
+        },
         {
             'id': 'grid_voltage',
             'type': 'float',
@@ -148,6 +191,7 @@ class InputModule(AbstractInput):
 
         self.sensor = None
 
+        self.kwh_measure_period_sec = None
         self.grid_voltage = None
         self.transformer_voltage = None
         self.ac_frequency = None
@@ -160,6 +204,10 @@ class InputModule(AbstractInput):
         self.ct6_accuracy_calibration = None
         self.ac_accuracy_calibration = None
 
+        self.timer_kwh_measure = 0
+        self.kwh_saved = None
+        self.lock_file = '/var/lock/power_kwh.lock'
+
         if not testing:
             self.setup_custom_options(
                 INPUT_INFORMATION['custom_options'], input_dev)
@@ -170,6 +218,18 @@ class InputModule(AbstractInput):
 
         logger.setLevel(logging.DEBUG)
         ch.setLevel(logging.DEBUG)
+
+        self.kwh_saved = self.get_custom_option("kwh_saved")
+
+        if self.kwh_saved is None:
+            self.kwh_saved = {
+                1: 0,
+                2: 0,
+                3: 0,
+                4: 0,
+                5: 0,
+                6: 0
+            }
 
         config = {
             'general': {
@@ -270,6 +330,32 @@ class InputModule(AbstractInput):
 
         self.sensor = RPiPowerMonitor(config=config)
 
+    def listener(self):
+        while self.running:
+            if time.time() - self.timer_kwh_measure >= self.kwh_measure_period_sec:
+                while time.time() - self.timer_kwh_measure >= self.kwh_measure_period_sec:
+                    self.timer_kwh_measure += self.kwh_measure_period_sec
+
+                results = self.sensor.get_power_measurements(duration=0.5)
+
+                per_hour_fraction = self.kwh_measure_period_sec / 3600
+
+                lf = LockFile()
+                if lf.lock_acquire(self.lock_file, timeout=10):
+                    try:
+                        chan = 1
+                        for measure_channel in range(1, 7):
+                            if self.is_enabled(measure_channel - 1) and measure_channel in results:
+                                kilo_watts = results[measure_channel]['power'] / 1000
+                                kwh_calculated = kilo_watts * per_hour_fraction
+                                self.kwh_saved[measure_channel] += kwh_calculated
+                            chan += 4
+                    except:
+                        self.logger.exception("acquiring measurements")
+                    finally:
+                        lf.lock_release(self.lock_file)
+            time.sleep(0.01)
+
     def get_measurement(self):
         self.return_dict = copy.deepcopy(measurements_dict)
 
@@ -282,8 +368,44 @@ class InputModule(AbstractInput):
         for measure_channel in range(1, 7):
             if self.is_enabled(measure_channel - 1) and measure_channel in results:
                 self.value_set(chan, results[measure_channel]['power'])
-                self.value_set(chan + 1, results[measure_channel]['current'])
-                self.value_set(chan + 2, results[measure_channel]['pf'])
-            chan += 3
+                self.value_set(chan + 2, results[measure_channel]['current'])
+                self.value_set(chan + 3, results[measure_channel]['pf'])
+            chan += 4
+
+        # Save kWh calculations to DB
+        lf = LockFile()
+        if lf.lock_acquire(self.lock_file, timeout=10):
+            try:
+                self.set_custom_option("kwh_saved", self.kwh_saved)
+            except:
+                self.logger.exception("acquiring measurements")
+            finally:
+                lf.lock_release(self.lock_file)
 
         return self.return_dict
+
+    def clear_channel(self, args_dict):
+        if 'channel_to_clear' not in args_dict or not args_dict['channel_to_clear']:
+            self.logger.error("channel_to_clear is required")
+            return
+        try:
+            lf = LockFile()
+            if lf.lock_acquire(self.lock_file, timeout=10):
+                try:
+                    if args_dict['channel_to_clear'] == 'all':
+                        self.kwh_saved[1] = 0
+                        self.kwh_saved[2] = 0
+                        self.kwh_saved[3] = 0
+                        self.kwh_saved[4] = 0
+                        self.kwh_saved[5] = 0
+                        self.kwh_saved[6] = 0
+                    else:
+                        self.kwh_saved[int(args_dict['channel_to_clear'])] = 0
+
+                    self.set_custom_option("kwh_saved", self.kwh_saved)
+                except:
+                    self.logger.exception(f"Clearing kWH for channel: {args_dict['channel_to_clear']}")
+                finally:
+                    lf.lock_release(self.lock_file)
+        except Exception as err:
+            self.logger.error(f"Error clearing kWh for channel {args_dict['channel_to_clear']}: {err}")
