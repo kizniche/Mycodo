@@ -1,7 +1,7 @@
 {% set widget_options = custom_options_values_widgets[each_widget.unique_id] %}
 {% set widget_variables = custom_widget_variables[each_widget.unique_id] %}
 
-<div class="grid-stack-item-content widget-outer" style="display: flex; flex-flow: column; padding: 0; border: 1px solid #ddd; border-radius: 5px">
+<div class="grid-stack-item-content widget-outer" style="display: flex; flex-flow: column; padding: 0; border: 1px solid #ddd; border-radius: 5px; inset: 2px">
 
   <div class="d-flex justify-content-between widget-heading{% if not this_dashboard.locked %} panel-heading{% endif %}">
 {% if not this_dashboard.locked %}
