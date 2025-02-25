@@ -102,6 +102,10 @@ def page_function_submit():
                 form_add_function)
             if dep_list:
                 dep_unmet = form_add_function.function_type.data
+        elif form_function_base.function_duplicate.data:
+            messages, function_id = utils_function.function_duplicate(
+                form_function_base)
+            duplicated_function_id = form_function_base.function_id.data
         else:
             function_id = form_function_base.function_id.data
             controller_type = determine_controller_type(function_id)
@@ -233,10 +237,14 @@ def page_function_submit():
                 else:
                     messages["error"].append("Unknown function directive")
 
+    # Initialize variables that may not be set
+    duplicated_function_id = duplicated_function_id if 'duplicated_function_id' in locals() else None
+
     return jsonify(data={
         'action_id': action_id,
         'condition_id': condition_id,
         'function_id': function_id,
+        'duplicated_function_id': duplicated_function_id,
         'dep_name': dep_name,
         'dep_list': dep_list,
         'dep_unmet': dep_unmet,

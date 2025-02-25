@@ -1,0 +1,37 @@
+# Function Duplication Feature
+
+## Goal
+Implement a duplicate function capability for Mycodo functions similar to the existing duplicate functionality for inputs. This will allow users to quickly copy complex functions with all their settings and actions, which is particularly useful for functions that require extensive configuration.
+
+## Implementation Plan
+
+1. **Add Duplicate Button to Function UI:**
+   - Add a `function_duplicate` submit button to the `FunctionMod` form in `mycodo/mycodo_flask/forms/forms_function.py`
+
+2. **Create Duplication Logic:**
+   - Implement a `function_duplicate()` method in `mycodo/mycodo_flask/utils/utils_function.py` based on the existing `input_duplicate()` method
+   - This function will:
+     - Clone the base function using the existing `clone_model` utility
+     - Clone any associated function channels
+     - Clone any associated actions 
+     - Set the new function to deactivated state
+     - Add "Copy #" to the name of the duplicated function
+
+3. **Update Route Handler:**
+   - Modify the route handler in `mycodo/mycodo_flask/routes_function.py` to process the form submission when the duplicate button is clicked
+   - Add a mechanism to track which function was duplicated to allow proper UI feedback
+
+## Files to Modify
+
+1. `mycodo/mycodo_flask/forms/forms_function.py` - Add duplicate button to form
+2. `mycodo/mycodo_flask/utils/utils_function.py` - Implement function duplication logic
+3. `mycodo/mycodo_flask/routes_function.py` - Handle duplicate button submission
+
+## Expected Behavior
+
+After implementation, users will be able to:
+1. Navigate to a function in the UI
+2. Click the "Duplicate" button
+3. Get a new function with an identical configuration but with a new unique ID and a modified name
+4. The duplicated function will be in a deactivated state by default
+5. All settings, channels, and actions of the original function will be preserved in the duplicate 

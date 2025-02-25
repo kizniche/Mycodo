@@ -1,0 +1,184 @@
+# Function Duplication Feature Implementation Plan
+
+## Overview
+This plan outlines the steps to implement a function duplication feature for Mycodo functions similar to the existing duplicate functionality for inputs. This will enable users to quickly copy complex functions with all their settings and actions.
+
+## Files to Modify
+1. `mycodo/mycodo_flask/forms/forms_function.py` - Add duplicate button to form
+2. `mycodo/mycodo_flask/utils/utils_function.py` - Implement function duplication logic
+3. `mycodo/mycodo_flask/routes_function.py` - Handle duplicate button submission
+4. `mycodo/mycodo_flask/templates/pages/function.html` - Update JavaScript to handle function duplication
+5. `mycodo/mycodo_flask/templates/pages/function_options/function_options.html` - Add duplicate button to UI
+
+## Implementation Steps
+
+### Step 1: Add Duplicate Button to Function Form
+File: `mycodo/mycodo_flask/forms/forms_function.py`
+
+Locate the `FunctionMod` class (around line 21-32) and add a new submit field for the duplicate button:
+```python
+# Add this line right before function_mod = SubmitField(TRANSLATIONS['save']['title'])
+function_duplicate = SubmitField(TRANSLATIONS['duplicate']['title'])
+```
+
+### Step 2: Implement Function Duplication Logic
+File: `mycodo/mycodo_flask/utils/utils_function.py`
+
+Create a new function called `function_duplicate()` based on the existing `input_duplicate()` function in utils_input.py:
+```python
+def function_duplicate(form_mod):
+    """
+    Duplicate a function with a new unique ID and similar name
+    
+    :param form_mod: The form object containing function_id
+    :return: tuple(messages, new_function_id)
+    """
+    messages = {
+        "success": [],
+        "info": [],
+        "warning": [],
+        "error": []
+    }
+
+    # Get the function to duplicate
+    mod_function = Function.query.filter(
+        Function.unique_id == form_mod.function_id.data).first()
+
+    if not mod_function:
+        messages["error"].append("Could not find function")
+        return messages, None
+
+    # Duplicate function with new unique_id and name
+    new_function = clone_model(
+        mod_function, unique_id=set_uuid(), name=f"Copy of {mod_function.name}")
+
+    # Deactivate the new Function
+    mod_function = Function.query.filter(
+        Function.unique_id == new_function.unique_id).first()
+    if mod_function:
+        mod_function.is_activated = False
+        mod_function.save()
+
+        # Clone function channels
+        function_channels = FunctionChannel.query.filter(
+            FunctionChannel.function_id == form_mod.function_id.data).all()
+        for each_channel in function_channels:
+            clone_model(each_channel, unique_id=set_uuid(), function_id=mod_function.unique_id)
+
+        # Clone associated actions
+        actions = Actions.query.filter(
+            Actions.function_id == form_mod.function_id.data).all()
+        for each_action in actions:
+            clone_model(each_action, unique_id=set_uuid(), function_id=mod_function.unique_id)
+
+    messages["success"].append(
+        f"{TRANSLATIONS['duplicate']['title']} {TRANSLATIONS['function']['title']}")
+
+    return messages, new_function.unique_id
+```
+
+Make sure to add the necessary imports at the top of the file if they're not already there:
+```python
+from mycodo.databases import clone_model, set_uuid
+```
+
+### Step 3: Update Route Handler for Function Duplication
+File: `mycodo/mycodo_flask/routes_function.py`
+
+In the `page_function_submit()` function, add a new condition to handle the duplicate button:
+
+1. Around line 80-90, right after the condition for `form_add_function.function_add.data`, add:
+```python
+elif form_function_base.function_duplicate.data:
+    messages, function_id = utils_function.function_duplicate(
+        form_function_base)
+    duplicated_function_id = form_function_base.function_id.data
+```
+
+2. Before the return statement at the end of the function (around line 240-250), initialize the duplicated_function_id variable if it doesn't exist:
+```python
+# Add this variable to the locals before the return statement
+duplicated_function_id = duplicated_function_id if 'duplicated_function_id' in locals() else None
+```
+
+3. Include it in the return statement:
+```python
+return jsonify(data={
+    'action': action,
+    'function_id': function_id,
+    'duplicated_function_id': duplicated_function_id,  # Add this line
+    'messages': messages,
+    'page_refresh': page_refresh,
+    'dep_unmet': dep_unmet,
+    'dep_name': dep_name,
+    'dep_list': dep_list,
+    'dep_message': dep_message
+})
+```
+
+### Step 4: Update the HTML Template to Handle Duplication Response
+File: `mycodo/mycodo_flask/templates/pages/function.html`
+
+Update the JavaScript to handle function duplication response:
+
+1. Find the `processRequest` function JavaScript section (around line 300-350) and add 'function_duplicate' to the list of actions:
+
+```javascript
+if (action === 'function_add' ||
+    action === 'function_mod' ||
+    action === 'function_delete' ||
+    action === 'function_activate' ||
+    action === 'function_deactivate' ||
+    action === 'function_duplicate' ||      // Add this line
+    action === 'execute_all_actions' ||
+    // ... the rest of the conditions
+```
+
+2. Find the code section handling `function_add` (around line 365-390) and modify it to handle function_duplicate as well:
+
+From:
+```javascript
+if (action === 'function_add' && 'function_id' in data.data) {
+```
+
+To:
+```javascript
+if ((action === 'function_add' || action === 'function_duplicate') && 'function_id' in data.data) {
+```
+
+3. Add a line to hide the modal for the duplicated function (around line 390, after the grid.addWidget section):
+
+```javascript
+if (action === 'function_duplicate') { $('#modal_config_' + data.data.duplicated_function_id).modal('hide'); }
+```
+
+### Step 5: Add Duplicate Button to the Function Options HTML
+File: `mycodo/mycodo_flask/templates/pages/function_options/function_options.html`
+
+Add the duplicate button to the function options in the HTML file. Find the row with other buttons (around line 6-26) and add the duplicate button:
+
+```html
+<div class="col-auto">
+  <input onclick="return confirm('{{_('Are you sure you want to do this?')}}') && $(this).processRequest(this, 'function_duplicate');" name="function_duplicate" value="{{_('Duplicate')}}" class="form-control btn btn-primary btn-sm btn-block" type="button"/>
+</div>
+```
+
+Place it after the "Save" button but before the "Delete" button, around line 18.
+
+## Testing Steps
+1. Navigate to the Functions page in the Mycodo web interface
+2. Click on a function to edit it
+3. Click the "Duplicate" button
+4. Verify that a new function is created with:
+   - A name prefixed with "Copy of"
+   - The same settings as the original function
+   - All channels and actions duplicated
+   - The function is in a deactivated state
+
+## Notes
+- The implementation follows the same pattern as the existing input duplication feature
+- The duplicated function will be deactivated by default
+- The duplicated function will have a new unique ID
+- All settings, channels, and actions of the original function will be preserved in the duplicate
+- If the JavaScript doesn't work correctly, check the action names and response handling
+- The function.html file is using a grid layout, so a new grid item will be created for the duplicated function 
