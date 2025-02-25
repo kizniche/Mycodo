@@ -17,6 +17,9 @@
         <input onclick="return $(this).processRequest(this, 'output_mod');" name="output_mod" value="{{_('Save')}}" class="form-control btn btn-primary btn-block" type="button"/>
       </div>
       <div class="col-auto">
+        <input onclick="return confirm('{{_('Are you sure you want to do this?')}}') && $(this).processRequest(this, 'output_duplicate');" name="output_duplicate" value="{{_('Duplicate')}}" class="form-control btn btn-primary btn-block" type="button"/>
+      </div>
+      <div class="col-auto">
         <input onclick="return confirm('{{_('Are you sure you want to delete this?')}}') && $(this).processRequest(this, 'output_delete');" name="output_delete" value="{{_('Delete')}}" class="form-control btn btn-primary btn-block" type="button"/>
       </div>
     </div>

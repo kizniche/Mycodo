@@ -10,6 +10,7 @@ from mycodo.config import FUNCTION_INFO
 from mycodo.config import PID_INFO
 from mycodo.config_translations import TRANSLATIONS
 from mycodo.databases import set_uuid
+from mycodo.databases import clone_model
 from mycodo.databases.models import Actions
 from mycodo.databases.models import Conditional
 from mycodo.databases.models import ConditionalConditions
@@ -25,6 +26,7 @@ from mycodo.mycodo_flask.utils.utils_general import custom_channel_options_retur
 from mycodo.mycodo_flask.utils.utils_general import custom_options_return_json
 from mycodo.mycodo_flask.utils.utils_general import delete_entry_with_id
 from mycodo.mycodo_flask.utils.utils_general import return_dependencies
+from mycodo.mycodo_flask.utils.utils_misc import determine_controller_type
 from mycodo.utils.conditional import save_conditional_code
 from mycodo.utils.actions import parse_action_information
 from mycodo.utils.functions import parse_function_information
@@ -394,3 +396,103 @@ def action_execute_all(form):
             messages["error"].append(str(except_msg))
 
     return messages
+
+
+def function_duplicate(form_mod):
+    """
+    Duplicate a function with a new unique ID and similar name
+    
+    :param form_mod: The form object containing function_id
+    :return: tuple(messages, new_function_id)
+    """
+    messages = {
+        "success": [],
+        "info": [],
+        "warning": [],
+        "error": []
+    }
+
+    function_id = form_mod.function_id.data
+    controller_type = determine_controller_type(function_id)
+    
+    if controller_type == "Conditional":
+        orig_function = Conditional.query.filter(
+            Conditional.unique_id == function_id).first()
+    elif controller_type == "PID":
+        orig_function = PID.query.filter(
+            PID.unique_id == function_id).first()
+    elif controller_type == "Trigger":
+        orig_function = Trigger.query.filter(
+            Trigger.unique_id == function_id).first()
+    elif controller_type == "Function":
+        orig_function = Function.query.filter(
+            Function.unique_id == function_id).first()
+    elif controller_type == "Function_Custom":
+        orig_function = CustomController.query.filter(
+            CustomController.unique_id == function_id).first()
+    else:
+        messages["error"].append(f"Unknown controller type: {controller_type}")
+        return messages, None
+
+    if not orig_function:
+        messages["error"].append("Could not find function")
+        return messages, None
+
+    # Duplicate function with new unique_id and name
+    new_function = clone_model(
+        orig_function, unique_id=set_uuid(), name=f"Copy of {orig_function.name}")
+
+    if controller_type == "Conditional":
+        new_func = Conditional.query.filter(
+            Conditional.unique_id == new_function.unique_id).first()
+    elif controller_type == "PID":
+        new_func = PID.query.filter(
+            PID.unique_id == new_function.unique_id).first()
+    elif controller_type == "Trigger":
+        new_func = Trigger.query.filter(
+            Trigger.unique_id == new_function.unique_id).first()
+    elif controller_type == "Function":
+        new_func = Function.query.filter(
+            Function.unique_id == new_function.unique_id).first()
+    elif controller_type == "Function_Custom":
+        new_func = CustomController.query.filter(
+            CustomController.unique_id == new_function.unique_id).first()
+    
+    if not new_func:
+        messages["error"].append("Could not create duplicate function")
+        return messages, None
+    
+    # Deactivate the new Function
+    new_func.is_activated = False
+    new_func.save()
+
+    # Clone function channels
+    function_channels = FunctionChannel.query.filter(
+        FunctionChannel.function_id == function_id).all()
+    for each_channel in function_channels:
+        clone_model(each_channel, unique_id=set_uuid(), function_id=new_func.unique_id)
+
+    # Clone associated actions
+    actions = Actions.query.filter(
+        Actions.function_id == function_id).all()
+    for each_action in actions:
+        clone_model(each_action, unique_id=set_uuid(), function_id=new_func.unique_id)
+
+    # Clone device measurements for PIDs
+    if controller_type == "PID":
+        device_measurements = DeviceMeasurements.query.filter(
+            DeviceMeasurements.device_id == function_id).all()
+        for each_dev in device_measurements:
+            clone_model(each_dev, unique_id=set_uuid(), device_id=new_func.unique_id)
+
+    # Clone conditional conditions
+    if controller_type == "Conditional":
+        conditional_conditions = ConditionalConditions.query.filter(
+            ConditionalConditions.conditional_id == function_id).all()
+        for each_condition in conditional_conditions:
+            clone_model(each_condition, unique_id=set_uuid(), conditional_id=new_func.unique_id)
+
+    messages["success"].append(
+        f"{TRANSLATIONS['duplicate']['title']} {TRANSLATIONS['function']['title']}")
+
+    return messages, new_function.unique_id

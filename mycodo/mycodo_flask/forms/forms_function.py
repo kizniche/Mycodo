@@ -28,5 +28,6 @@ class FunctionMod(FlaskForm):
     execute_all_actions = SubmitField(lazy_gettext('Execute All Actions'))
     function_activate = SubmitField(TRANSLATIONS['activate']['title'])
     function_deactivate = SubmitField(TRANSLATIONS['deactivate']['title'])
+    function_duplicate = SubmitField(TRANSLATIONS['duplicate']['title'])
     function_mod = SubmitField(TRANSLATIONS['save']['title'])
     function_delete = SubmitField(TRANSLATIONS['delete']['title'])

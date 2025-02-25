@@ -318,6 +318,7 @@
           action === 'function_delete' ||
           action === 'function_activate' ||
           action === 'function_deactivate' ||
+          action === 'function_duplicate' ||
           action === 'execute_all_actions' ||
           action === 'add_action' ||
           action === 'save_action' ||
@@ -516,7 +517,33 @@
                     toastr['error']('Error: Could not get Function Conditions');
                   }
                 });
-              } else {
+              }
+              else if (action === 'function_duplicate' && 'function_id' in data.data) {
+                if (data.data.duplicated_function_id) {
+                  $('#modal_config_' + data.data.duplicated_function_id).modal('hide');
+                }
+                $.ajax({
+                  type: "GET",
+                  url: '/function?function_type=entry&function_id=' + data.data.function_id,
+                  success: function (new_entry) {
+                    if (data.data.messages.success.length !== 0) {
+                      grid.addWidget('<div class="grid-stack-item" id="gridstack_function_' + data.data.function_id + '" gs-id="' + data.data.function_id + '">' + new_entry + '</div>', {
+                        w: 24,
+                        h: 1,
+                        y: 999
+                      });
+                      {% if not hide_tooltips %}$('input[title]').tooltip({placement: 'top'});{% endif %}
+                      $('#action_type_' + data.data.function_id).selectpicker('refresh');
+                      $('#condition_type_' + data.data.function_id).selectpicker('refresh');
+                    }
+                    popup_response(data);
+                  },
+                  error: function() {
+                    toastr['error']('Error: Could not get new Function entry');
+                  }
+                });
+              }
+              else {
                 popup_response(data);
               }
             } else {

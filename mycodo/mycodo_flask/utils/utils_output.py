@@ -9,6 +9,7 @@ from flask_babel import gettext
 
 from mycodo.config_translations import TRANSLATIONS
 from mycodo.databases import set_uuid
+from mycodo.databases import clone_model
 from mycodo.databases.models import DeviceMeasurements
 from mycodo.databases.models import Output
 from mycodo.databases.models import OutputChannel
@@ -432,3 +433,48 @@ def manipulate_output(action, output_id):
 def get_all_output_states():
     daemon_control = DaemonControl()
     return daemon_control.output_states_all()
+
+
+def output_duplicate(form_output):
+    """
+    Duplicate an output with a new unique ID and similar name
+    
+    :param form_output: The form object containing output_id
+    :return: tuple(messages, new_output_id)
+    """
+    messages = {
+        "success": [],
+        "info": [],
+        "warning": [],
+        "error": []
+    }
+
+    # Get the output to duplicate
+    output = Output.query.filter(
+        Output.unique_id == form_output.output_id.data).first()
+
+    if not output:
+        messages["error"].append("Could not find output")
+        return messages, None
+
+    # Duplicate output with new unique_id and name
+    new_output = clone_model(
+        output, unique_id=set_uuid(), name=f"Copy of {output.name}")
+
+    # Deactivate the new output
+    mod_output = Output.query.filter(
+        Output.unique_id == new_output.unique_id).first()
+    if mod_output:
+        mod_output.is_activated = False
+        mod_output.save()
+
+        # Clone output channels
+        output_channels = OutputChannel.query.filter(
+            OutputChannel.output_id == form_output.output_id.data).all()
+        for each_channel in output_channels:
+            clone_model(each_channel, unique_id=set_uuid(), output_id=mod_output.unique_id)
+
+    messages["success"].append(
+        f"{TRANSLATIONS['duplicate']['title']} {TRANSLATIONS['output']['title']}")
+
+    return messages, new_output.unique_id
