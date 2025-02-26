@@ -491,10 +491,7 @@ def test_add_all_function_devices_logged_in_as_admin(_, testapp):
     print("\nTest: test_add_all_function_devices_logged_in_as_admin")
     login_user(testapp, 'admin', '53CR3t_p4zZW0rD')
 
-    # Add All Custom Functions
-    function_count = 0
-    # choices_function = choices_custom_functions()
-
+    # Clean up any existing functions first
     list_function_tables = [
         CustomController,
         Conditional,
@@ -502,6 +499,29 @@ def test_add_all_function_devices_logged_in_as_admin(_, testapp):
         PID,
         Trigger,
     ]
+    
+    # Count existing functions and delete them to start with clean state
+    pre_existing_function_count = 0
+    for each_table in list_function_tables:
+        for each_function in each_table.query.all():
+            # Delete any existing functions
+            response = delete_data(testapp, 'function', device_dev=each_function)
+            assert 'data' in response.json
+            assert 'messages' in response.json['data']
+            
+        pre_existing_function_count += each_table.query.count()
+    
+    # Verify clean state - should be 0 functions
+    total_count = (CustomController.query.count() +
+                   Conditional.query.count() +
+                   Function.query.count() +
+                   PID.query.count() +
+                   Trigger.query.count())
+    assert total_count == 0, f"Unable to clean up pre-existing functions. Still have {total_count} functions."
+
+    # Add All Custom Functions
+    function_count = 0
+    # choices_function = choices_custom_functions()
 
     choices_functions = []
     for choice_function in FUNCTIONS:
@@ -568,6 +588,39 @@ def test_add_all_function_actions_logged_in_as_admin(_, testapp):
     print("\nTest: test_add_all_function_actions_logged_in_as_admin")
     login_user(testapp, 'admin', '53CR3t_p4zZW0rD')
 
+    # Clean up any existing actions
+    for action in Actions.query.all():
+        response = delete_data(testapp, 'action', device_dev=action)
+        assert 'data' in response.json
+        assert 'messages' in response.json['data']
+    
+    # Verify no existing actions
+    assert Actions.query.count() == 0, f"Unable to clean up pre-existing actions. Still have {Actions.query.count()} actions."
+
+    # Clean up any existing functions from previous tests
+    list_function_tables = [
+        CustomController,
+        Conditional,
+        Function,
+        PID,
+        Trigger,
+    ]
+    
+    for each_table in list_function_tables:
+        for each_function in each_table.query.all():
+            # Delete any existing functions
+            response = delete_data(testapp, 'function', device_dev=each_function)
+            assert 'data' in response.json
+            assert 'messages' in response.json['data']
+    
+    # Verify clean state - should be 0 functions
+    total_count = (CustomController.query.count() +
+                   Conditional.query.count() +
+                   Function.query.count() +
+                   PID.query.count() +
+                   Trigger.query.count())
+    assert total_count == 0, f"Unable to clean up pre-existing functions. Still have {total_count} functions."
+
     action_count = 0
 
     choices_action = []
@@ -623,7 +676,6 @@ def test_add_all_function_actions_logged_in_as_admin(_, testapp):
     assert response.json['data']['messages']['error'] == []
     assert 'success' in response.json['data']['messages']
     assert len(response.json['data']['messages']['success']) == 1
-
 
 
 @mock.patch('mycodo.mycodo_flask.routes_authentication.login_log')

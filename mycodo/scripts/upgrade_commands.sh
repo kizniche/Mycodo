@@ -622,6 +622,27 @@ case "${1:-''}" in
 
         chown root:mycodo "${MYCODO_PATH}"/mycodo/scripts/mycodo_wrapper
         chmod 4770 "${MYCODO_PATH}"/mycodo/scripts/mycodo_wrapper
+
+        printf "\n#### Setting up Flask socket and restarting services\n"
+        # Remove socket file if it exists (let service create it properly)
+        rm -f /usr/local/mycodoflask.sock
+
+        # Set proper directory permissions for socket
+        mkdir -p /usr/local
+        chmod 775 /usr/local
+        chown root:mycodo /usr/local
+
+        # Make templates readable by nginx
+        chmod -R 755 /opt/Mycodo/mycodo/mycodo_flask/templates
+
+        # Ensure www-data is in mycodo group
+        usermod -a -G mycodo www-data
+
+        # Restart all services in the correct order
+        systemctl restart nginx
+        systemctl restart mycodoflask
+        systemctl restart mycodo
+        printf "Flask socket permissions fixed and services restarted.\n"
     ;;
     'update-pip3')
         printf "\n#### Updating pip\n"

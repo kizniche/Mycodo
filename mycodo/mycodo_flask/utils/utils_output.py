@@ -449,32 +449,79 @@ def output_duplicate(form_output):
         "error": []
     }
 
+    current_app.logger.debug(f"Starting output duplication for output ID: {form_output.output_id.data}")
+
     # Get the output to duplicate
     output = Output.query.filter(
         Output.unique_id == form_output.output_id.data).first()
 
     if not output:
         messages["error"].append("Could not find output")
+        current_app.logger.error(f"Output duplication failed: Could not find output with ID: {form_output.output_id.data}")
         return messages, None
 
-    # Duplicate output with new unique_id and name
-    new_output = clone_model(
-        output, unique_id=set_uuid(), name=f"Copy of {output.name}")
-
-    # Deactivate the new output
-    mod_output = Output.query.filter(
-        Output.unique_id == new_output.unique_id).first()
-    if mod_output:
-        mod_output.is_activated = False
-        mod_output.save()
-
-        # Clone output channels
+    try:
+        # Start a single transaction for all clone operations
+        new_output_id = None
+        
+        # Get all related data before modifying anything
         output_channels = OutputChannel.query.filter(
             OutputChannel.output_id == form_output.output_id.data).all()
-        for each_channel in output_channels:
-            clone_model(each_channel, unique_id=set_uuid(), output_id=mod_output.unique_id)
+        current_app.logger.debug(f"Found {len(output_channels)} output channels to duplicate")
+        
+        # Create new unique_id outside the transaction
+        new_unique_id = set_uuid()
+        current_app.logger.debug(f"Generated new unique ID: {new_unique_id}")
+        
+        # Clone all objects in a single transaction without immediate commits
+        with db.session.no_autoflush:
+            # Duplicate output with new unique_id and name
+            new_output = output.__class__()
+            table = output.__table__
+            non_pk_columns = [k for k in table.columns.keys() if k not in table.primary_key]
+            data = {c: getattr(output, c) for c in non_pk_columns}
+            data['unique_id'] = new_unique_id
+            data['name'] = f"Copy of {output.name}"
+            for key, value in data.items():
+                if hasattr(new_output, key):
+                    setattr(new_output, key, value)
+            
+            # Deactivate the new Output
+            new_output.is_activated = False
+            db.session.add(new_output)
+            current_app.logger.debug(f"Added new output to session")
+            
+            # Clone output channels
+            for each_channel in output_channels:
+                new_channel = each_channel.__class__()
+                channel_table = each_channel.__table__
+                channel_non_pk = [k for k in channel_table.columns.keys() if k not in channel_table.primary_key]
+                channel_data = {c: getattr(each_channel, c) for c in channel_non_pk}
+                channel_data['unique_id'] = set_uuid()
+                channel_data['output_id'] = new_unique_id
+                for key, value in channel_data.items():
+                    if hasattr(new_channel, key):
+                        setattr(new_channel, key, value)
+                db.session.add(new_channel)
+            
+            # Commit all changes in one transaction
+            try:
+                db.session.commit()
+                new_output_id = new_unique_id
+                current_app.logger.debug(f"Successfully committed all output duplication operations")
+            except Exception as e:
+                db.session.rollback()
+                messages["error"].append(f"Error duplicating output: {str(e)}")
+                current_app.logger.exception(f"Failed to commit output duplication: {e}")
+                return messages, None
+                
+    except Exception as e:
+        messages["error"].append(f"Error duplicating output: {str(e)}")
+        current_app.logger.exception(f"Exception during output duplication: {e}")
+        return messages, None
 
     messages["success"].append(
         f"{TRANSLATIONS['duplicate']['title']} {TRANSLATIONS['output']['title']}")
+    current_app.logger.debug(f"Output duplication completed successfully")
 
-    return messages, new_output.unique_id
+    return messages, new_output_id

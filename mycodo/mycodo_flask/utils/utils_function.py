@@ -414,6 +414,7 @@ def function_duplicate(form_mod):
 
     function_id = form_mod.function_id.data
     controller_type = determine_controller_type(function_id)
+    current_app.logger.debug(f"Starting function duplication for function ID: {function_id}, type: {controller_type}")
     
     if controller_type == "Conditional":
         orig_function = Conditional.query.filter(
@@ -432,67 +433,131 @@ def function_duplicate(form_mod):
             CustomController.unique_id == function_id).first()
     else:
         messages["error"].append(f"Unknown controller type: {controller_type}")
+        current_app.logger.error(f"Function duplication failed: Unknown controller type: {controller_type}")
         return messages, None
 
     if not orig_function:
         messages["error"].append("Could not find function")
+        current_app.logger.error(f"Function duplication failed: Could not find function with ID: {function_id}")
         return messages, None
 
-    # Duplicate function with new unique_id and name
-    new_function = clone_model(
-        orig_function, unique_id=set_uuid(), name=f"Copy of {orig_function.name}")
-
-    if controller_type == "Conditional":
-        new_func = Conditional.query.filter(
-            Conditional.unique_id == new_function.unique_id).first()
-    elif controller_type == "PID":
-        new_func = PID.query.filter(
-            PID.unique_id == new_function.unique_id).first()
-    elif controller_type == "Trigger":
-        new_func = Trigger.query.filter(
-            Trigger.unique_id == new_function.unique_id).first()
-    elif controller_type == "Function":
-        new_func = Function.query.filter(
-            Function.unique_id == new_function.unique_id).first()
-    elif controller_type == "Function_Custom":
-        new_func = CustomController.query.filter(
-            CustomController.unique_id == new_function.unique_id).first()
-    
-    if not new_func:
-        messages["error"].append("Could not create duplicate function")
+    try:
+        # Start a single transaction for all clone operations
+        new_function_id = None
+        
+        # Get all related data before modifying anything
+        function_channels = FunctionChannel.query.filter(
+            FunctionChannel.function_id == function_id).all()
+        current_app.logger.debug(f"Found {len(function_channels)} function channels to duplicate")
+        
+        actions = Actions.query.filter(
+            Actions.function_id == function_id).all()
+        current_app.logger.debug(f"Found {len(actions)} actions to duplicate")
+        
+        device_measurements = []
+        if controller_type == "PID":
+            device_measurements = DeviceMeasurements.query.filter(
+                DeviceMeasurements.device_id == function_id).all()
+            current_app.logger.debug(f"Found {len(device_measurements)} device measurements to duplicate")
+        
+        conditional_conditions = []
+        if controller_type == "Conditional":
+            conditional_conditions = ConditionalConditions.query.filter(
+                ConditionalConditions.conditional_id == function_id).all()
+            current_app.logger.debug(f"Found {len(conditional_conditions)} conditional conditions to duplicate")
+        
+        # Create new unique_id outside the transaction
+        new_unique_id = set_uuid()
+        current_app.logger.debug(f"Generated new unique ID: {new_unique_id}")
+        
+        # Clone all objects in a single transaction without immediate commits
+        with db.session.no_autoflush:
+            # Duplicate function with new unique_id and name
+            new_function = orig_function.__class__()
+            table = orig_function.__table__
+            non_pk_columns = [k for k in table.columns.keys() if k not in table.primary_key]
+            data = {c: getattr(orig_function, c) for c in non_pk_columns}
+            data['unique_id'] = new_unique_id
+            data['name'] = f"Copy of {orig_function.name}"
+            for key, value in data.items():
+                if hasattr(new_function, key):
+                    setattr(new_function, key, value)
+            
+            # Deactivate the new Function
+            new_function.is_activated = False
+            db.session.add(new_function)
+            current_app.logger.debug(f"Added new function to session")
+            
+            # Clone function channels
+            for each_channel in function_channels:
+                new_channel = each_channel.__class__()
+                channel_table = each_channel.__table__
+                channel_non_pk = [k for k in channel_table.columns.keys() if k not in channel_table.primary_key]
+                channel_data = {c: getattr(each_channel, c) for c in channel_non_pk}
+                channel_data['unique_id'] = set_uuid()
+                channel_data['function_id'] = new_unique_id
+                for key, value in channel_data.items():
+                    if hasattr(new_channel, key):
+                        setattr(new_channel, key, value)
+                db.session.add(new_channel)
+            
+            # Clone associated actions
+            for each_action in actions:
+                new_action = each_action.__class__()
+                action_table = each_action.__table__
+                action_non_pk = [k for k in action_table.columns.keys() if k not in action_table.primary_key]
+                action_data = {c: getattr(each_action, c) for c in action_non_pk}
+                action_data['unique_id'] = set_uuid()
+                action_data['function_id'] = new_unique_id
+                for key, value in action_data.items():
+                    if hasattr(new_action, key):
+                        setattr(new_action, key, value)
+                db.session.add(new_action)
+            
+            # Clone device measurements for PIDs
+            for each_dev in device_measurements:
+                new_measurement = each_dev.__class__()
+                meas_table = each_dev.__table__
+                meas_non_pk = [k for k in meas_table.columns.keys() if k not in meas_table.primary_key]
+                meas_data = {c: getattr(each_dev, c) for c in meas_non_pk}
+                meas_data['unique_id'] = set_uuid()
+                meas_data['device_id'] = new_unique_id
+                for key, value in meas_data.items():
+                    if hasattr(new_measurement, key):
+                        setattr(new_measurement, key, value)
+                db.session.add(new_measurement)
+            
+            # Clone conditional conditions
+            for each_condition in conditional_conditions:
+                new_condition = each_condition.__class__()
+                cond_table = each_condition.__table__
+                cond_non_pk = [k for k in cond_table.columns.keys() if k not in cond_table.primary_key]
+                cond_data = {c: getattr(each_condition, c) for c in cond_non_pk}
+                cond_data['unique_id'] = set_uuid()
+                cond_data['conditional_id'] = new_unique_id
+                for key, value in cond_data.items():
+                    if hasattr(new_condition, key):
+                        setattr(new_condition, key, value)
+                db.session.add(new_condition)
+            
+            # Commit all changes in one transaction
+            try:
+                db.session.commit()
+                new_function_id = new_unique_id
+                current_app.logger.debug(f"Successfully committed all duplication operations")
+            except Exception as e:
+                db.session.rollback()
+                messages["error"].append(f"Error duplicating function: {str(e)}")
+                current_app.logger.exception(f"Failed to commit function duplication: {e}")
+                return messages, None
+                
+    except Exception as e:
+        messages["error"].append(f"Error duplicating function: {str(e)}")
+        current_app.logger.exception(f"Exception during function duplication: {e}")
         return messages, None
-    
-    # Deactivate the new Function
-    new_func.is_activated = False
-    new_func.save()
-
-    # Clone function channels
-    function_channels = FunctionChannel.query.filter(
-        FunctionChannel.function_id == function_id).all()
-    for each_channel in function_channels:
-        clone_model(each_channel, unique_id=set_uuid(), function_id=new_func.unique_id)
-
-    # Clone associated actions
-    actions = Actions.query.filter(
-        Actions.function_id == function_id).all()
-    for each_action in actions:
-        clone_model(each_action, unique_id=set_uuid(), function_id=new_func.unique_id)
-
-    # Clone device measurements for PIDs
-    if controller_type == "PID":
-        device_measurements = DeviceMeasurements.query.filter(
-            DeviceMeasurements.device_id == function_id).all()
-        for each_dev in device_measurements:
-            clone_model(each_dev, unique_id=set_uuid(), device_id=new_func.unique_id)
-
-    # Clone conditional conditions
-    if controller_type == "Conditional":
-        conditional_conditions = ConditionalConditions.query.filter(
-            ConditionalConditions.conditional_id == function_id).all()
-        for each_condition in conditional_conditions:
-            clone_model(each_condition, unique_id=set_uuid(), conditional_id=new_func.unique_id)
 
     messages["success"].append(
         f"{TRANSLATIONS['duplicate']['title']} {TRANSLATIONS['function']['title']}")
+    current_app.logger.debug(f"Function duplication completed successfully")
 
-    return messages, new_function.unique_id
+    return messages, new_function_id
