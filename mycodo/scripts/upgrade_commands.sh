@@ -622,8 +622,7 @@ case "${1:-''}" in
 
         chown root:mycodo "${MYCODO_PATH}"/mycodo/scripts/mycodo_wrapper
         chmod 4770 "${MYCODO_PATH}"/mycodo/scripts/mycodo_wrapper
-
-        printf "\n#### Setting up Flask socket and restarting services\n"
+        
         # Remove socket file if it exists (let service create it properly)
         rm -f /usr/local/mycodoflask.sock
 
@@ -637,12 +636,7 @@ case "${1:-''}" in
 
         # Ensure www-data is in mycodo group
         usermod -a -G mycodo www-data
-
-        # Restart all services in the correct order
-        systemctl restart nginx
-        systemctl restart mycodoflask
-        systemctl restart mycodo
-        printf "Flask socket permissions fixed and services restarted.\n"
+        
     ;;
     'update-pip3')
         printf "\n#### Updating pip\n"
@@ -707,11 +701,29 @@ case "${1:-''}" in
         done
     ;;
     'web-server-restart')
-        printf "\n#### Restarting nginx\n"
-        service nginx restart
-        sleep 5
-        printf "#### Reloading mycodoflask\n"
-        service mycodoflask reload
+        printf "\n#### Restarting web and daemon services in proper order\n"
+        
+        # Ensure socket directory exists with proper permissions before any operations
+        printf "#### Ensuring socket directory permissions\n"
+        mkdir -p /usr/local
+        chmod 775 /usr/local
+        chown root:mycodo /usr/local
+        
+        # Remove existing socket if present to avoid permission issues
+        if [ -S /usr/local/mycodoflask.sock ]; then
+            printf "#### Removing existing socket file\n"
+            rm -f /usr/local/mycodoflask.sock
+        fi
+        
+        printf "#### Restarting nginx\n"
+        systemctl restart nginx
+        sleep 2
+        printf "#### Restarting mycodoflask\n"
+        systemctl restart mycodoflask
+        sleep 2
+        printf "#### Restarting mycodo\n"
+        systemctl restart mycodo
+        printf "#### All services restarted\n"
     ;;
     'web-server-disable')
         printf "\n#### Disabling service for nginx web server\n"

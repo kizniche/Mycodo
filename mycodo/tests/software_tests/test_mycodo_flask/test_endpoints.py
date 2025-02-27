@@ -590,11 +590,14 @@ def test_add_all_function_actions_logged_in_as_admin(_, testapp):
 
     # Clean up any existing actions
     for action in Actions.query.all():
+        print(f"DEBUG: Found existing action with ID {action.unique_id} for function {action.function_id}")
         response = delete_data(testapp, 'action', device_dev=action)
         assert 'data' in response.json
         assert 'messages' in response.json['data']
     
     # Verify no existing actions
+    action_count_before = Actions.query.count()
+    print(f"DEBUG: Initial action count: {action_count_before}")
     assert Actions.query.count() == 0, f"Unable to clean up pre-existing actions. Still have {Actions.query.count()} actions."
 
     # Clean up any existing functions from previous tests
@@ -609,6 +612,7 @@ def test_add_all_function_actions_logged_in_as_admin(_, testapp):
     for each_table in list_function_tables:
         for each_function in each_table.query.all():
             # Delete any existing functions
+            print(f"DEBUG: Deleting existing function: {each_function.unique_id}")
             response = delete_data(testapp, 'function', device_dev=each_function)
             assert 'data' in response.json
             assert 'messages' in response.json['data']
@@ -619,6 +623,7 @@ def test_add_all_function_actions_logged_in_as_admin(_, testapp):
                    Function.query.count() +
                    PID.query.count() +
                    Trigger.query.count())
+    print(f"DEBUG: Total function count after cleanup: {total_count}")
     assert total_count == 0, f"Unable to clean up pre-existing functions. Still have {total_count} functions."
 
     action_count = 0
@@ -629,6 +634,7 @@ def test_add_all_function_actions_logged_in_as_admin(_, testapp):
         choices_action.append(action)
 
     # Add Execute Actions function
+    print(f"DEBUG: Adding new function_actions")
     response = add_function(testapp, function_type="function_actions")
     assert 'data' in response.json
     assert 'messages' in response.json['data']
@@ -638,27 +644,45 @@ def test_add_all_function_actions_logged_in_as_admin(_, testapp):
     assert len(response.json['data']['messages']['success']) == 1
 
     function_dev = Function.query.filter(Function.id == 1).first()
+    print(f"DEBUG: Created function with ID {function_dev.unique_id}")
 
     # Add/delete every action
     for index, each_action in enumerate(choices_action):
         print("test_add_all_function_actions_logged_in_as_admin: Adding, saving, and deleting Action ({}/{}): {}".format(
             index + 1, len(choices_action), each_action))
+        
+        # Debug actions before adding
+        all_actions_before = Actions.query.all()
+        print(f"DEBUG: Actions before adding new one: {[a.unique_id for a in all_actions_before]}")
+        
         response = add_action(testapp, function_id=function_dev.unique_id, action_type=each_action)
         assert 'data' in response.json
         assert 'messages' in response.json['data']
         assert 'error' in response.json['data']['messages']
-        assert response.json['data']['messages']['error'] == []
+        assert response.json['data']['messages']['error'] == [], f"Error adding action: {response.json['data']['messages']['error']}"
         assert 'success' in response.json['data']['messages']
         assert len(response.json['data']['messages']['success']) == 1
 
+        # Check if action was created in database
+        all_actions_after = Actions.query.all()
+        print(f"DEBUG: Actions after adding: {[a.unique_id for a in all_actions_after]}")
+        
         action = Actions.query.first()
+        if action:
+            print(f"DEBUG: Found action with ID {action.unique_id}, function_id: {action.function_id}")
+        else:
+            print("DEBUG: No action found after adding!")
 
         # Verify data was entered into the database
         action_count += 1
+        current_count = Actions.query.count()
+        print(f"DEBUG: Expected action count: {action_count}, actual count: {current_count}")
         assert Actions.query.count() == action_count, "Number of Actions doesn't match: In DB {}, Should be: {}".format(
             Actions.query.count(), action_count)
 
         # Delete action
+        if action:
+            print(f"DEBUG: Deleting action with ID {action.unique_id}")
         response = delete_data(testapp, 'action', device_dev=action)
         assert 'data' in response.json
         assert 'messages' in response.json['data']
@@ -667,8 +691,13 @@ def test_add_all_function_actions_logged_in_as_admin(_, testapp):
         assert 'success' in response.json['data']['messages']
         assert len(response.json['data']['messages']['success']) == 1
         action_count -= 1
+        
+        # Verify action was deleted
+        remaining_count = Actions.query.count()
+        print(f"DEBUG: After deletion, action count: {remaining_count}")
 
     # Delete function
+    print(f"DEBUG: Deleting function with ID {function_dev.unique_id}")
     response = delete_data(testapp, 'function', device_dev=function_dev)
     assert 'data' in response.json
     assert 'messages' in response.json['data']
@@ -812,6 +841,30 @@ def add_function(testapp, function_type=''):
 
 def add_action(testapp, function_id=None, action_type=''):
     """Go to the function page and add action."""
+    # First, get the function type for the function ID
+    function_type = 'function'  # Default
+    if function_id:
+        from mycodo.databases.models import Function, Conditional, Trigger, CustomController, PID
+        # Try to find the function in each possible table
+        function = Function.query.filter(Function.unique_id == function_id).first()
+        if function:
+            function_type = function.function_type
+            print(f"DEBUG: Found function {function_id} with type {function_type}")
+        else:
+            # Check other function tables
+            conditional = Conditional.query.filter(Conditional.unique_id == function_id).first()
+            if conditional:
+                function_type = 'conditional'
+            trigger = Trigger.query.filter(Trigger.unique_id == function_id).first()
+            if trigger:
+                function_type = 'trigger'
+            custom = CustomController.query.filter(CustomController.unique_id == function_id).first()
+            if custom:
+                function_type = 'custom'
+            pid = PID.query.filter(PID.unique_id == function_id).first()
+            if pid:
+                function_type = 'pid'
+    
     form = testapp.get('/function').maybe_follow().forms['mod_function_form']
     form_dict = {}
     for each_field in form.fields.items():
@@ -821,13 +874,17 @@ def add_action(testapp, function_id=None, action_type=''):
         form_dict.pop("function_mod")
     if "function_delete" in form_dict:
         form_dict.pop("function_delete")
+    if "function_duplicate" in form_dict:
+        form_dict.pop("function_duplicate")
     if "execute_all_actions" in form_dict:
         form_dict.pop("execute_all_actions")
     if function_id:
         form_dict['function_id'] = function_id
-    form_dict['function_type'] = 'function'
+    form_dict['function_type'] = function_type  # Use the determined function type instead of hardcoding
     form_dict['add_action'] = 'Add'
     form_dict['action_type'] = action_type
+    
+    print(f"DEBUG: Submitting action form with function_id={function_id}, function_type={function_type}, action_type={action_type}")
     response = testapp.post('/function_submit', form_dict)
     # response.showbrowser()
     return response
@@ -886,7 +943,7 @@ def save_data(testapp, data_type):
         form = testapp.get('/output').maybe_follow().forms['mod_output_form']
         form_dict = {}
         for each_field in form.fields.items():
-            if each_field[0]:
+            if each_field[0] and each_field[0] not in ['output_delete', 'output_duplicate']:
                 form_dict[each_field[0]] = form[each_field[0]].value
         form_dict['output_mod'] = 'Save'
         response = testapp.post('/output_submit', form_dict)
@@ -894,7 +951,7 @@ def save_data(testapp, data_type):
         form = testapp.get('/function').maybe_follow().forms['mod_function_form']
         form_dict = {}
         for each_field in form.fields.items():
-            if each_field[0]:
+            if each_field[0] and each_field[0] not in ['function_delete', 'function_duplicate', 'execute_all_actions']:
                 form_dict[each_field[0]] = form[each_field[0]].value
         form_dict['function_mod'] = 'Save'
         response = testapp.post('/function_submit', form_dict)
