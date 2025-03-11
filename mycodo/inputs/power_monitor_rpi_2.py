@@ -59,7 +59,7 @@ INPUT_INFORMATION = {
     'options_disabled': ['interface'],
 
     'dependencies_module': [
-        ('pip-pypi', 'rpi_power_monitor', 'git+https://github.com/David00/rpi-power-monitor.git@192a99880bd576b2f3e7016b04d03f252ddaf99f')
+        ('pip-pypi', 'rpi_power_monitor', 'git+https://github.com/David00/rpi-power-monitor`.git@192a99880bd576b2f3e7016b04d03f252ddaf99f')
     ],
 
     'custom_commands': [
@@ -134,12 +134,28 @@ INPUT_INFORMATION = {
             'phrase': 'The calibration value for CT1'
         },
         {
+            'id': 'ct1_rating',
+            'type': 'float',
+            'default_value': 1.0,
+            'required': True,
+            'name': 'CT1 Rating',
+            'phrase': 'The Amp rating for the CT1 clamp'
+        },
+        {
             'id': 'ct2_accuracy_calibration',
             'type': 'float',
             'default_value': 1.0,
             'required': True,
             'name': 'CT2 Calibration',
             'phrase': 'The calibration value for CT2'
+        },
+        {
+            'id': 'ct2_rating',
+            'type': 'float',
+            'default_value': 100,
+            'required': True,
+            'name': 'CT2 Rating',
+            'phrase': 'The Amp rating for the CT2 clamp'
         },
         {
             'id': 'ct3_accuracy_calibration',
@@ -150,12 +166,28 @@ INPUT_INFORMATION = {
             'phrase': 'The calibration value for CT3'
         },
         {
+            'id': 'ct3_rating',
+            'type': 'float',
+            'default_value': 100,
+            'required': True,
+            'name': 'CT3 Rating',
+            'phrase': 'The Amp rating for the CT3 clamp'
+        },
+        {
             'id': 'ct4_accuracy_calibration',
             'type': 'float',
             'default_value': 1.0,
             'required': True,
             'name': 'CT4 Calibration',
             'phrase': 'The calibration value for CT4'
+        },
+        {
+            'id': 'ct4_rating',
+            'type': 'float',
+            'default_value': 100,
+            'required': True,
+            'name': 'CT4 Rating',
+            'phrase': 'The Amp rating for the CT4 clamp'
         },
         {
             'id': 'ct5_accuracy_calibration',
@@ -166,12 +198,28 @@ INPUT_INFORMATION = {
             'phrase': 'The calibration value for CT5'
         },
         {
+            'id': 'ct5_rating',
+            'type': 'float',
+            'default_value': 100,
+            'required': True,
+            'name': 'CT5 Rating',
+            'phrase': 'The Amp rating for the CT5 clamp'
+        },
+        {
             'id': 'ct6_accuracy_calibration',
             'type': 'float',
             'default_value': 1.0,
             'required': True,
             'name': 'CT6 Calibration',
             'phrase': 'The calibration value for CT6'
+        },
+        {
+            'id': 'ct6_rating',
+            'type': 'float',
+            'default_value': 100,
+            'required': True,
+            'name': 'CT6 Rating',
+            'phrase': 'The Amp rating for the CT6 clamp'
         },
         {
             'id': 'ac_accuracy_calibration',
@@ -202,6 +250,12 @@ class InputModule(AbstractInput):
         self.ct4_accuracy_calibration = None
         self.ct5_accuracy_calibration = None
         self.ct6_accuracy_calibration = None
+        self.ct1_rating = None
+        self.ct2_rating = None
+        self.ct3_rating = None
+        self.ct4_rating = None
+        self.ct5_rating = None
+        self.ct6_rating = None
         self.ac_accuracy_calibration = None
 
         self.timer_kwh_measure = 0
@@ -261,7 +315,7 @@ class InputModule(AbstractInput):
             'current_transformers': {
                 'channel_1': {
                     'name': 'Channel 1',
-                    'rating': 100,
+                    'rating': self.ct1_rating,
                     'type': 'consumption',
                     'two_pole': False,
                     'enabled': self.is_enabled(0),
@@ -272,7 +326,7 @@ class InputModule(AbstractInput):
                 },
                 'channel_2': {
                     'name': 'Channel 2',
-                    'rating': 100,
+                    'rating': self.ct2_rating,
                     'type': 'consumption',
                     'two_pole': False,
                     'enabled': self.is_enabled(1),
@@ -283,7 +337,7 @@ class InputModule(AbstractInput):
                 },
                 'channel_3': {
                     'name': 'Channel 3',
-                    'rating': 100,
+                    'rating': self.ct3_rating,
                     'type': 'consumption',
                     'two_pole': False,
                     'enabled': self.is_enabled(2),
@@ -294,7 +348,7 @@ class InputModule(AbstractInput):
                 },
                 'channel_4': {
                     'name': 'Channel 4',
-                    'rating': 100,
+                    'rating': self.ct4_rating,
                     'type': 'consumption',
                     'two_pole': False,
                     'enabled': self.is_enabled(3),
@@ -305,7 +359,7 @@ class InputModule(AbstractInput):
                 },
                 'channel_5': {
                     'name': 'Channel 5',
-                    'rating': 100,
+                    'rating': self.ct5_rating,
                     'type': 'consumption',
                     'two_pole': False,
                     'enabled': self.is_enabled(4),
@@ -316,7 +370,7 @@ class InputModule(AbstractInput):
                 },
                 'channel_6': {
                     'name': 'Channel 6',
-                    'rating': 100,
+                    'rating': self.ct6_rating,
                     'type': 'consumption',
                     'two_pole': False,
                     'enabled': self.is_enabled(5),
