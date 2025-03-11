@@ -59,7 +59,7 @@ INPUT_INFORMATION = {
     'options_disabled': ['interface'],
 
     'dependencies_module': [
-        ('pip-pypi', 'rpi_power_monitor', 'git+https://github.com/David00/rpi-power-monitor.git@eeb3143fba6452de916407ae94a0a6e8834a7d67')
+        ('pip-pypi', 'rpi_power_monitor', 'git+https://github.com/David00/rpi-power-monitor.git@192a99880bd576b2f3e7016b04d03f252ddaf99f')
     ],
 
     'custom_commands': [

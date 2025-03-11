@@ -556,7 +556,7 @@ def controller_activate_deactivate(messages,
 
     try:
         if not messages["error"]:
-            control = DaemonControl()
+            control = DaemonControl(pyro_timeout=60)
             if controller_action == 'activate':
                 return_values = control.controller_activate(controller_id)
             else:
