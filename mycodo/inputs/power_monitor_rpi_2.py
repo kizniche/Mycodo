@@ -136,7 +136,7 @@ INPUT_INFORMATION = {
         {
             'id': 'ct1_rating',
             'type': 'float',
-            'default_value': 1.0,
+            'default_value': 100,
             'required': True,
             'name': 'CT1 Rating',
             'phrase': 'The Amp rating for the CT1 clamp'
@@ -268,7 +268,7 @@ class InputModule(AbstractInput):
             self.try_initialize()
 
     def initialize(self):
-        from power_monitor import RPiPowerMonitor, logger, ch
+        from rpi_power_monitor import RPiPowerMonitor, logger, ch
 
         logger.setLevel(logging.DEBUG)
         ch.setLevel(logging.DEBUG)
