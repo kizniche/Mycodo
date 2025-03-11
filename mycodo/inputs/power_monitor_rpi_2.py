@@ -268,7 +268,7 @@ class InputModule(AbstractInput):
             self.try_initialize()
 
     def initialize(self):
-        from rpi_power_monitor import RPiPowerMonitor, logger, ch
+        from rpi_power_monitor.power_monitor import RPiPowerMonitor, logger, ch
 
         logger.setLevel(logging.DEBUG)
         ch.setLevel(logging.DEBUG)
