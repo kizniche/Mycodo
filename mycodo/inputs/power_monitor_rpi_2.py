@@ -19,17 +19,17 @@ for ct in range(1, 7):
         'unit': 'W',
         'name': f'CT{ct}'
     }
-    measurements_dict[channel] = {
+    measurements_dict[channel + 1] = {
         'measurement': 'energy',
         'unit': 'kWh',
         'name': f'CT{ct} Total'
     }
-    measurements_dict[channel + 1] = {
+    measurements_dict[channel + 2] = {
         'measurement': 'electrical_current',
         'unit': 'A',
         'name': f'CT{ct}'
     }
-    measurements_dict[channel + 2] = {
+    measurements_dict[channel + 3] = {
         'measurement': 'power_factor',
         'unit': 'unitless',
         'name': f'CT{ct}'
@@ -59,7 +59,7 @@ INPUT_INFORMATION = {
     'options_disabled': ['interface'],
 
     'dependencies_module': [
-        ('pip-pypi', 'rpi_power_monitor', 'git+https://github.com/David00/rpi-power-monitor`.git@192a99880bd576b2f3e7016b04d03f252ddaf99f')
+        ('pip-pypi', 'rpi_power_monitor', 'git+https://github.com/kizniche/rpi-power-monitor-040-lib')
     ],
 
     'custom_commands': [
@@ -268,121 +268,123 @@ class InputModule(AbstractInput):
             self.try_initialize()
 
     def initialize(self):
-        from rpi_power_monitor.power_monitor import RPiPowerMonitor, logger, ch
+        try:
+            from rpi_power_monitor.power_monitor import RPiPowerMonitor, ch
 
-        logger.setLevel(logging.DEBUG)
-        ch.setLevel(logging.DEBUG)
+            self.kwh_saved = self.get_custom_option("kwh_saved")
 
-        self.kwh_saved = self.get_custom_option("kwh_saved")
-
-        if self.kwh_saved is None:
-            self.kwh_saved = {
-                1: 0,
-                2: 0,
-                3: 0,
-                4: 0,
-                5: 0,
-                6: 0
-            }
-
-        config = {
-            'general': {
-                'name': 'Power-Monitor'
-            },
-            'database': {
-                'enabled': False,
-                'host': 'localhost',
-                'port': 8086,
-                'username': 'root',
-                'password': 'password',
-                'database_name': 'power_monitor',
-                'influx_version': 1,
-                # The Influx V2 configuration is only required if influx_version (above) is set to 1.
-                # Set influx_version = 2, and fill in your InfluxDB v2 parameters below, to use InfluxDB v2.
-                'influx_v2': {
-                    'bucket': 'power_monitor',
-                    'org': '<your Influx Cloud email or custom defined org>',
-                    'token': '<an API token with at least r/w permissions for all buckets and all tasks>',
-                    'url': '<your unique Influx Cloud or self-hosted InfluxDB v2 server URL>',
+            if self.kwh_saved is None:
+                self.kwh_saved = {
+                    1: 0,
+                    2: 0,
+                    3: 0,
+                    4: 0,
+                    5: 0,
+                    6: 0
                 }
-            },
-            'grid_voltage': {
-                'grid_voltage': self.grid_voltage,
-                'ac_transformer_output_voltage': self.transformer_voltage,
-                'frequency': self.ac_frequency,
-                'voltage_calibration': self.ac_accuracy_calibration
-            },
-            'current_transformers': {
-                'channel_1': {
-                    'name': 'Channel 1',
-                    'rating': self.ct1_rating,
-                    'type': 'consumption',
-                    'two_pole': False,
-                    'enabled': self.is_enabled(0),
-                    'calibration': self.ct1_accuracy_calibration,
-                    'amps_cutoff_threshold': 0.01,
-                    'reversed': False,
-                    'phase_angle': 0
-                },
-                'channel_2': {
-                    'name': 'Channel 2',
-                    'rating': self.ct2_rating,
-                    'type': 'consumption',
-                    'two_pole': False,
-                    'enabled': self.is_enabled(1),
-                    'calibration': self.ct2_accuracy_calibration,
-                    'amps_cutoff_threshold': 0.01,
-                    'reversed': False,
-                    'phase_angle': 0
-                },
-                'channel_3': {
-                    'name': 'Channel 3',
-                    'rating': self.ct3_rating,
-                    'type': 'consumption',
-                    'two_pole': False,
-                    'enabled': self.is_enabled(2),
-                    'calibration': self.ct3_accuracy_calibration,
-                    'amps_cutoff_threshold': 0.01,
-                    'reversed': False,
-                    'phase_angle': 0
-                },
-                'channel_4': {
-                    'name': 'Channel 4',
-                    'rating': self.ct4_rating,
-                    'type': 'consumption',
-                    'two_pole': False,
-                    'enabled': self.is_enabled(3),
-                    'calibration': self.ct4_accuracy_calibration,
-                    'amps_cutoff_threshold': 0.01,
-                    'reversed': False,
-                    'phase_angle': 0
-                },
-                'channel_5': {
-                    'name': 'Channel 5',
-                    'rating': self.ct5_rating,
-                    'type': 'consumption',
-                    'two_pole': False,
-                    'enabled': self.is_enabled(4),
-                    'calibration': self.ct5_accuracy_calibration,
-                    'amps_cutoff_threshold': 0.01,
-                    'reversed': False,
-                    'phase_angle': 0
-                },
-                'channel_6': {
-                    'name': 'Channel 6',
-                    'rating': self.ct6_rating,
-                    'type': 'consumption',
-                    'two_pole': False,
-                    'enabled': self.is_enabled(5),
-                    'calibration': self.ct6_accuracy_calibration,
-                    'amps_cutoff_threshold': 0.01,
-                    'reversed': False,
-                    'phase_angle': 0
-                },
-            }
-        }
 
-        self.sensor = RPiPowerMonitor(config=config)
+            config = {
+                'general': {
+                    'name': 'Power-Monitor'
+                },
+                'database': {
+                    'enabled': False,
+                    'host': 'localhost',
+                    'port': 8086,
+                    'username': 'root',
+                    'password': 'password',
+                    'database_name': 'power_monitor',
+                    'influx_version': 1,
+                    # The Influx V2 configuration is only required if influx_version (above) is set to 1.
+                    # Set influx_version = 2, and fill in your InfluxDB v2 parameters below, to use InfluxDB v2.
+                    'influx_v2': {
+                        'bucket': 'power_monitor',
+                        'org': '<your Influx Cloud email or custom defined org>',
+                        'token': '<an API token with at least r/w permissions for all buckets and all tasks>',
+                        'url': '<your unique Influx Cloud or self-hosted InfluxDB v2 server URL>',
+                    }
+                },
+                'grid_voltage': {
+                    'grid_voltage': self.grid_voltage,
+                    'ac_transformer_output_voltage': self.transformer_voltage,
+                    'frequency': self.ac_frequency,
+                    'voltage_calibration': self.ac_accuracy_calibration
+                },
+                'current_transformers': {
+                    'channel_1': {
+                        'name': 'Channel 1',
+                        'rating': self.ct1_rating,
+                        'type': 'consumption',
+                        'two_pole': False,
+                        'enabled': self.is_enabled(0),
+                        'calibration': self.ct1_accuracy_calibration,
+                        'amps_cutoff_threshold': 0.01,
+                        'reversed': False,
+                        'phase_angle': 0
+                    },
+                    'channel_2': {
+                        'name': 'Channel 2',
+                        'rating': self.ct2_rating,
+                        'type': 'consumption',
+                        'two_pole': False,
+                        'enabled': self.is_enabled(1),
+                        'calibration': self.ct2_accuracy_calibration,
+                        'amps_cutoff_threshold': 0.01,
+                        'reversed': False,
+                        'phase_angle': 0
+                    },
+                    'channel_3': {
+                        'name': 'Channel 3',
+                        'rating': self.ct3_rating,
+                        'type': 'consumption',
+                        'two_pole': False,
+                        'enabled': self.is_enabled(2),
+                        'calibration': self.ct3_accuracy_calibration,
+                        'amps_cutoff_threshold': 0.01,
+                        'reversed': False,
+                        'phase_angle': 0
+                    },
+                    'channel_4': {
+                        'name': 'Channel 4',
+                        'rating': self.ct4_rating,
+                        'type': 'consumption',
+                        'two_pole': False,
+                        'enabled': self.is_enabled(3),
+                        'calibration': self.ct4_accuracy_calibration,
+                        'amps_cutoff_threshold': 0.01,
+                        'reversed': False,
+                        'phase_angle': 0
+                    },
+                    'channel_5': {
+                        'name': 'Channel 5',
+                        'rating': self.ct5_rating,
+                        'type': 'consumption',
+                        'two_pole': False,
+                        'enabled': self.is_enabled(4),
+                        'calibration': self.ct5_accuracy_calibration,
+                        'amps_cutoff_threshold': 0.01,
+                        'reversed': False,
+                        'phase_angle': 0
+                    },
+                    'channel_6': {
+                        'name': 'Channel 6',
+                        'rating': self.ct6_rating,
+                        'type': 'consumption',
+                        'two_pole': False,
+                        'enabled': self.is_enabled(5),
+                        'calibration': self.ct6_accuracy_calibration,
+                        'amps_cutoff_threshold': 0.01,
+                        'reversed': False,
+                        'phase_angle': 0
+                    },
+                }
+            }
+
+            self.sensor = RPiPowerMonitor(config=config)
+
+            self.timer_kwh_measure = time.time()
+        except Exception:
+            self.logger.exception("1")
 
     def listener(self):
         while self.running:
