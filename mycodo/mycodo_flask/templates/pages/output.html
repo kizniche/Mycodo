@@ -233,6 +233,7 @@
       if (action === 'output_add' ||
           action === 'output_mod' ||
           action === 'output_delete'||
+          action === 'output_duplicate' ||
           action.startsWith('custom_button_')) {
         {% if not misc.hide_alert_info %}toastr['info']('Command sent. Please wait...');{% endif %}
         $.ajax({
@@ -294,6 +295,28 @@
                 $('.modal-backdrop').remove();
                 $(document.body).removeClass("modal-open");
                 grid.removeWidget('#gridstack_output_' + data.data.output_id);
+              }
+              else if (action === 'output_duplicate' && 'output_id' in data.data) {
+                if (data.data.duplicated_output_id) {
+                  $('#modal_config_' + data.data.duplicated_output_id).modal('hide');
+                }
+                $.ajax({
+                  type: "GET",
+                  url: '/output?output_type=entry&output_id=' + data.data.output_id,
+                  success: function (new_entry) {
+                    if (data.data.messages.success.length !== 0) {
+                      grid.addWidget('<div class="grid-stack-item" id="gridstack_output_' + data.data.output_id + '" gs-id="' + data.data.output_id + '">' + new_entry + '</div>', {
+                        w: 24,
+                        h: 1
+                      });
+                      {% if not hide_tooltips %}$('input[title]').tooltip({placement: 'top'});{% endif %}
+                    }
+                    popup_response(data);
+                  },
+                  error: function() {
+                    toastr['error']('Error: Could not get new output entry');
+                  }
+                });
               }
               if ('page_refresh' in data.data && data.data.page_refresh) {
                 $.ajax({
