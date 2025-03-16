@@ -25,7 +25,7 @@ depends_on = None
 
 def upgrade():
     with op.batch_alter_table("misc") as batch_op:
-        batch_op.add_column(sa.Column('custom_layout', sa.Text))
+        batch_op.add_column(sa.Column('custom_layout', sa.Text().with_variant(LONGTEXT, "mysql", "mariadb")))
 
     op.execute(
         '''

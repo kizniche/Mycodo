@@ -65,12 +65,18 @@
     {%- endfor -%}
     </div> <!-- grid-stack -->
 
-    <hr/>
+  {% if this_dashboard.locked %}
+
   </div>
 
   <div style="clear: both"></div>
 
-  {% if not this_dashboard.locked %}
+  {% else %}
+
+    <hr/>
+  </div>
+
+  <div style="clear: both"></div>
 
   <div class="container-fluid" style="padding-bottom: 1em; margin-left: 0.5em">
 
