@@ -13,6 +13,7 @@ This release introduces the ability to override MYCODO_DB_PATH, SQLALCHEMY_DATAB
  - Fix directory validation
  - Add Output: L298N Peristaltic Pump (Pi 5)
  - Add Input: Raspberry Pi 6-Channel Power Monitor (v0.4.0)
+ - Fix PID Autotune not turning output off
 
 ### Features
 
