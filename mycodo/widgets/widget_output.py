@@ -354,7 +354,7 @@ WIDGET_INFORMATION = {
               if (state === 'on') {
                 document.getElementById("text-output-state-" + widget_id).innerHTML = '({{_('Active')}})';
               } else {
-                document.getElementById("text-output-state-" + widget_id).innerHTML = '({{_('Active')}}, ' + state.toFixed(1) + '%)';
+                document.getElementById("text-output-state-" + widget_id).innerHTML = '({{_('Active')}}, ' + state.toFixed(1) + ')';
               }
             }
             else {
