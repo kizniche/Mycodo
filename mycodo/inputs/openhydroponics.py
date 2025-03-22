@@ -1,10 +1,13 @@
 # coding=utf-8
+import asyncio
 import copy
 
 from mycodo.inputs.base_input import AbstractInput
 from mycodo.databases.models import DeviceMeasurements, InputChannel
 from mycodo.utils.database import db_retrieve_table_daemon
 from mycodo.utils.asyncio import AsyncLoop
+
+node_manager = None
 
 measurements_dict = {
 }
@@ -39,11 +42,12 @@ INPUT_INFORMATION = {
     "custom_options": [
         {
             "id": "device_id",
-            "type": "text",
-            "default_value": "00000000-0000-0000-0000-000000000000",
+            "type": "select",
+            "options_select": [],
+            "default_value": None,
             "required": True,
-            "name": "Device Identifier",
-            "phrase": "Select the device",
+            "name": "Node",
+            "phrase": "Select the openhydroponics node",
         },
     ],
     "custom_channel_options": [
@@ -59,6 +63,23 @@ INPUT_INFORMATION = {
 }
 
 
+async def populate_nodes():
+    async for node in node_manager:
+        INPUT_INFORMATION["custom_options"][0]["options_select"].append(
+            (str(node.uuid), f"Node: {node.uuid}")
+        )
+
+
+try:
+    from openhydroponics.node_manager import NodeManager
+    node_manager = NodeManager()
+    asyncio.run(populate_nodes())
+except ImportError:
+    # Before the dependencies are installed, this will raise an ImportError
+    # Just ignore it for now
+    pass
+
+
 class InputModule(AbstractInput):
     """ Input module to read the Openhydroponics sneosors. """
 
@@ -66,7 +87,6 @@ class InputModule(AbstractInput):
         super().__init__(input_dev, testing=testing, name=__name__)
 
         # Initialize variables
-        self.node_manager = None
         self.device_id = None
         self.options_channels = None
 
@@ -79,8 +99,7 @@ class InputModule(AbstractInput):
             self.try_initialize()
 
     async def async_initialize(self):
-        from openhydroponics.node_manager import NodeManager
-        self.node_manager = NodeManager()
+        await node_manager.init()
 
         input_channels = db_retrieve_table_daemon(
             InputChannel).filter(InputChannel.input_id == self.input_dev.unique_id).all()
@@ -106,7 +125,7 @@ class InputModule(AbstractInput):
         if not self.device_id:
             self.logger.error("Device ID not set")
             return None
-        node = await self.node_manager.request_node(self.device_id)
+        node = await node_manager.request_node(self.device_id)
         if not node:
             self.logger.error(f"Node {self.device_id} not found")
             return None
