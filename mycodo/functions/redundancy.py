@@ -46,7 +46,7 @@ FUNCTION_INFORMATION = {
     'measurements_dict': measurements_dict,
     'enable_channel_unit_select': True,
 
-    'message': "This function stores the first available measurement. This is useful if you have multiple sensors that you want to serve as backups in case one stops working, you can set them up in the order of importance. This function will check if a measurement exits, starting with the first measurement. If it doesn't, the next is checked, until a measurement is found. Once a measurement is found, it is stored in the database with the user-set measurement and unit. The output of this function can be used as an input throughout Mycodo. If you need more than 3 measurements to be checked, you can string multiple Redundancy Functions by creating a second Function and setting the first Function's output as the second Function's input.",
+    'message': "This function stores the first available measurement. This is useful if you have multiple sensors that you want to serve as backups in case one stops working, you can set them up in the order of importance. This function will check if a measurement exits, starting with the first measurement. If it doesn't, the next is checked, until a measurement is found. Once a measurement is found, it is stored in the database with the user-set measurement and unit. The output of this function can be used as an input throughout Mycodo. If you need more than 3 measurements to be checked, you can string multiple Redundancy Functions by creating a second Function and setting the first Function's output as the second Function's input. If Average Measurements is enabled, the output will be the average of any valid values that are available from the selected measurements.",
 
     'options_enabled': [
         'measurements_select_measurement_unit',
@@ -62,6 +62,14 @@ FUNCTION_INFORMATION = {
             'constraints_pass': constraints_pass_positive_value,
             'name': "{} ({})".format(lazy_gettext('Period'), lazy_gettext('Seconds')),
             'phrase': lazy_gettext('The duration between measurements or actions')
+        },
+        {
+            'id': 'average_measurements',
+            'type': 'bool',
+            'default_value': False,
+            'required': True,
+            'name': 'Average Measurements',
+            'phrase': 'Store the average of multiple valid measurements'
         },
         {
             'id': 'select_measurement_a',
@@ -137,6 +145,7 @@ class CustomModule(AbstractFunction):
 
         # Initialize custom options
         self.period = None
+        self.average_measurements = None
         self.select_measurement_a_device_id = None
         self.select_measurement_a_measurement_id = None
         self.measurement_a_max_age = None
@@ -236,19 +245,44 @@ class CustomModule(AbstractFunction):
                     self.measurement_c_max_age))
 
         if last_measurement_a or last_measurement_b or last_measurement_c:
-            if last_measurement_a:
-                self.logger.debug("Using Measurement A")
-                measurement_store = last_measurement_a[1]
-            elif last_measurement_b:
-                self.logger.debug("Using Measurement B")
-                measurement_store = last_measurement_b[1]
-            elif last_measurement_c:
-                self.logger.debug("Using Measurement C")
-                measurement_store = last_measurement_c[1]
+            if self.average_measurements:
+                count = 0
+                measurement_store = 0
+                if last_measurement_a and len(last_measurement_a) == 2 and last_measurement_a[1] is not None:
+                    count += 1
+                    self.logger.debug(f"Using Measurement A: {last_measurement_a[1]}")
+                    measurement_store += last_measurement_a[1]
+                if last_measurement_b and len(last_measurement_b) == 2 and last_measurement_b[1] is not None:
+                    count += 1
+                    self.logger.debug(f"Using Measurement B: {last_measurement_b[1]}")
+                    measurement_store += last_measurement_b[1]
+                if last_measurement_c and len(last_measurement_c) == 2 and last_measurement_c[1] is not None:
+                    count += 1
+                    self.logger.debug(f"Using Measurement C: {last_measurement_c[1]}")
+                    measurement_store += last_measurement_c[1]
+
+                if count:
+                    self.logger.debug(
+                        f"Storing Measurement: {measurement_store} / {count} = {measurement_store / count}")
+                    measurement_store = measurement_store / count
+                else:
+                    self.logger.debug(
+                        "Could not find a measurement in the specified time frames for Measurements A, B, or C")
+                    return
             else:
-                self.logger.debug(
-                    "Could not find a measurement in the specified time frames for Measurements A, B, or C")
-                return
+                if last_measurement_a and len(last_measurement_a) == 2 and last_measurement_a[1] is not None:
+                    self.logger.debug(f"Using Measurement A: {last_measurement_a[1]}")
+                    measurement_store = last_measurement_a[1]
+                elif last_measurement_b and len(last_measurement_b) == 2 and last_measurement_b[1] is not None:
+                    self.logger.debug(f"Using Measurement B: {last_measurement_b[1]}")
+                    measurement_store = last_measurement_b[1]
+                elif last_measurement_c and len(last_measurement_c) == 2 and last_measurement_c[1] is not None:
+                    self.logger.debug(f"Using Measurement C: {last_measurement_c[1]}")
+                    measurement_store = last_measurement_c[1]
+                else:
+                    self.logger.debug(
+                        "Could not find a measurement in the specified time frames for Measurements A, B, or C")
+                    return
 
             write_influxdb_value(
                 self.unique_id,

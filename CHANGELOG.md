@@ -19,6 +19,7 @@ This release introduces the ability to override MYCODO_DB_PATH, SQLALCHEMY_DATAB
 
  - Add ability to use alternate mysql server using config_override.py
  - Add Output: PWM Raspberry Pi GPIO (RPi.GPIO) (for Pi <= 4, since pigpiod is deprecated)
+ - Add ability to average measurements in Redundancy Function
 
 ### Miscellaneous
 
