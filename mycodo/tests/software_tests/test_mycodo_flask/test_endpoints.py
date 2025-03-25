@@ -23,6 +23,7 @@ from mycodo.utils.outputs import parse_output_information
 from mycodo.utils.utils import random_alphanumeric
 from mycodo.utils.widgets import parse_widget_information
 
+random.seed(42) # for reproducibility
 
 # ----------------------
 #   Non-Logged In Tests
