@@ -79,6 +79,9 @@ def page_output_submit():
         elif form_mod_output.output_delete.data:
             messages = utils_output.output_del(form_mod_output)
             output_id = form_mod_output.output_id.data
+        elif form_mod_output.output_duplicate.data:
+            messages, output_id = utils_output.output_duplicate(form_mod_output)
+            duplicated_output_id = form_mod_output.output_id.data
 
         # Custom action
         else:
@@ -96,8 +99,12 @@ def page_output_submit():
             else:
                 messages["error"].append("Unknown output directive")
 
+    # Initialize variables that may not be set
+    duplicated_output_id = duplicated_output_id if 'duplicated_output_id' in locals() else None
+
     return jsonify(data={
         'output_id': output_id,
+        'duplicated_output_id': duplicated_output_id,
         'dep_name': dep_name,
         'dep_list': dep_list,
         'dep_unmet': dep_unmet,
