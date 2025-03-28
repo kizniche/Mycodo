@@ -137,7 +137,7 @@ INPUT_INFORMATION = {
     "url_product_purchase": [
         "https://lectronz.com/stores/mickeprag",
     ],
-    "options_enabled": [],
+    "options_enabled": ["measurements_select"],
     "options_disabled": ["interface"],
     "dependencies_module": [
         ("pip-pypi", "openhydroponics", "openhydroponics>=0.1.0"),
