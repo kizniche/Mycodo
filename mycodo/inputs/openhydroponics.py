@@ -34,6 +34,15 @@ async def execute_at_modification_async(
     }
 
     device_id = request_form.get("device_id")
+    if not device_id or device_id == custom_options_dict_presave["device_id"]:
+        # Device ID not changed
+        return (
+            messages,
+            mod_input,
+            custom_options_dict_postsave,
+            custom_options_channels_dict_postsave,
+        )
+
     await node_manager.init()
     node = await node_manager.request_node(device_id)
     if not node:
