@@ -3,8 +3,7 @@ import asyncio
 import copy
 
 from mycodo.inputs.base_input import AbstractInput
-from mycodo.databases.models import DeviceMeasurements, InputChannel
-from mycodo.utils.database import db_retrieve_table_daemon
+from mycodo.databases.models import DeviceMeasurements
 from mycodo.utils.asyncio import AsyncLoop
 
 node_manager = None
@@ -16,6 +15,104 @@ measurements_dict = {
 channels_dict = {0: {}}
 
 
+async def execute_at_modification_async(
+    messages,
+    mod_input,
+    request_form,
+    custom_options_dict_presave,
+    custom_options_channels_dict_presave,
+    custom_options_dict_postsave,
+    custom_options_channels_dict_postsave,
+):
+    from openhydroponics.msg import EndpointClass, EndpointInputClass
+
+    mapping = {
+        EndpointInputClass.Temperature: ("temperature", "C"),
+        EndpointInputClass.Humidity: ("humidity", "percent"),
+        EndpointInputClass.EC: ("electrical_conductivity", "uS_cm"),
+        EndpointInputClass.PH: ("ion_concentration", "pH"),
+    }
+
+    device_id = request_form.get("device_id")
+    await node_manager.init()
+    node = await node_manager.request_node(device_id)
+    if not node:
+        messages["error"].append(f"Node {mod_input.device_id} not found")
+        return (
+            messages,
+            mod_input,
+            custom_options_dict_postsave,
+            custom_options_channels_dict_postsave,
+        )
+
+    device_measurements = DeviceMeasurements.query.filter(
+        DeviceMeasurements.device_id == mod_input.unique_id
+    )
+    channels = []
+    # Update existing measurements and delete non existing ones
+    for measurement in device_measurements.all():
+        endpoint = node.get_endpoint(measurement.channel)
+        if (
+            endpoint
+            and endpoint.ENDPOINT_CLASS == EndpointClass.Input
+            and endpoint.INPUT_CLASS in mapping
+        ):
+            # Input endpoint found, update its measurement
+            measurement_type, unit = mapping[endpoint.INPUT_CLASS]
+            measurement.measurement = measurement_type
+            measurement.unit = unit
+            measurement.save()
+            channels.append(measurement.channel)
+            continue
+        measurement.delete()
+
+    # Add new measurements
+    for endpoint in node:
+        if endpoint.endpoint_id in channels:
+            continue
+        if endpoint.ENDPOINT_CLASS != EndpointClass.Input:
+            continue
+        if endpoint.INPUT_CLASS not in mapping:
+            continue
+        measurement_type, unit = mapping[endpoint.INPUT_CLASS]
+
+        new_measurement = DeviceMeasurements()
+        new_measurement.device_id = mod_input.unique_id
+        new_measurement.measurement = measurement_type
+        new_measurement.unit = unit
+        new_measurement.channel = endpoint.endpoint_id
+        new_measurement.save()
+
+    return (
+        messages,
+        mod_input,
+        custom_options_dict_postsave,
+        custom_options_channels_dict_postsave,
+    )
+
+
+def execute_at_modification(
+    messages,
+    mod_input,
+    request_form,
+    custom_options_dict_presave,
+    custom_options_channels_dict_presave,
+    custom_options_dict_postsave,
+    custom_options_channels_dict_postsave,
+):
+
+    return asyncio.run(
+        execute_at_modification_async(
+            messages,
+            mod_input,
+            request_form,
+            custom_options_dict_presave,
+            custom_options_channels_dict_presave,
+            custom_options_dict_postsave,
+            custom_options_channels_dict_postsave,
+        )
+    )
+
 
 INPUT_INFORMATION = {
     "input_name_unique": "openhydroponics",
@@ -25,9 +122,7 @@ INPUT_INFORMATION = {
     "measurements_name": "pH/EC/Humidity/Temperature",
     "measurements_dict": measurements_dict,
     "measurements_use_same_timestamp": True,
-    "measurements_variable_amount": True,
-    "channels_dict": channels_dict,
-    'channel_quantity_same_as_measurements': True,
+    "execute_at_modification": execute_at_modification,
     "url_manufacturer": "https://openhydroponics.com/",
     "url_datasheet": "https://docs.openhydroponics.com/hardware.html",
     "url_product_purchase": [
@@ -49,16 +144,6 @@ INPUT_INFORMATION = {
             "name": "Node",
             "phrase": "Select the openhydroponics node",
         },
-    ],
-    "custom_channel_options": [
-        {
-            "id": "endpoint",
-            "type": "integer",
-            "default_value": 0,
-            "required": True,
-            "name": "Endpoint",
-            "phrase": "OpenHydroponics endpoint number",
-        }
     ],
 }
 
@@ -101,14 +186,6 @@ class InputModule(AbstractInput):
     async def async_initialize(self):
         await node_manager.init()
 
-        input_channels = db_retrieve_table_daemon(
-            InputChannel).filter(InputChannel.input_id == self.input_dev.unique_id).all()
-        self.options_channels = self.setup_custom_channel_options_json(
-            INPUT_INFORMATION['custom_channel_options'], input_channels)
-
-        self.device_measurements = db_retrieve_table_daemon(
-            DeviceMeasurements).filter(
-            DeviceMeasurements.device_id == self.input_dev.unique_id)
         self.measurement_info = {}
         for measurement in self.device_measurements.all():
             self.measurement_info[measurement.channel] = {}
@@ -131,9 +208,8 @@ class InputModule(AbstractInput):
             return None
 
         self.return_dict = copy.deepcopy(self.measurement_info)
-        for channel in self.channels_measurement:
-            endpoint_no = self.options_channels['endpoint'][channel]
-            value, _ = node.get_endpoint_value(endpoint_no)
+        for channel in self.measurement_info:
+            value, _ = node.get_endpoint_value(channel)
             if not value:
                 continue
             self.value_set(channel, value)
