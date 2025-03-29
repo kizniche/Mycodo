@@ -24,7 +24,18 @@ async def execute_at_modification_async(
     custom_options_dict_postsave,
     custom_options_channels_dict_postsave,
 ):
-    from openhydroponics.msg import EndpointClass, EndpointInputClass
+    try:
+        from openhydroponics.msg import EndpointClass, EndpointInputClass
+    except ImportError:
+        # This will be called by tests and it does not have the dependencies installed
+        # This should not happen in normal operation
+        messages["error"].append("openhydroponics not installed")
+        return (
+            messages,
+            mod_input,
+            custom_options_dict_postsave,
+            custom_options_channels_dict_postsave,
+        )
 
     mapping = {
         EndpointInputClass.Temperature: ("temperature", "C"),
