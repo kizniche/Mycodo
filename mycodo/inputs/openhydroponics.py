@@ -25,7 +25,7 @@ async def execute_at_modification_async(
     custom_options_channels_dict_postsave,
 ):
     try:
-        from openhydroponics.msg import EndpointClass, EndpointInputClass
+        from openhydroponics.base.endpoint import EndpointClass, EndpointInputClass
     except ImportError:
         # This will be called by tests and it does not have the dependencies installed
         # This should not happen in normal operation
@@ -151,7 +151,7 @@ INPUT_INFORMATION = {
     "options_enabled": ["measurements_select"],
     "options_disabled": ["interface"],
     "dependencies_module": [
-        ("pip-pypi", "openhydroponics", "openhydroponics>=0.1.0"),
+        ("pip-pypi", "openhydroponics", "openhydroponics>=0.6.0"),
     ],
     "interfaces": ["CAN"],
     "custom_options": [
@@ -176,7 +176,7 @@ async def populate_nodes():
 
 
 try:
-    from openhydroponics.node_manager import NodeManager
+    from openhydroponics.dbus import NodeManager
     node_manager = NodeManager()
     asyncio.run(populate_nodes())
 except ImportError:
