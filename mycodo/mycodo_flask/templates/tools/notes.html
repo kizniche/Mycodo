@@ -2,6 +2,17 @@
 {% set active_page = "notes" %}
 {% set help_page = ["https://kizniche.github.io/Mycodo/Notes", _('Notes')] %}
 
+{% block head %}
+<link href="/static/css/datatables_2_2_2/datatables.min.css" rel="stylesheet">
+<script src="/static/js/datatables_2_2_2/datatables.min.js"></script>
+
+<script>
+    $(document).ready( function () {
+        new DataTable('#note-table');
+    });
+</script>
+{% endblock %}
+
 {% block title %} - {{_('Notes')}}{% endblock %}
 
 {% block body %}
@@ -154,9 +165,10 @@
   <h3>{{_('Search')}} {{_('Notes')}}</h3>
 
   <p>
-    Leave all fields empty and click Show Notes to see all notes.
+    Only 10 notes are displayed initially. Leave all fields empty and click Show Notes to display all notes.
     <br/>Filter Tags: Enter one or more tags, separated by commas, to view the notes with those tags.
     <br/>Filter Notes: Search using "*" as a wildcard (e.g. "*tem*" will return all notes with 'temp' and 'temperature' in the note).
+    <br/>Table Search: The table has its own Search, that functions separately from the form filter.
   </p>
 
   <form method="post" action="/notes" enctype=multipart/form-data>
@@ -218,17 +230,21 @@
 
  {% if notes %}
 
-  <p>{{_('Found')}}: {{number_displayed_notes[0]}}/{{number_displayed_notes[1]}}</p>
+  <p>Filtered Notes: {{number_displayed_notes[0]}}/{{number_displayed_notes[1]}}</p>
 
  <div class="table-responsive">
-  <table class="table">
-    <tr>
-      <td></td>
-      <td>ID</td>
-      <td>Time, Name (Tags)</td>
-      <td>Files</td>
-      <td>Note</td>
-    </tr>
+  <table class="table table-sm table-striped" id="note-table">
+    <thead>
+      <tr>
+        <td></td>
+        <td>ID</td>
+        <td>Time, Name (Tags)</td>
+        <td>Files</td>
+        <td>Note</td>
+      </tr>
+    </thead>
+
+    <tbody>
 
     {% for each_note in notes %}
 
@@ -264,6 +280,7 @@
 
     {% endfor -%}
 
+  </tbody>
   </table>
  </div>
 
