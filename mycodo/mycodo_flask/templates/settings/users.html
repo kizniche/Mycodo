@@ -187,6 +187,14 @@
           </select>
         </div>
       </div>
+      <div class="form-check form-check-inline">
+        {{form_mod_user.enable_2fa(class_='form-control')}}
+        <label>{{form_mod_user.enable_2fa.label.text}}</label>
+      </div>
+      <div class="form-check form-check-inline">
+        {{form_mod_user.disable_2fa(class_='form-control')}}
+        <label>{{form_mod_user.disable_2fa.label.text}}</label>
+      </div>
       <div class="col-4 col-sm-3 col-md-3">
         {{form_add_user.user_add(class_='btn btn-primary')}}
       </div>
@@ -240,6 +248,14 @@
           {% else %}
             {{form_mod_user.api_key(class_='form-control', **{'title': 'API Key (Base64)'})}}
           {% endif %}
+        </div>
+        <div class="form-check form-check-inline">
+          {{form_mod_user.enable_2fa(class_='form-control')}}
+          <label>{{form_mod_user.enable_2fa.label.text}}</label>
+        </div>
+        <div class="form-check form-check-inline">
+          {{form_mod_user.disable_2fa(class_='form-control')}}
+          <label>{{form_mod_user.disable_2fa.label.text}}</label>
         </div>
         <div class="col-sm-6 col-md-3 small-gutters">
           {{form_mod_user.user_generate_api_key(class_='btn btn-primary btn-block')}}
