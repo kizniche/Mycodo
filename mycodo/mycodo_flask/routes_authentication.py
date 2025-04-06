@@ -26,16 +26,6 @@ from mycodo.mycodo_flask.forms import forms_authentication
 from mycodo.mycodo_flask.utils import utils_general
 from mycodo.utils.utils import test_password, test_username
 
-#current_app.config.update(
-#    MAIL_SERVER='smtp.example.com',
-#    MAIL_PORT=587,
-#    MAIL_USE_TLS=True,
-#    MAIL_USERNAME='your-email@example.com',
-#    MAIL_PASSWORD='your-email-password'
-#)
-
-
-
 logger = logging.getLogger(__name__)
 
 blueprint = Blueprint(
