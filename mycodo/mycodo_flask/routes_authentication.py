@@ -563,28 +563,6 @@ def clear_cookie_auth():
     response.set_cookie('remember_token', '', expires=0)
     return response
 
-@blueprint.route('/two_factor_setup', methods=('GET', 'POST'))
-@flask_login.login_required
-def two_factor_setup():
-    user = User.query.filter(User.code == code).first()
-    if not user.two_factor_otp_secret:
-        user.two_factor_otp_secret = pyotp.random_base32()
-        db.session.commit()
-
-    otp_uri = pyotp.totp.TOTP(user.tf_totp_secret).provisioning_uri(
-        user.email, issuer_name="MycodoApp")
-
-    if request.method == 'POST':
-        token = request.form.get('token')
-        totp = pyotp.TOTP(user.tf_totp_secret)
-        if totp.verify(token):
-            flash('2FA setup successful.')
-            return redirect(url_for('dashboard'))
-        else:
-            flash('Invalid token. Please try again.')
-
-    return render_template('two_factor_setup.html', otp_uri=otp_uri)
-
 
 
 
