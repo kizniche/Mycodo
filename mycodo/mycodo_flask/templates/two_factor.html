@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Two-Factor Authentication</title>
+    <style>
+        .button-link {
+            background-color: #9ad3e2;
+            border: none;
+            color: rgb(1, 1, 4);
+            text-decoration: none;
+            padding: 10px 20px;
+            cursor: pointer;
+            display: inline-block;
+            margin-top: 10px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Two-Factor Authentication</h1>
+    <form method="post">
+        <label for="token">Enter the token from your app:</label>
+        <input type="text" id="token" name="token">
+        <button type="submit">Verify</button>
+    </form>
+    <a href="/login" class="button-link">Back to Login</a>
+</body>
+</html>
