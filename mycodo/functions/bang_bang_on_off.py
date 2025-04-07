@@ -196,54 +196,54 @@ class CustomModule(AbstractFunction):
             self.measurement_measurement_id,
             max_age=self.measurement_max_age)
 
-        if not last_measurement:
-            self.logger.error("Could not acquire a measurement")
+        if not last_measurement or last_measurement[1] is None:
+            self.logger.error("No measurement available. Cannot operate without measurement. Turning output Off.")
+            self.control.output_off(self.output_device_id, output_channel=self.output_channel)
             return
 
         if self.direction == 'raise':
-            if last_measurement[1] > (self.setpoint + self.hysteresis):
+            if last_measurement[1] > self.setpoint + self.hysteresis:
                 self.logger.debug("Raise: Off")
                 self.control.output_off(
                     self.output_raise_device_id, output_channel=self.output_raise_channel)
-            elif last_measurement[1] < (self.setpoint - self.hysteresis):
+            elif last_measurement[1] < self.setpoint - self.hysteresis:
                 self.logger.debug("Raise: On")
                 self.control.output_on(
                     self.output_raise_device_id, output_channel=self.output_raise_channel)
 
         elif self.direction == 'lower':
-            if last_measurement[1] < (self.setpoint - self.hysteresis):
+            if last_measurement[1] < self.setpoint - self.hysteresis:
                 self.logger.debug("Lower: Off")
                 self.control.output_off(
                     self.output_lower_device_id, output_channel=self.output_lower_channel)
-            elif last_measurement[1] > (self.setpoint + self.hysteresis):
+            elif last_measurement[1] > self.setpoint + self.hysteresis:
                 self.logger.debug("Lower: On")
                 self.control.output_on(
                     self.output_lower_device_id, output_channel=self.output_lower_channel)
 
         elif self.direction == 'both':
-            if (self.setpoint - self.hysteresis) < last_measurement[1] < (self.setpoint + self.hysteresis):
+            if self.setpoint - self.hysteresis < last_measurement[1] < self.setpoint + self.hysteresis:
                 self.logger.debug("Lower: Off, Raise: Off")
                 self.control.output_off(
                     self.output_raise_device_id, output_channel=self.output_raise_channel)
                 self.control.output_off(
                     self.output_lower_device_id, output_channel=self.output_lower_channel)
 
-            elif last_measurement[1] > (self.setpoint + self.hysteresis):
+            elif last_measurement[1] > self.setpoint + self.hysteresis:
                 self.logger.debug("Lower: On, Raise: Off")
                 self.control.output_off(
                     self.output_raise_device_id, output_channel=self.output_raise_channel)
                 self.control.output_on(
                     self.output_lower_device_id, output_channel=self.output_lower_channel)
 
-            elif last_measurement[1] < (self.setpoint - self.hysteresis):
+            elif last_measurement[1] < self.setpoint - self.hysteresis:
                 self.logger.debug("Lower: Off, Raise: On")
                 self.control.output_off(
                     self.output_lower_device_id, output_channel=self.output_lower_channel)
                 self.control.output_on(
                     self.output_raise_device_id, output_channel=self.output_raise_channel)
         else:
-            self.logger.error(
-                "Unknown controller direction: '{}'".format(self.direction))
+            self.logger.error("Unknown controller direction: '{}'".format(self.direction))
 
         output_raise_state = self.control.output_state(
             self.output_raise_device_id, self.output_raise_channel)
