@@ -109,7 +109,7 @@ FUNCTION_INFORMATION = {
 
 class CustomModule(AbstractFunction):
     """
-    Class to operate custom controller
+    Class to operate the bang-bang controller
     """
     def __init__(self, function, testing=False):
         super().__init__(function, testing=testing, name=__name__)
@@ -142,8 +142,7 @@ class CustomModule(AbstractFunction):
             self.try_initialize()
 
     def initialize(self):
-        self.output_channel = self.get_output_channel_from_channel_id(
-            self.output_channel_id)
+        self.output_channel = self.get_output_channel_from_channel_id(self.output_channel_id)
 
         self.logger.info(
             "Bang-Bang controller started with options: "
@@ -175,34 +174,35 @@ class CustomModule(AbstractFunction):
             self.measurement_measurement_id,
             max_age=self.measurement_max_age)
 
-        if not last_measurement:
-            self.logger.error("Could not acquire a measurement")
-            return
-
         output_state = self.control.output_state(self.output_device_id, self.output_channel)
 
-        self.logger.debug(
-            f"Input: {last_measurement[1]}, output: {output_state}, target: {self.setpoint}, hyst: {self.hysteresis}")
+        self.logger.debug(f"measurement: {last_measurement[1]}, output state: {output_state}, "
+                          f"setpoint: {self.setpoint}, hysteresis: {self.hysteresis}")
+
+        if not last_measurement or last_measurement[1] is None:
+            self.logger.error("No measurement available. Cannot operate without measurement. Turning output Off.")
+            self.control.output_off(self.output_device_id, output_channel=self.output_channel)
+            return
 
         if self.direction == 'raise':
-            if last_measurement[1] > (self.setpoint + self.hysteresis):
+            if last_measurement[1] > self.setpoint + self.hysteresis:
                 if output_state == 'on':
                     self.control.output_off(
                         self.output_device_id,
                         output_channel=self.output_channel)
             else:
-                if last_measurement[1] < (self.setpoint - self.hysteresis):
+                if last_measurement[1] < self.setpoint - self.hysteresis:
                     self.control.output_on(
                         self.output_device_id,
                         output_channel=self.output_channel)
         elif self.direction == 'lower':
-            if last_measurement[1] < (self.setpoint - self.hysteresis):
+            if last_measurement[1] < self.setpoint - self.hysteresis:
                 if output_state == 'on':
                     self.control.output_off(
                         self.output_device_id,
                         output_channel=self.output_channel)
             else:
-                if last_measurement[1] > (self.setpoint + self.hysteresis):
+                if last_measurement[1] > self.setpoint + self.hysteresis:
                     self.control.output_on(
                         self.output_device_id,
                         output_channel=self.output_channel)
