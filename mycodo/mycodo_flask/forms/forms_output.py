@@ -61,6 +61,7 @@ class OutputMod(FlaskForm):
     gpio_location = IntegerField(TRANSLATIONS['gpio_location']['title'], widget=NumberInput())
     i2c_location = StringField(TRANSLATIONS['i2c_location']['title'])
     i2c_bus = IntegerField(TRANSLATIONS['i2c_bus']['title'])
+    output_duplicate = SubmitField(TRANSLATIONS['duplicate']['title'])
     output_mod = SubmitField(TRANSLATIONS['save']['title'])
     output_delete = SubmitField(TRANSLATIONS['delete']['title'])
     on_submit = SubmitField(lazy_gettext('Turn On'))
