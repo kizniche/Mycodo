@@ -1,9 +1,12 @@
 ## 8.16.1 (Unreleased)
 
+This release fixes an install issue created by a dependency that resulted in an incompatible software version of another dependency.
+
 This release introduces the ability to override MYCODO_DB_PATH, SQLALCHEMY_DATABASE_URI, and ALEMBIC_URL in mycodo/config.py to use an alternate settings database. This is accomplished by creating these variables in mycodo/config_override.py. This new config file will be checked on startup and will persist after upgrades.
 
 ### Bugfixes
 
+ - Fix dependency issue with marshmallow ([#1418](https://github.com/kizniche/Mycodo/issues/1418))
  - Fix Atlas EC and pH Inputs losing measurements when calibration temperature is None
  - Fix restoring mycodo/user_scripts during upgrade
  - Fix documentation generation
