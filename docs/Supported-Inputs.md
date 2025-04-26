@@ -873,7 +873,7 @@ A single topic is subscribed to and the returned JSON payload contains one or mo
 - Default Value: 1883</td><td>Host port number</td></tr><tr><td>Topic</td><td>Text
 - Default Value: mqtt/test/input</td><td>The topic to subscribe to</td></tr><tr><td>Keep Alive</td><td>Integer
 - Default Value: 60</td><td>Maximum amount of time between received signals. Set to 0 to disable.</td></tr><tr><td>Client ID</td><td>Text
-- Default Value: client_FGIg092m</td><td>Unique client ID for connecting to the server</td></tr><tr><td>Use Login</td><td>Boolean</td><td>Send login credentials</td></tr><tr><td>Use TLS</td><td>Boolean</td><td>Send login credentials using TLS</td></tr><tr><td>Username</td><td>Text
+- Default Value: client_qty5tMmS</td><td>Unique client ID for connecting to the server</td></tr><tr><td>Use Login</td><td>Boolean</td><td>Send login credentials</td></tr><tr><td>Use TLS</td><td>Boolean</td><td>Send login credentials using TLS</td></tr><tr><td>Username</td><td>Text
 - Default Value: user</td><td>Username for connecting to the server</td></tr><tr><td>Password</td><td>Text</td><td>Password for connecting to the server. Leave blank to disable.</td></tr><tr><td>Use Websockets</td><td>Boolean</td><td>Use websockets to connect to the server.</td></tr><tr><td colspan="3">Channel Options</td></tr><tr><td>Name</td><td>Text</td><td>A name to distinguish this from others</td></tr><tr><td>JMESPATH Expression</td><td>Text</td><td>JMESPATH expression to find value in JSON response</td></tr></tbody></table>
 
 ### MQTT: MQTT Subscribe (Value payload)
@@ -889,7 +889,7 @@ A topic is subscribed to for each channel Subscription Topic and the returned pa
 - Default Value: localhost</td><td>Host or IP address</td></tr><tr><td>Port</td><td>Integer
 - Default Value: 1883</td><td>Host port number</td></tr><tr><td>Keep Alive</td><td>Integer
 - Default Value: 60</td><td>Maximum amount of time between received signals. Set to 0 to disable.</td></tr><tr><td>Client ID</td><td>Text
-- Default Value: client_mqUgXLvM</td><td>Unique client ID for connecting to the server</td></tr><tr><td>Use Login</td><td>Boolean</td><td>Send login credentials</td></tr><tr><td>Use TLS</td><td>Boolean</td><td>Send login credentials using TLS</td></tr><tr><td>Username</td><td>Text
+- Default Value: client_2NluwVOT</td><td>Unique client ID for connecting to the server</td></tr><tr><td>Use Login</td><td>Boolean</td><td>Send login credentials</td></tr><tr><td>Use TLS</td><td>Boolean</td><td>Send login credentials using TLS</td></tr><tr><td>Username</td><td>Text
 - Default Value: user</td><td>Username for connecting to the server</td></tr><tr><td>Password</td><td>Text</td><td>Password for connecting to the server. Leave blank to disable.</td></tr><tr><td>Use Websockets</td><td>Boolean</td><td>Use websockets to connect to the server.</td></tr><tr><td colspan="3">Channel Options</td></tr><tr><td>Name</td><td>Text</td><td>A name to distinguish this from others</td></tr><tr><td>Subscription Topic</td><td>Text</td><td>The MQTT topic to subscribe to</td></tr></tbody></table>
 
 ### Melexis: MLX90393
@@ -999,7 +999,7 @@ A topic is subscribed to for each channel Subscription Topic and the returned pa
 - Dependencies: [libjpeg-dev](https://packages.debian.org/search?keywords=libjpeg-dev), [zlib1g-dev](https://packages.debian.org/search?keywords=zlib1g-dev), [colour](https://pypi.org/project/colour), [Pillow](https://pypi.org/project/Pillow), [Adafruit_AMG88xx](https://github.com/adafruit/Adafruit_AMG88xx_python)
 <table><thead><tr class="header"><th>Option</th><th>Type</th><th>Description</th></tr></thead><tbody><tr><td>I<sup>2</sup>C Address</td><td>Text</td><td>The address of the I<sup>2</sup>C device.</td></tr><tr><td>I<sup>2</sup>C Bus</td><td>Integer</td><td>The Bus the I<sup>2</sup>C device is connected.</td></tr><tr><td>Measurements Enabled</td><td>Multi-Select</td><td>The measurements to record</td></tr><tr><td>Period (Seconds)</td><td>Decimal</td><td>The duration between measurements or actions</td></tr><tr><td>Pre Output</td><td>Select</td><td>Turn the selected output on before taking every measurement</td></tr><tr><td>Pre Out Duration (Seconds)</td><td>Decimal</td><td>If a Pre Output is selected, set the duration to turn the Pre Output on for before every measurement is acquired.</td></tr><tr><td>Pre During Measure</td><td>Boolean</td><td>Check to turn the output off after (opposed to before) the measurement is complete</td></tr></tbody></table>
 
-### Power Monitor: RPi Power Monitor (6 Channels)
+### Power Monitor: RPi 6-Channel Power Monitor (v0.1.0)
 
 - Manufacturer: Power Monitor
 - Measurements: AC Voltage, Power, Current, Power Factor
@@ -1025,6 +1025,35 @@ See https://github.com/David00/rpi-power-monitor/wiki/Calibrating-for-Accuracy f
 - Default Value: 1.0</td><td>The accuracy calibration value for CT5</td></tr><tr><td>CT6 Accuracy Calibration</td><td>Decimal
 - Default Value: 1.0</td><td>The accuracy calibration value for CT6</td></tr><tr><td>AC Accuracy Calibration</td><td>Decimal
 - Default Value: 1.0</td><td>The accuracy calibration value for AC</td></tr></tbody></table>
+
+### Power Monitor: RPi 6-Channel Power Monitor (v0.4.0)
+
+- Manufacturer: Power Monitor
+- Measurements: AC Voltage, Power, Energy, Current, Power Factor
+- Libraries: rpi-power-monitor
+- Dependencies: [rpi_power_monitor](https:/)
+- Manufacturer URL: [Link](https://github.com/David00/rpi-power-monitor)
+- Product URL: [Link](https://power-monitor.dalbrecht.tech/)
+
+See https://david00.github.io/rpi-power-monitor/docs/v0.3.0/calibration.html for calibration documentation.
+<table><thead><tr class="header"><th>Option</th><th>Type</th><th>Description</th></tr></thead><tbody><tr><td>Measurements Enabled</td><td>Multi-Select</td><td>The measurements to record</td></tr><tr><td>Period (Seconds)</td><td>Decimal</td><td>The duration between measurements or actions</td></tr><tr><td>Pre Output</td><td>Select</td><td>Turn the selected output on before taking every measurement</td></tr><tr><td>Pre Out Duration (Seconds)</td><td>Decimal</td><td>If a Pre Output is selected, set the duration to turn the Pre Output on for before every measurement is acquired.</td></tr><tr><td>Pre During Measure</td><td>Boolean</td><td>Check to turn the output off after (opposed to before) the measurement is complete</td></tr><tr><td>Period (Seconds) for kWh Measuring</td><td>Integer
+- Default Value: 5</td><td>How often to acquire measurements to calculate kWh</td></tr><tr><td>Grid Voltage</td><td>Decimal
+- Default Value: 124.2</td><td>The AC voltage measured at the outlet</td></tr><tr><td>Transformer Voltage</td><td>Decimal
+- Default Value: 10.2</td><td>The AC voltage measured at the barrel plug of the 9 VAC transformer</td></tr><tr><td>AC Frequency (Hz)</td><td>Integer
+- Default Value: 60</td><td>The frequency of the AC voltage</td></tr><tr><td>CT1 Calibration</td><td>Decimal
+- Default Value: 1.0</td><td>The calibration value for CT1</td></tr><tr><td>CT1 Rating</td><td>Decimal
+- Default Value: 100</td><td>The Amp rating for the CT1 clamp</td></tr><tr><td>CT2 Calibration</td><td>Decimal
+- Default Value: 1.0</td><td>The calibration value for CT2</td></tr><tr><td>CT2 Rating</td><td>Decimal
+- Default Value: 100</td><td>The Amp rating for the CT2 clamp</td></tr><tr><td>CT3 Calibration</td><td>Decimal
+- Default Value: 1.0</td><td>The calibration value for CT3</td></tr><tr><td>CT3 Rating</td><td>Decimal
+- Default Value: 100</td><td>The Amp rating for the CT3 clamp</td></tr><tr><td>CT4 Calibration</td><td>Decimal
+- Default Value: 1.0</td><td>The calibration value for CT4</td></tr><tr><td>CT4 Rating</td><td>Decimal
+- Default Value: 100</td><td>The Amp rating for the CT4 clamp</td></tr><tr><td>CT5 Calibration</td><td>Decimal
+- Default Value: 1.0</td><td>The calibration value for CT5</td></tr><tr><td>CT5 Rating</td><td>Decimal
+- Default Value: 100</td><td>The Amp rating for the CT5 clamp</td></tr><tr><td>CT6 Calibration</td><td>Decimal
+- Default Value: 1.0</td><td>The calibration value for CT6</td></tr><tr><td>CT6 Rating</td><td>Decimal
+- Default Value: 100</td><td>The Amp rating for the CT6 clamp</td></tr><tr><td>AC Calibration</td><td>Decimal
+- Default Value: 1.0</td><td>The calibration value for AC</td></tr><tr><td colspan="3">Commands</td></tr><tr><td colspan="3">Clear the running kWh totals.</td></tr><tr><td>Channel to Clear</td><td>Select(Options: [All Channels | <strong>Channel 1</strong> | Channel 2 | Channel 3 | Channel 4 | Channel 5 | Channel 6] (Default in <strong>bold</strong>)</td><td>The channel(s) to clear the kWh total and start back at 0.</td></tr><tr><td>Clear kWh Total</td><td>Button</td><td></td></tr></tbody></table>
 
 ### ROHM: BH1750
 
@@ -1339,7 +1368,7 @@ This Input module allows the use of any temperature/humidity sensor with the TH1
 This measures from several Kasa power devices (plugs/strips) capable of measuring energy consumption. These include, but are not limited to the KP115 and HS600.
 <table><thead><tr class="header"><th>Option</th><th>Type</th><th>Description</th></tr></thead><tbody><tr><td>Measurements Enabled</td><td>Multi-Select</td><td>The measurements to record</td></tr><tr><td>Period (Seconds)</td><td>Decimal</td><td>The duration between measurements or actions</td></tr><tr><td>Pre Output</td><td>Select</td><td>Turn the selected output on before taking every measurement</td></tr><tr><td>Pre Out Duration (Seconds)</td><td>Decimal</td><td>If a Pre Output is selected, set the duration to turn the Pre Output on for before every measurement is acquired.</td></tr><tr><td>Pre During Measure</td><td>Boolean</td><td>Check to turn the output off after (opposed to before) the measurement is complete</td></tr><tr><td>Device Type</td><td>Select</td><td>The type of Kasa device</td></tr><tr><td>Host</td><td>Text
 - Default Value: 0.0.0.0</td><td>Host or IP address</td></tr><tr><td>Asyncio RPC Port</td><td>Integer
-- Default Value: 18108</td><td>The port to start the asyncio RPC server. Must be unique from other Kasa Outputs.</td></tr><tr><td colspan="3">Commands</td></tr><tr><td colspan="3">The total kWh can be cleared with the following button or with the Clear Total kWh Function Action. This will also clear all energy stats on the device, not just the total kWh.</td></tr><tr><td>Clear Total: Kilowatt-hour</td><td>Button</td><td></td></tr></tbody></table>
+- Default Value: 18752</td><td>The port to start the asyncio RPC server. Must be unique from other Kasa Outputs.</td></tr><tr><td colspan="3">Commands</td></tr><tr><td colspan="3">The total kWh can be cleared with the following button or with the Clear Total kWh Function Action. This will also clear all energy stats on the device, not just the total kWh.</td></tr><tr><td>Clear Total: Kilowatt-hour</td><td>Button</td><td></td></tr></tbody></table>
 
 ### Tasmota: Tasmota Outlet Energy Monitor (HTTP)
 

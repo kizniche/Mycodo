@@ -315,7 +315,9 @@ Measurements
 
 ## Electrical Current
 
-### [Power Monitor: RPi Power Monitor (6 Channels)](/Mycodo/Supported-Inputs/#power-monitor-rpi-power-monitor-6-channels)
+### [Power Monitor: RPi 6-Channel Power Monitor (v0.1.0)](/Mycodo/Supported-Inputs/#power-monitor-rpi-6-channel-power-monitor-v010)
+
+### [Power Monitor: RPi 6-Channel Power Monitor (v0.4.0)](/Mycodo/Supported-Inputs/#power-monitor-rpi-6-channel-power-monitor-v040)
 
 ### [TP-Link: Kasa WiFi Power Plug/Strip Energy Statistics](/Mycodo/Supported-Inputs/#tp-link-kasa-wifi-power-plug-strip-energy-statistics)
 
@@ -333,7 +335,9 @@ Measurements
 
 ### [Microchip: MCP342x (x=2,3,4,6,7,8)](/Mycodo/Supported-Inputs/#microchip-mcp342x-x=2-3-4-6-7-8)
 
-### [Power Monitor: RPi Power Monitor (6 Channels)](/Mycodo/Supported-Inputs/#power-monitor-rpi-power-monitor-6-channels)
+### [Power Monitor: RPi 6-Channel Power Monitor (v0.1.0)](/Mycodo/Supported-Inputs/#power-monitor-rpi-6-channel-power-monitor-v010)
+
+### [Power Monitor: RPi 6-Channel Power Monitor (v0.4.0)](/Mycodo/Supported-Inputs/#power-monitor-rpi-6-channel-power-monitor-v040)
 
 ### [TP-Link: Kasa WiFi Power Plug/Strip Energy Statistics](/Mycodo/Supported-Inputs/#tp-link-kasa-wifi-power-plug-strip-energy-statistics)
 
@@ -352,6 +356,8 @@ Measurements
 ### [Texas Instruments: INA219x](/Mycodo/Supported-Inputs/#texas-instruments-ina219x)
 
 ## Energy
+
+### [Power Monitor: RPi 6-Channel Power Monitor (v0.4.0)](/Mycodo/Supported-Inputs/#power-monitor-rpi-6-channel-power-monitor-v040)
 
 ### [TP-Link: Kasa WiFi Power Plug/Strip Energy Statistics](/Mycodo/Supported-Inputs/#tp-link-kasa-wifi-power-plug-strip-energy-statistics)
 
@@ -523,7 +529,9 @@ Measurements
 
 ## Power
 
-### [Power Monitor: RPi Power Monitor (6 Channels)](/Mycodo/Supported-Inputs/#power-monitor-rpi-power-monitor-6-channels)
+### [Power Monitor: RPi 6-Channel Power Monitor (v0.1.0)](/Mycodo/Supported-Inputs/#power-monitor-rpi-6-channel-power-monitor-v010)
+
+### [Power Monitor: RPi 6-Channel Power Monitor (v0.4.0)](/Mycodo/Supported-Inputs/#power-monitor-rpi-6-channel-power-monitor-v040)
 
 ### [TP-Link: Kasa WiFi Power Plug/Strip Energy Statistics](/Mycodo/Supported-Inputs/#tp-link-kasa-wifi-power-plug-strip-energy-statistics)
 
@@ -535,7 +543,9 @@ Measurements
 
 ## Power Factor
 
-### [Power Monitor: RPi Power Monitor (6 Channels)](/Mycodo/Supported-Inputs/#power-monitor-rpi-power-monitor-6-channels)
+### [Power Monitor: RPi 6-Channel Power Monitor (v0.1.0)](/Mycodo/Supported-Inputs/#power-monitor-rpi-6-channel-power-monitor-v010)
+
+### [Power Monitor: RPi 6-Channel Power Monitor (v0.4.0)](/Mycodo/Supported-Inputs/#power-monitor-rpi-6-channel-power-monitor-v040)
 
 ### [Tasmota: Tasmota Outlet Energy Monitor (HTTP)](/Mycodo/Supported-Inputs/#tasmota-tasmota-outlet-energy-monitor-http)
 

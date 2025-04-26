@@ -1664,24 +1664,31 @@ def settings_pi_mod(form):
                       f" | ts '[%Y-%m-%d %H:%M:%S]' 2>&1"
                 enable_pigpiod_1ms = subprocess.Popen(cmd, shell=True)
                 enable_pigpiod_1ms.wait()
+                action_str = "Installed pigpiod with 1 ms sample rate"
+
             elif form.pigpiod_sample_rate.data == 'high':
                 # Install pigpiod (sample rate of 5 ms)
                 cmd = f"{INSTALL_DIRECTORY}/mycodo/scripts/mycodo_wrapper enable_pigpiod_high" \
                       f" | ts '[%Y-%m-%d %H:%M:%S]' 2>&1"
                 enable_pigpiod_5ms = subprocess.Popen(cmd, shell=True)
                 enable_pigpiod_5ms.wait()
+                action_str = "Installed pigpiod with 5 ms sample rate"
+
             elif form.pigpiod_sample_rate.data == 'disabled':
                 # Disable pigpiod (user selected disable)
                 cmd = f"{INSTALL_DIRECTORY}/mycodo/scripts/mycodo_wrapper enable_pigpiod_disabled" \
                       f" | ts '[%Y-%m-%d %H:%M:%S]' 2>&1"
                 disable_pigpiod = subprocess.Popen(cmd, shell=True)
                 disable_pigpiod.wait()
+                action_str = "Disabled pigpiod"
+
             elif form.pigpiod_sample_rate.data == 'uninstalled':
                 # Uninstall pigpiod (user selected disable)
                 cmd = f"{INSTALL_DIRECTORY}/mycodo/scripts/mycodo_wrapper uninstall_pigpiod" \
                       f" | ts '[%Y-%m-%d %H:%M:%S]' 2>&1"
                 uninstall_pigpiod = subprocess.Popen(cmd, shell=True)
                 uninstall_pigpiod.wait()
+                action_str = "Uninstalled pigpiod"
 
             # Start the Mycodo daemon
             cmd = f"{INSTALL_DIRECTORY}/mycodo/scripts/mycodo_wrapper daemon_start" \

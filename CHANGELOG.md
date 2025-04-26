@@ -1,4 +1,4 @@
-## 8.16.1 (Unreleased)
+## 8.16.1 (2025.04.26)
 
 This release fixes an install issue created by a dependency that resulted in an incompatible software version of another dependency.
 
