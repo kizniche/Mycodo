@@ -150,7 +150,10 @@ class ActionModule(AbstractFunctionAction):
                                 f"of {increment} over {duration} seconds."
 
         change_in_duty_cycle = abs(start - end)
-        steps = change_in_duty_cycle * 1 / increment
+        steps = change_in_duty_cycle / increment if increment else 0
+        if steps == 0:
+            self.logger.warning("Ramp‑PWM: start==end or increment==0 – skipping ramp")
+            return dict_vars
         seconds_per_step = duration / steps
 
         current_duty_cycle = start
