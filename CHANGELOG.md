@@ -1,3 +1,10 @@
+## 8.16.2 (Unreleased)
+
+### Bugfixes
+
+ - Fix libglib2.0 dependency issue with Mijia LYWSD03MMC Input
+
+
 ## 8.16.1 (2025.04.26)
 
 This release fixes an install issue created by a dependency that resulted in an incompatible software version of another dependency.

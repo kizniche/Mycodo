@@ -16,8 +16,8 @@ MYCODO_MAJOR_VERSION="8"
 # Dependency versions/URLs
 PIGPIO_URL="https://github.com/joan2937/pigpio/archive/v79.tar.gz"
 MCB2835_URL="http://www.airspayce.com/mikem/bcm2835/bcm2835-1.50.tar.gz"
-WIRINGPI_URL_ARMHF="https://github.com/WiringPi/WiringPi/releases/download/2.61-1/wiringpi-3.10-armhf.deb"
-WIRINGPI_URL_ARM64="https://github.com/WiringPi/WiringPi/releases/download/2.61-1/wiringpi-3.10-arm64.deb"
+WIRINGPI_URL_ARMHF="https://github.com/WiringPi/WiringPi/releases/download/3.10/wiringpi_3.10_armhf.deb"
+WIRINGPI_URL_ARM64="https://github.com/WiringPi/WiringPi/releases/download/3.10/wiringpi_3.10_arm64.deb"
 
 INFLUXDB1_VERSION="1.8.10"
 
@@ -691,20 +691,21 @@ case "${1:-''}" in
         sleep 5
         printf "#### Reloading mycodoflask\n"
         service mycodoflask reload
+        sleep 5
     ;;
     'web-server-disable')
-        printf "\n#### Disabling service for nginx web server\n"
+        printf "\n#### Disabling services for fronted\n"
         systemctl disable mycodoflask.service
         rm -rf /etc/systemd/system/mycodoflask.service
     ;;
     'web-server-enable')
-        printf "\n#### Enabling service for nginx web server\n"
+        printf "\n#### Enabling services for fronted\n"
         ln -sf "${MYCODO_PATH}"/install/mycodoflask_nginx.conf /etc/nginx/sites-enabled/default
         systemctl enable nginx
         systemctl enable "${MYCODO_PATH}"/install/mycodoflask.service
     ;;
     'web-server-update')
-        printf "\n#### Installing and configuring nginx web server\n"
+        printf "\n#### Reconfiguring fronted\n"
         /bin/bash "${MYCODO_PATH}"/mycodo/scripts/upgrade_commands.sh web-server-disable
         /bin/bash "${MYCODO_PATH}"/mycodo/scripts/upgrade_commands.sh web-server-enable
     ;;

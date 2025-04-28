@@ -62,7 +62,7 @@ INPUT_INFORMATION = {
     'options_disabled': ['interface'],
 
     'dependencies_module': [
-        ('apt', 'libglib2.0', 'libglib2.0'),
+        ('apt', 'libglib2.0-0', 'libglib2.0-0'),
         ('apt', 'bluez', 'bluez'),
         ('apt', 'bluetooth', 'bluetooth'),
         ('apt', 'libbluetooth-dev', 'libbluetooth-dev'),
