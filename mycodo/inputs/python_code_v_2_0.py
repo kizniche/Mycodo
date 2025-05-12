@@ -240,10 +240,10 @@ class InputModule(AbstractInput):
         self.unique_id = self.input_dev.unique_id
 
         self.measure_info = {}
-        self.device_measurements = db_retrieve_table_daemon(
+        device_measurements = db_retrieve_table_daemon(
             DeviceMeasurements).filter(
             DeviceMeasurements.device_id == self.input_dev.unique_id)
-        for each_measure in self.device_measurements.all():
+        for each_measure in device_measurements.all():
             self.measure_info[each_measure.channel] = {}
             self.measure_info[each_measure.channel]['unit'] = each_measure.unit
             self.measure_info[each_measure.channel]['measurement'] = each_measure.measurement

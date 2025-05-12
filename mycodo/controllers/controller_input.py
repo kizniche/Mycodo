@@ -25,6 +25,8 @@
 import threading
 import time
 
+from sqlalchemy.exc import PendingRollbackError
+
 from mycodo.controllers.base_controller import AbstractController
 from mycodo.databases.models import (SMTP, Conversion,
                                      DeviceMeasurements, Input, Misc, Output,
@@ -80,7 +82,6 @@ class InputController(AbstractController, threading.Thread):
         self.pause_loop = False
         self.verify_pause_loop = True
         self.dict_inputs = None
-        self.device_measurements = None
         self.conversions = None
         self.input_dev = None
         self.input_name = None
@@ -255,10 +256,6 @@ class InputController(AbstractController, threading.Thread):
         self.sample_rate = db_retrieve_table_daemon(
             Misc, entry='first').sample_rate_controller_input
 
-        self.device_measurements = db_retrieve_table_daemon(
-            DeviceMeasurements).filter(
-            DeviceMeasurements.device_id == self.unique_id)
-
         self.conversions = db_retrieve_table_daemon(Conversion)
 
         self.input_dev = input_dev
@@ -399,9 +396,13 @@ class InputController(AbstractController, threading.Thread):
         self.lastUpdate = time.time()
 
     def create_measurements_dict(self):
+        device_measurements = db_retrieve_table_daemon(
+            DeviceMeasurements).filter(
+            DeviceMeasurements.device_id == self.unique_id)
+
         measurements_record = {}
         for each_channel, each_measurement in self.measurement.values.items():
-            measurement = self.device_measurements.filter(
+            measurement = device_measurements.filter(
                 DeviceMeasurements.channel == each_channel).first()
 
             if measurement and 'value' in each_measurement:
@@ -421,6 +422,7 @@ class InputController(AbstractController, threading.Thread):
                     each_channel,
                     each_measurement,
                     timestamp=timestamp)
+
         self.logger.debug(
             f"Adding measurements to InfluxDB with ID {self.unique_id}: {measurements_record}")
         return measurements_record

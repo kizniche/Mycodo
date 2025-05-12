@@ -8,6 +8,7 @@ import time
 from mycodo.config import MYCODO_DB_PATH
 from mycodo.config import PATH_CAMERAS
 from mycodo.databases.models import Camera
+from mycodo.databases.models import CustomController
 from mycodo.databases.models import OutputChannel
 from mycodo.databases.utils import session_scope
 from mycodo.mycodo_client import DaemonControl
@@ -33,7 +34,15 @@ def camera_record(record_type, unique_id, duration_sec=None, tmp_filename=None):
     :return:
     """
     daemon_control = None
-    settings = db_retrieve_table_daemon(Camera, unique_id=unique_id)
+
+    if db_retrieve_table_daemon(Camera, unique_id=unique_id):
+        settings = db_retrieve_table_daemon(Camera, unique_id=unique_id)
+    elif db_retrieve_table_daemon(CustomController, unique_id=unique_id):
+        settings = db_retrieve_table_daemon(CustomController, unique_id=unique_id)
+    else:
+        logger.error(f"Camera with ID {unique_id} not found")
+        return None, None
+
     timestamp_date = datetime.datetime.now()
     timestamp = timestamp_date.strftime('%Y-%m-%d_%H-%M-%S')
     assure_path_exists(PATH_CAMERAS)

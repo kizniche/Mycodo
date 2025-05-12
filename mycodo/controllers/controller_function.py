@@ -51,7 +51,6 @@ class FunctionController(AbstractController, threading.Thread):
 
         self.timer_loop = time.time()
         self.dict_function = None
-        self.device_measurements = None
         self.conversions = None
         self.function = None
         self.function_name = None
@@ -97,10 +96,6 @@ class FunctionController(AbstractController, threading.Thread):
 
         self.sample_rate = db_retrieve_table_daemon(
             Misc, entry='first').sample_rate_controller_function
-
-        self.device_measurements = db_retrieve_table_daemon(
-            DeviceMeasurements).filter(
-            DeviceMeasurements.device_id == self.unique_id)
 
         self.conversions = db_retrieve_table_daemon(Conversion)
 

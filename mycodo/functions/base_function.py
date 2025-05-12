@@ -32,15 +32,7 @@ class AbstractFunction(AbstractBaseController):
 
         if not testing:
             self.unique_id = function.unique_id
-            self.initialize_measurements()
-
-    def initialize_measurements(self):
-        try:
-            if self.device_measurements:
-                return
-        except:
-            pass
-        self.setup_device_measurement(self.unique_id)
+            self.setup_device_measurement(self.unique_id)
 
     def is_enabled(self, channel):
         try:

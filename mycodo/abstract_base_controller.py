@@ -45,7 +45,6 @@ class AbstractBaseController(object):
 
         self.channels_conversion = {}
         self.channels_measurement = {}
-        self.device_measurements = None
 
     def initialize(self):
         pass
@@ -75,20 +74,18 @@ class AbstractBaseController(object):
             return self.setup_custom_options_csv(custom_options, custom_controller)
 
     def setup_device_measurement(self, unique_id):
-        for _ in range(5):  # Make 5 attempts to access database
-            try:
-                self.device_measurements = db_retrieve_table_daemon(
-                    DeviceMeasurements).filter(
-                    DeviceMeasurements.device_id == unique_id)
+        try:
+            device_measurements = db_retrieve_table_daemon(
+                DeviceMeasurements).filter(
+                DeviceMeasurements.device_id == unique_id)
 
-                for each_measure in self.device_measurements.all():
-                    self.channels_measurement[each_measure.channel] = each_measure
-                    self.channels_conversion[each_measure.channel] = db_retrieve_table_daemon(
-                        Conversion, unique_id=each_measure.conversion_id)
-                return
-            except Exception as msg:
-                self.logger.debug(f"Error: {msg}")
-            time.sleep(0.1)
+            for each_measure in device_measurements.all():
+                self.channels_measurement[each_measure.channel] = each_measure
+                self.channels_conversion[each_measure.channel] = db_retrieve_table_daemon(
+                    Conversion, unique_id=each_measure.conversion_id)
+            return
+        except Exception as msg:
+            self.logger.error(f"Error: {msg}")
 
     # TODO: Remove in place of JSON function, below, in next major version
     def setup_custom_options_csv(self, custom_options, custom_controller):

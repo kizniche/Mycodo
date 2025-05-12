@@ -92,7 +92,6 @@ class PIDController(AbstractController, threading.Thread):
         self.PID_Controller = None
         self.setpoint = None
 
-        self.device_measurements = None
         self.device_id = None
         self.measurement_id = None
         self.log_level_debug = None
@@ -154,8 +153,6 @@ class PIDController(AbstractController, threading.Thread):
         self.dict_outputs = parse_output_information()
 
         self.sample_rate = db_retrieve_table_daemon(Misc, entry='first').sample_rate_controller_pid
-
-        self.device_measurements = db_retrieve_table_daemon(DeviceMeasurements)
 
         pid = db_retrieve_table_daemon(PID, unique_id=self.unique_id)
 
@@ -384,7 +381,7 @@ class PIDController(AbstractController, threading.Thread):
         ]
 
         measurement_dict = {}
-        measurements = self.device_measurements.filter(
+        measurements = db_retrieve_table_daemon(DeviceMeasurements).filter(
             DeviceMeasurements.device_id == self.unique_id).all()
         for each_channel, each_measurement in enumerate(measurements):
             if (each_measurement.channel not in measurement_dict and

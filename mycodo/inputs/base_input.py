@@ -40,7 +40,7 @@ class AbstractInput(AbstractBaseController):
 
         if not testing:
             self.unique_id = input_dev.unique_id
-            self.initialize_measurements()
+            self.setup_device_measurement(self.unique_id)
 
     def __iter__(self):
         """Support the iterator protocol."""
@@ -145,14 +145,6 @@ class AbstractInput(AbstractBaseController):
                 self.logger.error(msg)
         return 1
 
-    def initialize_measurements(self):
-        try:
-            if self.device_measurements:
-                return
-        except:
-            pass
-        self.setup_device_measurement(self.unique_id)
-
     def is_enabled(self, channel):
         if channel not in self.channels_measurement:
             self.logger.error(f"Channel {channel} not found by is_enabled()")
@@ -237,7 +229,7 @@ class AbstractInput(AbstractBaseController):
         Use to smooth erratic measurements
 
         :param name: name of the measurement
-        :param init_max: initialize_measurements variables for this name
+        :param init_max: max number to average
         :param measurement: add measurement to pool and return average of past init_max measurements
         :return: int or float, whichever measurements come in as
         """

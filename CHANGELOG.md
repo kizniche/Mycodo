@@ -2,7 +2,9 @@
 
 ### Bugfixes
 
+ - Fix bug preventing db rollback in Inputs
  - Fix libglib2.0 dependency issue with Mijia LYWSD03MMC Input
+ - Enable Camera Photo Action to capture stills with Camera Function
 
 
 ## 8.16.1 (2025.04.26)
