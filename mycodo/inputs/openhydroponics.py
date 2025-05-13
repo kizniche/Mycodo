@@ -1,12 +1,12 @@
 # coding=utf-8
-import asyncio
 import copy
 
 from mycodo.inputs.base_input import AbstractInput
 from mycodo.databases.models import DeviceMeasurements
 from mycodo.utils.asyncio import AsyncLoop
 
-node_manager = None
+loop = AsyncLoop()
+loop.initialize()
 
 measurements_dict = {
 }
@@ -54,10 +54,12 @@ async def execute_at_modification_async(
             custom_options_channels_dict_postsave,
         )
 
+    node_manager = NodeManager()
     await node_manager.init()
     node = await node_manager.request_node(device_id)
     if not node:
         messages["error"].append(f"Node {mod_input.device_id} not found")
+        await node_manager.deinit()
         return (
             messages,
             mod_input,
@@ -103,6 +105,7 @@ async def execute_at_modification_async(
         new_measurement.channel = endpoint.endpoint_id
         new_measurement.save()
 
+    await node_manager.deinit()
     return (
         messages,
         mod_input,
@@ -121,7 +124,7 @@ def execute_at_modification(
     custom_options_channels_dict_postsave,
 ):
 
-    return asyncio.run(
+    return loop.call_async(
         execute_at_modification_async(
             messages,
             mod_input,
@@ -169,16 +172,18 @@ INPUT_INFORMATION = {
 
 
 async def populate_nodes():
+    node_manager = NodeManager()
+    await node_manager.init()
     async for node in node_manager:
         INPUT_INFORMATION["custom_options"][0]["options_select"].append(
             (str(node.uuid), f"Node: {node.uuid}")
         )
+    await node_manager.deinit()
 
 
 try:
     from openhydroponics.dbus import NodeManager
-    node_manager = NodeManager()
-    asyncio.run(populate_nodes())
+    loop.call_async(populate_nodes())
 except ImportError:
     # Before the dependencies are installed, this will raise an ImportError
     # Just ignore it for now
@@ -195,7 +200,7 @@ class InputModule(AbstractInput):
         self.device_id = None
         self.options_channels = None
 
-        self.loop = AsyncLoop()
+        self.node_manager = NodeManager()
 
         # Set custom option variables to defaults or user-set values
         self.setup_custom_options(INPUT_INFORMATION["custom_options"], input_dev)
@@ -204,7 +209,7 @@ class InputModule(AbstractInput):
             self.try_initialize()
 
     async def async_initialize(self):
-        await node_manager.init()
+        await self.node_manager.init()
 
         self.measurement_info = {}
         for measurement in self.device_measurements.all():
@@ -215,14 +220,13 @@ class InputModule(AbstractInput):
             ] = measurement.measurement
 
     def initialize(self):
-        self.loop.initialize()
-        self.loop.call_async(self.async_initialize())
+        loop.call_async(self.async_initialize())
 
     async def get_measurement_async(self):
         if not self.device_id:
             self.logger.error("Device ID not set")
             return None
-        node = await node_manager.request_node(self.device_id)
+        node = await self.node_manager.request_node(self.device_id)
         if not node:
             self.logger.error(f"Node {self.device_id} not found")
             return None
@@ -236,7 +240,7 @@ class InputModule(AbstractInput):
         return self.return_dict
 
     def get_measurement(self):
-        return self.loop.call_async(self.get_measurement_async())
+        return loop.call_async(self.get_measurement_async())
 
     def stop_input(self):
-        self.loop.stop()
+        loop.call_async(self.node_manager.deinit())
