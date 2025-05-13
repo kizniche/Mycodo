@@ -15,7 +15,7 @@ elif [ ! -d "$1" ]; then
     exit 2
 fi
 
-INSTALL_DIRECTORY=$( cd -P /var/mycodo-root/.. && pwd -P )
+INSTALL_DIRECTORY="/opt"
 echo '1' > "${INSTALL_DIRECTORY}"/Mycodo/.restore
 
 function error_found {
@@ -27,16 +27,17 @@ function error_found {
     exit 1
 }
 
+cd /
+
 CURRENT_VERSION=$("${INSTALL_DIRECTORY}"/Mycodo/env/bin/python "${INSTALL_DIRECTORY}"/Mycodo/mycodo/utils/github_release_info.py -c 2>&1)
 NOW=$(date +"%Y-%m-%d_%H-%M-%S")
 BACKUP_DIR="/var/Mycodo-backups/Mycodo-backup-${NOW}-${CURRENT_VERSION}"
 
 printf "\n#### Restore of backup %s initiated %s ####\n" "$1" "$NOW"
 
-printf "#### Stopping Daemon and HTTP server ####\n"
+printf "#### Stopping backend and frontend ####\n"
 service mycodo stop
-sleep 2
-apachectl stop
+service mycodoflask stop
 
 /bin/bash "${INSTALL_DIRECTORY}"/Mycodo/mycodo/scripts/upgrade_commands.sh initialize
 
@@ -84,6 +85,8 @@ if ! "${INSTALL_DIRECTORY}"/Mycodo/mycodo/scripts/upgrade_commands.sh update-per
   printf "Failed: Error while setting permissions.\n"
   error_found
 fi
+
+service mycodoflask restart
 
 printf "\n\nRunning post-restore script...\n"
 if ! "${INSTALL_DIRECTORY}"/Mycodo/mycodo/scripts/upgrade_post.sh ; then
