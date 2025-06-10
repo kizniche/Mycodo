@@ -1,4 +1,6 @@
-## 8.16.2 (Unreleased)
+## 8.16.2 (2025.06.10)
+
+This is a bugfix release to correct an installation issue that prevents the frontend from automatically starting.
 
 ### Bugfixes
 
