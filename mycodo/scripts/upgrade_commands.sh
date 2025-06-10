@@ -92,7 +92,8 @@ Options:
   upgrade-master                Upgrade Mycodo to the master branch at https://github.com/kizniche/Mycodo
   upgrade-post                  Execute post-upgrade script
   web-server-connect            Attempt to connect to the web server
-  web-server-restart            Restart the web server
+  web-server-reload             Reload nginx and the Flask web server
+  web-server-restart            Restart nginx and the Flask web server
   web-server-disable            Disable the web server service
   web-server-enable             Enable the web server service
   web-server-update             Update the web server configuration files
@@ -590,7 +591,7 @@ case "${1:-''}" in
         printf "Mycodo logrotate script installed\n"
     ;;
     'update-mycodo-service-disable')
-        printf "\n#### Disabling mycodo startup script\n"
+        printf "\n#### Disabling mycodo startup script (Note: Failing is normal if it has not ever been installed before)\n"
         systemctl disable mycodo.service
         rm -rf /etc/systemd/system/mycodo.service
     ;;
@@ -685,16 +686,24 @@ case "${1:-''}" in
             printf "#### Trying again...\n"
         done
     ;;
-    'web-server-restart')
-        printf "\n#### Restarting nginx\n"
-        service nginx restart
+    'web-server-reload')
+        printf "\n#### Reloading nginx\n"
+        service nginx reload
         sleep 5
         printf "#### Reloading mycodoflask\n"
         service mycodoflask reload
         sleep 5
     ;;
+    'web-server-restart')
+        printf "\n#### Restarting nginx\n"
+        service nginx restart
+        sleep 5
+        printf "#### Restarting mycodoflask\n"
+        service mycodoflask restart
+        sleep 5
+    ;;
     'web-server-disable')
-        printf "\n#### Disabling services for fronted\n"
+        printf "\n#### Disabling services for fronted (Note: Failing is normal if it has not ever been installed before)\n"
         systemctl disable mycodoflask.service
         rm -rf /etc/systemd/system/mycodoflask.service
     ;;

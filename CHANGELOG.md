@@ -2,6 +2,7 @@
 
 ### Bugfixes
 
+ - Fix install not properly starting the frontend ([#1426](https://github.com/kizniche/Mycodo/issues/1426))
  - Fix bug preventing db rollback in Inputs
  - Fix libglib2.0 dependency issue with Mijia LYWSD03MMC Input
  - Enable Camera Photo Action to capture stills with Camera Function

@@ -2051,7 +2051,7 @@ def settings_diagnostic_upgrade_master():
                 error, action, url_for('routes_settings.settings_diagnostic'))
             return
         finally:
-            command = '/bin/bash {path}/mycodo/scripts/upgrade_commands.sh web-server-restart'.format(
+            command = '/bin/bash {path}/mycodo/scripts/upgrade_commands.sh web-server-reload'.format(
                 path=INSTALL_DIRECTORY)
             subprocess.Popen(command, shell=True)
 
