@@ -232,7 +232,7 @@
       const url_2 = '/function_status_always/' + function_id;
       $.getJSON(url_2,
         function(data, responseText, jqXHR) {
-          if (jqXHR.status !== 204) {
+          if (jqXHR.status !== 204 && document.getElementById("function_status_always" + function_id)) {
             if (data && "string_status" in data) {
               document.getElementById("function_status_always" + function_id).innerHTML = data['string_status'].replace(/(?:\r\n|\r|\n)/g, "<br>");
             } else {
@@ -246,7 +246,7 @@
               document.getElementById("function_status_always" + function_id).innerHTML += "<p><pre>Error(s):<br>" + errors + "</pre></p>";
             }
           }
-          else {
+          else if (document.getElementById("function_status_always" + function_id)) {
             document.getElementById("function_status_always" + function_id).innerHTML = "Error querying status.";
           }
         }
