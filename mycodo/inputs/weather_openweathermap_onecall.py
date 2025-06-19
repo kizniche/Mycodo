@@ -190,7 +190,7 @@ class InputModule(AbstractInput):
 
     def initialize(self):
         if self.api_key and self.latitude and self.longitude and self.weather_time:
-            base_url = "https://api.openweathermap.org/data/2.5/onecall?lat={lat}&lon={lon}&units=metric&appid={key}".format(
+            base_url = "https://api.openweathermap.org/data/3.0/onecall?lat={lat}&lon={lon}&units=metric&appid={key}".format(
                 lat=self.latitude, lon=self.longitude, key=self.api_key)
             if self.weather_time == 'current':
                 self.weather_time_dict["time"] = "current"
