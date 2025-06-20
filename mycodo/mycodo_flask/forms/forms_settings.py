@@ -355,6 +355,8 @@ class UserAdd(FlaskForm):
     theme = StringField(
         lazy_gettext('Theme'), validators=[DataRequired()])
     user_add = SubmitField(lazy_gettext('Add User'))
+    enable_2fa = BooleanField(lazy_gettext('Enable 2FA'))
+    disable_2fa = BooleanField(lazy_gettext('Disable 2FA'))
 
 
 
@@ -403,7 +405,8 @@ class UserMod(FlaskForm):
     user_generate_api_key = SubmitField("Generate API Key")
     user_save = SubmitField(TRANSLATIONS['save']['title'])
     user_delete = SubmitField(TRANSLATIONS['delete']['title'])
-
+    enable_2fa = BooleanField(lazy_gettext('Enable 2FA'))
+    disable_2fa = BooleanField(lazy_gettext('Disable 2FA'))
 
 #
 # Settings (Pi)

@@ -7,6 +7,7 @@ import os
 import sys
 from datetime import timedelta
 
+
 from flask_babel import lazy_gettext as lg
 
 # Append proper path for other software reading this config file
@@ -91,6 +92,11 @@ RESTORE_LOG_FILE = os.path.join(LOG_PATH, 'mycodorestore.log')
 HTTP_ACCESS_LOG_FILE = '/var/log/nginx/access.log'
 HTTP_ERROR_LOG_FILE = '/var/log/nginx/error.log'
 
+# Two Factor Authentication
+SECURITY_TWO_FACTOR = True
+SECURITY_TWO_FACTOR_METHODS = ['authenticator']
+SECURITY_TWO_FACTOR_ENABLED_METHODS = ['authenticator']
+
 # Lock files
 LOCK_PATH = '/var/lock'
 LOCK_FILE_STREAM = os.path.join(LOCK_PATH, 'mycodo-camera-stream.pid')
@@ -134,6 +140,13 @@ LOGIN_BAN_SECONDS = 600  # 10 minutes
 
 # Check for upgrade every 2 days (if enabled)
 UPGRADE_CHECK_INTERVAL = 172800
+
+MAIL_SERVER='172.253.63.109'
+MAIL_PORT=465
+MAIL_USE_TLS=False
+MAIL_USE_SSL=True
+MAIL_USERNAME='cs763test@gmail.com'
+MAIL_PASSWORD='jsqlcvyfcgdrxioy'
 
 TAGS_URL = 'https://api.github.com/repos/kizniche/Mycodo/git/refs/tags'
 
