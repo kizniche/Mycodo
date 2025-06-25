@@ -537,6 +537,7 @@ except:
 class ProdConfig(object):
     """Production Configuration."""
     SQLALCHEMY_DATABASE_URI = MYCODO_DB_PATH
+    SQLALCHEMY_POOL_RECYCLE = 3600
     SQLALCHEMY_TRACK_MODIFICATIONS = False
 
     FLASK_PROFILER = {
