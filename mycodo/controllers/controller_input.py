@@ -82,7 +82,6 @@ class InputController(AbstractController, threading.Thread):
         self.pause_loop = False
         self.verify_pause_loop = True
         self.dict_inputs = None
-        self.conversions = None
         self.input_dev = None
         self.input_name = None
         self.log_level_debug = None
@@ -256,8 +255,6 @@ class InputController(AbstractController, threading.Thread):
         self.sample_rate = db_retrieve_table_daemon(
             Misc, entry='first').sample_rate_controller_input
 
-        self.conversions = db_retrieve_table_daemon(Conversion)
-
         self.input_dev = input_dev
         self.input_name = input_dev.name
         self.unique_id = input_dev.unique_id
@@ -406,7 +403,7 @@ class InputController(AbstractController, threading.Thread):
                 DeviceMeasurements.channel == each_channel).first()
 
             if measurement and 'value' in each_measurement:
-                conversion = self.conversions.filter(
+                conversion = db_retrieve_table_daemon(Conversion).filter(
                     Conversion.unique_id == measurement.conversion_id).first()
 
                 # If a timestamp is passed from the module, use it
