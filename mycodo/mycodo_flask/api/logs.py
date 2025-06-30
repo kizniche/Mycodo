@@ -37,7 +37,7 @@ ns_dep = api.namespace('log', description='Log operations')
     params={'log_type': 'Log to return the last lines of. Options: login, http_access, http_error, daemon, dependency, import, keepup, backup, restore, upgrade.',
             'last_lines': 'How many lines to return.'}
 )
-class DependencyInstall(Resource):
+class LogTail(Resource):
     """Tail the last lines of a log."""
 
     @accept('application/vnd.mycodo.v1+json')
@@ -68,7 +68,7 @@ class DependencyInstall(Resource):
             elif log_type == 'upgrade':
                 logfile = config.UPGRADE_LOG_FILE
             else:
-                return {'message': 'Unknown log type'}, 460
+                return {'message': 'Unknown log type'}, 404
 
             command = None
             logrotate_file = logfile + '.1'
