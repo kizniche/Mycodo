@@ -63,9 +63,11 @@ def init_api(app):
     import mycodo.mycodo_flask.api.choices
     import mycodo.mycodo_flask.api.controller
     import mycodo.mycodo_flask.api.daemon
+    import mycodo.mycodo_flask.api.dependency
     import mycodo.mycodo_flask.api.export_import
     import mycodo.mycodo_flask.api.function
     import mycodo.mycodo_flask.api.input
+    import mycodo.mycodo_flask.api.logs
     import mycodo.mycodo_flask.api.measurement
     import mycodo.mycodo_flask.api.note
     import mycodo.mycodo_flask.api.output
