@@ -1,3 +1,10 @@
+## 8.16.3 (Unreleased)
+
+### Bugfixes
+
+ - Add API endpoints: /log and /dependency ([#1430](https://github.com/kizniche/Mycodo/issues/1430))
+
+
 ## 8.16.2 (2025.06.10)
 
 This is a bugfix release to correct an installation issue that prevents the frontend from automatically starting.
