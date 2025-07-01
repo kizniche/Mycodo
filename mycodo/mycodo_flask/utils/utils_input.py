@@ -793,7 +793,6 @@ def check_input_channels_exist(dict_inputs, device, unique_id, messages):
         elif ('measurements_dict' in dict_inputs[device] and
               dict_inputs[device]['measurements_dict']):
             for each_channel in dict_inputs[device]['measurements_dict']:
-
                 measure_exists = DeviceMeasurements.query.filter(
                     and_(DeviceMeasurements.device_id == unique_id,
                          DeviceMeasurements.channel == each_channel)).count()
@@ -830,7 +829,6 @@ def check_input_channels_exist(dict_inputs, device, unique_id, messages):
                     unique_id, each_channel,
                     device=device, use_defaults=True)
                 new_channel.custom_options = custom_options
-
                 new_channel.save()
     except:
         logger.exception("check_input_channels_exist()")

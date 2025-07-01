@@ -245,6 +245,10 @@ MEASUREMENTS = {
         'name': lazy_gettext('Radiation Dose Rate'),
         'meas': 'radiation_dose_rate',
         'units': ['cpm', 'uSv_hr']},
+    'rate_ppm': {
+        'name': lazy_gettext('PPM Rate'),
+        'meas': 'rate_volume',
+        'units': ['ppm_min']},
     'rate_volume': {
         'name': lazy_gettext('Volume Flow Rate'),
         'meas': 'rate_volume',
@@ -509,6 +513,9 @@ UNITS = {
     'ppm': {
         'name': lazy_gettext('Parts per million'),
         'unit': 'ppm'},
+    'ppm_min': {
+        'name': lazy_gettext('Parts per million per minute'),
+        'unit': 'ppm/min'},
     'ppt': {
         'name': lazy_gettext('Parts per thousand'),
         'unit': 'ppt'},

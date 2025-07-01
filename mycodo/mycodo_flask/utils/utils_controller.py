@@ -5,6 +5,7 @@ import os
 
 import sqlalchemy
 from flask_babel import gettext
+from sqlalchemy import and_
 
 from mycodo.config import PATH_PYTHON_CODE_USER
 from mycodo.config_translations import TRANSLATIONS
@@ -118,6 +119,51 @@ def controller_mod(form_mod, request_form):
                             new_channel.custom_options = custom_options
 
                             new_channel.save()
+
+        #
+        # Add new measurements/channels
+        #
+        if ('measurements_dict' in dict_controllers[mod_controller.device] and
+                dict_controllers[mod_controller.device]['measurements_dict']):
+            for each_channel in dict_controllers[mod_controller.device]['measurements_dict']:
+                measure_exists = DeviceMeasurements.query.filter(
+                    and_(DeviceMeasurements.device_id == mod_controller.unique_id,
+                         DeviceMeasurements.channel == each_channel)).count()
+
+                if measure_exists:
+                    continue
+
+                measure_info = dict_controllers[mod_controller.device]['measurements_dict'][each_channel]
+                new_measurement = DeviceMeasurements()
+                new_measurement.device_id = mod_controller.unique_id
+                if 'name' in measure_info:
+                    new_measurement.name = measure_info['name']
+                new_measurement.measurement = measure_info['measurement']
+                new_measurement.unit = measure_info['unit']
+                new_measurement.channel = each_channel
+                new_measurement.save()
+
+        if 'channels_dict' in dict_controllers[mod_controller.device]:
+            for each_channel, channel_info in dict_controllers[mod_controller.device]['channels_dict'].items():
+                channel_exists = FunctionChannel.query.filter(
+                    and_(FunctionChannel.function_id == mod_controller.unique_id,
+                         FunctionChannel.channel == each_channel)).count()
+
+                if channel_exists:
+                    continue
+
+                new_channel = FunctionChannel()
+                new_channel.function_id = mod_controller.unique_id
+                new_channel.channel = each_channel
+
+                # Generate string to save from custom options
+                messages["error"], custom_options = custom_channel_options_return_json(
+                    messages["error"], dict_controllers, None,
+                    mod_controller.unique_id, each_channel,
+                    device=mod_controller.unique_id, use_defaults=True)
+                new_channel.custom_options = custom_options
+
+                new_channel.save()
 
         # Parse pre-save custom options for function device and its channels
         try:
