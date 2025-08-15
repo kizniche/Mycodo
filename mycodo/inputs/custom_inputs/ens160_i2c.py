@@ -37,8 +37,8 @@ measurements_dict = {
         'unit': 'ppb'
     },
     2: {
-        'measurement': 'unitless',
-        'unit': 'none'
+        'measurement': 'aqi',
+        'unit': 'index'
     }
 }
 
