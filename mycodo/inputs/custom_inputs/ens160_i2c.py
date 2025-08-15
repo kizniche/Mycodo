@@ -26,7 +26,7 @@ from mycodo.inputs.base_input import AbstractInput
 # Measurements: mirror common gas sensor IDs used in other inputs (e.g., CCS811)
 # 0: eCO2 in ppm (measurement ID: 'co2')
 # 1: TVOC in ppb (measurement ID: 'voc')
-# 2: AQI as a unitless index (measurement ID: 'unitless')
+# 2: AQI as a unitless index (measurement ID: 'index')
 measurements_dict = {
     0: {
         'measurement': 'co2',
@@ -64,8 +64,9 @@ INPUT_INFORMATION = {
     'options_disabled': ['interface'],
 
     'dependencies_module': [
-        # Extended I2C bus selection by bus number
-        ('pip-pypi', 'usb.core', 'pyusb==1.1.1'),
+        # Extended I2C bus selection by bus number.
+        # Note: pyusb is not required for native Linux I2C (/dev/i2c-*).
+        # It would only be needed if you use a USB-to-I2C bridge (e.g., MCP2221/FT232H via Blinka).
         ('pip-pypi', 'adafruit_extended_bus', 'Adafruit-extended-bus==1.0.2'),
         # ENS160 CircuitPython library
         ('pip-pypi', 'adafruit_ens160', 'adafruit-circuitpython-ens160==1.0.12')
@@ -404,9 +405,26 @@ class InputModule(AbstractInput):
 
         # Read values from the sensor. Library properties expected: .eco2, .tvoc
         try:
-            # Raw readings
+            # Raw readings with robust fallbacks across library versions
             eco2_raw = getattr(self.sensor, 'eco2', None)
+            if eco2_raw is None:
+                # Try alternate property names used in some versions
+                for alt in ('eCO2', 'ECO2', 'equivalent_co2', 'eq_co2'):
+                    if hasattr(self.sensor, alt):
+                        try:
+                            eco2_raw = getattr(self.sensor, alt)
+                            break
+                        except Exception:
+                            eco2_raw = None
             tvoc_raw = getattr(self.sensor, 'tvoc', None)
+            if tvoc_raw is None:
+                for alt in ('TVOC',):
+                    if hasattr(self.sensor, alt):
+                        try:
+                            tvoc_raw = getattr(self.sensor, alt)
+                            break
+                        except Exception:
+                            tvoc_raw = None
             try:
                 aqi_raw = getattr(self.sensor, 'aqi', None)
                 if aqi_raw is None:
