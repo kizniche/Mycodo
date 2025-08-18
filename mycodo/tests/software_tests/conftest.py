@@ -118,4 +118,3 @@ def login_user(app, username, password):
     form['mycodo_username'] = username
     form['mycodo_password'] = password
     form.submit().maybe_follow()
-    return None
