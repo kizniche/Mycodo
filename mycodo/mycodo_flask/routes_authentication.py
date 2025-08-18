@@ -6,19 +6,22 @@ import logging
 import os
 import socket
 import time
+import pyotp
 
 import flask_login
 from flask import (flash, jsonify, make_response, redirect, render_template,
-                   request, session, url_for)
+                   request, session, url_for, current_app)
 from flask.blueprints import Blueprint
 from flask_babel import gettext
 from sqlalchemy import func
+from flask_mail import (Message)
 
 from mycodo.config import (INSTALL_DIRECTORY, LANGUAGES, LOGIN_ATTEMPTS,
-                           LOGIN_BAN_SECONDS, LOGIN_LOG_FILE)
+                           LOGIN_BAN_SECONDS, LOGIN_LOG_FILE, MAIL_SERVER)
 from mycodo.config_translations import TRANSLATIONS
 from mycodo.databases.models import AlembicVersion, Misc, Role, User
 from mycodo.mycodo_flask.extensions import db
+from mycodo.mycodo_flask.extensions import mail
 from mycodo.mycodo_flask.forms import forms_authentication
 from mycodo.mycodo_flask.utils import utils_general
 from mycodo.utils.utils import test_password, test_username
@@ -247,6 +250,15 @@ def login_password():
                         role_name = Role.query.filter(Role.id == user.role_id).first().name
                         login_log(username, role_name, user_ip, 'LOGIN')
 
+                        if user.two_factor_enabled:
+                            if not user.two_factor_otp_secret:
+                                user.two_factor_otp_secret = pyotp.random_base32()
+                                db.session.commit()
+
+                        if user.two_factor_otp_secret and user.two_factor_enabled:
+                            send_otp(user)
+                            return redirect(url_for('routes_authentication.two_factor',loginUsername='{}'.format(username)))
+                        
                         # flask-login user
                         login_user = User()
                         login_user.id = user.id
@@ -274,6 +286,46 @@ def login_password():
                            language=language,
                            languages=LANGUAGES)
 
+# send_otp generates the one time passcode and allows for it to be valid
+# for 5 minutes. It then uses Flask mail to send the email to the address
+# setup by the user.
+def send_otp(user):
+    # Generate a one-time password
+    logger.warning("Sending email....")
+    totp = pyotp.TOTP(user.two_factor_otp_secret, interval=300)
+    otp = totp.now()
+
+    # Create the email message
+    msg = Message('Your One-Time Password',
+                sender='cs763test@gmail.com',
+                recipients=[user.email])
+    msg.body = f'Your one-time password is: {otp}'
+    # Send the email
+    mail.send(msg)
+
+# two_factor gets the token from the users input and verifies
+# it against the user secret for OTP. If successful user can login
+# otherwise they have to reenter.
+@blueprint.route('/two_factor/<loginUsername>', methods=['GET', 'POST'])
+def two_factor(loginUsername):
+    user = User.query.filter(User.name == loginUsername).first()
+    if request.method == 'POST':
+        token = request.form.get('token')
+        totp = pyotp.TOTP(user.two_factor_otp_secret,interval=300)
+        if totp.verify(token):
+            logger.warning("OTP token verified!")
+            login_user = User()
+            login_user.id = user.id
+            login_user.name = user.name
+            flask_login.login_user(login_user)
+            return redirect(url_for('routes_general.home'))
+        elif 'back_to_login' in request.form:
+            return redirect(url_for('/login_password'))
+        else:
+            logger.warning("Try again!")
+            flash('Invalid token. Please try again.')
+    logger.warning("two_factor done!")
+    return render_template('two_factor.html')
 
 @blueprint.route('/login_keypad', methods=('GET', 'POST'))
 def login_keypad():
@@ -500,3 +552,8 @@ def clear_cookie_auth():
     session.clear()
     response.set_cookie('remember_token', '', expires=0)
     return response
+
+
+
+
+
