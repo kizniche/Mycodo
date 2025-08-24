@@ -2,7 +2,10 @@
 #
 # waveshare_8channel_pi_relay_board_b_gpio.py - Output for Waveshare 8-Channel Raspberry Pi Relay Board B
 #
-from flask_babel import lazy_gettext
+try:
+    from flask_babel import lazy_gettext
+except ImportError:
+    def lazy_gettext(s): return s
 
 from mycodo.databases.models import OutputChannel
 from mycodo.outputs.base_output import AbstractOutput
