@@ -39,8 +39,7 @@ class DashboardBase(FlaskForm):
     widget_id = StringField('Widget ID', widget=widgets.HiddenInput())
 
     name = StringField(
-        TRANSLATIONS['name']['title'],
-        validators=[DataRequired()]
+        TRANSLATIONS['name']['title']
     )
     font_em_name = DecimalField(TRANSLATIONS['font_em_name']['title'])
     refresh_duration = IntegerField(

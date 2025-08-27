@@ -60,6 +60,8 @@ TRANSLATIONS = {
         'title': lazy_gettext('Device')},
     'diagnostic': {
         'title': lazy_gettext('Diagnostic')},
+    'disable': {
+        'title': lazy_gettext('Disable')},
     'display': {
         'title': lazy_gettext('Display')},
     'down': {
@@ -74,6 +76,8 @@ TRANSLATIONS = {
         'title': lazy_gettext('Edit')},
     'email': {
         'title': lazy_gettext('E-Mail')},
+    'enable': {
+        'title': lazy_gettext('Enable')},
     'energy_usage': {
         'title': lazy_gettext('Energy Usage')},
     'error': {
@@ -148,6 +152,8 @@ TRANSLATIONS = {
         'title': lazy_gettext('PWM')},
     'ramp': {
         'title': lazy_gettext('Ramp')},
+    'regulation': {
+        'title': lazy_gettext('Regulation')},
     'rename': {
         'title': lazy_gettext('Rename')},
     'reorder': {
