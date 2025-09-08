@@ -48,13 +48,14 @@ def save_dashboard_layout():
     keys = ('id', 'x', 'y', 'w', 'h')
     for index, each_widget in enumerate(data):
         if all(k in each_widget for k in keys):
-            widget_mod = Widget.query.filter(
-                Widget.unique_id == each_widget['id']).first()
+            widget_mod = Widget.query.filter(Widget.unique_id == each_widget['id']).first()
             if widget_mod:
-                widget_mod.position_x = each_widget['x']
-                widget_mod.position_y = each_widget['y']
-                widget_mod.width = each_widget['w']
-                widget_mod.height = each_widget['h']
+                dashboard = Dashboard.query.filter(Dashboard.unique_id == widget_mod.dashboard_id).first()
+                if dashboard and not dashboard.locked:
+                    widget_mod.position_x = each_widget['x']
+                    widget_mod.position_y = each_widget['y']
+                    widget_mod.width = each_widget['w']
+                    widget_mod.height = each_widget['h']
     db.session.commit()
     return "success"
 
