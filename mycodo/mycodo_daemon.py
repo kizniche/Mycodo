@@ -40,8 +40,8 @@ from logging import handlers
 
 from Pyro5.api import Proxy, expose, serve
 
-from mycodo.config import (DAEMON_LOG_FILE, DOCKER_CONTAINER, MYCODO_DB_PATH,
-                           MYCODO_VERSION, STATS_CSV, STATS_INTERVAL,
+from mycodo.config import (DAEMON_LOG_FILE, DOCKER_CONTAINER, LOG_PATH,
+                           MYCODO_DB_PATH, MYCODO_VERSION, STATS_CSV, STATS_INTERVAL,
                            UPGRADE_CHECK_INTERVAL)
 from mycodo.controllers.controller_conditional import ConditionalController
 from mycodo.controllers.controller_function import FunctionController
@@ -1378,6 +1378,10 @@ if __name__ == '__main__':
     # Check for root privileges
     if not os.geteuid() == 0:
         sys.exit("Script must be executed as root")
+
+    # Make sure log directory exits
+    if not os.path.exists(LOG_PATH):
+        os.makedirs(LOG_PATH)
 
     # Parse commandline arguments
     args = parse_args()
