@@ -25,9 +25,7 @@ import threading
 import time
 
 from mycodo.controllers.base_controller import AbstractController
-from mycodo.databases.models import Conversion
 from mycodo.databases.models import CustomController
-from mycodo.databases.models import DeviceMeasurements
 from mycodo.databases.models import Misc
 from mycodo.mycodo_client import DaemonControl
 from mycodo.utils.database import db_retrieve_table_daemon

@@ -206,6 +206,10 @@ class CustomModule(AbstractFunction):
                     self.measurement_max_age_b))
 
         if last_measurement_a and last_measurement_b:
+            if last_measurement_a[1] is None or last_measurement_b[1] is None:
+                self.logger.error(f"None found, cannot proceed. "
+                                  f"Measurement A: {last_measurement_a[1]}, Measurement B: {last_measurement_b[1]}")
+                return
             list_measures = [last_measurement_a[1], last_measurement_b[1]]
             difference = max(list_measures) - min(list_measures)
             if difference > self.max_difference:

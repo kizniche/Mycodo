@@ -16,6 +16,7 @@ This is a bugfix release to correct an installation issue that prevents the fron
  - Fix libglib2.0 dependency issue with Mijia LYWSD03MMC Input
  - Enable Camera Photo Action to capture stills with Camera Function
  - Prevent moving/resizing widgets on desktops when locked
+ - Gracefully handle NoneTypes in Verification Function
 
 
 ## 8.16.1 (2025.04.26)
