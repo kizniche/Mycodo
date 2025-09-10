@@ -176,6 +176,12 @@ def user(form):
 
 
 def user_add(form):
+    messages = {
+        "success": [],
+        "info": [],
+        "warning": [],
+        "error": []
+    }
     action = '{action} {controller} {user}'.format(
         action=TRANSLATIONS['add']['title'],
         controller=TRANSLATIONS['user']['title'],
@@ -211,6 +217,16 @@ def user_add(form):
                 new_user.code = code_int
             except:
                 error.append("Keypad code must be a numerical value of 4 or more digits")
+
+        # Enabling two factor
+        if(form.enable_2fa.data == True and form.disable_2fa.data == True):
+            messages["error"].append('Cannot enable and disable 2FA only set 1 and hit save.')
+        elif(form.enable_2fa.data == True):
+            new_user.two_factor_enabled = form.enable_2fa.data
+            messages["info"].append('2FA Enabled!')
+        elif(form.disable_2fa.data == True):
+            new_user.two_factor_enabled = False
+            messages["info"].append('2FA Disabled!')
 
         if not error:
             new_user.set_password(form.password_new.data)
@@ -296,6 +312,16 @@ def user_mod(form):
                 mod_user.code = code_int
             except:
                 messages["error"].append("Keypad code must be a numerical value of 4 or more digits")
+
+        # Enabling two factor
+        if(form.enable_2fa.data == True and form.disable_2fa.data == True):
+            messages["error"].append('Cannot enable and disable 2FA only set 1 and hit save.')
+        elif(form.enable_2fa.data == True):
+            mod_user.two_factor_enabled = form.enable_2fa.data
+            messages["info"].append('2FA Enabled!')
+        elif(form.disable_2fa.data == True):
+            mod_user.two_factor_enabled = False
+            messages["info"].append('2FA Disabled!')
 
         # Only change the password if it's entered in the form
         if form.password_new.data != '':

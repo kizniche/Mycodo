@@ -7,6 +7,9 @@ from mycodo.databases import set_uuid
 from mycodo.mycodo_flask.extensions import db
 from mycodo.mycodo_flask.extensions import ma
 
+from flask_security import UserMixin as SecurityMixin
+import pyotp
+
 
 class User(UserMixin, CRUDMixin, db.Model):
     __tablename__ = "users"
@@ -27,6 +30,10 @@ class User(UserMixin, CRUDMixin, db.Model):
     password_reset_code = db.Column(db.Text, default=None)
     password_reset_code_expiration = db.Column(db.DateTime, default=None)
     password_reset_last_request = db.Column(db.DateTime, default=None)
+    active = db.Column(db.Boolean, default=True)
+    two_factor_method = db.Column(db.String(64))
+    two_factor_otp_secret = db.Column(db.String(255))
+    two_factor_enabled = db.Column(db.Boolean(), default=False)
 
     def __repr__(self):
         output = "<User: <name='{name}', email='{email}' is_admin='{isadmin}'>"

@@ -11,6 +11,8 @@ and adds it's configuration to them.
 from flask import app
 from flask_sqlalchemy import SQLAlchemy
 from flask_marshmallow import Marshmallow  # must be imported after SQLAlchemy
+from flask_mail import Mail
 
 db = SQLAlchemy()
 ma = Marshmallow(app)
+mail = Mail()

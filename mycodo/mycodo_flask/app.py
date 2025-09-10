@@ -14,6 +14,7 @@ from flask_limiter import Limiter
 from flask_login import current_user
 from flask_session import Session
 from flask_talisman import Talisman
+from flask_mail import Mail
 
 from mycodo.config import INSTALL_DIRECTORY, LANGUAGES, ProdConfig
 from mycodo.databases.models import Misc, User, Widget, populate_db
@@ -32,6 +33,7 @@ from mycodo.utils.widgets import parse_widget_information
 
 logger = logging.getLogger(__name__)
 
+mail = Mail()
 
 def create_app(config=ProdConfig):
     """
@@ -56,6 +58,16 @@ def register_extensions(app):
     app.jinja_env.add_extension('jinja2.ext.do')  # Global values in jinja
 
     db.init_app(app)  # Influx db time-series database
+
+    app.config.update(
+        MAIL_SERVER='smtp.gmail.com',
+        MAIL_PORT=587,
+        MAIL_USE_TLS=True,
+        MAIL_USERNAME='cs763test@gmail.com',
+        MAIL_PASSWORD='jsqlcvyfcgdrxioy'
+    )
+
+    mail.init_app(app)
 
     init_api(app)
 
