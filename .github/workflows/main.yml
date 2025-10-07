@@ -25,12 +25,12 @@ jobs:
       - name: Install dependencies
         run: |
           sudo bash mycodo/scripts/upgrade_commands.sh update-apt
-          sudo apt install -y libboost-python-dev gawk git libffi-dev libi2c-dev nginx python3-dev sqlite3 swig
+          sudo apt install -y curl libboost-python-dev gawk git libffi-dev libi2c-dev nginx python3-dev sqlite3 swig
           sudo bash mycodo/scripts/upgrade_commands.sh update-packages
           git clone --recursive https://github.com/WiringPi/WiringPi-Python.git && cd WiringPi-Python && git submodule update --init && cd WiringPi && ./build && cd ../..
           sudo bash mycodo/scripts/upgrade_commands.sh build-pigpiod
           sudo bash mycodo/scripts/upgrade_commands.sh update-influxdb-2
-          sudo service influxdb start && sleep 3
+          sleep 3
           sudo bash mycodo/scripts/upgrade_commands.sh update-influxdb-2-db-user
           sudo useradd -M mycodo
           export PATH=/usr/bin:$PATH

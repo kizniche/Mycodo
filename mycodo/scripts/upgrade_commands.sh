@@ -22,7 +22,7 @@ WIRINGPI_URL_ARM64="https://github.com/WiringPi/WiringPi/releases/download/3.10/
 INFLUXDB1_VERSION="1.8.10"
 
 # Required apt packages
-APT_PKGS="gawk gcc g++ git jq libffi-dev libi2c-dev logrotate moreutils netcat-openbsd nginx python3 python3-dev python3-pip python3-setuptools python3-venv rng-tools sqlite3 unzip wget"
+APT_PKGS="curl gawk gcc g++ git jq libffi-dev libi2c-dev logrotate moreutils netcat-openbsd nginx python3 python3-dev python3-pip python3-setuptools python3-venv rng-tools sqlite3 unzip wget"
 
 UNAME_TYPE=$(uname -m)
 MACHINE_TYPE=$(dpkg --print-architecture)
