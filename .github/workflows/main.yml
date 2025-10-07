@@ -24,7 +24,7 @@ jobs:
       - name: Install dependencies
         run: |
           sudo bash mycodo/scripts/upgrade_commands.sh update-apt
-          sudo apt install -y libatlas-base-dev libboost-python-dev gawk git libffi-dev libi2c-dev nginx python3-dev sqlite3 swig
+          sudo apt install -y libboost-python-dev gawk git libffi-dev libi2c-dev nginx python3-dev sqlite3 swig
           sudo bash mycodo/scripts/upgrade_commands.sh update-packages
           git clone --recursive https://github.com/WiringPi/WiringPi-Python.git && cd WiringPi-Python && git submodule update --init && cd WiringPi && ./build && cd ../..
           sudo bash mycodo/scripts/upgrade_commands.sh build-pigpiod
