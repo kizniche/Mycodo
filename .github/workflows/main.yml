@@ -11,6 +11,7 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
+    timeout-minutes: 60
     container:
       image: debian:trixie
     steps:
@@ -18,7 +19,7 @@ jobs:
       - name: Set up Python 3.11
         uses: actions/setup-python@v5
         with:
-          python-version: 3.11
+          python-version: '3.11'
       - name: Install sudo
         run: apt update && apt install -y sudo
       - name: Install dependencies
@@ -28,9 +29,9 @@ jobs:
           sudo bash mycodo/scripts/upgrade_commands.sh update-packages
           git clone --recursive https://github.com/WiringPi/WiringPi-Python.git && cd WiringPi-Python && git submodule update --init && cd WiringPi && ./build && cd ../..
           sudo bash mycodo/scripts/upgrade_commands.sh build-pigpiod
-          sudo bash mycodo/scripts/upgrade_commands.sh update-influxdb-1
+          sudo bash mycodo/scripts/upgrade_commands.sh update-influxdb-2
           sudo service influxdb start && sleep 3
-          sudo bash mycodo/scripts/upgrade_commands.sh update-influxdb-1-db-user
+          sudo bash mycodo/scripts/upgrade_commands.sh update-influxdb-2-db-user
           sudo useradd -M mycodo
           export PATH=/usr/bin:$PATH
       - name: Test setup components
@@ -49,20 +50,19 @@ jobs:
           env/bin/python mycodo/scripts/generate_manual_inputs.py
           env/bin/python mycodo/scripts/generate_manual_outputs.py
           env/bin/python mycodo/scripts/generate_manual_widgets.py
-          printf "\n#### Generating API Manual\n"
+          printf "\n#### Starting Flask Frontend\n"
           sudo env/bin/python mycodo/start_flask_ui.py &
           sleep 10
           wget --no-check-certificate -p https://127.0.0.1 -O /dev/null
-          printf "\n# Installing npm\n"
-          sudo mkdir -p /etc/apt/keyrings
-          curl -fsSL https://deb.nodesource.com/gpgkey/nodesource-repo.gpg.key | sudo gpg --dearmor -o /etc/apt/keyrings/nodesource.gpg
-          NODE_MAJOR=20
-          echo "deb [signed-by=/etc/apt/keyrings/nodesource.gpg] https://deb.nodesource.com/node_$NODE_MAJOR.x nodistro main" | sudo tee /etc/apt/sources.list.d/nodesource.list
-          sudo apt update
-          sudo apt install nodejs
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+      - name: Generate API documentation
+        run: |
           printf "\n# Installing redoc-cli\n"
           sudo npm install -g redoc-cli
-          printf "\n# Generating manual\n"
+          printf "\n# Generating API Manual\n"
           sudo bash mycodo/scripts/generate_manual_api.sh
       - name: Test with pytest
         run: |
