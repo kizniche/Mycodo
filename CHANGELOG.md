@@ -1,14 +1,41 @@
 ## 8.17.0 (Unreleased)
 
-This release was updated to install and run on Debian Trixie (13) and Raspberry Pi OS Trixie (13). These operating system versions use Python 3.11 by default. If you are using an older operating system, you may not be able to upgrade to this version, or some Python packages may not be able to upgrade properly. If you are using an older operating system, it is recommended to stay on the latest version of Mycodo that is compatible with your OS.
+This release has several updates that allow Mycodo to be installed and run on Debian Trixie (13) and Raspberry Pi OS Trixie (13). These operating system versions use Python 3.11 by default. If you are using an older operating system, you may not be able to upgrade to this version if you don't have at least Python 3.11, or some Python packages may not be able to upgrade properly. If you are using an older operating system and older Python version, it is recommended to stay on your current version of Mycodo that is compatible with your OS.
 
-If you are running a Debian 12 or variant operating system, you will need to install Python 3.11, regenerate your virtualenv, then install dependencies, before upgrading to this version.
+If you are running Debian 12 or similar version operating system, you will need to install Python 3.11, regenerate your virtualenv, then install dependencies, before upgrading to this version.
 
-This can be done 
+See https://askubuntu.com/a/1438713 for instructions for installing Python 3.11 on Debian-based operating systems. Briefly:
+
+```bash
+sudo add-apt-repository ppa:deadsnakes/ppa
+sudo apt install python3.11
+```
+
+Then regenerate the virtualenv and install dependencies:
+
+```bash
+sudo rm -rf /opt/Mycodo/env
+virtualenv --python="/usr/bin/python3.11" /opt/Mycodo/env
+/opt/Mycodo/env/bin/pip install -r /opt/Mycodo/requirements.txt
+/opt/Mycodo/mycodo/scripts/upgrade_post.sh
+```
+
+Restart Mycodo daemon and frontend and ensure they still work:
+
+```bash
+sudo service mycodo restart
+sudo service mycodoflask restart
+```
 
 ### Bugfixes
 
+ - Fix OpenWeather One Call API endpoint to use v3.0 ([#1429](https://github.com/kizniche/Mycodo/pull/1429))
+
+### Features
+
  - Add API endpoints: /log and /dependency ([#1430](https://github.com/kizniche/Mycodo/issues/1430))
+ - Add ability to duplicate Outputs or Functions ([#1410](https://github.com/kizniche/Mycodo/pull/1410))
+
 
 ### Miscellaneous
 
