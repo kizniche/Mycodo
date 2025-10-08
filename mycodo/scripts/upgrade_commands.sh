@@ -474,7 +474,7 @@ case "${1:-''}" in
                 dpkg -i "${INSTALL_FILE}"
                 rm -rf "${INSTALL_FILE}"
 
-                service influxdb restart
+                systemctl restart influxd
             else
                 printf "Correct version of InfluxDB currently installed (v${CORRECT_VERSION_INSTALL}).\n"
             fi
@@ -492,7 +492,7 @@ case "${1:-''}" in
                 dpkg -i "${CLIENT_FILE}"
                 rm -rf "${CLIENT_FILE}"
 
-                service influxdb restart
+                systemctl restart influxd
             else
                 printf "Correct version of InfluxDB-Client currently installed (v${CORRECT_VERSION_CLI}).\n"
             fi
