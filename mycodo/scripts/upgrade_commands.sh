@@ -438,9 +438,9 @@ case "${1:-''}" in
         printf "\n#### Ensuring compatible version of influxdb 2.x is installed ####\n"
         if [[ ${UNAME_TYPE} == 'x86_64' || ${MACHINE_TYPE} == 'arm64' ]]; then
             INSTALL_ADDRESS="https://dl.influxdata.com/influxdb/releases/"
-            AMD64_INSTALL_FILE="influxdb2_2.7.8-1_amd64.deb"
-            ARM64_INSTALL_FILE="influxdb2_2.7.8-1_arm64.deb"
-            CORRECT_VERSION_INSTALL="2.7.8-1"
+            AMD64_INSTALL_FILE="influxdb2_2.7.12-1_amd64.deb"
+            ARM64_INSTALL_FILE="influxdb2_2.7.12-1_arm64.deb"
+            CORRECT_VERSION_INSTALL="2.7.12-1"
             AMD64_CLIENT_FILE="influxdb2-client-2.7.5-amd64.deb"
             ARM64_CLIENT_FILE="influxdb2-client-2.7.5-arm64.deb"
             CORRECT_VERSION_CLI="2.7.5-1"
