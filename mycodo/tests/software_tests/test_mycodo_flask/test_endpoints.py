@@ -786,7 +786,7 @@ def add_widget(testapp, dashboard_id=None, widget_type=''):
     form = testapp.get('/dashboard').maybe_follow().forms['add_widget_form']
     form_dict = {}
     for each_field in form.fields.items():
-        if each_field[0]:
+        if each_field[0] and each_field[0] != 'csrf_token':
             form_dict[each_field[0]] = form[each_field[0]].value
     form_dict['dashboard_id'] = dashboard_id
     form_dict['widget_type'] = widget_type

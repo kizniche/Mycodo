@@ -171,7 +171,7 @@ class MycodoRelease:
                     maj_versions.append(each_tag[1:])
 
             for each_tag in self.mycodo_tags:
-                if (re.match(f'v{major_version}.*(\d\.\d)', each_tag) and
+                if (re.match(fr'v{major_version}.*(\d\.\d)', each_tag) and
                         each_tag[1:] == self.sort_reverse_list(maj_versions)[0]):
                     if version_only:
                         return each_tag[1:]
