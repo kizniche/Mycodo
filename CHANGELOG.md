@@ -35,10 +35,12 @@ sudo service mycodoflask restart
 
  - Add API endpoints: /log and /dependency ([#1430](https://github.com/kizniche/Mycodo/issues/1430))
  - Add ability to duplicate Outputs or Functions ([#1410](https://github.com/kizniche/Mycodo/pull/1410))
-
+ - Add Input: ENS160 ([#1434](https://github.com/kizniche/Mycodo/pull/1434))
+ - Add Output: Waveshare 8-Channel Raspberry Pi Relay Board B ([#1434](https://github.com/kizniche/Mycodo/pull/1434))
 
 ### Miscellaneous
 
+ - Updates to support Python 3.11
  - Update InfluxDB to 2.7.12
  - Update pip packages
 
