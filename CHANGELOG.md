@@ -1,8 +1,19 @@
-## 8.16.3 (Unreleased)
+## 8.17.0 (Unreleased)
+
+This release was updated to install and run on Debian Trixie (13) and Raspberry Pi OS Trixie (13). These operating system versions use Python 3.11 by default. If you are using an older operating system, you may not be able to upgrade to this version, or some Python packages may not be able to upgrade properly. If you are using an older operating system, it is recommended to stay on the latest version of Mycodo that is compatible with your OS.
+
+If you are running a Debian 12 or variant operating system, you will need to install Python 3.11, regenerate your virtualenv, then install dependencies, before upgrading to this version.
+
+This can be done 
 
 ### Bugfixes
 
  - Add API endpoints: /log and /dependency ([#1430](https://github.com/kizniche/Mycodo/issues/1430))
+
+### Miscellaneous
+
+ - Update InfluxDB to 2.7.12
+ - Update pip packages
 
 
 ## 8.16.2 (2025.06.10)

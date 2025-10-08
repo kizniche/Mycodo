@@ -93,7 +93,7 @@
       {% set force_default_value = true %}
 
     <div class="add_dashboard_widget" style="display: none" id="{{each_widget}}">
-      <form method="post" id="add_widget_form" action="/dashboard/{{dashboard_id}}">
+      <form method="post" id="add_widget_form_{{ each_widget }}" action="/dashboard/{{dashboard_id}}">
       {{form_base.csrf_token}}
       <input type="hidden" name="dashboard_id" value="{{dashboard_id}}">
       <input type="hidden" name="widget_type" value="{{each_widget}}">
