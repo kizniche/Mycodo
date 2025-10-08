@@ -271,10 +271,6 @@ def pid_mod(form_mod_pid_base,
                 page_refresh = True
             mod_pid.lower_output_id = None
 
-    if (mod_pid.raise_output_id and mod_pid.lower_output_id and
-            mod_pid.raise_output_id == mod_pid.lower_output_id):
-        messages["error"].append(gettext("Raise and lower outputs cannot be the same"))
-
     try:
         if not messages["error"]:
             db.session.commit()

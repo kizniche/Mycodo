@@ -29,6 +29,7 @@ sudo service mycodoflask restart
 
 ### Bugfixes
 
+ - Fix inability to set the same output for PID raise and lower ([#1369](https://github.com/kizniche/Mycodo/issues/1369))
  - Fix OpenWeather One Call API endpoint to use v3.0 ([#1429](https://github.com/kizniche/Mycodo/pull/1429))
 
 ### Features
