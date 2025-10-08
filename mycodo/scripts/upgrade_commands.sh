@@ -474,7 +474,11 @@ case "${1:-''}" in
                 dpkg -i "${INSTALL_FILE}"
                 rm -rf "${INSTALL_FILE}"
 
-                systemctl restart influxd
+                if pidof systemd > /dev/null; then
+                    systemctl restart influxd
+                else
+                    printf "Systemd not running. Skipping service management for influxd.\n"
+                fi
             else
                 printf "Correct version of InfluxDB currently installed (v${CORRECT_VERSION_INSTALL}).\n"
             fi
@@ -492,7 +496,11 @@ case "${1:-''}" in
                 dpkg -i "${CLIENT_FILE}"
                 rm -rf "${CLIENT_FILE}"
 
-                systemctl restart influxd
+                if pidof systemd > /dev/null; then
+                    systemctl restart influxd
+                else
+                    printf "Systemd not running. Skipping service management for influxd.\n"
+                fi
             else
                 printf "Correct version of InfluxDB-Client currently installed (v${CORRECT_VERSION_CLI}).\n"
             fi
