@@ -436,8 +436,6 @@ case "${1:-''}" in
     ;;
     'update-influxdb-2')
         printf "\n#### Ensuring compatible version of influxdb 2.x is installed ####\n"
-        apt install -y systemd
-
         if [[ ${UNAME_TYPE} == 'x86_64' || ${MACHINE_TYPE} == 'arm64' ]]; then
             INSTALL_ADDRESS="https://dl.influxdata.com/influxdb/releases/"
             AMD64_INSTALL_FILE="influxdb2_2.7.8-1_amd64.deb"
@@ -476,11 +474,7 @@ case "${1:-''}" in
                 dpkg -i "${INSTALL_FILE}"
                 rm -rf "${INSTALL_FILE}"
 
-                if pidof systemd > /dev/null; then
-                    systemctl restart influxd
-                else
-                    printf "Systemd not running. Skipping service management for influxd.\n"
-                fi
+                systemctl restart influxd
             else
                 printf "Correct version of InfluxDB currently installed (v${CORRECT_VERSION_INSTALL}).\n"
             fi
@@ -498,11 +492,7 @@ case "${1:-''}" in
                 dpkg -i "${CLIENT_FILE}"
                 rm -rf "${CLIENT_FILE}"
 
-                if pidof systemd > /dev/null; then
-                    systemctl restart influxd
-                else
-                    printf "Systemd not running. Skipping service management for influxd.\n"
-                fi
+                systemctl restart influxd
             else
                 printf "Correct version of InfluxDB-Client currently installed (v${CORRECT_VERSION_CLI}).\n"
             fi
