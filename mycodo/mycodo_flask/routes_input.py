@@ -295,7 +295,7 @@ def page_input():
         try:
             test_cmd = subprocess.check_output(['owdir']).splitlines()
             for each_ow in test_cmd:
-                str_ow = re.sub("\ |\/|\'", "", each_ow.decode("utf-8"))  # Strip / and '
+                str_ow = re.sub(r"\ |\/|\'", "", each_ow.decode("utf-8"))  # Strip / and '
                 if '.' in str_ow and len(str_ow) == 15:
                     devices_1wire_ow_shell.append(str_ow)
         except Exception:

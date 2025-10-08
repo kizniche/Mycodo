@@ -23,7 +23,7 @@ def generate_controller_doc(out_file, each_data):
                     out_file.write(f"[{each_dep[2]}](https://packages.debian.org/search?keywords={each_dep[2]})")
                 elif each_dep[0] == "pip-pypi":
                     if 'git+' in each_dep[2]:
-                        url = re.search('git\+(.*).git', each_dep[2])
+                        url = re.search(r'git\+(.*).git', each_dep[2])
                         out_file.write(f"[{each_dep[1]}]({url.group(1)})")
                     elif "==" in each_dep[2]:
                         out_file.write(f"[{each_dep[2].split('==')[0]}](https://pypi.org/project/{each_dep[2].split('==')[0]})")

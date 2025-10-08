@@ -40,7 +40,7 @@ class MycodoRelease:
             for each_tag in response_tags:
                 if "ref" in each_tag and "/" in each_tag['ref']:
                     tag_full = each_tag['ref'].split('/')
-                    if len(tag_full) == 3 and re.match('v(\d+)\.(\d+)\.\d+', tag_full[2]):
+                    if len(tag_full) == 3 and re.match(r'v(\d+)\.(\d+)\.\d+', tag_full[2]):
                         parsed_tags.append(tag_full[2])
         except socket.gaierror:
             logger.error("Cannot connect")
@@ -55,7 +55,7 @@ class MycodoRelease:
         all_versions = []
         try:
             for each_tag in self.mycodo_tags:
-                if re.match(f'v{major_version}.*(\d\.\d)', each_tag):
+                if re.match(fr'v{major_version}.*(\d\.\d)', each_tag):
                     all_versions.append(each_tag[1:])
         except Exception:
             logger.exception("github_releases()")
@@ -167,7 +167,7 @@ class MycodoRelease:
         maj_versions = []
         try:
             for each_tag in self.mycodo_tags:
-                if re.match(f'v{major_version}.*(\d\.\d)', each_tag):
+                if re.match(fr'v{major_version}.*(\d\.\d)', each_tag):
                     maj_versions.append(each_tag[1:])
 
             for each_tag in self.mycodo_tags:
