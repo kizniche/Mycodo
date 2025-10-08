@@ -436,6 +436,8 @@ case "${1:-''}" in
     ;;
     'update-influxdb-2')
         printf "\n#### Ensuring compatible version of influxdb 2.x is installed ####\n"
+        apt install systemd
+
         if [[ ${UNAME_TYPE} == 'x86_64' || ${MACHINE_TYPE} == 'arm64' ]]; then
             INSTALL_ADDRESS="https://dl.influxdata.com/influxdb/releases/"
             AMD64_INSTALL_FILE="influxdb2_2.7.8-1_amd64.deb"
