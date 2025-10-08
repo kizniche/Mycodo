@@ -14,7 +14,7 @@ import flask_login
 from flask import (Blueprint, flash, jsonify, make_response, redirect,
                    render_template, request, send_file, url_for)
 from flask_babel import gettext
-from pkg_resources import parse_version
+from packaging.version import parse as parse_version
 
 from mycodo.config import (BACKUP_LOG_FILE, BACKUP_PATH, CAMERA_INFO,
                            DEPENDENCIES_GENERAL, DEPENDENCY_INIT_FILE,
