@@ -437,10 +437,11 @@ case "${1:-''}" in
     'update-influxdb-2')
         printf "\n#### Ensuring compatible version of influxdb 2.x is installed ####\n"
         if [[ ${UNAME_TYPE} == 'x86_64' || ${MACHINE_TYPE} == 'arm64' ]]; then
-            INSTALL_ADDRESS="https://dl.influxdata.com/influxdb/releases/"
+            SERV_ADDRESS="https://dl.influxdata.com/influxdb/releases/v2.7.12/"
             AMD64_INSTALL_FILE="influxdb2_2.7.12-1_amd64.deb"
-            ARM64_INSTALL_FILE="influxdb2_2.7.12-1_arm64.deb"
+            ARM64_INSTALL_FILE="vinfluxdb2_2.7.12-1_arm64.deb"
             CORRECT_VERSION_INSTALL="2.7.12-1"
+            CLIENT_ADDRESS="https://dl.influxdata.com/influxdb/releases/"
             AMD64_CLIENT_FILE="influxdb2-client-2.7.5-amd64.deb"
             ARM64_CLIENT_FILE="influxdb2-client-2.7.5-arm64.deb"
             CORRECT_VERSION_CLI="2.7.5-1"
@@ -455,7 +456,7 @@ case "${1:-''}" in
                 CLIENT_FILE=$ARM64_CLIENT_FILE
             fi
 
-            printf "#### Influxdb server file location: ${INSTALL_ADDRESS}${INSTALL_FILE}\n"
+            printf "#### Influxdb server file location: ${SERV_ADDRESS}${INSTALL_FILE}\n"
 
             CURRENT_VERSION=$(apt-cache policy influxdb2 | grep 'Installed' | gawk '{print $2}')
 
@@ -470,7 +471,7 @@ case "${1:-''}" in
 
                 printf "#### Installing InfluxDB v${CORRECT_VERSION_INSTALL}...\n"
 
-                wget --quiet "${INSTALL_ADDRESS}${INSTALL_FILE}"
+                wget --quiet "${SERV_ADDRESS}${INSTALL_FILE}"
                 dpkg -i "${INSTALL_FILE}"
                 rm -rf "${INSTALL_FILE}"
 
@@ -479,7 +480,7 @@ case "${1:-''}" in
                 printf "Correct version of InfluxDB currently installed (v${CORRECT_VERSION_INSTALL}).\n"
             fi
 
-            printf "#### Influxdb client file location: ${INSTALL_ADDRESS}${CLIENT_FILE}\n"
+            printf "#### Influxdb client file location: ${CLIENT_ADDRESS}${CLIENT_FILE}\n"
 
             CURRENT_VERSION=$(apt-cache policy influxdb2-cli | grep 'Installed' | gawk '{print $2}')
 
@@ -488,7 +489,7 @@ case "${1:-''}" in
 
                 printf "#### Installing InfluxDB-Client v${CORRECT_VERSION_CLI}...\n"
 
-                wget --quiet "${INSTALL_ADDRESS}${CLIENT_FILE}"
+                wget --quiet "${CLIENT_ADDRESS}${CLIENT_FILE}"
                 dpkg -i "${CLIENT_FILE}"
                 rm -rf "${CLIENT_FILE}"
 
