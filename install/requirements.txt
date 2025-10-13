@@ -4,7 +4,7 @@ argparse==1.4.0
 bcrypt==5.0.0
 distro==1.9.0
 email_validator==2.3.0
-filelock==3.13.1
+filelock==3.20.0
 Flask==3.1.2
 Flask_Accept==0.0.6
 Flask_Babel==4.0.0
