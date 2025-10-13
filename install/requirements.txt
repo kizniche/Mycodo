@@ -20,7 +20,7 @@ Flask_Talisman==1.1.0
 Flask_WTF==1.2.2
 geocoder==1.38.1
 gunicorn==23.0.0
-importlib_metadata==6.8.0
+importlib_metadata==8.7.0
 influxdb==5.3.2  # Only used for stats. TODO: update to influxdb_client and remove
 influxdb_client[ciso]==1.49.0
 MarkupSafe==2.1.3
