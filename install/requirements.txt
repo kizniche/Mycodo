@@ -1,7 +1,7 @@
 # Mycodo base
 alembic==1.16.5
 argparse==1.4.0
-bcrypt==4.1.2
+bcrypt==5.0.0
 distro==1.9.0
 email_validator==2.3.0
 filelock==3.13.1
