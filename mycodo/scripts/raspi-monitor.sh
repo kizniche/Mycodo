@@ -11,8 +11,8 @@
 # Script to enable and disable the HDMI signal of the Raspberry PI
 # Inspiration: http://www.raspberrypi.org/forums/viewtopic.php?t=16472&p=176258
 #
-# sudo apt-get update
-# sudo apt-get install git gcc libusb-dev
+# sudo apt update
+# sudo apt install git gcc libusb-dev
 # git clone https://github.com/codazoda/hub-ctrl.c
 # gcc -o hub-ctrl ./hub-ctrl.c/hub-ctrl.c -lusb
 # sudo cp hub-ctrl /usr/local/sbin/

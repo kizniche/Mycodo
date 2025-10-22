@@ -171,12 +171,23 @@ def admin_backup():
 def install_dependencies(dependencies):
     now = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
     dependency_list = []
+    apt_update = False
+
     for each_dependency in dependencies:
+        if each_dependency[2] == 'apt':
+            apt_update = True
+
         if each_dependency[0] not in dependency_list:
             dependency_list.append(each_dependency[0])
+
     with open(DEPENDENCY_LOG_FILE, 'a+') as f:
         f.write("\n[{time}] Dependency installation beginning. Installing: {deps}\n\n".format(
             time=now, deps=", ".join(dependency_list)))
+
+    # Update apt repositories before installing apt dependencies
+    if apt_update:
+        cmd = f"/bin/bash {INSTALL_DIRECTORY}/mycodo/scripts/upgrade_commands.sh update-apt | ts '[%Y-%m-%d %H:%M:%S]' >> {DEPENDENCY_LOG_FILE} 2>&1"
+        cmd_output(cmd, stdout_pipe=False, user='root')
 
     for each_dep in dependencies:
         if each_dep[2] == 'bash-commands':

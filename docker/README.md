@@ -101,7 +101,7 @@ Open a terminal in Raspbian and run the following commands.
 #### Retrieve and extract the latest Mycodo release
 
 ```shell script
-sudo apt-get install git
+sudo apt install git
 git clone https://github.com/kizniche/Mycodo
 ```
 

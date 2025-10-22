@@ -154,7 +154,7 @@ if __name__ == "__main__":
     apt_deps = " ".join(installed_apt_deps)
 
     if apt_deps:
-        update_cmd = f'apt-get install -y {apt_deps}'
+        update_cmd = f'apt install -y {apt_deps}'
         output, err, stat = cmd_output(update_cmd, user='root')
         formatted_output = output.decode("utf-8").replace('\\n', '\n')
         logger.info(formatted_output)

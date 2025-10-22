@@ -31,6 +31,7 @@ sudo service mycodoflask restart
 
  - Fix inability to set the same output for PID raise and lower ([#1369](https://github.com/kizniche/Mycodo/issues/1369))
  - Fix OpenWeather One Call API endpoint to use v3.0 ([#1429](https://github.com/kizniche/Mycodo/pull/1429))
+ - Fix apt update not being run before installing apt packages dependencies
 
 ### Features
 
@@ -3720,7 +3721,7 @@ If you rely on your system to work, it is highly recommended that you ***DO NOT 
 
 #### Failure during the upgrade to >= 5.5.0
 
-I found that occasionally the upgrade will spontaneously stop without an indication of the issue. I've seen it happen during an apt-get install and during a pip upgrade. It does not seem consistent, and there were no erorrs, therefore it wasn't able to be fixed. If you experience an error during the upgrade that doesn't allow the upgrade to complete, issue the following commands to attempt to resume and complete the upgrade. If that doesn't fix it, you may have to install Mycodo from scratch.
+I found that occasionally the upgrade will spontaneously stop without an indication of the issue. I've seen it happen during an apt install and during a pip upgrade. It does not seem consistent, and there were no erorrs, therefore it wasn't able to be fixed. If you experience an error during the upgrade that doesn't allow the upgrade to complete, issue the following commands to attempt to resume and complete the upgrade. If that doesn't fix it, you may have to install Mycodo from scratch.
 
 ```bash
 sudo dpkg --configure -a

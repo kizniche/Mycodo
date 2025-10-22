@@ -1945,7 +1945,7 @@ def settings_diagnostic_recreate_influxdb_db_2():
             p = subprocess.Popen(command, shell=True)
             p.communicate()
         except Exception:
-            logger.exception()
+            logger.exception("recreating influxdb2x database")
     
     flash_success_errors(
         error, action, url_for('routes_settings.settings_diagnostic'))

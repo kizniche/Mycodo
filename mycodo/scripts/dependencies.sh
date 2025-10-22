@@ -18,7 +18,7 @@ printf "\n#### Installing/updating %s (%s)\n" "${2}" "${1}"
 
 case "${1}" in
     'apt')
-        apt-get install -y "${2}"
+        apt install -y "${2}"
     ;;
     'pip-pypi')
         if [ ! -e "${INSTALL_DIRECTORY}"/env/bin/python3 ]; then

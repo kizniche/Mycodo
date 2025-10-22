@@ -1,24 +1,15 @@
 # coding=utf-8
-import flask_login
 import logging
 import threading
 import traceback
+
+import flask_login
 from flask_accept import accept
 from flask_restx import Resource
 from flask_restx import abort
-from flask_restx import fields
 
-from mycodo.databases.models import DeviceMeasurements
-from mycodo.databases.models import Input
-from mycodo.databases.models import InputChannel
-from mycodo.databases.models.input import InputChannelSchema
-from mycodo.databases.models.input import InputSchema
-from mycodo.databases.models.measurement import DeviceMeasurementsSchema
-from mycodo.mycodo_client import DaemonControl
 from mycodo.mycodo_flask.api import api
 from mycodo.mycodo_flask.api import default_responses
-from mycodo.mycodo_flask.api.utils import get_from_db
-from mycodo.mycodo_flask.api.utils import return_list_of_dictionaries
 from mycodo.mycodo_flask.routes_admin import install_dependencies
 from mycodo.mycodo_flask.utils import utils_general
 from mycodo.mycodo_flask.utils.utils_general import return_dependencies
