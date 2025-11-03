@@ -1,5 +1,5 @@
 # Testing
-testfixtures==7.0.2
+testfixtures==10.0.0
 mock==5.2.0
 pytest==8.4.2
 factory_boy==3.3.3
