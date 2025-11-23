@@ -238,8 +238,13 @@ def camera_record(record_type, unique_id, duration_sec=None, tmp_filename=None):
             logger.exception("raspistill")
 
     elif settings.library == 'libcamera':
-        if not os.path.exists("/usr/bin/libcamera-still"):
-            logger.error("/usr/bin/libcamera-still not found")
+        # Check for rpicam-still first (Bookworm), then fallback to libcamera-still
+        if os.path.exists("/usr/bin/rpicam-still"):
+            camera_cmd = "/usr/bin/rpicam-still"
+        elif os.path.exists("/usr/bin/libcamera-still"):
+            camera_cmd = "/usr/bin/libcamera-still"
+        else:
+            logger.error("Neither /usr/bin/rpicam-still nor /usr/bin/libcamera-still found")
             return None, None
 
         try:
@@ -249,9 +254,9 @@ def camera_record(record_type, unique_id, duration_sec=None, tmp_filename=None):
                 filename = f"{filename}.{settings.output_format.lower()}"
                 path_file = os.path.join(save_path, filename)
 
-            cmd = f"/usr/bin/libcamera-still " \
+            cmd = f"{camera_cmd} " \
                   f"--width {settings.width} " \
-                  f"--height { settings.height} " \
+                  f"--height {settings.height} " \
                   f"--brightness {settings.brightness} " \
                   f"-o {path_file}"
 
