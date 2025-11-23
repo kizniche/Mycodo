@@ -41,6 +41,7 @@ sudo service mycodoflask restart
  - Add Output: Waveshare 8-Channel Raspberry Pi Relay Board B ([#1434](https://github.com/kizniche/Mycodo/pull/1434))
  - Add Function: Camera: rpicam ([#1487](https://github.com/kizniche/Mycodo/pull/1487))
  - Add Input: VEML7700 Ambient Light Sensor ([#1491](https://github.com/kizniche/Mycodo/pull/1491))
+ - Add Input: LTR390 UV Light Sensor ([#1432](https://github.com/kizniche/Mycodo/pull/1432))
 
 ### Miscellaneous
 
