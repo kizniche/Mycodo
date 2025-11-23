@@ -39,6 +39,7 @@ sudo service mycodoflask restart
  - Add API endpoints: /log and /dependency ([#1430](https://github.com/kizniche/Mycodo/issues/1430))
  - Add Input: ENS160 ([#1434](https://github.com/kizniche/Mycodo/pull/1434))
  - Add Output: Waveshare 8-Channel Raspberry Pi Relay Board B ([#1434](https://github.com/kizniche/Mycodo/pull/1434))
+ - Add Function: Camera: rpicam ([#1487](https://github.com/kizniche/Mycodo/pull/1487))
 
 ### Miscellaneous
 
