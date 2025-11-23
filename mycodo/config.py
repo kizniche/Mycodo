@@ -187,6 +187,14 @@ CAMERA_INFO = {
         'capable_image': True,
         'capable_stream': False
     },
+    'rpicam': {
+        'name': 'rpicam',
+        'dependencies_module': [
+            ('apt', 'rpicam-apps', 'rpicam-apps')
+        ],
+        'capable_image': True,
+        'capable_stream': False
+    },
     'opencv': {
         'name': 'OpenCV',
         'dependencies_module': [

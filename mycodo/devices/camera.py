@@ -238,13 +238,8 @@ def camera_record(record_type, unique_id, duration_sec=None, tmp_filename=None):
             logger.exception("raspistill")
 
     elif settings.library == 'libcamera':
-        # Check for rpicam-still first (Bookworm), then fallback to libcamera-still
-        if os.path.exists("/usr/bin/rpicam-still"):
-            camera_cmd = "/usr/bin/rpicam-still"
-        elif os.path.exists("/usr/bin/libcamera-still"):
-            camera_cmd = "/usr/bin/libcamera-still"
-        else:
-            logger.error("Neither /usr/bin/rpicam-still nor /usr/bin/libcamera-still found")
+        if not os.path.exists("/usr/bin/libcamera-still"):
+            logger.error("/usr/bin/libcamera-still found")
             return None, None
 
         try:
@@ -254,7 +249,7 @@ def camera_record(record_type, unique_id, duration_sec=None, tmp_filename=None):
                 filename = f"{filename}.{settings.output_format.lower()}"
                 path_file = os.path.join(save_path, filename)
 
-            cmd = f"{camera_cmd} " \
+            cmd = f"/usr/bin/libcamera-still " \
                   f"--width {settings.width} " \
                   f"--height {settings.height} " \
                   f"--brightness {settings.brightness} " \
@@ -296,6 +291,61 @@ def camera_record(record_type, unique_id, duration_sec=None, tmp_filename=None):
                 f"cmd: {cmd}; out: {out}; error: {err}; status: {status}")
         except:
             logger.exception("libcamera")
+
+    elif settings.library == 'rpicam':
+        if not os.path.exists("/usr/bin/rpicam-still"):
+            logger.error("/usr/bin/rpicam-still found")
+            return None, None
+
+        try:
+            if settings.output_format:
+                # replace extension
+                filename = filename.rsplit('.', 1)[0]
+                filename = f"{filename}.{settings.output_format.lower()}"
+                path_file = os.path.join(save_path, filename)
+
+            cmd = f"/usr/bin/rpicam-still " \
+                  f"--width {settings.width} " \
+                  f"--height {settings.height} " \
+                  f"--brightness {settings.brightness} " \
+                  f"-o {path_file}"
+
+            if settings.output_format:
+                cmd += f" --encoding {settings.output_format}"
+            if not settings.show_preview:
+                cmd += " --nopreview"
+            if settings.contrast is not None:
+                cmd += f" --contrast {int(settings.contrast)}"
+            if settings.saturation is not None:
+                cmd += f" --saturation {int(settings.saturation)}"
+            if settings.picamera_sharpness is not None:
+                cmd += f" --sharpness {int(settings.picamera_sharpness)}"
+            if settings.picamera_shutter_speed is not None:
+                cmd += f" --shutter {int(settings.picamera_shutter_speed)}"
+            if settings.gain is not None:
+                cmd += f" --gain {settings.gain}"
+            if settings.picamera_awb not in ["off", None]:
+                cmd += f" --awb {settings.picamera_awb}"
+            elif (settings.picamera_awb == "off" and
+                  settings.picamera_awb_gain_blue is not None and
+                  settings.picamera_awb_gain_red is not None):
+                cmd += f" --awb custom"
+                cmd += f" --awbgains {settings.picamera_awb_gain_red:.1f},{settings.picamera_awb_gain_blue:.1f}"
+            if settings.hflip:
+                cmd += " --hflip"
+            if settings.vflip:
+                cmd += " --vflip"
+            if settings.rotation:
+                cmd += f" --rotation {settings.rotation}"
+            if settings.custom_options:
+                cmd += f" {settings.custom_options}"
+
+            out, err, status = cmd_output(cmd, stdout_pipe=False, user='root')
+            logger.debug(
+                "Camera debug message: "
+                f"cmd: {cmd}; out: {out}; error: {err}; status: {status}")
+        except:
+            logger.exception("rpicam")
 
     elif settings.library == 'opencv':
         try:
