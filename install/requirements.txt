@@ -1,5 +1,5 @@
 # Mycodo base
-alembic==1.16.5
+alembic==1.17.2
 argparse==1.4.0
 bcrypt==5.0.0
 distro==1.9.0
