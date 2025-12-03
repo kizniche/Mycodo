@@ -85,7 +85,6 @@ Options:
   update-permissions            Set permissions for Mycodo directories/files
   update-pip3                   Update pip
   update-pip3-packages          Update required pip packages
-  update-swap-size              Ensure swap size is sufficiently large (512 MB)
   upgrade-mycodo                Upgrade Mycodo to latest compatible release and preserve database and virtualenv
   upgrade-release-major {ver}   Upgrade Mycodo to a major version release {ver} and preserve database and virtualenv
   upgrade-release-wipe {ver}    Upgrade Mycodo to a major version release {ver} and wipe database and virtualenv
@@ -646,17 +645,6 @@ case "${1:-''}" in
     ;;
     'pip-clear-cache')
       "${MYCODO_PATH}"/env/bin/python -m pip cache remove *
-    ;;
-    'update-swap-size')
-        printf "\n#### Checking if swap size is 100 MB and needs to be changed to 512 MB\n"
-        if grep -q -s "CONF_SWAPSIZE=100" "/etc/dphys-swapfile"; then
-            printf "#### Swap currently set to 100 MB. Changing to 512 MB and restarting\n"
-            sed -i 's/CONF_SWAPSIZE=100/CONF_SWAPSIZE=512/g' /etc/dphys-swapfile
-            /etc/init.d/dphys-swapfile stop
-            /etc/init.d/dphys-swapfile start
-        else
-            printf "#### Swap not currently set to 100 MB. Not changing.\n"
-        fi
     ;;
     'upgrade-mycodo')
         /bin/bash "${MYCODO_PATH}"/mycodo/scripts/upgrade_download.sh upgrade-release-major "${MYCODO_MAJOR_VERSION}"

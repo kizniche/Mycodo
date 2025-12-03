@@ -4,7 +4,7 @@ This release has several updates that allow Mycodo to be installed and run on De
 
 If you are running Debian 12 or similar version operating system, you will need to install Python 3.11, regenerate your virtualenv, then install dependencies, before upgrading to this version.
 
-See https://askubuntu.com/a/1438713 for instructions for installing Python 3.11 on Debian-based operating systems. Briefly:
+See https://askubuntu.com/a/1438713 for instructions for installing Python 3.11 on version <= 12 Debian-based operating systems. Briefly:
 
 ```bash
 sudo add-apt-repository ppa:deadsnakes/ppa
