@@ -438,7 +438,7 @@ case "${1:-''}" in
         if [[ ${UNAME_TYPE} == 'x86_64' || ${MACHINE_TYPE} == 'arm64' ]]; then
             SERV_ADDRESS="https://dl.influxdata.com/influxdb/releases/v2.7.12/"
             AMD64_INSTALL_FILE="influxdb2_2.7.12-1_amd64.deb"
-            ARM64_INSTALL_FILE="vinfluxdb2_2.7.12-1_arm64.deb"
+            ARM64_INSTALL_FILE="influxdb2_2.7.12-1_arm64.deb"
             CORRECT_VERSION_INSTALL="2.7.12-1"
             CLIENT_ADDRESS="https://dl.influxdata.com/influxdb/releases/"
             AMD64_CLIENT_FILE="influxdb2-client-2.7.5-amd64.deb"
@@ -469,6 +469,7 @@ case "${1:-''}" in
                 DEBIAN_FRONTEND=noninteractive apt remove -y influxdb
 
                 printf "#### Installing InfluxDB v${CORRECT_VERSION_INSTALL}...\n"
+                printf "#### InfluxDB download location: ${SERV_ADDRESS}${INSTALL_FILE}\n"
 
                 wget --quiet "${SERV_ADDRESS}${INSTALL_FILE}"
                 dpkg -i "${INSTALL_FILE}"
@@ -479,7 +480,7 @@ case "${1:-''}" in
                 printf "Correct version of InfluxDB currently installed (v${CORRECT_VERSION_INSTALL}).\n"
             fi
 
-            printf "#### Influxdb client file location: ${CLIENT_ADDRESS}${CLIENT_FILE}\n"
+            printf "#### Influxdb client download location: ${CLIENT_ADDRESS}${CLIENT_FILE}\n"
 
             CURRENT_VERSION=$(apt-cache policy influxdb2-cli | grep 'Installed' | gawk '{print $2}')
 
