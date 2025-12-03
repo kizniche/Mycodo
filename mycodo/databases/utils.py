@@ -16,7 +16,15 @@ def session_scope(db_uri):
     Session = sessionmaker()
 
     # later, we create the engine
-    engine = create_engine(f"{db_uri}?check_same_thread=False")
+    try:
+        # Custom URI
+        from mycodo.config_override import SQLALCHEMY_DATABASE_URI
+        engine_url = SQLALCHEMY_DATABASE_URI
+    except:
+        # SQLite3
+        engine_url = f"{db_uri}?check_same_thread=False"
+
+    engine = create_engine(engine_url)
 
     # associate it with our custom Session class
     Session.configure(bind=engine)

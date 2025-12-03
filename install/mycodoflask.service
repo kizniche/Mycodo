@@ -1,8 +1,12 @@
 [Unit]
 Description=Mycodo web user interface
 After=network.target
+StartLimitIntervalSec=300
+StartLimitBurst=5
 
 [Service]
+Restart=on-failure
+RestartSec=20
 User=root
 Group=mycodo
 WorkingDirectory=/opt/Mycodo/mycodo
