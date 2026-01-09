@@ -16,6 +16,7 @@ from mycodo.utils.database import db_retrieve_table_daemon
 from mycodo.utils.system_pi import assure_path_exists
 from mycodo.utils.system_pi import cmd_output
 from mycodo.utils.system_pi import set_user_grp
+from mycodo.utils.utils import random_alphanumeric
 
 logger = logging.getLogger(__name__)
 
@@ -440,13 +441,7 @@ def camera_record(record_type, unique_id, duration_sec=None, tmp_filename=None):
             from urllib.request import urlretrieve
 
             if record_type in ['photo', 'timelapse']:
-                path_tmp = "/tmp/tmpimg.jpg"
-
-                # Get filename and extension, if available
-                a = urlparse(settings.url_still)
-                url_filename = os.path.basename(a.path)
-                if url_filename:
-                    path_tmp = f"/tmp/{url_filename}"
+                path_tmp = f"/tmp/tmpimg_{random_alphanumeric(8)}.jpg"
 
                 try:
                     os.remove(path_tmp)
@@ -460,34 +455,35 @@ def camera_record(record_type, unique_id, duration_sec=None, tmp_filename=None):
                 except Exception as err:
                     logger.exception(err)
 
-                try:
-                    img_orig = cv2.imread(path_tmp)
-
-                    if img_orig is not None and img_orig.shape is not None:
-                        if any((settings.hflip, settings.vflip, settings.rotation)):
-                            img_edited = None
-                            if settings.hflip and settings.vflip:
-                                img_edited = cv2.flip(img_orig, -1)
-                            elif settings.hflip:
-                                img_edited = cv2.flip(img_orig, 1)
-                            elif settings.vflip:
-                                img_edited = cv2.flip(img_orig, 0)
-
-                            if settings.rotation:
-                                img_edited = imutils.rotate_bound(img_orig, settings.rotation)
-
-                            if img_edited:
-                                cv2.imwrite(path_file, img_edited)
-                        else:
-                            cv2.imwrite(path_file, img_orig)
-                    else:
-                        os.rename(path_tmp, path_file)
-                except Exception as err:
-                    logger.error(f"Could not convert, rotate, or invert image: {err}")
+                if not os.path.isfile(path_tmp):
+                    logger.error("Could not acquire image.")
+                else:
                     try:
-                        os.rename(path_tmp, path_file)
-                    except FileNotFoundError:
-                        logger.error("Camera image not found")
+                        img_orig = cv2.imread(path_tmp)
+
+                        if img_orig is not None and img_orig.shape is not None:
+                            if any((settings.hflip, settings.vflip, settings.rotation)):
+                                if settings.hflip and settings.vflip:
+                                    img_edited = cv2.flip(img_orig, -1)
+                                elif settings.hflip:
+                                    img_edited = cv2.flip(img_orig, 1)
+                                elif settings.vflip:
+                                    img_edited = cv2.flip(img_orig, 0)
+
+                                if settings.rotation:
+                                    img_edited = imutils.rotate_bound(img_orig, settings.rotation)
+
+                                cv2.imwrite(path_file, img_edited)
+                            else:
+                                cv2.imwrite(path_file, img_orig)
+                        else:
+                            os.rename(path_tmp, path_file)
+                    except Exception as err:
+                        logger.error(f"Could not convert, rotate, or invert image: {err}")
+                        try:
+                            os.rename(path_tmp, path_file)
+                        except FileNotFoundError:
+                            logger.error("Can't move image. Camera image not found")
 
             elif record_type == 'video':
                 pass  # No video (yet)
@@ -506,7 +502,9 @@ def camera_record(record_type, unique_id, duration_sec=None, tmp_filename=None):
                 headers = {}
 
             if record_type in ['photo', 'timelapse']:
-                path_tmp = "/tmp/tmpimg.jpg"
+                success = False
+                path_tmp = f"/tmp/tmpimg_{random_alphanumeric(8)}.jpg"
+
                 try:
                     os.remove(path_tmp)
                 except FileNotFoundError:
@@ -516,26 +514,7 @@ def camera_record(record_type, unique_id, duration_sec=None, tmp_filename=None):
                     r = requests.get(settings.url_still, headers=headers, verify=False)
                     if r.status_code == 200:
                         open(path_tmp, 'wb').write(r.content)
-
-                        img_orig = cv2.imread(path_tmp)
-
-                        if img_orig is not None and img_orig.shape is not None:
-                            if any((settings.hflip, settings.vflip, settings.rotation)):
-                                if settings.hflip and settings.vflip:
-                                    img_edited = cv2.flip(img_orig, -1)
-                                elif settings.hflip:
-                                    img_edited = cv2.flip(img_orig, 1)
-                                elif settings.vflip:
-                                    img_edited = cv2.flip(img_orig, 0)
-
-                                if settings.rotation:
-                                    img_edited = imutils.rotate_bound(img_orig, settings.rotation)
-
-                                cv2.imwrite(path_file, img_edited)
-                            else:
-                                cv2.imwrite(path_file, img_orig)
-
-                        os.rename(path_tmp, path_file)
+                        success = True
                     else:
                         logger.error(f"Could not download image. Status code: {r.status_code}, content: {r.content}")
                 except requests.HTTPError as err:
@@ -543,6 +522,36 @@ def camera_record(record_type, unique_id, duration_sec=None, tmp_filename=None):
                 except Exception as err:
                     logger.exception(err)
 
+                if success:
+                    img_orig = cv2.imread(path_tmp)
+
+                    if not os.path.isfile(path_tmp):
+                        logger.error("Could not acquire image.")
+                    else:
+                        try:
+                            if img_orig is not None and img_orig.shape is not None:
+                                if any((settings.hflip, settings.vflip, settings.rotation)):
+                                    if settings.hflip and settings.vflip:
+                                        img_edited = cv2.flip(img_orig, -1)
+                                    elif settings.hflip:
+                                        img_edited = cv2.flip(img_orig, 1)
+                                    elif settings.vflip:
+                                        img_edited = cv2.flip(img_orig, 0)
+
+                                    if settings.rotation:
+                                        img_edited = imutils.rotate_bound(img_orig, settings.rotation)
+
+                                    cv2.imwrite(path_file, img_edited)
+                                else:
+                                    cv2.imwrite(path_file, img_orig)
+                            else:
+                                os.rename(path_tmp, path_file)
+                        except Exception as err:
+                            logger.error(f"Could not convert, rotate, or invert image: {err}")
+                            try:
+                                os.rename(path_tmp, path_file)
+                            except FileNotFoundError:
+                                logger.error("Can't move image. Camera image not found")
             elif record_type == 'video':
                 pass  # No video (yet)
         except:
