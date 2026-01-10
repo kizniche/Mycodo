@@ -479,6 +479,65 @@ def read_influxdb_list(unique_id, unit, channel,
         logger.debug("Could not read form influxdb.")
 
 
+def read_influxdb_multi(channels_data, past_seconds=None, value='LAST'):
+    """
+    Query Influxdb for multiple channels at once
+    
+    example:
+        channels_data = [
+            {'unique_id': '00000001', 'unit': 'C', 'channel': 0, 'measure': 'temperature'},
+            {'unique_id': '00000001', 'unit': '%', 'channel': 1, 'measure': 'humidity'}
+        ]
+        read_influxdb_multi(channels_data, past_seconds=3600)
+    
+    :return: dict mapping channel index to [time, value]
+    :rtype: dict
+    
+    :param channels_data: List of channel specifications, each containing:
+        - unique_id: Device unique ID
+        - unit: Measurement unit
+        - channel: Channel number
+        - measure: (optional) Measurement type
+    :type channels_data: list of dict
+    :param past_seconds: How many seconds to look back
+    :type past_seconds: int or None
+    :param value: What kind of measurement to return (e.g. LAST, SUM, MIN, MAX, etc.)
+    :type value: str
+    """
+    results = {}
+    
+    if not channels_data:
+        return results
+    
+    # Query each channel and collect results
+    for idx, channel_spec in enumerate(channels_data):
+        unique_id = channel_spec.get('unique_id')
+        unit = channel_spec.get('unit')
+        channel = channel_spec.get('channel')
+        measure = channel_spec.get('measure')
+        
+        if not unique_id or not unit or channel is None:
+            logger.warning(f"Invalid channel specification at index {idx}: {channel_spec}")
+            results[idx] = [None, None]
+            continue
+        
+        try:
+            result = read_influxdb_single(
+                unique_id=unique_id,
+                unit=unit,
+                channel=channel,
+                measure=measure,
+                duration_sec=past_seconds,
+                value=value
+            )
+            results[idx] = result if result else [None, None]
+        except Exception as e:
+            logger.error(f"Error reading channel {idx}: {e}")
+            results[idx] = [None, None]
+    
+    return results
+
+
 def output_sec_on(output_id, past_seconds, output_channel=0):
     """Return the number of seconds a output has been ON in the past number of seconds."""
     # Get the number of seconds ON stored in the database
