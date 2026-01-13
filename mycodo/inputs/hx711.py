@@ -137,8 +137,11 @@ class InputModule(AbstractInput):
             self.try_initialize()
 
     def initialize(self):
+        import RPi.GPIO as GPIO
         from hx711 import HX711
 
+        GPIO.setwarnings(False)
+        
         self.hx711 = HX711(
             dout_pin=self.pin_data,
             pd_sck_pin=self.pin_clock,
@@ -160,13 +163,14 @@ class InputModule(AbstractInput):
 
         try:
             # Get raw data, averaging over samples
-            raw_data = self.hx711.get_raw_data(num_measures=self.samples)
+            # Note: get_raw_data returns a list of raw values
+            raw_data = self.hx711.get_raw_data(times=self.samples)
             
             if not raw_data:
                 self.logger.error("No data received from HX711")
                 return None
 
-            # Calculate average
+            # Calculate average from the list of samples
             raw_average = sum(raw_data) / len(raw_data)
 
             # Apply tare
