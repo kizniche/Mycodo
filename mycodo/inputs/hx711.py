@@ -3,7 +3,6 @@
 # hx711.py - Input for HX711 load cell amplifier
 #
 import copy
-import time
 
 from flask_babel import lazy_gettext
 
@@ -141,12 +140,37 @@ class InputModule(AbstractInput):
         from hx711 import HX711
 
         GPIO.setwarnings(False)
-        
+
+        # Validate samples parameter
+        if self.samples is None or self.samples < 1:
+            self.samples = 3
+            self.logger.warning("Invalid samples value, defaulting to 3")
+
+        # Normalize and validate channel/gain combination
+        channel = str(self.channel).upper() if self.channel is not None else 'A'
+        try:
+            gain = int(self.gain) if self.gain is not None else 128
+        except (TypeError, ValueError):
+            raise ValueError(
+                "Invalid HX711 gain value: {!r}".format(self.gain)
+            )
+
+        if channel not in ("A", "B"):
+            raise ValueError(
+                "Invalid HX711 channel: {!r}. Expected 'A' or 'B'.".format(self.channel)
+            )
+
+        if (channel == "A" and gain not in (128, 64)) or (channel == "B" and gain != 32):
+            raise ValueError(
+                "Invalid HX711 channel/gain combination: channel {} does not support gain {}"
+                .format(channel, gain)
+            )
+
         self.hx711 = HX711(
             dout_pin=self.pin_data,
             pd_sck_pin=self.pin_clock,
-            channel=self.channel,
-            gain=int(self.gain)
+            channel=channel,
+            gain=gain
         )
         self.hx711.reset()
 
@@ -164,9 +188,10 @@ class InputModule(AbstractInput):
         try:
             # Get raw data, averaging over samples
             # Note: get_raw_data returns a list of raw values
-            raw_data = self.hx711.get_raw_data(times=self.samples)
-            
-            if not raw_data:
+            raw_data = self.hx711.get_raw_data(times=self.samples or 3)
+
+            # Validate raw_data is a non-empty list before arithmetic operations
+            if not isinstance(raw_data, list) or not raw_data:
                 self.logger.error("No data received from HX711")
                 return None
 
@@ -174,11 +199,13 @@ class InputModule(AbstractInput):
             raw_average = sum(raw_data) / len(raw_data)
 
             # Apply tare
-            tared_value = raw_average - self.tare_value
+            tare = self.tare_value if self.tare_value is not None else 0.0
+            tared_value = raw_average - tare
 
             # Apply calibration factor to get grams
-            if self.calibration_factor != 0:
-                mass_grams = tared_value / self.calibration_factor
+            cal_factor = self.calibration_factor if self.calibration_factor else 1.0
+            if cal_factor != 0:
+                mass_grams = tared_value / cal_factor
             else:
                 mass_grams = tared_value
 
@@ -194,6 +221,11 @@ class InputModule(AbstractInput):
         """Called when the input is stopped."""
         try:
             import RPi.GPIO as GPIO
-            GPIO.cleanup()
-        except Exception:
-            pass
+            # Only cleanup the specific pins used by this HX711 instance
+            pins_to_cleanup = [pin for pin in (self.pin_data, self.pin_clock) if pin is not None]
+            if pins_to_cleanup:
+                GPIO.cleanup(pins_to_cleanup)
+        except Exception as exc:
+            # Ignore GPIO cleanup errors during shutdown but log for diagnostics
+            if hasattr(self, "logger") and self.logger:
+                self.logger.debug("HX711 GPIO cleanup failed: %s", exc, exc_info=True)
