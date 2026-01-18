@@ -58,20 +58,11 @@ This guide covers wiring a **50 kg half-bridge load cell** to an **HX711 ADC mod
 - **Top** sensor signal (yellow/white/green) to **A-**
 - **Bottom** sensors signal wires (yellow/white/green) together to **A+**
 
-### 2. Half-Bridge Fix (IMPORTANT)
+### 2. A- to E- Short (IMPORTANT)
 
 **⚠️ Do NOT short A- to E- when using a 4-loadcell set.**
 
-Do this by:
-
-- Soldering a short wire between A- and E-, OR
-- Using a jumper wire on a breadboard
-
-```text
-  E-  ●────────● A-
-    └────────┘
-     jumper
-```
+This guide only covers the 4x half-bridge set. If you are wiring a single half-bridge load cell, use a dedicated single-sensor wiring guide.
 
 ### 3. HX711 to Raspberry Pi
 
@@ -84,39 +75,11 @@ Do this by:
 
 ---
 
-## Raspberry Pi GPIO Pinout (Relevant Pins)
-
-```text
-          3.3V  (1) (2)  5V  ◄── VCC
-           GPIO2  (3) (4)  5V
-           GPIO3  (5) (6)  GND ◄── GND
-           GPIO4  (7) (8)  GPIO14
-           GND  (9) (10) GPIO15
-          GPIO17 (11) (12) GPIO18
-     DT ───► GPIO27 (13) (14) GND
-          GPIO22 (15) (16) GPIO23
-          3.3V (17) (18) GPIO24
-          GPIO10 (19) (20) GND
-           GPIO9 (21) (22) GPIO25
-          GPIO11 (23) (24) GPIO8
-           GND (25) (26) GPIO7
-           GPIO0 (27) (28) GPIO1
-           GPIO5 (29) (30) GND
-           GPIO6 (31) (32) GPIO12
-          GPIO13 (33) (34) GND
-          GPIO19 (35) (36) GPIO16
-          GPIO26 (37) (38) GPIO20
-           GND (39) (40) GPIO21 ◄── SCK
-```
-
----
-
 ## Checklist
 
 - [ ] Load cell RED → HX711 E+
 - [ ] Load cell BLACK → HX711 E-
 - [ ] Load cell signal (yellow/white/green) → HX711 A+
-- [ ] **HX711 A- shorted to E- (jumper)**
 - [ ] HX711 VCC → Pi 5V
 - [ ] HX711 GND → Pi GND
 - [ ] HX711 DT → Pi GPIO 27
@@ -125,11 +88,6 @@ Do this by:
 ---
 
 ## Troubleshooting
-
-### Issue: Always 0 or -1
-
-**Cause:** A- is not connected to E-  
-**Fix:** Add a jumper between A- and E-
 
 ### Issue: Very unstable values (spread > 1,000,000)
 
@@ -154,56 +112,36 @@ Many 3-wire half-bridge load cells measure **about 2 kΩ** between **RED** and *
 
 ---
 
+## How a Load Cell Works
+
+A load cell is a set of strain gauges wired as a half-bridge. When force is applied, the resistance changes slightly. The HX711 measures this tiny differential change and outputs a digital value. The value is not in grams until you apply a calibration factor.
+
+---
+
+## How to Measure and Verify
+
+### With a multimeter (wiring check)
+
+1. Measure resistance between **RED** and **BLACK** on each sensor. It should be around **2 kΩ**.
+2. The third wire (yellow/white/green) is the **signal** for that sensor.
+3. Verify all RED wires are tied to **E+** and all BLACK wires to **E-**.
+
+### With software (signal check)
+
+1. In Mycodo, add the HX711 input with the same GPIO pins as wired.
+2. Watch raw values with no load. They should be stable.
+3. Place a known weight and confirm the raw value shifts consistently.
+4. Use the calibration factor to convert raw values to grams.
+
+For advanced testing and calibration runs, use the HX711 test tool in [mycodo/scripts/hx711_test.py](mycodo/scripts/hx711_test.py).
+
+---
+
 ## Example Set (AliExpress)
 
 As a reference, this 4x half-bridge set is commonly used:
 
 - [AliExpress 4x half-bridge set](https://nl.aliexpress.com/item/1005010026325539.html?spm=a2g0o.order_list.order_list_main.17.576579d252uTQf&gatewayAdapt=glo2nld)
-
----
-
-## Test Command
-
-After wiring, test with:
-
-```bash
-sudo /opt/Mycodo/env/bin/python3 << 'EOF'
-import RPi.GPIO as GPIO
-import time
-
-GPIO.setwarnings(False)
-GPIO.setmode(GPIO.BCM)
-
-DT, SCK = 27, 21
-GPIO.setup(SCK, GPIO.OUT)
-GPIO.setup(DT, GPIO.IN)
-
-def read():
-  GPIO.output(SCK, False)
-  while GPIO.input(DT):
-    pass
-  value = 0
-  for _ in range(24):
-    GPIO.output(SCK, True)
-    GPIO.output(SCK, False)
-    value = (value << 1) | GPIO.input(DT)
-  GPIO.output(SCK, True)
-  GPIO.output(SCK, False)
-  return value - 0x1000000 if value & 0x800000 else value
-
-GPIO.output(SCK, True)
-time.sleep(0.1)
-GPIO.output(SCK, False)
-time.sleep(0.5)
-
-print("5 samples:")
-for i in range(5):
-  print(f"  {i+1}: {read():,}")
-  time.sleep(0.2)
-
-GPIO.cleanup()
-EOF
-```
 
 ---
 
