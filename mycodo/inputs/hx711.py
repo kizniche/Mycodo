@@ -16,6 +16,34 @@ measurements_dict = {
     }
 }
 
+
+def filter_outliers(values, mad_threshold=3.5):
+    if not values:
+        return values, []
+    sorted_vals = sorted(values)
+    n = len(sorted_vals)
+    median = sorted_vals[n // 2] if n % 2 else (sorted_vals[n // 2 - 1] + sorted_vals[n // 2]) / 2
+    abs_dev = [abs(v - median) for v in values]
+    abs_dev_sorted = sorted(abs_dev)
+    mad = abs_dev_sorted[n // 2] if n % 2 else (abs_dev_sorted[n // 2 - 1] + abs_dev_sorted[n // 2]) / 2
+
+    if mad == 0:
+        mean = sum(values) / len(values)
+        variance = sum((v - mean) ** 2 for v in values) / len(values)
+        std = variance ** 0.5
+        if std == 0:
+            return values, []
+        threshold = 3 * std
+        keep_mask = [abs(v - mean) <= threshold for v in values]
+    else:
+        keep_mask = [abs(0.6745 * (v - median) / mad) <= mad_threshold for v in values]
+
+    kept = [v for v, keep in zip(values, keep_mask) if keep]
+    removed = [v for v, keep in zip(values, keep_mask) if not keep]
+    if not kept:
+        return values, []
+    return kept, removed
+
 # Input information
 INPUT_INFORMATION = {
     'input_name_unique': 'HX711',
@@ -92,6 +120,20 @@ INPUT_INFORMATION = {
             'phrase': lazy_gettext('The number of samples to average for each measurement')
         },
         {
+            'id': 'outlier_filter_enabled',
+            'type': 'bool',
+            'default_value': True,
+            'name': lazy_gettext('Outlier Filter Enabled'),
+            'phrase': lazy_gettext('Filter spikes using a robust median/MAD filter before averaging')
+        },
+        {
+            'id': 'outlier_mad_threshold',
+            'type': 'float',
+            'default_value': 3.5,
+            'name': lazy_gettext('Outlier MAD Threshold'),
+            'phrase': lazy_gettext('Lower is stricter. Typical range: 2.5–5.0')
+        },
+        {
             'id': 'tare_value',
             'type': 'float',
             'default_value': 0.0,
@@ -127,6 +169,8 @@ class InputModule(AbstractInput):
         self.channel = None
         self.gain = None
         self.samples = None
+        self.outlier_filter_enabled = None
+        self.outlier_mad_threshold = None
         self.tare_value = None
         self.calibration_factor = None
 
@@ -194,6 +238,18 @@ class InputModule(AbstractInput):
             if not isinstance(raw_data, list) or not raw_data:
                 self.logger.error("No data received from HX711")
                 return None
+
+            # Optionally filter outliers before averaging
+            if self.outlier_filter_enabled:
+                threshold = self.outlier_mad_threshold if self.outlier_mad_threshold is not None else 3.5
+                filtered, removed = filter_outliers(raw_data, mad_threshold=threshold)
+                if removed and hasattr(self, "logger") and self.logger:
+                    self.logger.debug(
+                        "HX711 outlier filter removed %s samples (threshold=%s)",
+                        len(removed),
+                        threshold
+                    )
+                raw_data = filtered
 
             # Calculate average from the list of samples
             raw_average = sum(raw_data) / len(raw_data)
