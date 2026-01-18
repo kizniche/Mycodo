@@ -7,6 +7,7 @@ from hx711 import HX711
 import RPi.GPIO as GPIO
 import time
 import sys
+import curses
 
 GPIO.setwarnings(False)
 
@@ -60,6 +61,91 @@ def live_monitor(hx):
             time.sleep(0.15)
     except KeyboardInterrupt:
         print("\n\nStopped.")
+
+
+def tui_dashboard(hx, samples=5, use_filter=True, mad_threshold=3.5):
+    """Interactive TUI dashboard with live stats and weight in kg."""
+    def _run(screen):
+        curses.curs_set(0)
+        screen.nodelay(True)
+        screen.timeout(200)
+
+        tare_value = 0.0
+        calibration_factor = 1.0
+        last_raw_avg = 0.0
+
+        while True:
+            screen.erase()
+            screen.addstr(0, 0, "HX711 Live Dashboard")
+            screen.addstr(1, 0, f"Samples: {samples}  Filter: {'ON' if use_filter else 'OFF'}  MAD: {mad_threshold}")
+            screen.addstr(2, 0, f"Tare: {tare_value:,.0f}  Factor: {calibration_factor:,.4f}")
+
+            raw_data = hx.get_raw_data(times=samples)
+            if not isinstance(raw_data, list) or not raw_data:
+                screen.addstr(4, 0, "No data from HX711", curses.A_BOLD)
+                screen.addstr(6, 0, "Keys: q=quit  t=tar e to current  f=set factor")
+                screen.refresh()
+                if screen.getch() == ord('q'):
+                    break
+                continue
+
+            raw_avg = sum(raw_data) / len(raw_data)
+            raw_min = min(raw_data)
+            raw_max = max(raw_data)
+            raw_spread = raw_max - raw_min
+
+            filtered = raw_data
+            removed = []
+            if use_filter:
+                filtered, removed = filter_outliers(raw_data, mad_threshold=mad_threshold)
+
+            filtered_avg = sum(filtered) / len(filtered)
+            tared = filtered_avg - tare_value
+            if calibration_factor != 0:
+                grams = tared / calibration_factor
+            else:
+                grams = tared
+            kg = grams / 1000.0
+
+            last_raw_avg = raw_avg
+
+            screen.addstr(4, 0, f"Raw avg:     {raw_avg:>12,.0f}")
+            screen.addstr(5, 0, f"Raw min/max:{raw_min:>8,.0f} / {raw_max:>8,.0f}")
+            screen.addstr(6, 0, f"Raw spread: {raw_spread:>12,.0f}")
+            screen.addstr(7, 0, f"Filtered:   {filtered_avg:>12,.0f} (removed {len(removed)})")
+            screen.addstr(8, 0, f"Weight:     {grams:>12,.2f} g  |  {kg:>9,.3f} kg")
+
+            screen.addstr(10, 0, "Keys: q=quit  t=tare to current  f=set factor  g=set tare")
+
+            key = screen.getch()
+            if key == ord('q'):
+                break
+            if key == ord('t'):
+                tare_value = last_raw_avg
+            if key == ord('g'):
+                curses.echo()
+                screen.addstr(12, 0, "Enter tare (raw): ")
+                screen.clrtoeol()
+                try:
+                    tare_str = screen.getstr(12, 19, 20).decode().strip()
+                    tare_value = float(tare_str)
+                except Exception:
+                    pass
+                curses.noecho()
+            if key == ord('f'):
+                curses.echo()
+                screen.addstr(12, 0, "Enter factor: ")
+                screen.clrtoeol()
+                try:
+                    factor_str = screen.getstr(12, 14, 20).decode().strip()
+                    calibration_factor = float(factor_str)
+                except Exception:
+                    pass
+                curses.noecho()
+
+            screen.refresh()
+
+    curses.wrapper(_run)
 
 
 def filter_outliers(values, mad_threshold=3.5):
@@ -238,6 +324,7 @@ def main():
         print("  7. Factor calibration only")
         print("  4. Test with gain 64")
         print("  5. Test channel B")
+        print("  8. Live TUI dashboard")
         print("  q. Quit")
 
         choice = input("\nChoice: ").strip().lower()
@@ -301,6 +388,10 @@ def main():
             GPIO.cleanup()
             hx = HX711(dout_pin=DT_PIN, pd_sck_pin=SCK_PIN, channel='A', gain=128)
             hx.reset()
+
+        elif choice == '8':
+            hx.reset()
+            tui_dashboard(hx)
 
         elif choice == 'q':
             break
