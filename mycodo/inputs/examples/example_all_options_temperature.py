@@ -99,6 +99,13 @@ INPUT_INFORMATION = {
     # This will be displayed at the top of the options when the user expands the input with the "+" icon.
     'message': "Don't forget to do x and y before activating this Input",
 
+    # Add an additional message that's hidden behind a collapsible accordion
+    'message_extra': 'Some additional information:'
+                     '<table class="table"><tr><td>asdf</td><td>qwer</td></tr><tr><td>xcvb</td><td>tyui</td></tr></table>'
+                     '<strong>testing</strong>'
+                     '<br/><a href="startpage.com">This is a link</a>'
+                     '<p>Here is additional information that may be too long to include in the "message", and can be hidden behind a collapsable menu.</p>',
+
     # Python module dependencies
     # This must be a module that is able to be installed with pip or apt (pypi, git, and apt examples below)
     # Leave the list empty if there are no dependencies

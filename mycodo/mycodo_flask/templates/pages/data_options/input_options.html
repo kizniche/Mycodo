@@ -104,6 +104,36 @@
     </div>
     {% endif %}
 
+    {% if 'message_extra' in dict_inputs[each_input.device] %}
+    <div class="accordion" id="accordion_{{unique_id}}" style="padding-top: 0.3em">
+      <div class="card border-0">
+        <div class="card-header bg-transparent p-0 border-0" id="heading_{{unique_id}}">
+          <button
+            class="btn btn-link text-decoration-none p-0 d-flex align-items-center"
+            type="button"
+            data-toggle="collapse"
+            data-target="#message_extra_{{unique_id}}"
+            aria-expanded="false"
+            aria-controls="message_extra_{{unique_id}}">
+
+            <span class="mr-1 mt-n1">▸</span>
+            <strong>Additional Information</strong>
+          </button>
+        </div>
+
+        <div
+          id="message_extra_{{unique_id}}"
+          class="collapse"
+          aria-labelledby="heading_{{unique_id}}"
+          data-parent="#accordion_{{unique_id}}">
+          <div class="card-body">
+            {{dict_inputs[each_input.device]['message_extra']|safe}}
+          </div>
+        </div>
+      </div>
+    </div>
+    {% endif %}
+
     <div id="return_text_{{each_input.unique_id}}" class="col-12"></div>
 
   </div>

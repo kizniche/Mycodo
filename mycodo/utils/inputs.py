@@ -228,6 +228,7 @@ def parse_input_information(exclude_custom=False):
             dict_inputs = dict_has_value(dict_inputs, input_custom, 'do_not_run_periodically')
             dict_inputs = dict_has_value(dict_inputs, input_custom, 'edge_input')
             dict_inputs = dict_has_value(dict_inputs, input_custom, 'message')
+            dict_inputs = dict_has_value(dict_inputs, input_custom, 'message_extra')
 
             dict_inputs = dict_has_value(dict_inputs, input_custom, 'url_datasheet', force_type='list')
             dict_inputs = dict_has_value(dict_inputs, input_custom, 'url_manufacturer', force_type='list')

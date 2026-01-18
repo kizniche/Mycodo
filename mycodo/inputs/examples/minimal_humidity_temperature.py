@@ -43,6 +43,12 @@ INPUT_INFORMATION = {
 
     'message': "Note: This is just an informative note to the user.",
 
+    'message_extra': 'Some additional information:'
+                     '<table class="table"><tr><td>asdf</td><td>qwer</td></tr><tr><td>xcvb</td><td>tyui</td></tr></table>'
+                     '<strong>testing</strong>'
+                     '<br/><a href="startpage.com">This is a link</a>'
+                     '<p>Here is additional information that may be too long to include in the "message", and can be hidden behind a collapsable menu.</p>',
+
     'options_enabled': [
         'measurements_select',
         'period',
