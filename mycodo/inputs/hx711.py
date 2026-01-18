@@ -83,7 +83,7 @@ INPUT_INFORMATION = {
         '<li>Place a known weight and confirm the raw value shifts consistently.</li>'
         '<li>Adjust the calibration factor until the reading matches grams.</li>'
         '</ol>'
-        '<p>Advanced calibration runs: <code>mycodo/scripts/hx711_test.py</code>.</p>',
+        '<p>Advanced calibration runs: <code>mycodo/inputs/scripts/hx711_test.py</code>.</p>',
 
     'options_enabled': [
         'measurements_select',
