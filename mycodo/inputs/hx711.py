@@ -59,6 +59,31 @@ INPUT_INFORMATION = {
     'message': 'The HX711 is a precision 24-bit analog-to-digital converter (ADC) '
                'designed for weigh scales and industrial control applications. '
                'Connect DT to GPIO data pin and SCK to GPIO clock pin.',
+    # Additional information hidden behind a collapsible accordion in the UI
+    'message_extra': 'Wiring and calibration notes:'
+                     '<p><strong>4x half-bridge set (bathroom-scale style)</strong></p>'
+                     '<ul>'
+                     '<li>All <strong>red</strong> wires together to <strong>E+</strong></li>'
+                     '<li>All <strong>black</strong> wires together to <strong>E-</strong></li>'
+                     '<li><strong>Top</strong> sensor signal (yellow/white/green) to <strong>A-</strong></li>'
+                     '<li><strong>Bottom</strong> sensor signal wires (yellow/white/green) together to '
+                     '<strong>A+</strong></li>'
+                     '</ul>'
+                     '<p><strong>Do not</strong> short A- to E- when using a 4-loadcell set.</p>'
+                     '<p><strong>Wire identification (2 kΩ method)</strong>: Measure resistance between '
+                     '<strong>red</strong> and <strong>black</strong> on each sensor. It should be about '
+                     '<strong>2 kΩ</strong>. The remaining wire is the signal lead.</p>'
+                     '<p><strong>How it works</strong>: A load cell uses strain gauges in a half-bridge. '
+                     'The HX711 measures tiny changes in resistance and outputs a raw value. Apply the '
+                     'calibration factor to convert raw values to grams.</p>'
+                     '<p><strong>Quick verification</strong>:</p>'
+                     '<ol>'
+                     '<li>Check raw values with no load (should be stable).</li>'
+                     '<li>Place a known weight and confirm the raw value shifts consistently.</li>'
+                     '<li>Use the calibration factor to match grams.</li>'
+                     '</ol>'
+                     '<p>For advanced calibration runs, use the HX711 test tool in '
+                     '<code>mycodo/scripts/hx711_test.py</code>.</p>',
 
     'options_enabled': [
         'measurements_select',
