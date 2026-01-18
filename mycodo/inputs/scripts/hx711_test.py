@@ -73,11 +73,19 @@ def tui_dashboard(hx, samples=5, use_filter=True, mad_threshold=3.5):
         tare_value = 0.0
         calibration_factor = 1.0
         last_raw_avg = 0.0
+        last_tick = time.time()
+        refresh_hz = 0.0
 
         while True:
             screen.erase()
+            now = time.time()
+            dt = now - last_tick
+            if dt > 0:
+                refresh_hz = 1.0 / dt
+            last_tick = now
+
             screen.addstr(0, 0, "HX711 Live Dashboard")
-            screen.addstr(1, 0, f"Samples: {samples}  Filter: {'ON' if use_filter else 'OFF'}  MAD: {mad_threshold}")
+            screen.addstr(1, 0, f"Samples: {samples}  Filter: {'ON' if use_filter else 'OFF'}  MAD: {mad_threshold:.2f}  Hz: {refresh_hz:5.1f}")
             screen.addstr(2, 0, f"Tare: {tare_value:,.0f}  Factor: {calibration_factor:,.4f}")
 
             raw_data = hx.get_raw_data(times=samples)
@@ -93,6 +101,8 @@ def tui_dashboard(hx, samples=5, use_filter=True, mad_threshold=3.5):
             raw_min = min(raw_data)
             raw_max = max(raw_data)
             raw_spread = raw_max - raw_min
+            raw_variance = sum((v - raw_avg) ** 2 for v in raw_data) / len(raw_data)
+            raw_std = raw_variance ** 0.5
 
             filtered = raw_data
             removed = []
@@ -111,17 +121,26 @@ def tui_dashboard(hx, samples=5, use_filter=True, mad_threshold=3.5):
 
             screen.addstr(4, 0, f"Raw avg:     {raw_avg:>12,.0f}")
             screen.addstr(5, 0, f"Raw min/max:{raw_min:>8,.0f} / {raw_max:>8,.0f}")
-            screen.addstr(6, 0, f"Raw spread: {raw_spread:>12,.0f}")
+            screen.addstr(6, 0, f"Raw spread: {raw_spread:>12,.0f}  std: {raw_std:>9,.1f}")
             screen.addstr(7, 0, f"Filtered:   {filtered_avg:>12,.0f} (removed {len(removed)})")
             screen.addstr(8, 0, f"Weight:     {grams:>12,.2f} g  |  {kg:>9,.3f} kg")
 
-            screen.addstr(10, 0, "Keys: q=quit  t=tare to current  f=set factor  g=set tare")
+            screen.addstr(10, 0, "Keys: q=quit  t=tare current  g=set tare  f=set factor  m=toggle filter")
+            screen.addstr(11, 0, "      +/-=samples  d=set MAD  r=reset HX711")
 
             key = screen.getch()
             if key == ord('q'):
                 break
             if key == ord('t'):
                 tare_value = last_raw_avg
+            if key == ord('m'):
+                use_filter = not use_filter
+            if key == ord('r'):
+                hx.reset()
+            if key == ord('+'):
+                samples = min(samples + 1, 50)
+            if key == ord('-'):
+                samples = max(samples - 1, 1)
             if key == ord('g'):
                 curses.echo()
                 screen.addstr(12, 0, "Enter tare (raw): ")
@@ -139,6 +158,16 @@ def tui_dashboard(hx, samples=5, use_filter=True, mad_threshold=3.5):
                 try:
                     factor_str = screen.getstr(12, 14, 20).decode().strip()
                     calibration_factor = float(factor_str)
+                except Exception:
+                    pass
+                curses.noecho()
+            if key == ord('d'):
+                curses.echo()
+                screen.addstr(12, 0, "Enter MAD threshold: ")
+                screen.clrtoeol()
+                try:
+                    mad_str = screen.getstr(12, 22, 20).decode().strip()
+                    mad_threshold = float(mad_str)
                 except Exception:
                     pass
                 curses.noecho()
