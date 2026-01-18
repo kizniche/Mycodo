@@ -1,125 +1,125 @@
-# HX711 Load Cell Bedrading - 50kg Half-Bridge
+# HX711 Load Cell Wiring - 50 kg Half-Bridge
 
-## Overzicht
+## Overview
 
-Deze handleiding beschrijft de bedrading voor een **50kg Half-Bridge Load Cell** met een **HX711 ADC module** aangesloten op een **Raspberry Pi**.
+This guide covers wiring a **50 kg half-bridge load cell** to an **HX711 ADC module** connected to a **Raspberry Pi**.
 
-## Componenten
+## Components
 
-| Component | Beschrijving |
-|-----------|--------------|
-| Load Cell | 50kg Half-Bridge (3 draden) |
+| Component | Description |
+| --------- | ----------- |
+| Load cell | 50 kg half-bridge (3 wires) |
 | HX711 | 24-bit ADC module |
 | Raspberry Pi | Model 3/4/5 |
 
 ---
 
-## Bedrading Schema
+## Wiring Diagram
 
 ```text
-                    ┌─────────────────┐
-                    │     HX711       │
-                    │                 │
-  LOAD CELL         │   E+  ◄────────── ROOD (Load Cell)
+          ┌─────────────────┐
+          │     HX711       │
+          │                 │
+  LOAD CELL         │   E+  ◄────────── RED (Load Cell)
   (50kg Half-Bridge)│                 │
-                    │   E-  ◄────────── ZWART (Load Cell)
-                    │    │            │
-                    │    └──────┐     │
-                    │           │     │
-                    │   A+  ◄───│───── GEEL (Load Cell)
-                    │           │     │
-                    │   A-  ◄───┘     │  ← BELANGRIJK: Kortsluit A- naar E-
-                    │                 │
-                    │   B+      (niet gebruikt)
-                    │   B-      (niet gebruikt)
-                    │                 │
-                    │   VCC ◄──────────── 5V (Pi pin 2 of 4)
-                    │   GND ◄──────────── GND (Pi pin 6, 9, 14, etc.)
-                    │                 │
-                    │   DT  ──────────►── GPIO 27 (Pi pin 13)
-                    │   SCK ◄──────────── GPIO 21 (Pi pin 40)
-                    │                 │
-                    └─────────────────┘
+          │   E-  ◄────────── BLACK (Load Cell)
+          │    │            │
+          │    └──────┐     │
+          │           │     │
+          │   A+  ◄───│───── YELLOW (Load Cell)
+          │           │     │
+          │   A-  ◄───┘     │  ← IMPORTANT: Short A- to E-
+          │                 │
+          │   B+      (not used)
+          │   B-      (not used)
+          │                 │
+          │   VCC ◄──────────── 5V (Pi pin 2 or 4)
+          │   GND ◄──────────── GND (Pi pin 6, 9, 14, etc.)
+          │                 │
+          │   DT  ──────────►── GPIO 27 (Pi pin 13)
+          │   SCK ◄──────────── GPIO 21 (Pi pin 40)
+          │                 │
+          └─────────────────┘
 ```
 
 ---
 
-## Stap-voor-Stap Bedrading
+## Step-by-Step Wiring
 
-### 1. Load Cell naar HX711
+### 1. Load Cell to HX711
 
-| Load Cell Draad | Kleur  | HX711 Pin |
-|-----------------|--------|-----------|
-| Excitation+     | ROOD   | E+        |
-| Excitation-     | ZWART  | E-        |
-| Signal          | GEEL   | A+        |
+| Load cell wire | Color | HX711 pin |
+| ------------- | ----- | --------- |
+| Excitation+ | RED | E+ |
+| Excitation- | BLACK | E- |
+| Signal | YELLOW | A+ |
 
-**4-loadcell set (4x half-bridge) bedrading:**
+**4-loadcell set (4x half-bridge) wiring:**
 
-- Alle **rode** draden samen op **E+**
-- Alle **zwarte** draden samen op **E-**
-- **Bovenste** sensor: gele/witte/groene draad op **A-**
-- **Onderste** sensoren: gele/witte/groene draden samen op **A+**
+- All **red** wires together to **E+**
+- All **black** wires together to **E-**
+- **Top** sensor signal (yellow/white/green) to **A-**
+- **Bottom** sensors signal wires (yellow/white/green) together to **A+**
 
-### 2. Half-Bridge Fix (BELANGRIJK!)
+### 2. Half-Bridge Fix (IMPORTANT)
 
-**⚠️ Bij een half-bridge load cell MOET je A- verbinden met E-!**
+**⚠️ For a half-bridge load cell you MUST connect A- to E-!**
 
-Dit doe je door:
+Do this by:
 
-- Een kort draadje tussen A- en E- te solderen, OF
-- Een jumper wire te gebruiken op het breadboard
+- Soldering a short wire between A- and E-, OR
+- Using a jumper wire on a breadboard
 
 ```text
-    E-  ●────────● A-
-        └────────┘
-         jumper
+  E-  ●────────● A-
+    └────────┘
+     jumper
 ```
 
-### 3. HX711 naar Raspberry Pi
+### 3. HX711 to Raspberry Pi
 
-| HX711 Pin | Raspberry Pi | Pin Nummer |
-|-----------|--------------|------------|
-| VCC       | 5V           | Pin 2 of 4 |
-| GND       | GND          | Pin 6      |
-| DT (DOUT) | GPIO 27      | Pin 13     |
-| SCK       | GPIO 21      | Pin 40     |
+| HX711 pin | Raspberry Pi | Pin number |
+| --------- | ------------ | ---------- |
+| VCC | 5V | Pin 2 or 4 |
+| GND | GND | Pin 6 |
+| DT (DOUT) | GPIO 27 | Pin 13 |
+| SCK | GPIO 21 | Pin 40 |
 
 ---
 
-## Raspberry Pi GPIO Pinout (Relevante Pins)
+## Raspberry Pi GPIO Pinout (Relevant Pins)
 
 ```text
-                    3.3V  (1) (2)  5V  ◄── VCC
-                   GPIO2  (3) (4)  5V
-                   GPIO3  (5) (6)  GND ◄── GND
-                   GPIO4  (7) (8)  GPIO14
-                     GND  (9) (10) GPIO15
-                  GPIO17 (11) (12) GPIO18
-         DT ───► GPIO27 (13) (14) GND
-                  GPIO22 (15) (16) GPIO23
-                    3.3V (17) (18) GPIO24
-                  GPIO10 (19) (20) GND
-                   GPIO9 (21) (22) GPIO25
-                  GPIO11 (23) (24) GPIO8
-                     GND (25) (26) GPIO7
-                   GPIO0 (27) (28) GPIO1
-                   GPIO5 (29) (30) GND
-                   GPIO6 (31) (32) GPIO12
-                  GPIO13 (33) (34) GND
-                  GPIO19 (35) (36) GPIO16
-                  GPIO26 (37) (38) GPIO20
-                     GND (39) (40) GPIO21 ◄── SCK
+          3.3V  (1) (2)  5V  ◄── VCC
+           GPIO2  (3) (4)  5V
+           GPIO3  (5) (6)  GND ◄── GND
+           GPIO4  (7) (8)  GPIO14
+           GND  (9) (10) GPIO15
+          GPIO17 (11) (12) GPIO18
+     DT ───► GPIO27 (13) (14) GND
+          GPIO22 (15) (16) GPIO23
+          3.3V (17) (18) GPIO24
+          GPIO10 (19) (20) GND
+           GPIO9 (21) (22) GPIO25
+          GPIO11 (23) (24) GPIO8
+           GND (25) (26) GPIO7
+           GPIO0 (27) (28) GPIO1
+           GPIO5 (29) (30) GND
+           GPIO6 (31) (32) GPIO12
+          GPIO13 (33) (34) GND
+          GPIO19 (35) (36) GPIO16
+          GPIO26 (37) (38) GPIO20
+           GND (39) (40) GPIO21 ◄── SCK
 ```
 
 ---
 
-## Checklist voor Correcte Werking
+## Checklist
 
-- [ ] Load Cell ROOD → HX711 E+
-- [ ] Load Cell ZWART → HX711 E-
-- [ ] Load Cell WIT → HX711 A+
-- [ ] **HX711 A- verbonden met E- (JUMPER!)**
+- [ ] Load cell RED → HX711 E+
+- [ ] Load cell BLACK → HX711 E-
+- [ ] Load cell signal (yellow/white/green) → HX711 A+
+- [ ] **HX711 A- shorted to E- (jumper)**
 - [ ] HX711 VCC → Pi 5V
 - [ ] HX711 GND → Pi GND
 - [ ] HX711 DT → Pi GPIO 27
@@ -127,39 +127,39 @@ Dit doe je door:
 
 ---
 
-## Veelvoorkomende Problemen
+## Troubleshooting
 
-### Probleem: Altijd 0 of -1 als waarde
+### Issue: Always 0 or -1
 
-**Oorzaak:** A- niet verbonden met E-  
-**Oplossing:** Voeg jumper toe tussen A- en E-
+**Cause:** A- is not connected to E-  
+**Fix:** Add a jumper between A- and E-
 
-### Probleem: Zeer instabiele waarden (spread > 1.000.000)
+### Issue: Very unstable values (spread > 1,000,000)
 
-**Oorzaak:** Slechte verbindingen of 3.3V voeding  
-**Oplossing:** Gebruik 5V voor VCC, controleer alle soldeerverbindingen
+**Cause:** Poor connections or 3.3V supply  
+**Fix:** Use 5V for VCC and check solder joints
 
-### Probleem: TIMEOUT errors
+### Issue: TIMEOUT errors
 
-**Oorzaak:** DT/SCK draden verkeerd of niet aangesloten  
-**Oplossing:** Controleer GPIO 27 (DT) en GPIO 21 (SCK)
+**Cause:** DT/SCK wiring is incorrect or disconnected  
+**Fix:** Verify GPIO 27 (DT) and GPIO 21 (SCK)
 
-### Probleem: Waarden veranderen niet bij druk
+### Issue: Values do not change with pressure
 
-**Oorzaak:** Load cell niet correct aangesloten  
-**Oplossing:** Controleer E+/E-/A+ bedrading
-
----
-
-## Identificatie van draden (2 kΩ methode)
-
-Bij veel 3-draads half-bridge load cells meet je **ongeveer 2 kΩ** tussen **ROOD** en **ZWART**. Dat zijn meestal **E+** en **E-**. De overgebleven draad (geel/wit/groen) is dan de **A draad (signaal)**.
+**Cause:** Load cell wiring incorrect  
+**Fix:** Check E+/E-/A+ wiring
 
 ---
 
-## Voorbeeld set (AliExpress)
+## Wire Identification (2 kΩ Method)
 
-Als referentie kun je deze 4x half-bridge set gebruiken:
+Many 3-wire half-bridge load cells measure **about 2 kΩ** between **RED** and **BLACK**. These are typically **E+** and **E-**. The remaining wire (yellow/white/green) is the **signal (A) wire**.
+
+---
+
+## Example Set (AliExpress)
+
+As a reference, this 4x half-bridge set is commonly used:
 
 - [AliExpress 4x half-bridge set](https://nl.aliexpress.com/item/1005010026325539.html?spm=a2g0o.order_list.order_list_main.17.576579d252uTQf&gatewayAdapt=glo2nld)
 
@@ -167,7 +167,7 @@ Als referentie kun je deze 4x half-bridge set gebruiken:
 
 ## Test Command
 
-Na correcte bedrading, test met:
+After wiring, test with:
 
 ```bash
 sudo /opt/Mycodo/env/bin/python3 << 'EOF'
@@ -182,26 +182,27 @@ GPIO.setup(SCK, GPIO.OUT)
 GPIO.setup(DT, GPIO.IN)
 
 def read():
-    GPIO.output(SCK, False)
-    while GPIO.input(DT): pass
-    value = 0
-    for _ in range(24):
-        GPIO.output(SCK, True)
-        GPIO.output(SCK, False)
-        value = (value << 1) | GPIO.input(DT)
+  GPIO.output(SCK, False)
+  while GPIO.input(DT):
+    pass
+  value = 0
+  for _ in range(24):
     GPIO.output(SCK, True)
     GPIO.output(SCK, False)
-    return value - 0x1000000 if value & 0x800000 else value
+    value = (value << 1) | GPIO.input(DT)
+  GPIO.output(SCK, True)
+  GPIO.output(SCK, False)
+  return value - 0x1000000 if value & 0x800000 else value
 
 GPIO.output(SCK, True)
 time.sleep(0.1)
 GPIO.output(SCK, False)
 time.sleep(0.5)
 
-print("5 metingen:")
+print("5 samples:")
 for i in range(5):
-    print(f"  {i+1}: {read():,}")
-    time.sleep(0.2)
+  print(f"  {i+1}: {read():,}")
+  time.sleep(0.2)
 
 GPIO.cleanup()
 EOF
@@ -209,19 +210,19 @@ EOF
 
 ---
 
-## Specificaties
+## Specifications
 
-| Parameter | Waarde |
-| --------- | ------ |
-| Load Cell Capaciteit | 50 kg |
-| Load Cell Type | Half-Bridge |
-| ADC Resolutie | 24-bit |
-| Sample Rate | 10 Hz (default) / 80 Hz |
-| Voedingsspanning | 5V (aanbevolen) |
-| GPIO Data | 27 |
-| GPIO Clock | 21 |
+| Parameter | Value |
+| --------- | ----- |
+| Load cell capacity | 50 kg |
+| Load cell type | Half-bridge |
+| ADC resolution | 24-bit |
+| Sample rate | 10 Hz (default) / 80 Hz |
+| Supply voltage | 5V (recommended) |
+| GPIO data | 27 |
+| GPIO clock | 21 |
 
 ---
 
-*Document aangemaakt: 13 januari 2026*
+*Document created: 13 January 2026*  
 *Project: Mycodo HX711 Input Module*
