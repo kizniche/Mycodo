@@ -16,30 +16,55 @@ This guide covers wiring a **50 kg half-bridge load cell** to an **HX711 ADC mod
 
 ## Wiring Diagram
 
+### Single half-bridge load cell
+
 ```text
-          ┌─────────────────┐
-          │     HX711       │
-          │                 │
+    ┌─────────────────┐
+    │     HX711       │
+    │                 │
   LOAD CELL         │   E+  ◄────────── RED (Load Cell)
-  (50kg Half-Bridge)│                 │
-          │   E-  ◄────────── BLACK (Load Cell)
-          │    │            │
-          │    └──────┐     │
-          │           │     │
-          │   A+  ◄───│───── YELLOW (Load Cell)
-          │           │     │
-          │   A-  ◄───┘     │  ← IMPORTANT: Short A- to E-
-          │                 │
-          │   B+      (not used)
-          │   B-      (not used)
-          │                 │
-          │   VCC ◄──────────── 5V (Pi pin 2 or 4)
-          │   GND ◄──────────── GND (Pi pin 6, 9, 14, etc.)
-          │                 │
-          │   DT  ──────────►── GPIO 27 (Pi pin 13)
-          │   SCK ◄──────────── GPIO 21 (Pi pin 40)
-          │                 │
-          └─────────────────┘
+  (Half-Bridge)     │                 │
+    │   E-  ◄────────── BLACK (Load Cell)
+    │    │            │
+    │    └──────┐     │
+    │           │     │
+    │   A+  ◄───│───── YELLOW (Load Cell)
+    │           │     │
+    │   A-  ◄───┘     │  ← IMPORTANT: Short A- to E-
+    │                 │
+    │   B+      (not used)
+    │   B-      (not used)
+    │                 │
+    │   VCC ◄──────────── 5V (Pi pin 2 or 4)
+    │   GND ◄──────────── GND (Pi pin 6, 9, 14, etc.)
+    │                 │
+    │   DT  ──────────►── GPIO 27 (Pi pin 13)
+    │   SCK ◄──────────── GPIO 21 (Pi pin 40)
+    │                 │
+    └─────────────────┘
+```
+
+### 4x half-bridge load cells (bathroom-scale style)
+
+```text
+    ┌─────────────────┐
+    │     HX711       │
+    │                 │
+  RED (all)   ─────────────► │   E+
+  BLACK (all) ─────────────► │   E-
+  TOP sensor signal ───────► │   A-
+  BOTTOM sensor signals ───► │   A+
+    │                 │
+    │   B+      (not used)
+    │   B-      (not used)
+    │                 │
+    │   VCC ◄──────────── 5V (Pi pin 2 or 4)
+    │   GND ◄──────────── GND (Pi pin 6, 9, 14, etc.)
+    │                 │
+    │   DT  ──────────►── GPIO 27 (Pi pin 13)
+    │   SCK ◄──────────── GPIO 21 (Pi pin 40)
+    │                 │
+    └─────────────────┘
 ```
 
 ---
@@ -63,7 +88,8 @@ This guide covers wiring a **50 kg half-bridge load cell** to an **HX711 ADC mod
 
 ### 2. Half-Bridge Fix (IMPORTANT)
 
-**⚠️ For a half-bridge load cell you MUST connect A- to E-!**
+**⚠️ For a single half-bridge load cell you MUST connect A- to E-!**
+**Do NOT short A- to E- when using a 4-loadcell set.**
 
 Do this by:
 
