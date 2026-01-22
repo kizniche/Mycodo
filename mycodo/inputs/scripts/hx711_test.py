@@ -1,7 +1,9 @@
 #!/usr/bin/env python3
 """
-HX711 Test Script
+HX711 Test Script - Dual Channel Support
 Usage: sudo python3 hx711_test.py
+
+Supports both Channel A and Channel B simultaneously for dual load cell setups.
 """
 import curses
 import os
@@ -14,6 +16,11 @@ GPIO = None
 DT_PIN = 17   # Data pin (DOUT)
 SCK_PIN = 21  # Clock pin (PD_SCK)
 
+# Channel configuration
+CHANNEL_A_ENABLED = True
+CHANNEL_A_GAIN = 128  # 128 or 64
+CHANNEL_B_ENABLED = False
+
 # TUI defaults
 TUI_SAMPLES = 5
 TUI_USE_FILTER = True
@@ -22,6 +29,11 @@ TUI_ZERO_TRACKING_ENABLED = False
 TUI_ZERO_TRACKING_THRESHOLD_G = 2.0
 TUI_ZERO_TRACKING_RATE = 0.05
 
+# Per-channel calibration defaults
+TARE_A = 0.0
+CALIBRATION_FACTOR_A = 1.0
+TARE_B = 0.0
+CALIBRATION_FACTOR_B = 1.0
 
 class HX711Backend:
     def get_raw_data(self, times=3):
@@ -208,10 +220,168 @@ class HX711CircuitPythonBackend(HX711Backend):
             pass
 
 
+class DualChannelBackend:
+    """Wrapper for reading both Channel A and Channel B from a single HX711."""
+
+    def __init__(self, backend_type='circuitpython', gain_a=128):
+        self.backend_type = backend_type
+        self.gain_a = gain_a
+        self.hx_a = None
+        self.hx_b = None
+        self._init_backends()
+
+    def _init_backends(self):
+        """Initialize backends for both channels."""
+        if self.backend_type == 'circuitpython':
+            self.hx_a = HX711CircuitPythonBackend(DT_PIN, SCK_PIN, channel='A', gain=self.gain_a)
+            # Note: For CircuitPython, we reuse the same HX711 instance but switch channel
+            self.hx_b = HX711CircuitPythonBackend(DT_PIN, SCK_PIN, channel='B', gain=32)
+        else:
+            self.hx_a = HX711RPiBackend(DT_PIN, SCK_PIN, channel='A', gain=self.gain_a)
+            self.hx_b = HX711RPiBackend(DT_PIN, SCK_PIN, channel='B', gain=32)
+
+    def get_raw_data_a(self, times=3):
+        """Get raw data from Channel A."""
+        if self.hx_a:
+            return self.hx_a.get_raw_data(times=times)
+        return []
+
+    def get_raw_data_b(self, times=3):
+        """Get raw data from Channel B."""
+        if self.hx_b:
+            return self.hx_b.get_raw_data(times=times)
+        return []
+
+    def get_raw_data_both(self, times=3):
+        """Get raw data from both channels."""
+        data_a = self.get_raw_data_a(times=times)
+        data_b = self.get_raw_data_b(times=times)
+        return data_a, data_b
+
+    def reset(self):
+        """Reset both channel backends."""
+        if self.hx_a:
+            self.hx_a.reset()
+        if self.hx_b:
+            self.hx_b.reset()
+
+    def cleanup(self):
+        """Cleanup both channel backends."""
+        if self.hx_a:
+            self.hx_a.cleanup()
+        if self.hx_b:
+            self.hx_b.cleanup()
+
+
 def init_backend(backend, channel='A', gain=128):
     if backend == 'circuitpython':
         return HX711CircuitPythonBackend(DT_PIN, SCK_PIN, channel=channel, gain=gain)
     return HX711RPiBackend(DT_PIN, SCK_PIN, channel=channel, gain=gain)
+
+
+def dual_channel_test(backend_type='circuitpython', num_samples=10):
+    """Test both channels simultaneously."""
+    print(f"\nDual-channel stability test ({num_samples} samples each):")
+    print("-" * 70)
+
+    dual = DualChannelBackend(backend_type=backend_type, gain_a=CHANNEL_A_GAIN)
+    dual.reset()
+    time.sleep(0.3)
+
+    values_a = []
+    values_b = []
+
+    for i in range(num_samples):
+        # Read both channels
+        raw_a = [v for v in dual.get_raw_data_a(times=5) if v is not None]
+        raw_b = [v for v in dual.get_raw_data_b(times=5) if v is not None]
+
+        avg_a = sum(raw_a) / len(raw_a) if raw_a else None
+        avg_b = sum(raw_b) / len(raw_b) if raw_b else None
+
+        if avg_a is not None:
+            values_a.append(avg_a)
+        if avg_b is not None:
+            values_b.append(avg_b)
+
+        # Calculate weights if calibrated
+        weight_a = None
+        weight_b = None
+        if avg_a is not None and CALIBRATION_FACTOR_A != 0:
+            weight_a = (avg_a - TARE_A) / CALIBRATION_FACTOR_A
+        if avg_b is not None and CALIBRATION_FACTOR_B != 0:
+            weight_b = (avg_b - TARE_B) / CALIBRATION_FACTOR_B
+
+        print(f"  {i+1:2d}: Ch.A: {avg_a:>14,.0f}" if avg_a else f"  {i+1:2d}: Ch.A: {'N/A':>14}", end="")
+        if weight_a is not None:
+            print(f" ({weight_a:>8.1f}g)", end="")
+        print(f"  |  Ch.B: {avg_b:>14,.0f}" if avg_b else f"  |  Ch.B: {'N/A':>14}", end="")
+        if weight_b is not None:
+            print(f" ({weight_b:>8.1f}g)", end="")
+        print()
+        time.sleep(0.3)
+
+    print("-" * 70)
+    if values_a:
+        avg_a = sum(values_a) / len(values_a)
+        spread_a = max(values_a) - min(values_a)
+        print(f"  Ch.A Average: {avg_a:>14,.0f}  Spread: {spread_a:>14,.0f}")
+    if values_b:
+        avg_b = sum(values_b) / len(values_b)
+        spread_b = max(values_b) - min(values_b)
+        print(f"  Ch.B Average: {avg_b:>14,.0f}  Spread: {spread_b:>14,.0f}")
+
+    dual.cleanup()
+    return (values_a, values_b)
+
+
+def dual_channel_live_monitor(backend_type='circuitpython'):
+    """Live monitoring of both channels - press Ctrl+C to stop."""
+    print("\nDual-channel live monitoring - Press Ctrl+C to stop")
+    print("Move the wires to detect loose connections")
+    print("-" * 70)
+
+    dual = DualChannelBackend(backend_type=backend_type, gain_a=CHANNEL_A_GAIN)
+    dual.reset()
+    time.sleep(0.3)
+
+    try:
+        while True:
+            raw_a = [v for v in dual.get_raw_data_a(times=3) if v is not None]
+            raw_b = [v for v in dual.get_raw_data_b(times=3) if v is not None]
+
+            avg_a = sum(raw_a) / len(raw_a) if raw_a else None
+            avg_b = sum(raw_b) / len(raw_b) if raw_b else None
+
+            # Calculate weights
+            weight_a = None
+            weight_b = None
+            if avg_a is not None and CALIBRATION_FACTOR_A != 0:
+                weight_a = (avg_a - TARE_A) / CALIBRATION_FACTOR_A
+            if avg_b is not None and CALIBRATION_FACTOR_B != 0:
+                weight_b = (avg_b - TARE_B) / CALIBRATION_FACTOR_B
+
+            # Status indicators
+            status_a = "✓ OK" if avg_a and abs(avg_a) < 1000000 else "⚠️ " if avg_a else "❌"
+            status_b = "✓ OK" if avg_b and abs(avg_b) < 1000000 else "⚠️ " if avg_b else "❌"
+
+            output = f"\rA: {status_a} {avg_a:>12,.0f}" if avg_a else f"\rA: {status_a} {'N/A':>12}"
+            if weight_a is not None:
+                output += f" ({weight_a:>7.1f}g)"
+            else:
+                output += "           "
+
+            output += f"  |  B: {status_b} {avg_b:>12,.0f}" if avg_b else f"  |  B: {status_b} {'N/A':>12}"
+            if weight_b is not None:
+                output += f" ({weight_b:>7.1f}g)"
+
+            print(output, end="", flush=True)
+            time.sleep(0.15)
+
+    except KeyboardInterrupt:
+        print("\n\nStopped.")
+    finally:
+        dual.cleanup()
 
 
 def test_stability(hx, num_samples=10):
@@ -807,6 +977,8 @@ def main():
         print("  4. Test with gain 64")
         print("  5. Test channel B")
         print("  8. Live TUI dashboard")
+        print("  12. Dual-channel test (A+B)")
+        print("  13. Dual-channel live monitor")
         print(f"  9. Switch backend (current: {backend})")
         print("  q. Quit")
         print("\nTUI defaults:")
@@ -1018,6 +1190,19 @@ def main():
                 print(f"Initialization error: {e}")
                 hx = init_backend('rpi', channel='A', gain=128)
                 hx.reset()
+
+        elif choice == '12':
+            print("\n" + "=" * 50)
+            print("DUAL-CHANNEL TEST (Channel A + Channel B)")
+            print("=" * 50)
+            dual_channel_test(backend)
+
+        elif choice == '13':
+            print("\n" + "=" * 50)
+            print("DUAL-CHANNEL LIVE MONITOR")
+            print("Press Ctrl+C to stop")
+            print("=" * 50)
+            dual_channel_live_monitor(backend)
 
         elif choice == 'q':
             break
