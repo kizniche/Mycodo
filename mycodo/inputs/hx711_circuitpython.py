@@ -460,7 +460,7 @@ class InputModule(AbstractInput):
                 sys.path.append(candidate)
 
         try:
-            import RPi.GPIO  # noqa: F401
+            import RPi.GPIO as _RPi_check  # noqa: F401,F811
         except Exception:
             pass
 

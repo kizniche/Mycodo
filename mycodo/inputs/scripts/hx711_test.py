@@ -144,7 +144,7 @@ class HX711CircuitPythonBackend(HX711Backend):
                 sys.path.append(candidate)
 
         try:
-            import RPi.GPIO  # noqa: F401
+            import RPi.GPIO as _RPi_check  # noqa: F401,F811
         except Exception:
             pass
 
@@ -687,7 +687,7 @@ def factor_calibration(hx, tare_value, weight_samples=20, weight_runs=5, filter_
     known_weight = input("\nHow many grams is your calibration weight? ")
     try:
         known_weight = float(known_weight)
-    except:
+    except ValueError:
         print("   Invalid input!")
         return
 
