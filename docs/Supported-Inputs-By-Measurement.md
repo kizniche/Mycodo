@@ -37,6 +37,7 @@ Measurements
  - [Length](#length)
  - [Light](#light)
  - [Magnetic Flux Density](#magnetic-flux-density)
+ - [Mass](#mass)
  - [Methane](#methane)
  - [Moisture](#moisture)
  - [Oxygen](#oxygen)
@@ -492,6 +493,12 @@ Measurements
 ### [Melexis: MLX90393](/Mycodo/Supported-Inputs/#melexis-mlx90393)
 
 ### [Raspberry Pi Foundation: Sense HAT](/Mycodo/Supported-Inputs/#raspberry-pi-foundation-sense-hat)
+
+## Mass
+
+### [Avia Semiconductor: HX711 (CircuitPython)](/Mycodo/Supported-Inputs/#avia-semiconductor-hx711-circuitpython)
+
+### [Avia Semiconductor: HX711 (RPi.GPIO, Legacy)](/Mycodo/Supported-Inputs/#avia-semiconductor-hx711-rpigpio-legacy)
 
 ## Methane
 
