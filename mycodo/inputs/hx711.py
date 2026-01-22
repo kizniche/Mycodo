@@ -48,7 +48,7 @@ def filter_outliers(values, mad_threshold=3.5):
 INPUT_INFORMATION = {
     'input_name_unique': 'HX711',
     'input_manufacturer': 'Avia Semiconductor',
-    'input_name': 'HX711',
+    'input_name': 'HX711 (RPi.GPIO, Legacy)',
     'input_library': 'hx711',
     'measurements_name': 'Mass',
     'measurements_dict': measurements_dict,
@@ -56,9 +56,10 @@ INPUT_INFORMATION = {
     'url_datasheet': 'https://cdn.sparkfun.com/datasheets/Sensors/ForceFlex/hx711_english.pdf',
     'url_product_purchase': 'https://www.amazon.com/s?k=hx711',
 
-    'message': 'The HX711 is a precision 24-bit analog-to-digital converter (ADC) '
-               'designed for weigh scales and industrial control applications. '
-               'Connect DT to GPIO data pin and SCK to GPIO clock pin.',
+    'message': 'Legacy Raspberry Pi GPIO input (Pi 4 and earlier). '
+               'For Raspberry Pi 5 and broad compatibility, use the HX711 (CircuitPython) input. '
+               'Connect DT to a GPIO data pin and SCK to a GPIO clock pin. '
+               'Use a load cell rated for your target range.',
     # Additional information hidden behind a collapsible accordion in the UI
     'message_extra':
         '<h4>4x half-bridge set (bathroom-scale style)</h4>'
@@ -83,6 +84,19 @@ INPUT_INFORMATION = {
         '<li>Place a known weight and confirm the raw value shifts consistently.</li>'
         '<li>Adjust the calibration factor until the reading matches grams.</li>'
         '</ol>'
+        '<h4>Range guidance</h4>'
+        '<ul>'
+        '<li>Validated for heavier ranges (e.g., 1–200 kg) with calibration near your target range.</li>'
+        '<li>Lower ranges (e.g., 1–20 kg or 0.01–1 kg) are not yet tested in this setup.</li>'
+        '<li>If you use a lower range, ensure the load cell and amplifier are rated for it and recalibrate.</li>'
+        '</ul>'
+        '<h4>Calibration do/don\'t</h4>'
+        '<ul>'
+        '<li>Do use a rigid, flat load plate and keep placement consistent.</li>'
+        '<li>Do reposition the weight between calibration runs and average multiple runs.</li>'
+        '<li>Don\'t use point loads or flexible surfaces that bend under load.</li>'
+        '<li>Don\'t calibrate with a different placement/orientation than you measure.</li>'
+        '</ul>'
         '<p>Advanced calibration runs: <code>mycodo/inputs/scripts/hx711_test.py</code>.</p>',
 
     'options_enabled': [
