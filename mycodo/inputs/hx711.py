@@ -62,12 +62,20 @@ INPUT_INFORMATION = {
     'url_datasheet': 'https://cdn.sparkfun.com/datasheets/Sensors/ForceFlex/hx711_english.pdf',
     'url_product_purchase': 'https://www.amazon.com/s?k=hx711',
 
-    'message': 'Legacy Raspberry Pi GPIO input (Pi 4 and earlier). '
+    'message': 'Dual-channel HX711 input using legacy RPi.GPIO (Pi 4 and earlier only). '
                'For Raspberry Pi 5 and broad compatibility, use the HX711 (CircuitPython) input. '
-               'Connect DT to a GPIO data pin and SCK to a GPIO clock pin. '
-               'Use a load cell rated for your target range.',
+               'Supports simultaneous measurement on Channel A and Channel B. '
+               'Each channel has independent tare and calibration settings.',
     # Additional information hidden behind a collapsible accordion in the UI
     'message_extra':
+        '<h4>Dual-Channel Operation</h4>'
+        '<p>The HX711 has two input channels:</p>'
+        '<ul>'
+        '<li><strong>Channel A</strong>: Supports gain 128 or 64. Connect your primary load cell(s) here.</li>'
+        '<li><strong>Channel B</strong>: Fixed gain 32. Use for a second load cell or load cell group.</li>'
+        '</ul>'
+        '<p>Each channel has its own tare value and calibration factor. Enable both channels to measure '
+        'two independent weights simultaneously (e.g., water reservoir on A, nutrient tank on B).</p>'
         '<h4>4x half-bridge set (bathroom-scale style)</h4>'
         '<table class="table table-sm">'
         '<tr><th>Wire</th><th>Connect to</th></tr>'
@@ -102,6 +110,7 @@ INPUT_INFORMATION = {
         '<li>Disable zero tracking during calibration to avoid auto-adjusting tare mid-run.</li>'
         '<li>Ensure the raw value increases when weight is added. If it decreases, check wiring (A+/A- swapped or inverted bridge).</li>'
         '<li>Calibrate within your intended measurement range; very light or very heavy loads reduce accuracy.</li>'
+        '<li><strong>Calibrate each channel separately</strong> if using dual-channel mode.</li>'
         '</ul>'
         '<h4>Hardware notes</h4>'
         '<ul>'
