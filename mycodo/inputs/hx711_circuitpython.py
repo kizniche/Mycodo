@@ -15,7 +15,13 @@ from mycodo.inputs.base_input import AbstractInput
 measurements_dict = {
     0: {
         'measurement': 'mass',
-        'unit': 'g'
+        'unit': 'g',
+        'name': 'Channel A'
+    },
+    1: {
+        'measurement': 'mass',
+        'unit': 'g',
+        'name': 'Channel B'
     }
 }
 
@@ -58,7 +64,7 @@ INPUT_INFORMATION = {
     'input_manufacturer': 'Avia Semiconductor',
     'input_name': 'HX711 (CircuitPython)',
     'input_library': 'Adafruit_CircuitPython_HX711',
-    'measurements_name': 'Mass',
+    'measurements_name': 'Mass (Channel A, Channel B)',
     'measurements_dict': measurements_dict,
     'url_manufacturer': 'https://www.aviaic.com/',
     'url_datasheet': 'https://cdn.sparkfun.com/datasheets/Sensors/ForceFlex/hx711_english.pdf',
@@ -159,27 +165,29 @@ INPUT_INFORMATION = {
             'phrase': lazy_gettext('The GPIO pin connected to the HX711 clock pin (SCK/PD_SCK)')
         },
         {
-            'id': 'channel',
-            'type': 'select',
-            'default_value': 'A',
-            'options_select': [
-                ('A', 'Channel A'),
-                ('B', 'Channel B')
-            ],
-            'name': lazy_gettext('Channel'),
-            'phrase': lazy_gettext('The HX711 channel to read from')
+            'id': 'channel_a_enabled',
+            'type': 'bool',
+            'default_value': True,
+            'name': lazy_gettext('Channel A Enabled'),
+            'phrase': lazy_gettext('Enable Channel A measurement')
         },
         {
-            'id': 'gain',
+            'id': 'gain_a',
             'type': 'select',
             'default_value': '128',
             'options_select': [
-                ('128', '128 (Channel A)'),
-                ('64', '64 (Channel A)'),
-                ('32', '32 (Channel B)')
+                ('128', '128'),
+                ('64', '64')
             ],
-            'name': lazy_gettext('Gain'),
-            'phrase': lazy_gettext('The gain for the HX711. Channel A supports 128 or 64, Channel B supports 32.')
+            'name': lazy_gettext('Gain (Channel A)'),
+            'phrase': lazy_gettext('The gain for Channel A (128 or 64)')
+        },
+        {
+            'id': 'channel_b_enabled',
+            'type': 'bool',
+            'default_value': False,
+            'name': lazy_gettext('Channel B Enabled'),
+            'phrase': lazy_gettext('Enable Channel B measurement')
         },
         {
             'id': 'samples',
@@ -203,18 +211,32 @@ INPUT_INFORMATION = {
             'phrase': lazy_gettext('Lower is stricter. Typical range: 2.5–5.0')
         },
         {
-            'id': 'tare_value',
+            'id': 'tare_value_a',
             'type': 'float',
             'default_value': 0.0,
-            'name': lazy_gettext('Tare Value'),
-            'phrase': lazy_gettext('The raw value to subtract (tare). Set to 0 for no tare.')
+            'name': lazy_gettext('Tare Value (Channel A)'),
+            'phrase': lazy_gettext('The raw value to subtract for Channel A. Set to 0 for no tare.')
         },
         {
-            'id': 'calibration_factor',
+            'id': 'calibration_factor_a',
             'type': 'float',
             'default_value': 1.0,
-            'name': lazy_gettext('Calibration Factor'),
-            'phrase': lazy_gettext('The factor to convert raw value to grams. Raw value / calibration_factor = grams')
+            'name': lazy_gettext('Calibration Factor (Channel A)'),
+            'phrase': lazy_gettext('The factor to convert Channel A raw value to grams')
+        },
+        {
+            'id': 'tare_value_b',
+            'type': 'float',
+            'default_value': 0.0,
+            'name': lazy_gettext('Tare Value (Channel B)'),
+            'phrase': lazy_gettext('The raw value to subtract for Channel B. Set to 0 for no tare.')
+        },
+        {
+            'id': 'calibration_factor_b',
+            'type': 'float',
+            'default_value': 1.0,
+            'name': lazy_gettext('Calibration Factor (Channel B)'),
+            'phrase': lazy_gettext('The factor to convert Channel B raw value to grams')
         },
         {
             'id': 'zero_tracking_enabled',
@@ -296,20 +318,22 @@ class InputModule(AbstractInput):
         self.hx711 = None
         self.data_pin = None
         self.clock_pin = None
-        self.channel_gain = None
-        self.gain_a_64 = None
-        self.gain_b_32 = None
+        self.channel_gain_a = None
+        self.channel_gain_b = None
 
         # Custom options
         self.pin_data = None
         self.pin_clock = None
-        self.channel = None
-        self.gain = None
+        self.channel_a_enabled = None
+        self.gain_a = None
+        self.channel_b_enabled = None
         self.samples = None
         self.outlier_filter_enabled = None
         self.outlier_mad_threshold = None
-        self.tare_value = None
-        self.calibration_factor = None
+        self.tare_value_a = None
+        self.calibration_factor_a = None
+        self.tare_value_b = None
+        self.calibration_factor_b = None
         self.read_delay_ms = None
         self.max_retries = None
         self.clock_delay_us = None
@@ -319,7 +343,8 @@ class InputModule(AbstractInput):
         self.zero_tracking_enabled = None
         self.zero_tracking_threshold_g = None
         self.zero_tracking_rate = None
-        self.tare_value_runtime = None
+        self.tare_value_runtime_a = None
+        self.tare_value_runtime_b = None
 
         if not testing:
             self.setup_custom_options(
@@ -365,8 +390,10 @@ class InputModule(AbstractInput):
             self.zero_tracking_rate = 0.05
         if self.zero_tracking_rate > 1.0:
             self.zero_tracking_rate = 1.0
-        if self.tare_value_runtime is None:
-            self.tare_value_runtime = self.tare_value if self.tare_value is not None else 0.0
+        if self.tare_value_runtime_a is None:
+            self.tare_value_runtime_a = self.tare_value_a if self.tare_value_a is not None else 0.0
+        if self.tare_value_runtime_b is None:
+            self.tare_value_runtime_b = self.tare_value_b if self.tare_value_b is not None else 0.0
 
         def _delay_us(us):
             target_us = max(float(us), float(self.clock_delay_us or 0.0))
@@ -377,33 +404,24 @@ class InputModule(AbstractInput):
 
         microcontroller.delay_us = _delay_us
 
-        # Normalize and validate channel/gain combination
-        channel = str(self.channel).upper() if self.channel is not None else 'A'
-        try:
-            gain = int(self.gain) if self.gain is not None else 128
-        except (TypeError, ValueError):
-            raise ValueError(
-                "Invalid HX711 gain value: {!r}".format(self.gain)
-            )
-
-        if channel not in ("A", "B"):
-            raise ValueError(
-                "Invalid HX711 channel: {!r}. Expected 'A' or 'B'.".format(self.channel)
-            )
-
-        if (channel == "A" and gain not in (128, 64)) or (channel == "B" and gain != 32):
-            raise ValueError(
-                "Invalid HX711 channel/gain combination: channel {} does not support gain {}"
-                .format(channel, gain)
-            )
+        # Validate at least one channel is enabled
+        if not self.channel_a_enabled and not self.channel_b_enabled:
+            raise ValueError("At least one channel must be enabled")
 
         if self.pin_data is None or self.pin_clock is None:
             raise ValueError("Both data and clock pins must be set")
 
-        self.channel_gain = HX711.CHAN_A_GAIN_128 if (channel == "A" and gain == 128) else \
-            HX711.CHAN_A_GAIN_64 if (channel == "A" and gain == 64) else HX711.CHAN_B_GAIN_32
-        self.gain_a_64 = HX711.CHAN_A_GAIN_64
-        self.gain_b_32 = HX711.CHAN_B_GAIN_32
+        # Set up channel gains
+        try:
+            gain_a = int(self.gain_a) if self.gain_a is not None else 128
+        except (TypeError, ValueError):
+            gain_a = 128
+
+        if gain_a not in (128, 64):
+            gain_a = 128
+
+        self.channel_gain_a = HX711.CHAN_A_GAIN_128 if gain_a == 128 else HX711.CHAN_A_GAIN_64
+        self.channel_gain_b = HX711.CHAN_B_GAIN_32  # Channel B only supports gain 32
 
         bcm_to_board = [
             board.D1,
@@ -442,8 +460,12 @@ class InputModule(AbstractInput):
         self.clock_pin.value = False
 
         self.hx711 = HX711(self.data_pin, self.clock_pin)
+        # Initialize by reading once
         try:
-            _ = self.hx711.read(self.channel_gain)
+            if self.channel_a_enabled:
+                _ = self.hx711.read(self.channel_gain_a)
+            elif self.channel_b_enabled:
+                _ = self.hx711.read(self.channel_gain_b)
         except Exception:
             pass
 
@@ -465,7 +487,7 @@ class InputModule(AbstractInput):
             pass
 
     def get_measurement(self):
-        """Get the mass measurement from the HX711."""
+        """Get the mass measurement from the HX711 (both channels if enabled)."""
         if not self.hx711:
             if hasattr(self, "logger") and self.logger:
                 self.logger.error(
@@ -477,79 +499,124 @@ class InputModule(AbstractInput):
         self.return_dict = copy.deepcopy(measurements_dict)
 
         try:
-            raw_data = []
-            channel_gain = self.channel_gain if self.channel_gain is not None else 1
             delay_s = max(0.0, (self.read_delay_ms or 0) / 1000.0)
             retries = max(0, int(self.max_retries or 0))
             samples_target = self.samples or 3
             max_attempts = max(samples_target * max(retries, 1), samples_target)
-            attempts = 0
 
-            while len(raw_data) < samples_target and attempts < max_attempts:
-                attempts += 1
-                sample = self._read_with_timeout(channel_gain)
-                if is_saturated(sample):
-                    if self.auto_gain_fallback:
-                        sample = self._read_fallback_sample(channel_gain)
-                    if self.invalid_sample_filter and is_saturated(sample):
-                        if delay_s:
-                            time.sleep(delay_s)
-                        continue
-                if sample is None:
-                    if delay_s:
-                        time.sleep(delay_s)
-                    continue
-                raw_data.append(sample)
-                if delay_s:
-                    time.sleep(delay_s)
-
-            if not raw_data:
-                if hasattr(self, "logger") and self.logger:
-                    self.logger.error("No data received from HX711")
-                return None
-
-            if self.outlier_filter_enabled:
-                threshold = self.outlier_mad_threshold if self.outlier_mad_threshold is not None else 3.5
-                filtered, removed = filter_outliers(raw_data, mad_threshold=threshold)
-                if removed and hasattr(self, "logger") and self.logger:
-                    self.logger.debug(
-                        "HX711 outlier filter removed %s samples (threshold=%s)",
-                        len(removed),
-                        threshold
+            # Read Channel A if enabled
+            if self.channel_a_enabled:
+                raw_data_a = self._read_channel_samples(
+                    self.channel_gain_a, samples_target, max_attempts, delay_s
+                )
+                if raw_data_a:
+                    mass_a = self._process_channel_data(
+                        raw_data_a,
+                        self.tare_value_a,
+                        self.calibration_factor_a,
+                        'a'
                     )
-                raw_data = filtered
+                    if mass_a is not None:
+                        self.value_set(0, mass_a)
 
-            raw_average = sum(raw_data) / len(raw_data)
+            # Read Channel B if enabled
+            if self.channel_b_enabled:
+                raw_data_b = self._read_channel_samples(
+                    self.channel_gain_b, samples_target, max_attempts, delay_s
+                )
+                if raw_data_b:
+                    mass_b = self._process_channel_data(
+                        raw_data_b,
+                        self.tare_value_b,
+                        self.calibration_factor_b,
+                        'b'
+                    )
+                    if mass_b is not None:
+                        self.value_set(1, mass_b)
 
-            tare_config = self.tare_value if self.tare_value is not None else 0.0
-            if self.tare_value_runtime is None:
-                self.tare_value_runtime = tare_config
-            tare = self.tare_value_runtime
-            tared_value = raw_average - tare
-
-            cal_factor = self.calibration_factor if self.calibration_factor else 1.0
-            if cal_factor != 0:
-                mass_grams = tared_value / cal_factor
-            else:
-                mass_grams = tared_value
-
-            if self.zero_tracking_enabled and cal_factor:
-                threshold_g = self.zero_tracking_threshold_g if self.zero_tracking_threshold_g is not None else 0.0
-                if abs(mass_grams) <= threshold_g:
-                    rate = self.zero_tracking_rate if self.zero_tracking_rate is not None else 0.0
-                    rate = max(0.0, min(rate, 1.0))
-                    if rate:
-                        self.tare_value_runtime += tared_value * rate
-                        tared_value = raw_average - self.tare_value_runtime
-                        mass_grams = tared_value / cal_factor if cal_factor != 0 else tared_value
-
-            self.value_set(0, mass_grams)
             return self.return_dict
 
         except Exception as e:
             if hasattr(self, "logger") and self.logger:
                 self.logger.error("Error reading HX711: {err}".format(err=e))
             return None
+
+    def _read_channel_samples(self, channel_gain, samples_target, max_attempts, delay_s):
+        """Read raw samples from a specific channel."""
+        raw_data = []
+        attempts = 0
+
+        while len(raw_data) < samples_target and attempts < max_attempts:
+            attempts += 1
+            sample = self._read_with_timeout(channel_gain)
+            if is_saturated(sample):
+                if self.auto_gain_fallback:
+                    sample = self._read_fallback_sample(channel_gain)
+                if self.invalid_sample_filter and is_saturated(sample):
+                    if delay_s:
+                        time.sleep(delay_s)
+                    continue
+            if sample is None:
+                if delay_s:
+                    time.sleep(delay_s)
+                continue
+            raw_data.append(sample)
+            if delay_s:
+                time.sleep(delay_s)
+
+        return raw_data
+
+    def _process_channel_data(self, raw_data, tare_config, cal_factor_config, channel_id):
+        """Process raw data into calibrated mass value with optional zero tracking."""
+        if not raw_data:
+            return None
+
+        # Apply outlier filter if enabled
+        if self.outlier_filter_enabled:
+            threshold = self.outlier_mad_threshold if self.outlier_mad_threshold is not None else 3.5
+            filtered, removed = filter_outliers(raw_data, mad_threshold=threshold)
+            if removed and hasattr(self, "logger") and self.logger:
+                self.logger.debug(
+                    "HX711 Ch%s outlier filter removed %s samples (threshold=%s)",
+                    channel_id.upper(),
+                    len(removed),
+                    threshold
+                )
+            raw_data = filtered
+
+        if not raw_data:
+            return None
+
+        raw_average = sum(raw_data) / len(raw_data)
+
+        # Get runtime tare (allows for zero tracking adjustment)
+        tare_runtime_attr = 'tare_value_runtime_{}'.format(channel_id)
+        tare_config_val = tare_config if tare_config is not None else 0.0
+        if getattr(self, tare_runtime_attr, None) is None:
+            setattr(self, tare_runtime_attr, tare_config_val)
+        tare = getattr(self, tare_runtime_attr)
+        tared_value = raw_average - tare
+
+        # Apply calibration factor
+        cal_factor = cal_factor_config if cal_factor_config else 1.0
+        if cal_factor != 0:
+            mass_grams = tared_value / cal_factor
+        else:
+            mass_grams = tared_value
+
+        # Zero tracking
+        if self.zero_tracking_enabled and cal_factor:
+            threshold_g = self.zero_tracking_threshold_g if self.zero_tracking_threshold_g is not None else 0.0
+            if abs(mass_grams) <= threshold_g:
+                rate = self.zero_tracking_rate if self.zero_tracking_rate is not None else 0.0
+                rate = max(0.0, min(rate, 1.0))
+                if rate:
+                    new_tare = getattr(self, tare_runtime_attr) + tared_value * rate
+                    setattr(self, tare_runtime_attr, new_tare)
+                    tared_value = raw_average - new_tare
+                    mass_grams = tared_value / cal_factor if cal_factor != 0 else tared_value
+
+        return mass_grams
 
     def stop_input(self):
         """Called when the input is stopped."""
@@ -567,8 +634,8 @@ class InputModule(AbstractInput):
         if not self.hx711:
             return None
         fallbacks = [
-            (self.gain_a_64, "A/64"),
-            (self.gain_b_32, "B/32")
+            (self.channel_gain_a, "A"),
+            (self.channel_gain_b, "B/32")
         ]
         for gain_value, label in fallbacks:
             if gain_value == primary_gain:
@@ -589,7 +656,7 @@ class InputModule(AbstractInput):
             return None
         timeout_s = max(0.001, (self.ready_timeout_ms or 100.0) / 1000.0)
         start = time.perf_counter()
-        while self.data_pin.value:
+        while self.data_pin and self.data_pin.value:
             if (time.perf_counter() - start) > timeout_s:
                 return None
         return self.hx711.read(channel_gain)

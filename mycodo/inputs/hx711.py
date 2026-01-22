@@ -12,7 +12,13 @@ from mycodo.inputs.base_input import AbstractInput
 measurements_dict = {
     0: {
         'measurement': 'mass',
-        'unit': 'g'
+        'unit': 'g',
+        'name': 'Channel A'
+    },
+    1: {
+        'measurement': 'mass',
+        'unit': 'g',
+        'name': 'Channel B'
     }
 }
 
@@ -50,7 +56,7 @@ INPUT_INFORMATION = {
     'input_manufacturer': 'Avia Semiconductor',
     'input_name': 'HX711 (RPi.GPIO, Legacy)',
     'input_library': 'hx711',
-    'measurements_name': 'Mass',
+    'measurements_name': 'Mass (Channel A, Channel B)',
     'measurements_dict': measurements_dict,
     'url_manufacturer': 'https://www.aviaic.com/',
     'url_datasheet': 'https://cdn.sparkfun.com/datasheets/Sensors/ForceFlex/hx711_english.pdf',
@@ -148,27 +154,29 @@ INPUT_INFORMATION = {
             'phrase': lazy_gettext('The GPIO pin connected to the HX711 clock pin (SCK/PD_SCK)')
         },
         {
-            'id': 'channel',
-            'type': 'select',
-            'default_value': 'A',
-            'options_select': [
-                ('A', 'Channel A'),
-                ('B', 'Channel B')
-            ],
-            'name': lazy_gettext('Channel'),
-            'phrase': lazy_gettext('The HX711 channel to read from')
+            'id': 'channel_a_enabled',
+            'type': 'bool',
+            'default_value': True,
+            'name': lazy_gettext('Channel A Enabled'),
+            'phrase': lazy_gettext('Enable Channel A measurement')
         },
         {
-            'id': 'gain',
+            'id': 'gain_a',
             'type': 'select',
             'default_value': '128',
             'options_select': [
-                ('128', '128 (Channel A)'),
-                ('64', '64 (Channel A)'),
-                ('32', '32 (Channel B)')
+                ('128', '128'),
+                ('64', '64')
             ],
-            'name': lazy_gettext('Gain'),
-            'phrase': lazy_gettext('The gain for the HX711. Channel A supports 128 or 64, Channel B supports 32.')
+            'name': lazy_gettext('Gain (Channel A)'),
+            'phrase': lazy_gettext('The gain for Channel A (128 or 64)')
+        },
+        {
+            'id': 'channel_b_enabled',
+            'type': 'bool',
+            'default_value': False,
+            'name': lazy_gettext('Channel B Enabled'),
+            'phrase': lazy_gettext('Enable Channel B measurement')
         },
         {
             'id': 'samples',
@@ -192,18 +200,32 @@ INPUT_INFORMATION = {
             'phrase': lazy_gettext('Lower is stricter. Typical range: 2.5–5.0')
         },
         {
-            'id': 'tare_value',
+            'id': 'tare_value_a',
             'type': 'float',
             'default_value': 0.0,
-            'name': lazy_gettext('Tare Value'),
-            'phrase': lazy_gettext('The raw value to subtract (tare). Set to 0 for no tare.')
+            'name': lazy_gettext('Tare Value (Channel A)'),
+            'phrase': lazy_gettext('The raw value to subtract for Channel A. Set to 0 for no tare.')
         },
         {
-            'id': 'calibration_factor',
+            'id': 'calibration_factor_a',
             'type': 'float',
             'default_value': 1.0,
-            'name': lazy_gettext('Calibration Factor'),
-            'phrase': lazy_gettext('The factor to convert raw value to grams. Raw value / calibration_factor = grams')
+            'name': lazy_gettext('Calibration Factor (Channel A)'),
+            'phrase': lazy_gettext('The factor to convert Channel A raw value to grams')
+        },
+        {
+            'id': 'tare_value_b',
+            'type': 'float',
+            'default_value': 0.0,
+            'name': lazy_gettext('Tare Value (Channel B)'),
+            'phrase': lazy_gettext('The raw value to subtract for Channel B. Set to 0 for no tare.')
+        },
+        {
+            'id': 'calibration_factor_b',
+            'type': 'float',
+            'default_value': 1.0,
+            'name': lazy_gettext('Calibration Factor (Channel B)'),
+            'phrase': lazy_gettext('The factor to convert Channel B raw value to grams')
         }
     ]
 }
@@ -212,25 +234,30 @@ INPUT_INFORMATION = {
 class InputModule(AbstractInput):
     """
     A sensor support class for the HX711 load cell amplifier.
-    
+
     The HX711 is a precision 24-bit analog-to-digital converter (ADC)
     designed for weigh scales and industrial control applications.
+    Supports dual-channel measurement (A and B).
     """
     def __init__(self, input_dev, testing=False):
         super().__init__(input_dev, testing=testing, name=__name__)
 
-        self.hx711 = None
+        self.hx711_a = None
+        self.hx711_b = None
 
         # Custom options
         self.pin_data = None
         self.pin_clock = None
-        self.channel = None
-        self.gain = None
+        self.channel_a_enabled = None
+        self.gain_a = None
+        self.channel_b_enabled = None
         self.samples = None
         self.outlier_filter_enabled = None
         self.outlier_mad_threshold = None
-        self.tare_value = None
-        self.calibration_factor = None
+        self.tare_value_a = None
+        self.calibration_factor_a = None
+        self.tare_value_b = None
+        self.calibration_factor_b = None
 
         if not testing:
             self.setup_custom_options(
@@ -248,37 +275,41 @@ class InputModule(AbstractInput):
             self.samples = 3
             self.logger.warning("Invalid samples value, defaulting to 3")
 
-        # Normalize and validate channel/gain combination
-        channel = str(self.channel).upper() if self.channel is not None else 'A'
-        try:
-            gain = int(self.gain) if self.gain is not None else 128
-        except (TypeError, ValueError):
-            raise ValueError(
-                "Invalid HX711 gain value: {!r}".format(self.gain)
-            )
+        # Validate at least one channel is enabled
+        if not self.channel_a_enabled and not self.channel_b_enabled:
+            raise ValueError("At least one channel must be enabled")
 
-        if channel not in ("A", "B"):
-            raise ValueError(
-                "Invalid HX711 channel: {!r}. Expected 'A' or 'B'.".format(self.channel)
-            )
+        # Initialize Channel A if enabled
+        if self.channel_a_enabled:
+            try:
+                gain_a = int(self.gain_a) if self.gain_a is not None else 128
+            except (TypeError, ValueError):
+                gain_a = 128
 
-        if (channel == "A" and gain not in (128, 64)) or (channel == "B" and gain != 32):
-            raise ValueError(
-                "Invalid HX711 channel/gain combination: channel {} does not support gain {}"
-                .format(channel, gain)
-            )
+            if gain_a not in (128, 64):
+                gain_a = 128
 
-        self.hx711 = HX711(
-            dout_pin=self.pin_data,
-            pd_sck_pin=self.pin_clock,
-            channel=channel,
-            gain=gain
-        )
-        self.hx711.reset()
+            self.hx711_a = HX711(
+                dout_pin=self.pin_data,
+                pd_sck_pin=self.pin_clock,
+                channel='A',
+                gain=gain_a
+            )
+            self.hx711_a.reset()
+
+        # Initialize Channel B if enabled
+        if self.channel_b_enabled:
+            self.hx711_b = HX711(
+                dout_pin=self.pin_data,
+                pd_sck_pin=self.pin_clock,
+                channel='B',
+                gain=32  # Channel B only supports gain 32
+            )
+            self.hx711_b.reset()
 
     def get_measurement(self):
-        """Get the mass measurement from the HX711."""
-        if not self.hx711:
+        """Get the mass measurement from the HX711 (both channels if enabled)."""
+        if not self.hx711_a and not self.hx711_b:
             self.logger.error(
                 "Error 101: Device not set up. "
                 "See https://kizniche.github.io/Mycodo/Error-Codes#error-101 for more info."
@@ -288,13 +319,43 @@ class InputModule(AbstractInput):
         self.return_dict = copy.deepcopy(measurements_dict)
 
         try:
-            # Get raw data, averaging over samples
-            # Note: get_raw_data returns a list of raw values
-            raw_data = self.hx711.get_raw_data(times=self.samples or 3)
+            # Read Channel A if enabled
+            if self.channel_a_enabled and self.hx711_a:
+                mass_a = self._read_channel(
+                    self.hx711_a,
+                    self.tare_value_a,
+                    self.calibration_factor_a,
+                    'A'
+                )
+                if mass_a is not None:
+                    self.value_set(0, mass_a)
 
-            # Validate raw_data is a non-empty list before arithmetic operations
+            # Read Channel B if enabled
+            if self.channel_b_enabled and self.hx711_b:
+                mass_b = self._read_channel(
+                    self.hx711_b,
+                    self.tare_value_b,
+                    self.calibration_factor_b,
+                    'B'
+                )
+                if mass_b is not None:
+                    self.value_set(1, mass_b)
+
+            return self.return_dict
+
+        except Exception as e:
+            self.logger.error("Error reading HX711: {err}".format(err=e))
+            return None
+
+    def _read_channel(self, hx711_instance, tare_value, calibration_factor, channel_label):
+        """Read and process data from a single HX711 channel."""
+        try:
+            # Get raw data, averaging over samples
+            raw_data = hx711_instance.get_raw_data(times=self.samples or 3)
+
+            # Validate raw_data
             if not isinstance(raw_data, list) or not raw_data:
-                self.logger.error("No data received from HX711")
+                self.logger.error("No data received from HX711 Channel {}".format(channel_label))
                 return None
 
             # Optionally filter outliers before averaging
@@ -303,32 +364,34 @@ class InputModule(AbstractInput):
                 filtered, removed = filter_outliers(raw_data, mad_threshold=threshold)
                 if removed and hasattr(self, "logger") and self.logger:
                     self.logger.debug(
-                        "HX711 outlier filter removed %s samples (threshold=%s)",
+                        "HX711 Ch%s outlier filter removed %s samples (threshold=%s)",
+                        channel_label,
                         len(removed),
                         threshold
                     )
                 raw_data = filtered
 
+            if not raw_data:
+                return None
+
             # Calculate average from the list of samples
             raw_average = sum(raw_data) / len(raw_data)
 
             # Apply tare
-            tare = self.tare_value if self.tare_value is not None else 0.0
+            tare = tare_value if tare_value is not None else 0.0
             tared_value = raw_average - tare
 
             # Apply calibration factor to get grams
-            cal_factor = self.calibration_factor if self.calibration_factor else 1.0
+            cal_factor = calibration_factor if calibration_factor else 1.0
             if cal_factor != 0:
                 mass_grams = tared_value / cal_factor
             else:
                 mass_grams = tared_value
 
-            self.value_set(0, mass_grams)
-
-            return self.return_dict
+            return mass_grams
 
         except Exception as e:
-            self.logger.error("Error reading HX711: {err}".format(err=e))
+            self.logger.error("Error reading HX711 Channel {}: {}".format(channel_label, e))
             return None
 
     def stop_input(self):
