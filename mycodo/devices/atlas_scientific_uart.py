@@ -135,6 +135,24 @@ class AtlasScientificUART(AbstractBaseAtlasScientific):
             self.logger.exception('UART device not initialized')
             return None
 
+    @staticmethod
+    def build_string(data):
+        """
+        Build a string from data, filtering out non-alphanumeric characters
+        except for '.' and ','. Used during calibration.
+        """
+        try:
+            list_chars = []
+            for each_char in data:
+                try:
+                    if each_char.isalnum() or each_char in [".", ","]:
+                        list_chars.append(each_char)
+                except:
+                    pass
+            return ''.join(list_chars)
+        except:
+            return None
+
 
 def main():
     device_str = input("Device? (e.g. '/dev/ttyAMA1'): ")
