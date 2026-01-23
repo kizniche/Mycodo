@@ -356,6 +356,121 @@ INPUT_INFORMATION = {
             'name': lazy_gettext('Auto Gain Fallback'),
             'phrase': lazy_gettext('Retry A/64 and B/32 when saturated samples occur')
         }
+    ],
+
+    'custom_commands_message':
+        '<strong>Calibration Wizard</strong><br>'
+        'Use these buttons to calibrate your load cell. The wizard uses MAD outlier filtering '
+        'for robust measurements. For best results:<br>'
+        '<ul>'
+        '<li>Ensure the scale is stable and not vibrating</li>'
+        '<li>Remove all weight before tare calibration</li>'
+        '<li>Use a known, accurate calibration weight</li>'
+        '<li>Reposition the weight between factor calibration runs</li>'
+        '</ul>',
+
+    'custom_commands': [
+        {
+            'id': 'section_tare_cal',
+            'type': 'message',
+            'default_value': '<strong>Tare Calibration</strong> — Remove all weight from scale',
+        },
+        {
+            'id': 'tare_channel_select',
+            'type': 'select',
+            'default_value': 'a',
+            'options_select': [
+                ('a', 'Channel A'),
+                ('b', 'Channel B')
+            ],
+            'name': lazy_gettext('Channel for Tare'),
+            'phrase': lazy_gettext('Select which channel to calibrate')
+        },
+        {
+            'id': 'tare_samples',
+            'type': 'integer',
+            'default_value': 20,
+            'name': lazy_gettext('Tare Samples'),
+            'phrase': lazy_gettext('Number of samples to collect for tare (default: 20)')
+        },
+        {
+            'id': 'calibrate_tare',
+            'type': 'button',
+            'wait_for_return': True,
+            'name': lazy_gettext('Calibrate Tare')
+        },
+        {
+            'type': 'new_line'
+        },
+        {
+            'id': 'section_factor_cal',
+            'type': 'message',
+            'default_value': '<strong>Factor Calibration</strong> — Place known weight on scale',
+        },
+        {
+            'id': 'factor_channel_select',
+            'type': 'select',
+            'default_value': 'a',
+            'options_select': [
+                ('a', 'Channel A'),
+                ('b', 'Channel B')
+            ],
+            'name': lazy_gettext('Channel for Factor'),
+            'phrase': lazy_gettext('Select which channel to calibrate')
+        },
+        {
+            'id': 'known_weight_grams',
+            'type': 'float',
+            'default_value': 1000.0,
+            'name': lazy_gettext('Known Weight (grams)'),
+            'phrase': lazy_gettext('The exact weight of your calibration object in grams')
+        },
+        {
+            'id': 'factor_samples_per_run',
+            'type': 'integer',
+            'default_value': 20,
+            'name': lazy_gettext('Samples per Run'),
+            'phrase': lazy_gettext('Number of samples per calibration run (default: 20)')
+        },
+        {
+            'id': 'factor_runs',
+            'type': 'integer',
+            'default_value': 3,
+            'name': lazy_gettext('Number of Runs'),
+            'phrase': lazy_gettext('Number of runs to average (default: 3, total 60 samples)')
+        },
+        {
+            'id': 'calibrate_factor',
+            'type': 'button',
+            'wait_for_return': True,
+            'name': lazy_gettext('Calibrate Factor')
+        },
+        {
+            'type': 'new_line'
+        },
+        {
+            'id': 'section_quick_actions',
+            'type': 'message',
+            'default_value': '<strong>Quick Actions</strong>',
+        },
+        {
+            'id': 'clear_calibration_channel',
+            'type': 'select',
+            'default_value': 'a',
+            'options_select': [
+                ('a', 'Channel A'),
+                ('b', 'Channel B'),
+                ('both', 'Both Channels')
+            ],
+            'name': lazy_gettext('Channel to Clear'),
+            'phrase': lazy_gettext('Select which channel calibration to reset')
+        },
+        {
+            'id': 'clear_calibration',
+            'type': 'button',
+            'wait_for_return': True,
+            'name': lazy_gettext('Reset Calibration to Defaults')
+        }
     ]
 }
 
@@ -715,3 +830,246 @@ class InputModule(AbstractInput):
             if (time.perf_counter() - start) > timeout_s:
                 return None
         return self.hx711.read(channel_gain)
+
+    # =====================================================================
+    # Calibration Wizard Methods
+    # =====================================================================
+
+    def calibrate_tare(self, args_dict):
+        """
+        Calibrate the tare (zero) value for a channel.
+        Collects samples with MAD outlier filtering and saves the average.
+        """
+        channel = args_dict.get('tare_channel_select', 'a').lower()
+        num_samples = int(args_dict.get('tare_samples', 20))
+        num_samples = max(5, min(num_samples, 100))  # Clamp to reasonable range
+
+        self.logger.info("Starting tare calibration for Channel %s with %d samples",
+                         channel.upper(), num_samples)
+
+        # Select correct channel gain
+        if channel == 'a':
+            channel_gain = self.channel_gain_a
+            if not self.channel_a_enabled:
+                self.logger.error("Channel A is not enabled. Enable it first.")
+                return "Error: Channel A is not enabled"
+        else:
+            channel_gain = self.channel_gain_b
+            if not self.channel_b_enabled:
+                self.logger.error("Channel B is not enabled. Enable it first.")
+                return "Error: Channel B is not enabled"
+
+        # Collect samples
+        raw_values = []
+        delay_s = max(0.0, (self.read_delay_ms or 1.0) / 1000.0)
+        max_attempts = num_samples * 3
+
+        self.logger.info("Collecting %d tare samples (max %d attempts)...", num_samples, max_attempts)
+
+        attempts = 0
+        while len(raw_values) < num_samples and attempts < max_attempts:
+            attempts += 1
+            sample = self._read_with_timeout(channel_gain)
+            if sample is None or is_saturated(sample):
+                time.sleep(delay_s)
+                continue
+            raw_values.append(sample)
+            time.sleep(delay_s)
+
+        if len(raw_values) < 5:
+            self.logger.error("Tare calibration failed: only %d valid samples collected", len(raw_values))
+            return "Error: Not enough valid samples (got {}, need at least 5)".format(len(raw_values))
+
+        # Apply MAD outlier filter
+        threshold = self.outlier_mad_threshold if self.outlier_mad_threshold else 3.5
+        filtered, removed = filter_outliers(raw_values, mad_threshold=threshold)
+
+        if removed:
+            self.logger.info("Tare calibration: filtered out %d outliers", len(removed))
+
+        if not filtered:
+            filtered = raw_values
+
+        # Calculate tare value
+        tare_value = sum(filtered) / len(filtered)
+
+        # Calculate statistics for logging
+        raw_min = min(filtered)
+        raw_max = max(filtered)
+        raw_spread = raw_max - raw_min
+
+        self.logger.info("Tare calibration results:")
+        self.logger.info("  Samples: %d collected, %d after filtering", len(raw_values), len(filtered))
+        self.logger.info("  Raw range: %d to %d (spread: %d)", int(raw_min), int(raw_max), int(raw_spread))
+        self.logger.info("  Tare value: %.0f", tare_value)
+
+        # Save the tare value
+        if channel == 'a':
+            self.tare_value_a = tare_value
+            self.tare_value_runtime_a = tare_value
+            self.set_custom_option("tare_value_a", tare_value)
+        else:
+            self.tare_value_b = tare_value
+            self.tare_value_runtime_b = tare_value
+            self.set_custom_option("tare_value_b", tare_value)
+
+        return "Tare calibration successful! Channel {} tare set to {:.0f}".format(
+            channel.upper(), tare_value
+        )
+
+    def calibrate_factor(self, args_dict):
+        """
+        Calibrate the conversion factor for a channel using a known weight.
+        Collects samples across multiple runs with MAD outlier filtering.
+        """
+        channel = args_dict.get('factor_channel_select', 'a').lower()
+        known_weight = float(args_dict.get('known_weight_grams', 1000.0))
+        samples_per_run = int(args_dict.get('factor_samples_per_run', 20))
+        num_runs = int(args_dict.get('factor_runs', 3))
+
+        # Clamp to reasonable ranges
+        samples_per_run = max(5, min(samples_per_run, 50))
+        num_runs = max(1, min(num_runs, 10))
+
+        if known_weight <= 0:
+            self.logger.error("Known weight must be greater than 0")
+            return "Error: Known weight must be greater than 0"
+
+        self.logger.info("Starting factor calibration for Channel %s", channel.upper())
+        self.logger.info("  Known weight: %.2f g", known_weight)
+        self.logger.info("  Samples per run: %d, Number of runs: %d (total: %d)",
+                         samples_per_run, num_runs, samples_per_run * num_runs)
+
+        # Select correct channel
+        if channel == 'a':
+            channel_gain = self.channel_gain_a
+            tare_value = self.tare_value_a if self.tare_value_a else 0.0
+            if not self.channel_a_enabled:
+                self.logger.error("Channel A is not enabled. Enable it first.")
+                return "Error: Channel A is not enabled"
+        else:
+            channel_gain = self.channel_gain_b
+            tare_value = self.tare_value_b if self.tare_value_b else 0.0
+            if not self.channel_b_enabled:
+                self.logger.error("Channel B is not enabled. Enable it first.")
+                return "Error: Channel B is not enabled"
+
+        delay_s = max(0.0, (self.read_delay_ms or 1.0) / 1000.0)
+        threshold = self.outlier_mad_threshold if self.outlier_mad_threshold else 3.5
+
+        run_factors = []
+        run_raw_averages = []
+
+        for run in range(1, num_runs + 1):
+            self.logger.info("Factor calibration run %d/%d...", run, num_runs)
+
+            # Collect samples for this run
+            raw_values = []
+            max_attempts = samples_per_run * 3
+            attempts = 0
+
+            while len(raw_values) < samples_per_run and attempts < max_attempts:
+                attempts += 1
+                sample = self._read_with_timeout(channel_gain)
+                if sample is None or is_saturated(sample):
+                    time.sleep(delay_s)
+                    continue
+                raw_values.append(sample)
+                time.sleep(delay_s)
+
+            if len(raw_values) < 5:
+                self.logger.warning("Run %d: only %d valid samples, skipping", run, len(raw_values))
+                continue
+
+            # Apply MAD filter
+            filtered, removed = filter_outliers(raw_values, mad_threshold=threshold)
+            if removed:
+                self.logger.debug("Run %d: filtered out %d outliers", run, len(removed))
+
+            if not filtered:
+                filtered = raw_values
+
+            # Calculate run statistics
+            run_avg = sum(filtered) / len(filtered)
+            run_raw_averages.append(run_avg)
+
+            # Calculate factor for this run
+            tared_value = run_avg - tare_value
+            if tared_value == 0:
+                self.logger.warning("Run %d: tared value is 0, cannot calculate factor", run)
+                continue
+
+            run_factor = tared_value / known_weight
+            run_factors.append(run_factor)
+
+            self.logger.info("  Run %d: raw avg=%.0f, tared=%.0f, factor=%.4f",
+                             run, run_avg, tared_value, run_factor)
+
+        if not run_factors:
+            self.logger.error("Factor calibration failed: no valid runs completed")
+            return "Error: No valid calibration runs completed"
+
+        # Average all run factors
+        calibration_factor = sum(run_factors) / len(run_factors)
+        avg_raw = sum(run_raw_averages) / len(run_raw_averages)
+
+        # Calculate factor spread for quality assessment
+        if len(run_factors) > 1:
+            factor_spread = max(run_factors) - min(run_factors)
+            factor_spread_pct = (factor_spread / calibration_factor) * 100 if calibration_factor else 0
+            self.logger.info("Factor spread: %.4f (%.2f%%)", factor_spread, factor_spread_pct)
+            if factor_spread_pct > 5:
+                self.logger.warning("High factor variation detected. Consider repositioning weight more consistently.")
+
+        self.logger.info("Factor calibration results:")
+        self.logger.info("  Successful runs: %d/%d", len(run_factors), num_runs)
+        self.logger.info("  Tare value used: %.0f", tare_value)
+        self.logger.info("  Average raw with weight: %.0f", avg_raw)
+        self.logger.info("  Calibration factor: %.4f", calibration_factor)
+
+        # Save the calibration factor
+        if channel == 'a':
+            self.calibration_factor_a = calibration_factor
+            self.set_custom_option("calibration_factor_a", calibration_factor)
+        else:
+            self.calibration_factor_b = calibration_factor
+            self.set_custom_option("calibration_factor_b", calibration_factor)
+
+        return "Factor calibration successful! Channel {} factor set to {:.4f}".format(
+            channel.upper(), calibration_factor
+        )
+
+    def clear_calibration(self, args_dict):
+        """
+        Reset calibration values to defaults for the selected channel(s).
+        """
+        channel = args_dict.get('clear_calibration_channel', 'a').lower()
+
+        channels_to_clear = []
+        if channel == 'both':
+            channels_to_clear = ['a', 'b']
+        else:
+            channels_to_clear = [channel]
+
+        for ch in channels_to_clear:
+            if ch == 'a':
+                self.tare_value_a = 0.0
+                self.tare_value_runtime_a = 0.0
+                self.calibration_factor_a = 1.0
+                self.delete_custom_option("tare_value_a")
+                self.delete_custom_option("calibration_factor_a")
+                self.logger.info("Channel A calibration reset to defaults (tare=0, factor=1.0)")
+            else:
+                self.tare_value_b = 0.0
+                self.tare_value_runtime_b = 0.0
+                self.calibration_factor_b = 1.0
+                self.delete_custom_option("tare_value_b")
+                self.delete_custom_option("calibration_factor_b")
+                self.logger.info("Channel B calibration reset to defaults (tare=0, factor=1.0)")
+
+        # Reload defaults
+        self.setup_custom_options(INPUT_INFORMATION['custom_options'], self.input_dev)
+
+        if channel == 'both':
+            return "Calibration reset for both channels"
+        return "Calibration reset for Channel {}".format(channel.upper())
