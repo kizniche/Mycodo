@@ -161,6 +161,11 @@ INPUT_INFORMATION = {
 
     'custom_options': [
         {
+            'id': 'section_general',
+            'type': 'message',
+            'default_value': '<strong>General Settings</strong>',
+        },
+        {
             'id': 'pin_data',
             'type': 'integer',
             'default_value': 27,
@@ -173,6 +178,14 @@ INPUT_INFORMATION = {
             'default_value': 21,
             'name': lazy_gettext('Clock Pin (SCK)'),
             'phrase': lazy_gettext('The GPIO pin connected to the HX711 clock pin (SCK/PD_SCK)')
+        },
+        {
+            'type': 'new_line'
+        },
+        {
+            'id': 'section_channel_a',
+            'type': 'message',
+            'default_value': '<strong>Channel A Settings</strong>',
         },
         {
             'id': 'channel_a_enabled',
@@ -193,11 +206,55 @@ INPUT_INFORMATION = {
             'phrase': lazy_gettext('The gain for Channel A (128 or 64)')
         },
         {
+            'id': 'tare_value_a',
+            'type': 'float',
+            'default_value': 0.0,
+            'name': lazy_gettext('Tare Value (Channel A)'),
+            'phrase': lazy_gettext('The raw value to subtract for Channel A. Set to 0 for no tare.')
+        },
+        {
+            'id': 'calibration_factor_a',
+            'type': 'float',
+            'default_value': 1.0,
+            'name': lazy_gettext('Calibration Factor (Channel A)'),
+            'phrase': lazy_gettext('The factor to convert Channel A raw value to grams')
+        },
+        {
+            'type': 'new_line'
+        },
+        {
+            'id': 'section_channel_b',
+            'type': 'message',
+            'default_value': '<strong>Channel B Settings</strong>',
+        },
+        {
             'id': 'channel_b_enabled',
             'type': 'bool',
             'default_value': False,
             'name': lazy_gettext('Channel B Enabled'),
             'phrase': lazy_gettext('Enable Channel B measurement')
+        },
+        {
+            'id': 'tare_value_b',
+            'type': 'float',
+            'default_value': 0.0,
+            'name': lazy_gettext('Tare Value (Channel B)'),
+            'phrase': lazy_gettext('The raw value to subtract for Channel B. Set to 0 for no tare.')
+        },
+        {
+            'id': 'calibration_factor_b',
+            'type': 'float',
+            'default_value': 1.0,
+            'name': lazy_gettext('Calibration Factor (Channel B)'),
+            'phrase': lazy_gettext('The factor to convert Channel B raw value to grams')
+        },
+        {
+            'type': 'new_line'
+        },
+        {
+            'id': 'section_sampling',
+            'type': 'message',
+            'default_value': '<strong>Sampling & Filtering</strong>',
         },
         {
             'id': 'samples',
@@ -221,32 +278,12 @@ INPUT_INFORMATION = {
             'phrase': lazy_gettext('Lower is stricter. Typical range: 2.5–5.0')
         },
         {
-            'id': 'tare_value_a',
-            'type': 'float',
-            'default_value': 0.0,
-            'name': lazy_gettext('Tare Value (Channel A)'),
-            'phrase': lazy_gettext('The raw value to subtract for Channel A. Set to 0 for no tare.')
+            'type': 'new_line'
         },
         {
-            'id': 'calibration_factor_a',
-            'type': 'float',
-            'default_value': 1.0,
-            'name': lazy_gettext('Calibration Factor (Channel A)'),
-            'phrase': lazy_gettext('The factor to convert Channel A raw value to grams')
-        },
-        {
-            'id': 'tare_value_b',
-            'type': 'float',
-            'default_value': 0.0,
-            'name': lazy_gettext('Tare Value (Channel B)'),
-            'phrase': lazy_gettext('The raw value to subtract for Channel B. Set to 0 for no tare.')
-        },
-        {
-            'id': 'calibration_factor_b',
-            'type': 'float',
-            'default_value': 1.0,
-            'name': lazy_gettext('Calibration Factor (Channel B)'),
-            'phrase': lazy_gettext('The factor to convert Channel B raw value to grams')
+            'id': 'section_zero_tracking',
+            'type': 'message',
+            'default_value': '<strong>Zero Tracking</strong>',
         },
         {
             'id': 'zero_tracking_enabled',
@@ -268,6 +305,14 @@ INPUT_INFORMATION = {
             'default_value': 0.05,
             'name': lazy_gettext('Zero Tracking Rate'),
             'phrase': lazy_gettext('Fraction of offset corrected per measurement (0.0–1.0)')
+        },
+        {
+            'type': 'new_line'
+        },
+        {
+            'id': 'section_advanced',
+            'type': 'message',
+            'default_value': '<strong>Advanced Settings</strong>',
         },
         {
             'id': 'read_delay_ms',
