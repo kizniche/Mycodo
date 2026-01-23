@@ -367,7 +367,8 @@ INPUT_INFORMATION = {
         '<li>Remove all weight before tare calibration</li>'
         '<li>Use a known, accurate calibration weight</li>'
         '<li>Reposition the weight between factor calibration runs</li>'
-        '</ul>',
+        '</ul>'
+        '<em>💡 Press F5 after calibration to see the new values in the settings fields.</em>',
 
     'custom_commands': [
         {
@@ -913,9 +914,10 @@ class InputModule(AbstractInput):
             self.tare_value_runtime_b = tare_value
             self.set_custom_option("tare_value_b", tare_value)
 
-        return "Tare calibration successful! Channel {} tare set to {:.0f}".format(
-            channel.upper(), tare_value
-        )
+        return (
+            "SUCCESS! Channel {ch} Tare Value saved: {val:.0f}\n"
+            "The value is now active. Refresh the page to see it in the settings field."
+        ).format(ch=channel.upper(), val=tare_value)
 
     def calibrate_factor(self, args_dict):
         """
@@ -1011,6 +1013,7 @@ class InputModule(AbstractInput):
 
         # Average all run factors
         calibration_factor = sum(run_factors) / len(run_factors)
+        calibration_factor = round(calibration_factor, 4)  # Round to 4 decimals
         avg_raw = sum(run_raw_averages) / len(run_raw_averages)
 
         # Calculate factor spread for quality assessment
@@ -1035,8 +1038,17 @@ class InputModule(AbstractInput):
             self.calibration_factor_b = calibration_factor
             self.set_custom_option("calibration_factor_b", calibration_factor)
 
-        return "Factor calibration successful! Channel {} factor set to {:.4f}".format(
-            channel.upper(), calibration_factor
+        return (
+            "SUCCESS! Channel {ch} Calibration Factor saved: {val:.4f}\n"
+            "Runs: {runs}/{total}, Tare used: {tare:.0f}, Avg raw: {raw:.0f}\n"
+            "The value is now active. Refresh the page to see it in the settings field."
+        ).format(
+            ch=channel.upper(),
+            val=calibration_factor,
+            runs=len(run_factors),
+            total=num_runs,
+            tare=tare_value,
+            raw=avg_raw
         )
 
     def clear_calibration(self, args_dict):
