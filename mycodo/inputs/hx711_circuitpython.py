@@ -914,10 +914,36 @@ class InputModule(AbstractInput):
             self.tare_value_runtime_b = tare_value
             self.set_custom_option("tare_value_b", tare_value)
 
-        return (
-            "SUCCESS! Channel {ch} Tare Value saved: {val:.0f}\n"
-            "The value is now active. Refresh the page to see it in the settings field."
-        ).format(ch=channel.upper(), val=tare_value)
+        # Build detailed result message
+        lines = []
+        lines.append("=" * 50)
+        lines.append("TARE CALIBRATION - Channel {}".format(channel.upper()))
+        lines.append("=" * 50)
+        lines.append("")
+        lines.append("Raw samples collected ({}):".format(len(raw_values)))
+        for i, val in enumerate(raw_values, 1):
+            marker = "" if val in filtered else " [FILTERED]"
+            lines.append("  {:2d}: {:>14,.0f}{}".format(i, val, marker))
+        lines.append("")
+        if removed:
+            lines.append("Outliers filtered out ({}):".format(len(removed)))
+            for val in removed:
+                lines.append("   - {:>14,.0f}".format(val))
+            lines.append("")
+        lines.append("-" * 50)
+        lines.append("Statistics (after filtering):")
+        lines.append("  Samples used: {}/{}".format(len(filtered), len(raw_values)))
+        lines.append("  Min:    {:>14,.0f}".format(raw_min))
+        lines.append("  Max:    {:>14,.0f}".format(raw_max))
+        lines.append("  Spread: {:>14,.0f}".format(raw_spread))
+        lines.append("")
+        lines.append("=" * 50)
+        lines.append("RESULT: Tare Value = {:.0f}".format(tare_value))
+        lines.append("=" * 50)
+        lines.append("")
+        lines.append("Value saved! Press F5 to refresh settings.")
+
+        return "\n".join(lines)
 
     def calibrate_factor(self, args_dict):
         """
@@ -1017,6 +1043,8 @@ class InputModule(AbstractInput):
         avg_raw = sum(run_raw_averages) / len(run_raw_averages)
 
         # Calculate factor spread for quality assessment
+        factor_spread = 0
+        factor_spread_pct = 0
         if len(run_factors) > 1:
             factor_spread = max(run_factors) - min(run_factors)
             factor_spread_pct = (factor_spread / calibration_factor) * 100 if calibration_factor else 0
@@ -1038,18 +1066,37 @@ class InputModule(AbstractInput):
             self.calibration_factor_b = calibration_factor
             self.set_custom_option("calibration_factor_b", calibration_factor)
 
-        return (
-            "SUCCESS! Channel {ch} Calibration Factor saved: {val:.4f}\n"
-            "Runs: {runs}/{total}, Tare used: {tare:.0f}, Avg raw: {raw:.0f}\n"
-            "The value is now active. Refresh the page to see it in the settings field."
-        ).format(
-            ch=channel.upper(),
-            val=calibration_factor,
-            runs=len(run_factors),
-            total=num_runs,
-            tare=tare_value,
-            raw=avg_raw
-        )
+        # Build detailed result message
+        lines = []
+        lines.append("=" * 50)
+        lines.append("FACTOR CALIBRATION - Channel {}".format(channel.upper()))
+        lines.append("=" * 50)
+        lines.append("")
+        lines.append("Known weight: {:.2f} g".format(known_weight))
+        lines.append("Tare value used: {:.0f}".format(tare_value))
+        lines.append("")
+        lines.append("Run results:")
+        for i, (raw_avg, factor) in enumerate(zip(run_raw_averages, run_factors), 1):
+            tared = raw_avg - tare_value
+            lines.append("  Run {}: raw={:,.0f}, tared={:,.0f}, factor={:.4f}".format(
+                i, raw_avg, tared, factor))
+        lines.append("")
+        lines.append("-" * 50)
+        lines.append("Statistics:")
+        lines.append("  Successful runs: {}/{}".format(len(run_factors), num_runs))
+        lines.append("  Average raw with weight: {:,.0f}".format(avg_raw))
+        if len(run_factors) > 1:
+            lines.append("  Factor spread: {:.4f} ({:.2f}%)".format(factor_spread, factor_spread_pct))
+            if factor_spread_pct > 5:
+                lines.append("  ⚠️  High variation - reposition weight more consistently")
+        lines.append("")
+        lines.append("=" * 50)
+        lines.append("RESULT: Calibration Factor = {:.4f}".format(calibration_factor))
+        lines.append("=" * 50)
+        lines.append("")
+        lines.append("Value saved! Press F5 to refresh settings.")
+
+        return "\n".join(lines)
 
     def clear_calibration(self, args_dict):
         """
