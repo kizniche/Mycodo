@@ -345,9 +345,9 @@ INPUT_INFORMATION = {
         {
             'id': 'factor_runs',
             'type': 'integer',
-            'default_value': 3,
+            'default_value': 5,
             'name': lazy_gettext('Number of Runs'),
-            'phrase': lazy_gettext('Number of runs to average (default: 3, total 60 samples)')
+            'phrase': lazy_gettext('Number of runs to average (default: 5). Outlier runs are filtered out.')
         },
         {
             'id': 'calibrate_factor',
@@ -703,8 +703,8 @@ class InputModule(AbstractInput):
 
         threshold = self.outlier_mad_threshold if self.outlier_mad_threshold else 3.5
 
-        run_factors = []
-        run_raw_averages = []
+        # Store all run data for reporting
+        all_runs = []  # List of dicts with run info
 
         for run in range(1, num_runs + 1):
             self.logger.info("Factor calibration run %d/%d...", run, num_runs)
@@ -731,7 +731,6 @@ class InputModule(AbstractInput):
 
             # Calculate run statistics
             run_avg = sum(filtered) / len(filtered)
-            run_raw_averages.append(run_avg)
 
             # Calculate factor for this run
             tared_value = run_avg - tare_value
@@ -740,32 +739,51 @@ class InputModule(AbstractInput):
                 continue
 
             run_factor = tared_value / known_weight
-            run_factors.append(run_factor)
+            all_runs.append({
+                'run': run,
+                'raw_avg': run_avg,
+                'tared': tared_value,
+                'factor': run_factor,
+                'excluded': False
+            })
 
             self.logger.info("  Run %d: raw avg=%.0f, tared=%.0f, factor=%.4f",
                              run, run_avg, tared_value, run_factor)
 
-        if not run_factors:
+        if not all_runs:
             self.logger.error("Factor calibration failed: no valid runs completed")
             return "Error: No valid calibration runs completed"
 
-        # Average all run factors
-        calibration_factor = sum(run_factors) / len(run_factors)
-        calibration_factor = round(calibration_factor, 4)  # Round to 4 decimals
-        avg_raw = sum(run_raw_averages) / len(run_raw_averages)
+        # Filter outlier runs (e.g., 1 bad run out of 5)
+        run_factors = [r['factor'] for r in all_runs]
+        if len(run_factors) >= 3:
+            filtered_factors, removed_factors = filter_outliers(run_factors, mad_threshold=threshold)
+            if removed_factors and filtered_factors:
+                for r in all_runs:
+                    if r['factor'] in removed_factors:
+                        r['excluded'] = True
+                self.logger.info("Filtered out %d outlier run(s) from %d total",
+                                 len(removed_factors), len(all_runs))
+
+        # Calculate final values from non-excluded runs
+        valid_runs = [r for r in all_runs if not r['excluded']]
+        calibration_factor = sum(r['factor'] for r in valid_runs) / len(valid_runs)
+        calibration_factor = round(calibration_factor, 4)
+        avg_raw = sum(r['raw_avg'] for r in valid_runs) / len(valid_runs)
 
         # Calculate factor spread for quality assessment
         factor_spread = 0
         factor_spread_pct = 0
-        if len(run_factors) > 1:
-            factor_spread = max(run_factors) - min(run_factors)
+        valid_factors = [r['factor'] for r in valid_runs]
+        if len(valid_factors) > 1:
+            factor_spread = max(valid_factors) - min(valid_factors)
             factor_spread_pct = (factor_spread / calibration_factor) * 100 if calibration_factor else 0
             self.logger.info("Factor spread: %.4f (%.2f%%)", factor_spread, factor_spread_pct)
             if factor_spread_pct > 5:
                 self.logger.warning("High factor variation detected. Consider repositioning weight more consistently.")
 
         self.logger.info("Factor calibration results:")
-        self.logger.info("  Successful runs: %d/%d", len(run_factors), num_runs)
+        self.logger.info("  Successful runs: %d/%d", len(valid_runs), num_runs)
         self.logger.info("  Tare value used: %.0f", tare_value)
         self.logger.info("  Average raw with weight: %.0f", avg_raw)
         self.logger.info("  Calibration factor: %.4f", calibration_factor)
@@ -788,16 +806,20 @@ class InputModule(AbstractInput):
         lines.append("Tare value used: {:.0f}".format(tare_value))
         lines.append("")
         lines.append("Run results:")
-        for i, (raw_avg, factor) in enumerate(zip(run_raw_averages, run_factors), 1):
-            tared = raw_avg - tare_value
-            lines.append("  Run {}: raw={:,.0f}, tared={:,.0f}, factor={:.4f}".format(
-                i, raw_avg, tared, factor))
+        for r in all_runs:
+            marker = " [EXCLUDED]" if r['excluded'] else ""
+            lines.append("  Run {}: raw={:,.0f}, tared={:,.0f}, factor={:.4f}{}".format(
+                r['run'], r['raw_avg'], r['tared'], r['factor'], marker))
         lines.append("")
+        excluded_runs = [r for r in all_runs if r['excluded']]
+        if excluded_runs:
+            lines.append("Outlier runs filtered out: {}".format(len(excluded_runs)))
+            lines.append("")
         lines.append("-" * 50)
-        lines.append("Statistics:")
-        lines.append("  Successful runs: {}/{}".format(len(run_factors), num_runs))
+        lines.append("Statistics (after filtering):")
+        lines.append("  Runs used: {}/{}".format(len(valid_runs), len(all_runs)))
         lines.append("  Average raw with weight: {:,.0f}".format(avg_raw))
-        if len(run_factors) > 1:
+        if len(valid_factors) > 1:
             lines.append("  Factor spread: {:.4f} ({:.2f}%)".format(factor_spread, factor_spread_pct))
             if factor_spread_pct > 5:
                 lines.append("  ⚠️  High variation - reposition weight more consistently")
