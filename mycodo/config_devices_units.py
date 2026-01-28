@@ -325,6 +325,10 @@ MEASUREMENTS = {
         'name': lazy_gettext('VOC'),
         'meas': 'voc',
         'units': ['ppb', 'ppm']},
+    'mass': {
+        'name': lazy_gettext('Mass'),
+        'meas': 'mass',
+        'units': ['g', 'kg']},
     'volume': {
         'name': lazy_gettext('Volume'),
         'meas': 'volume',
@@ -390,6 +394,9 @@ UNITS = {
     'ft': {
         'name': lazy_gettext('Foot'),
         'unit': 'ft'},
+    'g': {
+        'name': lazy_gettext('Gram'),
+        'unit': 'g'},
     'full': {
         'name': lazy_gettext('Full'),
         'unit': 'full'},
@@ -432,6 +439,9 @@ UNITS = {
     'kPa': {
         'name': lazy_gettext('Kilopascal'),
         'unit': 'kPa'},
+    'kg': {
+        'name': lazy_gettext('Kilogram'),
+        'unit': 'kg'},
     'kWh': {
         'name': lazy_gettext('Kilowatt-hour'),
         'unit': 'kWh'},
@@ -665,5 +675,9 @@ UNIT_CONVERSIONS = [
 
     # Volume
     ('l', 'ml', 'x*1000'),
-    ('ml', 'l', 'x/1000')
+    ('ml', 'l', 'x/1000'),
+
+    # Mass
+    ('g', 'kg', 'x/1000'),
+    ('kg', 'g', 'x*1000')
 ]
