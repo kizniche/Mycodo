@@ -168,7 +168,7 @@ INPUT_INFORMATION = {
         {
             'id': 'pin_data',
             'type': 'integer',
-            'default_value': 27,
+            'default_value': 17,
             'name': lazy_gettext('Data Pin (DT)'),
             'phrase': lazy_gettext('The GPIO pin connected to the HX711 data pin (DT/DOUT)')
         },
@@ -841,6 +841,11 @@ class InputModule(AbstractInput):
         Calibrate the tare (zero) value for a channel.
         Collects samples with MAD outlier filtering and saves the average.
         """
+        # Check if device is initialized
+        if not self.hx711:
+            self.logger.error("HX711 not initialized. Activate the input first.")
+            return "Error: HX711 not initialized. Please activate the input before calibrating."
+
         channel = args_dict.get('tare_channel_select', 'a').lower()
         num_samples = int(args_dict.get('tare_samples', 20))
         num_samples = max(5, min(num_samples, 100))  # Clamp to reasonable range
@@ -848,14 +853,16 @@ class InputModule(AbstractInput):
         self.logger.info("Starting tare calibration for Channel %s with %d samples",
                          channel.upper(), num_samples)
 
-        # Select correct channel gain
+        # Select correct channel gain and get previous tare value
         if channel == 'a':
             channel_gain = self.channel_gain_a
+            previous_tare = self.tare_value_a if self.tare_value_a else 0.0
             if not self.channel_a_enabled:
                 self.logger.error("Channel A is not enabled. Enable it first.")
                 return "Error: Channel A is not enabled"
         else:
             channel_gain = self.channel_gain_b
+            previous_tare = self.tare_value_b if self.tare_value_b else 0.0
             if not self.channel_b_enabled:
                 self.logger.error("Channel B is not enabled. Enable it first.")
                 return "Error: Channel B is not enabled"
@@ -941,6 +948,18 @@ class InputModule(AbstractInput):
         lines.append("RESULT: Tare Value = {:.0f}".format(tare_value))
         lines.append("=" * 50)
         lines.append("")
+        # Drift comparison
+        tare_drift = tare_value - previous_tare
+        tare_drift_pct = (tare_drift / previous_tare * 100) if previous_tare != 0 else 0
+        lines.append("-" * 50)
+        lines.append("DRIFT COMPARISON:")
+        lines.append("  Previous tare:  {:>14,.0f}".format(previous_tare))
+        lines.append("  New tare:       {:>14,.0f}".format(tare_value))
+        lines.append("  Difference:     {:>14,.0f}  ({:+.2f}%)".format(tare_drift, tare_drift_pct))
+        if abs(tare_drift_pct) > 1 and previous_tare != 0:
+            lines.append("  ⚠️  Significant drift detected (>1%)")
+        lines.append("-" * 50)
+        lines.append("")
         lines.append("Value saved! Press F5 to refresh settings.")
 
         return "\n".join(lines)
@@ -950,6 +969,11 @@ class InputModule(AbstractInput):
         Calibrate the conversion factor for a channel using a known weight.
         Collects samples across multiple runs with MAD outlier filtering.
         """
+        # Check if device is initialized
+        if not self.hx711:
+            self.logger.error("HX711 not initialized. Activate the input first.")
+            return "Error: HX711 not initialized. Please activate the input before calibrating."
+
         channel = args_dict.get('factor_channel_select', 'a').lower()
         known_weight = float(args_dict.get('known_weight_grams', 1000.0))
         samples_per_run = int(args_dict.get('factor_samples_per_run', 20))
@@ -968,16 +992,18 @@ class InputModule(AbstractInput):
         self.logger.info("  Samples per run: %d, Number of runs: %d (total: %d)",
                          samples_per_run, num_runs, samples_per_run * num_runs)
 
-        # Select correct channel
+        # Select correct channel and get previous factor
         if channel == 'a':
             channel_gain = self.channel_gain_a
             tare_value = self.tare_value_a if self.tare_value_a else 0.0
+            previous_factor = self.calibration_factor_a if self.calibration_factor_a else 1.0
             if not self.channel_a_enabled:
                 self.logger.error("Channel A is not enabled. Enable it first.")
                 return "Error: Channel A is not enabled"
         else:
             channel_gain = self.channel_gain_b
             tare_value = self.tare_value_b if self.tare_value_b else 0.0
+            previous_factor = self.calibration_factor_b if self.calibration_factor_b else 1.0
             if not self.channel_b_enabled:
                 self.logger.error("Channel B is not enabled. Enable it first.")
                 return "Error: Channel B is not enabled"
@@ -1118,6 +1144,18 @@ class InputModule(AbstractInput):
         lines.append("=" * 50)
         lines.append("RESULT: Calibration Factor = {:.4f}".format(calibration_factor))
         lines.append("=" * 50)
+        lines.append("")
+        # Drift comparison for factor
+        factor_drift = calibration_factor - previous_factor
+        factor_drift_pct = (factor_drift / previous_factor * 100) if previous_factor != 0 else 0
+        lines.append("-" * 50)
+        lines.append("DRIFT COMPARISON:")
+        lines.append("  Previous factor: {:>12.4f}".format(previous_factor))
+        lines.append("  New factor:      {:>12.4f}".format(calibration_factor))
+        lines.append("  Difference:      {:>12.4f}  ({:+.2f}%)".format(factor_drift, factor_drift_pct))
+        if abs(factor_drift_pct) > 1 and previous_factor != 1.0:
+            lines.append("  ⚠️  Significant drift detected (>1%)")
+        lines.append("-" * 50)
         lines.append("")
         lines.append("Value saved! Press F5 to refresh settings.")
 
