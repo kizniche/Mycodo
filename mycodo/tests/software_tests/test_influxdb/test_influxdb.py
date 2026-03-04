@@ -1,6 +1,7 @@
 # coding=utf-8
 """Tests for influxdb."""
-from mycodo.utils.influx import add_measurements_influxdb, read_influxdb_single
+from mycodo.utils.influx import (add_measurements_influxdb, read_influxdb_multi,
+                                 read_influxdb_single)
 
 
 def test_influxdb():
@@ -37,3 +38,52 @@ def test_influxdb():
     returned_measurement = last_measurement[1]
 
     assert returned_measurement == written_measurement
+
+
+def test_influxdb_multi():
+    """Verify multiple measurements can be read from influxdb in one call."""
+    print("\nTest: test_influxdb_multi")
+    
+    # Write test data for multiple channels
+    device_id = 'ID_MULTI_TEST'
+    
+    # Write channel 0
+    measurements_dict_0 = {
+        0: {
+            'measurement': 'temperature',
+            'unit': 'C',
+            'value': 25.5
+        }
+    }
+    add_measurements_influxdb(device_id, measurements_dict_0, block=True)
+    
+    # Write channel 1
+    measurements_dict_1 = {
+        1: {
+            'measurement': 'humidity',
+            'unit': 'percent',
+            'value': 65.3
+        }
+    }
+    add_measurements_influxdb(device_id, measurements_dict_1, block=True)
+    
+    # Query multiple channels at once
+    channels_data = [
+        {'unique_id': device_id, 'unit': 'C', 'channel': 0, 'measure': 'temperature'},
+        {'unique_id': device_id, 'unit': 'percent', 'channel': 1, 'measure': 'humidity'}
+    ]
+    
+    results = read_influxdb_multi(channels_data, past_seconds=1000)
+    
+    print(f"Multi-channel results: {results}")
+    
+    # Verify we got results for both channels
+    assert len(results) == 2
+    assert 0 in results
+    assert 1 in results
+    
+    # Verify channel 0 temperature
+    assert results[0][1] == 25.5
+    
+    # Verify channel 1 humidity
+    assert results[1][1] == 65.3
