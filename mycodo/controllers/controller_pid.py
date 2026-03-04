@@ -112,8 +112,6 @@ class PIDController(AbstractController, threading.Thread):
         self.raise_min_duration = None
         self.raise_max_duration = None
         self.raise_min_off_duration = None
-        self.raise_min_duty_cycle = None
-        self.raise_max_duty_cycle = None
         self.raise_always_min_pwm = None
         self.lower_output_id = None
         self.lower_output_channel_id = None
@@ -122,8 +120,6 @@ class PIDController(AbstractController, threading.Thread):
         self.lower_min_duration = None
         self.lower_max_duration = None
         self.lower_min_off_duration = None
-        self.lower_min_duty_cycle = None
-        self.lower_max_duty_cycle = None
         self.lower_always_min_pwm = None
         self.period = 0
         self.start_offset = 0
@@ -482,12 +478,12 @@ class PIDController(AbstractController, threading.Thread):
                             self.PID_Controller.control_variable)
 
                         # Ensure the duty cycle doesn't exceed the min/max
-                        if (self.raise_max_duty_cycle and
-                                raise_duty_cycle > self.raise_max_duty_cycle):
-                            raise_duty_cycle = self.raise_max_duty_cycle
-                        elif (self.raise_min_duty_cycle and
-                                raise_duty_cycle < self.raise_min_duty_cycle):
-                            raise_duty_cycle = self.raise_min_duty_cycle
+                        if (self.raise_max_duration and
+                                raise_duty_cycle > self.raise_max_duration):
+                            raise_duty_cycle = self.raise_max_duration
+                        elif (self.raise_min_duration and
+                                raise_duty_cycle < self.raise_min_duration):
+                            raise_duty_cycle = self.raise_min_duration
 
                         self.logger.debug(
                             f"Setpoint: {self.PID_Controller.setpoint}, "
@@ -602,12 +598,12 @@ class PIDController(AbstractController, threading.Thread):
                             abs(self.PID_Controller.control_variable))
 
                         # Ensure the duty cycle doesn't exceed the min/max
-                        if (self.lower_max_duty_cycle and
-                                lower_duty_cycle > self.lower_max_duty_cycle):
-                            lower_duty_cycle = self.lower_max_duty_cycle
-                        elif (self.lower_min_duty_cycle and
-                                lower_duty_cycle < self.lower_min_duty_cycle):
-                            lower_duty_cycle = self.lower_min_duty_cycle
+                        if (self.lower_max_duration and
+                                lower_duty_cycle > self.lower_max_duration):
+                            lower_duty_cycle = self.lower_max_duration
+                        elif (self.lower_min_duration and
+                                lower_duty_cycle < self.lower_min_duration):
+                            lower_duty_cycle = self.lower_min_duration
 
                         self.logger.debug(
                             f"Setpoint: {self.PID_Controller.setpoint}, "
@@ -774,20 +770,16 @@ class PIDController(AbstractController, threading.Thread):
                f"Output Raise: {self.raise_output_id}, " \
                f"Output Raise Channel: {self.raise_output_channel}, " \
                f"Output Raise Type: {self.raise_output_type}, " \
-               f"Output Raise Min On Duration: {self.raise_min_duration}, " \
-               f"Output Raise Max On Duration: {self.raise_max_duration}, " \
+               f"Output Raise Min Amount: {self.raise_min_duration}, " \
+               f"Output Raise Max Amount: {self.raise_max_duration}, " \
                f"Output Raise Min Off Duration: {self.raise_min_off_duration}, " \
-               f"Output Raise Min PWM: {self.raise_min_duty_cycle}, " \
-               f"Output Raise Max PWM: {self.raise_max_duty_cycle}, " \
                f"Output Raise Always Min PWM: {self.raise_always_min_pwm}, " \
                f"Output Lower: {self.lower_output_id}, " \
                f"Output Lower Channel: {self.lower_output_channel}, " \
                f"Output Lower Type: {self.lower_output_type}, " \
-               f"Output Lower Min On Duration: {self.lower_min_duration}, " \
-               f"Output Lower Max On Duration: {self.lower_max_duration}, " \
+               f"Output Lower Min Amount: {self.lower_min_duration}, " \
+               f"Output Lower Max Amount: {self.lower_max_duration}, " \
                f"Output Lower Min Off Duration: {self.lower_min_off_duration}, " \
-               f"Output Lower Min PWM: {self.lower_min_duty_cycle}, " \
-               f"Output Lower Max PWM: {self.lower_max_duty_cycle}, " \
                f"Output Lower Always Min PWM: {self.lower_always_min_pwm}, " \
                f"Setpoint Tracking Type: {self.setpoint_tracking_type}, " \
                f"Setpoint Tracking ID: {self.setpoint_tracking_id}"
