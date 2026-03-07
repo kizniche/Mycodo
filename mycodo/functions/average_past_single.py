@@ -156,7 +156,7 @@ class CustomModule(AbstractFunction):
             self.max_measure_age,
             measure=measurement)
 
-        if not average:
+        if average is None:
             self.logger.error("Could not find measurement within the set Max Age")
             return False
 
