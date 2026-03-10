@@ -1,6 +1,7 @@
 # Mycodo files
 test/
 tests/
+!mycodo/tests/
 site/
 env/
 .venv
