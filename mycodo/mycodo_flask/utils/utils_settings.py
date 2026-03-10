@@ -627,6 +627,7 @@ def settings_function_update(form):
     error = []
 
     controller_info = None
+    existing_controller_info = None
 
     try:
         install_dir = os.path.abspath(INSTALL_DIRECTORY)
@@ -645,6 +646,7 @@ def settings_function_update(form):
         else:
             form.update_controller_file.data.save(full_path_tmp)
 
+        # Load and validate the uploaded (new) module
         try:
             controller_info, status = load_module_from_file(full_path_tmp, 'functions')
             if not controller_info or not hasattr(controller_info, 'FUNCTION_INFORMATION'):
@@ -654,6 +656,18 @@ def settings_function_update(form):
             error.append("Could not load uploaded file as a python module:\n"
                          "{}".format(traceback.format_exc()))
 
+        # Load the existing (old) module from disk to extract its function_name_unique
+        existing_file_path = os.path.join(
+            PATH_FUNCTIONS_CUSTOM, '{}.py'.format(controller_device_name.lower()))
+        try:
+            existing_controller_info, status = load_module_from_file(existing_file_path, 'functions')
+            if not existing_controller_info or not hasattr(existing_controller_info, 'FUNCTION_INFORMATION'):
+                error.append("Could not load FUNCTION_INFORMATION dictionary from "
+                             "the existing controller module")
+        except Exception:
+            error.append("Could not load existing controller module as a python module:\n"
+                         "{}".format(traceback.format_exc()))
+
         if not error:
             if 'function_name_unique' not in controller_info.FUNCTION_INFORMATION:
                 error.append(
@@ -661,11 +675,12 @@ def settings_function_update(form):
                     "FUNCTION_INFORMATION dictionary")
             elif controller_info.FUNCTION_INFORMATION['function_name_unique'] == '':
                 error.append("'function_name_unique' is empty")
-            elif controller_info.FUNCTION_INFORMATION['function_name_unique'].lower() != controller_device_name.lower():
+            elif (controller_info.FUNCTION_INFORMATION['function_name_unique'].lower() !=
+                    existing_controller_info.FUNCTION_INFORMATION['function_name_unique'].lower()):
                 error.append(
                     "'function_name_unique' must match the existing module name '{}', "
                     "but '{}' was found".format(
-                        controller_device_name,
+                        existing_controller_info.FUNCTION_INFORMATION['function_name_unique'],
                         controller_info.FUNCTION_INFORMATION['function_name_unique']))
 
             if 'function_name' not in controller_info.FUNCTION_INFORMATION:
@@ -693,10 +708,8 @@ def settings_function_update(form):
                                 "or 'apt'")
 
         if not error:
-            # Determine filename of existing module to overwrite.
-            # Module files are always stored lowercase (see settings_function_import),
-            # so lowercasing controller_device_name reliably targets the existing file.
-            unique_name = '{}.py'.format(controller_device_name.lower())
+            # Determine filename from the uploaded module's function_name_unique
+            unique_name = '{}.py'.format(controller_info.FUNCTION_INFORMATION['function_name_unique'].lower())
 
             # Move module from temp directory to function directory, overwriting the existing module
             full_path_final = os.path.join(PATH_FUNCTIONS_CUSTOM, unique_name)
@@ -707,6 +720,16 @@ def settings_function_update(form):
                 path=install_dir)
             subprocess.Popen(cmd, shell=True)
             flash('Frontend reloaded to scan for updated Controller Modules', 'success')
+
+            # Restart the backend if any Controller using this module is currently activated
+            controller_activated = CustomController.query.filter(
+                CustomController.device == controller_device_name,
+                CustomController.is_activated == True).count()
+            if controller_activated:
+                cmd = '{path}/mycodo/scripts/mycodo_wrapper daemon_restart 2>&1'.format(
+                    path=install_dir)
+                subprocess.Popen(cmd, shell=True)
+                flash('Backend restarted to apply updated Controller Module', 'success')
 
     except Exception as err:
         logger.exception("Function Update")
