@@ -724,7 +724,7 @@ def settings_function_update(form):
             # Restart the backend if any Controller using this module is currently activated
             controller_activated = CustomController.query.filter(
                 CustomController.device == controller_device_name,
-                CustomController.is_activated == True).count()
+                CustomController.is_activated.is_(True)).count()
             if controller_activated:
                 cmd = '{path}/mycodo/scripts/mycodo_wrapper daemon_restart 2>&1'.format(
                     path=install_dir)
