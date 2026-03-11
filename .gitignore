@@ -8,6 +8,7 @@ env/
 /databases/flask_secret_key
 /mycodo/config_override.py
 /mycodo/flask_session/
+/flask_session/
 *.db
 *.pem
 *.bak

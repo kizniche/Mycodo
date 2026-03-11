@@ -287,3 +287,83 @@ class TestSettingsFunctionUpdate:
         with open(os.path.join(custom_functions_dir, 'my_custom_function.py'), 'rb') as f:
             assert b'# original' in f.read()
         mock_popen.assert_not_called()
+
+    @mock.patch('subprocess.Popen')
+    def test_update_sideloaded_module_preserves_original_filename(
+            self, mock_popen, app, custom_functions_dir, tmp_install_dir,
+            mock_mycodo_user):
+        """A side-loaded module (filename ≠ function_name_unique) must be updated in-place,
+        preserving the original filename rather than creating a new name-derived file."""
+        from mycodo.mycodo_flask.utils.utils_settings import settings_function_update
+
+        # The side-loaded module uses an arbitrary filename unrelated to function_name_unique
+        sideloaded_path = os.path.join(custom_functions_dir, 'sideloaded_custom_func.py')
+        with open(sideloaded_path, 'wb') as f:
+            f.write(VALID_FUNCTION_CONTENT)
+
+        form_del = make_del_form(VALID_FUNCTION_UNIQUE_NAME)
+        form = make_mod_form(MockFileStorage('sideloaded_custom_func.py', VALID_FUNCTION_CONTENT))
+
+        # parse_function_information() returns the side-loaded file's actual path
+        mock_dict = {
+            VALID_FUNCTION_UNIQUE_NAME: {
+                'file_path': sideloaded_path,
+                'function_name': 'My Custom Function',
+            }
+        }
+
+        with patch('mycodo.mycodo_flask.utils.utils_settings.INSTALL_DIRECTORY', tmp_install_dir), \
+                patch('mycodo.mycodo_flask.utils.utils_settings.PATH_FUNCTIONS_CUSTOM', custom_functions_dir), \
+                patch('mycodo.mycodo_flask.utils.utils_settings.parse_function_information',
+                      return_value=mock_dict), \
+                patch('mycodo.mycodo_flask.utils.utils_settings.CustomController') as mock_cc:
+            mock_cc.query.filter.return_value.count.return_value = 0
+            settings_function_update(form_del, form)
+
+        # The side-loaded file should have been updated in-place
+        assert os.path.exists(sideloaded_path)
+        with open(sideloaded_path, 'rb') as f:
+            assert b'MY_CUSTOM_FUNCTION' in f.read()
+
+        # A new name-derived file must NOT have been created
+        name_derived_path = os.path.join(custom_functions_dir, 'my_custom_function.py')
+        assert not os.path.exists(name_derived_path)
+
+        # Frontend reload should have been triggered
+        mock_popen.assert_called_once()
+        assert 'frontend_reload' in mock_popen.call_args[0][0]
+
+    @mock.patch('subprocess.Popen')
+    def test_update_sideloaded_module_overwrites_content(
+            self, mock_popen, app, custom_functions_dir, tmp_install_dir,
+            mock_mycodo_user):
+        """Updating a side-loaded module should replace the file content at the original path."""
+        from mycodo.mycodo_flask.utils.utils_settings import settings_function_update
+
+        sideloaded_path = os.path.join(custom_functions_dir, 'sideloaded_custom_func.py')
+        with open(sideloaded_path, 'wb') as f:
+            f.write(VALID_FUNCTION_CONTENT + b'# old version\n')
+
+        new_content = VALID_FUNCTION_CONTENT + b'# new version\n'
+        form_del = make_del_form(VALID_FUNCTION_UNIQUE_NAME)
+        form = make_mod_form(MockFileStorage('sideloaded_custom_func.py', new_content))
+
+        mock_dict = {
+            VALID_FUNCTION_UNIQUE_NAME: {
+                'file_path': sideloaded_path,
+                'function_name': 'My Custom Function',
+            }
+        }
+
+        with patch('mycodo.mycodo_flask.utils.utils_settings.INSTALL_DIRECTORY', tmp_install_dir), \
+                patch('mycodo.mycodo_flask.utils.utils_settings.PATH_FUNCTIONS_CUSTOM', custom_functions_dir), \
+                patch('mycodo.mycodo_flask.utils.utils_settings.parse_function_information',
+                      return_value=mock_dict), \
+                patch('mycodo.mycodo_flask.utils.utils_settings.CustomController') as mock_cc:
+            mock_cc.query.filter.return_value.count.return_value = 0
+            settings_function_update(form_del, form)
+
+        with open(sideloaded_path, 'rb') as f:
+            content = f.read()
+        assert b'# old version' not in content
+        assert b'# new version' in content
