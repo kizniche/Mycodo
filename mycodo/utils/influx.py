@@ -482,17 +482,17 @@ def read_influxdb_list(unique_id, unit, channel,
 def read_influxdb_multi(channels_data, past_seconds=None, value='LAST'):
     """
     Query Influxdb for multiple channels at once
-    
+
     example:
         channels_data = [
             {'unique_id': '00000001', 'unit': 'C', 'channel': 0, 'measure': 'temperature'},
             {'unique_id': '00000001', 'unit': '%', 'channel': 1, 'measure': 'humidity'}
         ]
         read_influxdb_multi(channels_data, past_seconds=3600)
-    
-    :return: dict mapping channel index to [time, value]
-    :rtype: dict
-    
+
+    :return: Dictionary mapping integer channel indices (0-based) to a list [time, value], where
+        time is a float (timestamp) or datetime object, and value is the measurement value.
+    :rtype: dict[int, list[time, value]]
     :param channels_data: List of channel specifications, each containing:
         - unique_id: Device unique ID
         - unit: Measurement unit
