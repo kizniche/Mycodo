@@ -320,6 +320,9 @@ class MeasurementsMulti(Resource):
         if past_seconds < 1:
             abort(422, custom='past_seconds must be >= 1')
 
+        # Fetch valid units once to avoid repeated DB queries in the loop
+        valid_units = add_custom_units(Unit.query.all())
+
         # Validate each channel specification
         validated_channels = []
         for idx, channel_spec in enumerate(channels):
@@ -338,7 +341,7 @@ class MeasurementsMulti(Resource):
             if channel is None:
                 abort(422, custom=f'channel is required for channel at index {idx}')
 
-            if unit not in add_custom_units(Unit.query.all()):
+            if unit not in valid_units:
                 abort(422, custom=f'Unit ID not found for channel at index {idx}: {unit}')
 
             if channel < 0:

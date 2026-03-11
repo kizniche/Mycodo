@@ -1,7 +1,6 @@
 # coding=utf-8
 """Tests for influxdb."""
-from mycodo.utils.influx import (add_measurements_influxdb, read_influxdb_multi,
-                                 read_influxdb_single)
+from mycodo.utils.influx import add_measurements_influxdb, read_influxdb_multi, read_influxdb_single
 
 
 def test_influxdb():
