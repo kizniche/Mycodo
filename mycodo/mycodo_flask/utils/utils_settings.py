@@ -628,6 +628,7 @@ def settings_function_update(form_del, form):
 
     controller_info = None
     existing_controller_info = None
+    existing_file_path = None
 
     try:
         install_dir = os.path.abspath(INSTALL_DIRECTORY)
@@ -657,9 +658,16 @@ def settings_function_update(form_del, form):
                 error.append("Could not load uploaded file as a python module:\n"
                              "{}".format(traceback.format_exc()))
 
-            # Load the existing (old) module from disk to extract its function_name_unique
-            existing_file_path = os.path.join(
-                PATH_FUNCTIONS_CUSTOM, '{}.py'.format(controller_device_name.lower()))
+            # Look up the existing module's actual file path from parse_function_information().
+            # This handles side-loaded modules whose filename differs from the unique name.
+            dict_functions = parse_function_information()
+            if (controller_device_name in dict_functions and
+                    'file_path' in dict_functions[controller_device_name]):
+                existing_file_path = dict_functions[controller_device_name]['file_path']
+            else:
+                # Fall back to the name-derived path for backward compatibility
+                existing_file_path = os.path.join(
+                    PATH_FUNCTIONS_CUSTOM, '{}.py'.format(controller_device_name.lower()))
             try:
                 existing_controller_info, status = load_module_from_file(existing_file_path, 'functions')
                 if not existing_controller_info or not hasattr(existing_controller_info, 'FUNCTION_INFORMATION'):
@@ -709,11 +717,16 @@ def settings_function_update(form_del, form):
                                 "or 'apt'")
 
         if not error:
-            # Determine filename from the uploaded module's function_name_unique
-            unique_name = '{}.py'.format(controller_info.FUNCTION_INFORMATION['function_name_unique'].lower())
+            # Preserve the original filename of the existing module so that side-loaded
+            # modules (whose filename may differ from function_name_unique) are updated
+            # in-place rather than written to a new name-derived path.
+            if not existing_file_path:
+                error.append("Could not determine the path of the existing controller module")
+
+        if not error:
+            full_path_final = existing_file_path
 
             # Move module from temp directory to function directory, overwriting the existing module
-            full_path_final = os.path.join(PATH_FUNCTIONS_CUSTOM, unique_name)
             os.rename(full_path_tmp, full_path_final)
 
             # Reload frontend to refresh the controllers
