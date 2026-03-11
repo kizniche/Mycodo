@@ -646,27 +646,28 @@ def settings_function_update(form):
         else:
             form.update_controller_file.data.save(full_path_tmp)
 
-        # Load and validate the uploaded (new) module
-        try:
-            controller_info, status = load_module_from_file(full_path_tmp, 'functions')
-            if not controller_info or not hasattr(controller_info, 'FUNCTION_INFORMATION'):
-                error.append("Could not load FUNCTION_INFORMATION dictionary from "
-                             "the uploaded controller module")
-        except Exception:
-            error.append("Could not load uploaded file as a python module:\n"
-                         "{}".format(traceback.format_exc()))
+        if not error:
+            # Load and validate the uploaded (new) module
+            try:
+                controller_info, status = load_module_from_file(full_path_tmp, 'functions')
+                if not controller_info or not hasattr(controller_info, 'FUNCTION_INFORMATION'):
+                    error.append("Could not load FUNCTION_INFORMATION dictionary from "
+                                 "the uploaded controller module")
+            except Exception:
+                error.append("Could not load uploaded file as a python module:\n"
+                             "{}".format(traceback.format_exc()))
 
-        # Load the existing (old) module from disk to extract its function_name_unique
-        existing_file_path = os.path.join(
-            PATH_FUNCTIONS_CUSTOM, '{}.py'.format(controller_device_name.lower()))
-        try:
-            existing_controller_info, status = load_module_from_file(existing_file_path, 'functions')
-            if not existing_controller_info or not hasattr(existing_controller_info, 'FUNCTION_INFORMATION'):
-                error.append("Could not load FUNCTION_INFORMATION dictionary from "
-                             "the existing controller module")
-        except Exception:
-            error.append("Could not load existing controller module as a python module:\n"
-                         "{}".format(traceback.format_exc()))
+            # Load the existing (old) module from disk to extract its function_name_unique
+            existing_file_path = os.path.join(
+                PATH_FUNCTIONS_CUSTOM, '{}.py'.format(controller_device_name.lower()))
+            try:
+                existing_controller_info, status = load_module_from_file(existing_file_path, 'functions')
+                if not existing_controller_info or not hasattr(existing_controller_info, 'FUNCTION_INFORMATION'):
+                    error.append("Could not load FUNCTION_INFORMATION dictionary from "
+                                 "the existing controller module")
+            except Exception:
+                error.append("Could not load existing controller module as a python module:\n"
+                             "{}".format(traceback.format_exc()))
 
         if not error:
             if 'function_name_unique' not in controller_info.FUNCTION_INFORMATION:
