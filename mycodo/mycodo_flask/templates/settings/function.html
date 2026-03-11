@@ -45,7 +45,6 @@
       <form method="post" action="/settings/function" enctype="multipart/form-data">
       {{form_controller_delete.csrf_token}}
       {{form_controller_delete.controller_id(value=each_controller)}}
-      {{form_controller_update.controller_id(value=each_controller)}}
 
         <tr>
           <td>{{each_controller}}</td>

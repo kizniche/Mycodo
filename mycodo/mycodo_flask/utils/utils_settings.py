@@ -617,7 +617,7 @@ def settings_function_delete(form):
     flash_success_errors(error, action, url_for('routes_settings.settings_function'))
 
 
-def settings_function_update(form):
+def settings_function_update(form_del, form):
     """
     Receive a function module file, check it for errors, replace the existing module
     """
@@ -637,7 +637,7 @@ def settings_function_update(form):
         tmp_name = 'tmp_function_testing.py'
         full_path_tmp = os.path.join(tmp_directory, tmp_name)
 
-        controller_device_name = form.controller_id.data
+        controller_device_name = form_del.controller_id.data
 
         if not form.update_controller_file.data:
             error.append('No file present')

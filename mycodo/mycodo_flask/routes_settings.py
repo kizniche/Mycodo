@@ -136,7 +136,7 @@ def settings_function():
         elif form_controller_delete.delete_controller.data:
             utils_settings.settings_function_delete(form_controller_delete)
         elif form_controller_update.update_controller.data:
-            utils_settings.settings_function_update(form_controller_update)
+            utils_settings.settings_function_update(form_controller_delete, form_controller_update)
 
         return redirect(url_for('routes_settings.settings_function'))
 

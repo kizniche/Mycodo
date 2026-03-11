@@ -183,7 +183,6 @@ class ControllerDel(FlaskForm):
 
 
 class ControllerMod(FlaskForm):
-    controller_id = StringField(widget=widgets.HiddenInput())
     update_controller_file = FileField()
     update_controller = SubmitField(lazy_gettext('Replace'))
 

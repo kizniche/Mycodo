@@ -31,10 +31,16 @@ class MockFileStorage:
             f.write(self._content)
 
 
-def make_update_form(controller_id, file_storage):
-    """Create a mock ControllerMod form object for testing."""
+def make_del_form(controller_id):
+    """Create a mock ControllerDel form (supplies controller_id)."""
     form = MagicMock()
     form.controller_id.data = controller_id
+    return form
+
+
+def make_mod_form(file_storage):
+    """Create a mock ControllerMod form (supplies the replacement file)."""
+    form = MagicMock()
     form.update_controller_file.data = file_storage
     return form
 
@@ -100,14 +106,14 @@ class TestSettingsFunctionUpdate:
         # Write the existing module that will be read from disk for comparison
         write_existing_module(custom_functions_dir)
 
-        file_storage = MockFileStorage('my_custom_function.py', VALID_FUNCTION_CONTENT)
-        form = make_update_form(VALID_FUNCTION_UNIQUE_NAME, file_storage)
+        form_del = make_del_form(VALID_FUNCTION_UNIQUE_NAME)
+        form = make_mod_form(MockFileStorage('my_custom_function.py', VALID_FUNCTION_CONTENT))
 
         with patch('mycodo.mycodo_flask.utils.utils_settings.INSTALL_DIRECTORY', tmp_install_dir), \
                 patch('mycodo.mycodo_flask.utils.utils_settings.PATH_FUNCTIONS_CUSTOM', custom_functions_dir), \
                 patch('mycodo.mycodo_flask.utils.utils_settings.CustomController') as mock_cc:
             mock_cc.query.filter.return_value.count.return_value = 0
-            settings_function_update(form)
+            settings_function_update(form_del, form)
 
         # File should be written to the custom functions directory
         expected_file = os.path.join(custom_functions_dir, 'my_custom_function.py')
@@ -128,15 +134,15 @@ class TestSettingsFunctionUpdate:
 
         write_existing_module(custom_functions_dir)
 
-        file_storage = MockFileStorage('my_custom_function.py', VALID_FUNCTION_CONTENT)
-        form = make_update_form(VALID_FUNCTION_UNIQUE_NAME, file_storage)
+        form_del = make_del_form(VALID_FUNCTION_UNIQUE_NAME)
+        form = make_mod_form(MockFileStorage('my_custom_function.py', VALID_FUNCTION_CONTENT))
 
         with patch('mycodo.mycodo_flask.utils.utils_settings.INSTALL_DIRECTORY', tmp_install_dir), \
                 patch('mycodo.mycodo_flask.utils.utils_settings.PATH_FUNCTIONS_CUSTOM', custom_functions_dir), \
                 patch('mycodo.mycodo_flask.utils.utils_settings.CustomController') as mock_cc:
             # One activated CustomController entry exists for this module
             mock_cc.query.filter.return_value.count.return_value = 1
-            settings_function_update(form)
+            settings_function_update(form_del, form)
 
         # File should exist
         assert os.path.exists(os.path.join(custom_functions_dir, 'my_custom_function.py'))
@@ -158,14 +164,14 @@ class TestSettingsFunctionUpdate:
         write_existing_module(custom_functions_dir, VALID_FUNCTION_CONTENT + b'# old version\n')
 
         new_content = VALID_FUNCTION_CONTENT + b'# new version\n'
-        file_storage = MockFileStorage('my_custom_function.py', new_content)
-        form = make_update_form(VALID_FUNCTION_UNIQUE_NAME, file_storage)
+        form_del = make_del_form(VALID_FUNCTION_UNIQUE_NAME)
+        form = make_mod_form(MockFileStorage('my_custom_function.py', new_content))
 
         with patch('mycodo.mycodo_flask.utils.utils_settings.INSTALL_DIRECTORY', tmp_install_dir), \
                 patch('mycodo.mycodo_flask.utils.utils_settings.PATH_FUNCTIONS_CUSTOM', custom_functions_dir), \
                 patch('mycodo.mycodo_flask.utils.utils_settings.CustomController') as mock_cc:
             mock_cc.query.filter.return_value.count.return_value = 0
-            settings_function_update(form)
+            settings_function_update(form_del, form)
 
         with open(os.path.join(custom_functions_dir, 'my_custom_function.py'), 'rb') as f:
             content = f.read()
@@ -180,11 +186,12 @@ class TestSettingsFunctionUpdate:
         from mycodo.mycodo_flask.utils.utils_settings import settings_function_update
 
         write_existing_module(custom_functions_dir)
-        form = make_update_form(VALID_FUNCTION_UNIQUE_NAME, None)
+        form_del = make_del_form(VALID_FUNCTION_UNIQUE_NAME)
+        form = make_mod_form(None)
 
         with patch('mycodo.mycodo_flask.utils.utils_settings.INSTALL_DIRECTORY', tmp_install_dir), \
                 patch('mycodo.mycodo_flask.utils.utils_settings.PATH_FUNCTIONS_CUSTOM', custom_functions_dir):
-            settings_function_update(form)
+            settings_function_update(form_del, form)
 
         mock_popen.assert_not_called()
 
@@ -196,12 +203,12 @@ class TestSettingsFunctionUpdate:
         from mycodo.mycodo_flask.utils.utils_settings import settings_function_update
 
         write_existing_module(custom_functions_dir)
-        file_storage = MockFileStorage('', VALID_FUNCTION_CONTENT)
-        form = make_update_form(VALID_FUNCTION_UNIQUE_NAME, file_storage)
+        form_del = make_del_form(VALID_FUNCTION_UNIQUE_NAME)
+        form = make_mod_form(MockFileStorage('', VALID_FUNCTION_CONTENT))
 
         with patch('mycodo.mycodo_flask.utils.utils_settings.INSTALL_DIRECTORY', tmp_install_dir), \
                 patch('mycodo.mycodo_flask.utils.utils_settings.PATH_FUNCTIONS_CUSTOM', custom_functions_dir):
-            settings_function_update(form)
+            settings_function_update(form_del, form)
 
         mock_popen.assert_not_called()
 
@@ -217,14 +224,14 @@ class TestSettingsFunctionUpdate:
         write_existing_module(custom_functions_dir)
 
         # Uploaded file has a DIFFERENT filename but the SAME function_name_unique in its dict
-        file_storage = MockFileStorage('renamed_upload.py', VALID_FUNCTION_CONTENT)
-        form = make_update_form(VALID_FUNCTION_UNIQUE_NAME, file_storage)
+        form_del = make_del_form(VALID_FUNCTION_UNIQUE_NAME)
+        form = make_mod_form(MockFileStorage('renamed_upload.py', VALID_FUNCTION_CONTENT))
 
         with patch('mycodo.mycodo_flask.utils.utils_settings.INSTALL_DIRECTORY', tmp_install_dir), \
                 patch('mycodo.mycodo_flask.utils.utils_settings.PATH_FUNCTIONS_CUSTOM', custom_functions_dir), \
                 patch('mycodo.mycodo_flask.utils.utils_settings.CustomController') as mock_cc:
             mock_cc.query.filter.return_value.count.return_value = 0
-            settings_function_update(form)
+            settings_function_update(form_del, form)
 
         # The existing module file should have been overwritten (keyed by unique name, not upload filename)
         expected_file = os.path.join(custom_functions_dir, 'my_custom_function.py')
@@ -250,12 +257,12 @@ class TestSettingsFunctionUpdate:
     'function_name': 'Different Function',
 }
 """
-        file_storage = MockFileStorage('renamed_upload.py', different_content)
-        form = make_update_form(VALID_FUNCTION_UNIQUE_NAME, file_storage)
+        form_del = make_del_form(VALID_FUNCTION_UNIQUE_NAME)
+        form = make_mod_form(MockFileStorage('renamed_upload.py', different_content))
 
         with patch('mycodo.mycodo_flask.utils.utils_settings.INSTALL_DIRECTORY', tmp_install_dir), \
                 patch('mycodo.mycodo_flask.utils.utils_settings.PATH_FUNCTIONS_CUSTOM', custom_functions_dir):
-            settings_function_update(form)
+            settings_function_update(form_del, form)
 
         mock_popen.assert_not_called()
 
@@ -269,13 +276,12 @@ class TestSettingsFunctionUpdate:
         original_content = VALID_FUNCTION_CONTENT + b'# original\n'
         write_existing_module(custom_functions_dir, original_content)
 
-        invalid_content = b'this is not valid python !@#$%'
-        file_storage = MockFileStorage('my_custom_function.py', invalid_content)
-        form = make_update_form(VALID_FUNCTION_UNIQUE_NAME, file_storage)
+        form_del = make_del_form(VALID_FUNCTION_UNIQUE_NAME)
+        form = make_mod_form(MockFileStorage('my_custom_function.py', b'this is not valid python !@#$%'))
 
         with patch('mycodo.mycodo_flask.utils.utils_settings.INSTALL_DIRECTORY', tmp_install_dir), \
                 patch('mycodo.mycodo_flask.utils.utils_settings.PATH_FUNCTIONS_CUSTOM', custom_functions_dir):
-            settings_function_update(form)
+            settings_function_update(form_del, form)
 
         # Existing module should be untouched
         with open(os.path.join(custom_functions_dir, 'my_custom_function.py'), 'rb') as f:
