@@ -122,6 +122,7 @@ def settings_function():
 
     form_controller = forms_settings.Controller()
     form_controller_delete = forms_settings.ControllerDel()
+    form_controller_update = forms_settings.ControllerMod()
 
     # Get list of custom functions
     excluded_files = ['__init__.py', '__pycache__']
@@ -134,6 +135,8 @@ def settings_function():
             utils_settings.settings_function_import(form_controller)
         elif form_controller_delete.delete_controller.data:
             utils_settings.settings_function_delete(form_controller_delete)
+        elif form_controller_update.update_controller.data:
+            utils_settings.settings_function_update(form_controller_delete, form_controller_update)
 
         return redirect(url_for('routes_settings.settings_function'))
 
@@ -155,7 +158,8 @@ def settings_function():
     return render_template('settings/function.html',
                            dict_controllers=dict_controllers,
                            form_controller=form_controller,
-                           form_controller_delete=form_controller_delete)
+                           form_controller_delete=form_controller_delete,
+                           form_controller_update=form_controller_update)
 
 
 @blueprint.route('/settings/action', methods=('GET', 'POST'))

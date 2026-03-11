@@ -617,6 +617,128 @@ def settings_function_delete(form):
     flash_success_errors(error, action, url_for('routes_settings.settings_function'))
 
 
+def settings_function_update(form_del, form):
+    """
+    Receive a function module file, check it for errors, replace the existing module
+    """
+    action = '{action} {controller}'.format(
+        action=gettext("Update"),
+        controller=TRANSLATIONS['controller']['title'])
+    error = []
+
+    controller_info = None
+    existing_controller_info = None
+
+    try:
+        install_dir = os.path.abspath(INSTALL_DIRECTORY)
+        tmp_directory = os.path.join(install_dir, 'mycodo/functions/tmp_functions')
+        assure_path_exists(tmp_directory)
+        assure_path_exists(PATH_FUNCTIONS_CUSTOM)
+        tmp_name = 'tmp_function_testing.py'
+        full_path_tmp = os.path.join(tmp_directory, tmp_name)
+
+        controller_device_name = form_del.controller_id.data
+
+        if not form.update_controller_file.data:
+            error.append('No file present')
+        elif form.update_controller_file.data.filename == '':
+            error.append('No file name')
+        else:
+            form.update_controller_file.data.save(full_path_tmp)
+
+        if not error:
+            # Load and validate the uploaded (new) module
+            try:
+                controller_info, status = load_module_from_file(full_path_tmp, 'functions')
+                if not controller_info or not hasattr(controller_info, 'FUNCTION_INFORMATION'):
+                    error.append("Could not load FUNCTION_INFORMATION dictionary from "
+                                 "the uploaded controller module")
+            except Exception:
+                error.append("Could not load uploaded file as a python module:\n"
+                             "{}".format(traceback.format_exc()))
+
+            # Load the existing (old) module from disk to extract its function_name_unique
+            existing_file_path = os.path.join(
+                PATH_FUNCTIONS_CUSTOM, '{}.py'.format(controller_device_name.lower()))
+            try:
+                existing_controller_info, status = load_module_from_file(existing_file_path, 'functions')
+                if not existing_controller_info or not hasattr(existing_controller_info, 'FUNCTION_INFORMATION'):
+                    error.append("Could not load FUNCTION_INFORMATION dictionary from "
+                                 "the existing controller module")
+            except Exception:
+                error.append("Could not load existing controller module as a python module:\n"
+                             "{}".format(traceback.format_exc()))
+
+        if not error:
+            if 'function_name_unique' not in controller_info.FUNCTION_INFORMATION:
+                error.append(
+                    "'function_name_unique' not found in "
+                    "FUNCTION_INFORMATION dictionary")
+            elif controller_info.FUNCTION_INFORMATION['function_name_unique'] == '':
+                error.append("'function_name_unique' is empty")
+            elif (controller_info.FUNCTION_INFORMATION['function_name_unique'].lower() !=
+                    existing_controller_info.FUNCTION_INFORMATION['function_name_unique'].lower()):
+                error.append(
+                    "'function_name_unique' must match the existing module name '{}', "
+                    "but '{}' was found".format(
+                        existing_controller_info.FUNCTION_INFORMATION['function_name_unique'],
+                        controller_info.FUNCTION_INFORMATION['function_name_unique']))
+
+            if 'function_name' not in controller_info.FUNCTION_INFORMATION:
+                error.append("'function_name' not found in FUNCTION_INFORMATION dictionary")
+            elif controller_info.FUNCTION_INFORMATION['function_name'] == '':
+                error.append("'function_name' is empty")
+
+            if 'dependencies_module' in controller_info.FUNCTION_INFORMATION:
+                if not isinstance(controller_info.FUNCTION_INFORMATION['dependencies_module'], list):
+                    error.append("'dependencies_module' must be a list of tuples")
+                else:
+                    for each_dep in controller_info.FUNCTION_INFORMATION['dependencies_module']:
+                        if not isinstance(each_dep, tuple):
+                            error.append("'dependencies_module' must be a list of tuples")
+                        elif len(each_dep) != 3:
+                            error.append("'dependencies_module': tuples in list must have 3 items")
+                        elif not each_dep[0] or not each_dep[1] or not each_dep[2]:
+                            error.append(
+                                "'dependencies_module': tuples in list must "
+                                "not be empty")
+                        elif each_dep[0] not in ['internal', 'pip-pypi', 'apt']:
+                            error.append(
+                                "'dependencies_module': first in tuple "
+                                "must be 'internal', 'pip-pypi', "
+                                "or 'apt'")
+
+        if not error:
+            # Determine filename from the uploaded module's function_name_unique
+            unique_name = '{}.py'.format(controller_info.FUNCTION_INFORMATION['function_name_unique'].lower())
+
+            # Move module from temp directory to function directory, overwriting the existing module
+            full_path_final = os.path.join(PATH_FUNCTIONS_CUSTOM, unique_name)
+            os.rename(full_path_tmp, full_path_final)
+
+            # Reload frontend to refresh the controllers
+            cmd = '{path}/mycodo/scripts/mycodo_wrapper frontend_reload 2>&1'.format(
+                path=install_dir)
+            subprocess.Popen(cmd, shell=True)
+            flash('Frontend reloaded to scan for updated Controller Modules', 'success')
+
+            # Restart the backend if any Controller using this module is currently activated
+            controller_activated = CustomController.query.filter(
+                CustomController.device == controller_device_name,
+                CustomController.is_activated.is_(True)).count()
+            if controller_activated:
+                cmd = '{path}/mycodo/scripts/mycodo_wrapper daemon_restart 2>&1'.format(
+                    path=install_dir)
+                subprocess.Popen(cmd, shell=True)
+                flash('Backend restarted to apply updated Controller Module', 'success')
+
+    except Exception as err:
+        logger.exception("Function Update")
+        error.append("Exception: {}".format(err))
+
+    flash_success_errors(error, action, url_for('routes_settings.settings_function'))
+
+
 def settings_action_import(form):
     """
     Receive an action module file, check it for errors, add it to Mycodo controller list

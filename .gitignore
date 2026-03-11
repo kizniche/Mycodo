@@ -1,11 +1,13 @@
 # Mycodo files
 test/
 tests/
+!mycodo/tests/
 site/
 env/
 .venv
 /databases/flask_secret_key
 /mycodo/config_override.py
+/mycodo/flask_session/
 *.db
 *.pem
 *.bak

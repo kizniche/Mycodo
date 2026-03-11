@@ -182,6 +182,11 @@ class ControllerDel(FlaskForm):
     delete_controller = SubmitField(TRANSLATIONS['delete']['title'])
 
 
+class ControllerMod(FlaskForm):
+    update_controller_file = FileField()
+    update_controller = SubmitField(lazy_gettext('Replace'))
+
+
 #
 # Settings (Action)
 #
