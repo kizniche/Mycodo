@@ -25,7 +25,7 @@ influxdb==5.3.2  # Only used for stats. TODO: update to influxdb_client and remo
 influxdb_client[ciso]==1.49.0
 MarkupSafe==3.0.3
 marshmallow_sqlalchemy==1.4.2
-pyro5==5.15
+pyro5==5.16
 pyserial==3.5
 python-dateutil==2.9.0.post0
 requests==2.32.5
