@@ -38,6 +38,7 @@ sudo service mycodoflask restart
 
  - Add API endpoints: /log and /dependency ([#1430](https://github.com/kizniche/Mycodo/issues/1430))
  - Add ability to update (overwrite) a custom Function module without deleting it
+ - Add ability to update (overwrite) a custom Widget module without deleting it
  - Add Input: ENS160 ([#1434](https://github.com/kizniche/Mycodo/pull/1434))
  - Add Output: Waveshare 8-Channel Raspberry Pi Relay Board B ([#1434](https://github.com/kizniche/Mycodo/pull/1434))
  - Add Function: Camera: rpicam ([#1487](https://github.com/kizniche/Mycodo/pull/1487))

@@ -322,6 +322,7 @@ def settings_widget():
 
     form_widget = forms_settings.Widget()
     form_widget_delete = forms_settings.WidgetDel()
+    form_widget_update = forms_settings.WidgetMod()
 
     dict_measurements = add_custom_measurements(Measurement.query.all())
     dict_units = add_custom_units(Unit.query.all())
@@ -337,6 +338,8 @@ def settings_widget():
             utils_settings.settings_widget_import(form_widget)
         elif form_widget_delete.delete_widget.data:
             utils_settings.settings_widget_delete(form_widget_delete)
+        elif form_widget_update.update_widget.data:
+            utils_settings.settings_widget_update(form_widget_delete, form_widget_update)
 
         return redirect(url_for('routes_settings.settings_widget'))
 
@@ -362,7 +365,8 @@ def settings_widget():
                            dict_measurements=dict_measurements,
                            dict_units=dict_units,
                            form_widget=form_widget,
-                           form_widget_delete=form_widget_delete)
+                           form_widget_delete=form_widget_delete,
+                           form_widget_update=form_widget_update)
 
 
 @blueprint.route('/settings/measurement', methods=('GET', 'POST'))
