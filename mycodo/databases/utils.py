@@ -20,7 +20,7 @@ def session_scope(db_uri):
         # Custom URI
         from mycodo.config_override import SQLALCHEMY_DATABASE_URI
         engine_url = SQLALCHEMY_DATABASE_URI
-    except:
+    except Exception:
         # SQLite3
         engine_url = f"{db_uri}?check_same_thread=False"
 
