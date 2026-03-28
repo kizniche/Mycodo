@@ -26,7 +26,7 @@ class LockFile:
                 logger.debug("Lock acquired for {} in {:.3f} seconds".format(lockfile, seconds))
                 self.locked[lockfile] = True
                 break
-            except:
+            except Exception:
                 pass
             time.sleep(0.05)
         if not self.locked[lockfile]:
