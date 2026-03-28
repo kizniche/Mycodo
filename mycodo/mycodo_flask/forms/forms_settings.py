@@ -243,6 +243,11 @@ class WidgetDel(FlaskForm):
     delete_widget = SubmitField(TRANSLATIONS['delete']['title'])
 
 
+class WidgetMod(FlaskForm):
+    update_widget_file = FileField()
+    update_widget = SubmitField(lazy_gettext('Replace'))
+
+
 #
 # Settings (Measurement)
 #

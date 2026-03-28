@@ -1296,6 +1296,142 @@ def settings_widget_import(form):
     flash_success_errors(error, action, url_for('routes_settings.settings_widget'))
 
 
+def settings_widget_update(form_del, form):
+    """
+    Receive a widget module file, check it for errors, replace the existing module
+    """
+    action = '{action} {controller}'.format(
+        action=gettext("Update"),
+        controller=TRANSLATIONS['widget']['title'])
+    error = []
+
+    widget_info = None
+    existing_widget_info = None
+    existing_file_path = None
+
+    try:
+        install_dir = os.path.abspath(INSTALL_DIRECTORY)
+        tmp_directory = os.path.join(install_dir, 'mycodo/widgets/tmp_widgets')
+        assure_path_exists(tmp_directory)
+        assure_path_exists(PATH_WIDGETS_CUSTOM)
+        tmp_name = 'tmp_widget_testing.py'
+        full_path_tmp = os.path.join(tmp_directory, tmp_name)
+
+        widget_device_name = form_del.widget_id.data
+
+        if not form.update_widget_file.data:
+            error.append('No file present')
+        elif form.update_widget_file.data.filename == '':
+            error.append('No file name')
+        else:
+            form.update_widget_file.data.save(full_path_tmp)
+
+        if not error:
+            # Load and validate the uploaded (new) module
+            try:
+                widget_info, status = load_module_from_file(full_path_tmp, 'widgets')
+                if not widget_info or not hasattr(widget_info, 'WIDGET_INFORMATION'):
+                    error.append("Could not load WIDGET_INFORMATION dictionary from "
+                                 "the uploaded widget module")
+            except Exception:
+                error.append("Could not load uploaded file as a python module:\n"
+                             "{}".format(traceback.format_exc()))
+
+            # Look up the existing module's actual file path from parse_widget_information().
+            # This handles side-loaded modules whose filename differs from the unique name.
+            dict_widgets = parse_widget_information()
+            if (widget_device_name in dict_widgets and
+                    'file_path' in dict_widgets[widget_device_name]):
+                existing_file_path = dict_widgets[widget_device_name]['file_path']
+            else:
+                # Fall back to the name-derived path for backward compatibility
+                existing_file_path = os.path.join(
+                    PATH_WIDGETS_CUSTOM, '{}.py'.format(widget_device_name.lower()))
+            try:
+                existing_widget_info, status = load_module_from_file(existing_file_path, 'widgets')
+                if not existing_widget_info or not hasattr(existing_widget_info, 'WIDGET_INFORMATION'):
+                    error.append("Could not load WIDGET_INFORMATION dictionary from "
+                                 "the existing widget module")
+            except Exception:
+                error.append("Could not load existing widget module as a python module:\n"
+                             "{}".format(traceback.format_exc()))
+
+        if not error:
+            if 'widget_name_unique' not in widget_info.WIDGET_INFORMATION:
+                error.append(
+                    "'widget_name_unique' not found in "
+                    "WIDGET_INFORMATION dictionary")
+            elif widget_info.WIDGET_INFORMATION['widget_name_unique'] == '':
+                error.append("'widget_name_unique' is empty")
+            elif (widget_info.WIDGET_INFORMATION['widget_name_unique'].lower() !=
+                    existing_widget_info.WIDGET_INFORMATION['widget_name_unique'].lower()):
+                error.append(
+                    "'widget_name_unique' must match the existing module name '{}', "
+                    "but '{}' was found".format(
+                        existing_widget_info.WIDGET_INFORMATION['widget_name_unique'],
+                        widget_info.WIDGET_INFORMATION['widget_name_unique']))
+
+            if 'widget_name' not in widget_info.WIDGET_INFORMATION:
+                error.append("'widget_name' not found in WIDGET_INFORMATION dictionary")
+            elif widget_info.WIDGET_INFORMATION['widget_name'] == '':
+                error.append("'widget_name' is empty")
+
+            if 'dependencies_module' in widget_info.WIDGET_INFORMATION:
+                if not isinstance(widget_info.WIDGET_INFORMATION['dependencies_module'], list):
+                    error.append("'dependencies_module' must be a list of tuples")
+                else:
+                    for each_dep in widget_info.WIDGET_INFORMATION['dependencies_module']:
+                        if not isinstance(each_dep, tuple):
+                            error.append("'dependencies_module' must be a list of tuples")
+                        elif len(each_dep) != 3:
+                            error.append("'dependencies_module': tuples in list must have 3 items")
+                        elif not each_dep[0] or not each_dep[1] or not each_dep[2]:
+                            error.append(
+                                "'dependencies_module': tuples in list must "
+                                "not be empty")
+                        elif each_dep[0] not in ['internal', 'pip-pypi', 'apt']:
+                            error.append(
+                                "'dependencies_module': first in tuple "
+                                "must be 'internal', 'pip-pypi', "
+                                "or 'apt'")
+
+        if not error:
+            # Preserve the original filename of the existing module so that side-loaded
+            # modules (whose filename may differ from widget_name_unique) are updated
+            # in-place rather than written to a new name-derived path.
+            if not existing_file_path:
+                error.append("Could not determine the path of the existing widget module")
+
+        if not error:
+            full_path_final = existing_file_path
+
+            # Move module from temp directory to widget directory, overwriting the existing module
+            os.rename(full_path_tmp, full_path_final)
+
+            generate_widget_html()
+
+            # Reload frontend to refresh the widgets
+            cmd = '{path}/mycodo/scripts/mycodo_wrapper frontend_reload 2>&1'.format(
+                path=install_dir)
+            subprocess.Popen(cmd, shell=True)
+            flash('Frontend reloaded to scan for updated Widget Modules', 'success')
+
+            # Restart the backend if any Widget using this module exists on a dashboard
+            widget_exists = Widget.query.filter(
+                Widget.graph_type == widget_device_name).count()
+            if widget_exists:
+                cmd = '{path}/mycodo/scripts/mycodo_wrapper daemon_restart 2>&1'.format(
+                    path=install_dir)
+                subprocess.Popen(cmd, shell=True)
+                flash('Backend restarted to apply updated Widget Module', 'success')
+
+    except Exception as err:
+        logger.exception("Widget Update")
+        error.append("Exception: {}".format(err))
+
+    flash_success_errors(error, action, url_for('routes_settings.settings_widget'))
+
+
 def settings_widget_delete(form):
     action = '{action} {controller}'.format(
         action=gettext("Import"),
