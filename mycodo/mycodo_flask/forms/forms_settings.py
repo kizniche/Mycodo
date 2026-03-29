@@ -215,6 +215,11 @@ class InputDel(FlaskForm):
     delete_input = SubmitField(TRANSLATIONS['delete']['title'])
 
 
+class InputMod(FlaskForm):
+    update_input_file = FileField()
+    update_input = SubmitField(lazy_gettext('Replace'))
+
+
 #
 # Settings (Output)
 #

@@ -216,6 +216,7 @@ def settings_input():
 
     form_input = forms_settings.Input()
     form_input_delete = forms_settings.InputDel()
+    form_input_update = forms_settings.InputMod()
 
     dict_measurements = add_custom_measurements(Measurement.query.all())
     dict_units = add_custom_units(Unit.query.all())
@@ -231,6 +232,8 @@ def settings_input():
             utils_settings.settings_input_import(form_input)
         elif form_input_delete.delete_input.data:
             utils_settings.settings_input_delete(form_input_delete)
+        elif form_input_update.update_input.data:
+            utils_settings.settings_input_update(form_input_delete, form_input_update)
 
         return redirect(url_for('routes_settings.settings_input'))
 
@@ -258,7 +261,8 @@ def settings_input():
                            dict_measurements=dict_measurements,
                            dict_units=dict_units,
                            form_input=form_input,
-                           form_input_delete=form_input_delete)
+                           form_input_delete=form_input_delete,
+                           form_input_update=form_input_update)
 
 
 @blueprint.route('/settings/output', methods=('GET', 'POST'))
