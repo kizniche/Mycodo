@@ -11,7 +11,7 @@ Flask_Babel==4.0.0
 Flask_Compress==1.23
 Flask_Limiter==4.1.1
 Flask_Login==0.6.3
-Flask_Marshmallow==1.3.0
+Flask_Marshmallow==1.4.0
 #Flask_Profiler==1.8.1  # only use when profiling (uncomment and enable in config.py)
 Flask_RESTX==1.3.2
 Flask_Session==0.8.0
