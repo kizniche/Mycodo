@@ -6,23 +6,6 @@ to verify window alignment, timestamp selection, and correctness for
 _manual_aggregate_mean, _manual_calculate_mean, and _manual_calculate_sum.
 """
 import datetime
-import sys
-from unittest.mock import MagicMock
-
-# Stub out heavy dependencies so that mycodo.utils.influx can be imported
-# without a live database or Flask application context.
-for _mod in (
-    'mycodo.databases',
-    'mycodo.databases.models',
-    'mycodo.mycodo_client',
-    'mycodo.utils.database',
-    'mycodo.utils.system_pi',
-    'requests',
-    'influxdb_client',
-    'influxdb_client.client',
-    'influxdb_client.client.write_api',
-):
-    sys.modules.setdefault(_mod, MagicMock())
 
 import pytest
 
