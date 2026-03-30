@@ -19,9 +19,10 @@ def repeat_to_length(s, wanted):
 
 def safe_link(link):
     link = link.lower()
-    for rep in [" ", "(", ")", ":", ",", "/", "--", ]:
+    for rep in [" ", "(", ")", ":", ",", "--", ]:
         link = link.replace(rep, "-")
     link = link.replace(".", "")
+    link = link.replace("/", "")
     link = link.strip("-")
     return link
 

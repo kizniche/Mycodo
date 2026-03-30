@@ -15,7 +15,7 @@ Mycodo is open source software for the Raspberry Pi that couples inputs and outp
 Quick Install
 -------------
 
-Prerequisites: Debian-based Linux operating system (apt).
+Prerequisites: Debian-based Linux operating system (tested with Raspberry Pi OS 13 Trixie).
 
 Recommended: Single board computer (SBC) with General-Purpose Input-Output (GPIO) pins.
 
@@ -140,7 +140,7 @@ Prerequisites
 
 Required:
 
--  Debian-based operating system
+-  Debian-based operating system (tested with Raspberry Pi OS 13 Trixie)
 -  An active internet connection
 
 Recommended:
@@ -148,7 +148,7 @@ Recommended:
 -  `Raspberry Pi <https://www.raspberrypi.org>`__ single-board computer: 3, 4, or 5 (Zero, 1, and 2 are no longer recommended)
 -  `Raspberry Pi Operating System <https://www.raspberrypi.com/software/>`__ flashed to a micro SD card or SSD
 
-Mycodo has been tested to work with Raspberry Pi OS 12 (Bookworm release), Lite and Desktop, 32-bit and 64-bit.
+Mycodo has been tested to work with Raspberry Pi OS 13 (Trixie release), Lite and Desktop, 32-bit and 64-bit.
 
 Install Command
 ~~~~~~~~~~~~~~~

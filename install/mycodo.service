@@ -6,7 +6,7 @@ StartLimitBurst=5
 
 [Service]
 Restart=on-failure
-RestartSec=20s
+RestartSec=20
 TimeoutSec=0
 ExecStart=/opt/Mycodo/env/bin/python /opt/Mycodo/mycodo/mycodo_daemon.py
 ExecStop=/opt/Mycodo/env/bin/python /opt/Mycodo/mycodo/mycodo_client.py -t

@@ -42,7 +42,7 @@
 
       {% for each_widget in dict_widgets %}
 
-      <form method="post" action="/settings/widget">
+      <form method="post" action="/settings/widget" enctype="multipart/form-data">
       {{form_widget_delete.csrf_token}}
       {{form_widget_delete.widget_id(value=each_widget)}}
 
@@ -50,8 +50,16 @@
           <td>{{each_widget}}</td>
           <td>{{dict_widgets[each_widget]['widget_name']}}</td>
           <td>
-            <div class="col-12 small-gutters">
-              {{form_widget_delete.delete_widget(class_='btn btn-primary btn-block', **{'onclick':'return confirm("Are you sure you want to delete this?")'})}}
+            <div class="row small-gutters">
+              <div class="col-auto">
+                {{form_widget_delete.delete_widget(class_='btn btn-primary btn-block', **{'onclick':'return confirm("Are you sure you want to delete this?")'})}}
+              </div>
+              <div class="col-auto">
+                <span class="btn btn-sm btn-file"><input id="update_widget_file_{{each_widget}}" name="update_widget_file" type="file" /></span>
+              </div>
+              <div class="col-auto">
+                {{form_widget_update.update_widget(class_='btn btn-primary btn-block', **{'onclick':'return confirm("Are you sure you want to update this? This will overwrite the existing module.")'})}}
+              </div>
             </div>
           </td>
         </tr>
