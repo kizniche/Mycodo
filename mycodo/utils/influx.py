@@ -236,13 +236,27 @@ def query_flux(unit, unique_id,
 
     if group_sec:
         # Bug in influxdb/Flux v1.8.10 due to mean, but 1.x is EOL so won't be fixed
-        # Workaround is to query all measurements, then simulate aggregateWindow with mean for 1.x 
+        # Original workaround was to query all measurements, then simulate aggregateWindow with mean for 1.x
         # Error: panic: runtime error: invalid memory address or nil pointer dereference
         # https://github.com/influxdata/influxdb/issues/21649
         # https://github.com/influxdata/influxdb/pull/23520
         if settings.measurement_db_version == '2':
+            # Safe to use aggregateWindow with mean on InfluxDB 2.x
             query += f' |> aggregateWindow(every: {group_sec}s, fn: mean)'
-
+        elif settings.measurement_db_version == '1' and not value:
+            # For InfluxDB 1.x, avoid aggregateWindow(mean) and perform windowing via window() + reduce().
+            # This computes a per-window mean server-side to avoid transferring all raw points.
+            query += (
+                f' |> window(every: {group_sec}s)'
+                ' |> reduce('
+                'identity: {sum: 0.0, count: 0}, '
+                'fn: (r, accumulator) => ({'
+                'sum: accumulator.sum + r._value, '
+                'count: accumulator.count + 1'
+                '})'
+                ')'
+                ' |> map(fn: (r) => ({ _time: r._stop, _value: r.sum / float(v: r.count) }))'
+            )
     if limit:
         query += f' |> limit(n:{limit})'
 
