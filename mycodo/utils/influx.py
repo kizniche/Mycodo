@@ -234,6 +234,7 @@ def query_flux(unit, unique_id,
     if ts_str:
         query += " AND time = '{ts}'".format(ts=ts_str)
 
+    server_side_windowed = False
     if group_sec:
         # Bug in influxdb/Flux v1.8.10 due to mean, but 1.x is EOL so won't be fixed
         # Original workaround was to query all measurements, then simulate aggregateWindow with mean for 1.x
@@ -257,6 +258,7 @@ def query_flux(unit, unique_id,
                 ')'
                 ' |> map(fn: (r) => ({ _time: r._stop, _value: r.sum / float(v: r.count) }))'
             )
+            server_side_windowed = True
     if limit:
         query += f' |> limit(n:{limit})'
 
@@ -299,7 +301,9 @@ def query_flux(unit, unique_id,
 
     # Manual calculation for InfluxDB 1.x
     if settings.measurement_db_version == '1':
-        if group_sec:
+        if group_sec and not server_side_windowed:
+            # Server-side windowing was not applied (e.g., value was specified with group_sec),
+            # so perform manual mean aggregation over the grouped windows.
             tables = _manual_aggregate_mean(tables, group_sec)
         elif value == "MEAN":
             tables = _manual_calculate_mean(tables)
