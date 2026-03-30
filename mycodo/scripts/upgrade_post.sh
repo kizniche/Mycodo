@@ -28,10 +28,6 @@ TIMER_START_initialize=$SECONDS
 ${INSTALL_CMD} initialize
 TIMER_TOTAL_initialize=$((SECONDS - TIMER_START_initialize))
 
-TIMER_START_update_swap_size=$SECONDS
-${INSTALL_CMD} update-swap-size
-TIMER_TOTAL_update_swap_size=$((SECONDS - TIMER_START_update_swap_size))
-
 TIMER_START_update_apt=$SECONDS
 ${INSTALL_CMD} update-apt
 TIMER_TOTAL_update_apt=$((SECONDS - TIMER_START_update_apt))
@@ -118,7 +114,6 @@ TIMER_TOTAL_web_server_connect=$((SECONDS - TIMER_START_web_server_connect))
 
 printf "\nStage 3 execution time summary:"
 printf "\ninitialize:                   %s s" "${TIMER_TOTAL_initialize}"
-printf "\nupdate-swap-size:             %s s" "${TIMER_TOTAL_update_swap_size}"
 printf "\nsetup-virtualenv:             %s s" "${TIMER_TOTAL_setup_virtualenv}"
 printf "\nupdate-apt:                   %s s" "${TIMER_TOTAL_update_apt}"
 printf "\nupdate-packages:              %s s" "${TIMER_TOTAL_update_packages}"

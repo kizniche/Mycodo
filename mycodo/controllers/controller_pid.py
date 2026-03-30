@@ -770,17 +770,17 @@ class PIDController(AbstractController, threading.Thread):
                f"Output Raise: {self.raise_output_id}, " \
                f"Output Raise Channel: {self.raise_output_channel}, " \
                f"Output Raise Type: {self.raise_output_type}, " \
-               f"Output Raise Min On: {self.raise_min_duration}, " \
-               f"Output Raise Max On: {self.raise_max_duration}, " \
-               f"Output Raise Min Off: {self.raise_min_off_duration}, " \
-               f"Output Raise Always Min: {self.raise_always_min_pwm}, " \
+               f"Output Raise Min Amount: {self.raise_min_duration}, " \
+               f"Output Raise Max Amount: {self.raise_max_duration}, " \
+               f"Output Raise Min Off Duration: {self.raise_min_off_duration}, " \
+               f"Output Raise Always Min PWM: {self.raise_always_min_pwm}, " \
                f"Output Lower: {self.lower_output_id}, " \
                f"Output Lower Channel: {self.lower_output_channel}, " \
                f"Output Lower Type: {self.lower_output_type}, " \
-               f"Output Lower Min On: {self.lower_min_duration}, " \
-               f"Output Lower Max On: {self.lower_max_duration}, " \
-               f"Output Lower Min Off: {self.lower_min_off_duration}, " \
-               f"Output Lower Always Min: {self.lower_always_min_pwm}, " \
+               f"Output Lower Min Amount: {self.lower_min_duration}, " \
+               f"Output Lower Max Amount: {self.lower_max_duration}, " \
+               f"Output Lower Min Off Duration: {self.lower_min_off_duration}, " \
+               f"Output Lower Always Min PWM: {self.lower_always_min_pwm}, " \
                f"Setpoint Tracking Type: {self.setpoint_tracking_type}, " \
                f"Setpoint Tracking ID: {self.setpoint_tracking_id}"
 

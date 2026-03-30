@@ -31,7 +31,7 @@ INPUT_INFORMATION = {
     'input_name_unique': 'GROVE_TEMP_AND_HUMIDITY',
     'input_manufacturer': 'Seeedstudio',
     'input_name': 'DHT11/22',
-    'input_library': 'grovepi',
+    'input_library': 'grovepi, libatlas-base-dev',
     'measurements_name': 'Humidity/Temperature',
     'measurements_dict': measurements_dict,
     'url_manufacturer': [

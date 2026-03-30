@@ -4,7 +4,7 @@ This release has several updates that allow Mycodo to be installed and run on De
 
 If you are running Debian 12 or similar version operating system, you will need to install Python 3.11, regenerate your virtualenv, then install dependencies, before upgrading to this version.
 
-See https://askubuntu.com/a/1438713 for instructions for installing Python 3.11 on Debian-based operating systems. Briefly:
+See https://askubuntu.com/a/1438713 for instructions for installing Python 3.11 on version <= 12 Debian-based operating systems. Briefly:
 
 ```bash
 sudo add-apt-repository ppa:deadsnakes/ppa
@@ -32,12 +32,19 @@ sudo service mycodoflask restart
  - Fix inability to set the same output for PID raise and lower ([#1369](https://github.com/kizniche/Mycodo/issues/1369))
  - Fix OpenWeather One Call API endpoint to use v3.0 ([#1429](https://github.com/kizniche/Mycodo/pull/1429))
  - Fix apt update not being run before installing apt packages dependencies
+ - Fix camera library for different OS releases ([#1487](https://github.com/kizniche/Mycodo/pull/1487))
 
 ### Features
 
  - Add API endpoints: /log and /dependency ([#1430](https://github.com/kizniche/Mycodo/issues/1430))
+ - Add ability to update (overwrite) a custom Function module without deleting it
+ - Add ability to update (overwrite) a custom Widget module without deleting it
  - Add Input: ENS160 ([#1434](https://github.com/kizniche/Mycodo/pull/1434))
  - Add Output: Waveshare 8-Channel Raspberry Pi Relay Board B ([#1434](https://github.com/kizniche/Mycodo/pull/1434))
+ - Add Function: Camera: rpicam ([#1487](https://github.com/kizniche/Mycodo/pull/1487))
+ - Add Input: VEML7700 Ambient Light Sensor ([#1491](https://github.com/kizniche/Mycodo/pull/1491))
+ - Add Input: LTR390 UV Light Sensor ([#1432](https://github.com/kizniche/Mycodo/pull/1432))
+ - Add "message_extra" to input options
 
 ### Miscellaneous
 

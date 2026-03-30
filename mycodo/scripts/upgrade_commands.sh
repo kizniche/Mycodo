@@ -85,7 +85,6 @@ Options:
   update-permissions            Set permissions for Mycodo directories/files
   update-pip3                   Update pip
   update-pip3-packages          Update required pip packages
-  update-swap-size              Ensure swap size is sufficiently large (512 MB)
   upgrade-mycodo                Upgrade Mycodo to latest compatible release and preserve database and virtualenv
   upgrade-release-major {ver}   Upgrade Mycodo to a major version release {ver} and preserve database and virtualenv
   upgrade-release-wipe {ver}    Upgrade Mycodo to a major version release {ver} and wipe database and virtualenv
@@ -439,7 +438,7 @@ case "${1:-''}" in
         if [[ ${UNAME_TYPE} == 'x86_64' || ${MACHINE_TYPE} == 'arm64' ]]; then
             SERV_ADDRESS="https://dl.influxdata.com/influxdb/releases/v2.7.12/"
             AMD64_INSTALL_FILE="influxdb2_2.7.12-1_amd64.deb"
-            ARM64_INSTALL_FILE="vinfluxdb2_2.7.12-1_arm64.deb"
+            ARM64_INSTALL_FILE="influxdb2_2.7.12-1_arm64.deb"
             CORRECT_VERSION_INSTALL="2.7.12-1"
             CLIENT_ADDRESS="https://dl.influxdata.com/influxdb/releases/"
             AMD64_CLIENT_FILE="influxdb2-client-2.7.5-amd64.deb"
@@ -470,6 +469,7 @@ case "${1:-''}" in
                 DEBIAN_FRONTEND=noninteractive apt remove -y influxdb
 
                 printf "#### Installing InfluxDB v${CORRECT_VERSION_INSTALL}...\n"
+                printf "#### InfluxDB download location: ${SERV_ADDRESS}${INSTALL_FILE}\n"
 
                 wget --quiet "${SERV_ADDRESS}${INSTALL_FILE}"
                 dpkg -i "${INSTALL_FILE}"
@@ -480,7 +480,7 @@ case "${1:-''}" in
                 printf "Correct version of InfluxDB currently installed (v${CORRECT_VERSION_INSTALL}).\n"
             fi
 
-            printf "#### Influxdb client file location: ${CLIENT_ADDRESS}${CLIENT_FILE}\n"
+            printf "#### Influxdb client download location: ${CLIENT_ADDRESS}${CLIENT_FILE}\n"
 
             CURRENT_VERSION=$(apt-cache policy influxdb2-cli | grep 'Installed' | gawk '{print $2}')
 
@@ -646,17 +646,6 @@ case "${1:-''}" in
     ;;
     'pip-clear-cache')
       "${MYCODO_PATH}"/env/bin/python -m pip cache remove *
-    ;;
-    'update-swap-size')
-        printf "\n#### Checking if swap size is 100 MB and needs to be changed to 512 MB\n"
-        if grep -q -s "CONF_SWAPSIZE=100" "/etc/dphys-swapfile"; then
-            printf "#### Swap currently set to 100 MB. Changing to 512 MB and restarting\n"
-            sed -i 's/CONF_SWAPSIZE=100/CONF_SWAPSIZE=512/g' /etc/dphys-swapfile
-            /etc/init.d/dphys-swapfile stop
-            /etc/init.d/dphys-swapfile start
-        else
-            printf "#### Swap not currently set to 100 MB. Not changing.\n"
-        fi
     ;;
     'upgrade-mycodo')
         /bin/bash "${MYCODO_PATH}"/mycodo/scripts/upgrade_download.sh upgrade-release-major "${MYCODO_MAJOR_VERSION}"

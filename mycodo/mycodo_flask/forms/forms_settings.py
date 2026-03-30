@@ -182,6 +182,11 @@ class ControllerDel(FlaskForm):
     delete_controller = SubmitField(TRANSLATIONS['delete']['title'])
 
 
+class ControllerMod(FlaskForm):
+    update_controller_file = FileField()
+    update_controller = SubmitField(lazy_gettext('Replace'))
+
+
 #
 # Settings (Action)
 #
@@ -210,6 +215,11 @@ class InputDel(FlaskForm):
     delete_input = SubmitField(TRANSLATIONS['delete']['title'])
 
 
+class InputMod(FlaskForm):
+    update_input_file = FileField()
+    update_input = SubmitField(lazy_gettext('Replace'))
+
+
 #
 # Settings (Output)
 #
@@ -236,6 +246,11 @@ class Widget(FlaskForm):
 class WidgetDel(FlaskForm):
     widget_id = StringField(widget=widgets.HiddenInput())
     delete_widget = SubmitField(TRANSLATIONS['delete']['title'])
+
+
+class WidgetMod(FlaskForm):
+    update_widget_file = FileField()
+    update_widget = SubmitField(lazy_gettext('Replace'))
 
 
 #

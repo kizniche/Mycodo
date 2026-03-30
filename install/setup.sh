@@ -189,7 +189,6 @@ SECONDS=0
 START_B=$(date)
 printf "#### Mycodo installation began %s\n" "${START_B}" 2>&1 | tee -a "${LOG_LOCATION}"
 
-${INSTALL_CMD} update-swap-size 2>&1 | tee -a "${LOG_LOCATION}"
 ${INSTALL_CMD} update-apt 2>&1 | tee -a "${LOG_LOCATION}"
 ${INSTALL_CMD} uninstall-apt-pip 2>&1 | tee -a "${LOG_LOCATION}"
 ${INSTALL_CMD} update-packages 2>&1 | tee -a "${LOG_LOCATION}"

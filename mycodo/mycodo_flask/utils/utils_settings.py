@@ -617,6 +617,141 @@ def settings_function_delete(form):
     flash_success_errors(error, action, url_for('routes_settings.settings_function'))
 
 
+def settings_function_update(form_del, form):
+    """
+    Receive a function module file, check it for errors, replace the existing module
+    """
+    action = '{action} {controller}'.format(
+        action=gettext("Update"),
+        controller=TRANSLATIONS['controller']['title'])
+    error = []
+
+    controller_info = None
+    existing_controller_info = None
+    existing_file_path = None
+
+    try:
+        install_dir = os.path.abspath(INSTALL_DIRECTORY)
+        tmp_directory = os.path.join(install_dir, 'mycodo/functions/tmp_functions')
+        assure_path_exists(tmp_directory)
+        assure_path_exists(PATH_FUNCTIONS_CUSTOM)
+        tmp_name = 'tmp_function_testing.py'
+        full_path_tmp = os.path.join(tmp_directory, tmp_name)
+
+        controller_device_name = form_del.controller_id.data
+
+        if not form.update_controller_file.data:
+            error.append('No file present')
+        elif form.update_controller_file.data.filename == '':
+            error.append('No file name')
+        else:
+            form.update_controller_file.data.save(full_path_tmp)
+
+        if not error:
+            # Load and validate the uploaded (new) module
+            try:
+                controller_info, status = load_module_from_file(full_path_tmp, 'functions')
+                if not controller_info or not hasattr(controller_info, 'FUNCTION_INFORMATION'):
+                    error.append("Could not load FUNCTION_INFORMATION dictionary from "
+                                 "the uploaded controller module")
+            except Exception:
+                error.append("Could not load uploaded file as a python module:\n"
+                             "{}".format(traceback.format_exc()))
+
+            # Look up the existing module's actual file path from parse_function_information().
+            # This handles side-loaded modules whose filename differs from the unique name.
+            dict_functions = parse_function_information()
+            if (controller_device_name in dict_functions and
+                    'file_path' in dict_functions[controller_device_name]):
+                existing_file_path = dict_functions[controller_device_name]['file_path']
+            else:
+                # Fall back to the name-derived path for backward compatibility
+                existing_file_path = os.path.join(
+                    PATH_FUNCTIONS_CUSTOM, '{}.py'.format(controller_device_name.lower()))
+            try:
+                existing_controller_info, status = load_module_from_file(existing_file_path, 'functions')
+                if not existing_controller_info or not hasattr(existing_controller_info, 'FUNCTION_INFORMATION'):
+                    error.append("Could not load FUNCTION_INFORMATION dictionary from "
+                                 "the existing controller module")
+            except Exception:
+                error.append("Could not load existing controller module as a python module:\n"
+                             "{}".format(traceback.format_exc()))
+
+        if not error:
+            if 'function_name_unique' not in controller_info.FUNCTION_INFORMATION:
+                error.append(
+                    "'function_name_unique' not found in "
+                    "FUNCTION_INFORMATION dictionary")
+            elif controller_info.FUNCTION_INFORMATION['function_name_unique'] == '':
+                error.append("'function_name_unique' is empty")
+            elif (controller_info.FUNCTION_INFORMATION['function_name_unique'].lower() !=
+                    existing_controller_info.FUNCTION_INFORMATION['function_name_unique'].lower()):
+                error.append(
+                    "'function_name_unique' must match the existing module name '{}', "
+                    "but '{}' was found".format(
+                        existing_controller_info.FUNCTION_INFORMATION['function_name_unique'],
+                        controller_info.FUNCTION_INFORMATION['function_name_unique']))
+
+            if 'function_name' not in controller_info.FUNCTION_INFORMATION:
+                error.append("'function_name' not found in FUNCTION_INFORMATION dictionary")
+            elif controller_info.FUNCTION_INFORMATION['function_name'] == '':
+                error.append("'function_name' is empty")
+
+            if 'dependencies_module' in controller_info.FUNCTION_INFORMATION:
+                if not isinstance(controller_info.FUNCTION_INFORMATION['dependencies_module'], list):
+                    error.append("'dependencies_module' must be a list of tuples")
+                else:
+                    for each_dep in controller_info.FUNCTION_INFORMATION['dependencies_module']:
+                        if not isinstance(each_dep, tuple):
+                            error.append("'dependencies_module' must be a list of tuples")
+                        elif len(each_dep) != 3:
+                            error.append("'dependencies_module': tuples in list must have 3 items")
+                        elif not each_dep[0] or not each_dep[1] or not each_dep[2]:
+                            error.append(
+                                "'dependencies_module': tuples in list must "
+                                "not be empty")
+                        elif each_dep[0] not in ['internal', 'pip-pypi', 'apt']:
+                            error.append(
+                                "'dependencies_module': first in tuple "
+                                "must be 'internal', 'pip-pypi', "
+                                "or 'apt'")
+
+        if not error:
+            # Preserve the original filename of the existing module so that side-loaded
+            # modules (whose filename may differ from function_name_unique) are updated
+            # in-place rather than written to a new name-derived path.
+            if not existing_file_path:
+                error.append("Could not determine the path of the existing controller module")
+
+        if not error:
+            full_path_final = existing_file_path
+
+            # Move module from temp directory to function directory, overwriting the existing module
+            os.rename(full_path_tmp, full_path_final)
+
+            # Reload frontend to refresh the controllers
+            cmd = '{path}/mycodo/scripts/mycodo_wrapper frontend_reload 2>&1'.format(
+                path=install_dir)
+            subprocess.Popen(cmd, shell=True)
+            flash('Frontend reloaded to scan for updated Controller Modules', 'success')
+
+            # Restart the backend if any Controller using this module is currently activated
+            controller_activated = CustomController.query.filter(
+                CustomController.device == controller_device_name,
+                CustomController.is_activated.is_(True)).count()
+            if controller_activated:
+                cmd = '{path}/mycodo/scripts/mycodo_wrapper daemon_restart 2>&1'.format(
+                    path=install_dir)
+                subprocess.Popen(cmd, shell=True)
+                flash('Backend restarted to apply updated Controller Module', 'success')
+
+    except Exception as err:
+        logger.exception("Function Update")
+        error.append("Exception: {}".format(err))
+
+    flash_success_errors(error, action, url_for('routes_settings.settings_function'))
+
+
 def settings_action_import(form):
     """
     Receive an action module file, check it for errors, add it to Mycodo controller list
@@ -819,7 +954,7 @@ def settings_input_import(form):
                     "'measurements_name' not found in "
                     "INPUT_INFORMATION dictionary")
             elif input_info.INPUT_INFORMATION['measurements_name'] == '':
-                error.append("'measurements_name' list is empty")
+                error.append("'measurements_name' blank")
 
             if 'measurements_dict' not in input_info.INPUT_INFORMATION:
                 error.append(
@@ -830,7 +965,7 @@ def settings_input_import(form):
                    input_info.INPUT_INFORMATION['measurements_variable_amount']):
                     pass
                 else:
-                    error.append("'measurements_dict' list is empty")
+                    error.append("'measurements_dict' dict is empty")
             else:
                 # Check that units and measurements exist in database
                 for _, each_unit_measure in input_info.INPUT_INFORMATION['measurements_dict'].items():
@@ -886,13 +1021,22 @@ def settings_input_import(form):
 
 def settings_input_delete(form):
     action = '{action} {controller}'.format(
-        action=gettext("Import"),
+        action=gettext("Delete"),
         controller=TRANSLATIONS['input']['title'])
     error = []
 
     input_device_name = form.input_id.data
-    file_name = '{}.py'.format(form.input_id.data.lower())
-    full_path_file = os.path.join(PATH_INPUTS_CUSTOM, file_name)
+
+    # Look up file path from parse_input_information() to correctly handle
+    # side-loaded modules whose filename may differ from the unique name.
+    dict_inputs = parse_input_information()
+    if (input_device_name in dict_inputs and
+            'file_path' in dict_inputs[input_device_name]):
+        full_path_file = dict_inputs[input_device_name]['file_path']
+    else:
+        # Fall back to the name-derived path for backward compatibility
+        full_path_file = os.path.join(
+            PATH_INPUTS_CUSTOM, '{}.py'.format(input_device_name.lower()))
 
     if not error:
         # Check if any Input entries exist
@@ -911,6 +1055,180 @@ def settings_input_delete(form):
             path=os.path.abspath(INSTALL_DIRECTORY))
         subprocess.Popen(cmd, shell=True)
         flash('Frontend reloaded to scan for new Input Modules', 'success')
+
+    flash_success_errors(error, action, url_for('routes_settings.settings_input'))
+
+
+def settings_input_update(form_del, form):
+    """
+    Receive an input module file, check it for errors, replace the existing module.
+    Mirrors settings_function_update / settings_widget_update but validates the
+    full INPUT_INFORMATION dictionary (same checks as settings_input_import).
+    """
+    action = '{action} {controller}'.format(
+        action=gettext("Update"),
+        controller=TRANSLATIONS['input']['title'])
+    error = []
+
+    input_info = None
+    existing_input_info = None
+    existing_file_path = None
+
+    try:
+        install_dir = os.path.abspath(INSTALL_DIRECTORY)
+        tmp_directory = os.path.join(install_dir, 'mycodo/inputs/tmp_inputs')
+        assure_path_exists(tmp_directory)
+        assure_path_exists(PATH_INPUTS_CUSTOM)
+        tmp_name = 'tmp_input_testing.py'
+        full_path_tmp = os.path.join(tmp_directory, tmp_name)
+
+        input_device_name = form_del.input_id.data
+
+        if not form.update_input_file.data:
+            error.append('No file present')
+        elif form.update_input_file.data.filename == '':
+            error.append('No file name')
+        else:
+            form.update_input_file.data.save(full_path_tmp)
+
+        if not error:
+            # Load and validate the uploaded (new) module
+            try:
+                input_info, status = load_module_from_file(full_path_tmp, 'inputs')
+                if not input_info or not hasattr(input_info, 'INPUT_INFORMATION'):
+                    error.append("Could not load INPUT_INFORMATION dictionary from "
+                                 "the uploaded input module")
+            except Exception:
+                error.append("Could not load uploaded file as a python module:\n"
+                             "{}".format(traceback.format_exc()))
+
+            # Look up the existing module's actual file path from parse_input_information().
+            # This handles side-loaded modules whose filename differs from the unique name.
+            dict_inputs = parse_input_information()
+            if (input_device_name in dict_inputs and
+                    'file_path' in dict_inputs[input_device_name]):
+                existing_file_path = dict_inputs[input_device_name]['file_path']
+            else:
+                # Fall back to the name-derived path for backward compatibility
+                existing_file_path = os.path.join(
+                    PATH_INPUTS_CUSTOM, '{}.py'.format(input_device_name.lower()))
+            try:
+                existing_input_info, status = load_module_from_file(existing_file_path, 'inputs')
+                if not existing_input_info or not hasattr(existing_input_info, 'INPUT_INFORMATION'):
+                    error.append("Could not load INPUT_INFORMATION dictionary from "
+                                 "the existing input module")
+            except Exception:
+                error.append("Could not load existing input module as a python module:\n"
+                             "{}".format(traceback.format_exc()))
+
+        if not error:
+            if 'input_name_unique' not in input_info.INPUT_INFORMATION:
+                error.append(
+                    "'input_name_unique' not found in "
+                    "INPUT_INFORMATION dictionary")
+            elif input_info.INPUT_INFORMATION['input_name_unique'] == '':
+                error.append("'input_name_unique' is empty")
+            elif (input_info.INPUT_INFORMATION['input_name_unique'].lower() !=
+                    existing_input_info.INPUT_INFORMATION['input_name_unique'].lower()):
+                error.append(
+                    "'input_name_unique' must match the existing module name '{}', "
+                    "but '{}' was found".format(
+                        existing_input_info.INPUT_INFORMATION['input_name_unique'],
+                        input_info.INPUT_INFORMATION['input_name_unique']))
+
+            if 'input_manufacturer' not in input_info.INPUT_INFORMATION:
+                error.append(
+                    "'input_manufacturer' not found in "
+                    "INPUT_INFORMATION dictionary")
+            elif input_info.INPUT_INFORMATION['input_manufacturer'] == '':
+                error.append("'input_manufacturer' is empty")
+
+            if 'input_name' not in input_info.INPUT_INFORMATION:
+                error.append("'input_name' not found in INPUT_INFORMATION dictionary")
+            elif input_info.INPUT_INFORMATION['input_name'] == '':
+                error.append("'input_name' is empty")
+
+            if 'measurements_name' not in input_info.INPUT_INFORMATION:
+                error.append(
+                    "'measurements_name' not found in "
+                    "INPUT_INFORMATION dictionary")
+            elif input_info.INPUT_INFORMATION['measurements_name'] == '':
+                error.append("'measurements_name' is empty")
+
+            if 'measurements_dict' not in input_info.INPUT_INFORMATION:
+                error.append(
+                    "'measurements_dict' not found in "
+                    "INPUT_INFORMATION dictionary")
+            elif not input_info.INPUT_INFORMATION['measurements_dict']:
+                if ('measurements_variable_amount' in input_info.INPUT_INFORMATION and
+                        input_info.INPUT_INFORMATION['measurements_variable_amount']):
+                    pass
+                else:
+                    error.append("'measurements_dict' is empty")
+            else:
+                # Check that units and measurements exist in database
+                for _, each_unit_measure in input_info.INPUT_INFORMATION['measurements_dict'].items():
+                    if (each_unit_measure['unit'] not in UNITS and
+                            not Unit.query.filter(Unit.name_safe == each_unit_measure['unit']).count()):
+                        error.append(
+                            "Unit not found in database. "
+                            "Add the unit '{}' to the database before replacing.".format(
+                                each_unit_measure['unit']))
+                    if (each_unit_measure['measurement'] not in MEASUREMENTS and
+                            not Measurement.query.filter(
+                                Measurement.name_safe == each_unit_measure['measurement']).count()):
+                        error.append(
+                            "Measurement not found in database. "
+                            "Add the measurement '{}' to the database before replacing.".format(
+                                each_unit_measure['measurement']))
+
+            if 'dependencies_module' in input_info.INPUT_INFORMATION:
+                if not isinstance(input_info.INPUT_INFORMATION['dependencies_module'], list):
+                    error.append("'dependencies_module' must be a list of tuples")
+                else:
+                    for each_dep in input_info.INPUT_INFORMATION['dependencies_module']:
+                        if not isinstance(each_dep, tuple):
+                            error.append("'dependencies_module' must be a list of tuples")
+                        elif len(each_dep) != 3:
+                            error.append("'dependencies_module': tuples in list must have 3 items")
+                        elif not each_dep[0] or not each_dep[1] or not each_dep[2]:
+                            error.append(
+                                "'dependencies_module': tuples in list must not be empty")
+                        elif each_dep[0] not in ['internal', 'pip-pypi', 'apt']:
+                            error.append(
+                                "'dependencies_module': first in tuple "
+                                "must be 'internal', 'pip-pypi', "
+                                "or 'apt'")
+
+        if not error:
+            if not existing_file_path:
+                error.append("Could not determine the path of the existing input module")
+
+        if not error:
+            full_path_final = existing_file_path
+
+            # Move module from temp directory to input directory, overwriting the existing module
+            os.rename(full_path_tmp, full_path_final)
+
+            # Reload frontend to refresh the inputs
+            cmd = '{path}/mycodo/scripts/mycodo_wrapper frontend_reload 2>&1'.format(
+                path=install_dir)
+            subprocess.Popen(cmd, shell=True)
+            flash('Frontend reloaded to scan for updated Input Modules', 'success')
+
+            # Restart the backend if any Input using this module is currently activated
+            input_activated = Input.query.filter(
+                Input.device == input_device_name,
+                Input.is_activated.is_(True)).count()
+            if input_activated:
+                cmd = '{path}/mycodo/scripts/mycodo_wrapper daemon_restart 2>&1'.format(
+                    path=install_dir)
+                subprocess.Popen(cmd, shell=True)
+                flash('Backend restarted to apply updated Input Module', 'success')
+
+    except Exception as err:
+        logger.exception("Input Update")
+        error.append("Exception: {}".format(err))
 
     flash_success_errors(error, action, url_for('routes_settings.settings_input'))
 
@@ -981,7 +1299,7 @@ def settings_output_import(form):
                    output_info.OUTPUT_INFORMATION['measurements_variable_amount']):
                     pass
                 else:
-                    error.append("'measurements_dict' list is empty")
+                    error.append("'measurements_dict' dict is empty")
             else:
                 # Check that units and measurements exist in database
                 for _, each_unit_measure in output_info.OUTPUT_INFORMATION['measurements_dict'].items():
@@ -1156,6 +1474,142 @@ def settings_widget_import(form):
             flash('Frontend reloaded to scan for new Widget Modules', 'success')
 
     except Exception as err:
+        error.append("Exception: {}".format(err))
+
+    flash_success_errors(error, action, url_for('routes_settings.settings_widget'))
+
+
+def settings_widget_update(form_del, form):
+    """
+    Receive a widget module file, check it for errors, replace the existing module
+    """
+    action = '{action} {controller}'.format(
+        action=gettext("Update"),
+        controller=TRANSLATIONS['widget']['title'])
+    error = []
+
+    widget_info = None
+    existing_widget_info = None
+    existing_file_path = None
+
+    try:
+        install_dir = os.path.abspath(INSTALL_DIRECTORY)
+        tmp_directory = os.path.join(install_dir, 'mycodo/widgets/tmp_widgets')
+        assure_path_exists(tmp_directory)
+        assure_path_exists(PATH_WIDGETS_CUSTOM)
+        tmp_name = 'tmp_widget_testing.py'
+        full_path_tmp = os.path.join(tmp_directory, tmp_name)
+
+        widget_device_name = form_del.widget_id.data
+
+        if not form.update_widget_file.data:
+            error.append('No file present')
+        elif form.update_widget_file.data.filename == '':
+            error.append('No file name')
+        else:
+            form.update_widget_file.data.save(full_path_tmp)
+
+        if not error:
+            # Load and validate the uploaded (new) module
+            try:
+                widget_info, status = load_module_from_file(full_path_tmp, 'widgets')
+                if not widget_info or not hasattr(widget_info, 'WIDGET_INFORMATION'):
+                    error.append("Could not load WIDGET_INFORMATION dictionary from "
+                                 "the uploaded widget module")
+            except Exception:
+                error.append("Could not load uploaded file as a python module:\n"
+                             "{}".format(traceback.format_exc()))
+
+            # Look up the existing module's actual file path from parse_widget_information().
+            # This handles side-loaded modules whose filename differs from the unique name.
+            dict_widgets = parse_widget_information()
+            if (widget_device_name in dict_widgets and
+                    'file_path' in dict_widgets[widget_device_name]):
+                existing_file_path = dict_widgets[widget_device_name]['file_path']
+            else:
+                # Fall back to the name-derived path for backward compatibility
+                existing_file_path = os.path.join(
+                    PATH_WIDGETS_CUSTOM, '{}.py'.format(widget_device_name.lower()))
+            try:
+                existing_widget_info, status = load_module_from_file(existing_file_path, 'widgets')
+                if not existing_widget_info or not hasattr(existing_widget_info, 'WIDGET_INFORMATION'):
+                    error.append("Could not load WIDGET_INFORMATION dictionary from "
+                                 "the existing widget module")
+            except Exception:
+                error.append("Could not load existing widget module as a python module:\n"
+                             "{}".format(traceback.format_exc()))
+
+        if not error:
+            if 'widget_name_unique' not in widget_info.WIDGET_INFORMATION:
+                error.append(
+                    "'widget_name_unique' not found in "
+                    "WIDGET_INFORMATION dictionary")
+            elif widget_info.WIDGET_INFORMATION['widget_name_unique'] == '':
+                error.append("'widget_name_unique' is empty")
+            elif (widget_info.WIDGET_INFORMATION['widget_name_unique'].lower() !=
+                    existing_widget_info.WIDGET_INFORMATION['widget_name_unique'].lower()):
+                error.append(
+                    "'widget_name_unique' must match the existing module name '{}', "
+                    "but '{}' was found".format(
+                        existing_widget_info.WIDGET_INFORMATION['widget_name_unique'],
+                        widget_info.WIDGET_INFORMATION['widget_name_unique']))
+
+            if 'widget_name' not in widget_info.WIDGET_INFORMATION:
+                error.append("'widget_name' not found in WIDGET_INFORMATION dictionary")
+            elif widget_info.WIDGET_INFORMATION['widget_name'] == '':
+                error.append("'widget_name' is empty")
+
+            if 'dependencies_module' in widget_info.WIDGET_INFORMATION:
+                if not isinstance(widget_info.WIDGET_INFORMATION['dependencies_module'], list):
+                    error.append("'dependencies_module' must be a list of tuples")
+                else:
+                    for each_dep in widget_info.WIDGET_INFORMATION['dependencies_module']:
+                        if not isinstance(each_dep, tuple):
+                            error.append("'dependencies_module' must be a list of tuples")
+                        elif len(each_dep) != 3:
+                            error.append("'dependencies_module': tuples in list must have 3 items")
+                        elif not each_dep[0] or not each_dep[1] or not each_dep[2]:
+                            error.append(
+                                "'dependencies_module': tuples in list must "
+                                "not be empty")
+                        elif each_dep[0] not in ['internal', 'pip-pypi', 'apt']:
+                            error.append(
+                                "'dependencies_module': first in tuple "
+                                "must be 'internal', 'pip-pypi', "
+                                "or 'apt'")
+
+        if not error:
+            # Preserve the original filename of the existing module so that side-loaded
+            # modules (whose filename may differ from widget_name_unique) are updated
+            # in-place rather than written to a new name-derived path.
+            if not existing_file_path:
+                error.append("Could not determine the path of the existing widget module")
+
+        if not error:
+            full_path_final = existing_file_path
+
+            # Move module from temp directory to widget directory, overwriting the existing module
+            os.rename(full_path_tmp, full_path_final)
+
+            generate_widget_html()
+
+            # Reload frontend to refresh the widgets
+            cmd = '{path}/mycodo/scripts/mycodo_wrapper frontend_reload 2>&1'.format(
+                path=install_dir)
+            subprocess.Popen(cmd, shell=True)
+            flash('Frontend reloaded to scan for updated Widget Modules', 'success')
+
+            # Restart the backend if any Widget using this module exists on a dashboard
+            widget_exists = Widget.query.filter(
+                Widget.graph_type == widget_device_name).count()
+            if widget_exists:
+                cmd = '{path}/mycodo/scripts/mycodo_wrapper daemon_restart 2>&1'.format(
+                    path=install_dir)
+                subprocess.Popen(cmd, shell=True)
+                flash('Backend restarted to apply updated Widget Module', 'success')
+
+    except Exception as err:
+        logger.exception("Widget Update")
         error.append("Exception: {}".format(err))
 
     flash_success_errors(error, action, url_for('routes_settings.settings_widget'))
