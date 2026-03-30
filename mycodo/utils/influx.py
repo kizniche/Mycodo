@@ -301,11 +301,7 @@ def query_flux(unit, unique_id,
 
     # Manual calculation for InfluxDB 1.x
     if settings.measurement_db_version == '1':
-        if group_sec and not value and not server_side_windowed:
-            # group_sec was requested with no explicit aggregation and server-side
-            # windowing was not applied, so perform manual mean aggregation.
-            tables = _manual_aggregate_mean(tables, group_sec)
-        elif value == "MEAN":
+        if value == "MEAN":
             tables = _manual_calculate_mean(tables)
         elif value == "SUM":
             tables = _manual_calculate_sum(tables)
@@ -630,7 +626,7 @@ def influxdb_get_first_point(data):
     for table in data:
         for record in table.records:
             return record.values['_time']
-        
+
 
 class _ManualRecord:
     """Mimics InfluxDB record structure for manual aggregation results."""
@@ -642,61 +638,6 @@ class _ManualTable:
     """Mimics InfluxDB table structure for manual aggregation results."""
     def __init__(self, records):
         self.records = records
-
-
-def _manual_aggregate_mean(tables, group_sec):
-    """
-    Manually aggregate data into time groups and calculate mean for each group.
-    Used as workaround for InfluxDB 1.8.10 Flux bug with mean/aggregateWindow.
-    Windows are epoch-aligned (floor(epoch/group_sec)*group_sec) and the
-    aggregated point time is the window end, matching Flux aggregateWindow defaults.
-    """
-    # Extract all measurements with their epoch representation
-    measurements = []
-    for table in tables:
-        for row in table.records:
-            timestamp = row.values['_time']
-            value = row.values['_value']
-            if value is not None:
-                if hasattr(timestamp, 'timestamp'):
-                    epoch = timestamp.timestamp()
-                else:
-                    epoch = float(timestamp)
-                measurements.append((timestamp, epoch, value))
-
-    if not measurements:
-        return []
-
-    # Sort by epoch time
-    measurements.sort(key=lambda x: x[1])
-
-    # Aggregate into epoch-aligned time windows and calculate means.
-    # Windows are aligned to fixed boundaries: [n*group_sec, (n+1)*group_sec)
-    grouped = {}
-    for ts, epoch, value in measurements:
-        aligned_start = (epoch // group_sec) * group_sec
-        if aligned_start not in grouped:
-            grouped[aligned_start] = []
-        grouped[aligned_start].append((ts, value))
-
-    aggregated = []
-    sample_ts = measurements[0][0]
-    tz = getattr(sample_ts, 'tzinfo', None)
-    for aligned_start in sorted(grouped.keys()):
-        group_points = grouped[aligned_start]
-        mean_val = sum(v for _, v in group_points) / len(group_points)
-
-        # Use window end as the timestamp, matching Flux aggregateWindow default behavior.
-        window_end_epoch = aligned_start + group_sec
-        if hasattr(sample_ts, 'timestamp'):
-            group_time = datetime.datetime.fromtimestamp(window_end_epoch, tz)
-        else:
-            group_time = window_end_epoch
-
-        aggregated.append(_ManualRecord(group_time, mean_val))
-
-    return [_ManualTable(aggregated)]
-
 
 
 def _manual_calculate_mean(tables):
