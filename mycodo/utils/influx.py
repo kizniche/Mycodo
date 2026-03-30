@@ -301,9 +301,9 @@ def query_flux(unit, unique_id,
 
     # Manual calculation for InfluxDB 1.x
     if settings.measurement_db_version == '1':
-        if group_sec and not server_side_windowed:
-            # Server-side windowing was not applied (e.g., value was specified with group_sec),
-            # so perform manual mean aggregation over the grouped windows.
+        if group_sec and not value and not server_side_windowed:
+            # group_sec was requested with no explicit aggregation and server-side
+            # windowing was not applied, so perform manual mean aggregation.
             tables = _manual_aggregate_mean(tables, group_sec)
         elif value == "MEAN":
             tables = _manual_calculate_mean(tables)
