@@ -29,7 +29,7 @@ pyro5==5.16
 pyserial==3.5
 python-dateutil==2.9.0.post0
 requests==2.32.5
-setuptools==80.9.0
+setuptools==82.0.1
 SQLAlchemy==2.0.45
 Werkzeug==3.1.4
 WTForms==3.2.1
