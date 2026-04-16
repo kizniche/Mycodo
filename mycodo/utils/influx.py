@@ -15,6 +15,112 @@ from mycodo.utils.system_pi import return_measurement_info
 logger = logging.getLogger("mycodo.influx")
 
 
+# ---------------------------------------------------------------------------
+# Module-level InfluxDB client cache.
+# The client is keyed on (url, token_or_user, version) so it is recreated
+# automatically whenever the connection settings change (e.g. after
+# refresh_daemon_misc_settings() is called).  A threading.Lock protects the
+# cache so that concurrent measurement writers don't race on creation.
+# ---------------------------------------------------------------------------
+_influx_client_cache = {}   # key -> influxdb_client.InfluxDBClient
+_influx_client_lock = threading.Lock()
+_influx_client_key = None   # last key used to build the cached client
+
+
+def _make_influx_key(settings):
+    """Build a hashable cache key from the current connection settings."""
+    return (
+        settings.measurement_db_host,
+        settings.measurement_db_port,
+        settings.measurement_db_version,
+        settings.measurement_db_user,
+        settings.measurement_db_password,
+    )
+
+
+try:
+    from influxdb_client import InfluxDBClient
+except ImportError:  # pragma: no cover
+    InfluxDBClient = None  # type: ignore[assignment,misc]
+
+
+def _get_influx_client(settings, write_timeout_ms=5000, query_timeout_ms=60000):
+    """
+    Return a cached InfluxDBClient, creating a new one if the connection
+    settings have changed since the last call.
+
+    :param settings: Misc DB row (already retrieved by the caller).
+    :param write_timeout_ms: Timeout in ms used for write clients.
+    :param query_timeout_ms: Timeout in ms used for query clients.
+    :return: (client, bucket) tuple ready for use.
+    """
+
+    global _influx_client_key
+
+    key = _make_influx_key(settings)
+    influxdb_url = f'http://{settings.measurement_db_host}:{settings.measurement_db_port}'
+
+    # Use max of the two timeouts for the shared client — callers that only
+    # write will just have a slightly larger timeout ceiling, which is harmless.
+    timeout_ms = max(write_timeout_ms, query_timeout_ms)
+
+    with _influx_client_lock:
+        if key not in _influx_client_cache:
+            # Settings have changed (or first call): close old client if any.
+            for old_client in _influx_client_cache.values():
+                try:
+                    old_client.close()
+                except Exception:
+                    pass
+            _influx_client_cache.clear()
+
+            if settings.measurement_db_version == '1':
+                client = InfluxDBClient(
+                    url=influxdb_url,
+                    token=f'{settings.measurement_db_user}:{settings.measurement_db_password}',
+                    org='mycodo',
+                    timeout=timeout_ms)
+            elif settings.measurement_db_version == '2':
+                client = InfluxDBClient(
+                    url=influxdb_url,
+                    username=settings.measurement_db_user,
+                    password=settings.measurement_db_password,
+                    org='mycodo',
+                    timeout=timeout_ms)
+            else:
+                raise ValueError(f"Unknown Influxdb version: {settings.measurement_db_version}")
+
+            _influx_client_cache[key] = client
+            _influx_client_key = key
+
+        return _influx_client_cache[key]
+
+
+def _get_influx_bucket(settings):
+    """Return the bucket string for the current settings."""
+    if settings.measurement_db_version == '1':
+        return f'{settings.measurement_db_dbname}/{settings.measurement_db_retention_policy}'
+    elif settings.measurement_db_version == '2':
+        return settings.measurement_db_dbname
+    return None
+
+
+def refresh_influx_client():
+    """
+    Force the next InfluxDB call to build a fresh client.
+    Call this after changing InfluxDB connection settings at runtime
+    (e.g. from refresh_daemon_misc_settings()).
+    """
+    with _influx_client_lock:
+        for old_client in _influx_client_cache.values():
+            try:
+                old_client.close()
+            except Exception:
+                pass
+        _influx_client_cache.clear()
+    logger.debug("InfluxDB client cache cleared; next call will reconnect.")
+
+
 #
 # Influxdb using Flux (influxdb versions 1.8+ and 2.x)
 #
@@ -43,42 +149,26 @@ def write_influxdb_value(unique_id, unit, value, measure=None, channel=None, tim
     :param timestamp: If supplied, this timestamp will be used in the influxdb
     :type timestamp: datetime object
     """
-    from influxdb_client import InfluxDBClient, Point
+    from influxdb_client import Point
 
     settings = db_retrieve_table_daemon(Misc, entry='first')
-    influxdb_url = f'http://{settings.measurement_db_host}:{settings.measurement_db_port}'
+    try:
+        client = _get_influx_client(settings, write_timeout_ms=5000)
+        bucket = _get_influx_bucket(settings)
+    except ValueError as e:
+        logger.error(str(e))
+        return 1
 
-    if settings.measurement_db_version == '1':
-        client = InfluxDBClient(
-            url=influxdb_url,
-            token=f'{settings.measurement_db_user}:{settings.measurement_db_password}',
-            org='mycodo',
-            timeout=5000)
-        bucket = f'{settings.measurement_db_dbname}/{settings.measurement_db_retention_policy}'
-    elif settings.measurement_db_version == '2':
-        client = InfluxDBClient(
-            url=influxdb_url,
-            username=settings.measurement_db_user,
-            password=settings.measurement_db_password,
-            org='mycodo',
-            timeout=5000)
-        bucket = settings.measurement_db_dbname
-    else:
-        logger.error(f"Unknown Influxdb version: {settings.measurement_db_version}")
-        return
+    point = Point(unit).tag("device_id", unique_id)
+    if measure:
+        point = point.tag("measure", measure)
+    if channel is not None:
+        point = point.tag("channel", channel)
+    if timestamp:
+        point = point.time(timestamp)
+    point = point.field("value", value)
 
     with client.write_api(success_callback=write_success, error_callback=write_fail) as write_api:
-        point = Point(unit).tag("device_id", unique_id)
-
-        if measure:
-            point = point.tag("measure", measure)
-        if channel is not None:
-            point = point.tag("channel", channel)
-        if timestamp:
-            point = point.time(timestamp)
-
-        point = point.field("value", value)
-
         try:
             write_api.write(bucket=bucket, record=point)
             return 0
@@ -88,9 +178,9 @@ def write_influxdb_value(unique_id, unit, value, measure=None, channel=None, tim
             try:
                 write_api.write(bucket=bucket, record=point)
                 return 0
-            except:
+            except Exception as retry_msg:
                 logger.debug(
-                    f"Failed to write measurement to influxdb (Device ID: {unique_id}): {except_msg}.")
+                    f"Failed to write measurement to influxdb (Device ID: {unique_id}): {retry_msg}.")
                 return 1
 
 
@@ -102,28 +192,14 @@ def add_measurements_influxdb_flux(unique_id, measurements, use_same_timestamp=T
     :param use_same_timestamp: Allow influxdb to create the timestamp upon storage
     :return:
     """
-    from influxdb_client import InfluxDBClient, Point
+    from influxdb_client import Point
 
     settings = db_retrieve_table_daemon(Misc, entry='first')
-    influxdb_url = f'http://{settings.measurement_db_host}:{settings.measurement_db_port}'
-
-    if settings.measurement_db_version == '1':
-        client = InfluxDBClient(
-            url=influxdb_url,
-            token=f'{settings.measurement_db_user}:{settings.measurement_db_password}',
-            org='mycodo',
-            timeout=5000)
-        bucket = f'{settings.measurement_db_dbname}/{settings.measurement_db_retention_policy}'
-    elif settings.measurement_db_version == '2':
-        client = InfluxDBClient(
-            url=influxdb_url,
-            username=settings.measurement_db_user,
-            password=settings.measurement_db_password,
-            org='mycodo',
-            timeout=5000)
-        bucket = settings.measurement_db_dbname
-    else:
-        logger.error(f"Unknown Influxdb version: {settings.measurement_db_version}")
+    try:
+        client = _get_influx_client(settings, write_timeout_ms=5000)
+        bucket = _get_influx_bucket(settings)
+    except ValueError as e:
+        logger.error(str(e))
         return
 
     with client.write_api(success_callback=write_success, error_callback=write_fail) as write_api:
@@ -182,28 +258,12 @@ def query_flux(unit, unique_id,
                start_str=None, end_str=None, min_value=None, max_value=None, past_sec=None, group_sec=None,
                limit=None):
     """Generate influxdb query string (flux edition, using influxdb_client)."""
-    from influxdb_client import InfluxDBClient
-
     settings = db_retrieve_table_daemon(Misc, entry='first')
-    influxdb_url = f'http://{settings.measurement_db_host}:{settings.measurement_db_port}'
-
-    if settings.measurement_db_version == '1':
-        client = InfluxDBClient(
-            url=influxdb_url,
-            token=f'{settings.measurement_db_user}:{settings.measurement_db_password}',
-            org='mycodo',
-            timeout=60000)
-        bucket = f'{settings.measurement_db_dbname}/{settings.measurement_db_retention_policy}'
-    elif settings.measurement_db_version == '2':
-        client = InfluxDBClient(
-            url=influxdb_url,
-            username=settings.measurement_db_user,
-            password=settings.measurement_db_password,
-            org='mycodo',
-            timeout=60000)
-        bucket = settings.measurement_db_dbname
-    else:
-        logger.error(f"Unknown Influxdb version: {settings.measurement_db_version}")
+    try:
+        client = _get_influx_client(settings, query_timeout_ms=60000)
+        bucket = _get_influx_bucket(settings)
+    except ValueError as e:
+        logger.error(str(e))
         return
 
     query = f'from(bucket: "{bucket}")'
@@ -232,7 +292,9 @@ def query_flux(unit, unique_id,
     if measure:
         query += f' |> filter(fn: (r) => r["measure"] == "{measure}")'
     if ts_str:
-        query += " AND time = '{ts}'".format(ts=ts_str)
+        # Filter to an exact timestamp using proper Flux syntax.
+        # ts_str must be an RFC3339 string e.g. "2024-01-15T10:30:00Z"
+        query += f' |> filter(fn: (r) => r["_time"] == time(v: "{ts_str}"))'
 
     if group_sec:
         if settings.measurement_db_version == '1':
@@ -284,8 +346,7 @@ def query_flux(unit, unique_id,
     logger.debug(f"query_flux() query: '{query}'")
 
     tables = client.query_api().query(query)
-    client.close()
-
+    # Note: client is cached — do NOT call client.close() here.
     return tables
 
 
@@ -475,8 +536,10 @@ def read_influxdb_list(unique_id, unit, channel,
                         time = row.values['_time'].timestamp()
                     list_data.append((time, row.values['_value']))
             return list_data
-    except:
-        logger.debug("Could not read form influxdb.")
+    except requests.exceptions.ConnectionError:
+        logger.debug("Could not read from influxdb: connection error.")
+    except Exception:
+        logger.exception("Could not read from influxdb.")
 
 
 def read_influxdb_multi(channels_data, past_seconds=None, value='LAST'):

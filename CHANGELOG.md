@@ -31,6 +31,8 @@ sudo service mycodoflask restart
 
 ### Bugfixes
 
+ - Fix InfluxDB client being recreated on every write/query
+ - Fix Flux query filter using InfluxQL syntax instead of valid Flux syntax
  - Fix controller deactivation not returning the error message on failure
  - Fix `initialize_variables()` exception leaving daemon's `ready.wait()` hanging indefinitely on controller activation failure
  - Fix `session_scope()` creating a new database engine on every call; engine is now cached per URI

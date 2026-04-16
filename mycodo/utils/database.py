@@ -91,3 +91,11 @@ def db_retrieve_table_daemon(
 
         time.sleep(1)
         tries -= 1
+
+    raise RuntimeError(
+        "Could not read the Mycodo database after 5 attempts — "
+        "the database may be locked or corrupted. "
+        "Please submit a New Issue at "
+        "https://github.com/kizniche/Mycodo/issues/new"
+    )
+
