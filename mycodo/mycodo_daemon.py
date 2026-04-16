@@ -210,16 +210,20 @@ class DaemonController:
 
     @staticmethod
     def determine_controller_type(unique_id):
-        db_tables = {
-            'Conditional': db_retrieve_table_daemon(Conditional, unique_id=unique_id),
-            'Input': db_retrieve_table_daemon(Input, unique_id=unique_id),
-            'PID': db_retrieve_table_daemon(PID, unique_id=unique_id),
-            'Trigger': db_retrieve_table_daemon(Trigger, unique_id=unique_id),
-            'Function': db_retrieve_table_daemon(CustomController, unique_id=unique_id)
-        }
-        for each_type in db_tables:
-            if db_tables[each_type]:
+        """Return the controller type string for *unique_id*, or None if not found."""
+        if not unique_id:
+            return None
+        # Short-circuit: query one table at a time and return as soon as a match is found.
+        for each_type, model in (
+            ('Conditional', Conditional),
+            ('Input', Input),
+            ('PID', PID),
+            ('Trigger', Trigger),
+            ('Function', CustomController),
+        ):
+            if db_retrieve_table_daemon(model, unique_id=unique_id):
                 return each_type
+        return None
 
     def controller_activate(self, cont_id):
         """
@@ -338,7 +342,7 @@ class DaemonController:
                     message = f"Could not deactivate {cont_type} controller with " \
                               f"ID {cont_id}: {except_msg}"
                     self.logger.exception(message)
-                    return 1,
+                    return 1, message
                 finally:
                     self.controller[cont_type].pop(cont_id, None)
 
@@ -398,6 +402,11 @@ class DaemonController:
             return False
 
     def check_daemon(self):
+        """Check all active controllers are running.
+
+        :return: "OK" if all controllers are healthy, otherwise an error string.
+        :rtype: str
+        """
         try:
             for cond_id in self.controller['Conditional']:
                 if not self.controller['Conditional'][cond_id].is_running():
@@ -418,6 +427,7 @@ class DaemonController:
                 return "Error: Output controller"
             if not self.controller['Widget'].is_running():
                 return "Error: Widget controller"
+            return "OK"
         except Exception as except_msg:
             message = f"Could not check running threads: {except_msg}"
             self.logger.exception(message)
@@ -465,7 +475,7 @@ class DaemonController:
             else:
                 message = f"Unknown controller: {controller_type}"
                 self.logger.error(message)
-        except:
+        except Exception:
             message = "Cannot execute custom action. Is the controller activated? " \
                       "If it is and this error is still occurring, check the Daemon Log."
             self.logger.exception(message)
@@ -902,9 +912,9 @@ class DaemonController:
     def stop_all_controllers(self):
         """Stop all running controllers."""
         controller_running = {}
+        _join_timeout = 10.0  # seconds to wait per controller thread
 
-        # Reverse the list to shut down each controller in the
-        # reverse order they were started in
+        # Signal stop in reverse startup order
         for each_controller in list(reversed(self.cont_types)):
             controller_running[each_controller] = []
             for cont_id in self.controller[each_controller]:
@@ -913,15 +923,21 @@ class DaemonController:
                         self.controller[each_controller][cont_id].stop_controller()
                         controller_running[each_controller].append(cont_id)
                 except Exception as err:
-                    self.logger.info(f"{each_controller} controller {cont_id} thread had an issue stopping: {err}")
-            time.sleep(2.5)  # Give time for each controller type to stop before stopping the next type
+                    self.logger.info(
+                        f"{each_controller} controller {cont_id} had an issue stopping: {err}")
 
+        # Join with timeout per thread; log any that don't stop in time
         for each_controller in list(reversed(self.cont_types)):
             for cont_id in controller_running[each_controller]:
                 try:
-                    self.controller[each_controller][cont_id].join()
+                    self.controller[each_controller][cont_id].join(timeout=_join_timeout)
+                    if self.controller[each_controller][cont_id].is_alive():
+                        self.logger.warning(
+                            f"{each_controller} controller {cont_id} did not stop within "
+                            f"{_join_timeout:.0f} s")
                 except Exception as err:
-                    self.logger.info(f"{each_controller} controller {cont_id} thread had an issue being joined: {err}")
+                    self.logger.info(
+                        f"{each_controller} controller {cont_id} join error: {err}")
             self.logger.info(f"All {each_controller} controllers stopped")
 
         try:
@@ -938,7 +954,9 @@ class DaemonController:
         except Exception as err:
             self.logger.info(f"Widget controller had an issue stopping: {err}")
 
-    def trigger_action(self, action_id, value={}, debug=False):
+    def trigger_action(self, action_id, value=None, debug=False):
+        if value is None:
+            value = {}
         try:
             return trigger_action(
                 self.actions,
@@ -1058,7 +1076,7 @@ class DaemonController:
                 str_next_report = time.strftime(
                     '%c', time.localtime(self.output_usage_report_next_gen))
                 self.logger.debug(f"Generating next output usage report {str_next_report}")
-        except:
+        except Exception:
             self.logger.exception("Calculating next report time")
 
     def send_stats(self):
@@ -1074,7 +1092,7 @@ class DaemonController:
                 pass
             try:
                 recreate_stat_file()
-            except:
+            except Exception:
                 self.logger.exception("Recreating stats file")
 
         # Send stats
@@ -1236,8 +1254,10 @@ class PyroServer(object):
         """Add, delete, or modify a output in the running output controller."""
         return self.mycodo.output_setup(action, output_id)
 
-    def trigger_action(self, action_id, value={}, debug=False):
+    def trigger_action(self, action_id, value=None, debug=False):
         """Trigger action."""
+        if value is None:
+            value = {}
         return self.mycodo.trigger_action(
             action_id,
             value=value,
@@ -1305,7 +1325,7 @@ class PyroDaemon(threading.Thread):
             self.logger.info("Starting Pyro5 daemon")
             serve({
                 PyroServer(self.mycodo): 'mycodo.pyro_server',
-            }, host="0.0.0.0", port=9080, use_ns=False)
+            }, host="127.0.0.1", port=9080, use_ns=False)  # Bind to localhost only
         except Exception:
             self.logger.exception("PyroDaemon")
 

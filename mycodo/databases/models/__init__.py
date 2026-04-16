@@ -57,7 +57,6 @@ from .notes import Notes
 from .output import Output
 from .output import OutputChannel
 from .pid import PID
-from .remote import Remote
 from .role import Role
 from .smtp import SMTP
 from .user import User

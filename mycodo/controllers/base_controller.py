@@ -72,6 +72,10 @@ class AbstractController(AbstractBaseController):
                 self.initialize_variables()
             except Exception as except_msg:
                 self.logger.exception(f"initialize_variables() Exception: {except_msg}")
+                # Ensure the daemon's ready.wait() is unblocked and the thread exits.
+                self.running = False
+                self.ready.set()
+                return
 
             dur = (timeit.default_timer() - self.thread_startup_timer) * 1000
             self.logger.info(f"Activated in {dur:.1f} ms")

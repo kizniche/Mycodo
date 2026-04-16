@@ -22,7 +22,7 @@ from mycodo.mycodo_flask import (routes_admin, routes_authentication,
                                  routes_dashboard, routes_function,
                                  routes_general, routes_input, routes_method,
                                  routes_output, routes_page,
-                                 routes_password_reset, routes_remote_admin,
+                                 routes_password_reset,
                                  routes_settings, routes_static)
 from mycodo.mycodo_flask.api import api_blueprint, init_api
 from mycodo.mycodo_flask.extensions import db
@@ -100,7 +100,6 @@ def register_blueprints(app):
     app.register_blueprint(routes_method.blueprint)  # register method views
     app.register_blueprint(routes_output.blueprint)  # register output views
     app.register_blueprint(routes_page.blueprint)  # register page views
-    app.register_blueprint(routes_remote_admin.blueprint)  # register remote admin views
     app.register_blueprint(routes_settings.blueprint)  # register settings views
     app.register_blueprint(routes_static.blueprint)  # register static routes
 

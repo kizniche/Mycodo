@@ -27,8 +27,13 @@ sudo service mycodo restart
 sudo service mycodoflask restart
 ```
 
+**Security and breaking changes in this release:** The Remote Admin feature has been fully removed. If you were using Remote Admin to manage multiple Mycodo instances, you will need an alternative approach (e.g. a reverse proxy or VPN) going forward — no data is lost, but the Remote Admin pages and API endpoints will no longer exist after upgrading. Additionally, the internal Pyro5 IPC daemon now binds exclusively to `127.0.0.1` (localhost) instead of `0.0.0.0`; if you have any external tooling that connects to port 9080 directly, it will no longer be reachable from outside the host after this upgrade.
+
 ### Bugfixes
 
+ - Fix controller deactivation not returning the error message on failure
+ - Fix `initialize_variables()` exception leaving daemon's `ready.wait()` hanging indefinitely on controller activation failure
+ - Fix `session_scope()` creating a new database engine on every call; engine is now cached per URI
  - Fix inability to set the same output for PID raise and lower ([#1369](https://github.com/kizniche/Mycodo/issues/1369))
  - Fix OpenWeather One Call API endpoint to use v3.0 ([#1429](https://github.com/kizniche/Mycodo/pull/1429))
  - Fix apt update not being run before installing apt packages dependencies
@@ -49,6 +54,9 @@ sudo service mycodoflask restart
 
 ### Miscellaneous
 
+ - Remove Remote Admin feature (routes, model, templates, and related utilities)
+ - Restrict Pyro5 IPC daemon to localhost only (`127.0.0.1:9080` instead of `0.0.0.0:9080`)
+ - Improve login brute-force protection: failed attempts are now tracked server-side by IP address (in addition to the existing per-session tracking)
  - Updates to support Python 3.11
  - Update InfluxDB to 2.7.12
  - Update pip packages
