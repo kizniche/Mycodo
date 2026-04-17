@@ -56,9 +56,10 @@ def _get_engine_and_factory(db_uri):
     """Return a cached (engine, SessionFactory) pair for *db_uri*."""
     with _engine_cache_lock:
         if db_uri not in _engine_cache:
-            engine = create_engine(
-                db_uri, connect_args={"check_same_thread": False}
-            )
+            engine_kwargs = {}
+            if db_uri.startswith("sqlite"):
+                engine_kwargs["connect_args"] = {"check_same_thread": False}
+            engine = create_engine(db_uri, **engine_kwargs)
             _engine_cache[db_uri] = engine
             _session_factory_cache[db_uri] = sessionmaker(bind=engine)
         return _engine_cache[db_uri], _session_factory_cache[db_uri]

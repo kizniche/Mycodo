@@ -23,20 +23,27 @@ _ip_fail_tracker_lock = threading.Lock()
 def get_real_ip(request):
     """Return the first non-private, non-loopback IP from the request.
 
-    Walks X-Forwarded-For left-to-right (leftmost = original client when set
-    by a trusted proxy).  Falls back to REMOTE_ADDR.  Returns None if every
-    address in the chain is private/loopback (e.g. a pure-LAN setup behind a
-    misconfigured proxy) to avoid banning the whole network.
+    Honors X-Forwarded-For only when REMOTE_ADDR is a trusted proxy.
+    Falls back to REMOTE_ADDR. Returns None if every candidate address is
+    private/loopback (to avoid banning an entire LAN).
     """
     candidates = []
 
-    forwarded_for = request.environ.get('HTTP_X_FORWARDED_FOR', '')
-    if forwarded_for:
-        candidates.extend(
-            addr.strip() for addr in forwarded_for.split(',') if addr.strip()
-        )
-
     remote_addr = request.environ.get('REMOTE_ADDR', '')
+    trusted_proxies = set()
+    try:
+        from mycodo.config_override import TRUSTED_PROXIES
+        trusted_proxies.update(TRUSTED_PROXIES)
+    except ImportError:
+        from mycodo.config import TRUSTED_PROXIES
+        trusted_proxies.update(TRUSTED_PROXIES)
+
+    if remote_addr and remote_addr in trusted_proxies:
+        forwarded_for = request.environ.get('HTTP_X_FORWARDED_FOR', '')
+        if forwarded_for:
+            candidates.extend(
+                addr.strip() for addr in forwarded_for.split(',') if addr.strip()
+            )
     if remote_addr:
         candidates.append(remote_addr)
 
@@ -114,4 +121,3 @@ def ip_is_banned(client_ip, login_ban_seconds):
                 return True, elapsed
 
     return False, 0
-

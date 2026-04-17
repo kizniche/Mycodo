@@ -52,7 +52,7 @@ def _get_influx_client(settings, write_timeout_ms=5000, query_timeout_ms=60000):
     :param settings: Misc DB row (already retrieved by the caller).
     :param write_timeout_ms: Timeout in ms used for write clients.
     :param query_timeout_ms: Timeout in ms used for query clients.
-    :return: (client, bucket) tuple ready for use.
+    :return: Cached InfluxDBClient instance ready for use.
     """
 
     global _influx_client_key
@@ -65,6 +65,10 @@ def _get_influx_client(settings, write_timeout_ms=5000, query_timeout_ms=60000):
     timeout_ms = max(write_timeout_ms, query_timeout_ms)
 
     with _influx_client_lock:
+        if InfluxDBClient is None:
+            raise ImportError(
+                "influxdb_client is required for InfluxDB operations but is not installed."
+            )
         if key not in _influx_client_cache:
             # Settings have changed (or first call): close old client if any.
             for old_client in _influx_client_cache.values():
@@ -155,7 +159,7 @@ def write_influxdb_value(unique_id, unit, value, measure=None, channel=None, tim
     try:
         client = _get_influx_client(settings, write_timeout_ms=5000)
         bucket = _get_influx_bucket(settings)
-    except ValueError as e:
+    except (ValueError, ImportError) as e:
         logger.error(str(e))
         return 1
 
@@ -198,7 +202,7 @@ def add_measurements_influxdb_flux(unique_id, measurements, use_same_timestamp=T
     try:
         client = _get_influx_client(settings, write_timeout_ms=5000)
         bucket = _get_influx_bucket(settings)
-    except ValueError as e:
+    except (ValueError, ImportError) as e:
         logger.error(str(e))
         return
 
@@ -262,7 +266,7 @@ def query_flux(unit, unique_id,
     try:
         client = _get_influx_client(settings, query_timeout_ms=60000)
         bucket = _get_influx_bucket(settings)
-    except ValueError as e:
+    except (ValueError, ImportError) as e:
         logger.error(str(e))
         return
 

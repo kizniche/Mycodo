@@ -35,7 +35,13 @@ class _SafeFileHandler(_logging.Handler):
     def emit(self, record):
         pass
 
-_logging.FileHandler = _SafeFileHandler  # type: ignore[assignment]
+
+def setUpModule():
+    _logging.FileHandler = _SafeFileHandler  # type: ignore[assignment]
+
+
+def tearDownModule():
+    _logging.FileHandler = _real_FileHandler
 
 # Covers:
 #   - databases/utils.py      : sessionmaker caching
@@ -700,4 +706,3 @@ class TestNoAppContextIsolation(unittest.TestCase):
 
 if __name__ == "__main__":
     unittest.main()
-

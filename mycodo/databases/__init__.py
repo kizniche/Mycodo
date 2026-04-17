@@ -85,6 +85,13 @@ class CRUDMixin(object):
                     session.merge(self)
                 return self
         except Exception as error:
+            try:
+                from flask import has_app_context
+                if has_app_context():
+                    from mycodo.mycodo_flask.extensions import db
+                    db.session.rollback()
+            except Exception:
+                pass
             logger.error(
                 "Failed to save %s due to error: %s", self, error, exc_info=True
             )
@@ -109,6 +116,13 @@ class CRUDMixin(object):
                     obj = session.merge(self)
                     session.delete(obj)
         except Exception as error:
+            try:
+                from flask import has_app_context
+                if has_app_context():
+                    from mycodo.mycodo_flask.extensions import db
+                    db.session.rollback()
+            except Exception:
+                pass
             logger.error(
                 "Failed to delete '%s': '%s'", self, error, exc_info=True
             )

@@ -57,20 +57,24 @@ class TestGetRealIp(unittest.TestCase):
 
     def test_forwarded_for_leftmost_public_chosen(self):
         """Leftmost public IP in X-Forwarded-For is the original client."""
-        req = _req('10.0.0.1', forwarded_for='8.8.8.8, 10.0.0.2')
+        req = _req('127.0.0.1', forwarded_for='8.8.8.8, 10.0.0.2')
         self.assertEqual(get_real_ip(req), '8.8.8.8')
 
     def test_forwarded_for_skips_private_ips(self):
-        req = _req('10.0.0.1', forwarded_for='192.168.1.1, 172.16.0.5, 1.1.1.1')
+        req = _req('127.0.0.1', forwarded_for='192.168.1.1, 172.16.0.5, 1.1.1.1')
         self.assertEqual(get_real_ip(req), '1.1.1.1')
 
     def test_all_private_chain_returns_none(self):
-        req = _req('10.0.0.1', forwarded_for='192.168.1.1, 172.31.255.255')
+        req = _req('127.0.0.1', forwarded_for='192.168.1.1, 172.31.255.255')
         self.assertIsNone(get_real_ip(req))
 
     def test_malformed_entry_in_chain_skipped(self):
-        req = _req('10.0.0.1', forwarded_for='not-an-ip, 1.1.1.1')
+        req = _req('127.0.0.1', forwarded_for='not-an-ip, 1.1.1.1')
         self.assertEqual(get_real_ip(req), '1.1.1.1')
+
+    def test_forwarded_for_ignored_when_remote_not_trusted_proxy(self):
+        req = _req('8.8.4.4', forwarded_for='1.1.1.1')
+        self.assertEqual(get_real_ip(req), '8.8.4.4')
 
     def test_ipv6_loopback_returns_none(self):
         self.assertIsNone(get_real_ip(_req('::1')))
@@ -166,7 +170,6 @@ class TestIpIsBanned(unittest.TestCase):
 
 if __name__ == '__main__':
     unittest.main()
-
 
 
 

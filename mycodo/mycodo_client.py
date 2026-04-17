@@ -89,7 +89,7 @@ class DaemonControl:
         except Exception as e:
             logger.error(f"Pyro5 proxy error: {e}")
             self._proxy = None
-            return None
+            raise
 
     def _reset_proxy(self):
         """Discard the cached proxy so the next call creates a fresh one."""
