@@ -33,6 +33,16 @@ import uuid
 logger = logging.getLogger(__name__)
 
 
+def _rollback_flask_session_if_possible():
+    try:
+        from flask import has_app_context
+        if has_app_context():
+            from mycodo.mycodo_flask.extensions import db
+            db.session.rollback()
+    except Exception as err:
+        logger.debug("Unable to rollback Flask db.session: %s", err, exc_info=True)
+
+
 def _get_db_session():
     """
     Return the active SQLAlchemy session appropriate for the current context.
@@ -85,13 +95,7 @@ class CRUDMixin(object):
                     session.merge(self)
                 return self
         except Exception as error:
-            try:
-                from flask import has_app_context
-                if has_app_context():
-                    from mycodo.mycodo_flask.extensions import db
-                    db.session.rollback()
-            except Exception:
-                pass
+            _rollback_flask_session_if_possible()
             logger.error(
                 "Failed to save %s due to error: %s", self, error, exc_info=True
             )
@@ -116,13 +120,7 @@ class CRUDMixin(object):
                     obj = session.merge(self)
                     session.delete(obj)
         except Exception as error:
-            try:
-                from flask import has_app_context
-                if has_app_context():
-                    from mycodo.mycodo_flask.extensions import db
-                    db.session.rollback()
-            except Exception:
-                pass
+            _rollback_flask_session_if_possible()
             logger.error(
                 "Failed to delete '%s': '%s'", self, error, exc_info=True
             )
