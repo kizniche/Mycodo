@@ -18,6 +18,11 @@ logger = logging.getLogger(__name__)
 # ---------------------------------------------------------------------------
 _ip_fail_tracker = {}
 _ip_fail_tracker_lock = threading.Lock()
+try:
+    from mycodo.config_override import TRUSTED_PROXIES
+except ImportError:
+    from mycodo.config import TRUSTED_PROXIES
+_trusted_proxies = set(TRUSTED_PROXIES)
 
 
 def get_real_ip(request):
@@ -30,15 +35,7 @@ def get_real_ip(request):
     candidates = []
 
     remote_addr = request.environ.get('REMOTE_ADDR', '')
-    trusted_proxies = set()
-    try:
-        from mycodo.config_override import TRUSTED_PROXIES
-        trusted_proxies.update(TRUSTED_PROXIES)
-    except ImportError:
-        from mycodo.config import TRUSTED_PROXIES
-        trusted_proxies.update(TRUSTED_PROXIES)
-
-    if remote_addr and remote_addr in trusted_proxies:
+    if remote_addr and remote_addr in _trusted_proxies:
         forwarded_for = request.environ.get('HTTP_X_FORWARDED_FOR', '')
         if forwarded_for:
             candidates.extend(
