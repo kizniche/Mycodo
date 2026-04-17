@@ -89,7 +89,6 @@ def test_routes_when_not_logged_in(testapp):
         'method-data/0',
         'method-delete/0',
         'output',
-        'remote/setup',
         'settings/alerts',
         'settings/general',
         'settings/input',
@@ -349,7 +348,6 @@ def test_routes_logged_in_as_admin(_, testapp):
         ('notes', '<!-- Route: /notes -->'),
         ('note_edit/0', 'admin logged in'),
         ('output', '<!-- Route: /output -->'),
-        ('remote/setup', '<!-- Route: /remote/setup -->'),
         ('reset_password', '<!-- Route: /reset_password -->'),
         ('energy_usage_outputs', '<!-- Route: /energy_usage_outputs -->'),
         ('energy_usage_input_amp', '<!-- Route: /energy_usage_input_amp -->')
@@ -688,7 +686,6 @@ def test_routes_logged_in_as_guest(_, testapp):
         ('admin/backup', '<!-- Route: /live -->'),
         ('admin/upgrade', '<!-- Route: /live -->'),
         ('admin/statistics', '<!-- Route: /live -->'),
-        ('remote/setup', '<!-- Route: /live -->'),
         ('settings/alerts', '<!-- Route: /live -->'),
         ('settings/diagnostic', '<!-- Route: /live -->'),
         ('settings/general', '<!-- Route: /live -->'),
