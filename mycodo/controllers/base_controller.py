@@ -72,9 +72,23 @@ class AbstractController(AbstractBaseController):
                 self.initialize_variables()
             except Exception as except_msg:
                 self.logger.exception(f"initialize_variables() Exception: {except_msg}")
+                # Ensure the daemon's ready.wait() is unblocked and the thread exits.
+                self.running = False
+                self.ready.set()
+                return
 
             dur = (timeit.default_timer() - self.thread_startup_timer) * 1000
             self.logger.info(f"Activated in {dur:.1f} ms")
+
+            # Safety net: if a subclass forgot to call ready.set() inside
+            # initialize_variables(), unblock the daemon's ready.wait() now.
+            # Subclasses that correctly call ready.set() are unaffected because
+            # threading.Event.set() on an already-set event is a no-op.
+            if not self.ready.is_set():
+                self.logger.warning(
+                    "initialize_variables() returned without calling ready.set() — "
+                    "setting it now. Subclasses should call ready.set() explicitly.")
+                self.ready.set()
 
             while self.running:
                 try:

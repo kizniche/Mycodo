@@ -60,6 +60,7 @@ from mycodo.utils.actions import (get_condition_value,
                                   trigger_controller_actions)
 from mycodo.utils.database import db_retrieve_table_daemon
 from mycodo.utils.github_release_info import MycodoRelease
+from mycodo.utils.influx import refresh_influx_client
 from mycodo.utils.stats import (add_update_csv, recreate_stat_file,
                                 return_stat_file_dict, send_anonymous_stats)
 from mycodo.utils.tools import generate_output_usage_report, next_schedule
@@ -210,16 +211,20 @@ class DaemonController:
 
     @staticmethod
     def determine_controller_type(unique_id):
-        db_tables = {
-            'Conditional': db_retrieve_table_daemon(Conditional, unique_id=unique_id),
-            'Input': db_retrieve_table_daemon(Input, unique_id=unique_id),
-            'PID': db_retrieve_table_daemon(PID, unique_id=unique_id),
-            'Trigger': db_retrieve_table_daemon(Trigger, unique_id=unique_id),
-            'Function': db_retrieve_table_daemon(CustomController, unique_id=unique_id)
-        }
-        for each_type in db_tables:
-            if db_tables[each_type]:
+        """Return the controller type string for *unique_id*, or None if not found."""
+        if not unique_id:
+            return None
+        # Short-circuit: query one table at a time and return as soon as a match is found.
+        for each_type, model in (
+            ('Conditional', Conditional),
+            ('Input', Input),
+            ('PID', PID),
+            ('Trigger', Trigger),
+            ('Function', CustomController),
+        ):
+            if db_retrieve_table_daemon(model, unique_id=unique_id):
                 return each_type
+        return None
 
     def controller_activate(self, cont_id):
         """
@@ -232,6 +237,11 @@ class DaemonController:
         :type cont_id: str
         """
         cont_type = self.determine_controller_type(cont_id)
+
+        if cont_type is None:
+            message = f"Controller with ID {cont_id} not found in any controller table."
+            self.logger.error(message)
+            return 1, message
 
         if cont_id in self.controller[cont_type]:
             if self.controller[cont_type][cont_id].is_running():
@@ -277,7 +287,19 @@ class DaemonController:
         self.controller[cont_type][cont_id] = controller_manage['function'](ready, cont_id)
         self.controller[cont_type][cont_id].daemon = True
         self.controller[cont_type][cont_id].start()
-        ready.wait()  # wait for thread to return ready
+
+        # Wait up to 300 s for the controller to signal it is ready.
+        # 300 s is intentionally generous to accommodate controllers that
+        # compile and upload firmware during initialize_variables().
+        ready.wait(timeout=300)
+        if not ready.is_set():
+            self.controller[cont_type][cont_id].stop_controller()
+            message = (
+                f"{cont_type} controller {cont_id} did not signal ready within "
+                f"300 seconds. Check the daemon log for initialization errors.")
+            self.logger.error(message)
+            self.controller[cont_type].pop(cont_id, None)
+            return 1, message
 
         message = f"{cont_type} controller with ID {cont_id} activated."
         self.logger.debug(message)
@@ -294,6 +316,10 @@ class DaemonController:
         :type cont_id: str
         """
         cont_type = self.determine_controller_type(cont_id)
+        if cont_type is None:
+            message = f"Controller with ID {cont_id} not found in any controller table."
+            self.logger.error(message)
+            return 1, message
         if cont_id in self.controller[cont_type]:
             if self.controller[cont_type][cont_id].is_running():
                 try:
@@ -338,7 +364,7 @@ class DaemonController:
                     message = f"Could not deactivate {cont_type} controller with " \
                               f"ID {cont_id}: {except_msg}"
                     self.logger.exception(message)
-                    return 1,
+                    return 1, message
                 finally:
                     self.controller[cont_type].pop(cont_id, None)
 
@@ -380,6 +406,9 @@ class DaemonController:
         :type cont_id: str
         """
         cont_type = self.determine_controller_type(cont_id)
+        if cont_type is None:
+            self.logger.debug(f"Controller with ID {cont_id} not found in any controller table.")
+            return False
         try:
             if cont_id in self.controller[cont_type]:
                 if self.controller[cont_type][cont_id].is_running():
@@ -398,6 +427,11 @@ class DaemonController:
             return False
 
     def check_daemon(self):
+        """Check all active controllers are running.
+
+        :return: "OK" if all controllers are healthy, otherwise an error string.
+        :rtype: str
+        """
         try:
             for cond_id in self.controller['Conditional']:
                 if not self.controller['Conditional'][cond_id].is_running():
@@ -418,6 +452,7 @@ class DaemonController:
                 return "Error: Output controller"
             if not self.controller['Widget'].is_running():
                 return "Error: Widget controller"
+            return "OK"
         except Exception as except_msg:
             message = f"Could not check running threads: {except_msg}"
             self.logger.exception(message)
@@ -465,7 +500,7 @@ class DaemonController:
             else:
                 message = f"Unknown controller: {controller_type}"
                 self.logger.error(message)
-        except:
+        except Exception:
             message = "Cannot execute custom action. Is the controller activated? " \
                       "If it is and this error is still occurring, check the Daemon Log."
             self.logger.exception(message)
@@ -711,6 +746,8 @@ class DaemonController:
             self.output_usage_report_span = misc.output_usage_report_span
             self.output_usage_report_day = misc.output_usage_report_day
             self.output_usage_report_hour = misc.output_usage_report_hour
+            # If InfluxDB connection settings changed, force reconnect on next use.
+            refresh_influx_client()
         except Exception:
             self.logger.exception("Could not refresh misc settings")
 
@@ -856,7 +893,9 @@ class DaemonController:
         self.controller['Output'] = OutputController(ready, debug)
         self.controller['Output'].daemon = True
         self.controller['Output'].start()
-        ready.wait()  # wait for thread to return ready
+        ready.wait(timeout=300)
+        if not ready.is_set():
+            self.logger.error("Output Controller did not signal ready within 300 seconds")
 
         # Ensure Output controller has started before continuing
         time.sleep(0.5)
@@ -885,7 +924,9 @@ class DaemonController:
         self.controller['Widget'] = WidgetController(ready, debug)
         self.controller['Widget'].daemon = True
         self.controller['Widget'].start()
-        ready.wait()  # wait for thread to return ready
+        ready.wait(timeout=300)
+        if not ready.is_set():
+            self.logger.error("Widget Controller did not signal ready within 300 seconds")
 
         # Ensure Widget controller has started before continuing
         time.sleep(0.5)
@@ -902,9 +943,9 @@ class DaemonController:
     def stop_all_controllers(self):
         """Stop all running controllers."""
         controller_running = {}
+        _join_timeout = 10.0  # seconds to wait per controller thread
 
-        # Reverse the list to shut down each controller in the
-        # reverse order they were started in
+        # Signal stop in reverse startup order
         for each_controller in list(reversed(self.cont_types)):
             controller_running[each_controller] = []
             for cont_id in self.controller[each_controller]:
@@ -913,15 +954,21 @@ class DaemonController:
                         self.controller[each_controller][cont_id].stop_controller()
                         controller_running[each_controller].append(cont_id)
                 except Exception as err:
-                    self.logger.info(f"{each_controller} controller {cont_id} thread had an issue stopping: {err}")
-            time.sleep(2.5)  # Give time for each controller type to stop before stopping the next type
+                    self.logger.info(
+                        f"{each_controller} controller {cont_id} had an issue stopping: {err}")
 
+        # Join with timeout per thread; log any that don't stop in time
         for each_controller in list(reversed(self.cont_types)):
             for cont_id in controller_running[each_controller]:
                 try:
-                    self.controller[each_controller][cont_id].join()
+                    self.controller[each_controller][cont_id].join(timeout=_join_timeout)
+                    if self.controller[each_controller][cont_id].is_alive():
+                        self.logger.warning(
+                            f"{each_controller} controller {cont_id} did not stop within "
+                            f"{_join_timeout:.0f} s")
                 except Exception as err:
-                    self.logger.info(f"{each_controller} controller {cont_id} thread had an issue being joined: {err}")
+                    self.logger.info(
+                        f"{each_controller} controller {cont_id} join error: {err}")
             self.logger.info(f"All {each_controller} controllers stopped")
 
         try:
@@ -938,7 +985,9 @@ class DaemonController:
         except Exception as err:
             self.logger.info(f"Widget controller had an issue stopping: {err}")
 
-    def trigger_action(self, action_id, value={}, debug=False):
+    def trigger_action(self, action_id, value=None, debug=False):
+        if value is None:
+            value = {}
         try:
             return trigger_action(
                 self.actions,
@@ -1058,7 +1107,7 @@ class DaemonController:
                 str_next_report = time.strftime(
                     '%c', time.localtime(self.output_usage_report_next_gen))
                 self.logger.debug(f"Generating next output usage report {str_next_report}")
-        except:
+        except Exception:
             self.logger.exception("Calculating next report time")
 
     def send_stats(self):
@@ -1074,7 +1123,7 @@ class DaemonController:
                 pass
             try:
                 recreate_stat_file()
-            except:
+            except Exception:
                 self.logger.exception("Recreating stats file")
 
         # Send stats
@@ -1236,8 +1285,10 @@ class PyroServer(object):
         """Add, delete, or modify a output in the running output controller."""
         return self.mycodo.output_setup(action, output_id)
 
-    def trigger_action(self, action_id, value={}, debug=False):
+    def trigger_action(self, action_id, value=None, debug=False):
         """Trigger action."""
+        if value is None:
+            value = {}
         return self.mycodo.trigger_action(
             action_id,
             value=value,
@@ -1305,40 +1356,68 @@ class PyroDaemon(threading.Thread):
             self.logger.info("Starting Pyro5 daemon")
             serve({
                 PyroServer(self.mycodo): 'mycodo.pyro_server',
-            }, host="0.0.0.0", port=9080, use_ns=False)
+            }, host="127.0.0.1", port=9080, use_ns=False)  # Bind to localhost only
         except Exception:
             self.logger.exception("PyroDaemon")
 
 
 class PyroMonitor(threading.Thread):
     """
-    Monitor whether the Pyro5 server (and daemon) is active or not
+    Periodically pings the Pyro5 server to confirm the daemon is alive.
 
+    - Checks every *check_interval_sec* seconds (default 60 s).
+    - On the first failure it logs a WARNING and resets the proxy.
+    - After *error_threshold* consecutive failures it escalates to ERROR
+      and resets the counter so the error fires once per run of failures
+      rather than every check cycle.
+    - On recovery (first success after failures) logs an INFO notice.
     """
-    def __init__(self):
+    def __init__(self, check_interval_sec=60, error_threshold=3):
         threading.Thread.__init__(self)
-
         self.logger = logging.getLogger('mycodo.pyro_monitor')
-        self.timer_sec = 1800
+        self.check_interval_sec = check_interval_sec
+        self.error_threshold = error_threshold
 
     def run(self):
+        self.logger.info(
+            f"Starting Pyro5 daemon monitor (check every {self.check_interval_sec} s, "
+            f"error after {self.error_threshold} consecutive failures)")
+        consecutive_failures = 0
+        next_check = time.time() + self.check_interval_sec
+
         try:
-            self.logger.info(f"Starting Pyro5 daemon monitor ({self.timer_sec / 60.0:.0f} min timer)")
-            log_timer = time.time() + 1
             while True:
                 now = time.time()
-                if now > log_timer:
-                    while now > log_timer:
-                        log_timer += self.timer_sec
+                if now >= next_check:
+                    next_check = now + self.check_interval_sec
                     try:
                         proxy = Proxy("PYRO:mycodo.pyro_server@127.0.0.1:9080")
+                        proxy._pyroTimeout = 10
+                        status = proxy.daemon_status()
                         proxy.check_daemon()
-                        self.logger.debug(f"Pyro5 daemon monitor: daemon_status() response: '{proxy.daemon_status()}'")
-                    except Exception:
-                        self.logger.exception("Pyro5 daemon monitor")
+                        if consecutive_failures > 0:
+                            self.logger.info(
+                                f"Pyro5 daemon monitor: daemon recovered after "
+                                f"{consecutive_failures} failed check(s). Status: '{status}'")
+                        else:
+                            self.logger.debug(
+                                f"Pyro5 daemon monitor: OK (status='{status}')")
+                        consecutive_failures = 0
+                    except Exception as err:
+                        consecutive_failures += 1
+                        if consecutive_failures < self.error_threshold:
+                            self.logger.warning(
+                                f"Pyro5 daemon monitor: check failed "
+                                f"({consecutive_failures}/{self.error_threshold}): {err}")
+                        elif consecutive_failures == self.error_threshold:
+                            # Escalate: log once at ERROR level when threshold is reached.
+                            self.logger.error(
+                                f"Pyro5 daemon monitor: {self.error_threshold} consecutive "
+                                f"failures — daemon may be unresponsive. Last error: {err}")
+                        # else: keep counting silently until recovery
                 time.sleep(1)
         except Exception:
-            self.logger.exception("ERROR: PyroMonitor")
+            self.logger.exception("ERROR: PyroMonitor loop crashed")
 
 
 class MycodoDaemon:
@@ -1356,9 +1435,9 @@ class MycodoDaemon:
             pd.daemon = True
             pd.start()
 
-            # pm = PyroMonitor()
-            # pm.daemon = True
-            # pm.start()
+            pm = PyroMonitor()
+            pm.daemon = True
+            pm.start()
 
             self.mycodo.run()  # Start daemon thread that manages controllers
         except Exception:
