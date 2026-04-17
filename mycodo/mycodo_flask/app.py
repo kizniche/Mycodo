@@ -65,7 +65,10 @@ def register_extensions(app):
     app = extension_login_manager(app)  # User login management
     app = extension_session(app)  # Server side session
 
-    # Create and populate database if it doesn't exist
+    # Create and populate database if it doesn't exist.
+    # db.create_all() and populate_db() use Flask-SQLAlchemy's db.session
+    # because they run during app setup inside an app context — that is the
+    # correct and intentional usage here.
     with app.app_context():
         db.create_all()
         populate_db()
@@ -74,8 +77,11 @@ def register_extensions(app):
         # The upgrade script will execute alembic to upgrade the database
         # alembic_upgrade_db()
 
-    # Check user option to force all web connections to use SSL
-    # Fail if the URI is empty (pytest is running)
+    # Post-setup reads use session_scope (raw SQLAlchemy) rather than db.session
+    # because they occur outside the request lifecycle.  Both approaches connect
+    # to the same underlying database file; session_scope is simply the safer
+    # choice for code that must also run outside a Flask request context.
+    # See databases/utils.py for the full architecture explanation.
     if app.config['SQLALCHEMY_DATABASE_URI'] != 'sqlite://':
         with session_scope(app.config['SQLALCHEMY_DATABASE_URI']) as new_session:
             misc = new_session.query(Misc).first()
@@ -105,6 +111,8 @@ def register_blueprints(app):
 
 
 def register_widget_endpoints(app):
+    # session_scope is used here (not db.session) because this runs at startup
+    # outside of a request context.  See databases/utils.py for details.
     try:
         if app.config['TESTING']:  # TODO: Add pytest endpoint test and remove this
             return

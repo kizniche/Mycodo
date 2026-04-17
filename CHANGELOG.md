@@ -58,6 +58,8 @@ sudo service mycodoflask restart
 
  - Remove Remote Admin feature (routes, model, templates, and related utilities)
  - Restrict Pyro5 IPC daemon to localhost only (`127.0.0.1:9080` instead of `0.0.0.0:9080`)
+ - Refactor database access layer to eliminate Flask import inversion
+ - `db_retrieve_table()` now falls back to `session_scope` when called outside a Flask application context, making it safe to call from shared utilities and tests without a running Flask app
  - Improve login brute-force protection: failed attempts are now tracked server-side by IP address (in addition to the existing per-session tracking)
  - Updates to support Python 3.11
  - Update InfluxDB to 2.7.12

@@ -1,4 +1,39 @@
 # coding=utf-8
+"""
+databases/utils.py — Low-level SQLAlchemy session management.
+
+PUBLIC API CONTRACT
+===================
+The following symbols are part of Mycodo's **permanent public API** and MUST
+NOT be renamed, moved, or have their call signatures changed:
+
+  • ``session_scope(db_uri)``  — importable from ``mycodo.databases.utils``
+
+This function is imported directly by:
+  - The Mycodo daemon (mycodo_daemon.py)
+  - All built-in and user-supplied controllers, inputs, outputs, functions
+  - User-authored code entered via the conditional controller, Python Input,
+    Python Output, and custom module textarea fields in the web UI.
+    That code is stored in the database and executed at runtime; we cannot
+    inspect or regenerate it on behalf of existing users.
+
+!! DO NOT CHANGE THE SIGNATURE OR IMPORT PATH OF session_scope !!
+
+Architecture — why two session systems exist
+============================================
+Flask-SQLAlchemy (``db.session``, from mycodo_flask.extensions) manages a
+per-request scoped session that is only available while a Flask application
+context is active.  The Mycodo daemon and all background controllers run
+WITHOUT a Flask context, so ``db.session`` is unavailable to them.
+
+``session_scope`` provides a self-contained transactional context that works
+in *any* Python environment — Flask, daemon, scripts, tests — without
+requiring a running Flask application.  It is the single source of truth for
+all non-Flask DB access.
+
+The engine + sessionmaker cache below ensures that expensive engine creation
+happens only once per unique database URI, even across many concurrent threads.
+"""
 import logging
 import threading
 from contextlib import contextmanager
@@ -31,7 +66,20 @@ def _get_engine_and_factory(db_uri):
 
 @contextmanager
 def session_scope(db_uri):
-    """Provide a transactional scope around a series of operations."""
+    """
+    Provide a transactional scope around a series of database operations.
+
+    Usage::
+
+        with session_scope(MYCODO_DB_PATH) as session:
+            row = session.query(MyModel).filter_by(id=1).first()
+            session.expunge_all()   # detach objects before leaving scope
+
+    The session is committed on clean exit and rolled back on any exception.
+
+    .. note::
+        This is part of Mycodo's permanent public API — see module docstring.
+    """
     try:
         # Custom URI overrides the supplied one (e.g. PostgreSQL in production)
         from mycodo.config_override import SQLALCHEMY_DATABASE_URI

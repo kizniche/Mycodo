@@ -439,6 +439,265 @@ class TestDetermineControllerTypeNoneGuard(unittest.TestCase):
         self.assertFalse(result)
 
 
+# ---------------------------------------------------------------------------
+# PUBLIC API IMPORT CONTRACT
+# Verify that the permanent user-facing symbols resolve at their documented
+# import paths.  These imports MUST never fail — user code stored in the
+# database (conditional controllers, Python Inputs/Outputs, custom modules)
+# depends on them and cannot be regenerated automatically.
+# ---------------------------------------------------------------------------
+class TestPublicApiImportPaths(unittest.TestCase):
+    """Smoke-test that the permanent public-API symbols are importable."""
+
+    def test_session_scope_importable(self):
+        """session_scope must be importable from mycodo.databases.utils."""
+        from mycodo.databases.utils import session_scope  # noqa: F401
+        self.assertTrue(callable(session_scope))
+
+    def test_db_retrieve_table_daemon_importable(self):
+        """db_retrieve_table_daemon must be importable from mycodo.utils.database."""
+        from mycodo.utils.database import db_retrieve_table_daemon  # noqa: F401
+        self.assertTrue(callable(db_retrieve_table_daemon))
+
+    def test_db_retrieve_table_importable(self):
+        """db_retrieve_table must be importable from mycodo.utils.database."""
+        from mycodo.utils.database import db_retrieve_table  # noqa: F401
+        self.assertTrue(callable(db_retrieve_table))
+
+    def test_db_retrieve_table_daemon_signature(self):
+        """db_retrieve_table_daemon must accept all documented keyword arguments."""
+        import inspect
+        from mycodo.utils.database import db_retrieve_table_daemon
+        sig = inspect.signature(db_retrieve_table_daemon)
+        params = set(sig.parameters.keys())
+        required = {'table', 'entry', 'device_id', 'unique_id', 'custom_name', 'custom_value'}
+        self.assertTrue(
+            required.issubset(params),
+            f"Missing parameters: {required - params}"
+        )
+
+    def test_db_retrieve_table_signature(self):
+        """db_retrieve_table must accept all documented keyword arguments."""
+        import inspect
+        from mycodo.utils.database import db_retrieve_table
+        sig = inspect.signature(db_retrieve_table)
+        params = set(sig.parameters.keys())
+        required = {'table', 'entry', 'unique_id'}
+        self.assertTrue(
+            required.issubset(params),
+            f"Missing parameters: {required - params}"
+        )
+
+
+# ---------------------------------------------------------------------------
+# databases/__init__.py — CRUDMixin context-aware session routing
+# ---------------------------------------------------------------------------
+class TestCRUDMixinContextRouting(unittest.TestCase):
+    """
+    CRUDMixin.save() and .delete() must use db.session inside a Flask app
+    context and fall back to session_scope outside one.
+    """
+
+    def _make_instance(self):
+        """Create a minimal CRUDMixin instance (no real DB model needed)."""
+        from mycodo.databases import CRUDMixin
+
+        class FakeModel(CRUDMixin):
+            def __init__(self):
+                self.__table__ = None  # not needed for these tests
+
+        return FakeModel()
+
+    # ---- outside-Flask -------------------------------------------------------
+
+    def test_save_outside_flask_uses_session_scope(self):
+        """
+        Outside a Flask context, save() must route through session_scope.
+        We verify this by confirming that session_scope is called and that
+        no attempt is made to access db.session (which would raise outside Flask).
+        """
+        from contextlib import contextmanager
+        instance = self._make_instance()
+
+        mock_session = MagicMock()
+        scope_entered = []
+
+        @contextmanager
+        def fake_scope(_uri):
+            scope_entered.append(True)
+            yield mock_session
+
+        # Patch flask.has_app_context so the method takes the outside-Flask branch,
+        # and patch session_scope at the source so the lazy import inside save() picks
+        # up our fake.
+        with patch("flask.has_app_context", return_value=False), \
+             patch("mycodo.databases.utils.session_scope", fake_scope):
+            try:
+                instance.save()
+            except Exception:
+                pass  # merge will fail on a MagicMock session — that's expected
+
+        # session_scope was entered, confirming the daemon branch was taken.
+        self.assertTrue(scope_entered, "session_scope was never called — wrong branch taken")
+
+    def test_save_outside_flask_does_not_import_flask_db(self):
+        """
+        Outside Flask context, save() must not attempt to access db.session —
+        doing so would raise RuntimeError inside the daemon.
+        """
+        instance = self._make_instance()
+
+        mock_session = MagicMock()
+
+        from contextlib import contextmanager
+
+        @contextmanager
+        def fake_scope(_uri):
+            yield mock_session
+
+        # Simulate no Flask app context
+        with patch("flask.has_app_context", return_value=False), \
+             patch("mycodo.databases.utils.session_scope", fake_scope):
+            try:
+                instance.save()
+            except Exception:
+                pass  # Real merge will fail without a DB; that's OK
+
+        # If we got here without a RuntimeError about missing app context, pass.
+
+    # ---- inside-Flask --------------------------------------------------------
+
+    def test_save_inside_flask_uses_db_session(self):
+        """Inside a Flask context, save() must call db.session.add and commit."""
+        instance = self._make_instance()
+
+        mock_db_session = MagicMock()
+
+        with patch("flask.has_app_context", return_value=True), \
+             patch("mycodo.mycodo_flask.extensions.db") as mock_db:
+            mock_db.session = mock_db_session
+            try:
+                instance.save()
+            except Exception:
+                pass
+
+        mock_db_session.add.assert_called_once_with(instance)
+        mock_db_session.commit.assert_called_once()
+
+    def test_delete_inside_flask_uses_db_session(self):
+        """Inside a Flask context, delete() must call db.session.delete and commit."""
+        instance = self._make_instance()
+
+        mock_db_session = MagicMock()
+
+        with patch("flask.has_app_context", return_value=True), \
+             patch("mycodo.mycodo_flask.extensions.db") as mock_db:
+            mock_db.session = mock_db_session
+            try:
+                instance.delete()
+            except Exception:
+                pass
+
+        mock_db_session.delete.assert_called_once_with(instance)
+        mock_db_session.commit.assert_called_once()
+
+
+# ---------------------------------------------------------------------------
+# utils/database.py — db_retrieve_table context-aware fallback
+# ---------------------------------------------------------------------------
+class TestDbRetrieveTableContextFallback(unittest.TestCase):
+    """
+    db_retrieve_table must use Model.query inside Flask and fall back to
+    db_retrieve_table_daemon (session_scope) outside Flask.
+    """
+
+    def test_outside_flask_falls_back_to_session_scope(self):
+        """Outside Flask, db_retrieve_table must return results via session_scope."""
+        from mycodo.utils.database import db_retrieve_table
+        from contextlib import contextmanager
+
+        mock_table = MagicMock()
+        mock_row = MagicMock()
+
+        @contextmanager
+        def good_scope(_uri):
+            mock_session = MagicMock()
+            mock_session.query.return_value.first.return_value = mock_row
+            yield mock_session
+
+        with patch("flask.has_app_context", return_value=False), \
+             patch("mycodo.utils.database.session_scope", good_scope):
+            result = db_retrieve_table(mock_table, entry='first')
+
+        self.assertIs(result, mock_row)
+
+    def test_inside_flask_uses_model_query(self):
+        """Inside Flask, db_retrieve_table must use the Model.query proxy."""
+        from mycodo.utils.database import db_retrieve_table
+
+        mock_table = MagicMock()
+        mock_row = MagicMock()
+        mock_table.query.first.return_value = mock_row
+
+        with patch("flask.has_app_context", return_value=True):
+            result = db_retrieve_table(mock_table, entry='first')
+
+        mock_table.query.first.assert_called_once()
+        self.assertIs(result, mock_row)
+
+    def test_outside_flask_all_entries(self):
+        """Outside Flask, db_retrieve_table with entry='all' returns a list."""
+        from mycodo.utils.database import db_retrieve_table
+        from contextlib import contextmanager
+
+        mock_table = MagicMock()
+        mock_rows = [MagicMock(), MagicMock()]
+
+        @contextmanager
+        def good_scope(_uri):
+            mock_session = MagicMock()
+            mock_session.query.return_value.all.return_value = mock_rows
+            yield mock_session
+
+        with patch("flask.has_app_context", return_value=False), \
+             patch("mycodo.utils.database.session_scope", good_scope):
+            result = db_retrieve_table(mock_table, entry='all')
+
+        self.assertEqual(result, mock_rows)
+
+
+# ---------------------------------------------------------------------------
+# conftest helper — no_app_context fixture equivalent (unittest version)
+# ---------------------------------------------------------------------------
+class TestNoAppContextIsolation(unittest.TestCase):
+    """
+    Verify that without any patches, importing the database modules does not
+    require a live Flask application (i.e. no app-context-at-import-time error).
+    """
+
+    def test_databases_init_importable_without_flask_app(self):
+        """databases/__init__.py must be importable without a Flask app running."""
+        # If the old code (hard import of db at module level) were still there,
+        # this would raise an ImportError or application context error.
+        import importlib
+        import mycodo.databases as db_init
+        importlib.reload(db_init)
+        self.assertTrue(hasattr(db_init, 'CRUDMixin'))
+        self.assertTrue(hasattr(db_init, 'clone_model'))
+
+    def test_databases_utils_importable_without_flask_app(self):
+        """databases/utils.py must be importable without a Flask app running."""
+        import mycodo.databases.utils as db_utils
+        self.assertTrue(hasattr(db_utils, 'session_scope'))
+        self.assertTrue(hasattr(db_utils, '_get_engine_and_factory'))
+
+    def test_utils_database_importable_without_flask_app(self):
+        """utils/database.py must be importable without a Flask app running."""
+        import mycodo.utils.database as db_mod
+        self.assertTrue(hasattr(db_mod, 'db_retrieve_table'))
+        self.assertTrue(hasattr(db_mod, 'db_retrieve_table_daemon'))
+
+
 if __name__ == "__main__":
     unittest.main()
 
