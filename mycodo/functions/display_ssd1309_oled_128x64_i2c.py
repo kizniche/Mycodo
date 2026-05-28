@@ -187,7 +187,7 @@ FUNCTION_INFORMATION = {
         ('apt', 'liblcms2-dev', 'liblcms2-dev'),
         ('apt', 'libopenjp2-7', 'libopenjp2-7'),
         ('apt', 'libtiff6', 'libtiff6'),
-        ('apt', 'fonts-dejavu-mono', 'fonts-dejavu-mono')¶
+        ('apt', 'fonts-dejavu-mono', 'fonts-dejavu-mono')
     ],
 
     'custom_options': [
