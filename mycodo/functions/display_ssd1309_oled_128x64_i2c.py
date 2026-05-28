@@ -28,6 +28,7 @@ import time
 import traceback
 
 from flask_babel import lazy_gettext
+from PIL import ImageFont
 
 from mycodo.config import MYCODO_VERSION
 from mycodo.config_translations import TRANSLATIONS
@@ -179,13 +180,14 @@ FUNCTION_INFORMATION = {
     'dependencies_module': [
         ('pip-pypi', 'usb.core', 'pyusb==1.1.1'),
         ('pip-pypi', 'luma.oled', 'luma.oled==3.8.1'),
-        ('pip-pypi', 'PIL', 'Pillow==8.1.2'),
+        ('pip-pypi', 'PIL', 'Pillow'),
         ('apt', 'libjpeg-dev', 'libjpeg-dev'),
         ('apt', 'zlib1g-dev', 'zlib1g-dev'),
-        ('apt', 'libfreetype6-dev', 'libfreetype6-dev'),
+        ('apt', 'libfreetype-dev', 'libfreetype-dev'),
         ('apt', 'liblcms2-dev', 'liblcms2-dev'),
         ('apt', 'libopenjp2-7', 'libopenjp2-7'),
-        ('apt', 'libtiff5', 'libtiff5')
+        ('apt', 'libtiff6', 'libtiff6'),
+        ('apt', 'fonts-dejavu-mono', 'fonts-dejavu-mono')¶
     ],
 
     'custom_options': [
@@ -319,6 +321,7 @@ class CustomModule(AbstractFunction):
         self.options_channels = {}
         self.device = None
         self.canvas = None
+        self.font = ImageFont.truetype("/usr/share/fonts/truetype/dejavu/DejaVuSansMono/DejaVuSansMono.ttf", 9)        
         self.timer_loop = time.time()
         self.line_sets = []
         self.current_line_set = 0
@@ -463,12 +466,12 @@ class CustomModule(AbstractFunction):
             draw.rectangle(self.device.bounding_box, fill="black")
             for i, each_channel in enumerate(self.line_sets[self.current_line_set]):
                 draw.text((0, self.pad + self.line_y_dimensions[each_channel]),
-                          lines_display[each_channel], fill="white")
+                          lines_display[each_channel], fill="white",font=self.font)
 
     def stop_function(self):
         with self.canvas(self.device) as draw:
             draw.rectangle(self.device.bounding_box, fill="black")
             draw.text((0, self.pad + self.line_y_dimensions[0]),
-                      "Mycodo {}".format(MYCODO_VERSION), fill="white")
+                      "Mycodo {}".format(MYCODO_VERSION), fill="white", font=self.font)
             draw.text((0, self.pad + self.line_y_dimensions[1]),
-                      "Display Deactivated", fill="white")
+                      "Display Deactivated", fill="white", font=self.font)
