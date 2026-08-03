@@ -1,7 +1,7 @@
-mkdocs[i18n]==1.4.2
-mkdocs-i18n==0.4.4
-mkdocs-material==8.5.7
-mkdocs-minify-plugin==0.6.1
+mkdocs[i18n]==1.6.1
+mkdocs-i18n==0.4.6
+mkdocs-material==9.5.39
+mkdocs-minify-plugin==0.8.0
 mkdocs-with-pdf==0.9.3
-Pillow==9.3.0
-Pygments>=2.13.0  # syntax highlighting
+Pillow==10.4.0
+Pygments==2.18.0  # syntax highlighting
