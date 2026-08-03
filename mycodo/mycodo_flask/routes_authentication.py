@@ -8,7 +8,7 @@ import socket
 import time
 
 import flask_login
-from flask import (flash, jsonify, make_response, redirect, render_template,
+from flask import (flash, make_response, redirect, render_template,
                    request, session, url_for)
 from flask.blueprints import Blueprint
 from flask_babel import gettext
@@ -21,6 +21,7 @@ from mycodo.databases.models import AlembicVersion, Misc, Role, User
 from mycodo.mycodo_flask.extensions import db
 from mycodo.mycodo_flask.forms import forms_authentication
 from mycodo.mycodo_flask.utils import utils_general
+from mycodo.mycodo_flask.login_security import get_real_ip, ip_failed_login, ip_is_banned
 from mycodo.utils.utils import test_password, test_username
 
 logger = logging.getLogger(__name__)
@@ -227,12 +228,13 @@ def login_password():
             else:
                 username = form_login.mycodo_username.data.lower()
                 user_ip = request.environ.get('HTTP_X_FORWARDED_FOR', 'unknown address')
+                client_ip = get_real_ip(request)
                 user = User.query.filter(
                     func.lower(User.name) == username).first()
 
                 if not user:
                     login_log(username, 'NA', user_ip, 'NOUSER')
-                    failed_login()
+                    failed_login(client_ip)
                 elif form_login.validate_on_submit():
                     matched_hash = User().check_password(
                         form_login.mycodo_password.data, user.password_hash)
@@ -259,10 +261,10 @@ def login_password():
                         user = User.query.filter(User.name == username).first()
                         role_name = Role.query.filter(Role.id == user.role_id).first().name
                         login_log(username, role_name, user_ip, 'FAIL')
-                        failed_login()
+                        failed_login(client_ip)
                 else:
                     login_log(username, 'NA', user_ip, 'FAIL')
-                    failed_login()
+                    failed_login(client_ip)
 
             return redirect('/login')
 
@@ -342,10 +344,11 @@ def login_keypad_code(code):
     else:
         user = User.query.filter(User.code == code).first()
         user_ip = request.environ.get('HTTP_X_FORWARDED_FOR', 'unknown address')
+        client_ip = get_real_ip(request)
 
         if not user:
             login_log(code, 'NA', user_ip, 'FAIL')
-            failed_login()
+            failed_login(client_ip)
             flash("Invalid Code", "error")
             time.sleep(2)
         else:
@@ -385,62 +388,6 @@ def logout():
     return response
 
 
-@blueprint.route('/newremote/')
-def newremote():
-    """Verify authentication as a client computer to the remote admin."""
-    username = request.args.get('user')
-    pass_word = request.args.get('passw')
-
-    user = User.query.filter(
-        User.name == username).first()
-
-    if user:
-        if User().check_password(
-                pass_word, user.password_hash) == user.password_hash:
-            try:
-                with open('/opt/Mycodo/mycodo/mycodo_flask/ssl_certs/cert.pem', 'r') as cert:
-                    certificate_data = cert.read()
-            except Exception:
-                certificate_data = None
-            return jsonify(status=0,
-                           error_msg=None,
-                           hash=str(user.password_hash),
-                           certificate=certificate_data)
-    return jsonify(status=1,
-                   error_msg="Unable to authenticate with user and password.",
-                   hash=None,
-                   certificate=None)
-
-
-@blueprint.route('/remote_login', methods=('GET', 'POST'))
-def remote_admin_login():
-    """Authenticate Remote Admin login."""
-    password_hash = request.form.get('password_hash', None)
-    username = request.form.get('username', None)
-
-    if username and password_hash:
-        user = User.query.filter(
-            func.lower(User.name) == username).first()
-    else:
-        user = None
-
-    if user and str(user.password_hash) == str(password_hash):
-        login_user = User()
-        login_user.id = user.id
-        login_user.name = user.name
-        flask_login.login_user(login_user, remember=False)
-        return "Logged in via Remote Admin"
-    else:
-        return "ERROR"
-
-
-@blueprint.route('/auth/')
-@flask_login.login_required
-def remote_auth():
-    """Checks authentication for remote admin."""
-    return "authenticated"
-
-
 def admin_exists():
     """Verify that at least one admin user exists."""
     return User.query.filter_by(role_id=1).count()
@@ -456,7 +403,12 @@ def check_database_version_issue():
 
 
 def banned_from_login():
-    """Check if the person at the login prompt is banned form logging in."""
+    """Check if the person at the login prompt is banned from logging in.
+
+    Checks both the session-based ban (per browser session) and the
+    server-side in-memory IP-based ban (survives cookie clearing).
+    """
+    # --- session-based ban ---
     if not session.get('failed_login_count'):
         session['failed_login_count'] = 0
     if not session.get('failed_login_ban_time'):
@@ -467,11 +419,24 @@ def banned_from_login():
             return 1
         else:
             session['failed_login_ban_time'] = 0
+
+    # --- IP-based ban (delegates to login_security module) ---
+    client_ip = get_real_ip(request)
+    banned, elapsed = ip_is_banned(client_ip, LOGIN_BAN_SECONDS)
+    if banned:
+        session['ban_time_left'] = elapsed
+        return 1
+
     return 0
 
 
-def failed_login():
-    """Count the number of failed login attempts."""
+def failed_login(client_ip=None):
+    """Count the number of failed login attempts.
+
+    Updates both the session-based counter and (when a valid public IP is
+    provided) the server-side in-memory IP tracker via login_security module.
+    """
+    # --- session counter ---
     try:
         session['failed_login_count'] += 1
     except KeyError:
@@ -483,6 +448,9 @@ def failed_login():
     else:
         flash('Failed Login ({}/{})'.format(
             session['failed_login_count'], LOGIN_ATTEMPTS), "error")
+
+    # --- IP-based counter (delegates to login_security module) ---
+    ip_failed_login(client_ip, LOGIN_ATTEMPTS, LOGIN_BAN_SECONDS)
 
 
 def login_log(user, group, ip, status):

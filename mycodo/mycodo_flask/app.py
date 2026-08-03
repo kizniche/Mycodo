@@ -22,7 +22,7 @@ from mycodo.mycodo_flask import (routes_admin, routes_authentication,
                                  routes_dashboard, routes_function,
                                  routes_general, routes_input, routes_method,
                                  routes_output, routes_page,
-                                 routes_password_reset, routes_remote_admin,
+                                 routes_password_reset,
                                  routes_settings, routes_static)
 from mycodo.mycodo_flask.api import api_blueprint, init_api
 from mycodo.mycodo_flask.extensions import db
@@ -65,7 +65,10 @@ def register_extensions(app):
     app = extension_login_manager(app)  # User login management
     app = extension_session(app)  # Server side session
 
-    # Create and populate database if it doesn't exist
+    # Create and populate database if it doesn't exist.
+    # db.create_all() and populate_db() use Flask-SQLAlchemy's db.session
+    # because they run during app setup inside an app context — that is the
+    # correct and intentional usage here.
     with app.app_context():
         db.create_all()
         populate_db()
@@ -74,8 +77,11 @@ def register_extensions(app):
         # The upgrade script will execute alembic to upgrade the database
         # alembic_upgrade_db()
 
-    # Check user option to force all web connections to use SSL
-    # Fail if the URI is empty (pytest is running)
+    # Post-setup reads use session_scope (raw SQLAlchemy) rather than db.session
+    # because they occur outside the request lifecycle.  Both approaches connect
+    # to the same underlying database file; session_scope is simply the safer
+    # choice for code that must also run outside a Flask request context.
+    # See databases/utils.py for the full architecture explanation.
     if app.config['SQLALCHEMY_DATABASE_URI'] != 'sqlite://':
         with session_scope(app.config['SQLALCHEMY_DATABASE_URI']) as new_session:
             misc = new_session.query(Misc).first()
@@ -100,12 +106,13 @@ def register_blueprints(app):
     app.register_blueprint(routes_method.blueprint)  # register method views
     app.register_blueprint(routes_output.blueprint)  # register output views
     app.register_blueprint(routes_page.blueprint)  # register page views
-    app.register_blueprint(routes_remote_admin.blueprint)  # register remote admin views
     app.register_blueprint(routes_settings.blueprint)  # register settings views
     app.register_blueprint(routes_static.blueprint)  # register static routes
 
 
 def register_widget_endpoints(app):
+    # session_scope is used here (not db.session) because this runs at startup
+    # outside of a request context.  See databases/utils.py for details.
     try:
         if app.config['TESTING']:  # TODO: Add pytest endpoint test and remove this
             return

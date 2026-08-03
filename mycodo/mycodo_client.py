@@ -60,18 +60,45 @@ class DaemonControl:
         except Exception:
             logger.exception("Could not access SQL table to determine Pyro Timeout. Using 30 seconds.")
 
-        self.uri= pyro_uri
+        self.uri = pyro_uri
+        self._proxy = None  # cached Proxy instance
 
     def proxy(self, timeout=None):
+        """Return a connected Pyro5 Proxy, reusing the cached one where possible.
+
+        A new Proxy is created whenever:
+          - no proxy has been created yet, or
+          - the previous proxy encountered a communication failure, or
+          - a custom *timeout* is requested (a temp override is applied and
+            restored rather than creating a second long-lived proxy).
+        """
         try:
-            proxy = Proxy(self.uri)
-            if timeout:
-                proxy._pyroTimeout = timeout
+            # If a per-call timeout override is requested, apply it to the
+            # cached proxy temporarily; the caller is responsible for restoring
+            # it (see check_daemon for the pattern).
+            if self._proxy is None:
+                self._proxy = Proxy(self.uri)
+                self._proxy._pyroTimeout = self.pyro_timeout
+
+            if timeout is not None:
+                self._proxy._pyroTimeout = timeout
             else:
-                proxy._pyroTimeout = self.pyro_timeout
-            return proxy
+                self._proxy._pyroTimeout = self.pyro_timeout
+
+            return self._proxy
         except Exception as e:
             logger.error(f"Pyro5 proxy error: {e}")
+            self._proxy = None
+            raise
+
+    def _reset_proxy(self):
+        """Discard the cached proxy so the next call creates a fresh one."""
+        if self._proxy is not None:
+            try:
+                self._proxy._pyroRelease()
+            except Exception:
+                pass
+            self._proxy = None
 
     #
     # Status functions
@@ -90,21 +117,26 @@ class DaemonControl:
         except Pyro5.errors.TimeoutError as err:
             msg = f"Pyro5 TimeoutError: {err}"
             logger.error(msg)
+            self._reset_proxy()
             return msg
         except Pyro5.errors.CommunicationError as err:
             msg = f"Pyro5 Communication error: {err}"
             logger.error(msg)
+            self._reset_proxy()
             return msg
         except Pyro5.errors.NamingError as err:
             msg = f"Failed to locate Pyro5 Nameserver: {err}"
             logger.error(msg)
+            self._reset_proxy()
             return msg
         except Exception as err:
             msg = f"Pyro Exception: {err}"
             logger.error(msg)
+            self._reset_proxy()
             return msg
         finally:
-            proxy._pyroTimeout = old_timeout
+            if self._proxy is not None:
+                proxy._pyroTimeout = old_timeout
 
     def controller_is_active(self, controller_id):
         return self.proxy().controller_is_active(controller_id)
@@ -148,7 +180,9 @@ class DaemonControl:
     #
 
     def trigger_action(
-            self, action_id, value={}, debug=False):
+            self, action_id, value=None, debug=False):
+        if value is None:
+            value = {}
         return self.proxy().trigger_action(
             action_id, value=value, debug=debug)
 
@@ -276,11 +310,17 @@ class DaemonControl:
             recipients, message, subject=subject)
 
     def module_function(self, controller_type, unique_id, button_id, args_dict, thread=True, return_from_function=False, timeout=None):
+        proxy = self.proxy(timeout=timeout)
         try:
-            return self.proxy(timeout=timeout).module_function(
+            return proxy.module_function(
                 controller_type, unique_id, button_id, args_dict, thread=thread, return_from_function=return_from_function)
         except Exception:
             return 1, traceback.format_exc()
+        finally:
+            # If a custom timeout was used, restore the shared cached proxy to
+            # the default so subsequent calls aren't affected.
+            if proxy is not None and timeout is not None:
+                proxy._pyroTimeout = self.pyro_timeout
 
     def widget_add_refresh(self, unique_id):
         return self.proxy().widget_add_refresh(unique_id)

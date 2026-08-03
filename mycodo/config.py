@@ -131,6 +131,7 @@ ID_FILE = os.path.join(INSTALL_DIRECTORY, 'statistics.id')
 # Login restrictions
 LOGIN_ATTEMPTS = 5
 LOGIN_BAN_SECONDS = 600  # 10 minutes
+TRUSTED_PROXIES = ("127.0.0.1", "::1")
 
 # Check for upgrade every 2 days (if enabled)
 UPGRADE_CHECK_INTERVAL = 172800

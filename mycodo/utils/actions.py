@@ -334,7 +334,7 @@ def action_video(cond_action, message):
 def trigger_action(
         dict_actions,
         action_id,
-        value={},
+        value=None,
         debug=False):
     """
     Trigger individual action
@@ -346,6 +346,8 @@ def trigger_action(
 
     :return: dict with 'message' as a key
     """
+    if value is None:
+        value = {}
     action = db_retrieve_table_daemon(Actions, unique_id=action_id)
     if not value or 'message' not in value:
         message = ''

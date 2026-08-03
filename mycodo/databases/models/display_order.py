@@ -10,7 +10,6 @@ class DisplayOrder(CRUDMixin, db.Model):
     id = db.Column(db.Integer, unique=True, primary_key=True)
     lcd = db.Column(db.Text, default='')
     method = db.Column(db.Text, default='')
-    remote_host = db.Column(db.Text, default='')
     timer = db.Column(db.Text, default='')
 
     # TODO: Deprecated, remove at next major revision

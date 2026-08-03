@@ -7,9 +7,8 @@ from flask_wtf import FlaskForm
 from wtforms import BooleanField
 from wtforms import PasswordField
 from wtforms import SelectField
-from wtforms import StringField
 from wtforms import SubmitField
-from wtforms import widgets
+from wtforms import StringField
 from wtforms.validators import DataRequired
 
 from mycodo.config_translations import TRANSLATIONS
@@ -93,28 +92,6 @@ class ResetPassword(FlaskForm):
         lazy_gettext('Repeat Password'),
         render_kw={"placeholder": lazy_gettext('Repeat Password')})
     submit = SubmitField(lazy_gettext('Change Password'))
-
-
-#
-# Remote Admin add servers
-#
-
-class RemoteSetup(FlaskForm):
-    remote_id = StringField('Remote Host ID', widget=widgets.HiddenInput())
-    host = StringField(
-        lazy_gettext('Domain or IP Address'),
-        validators=[DataRequired()]
-    )
-    username = StringField(
-        TRANSLATIONS['user']['title'],
-        validators=[DataRequired()]
-    )
-    password = PasswordField(
-        TRANSLATIONS['password']['title'],
-        validators=[DataRequired()]
-    )
-    add = SubmitField(lazy_gettext('Add Host'))
-    delete = SubmitField(lazy_gettext('Delete Host'))
 
 
 class InstallNotice(FlaskForm):
