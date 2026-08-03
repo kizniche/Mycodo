@@ -234,17 +234,31 @@ def query_flux(unit, unique_id,
     if ts_str:
         query += " AND time = '{ts}'".format(ts=ts_str)
 
+    server_side_windowed = False
     if group_sec:
-        if settings.measurement_db_version == '1':
-            # TODO: Change median to mean when issue is fixed
-            # Bug in influxdb/Flux v1.8.10 due to mean
-            # Error: panic: runtime error: invalid memory address or nil pointer dereference
-            # https://github.com/influxdata/influxdb/issues/21649
-            # https://github.com/influxdata/influxdb/pull/23520
-            query += f' |> aggregateWindow(every: {group_sec}s, fn: median)'
-        elif settings.measurement_db_version == '2':
+        # Bug in influxdb/Flux v1.8.10 due to mean, but 1.x is EOL so won't be fixed
+        # Original workaround was to query all measurements, then simulate aggregateWindow with mean for 1.x
+        # Error: panic: runtime error: invalid memory address or nil pointer dereference
+        # https://github.com/influxdata/influxdb/issues/21649
+        # https://github.com/influxdata/influxdb/pull/23520
+        if settings.measurement_db_version == '2':
+            # Safe to use aggregateWindow with mean on InfluxDB 2.x
             query += f' |> aggregateWindow(every: {group_sec}s, fn: mean)'
-
+        elif settings.measurement_db_version == '1' and not value:
+            # For InfluxDB 1.x, avoid aggregateWindow(mean) and perform windowing via window() + reduce().
+            # This computes a per-window mean server-side to avoid transferring all raw points.
+            query += (
+                f' |> window(every: {group_sec}s)'
+                ' |> reduce('
+                'identity: {sum: 0.0, count: 0}, '
+                'fn: (r, accumulator) => ({'
+                'sum: accumulator.sum + r._value, '
+                'count: accumulator.count + 1'
+                '})'
+                ')'
+                ' |> map(fn: (r) => ({ _time: r._stop, _value: r.sum / float(v: r.count) }))'
+            )
+            server_side_windowed = True
     if limit:
         query += f' |> limit(n:{limit})'
 
@@ -261,23 +275,22 @@ def query_flux(unit, unique_id,
             query += ' |> count()'
         elif value == "SUM":
             if settings.measurement_db_version == '1':
-                # TODO: Change when issue is fixed
-                # Bug in influxdb/Flux v1.8.10 due to mean
+                # Bug in influxdb/Flux v1.8.10 due to sum, but 1.x is EOL so won't be fixed
                 # Error: panic: runtime error: invalid memory address or nil pointer dereference
                 # https://github.com/influxdata/influxdb/issues/21649
                 # https://github.com/influxdata/influxdb/pull/23520
-                logger.error("SUM cannot be used with influxdb 1.8.10 without causing an error. "
-                             "Returning all measurements for period to manually sum.")
+                # Manual sum calculation will be applied after query
+                logger.debug("Performing manual sum calculation for InfluxDB 1.x")
             elif settings.measurement_db_version == '2':
                 query += ' |> sum(column: "_value")'
         elif value == "MEAN":
             if settings.measurement_db_version == '1':
-                # TODO: Change median to mean when issue is fixed
-                # Bug in influxdb/Flux v1.8.10 due to mean
+                # Bug in influxdb/Flux v1.8.10 due to mean, but 1.x is EOL so won't be fixed
                 # Error: panic: runtime error: invalid memory address or nil pointer dereference
                 # https://github.com/influxdata/influxdb/issues/21649
                 # https://github.com/influxdata/influxdb/pull/23520
-                query += ' |> median()'
+                # Manual mean calculation will be applied after query
+                logger.debug("Performing manual mean calculation for InfluxDB 1.x")
             elif settings.measurement_db_version == '2':
                 query += ' |> mean()'
 
@@ -285,6 +298,13 @@ def query_flux(unit, unique_id,
 
     tables = client.query_api().query(query)
     client.close()
+
+    # Manual calculation for InfluxDB 1.x
+    if settings.measurement_db_version == '1':
+        if value == "MEAN":
+            tables = _manual_calculate_mean(tables)
+        elif value == "SUM":
+            tables = _manual_calculate_sum(tables)
 
     return tables
 
@@ -565,17 +585,9 @@ def output_sec_on(output_id, past_seconds, output_channel=0):
 
     sec_recorded_on = 0
     if data:
-        settings = db_retrieve_table_daemon(Misc, entry='first')
-        if settings.measurement_db_name == 'influxdb':
-            if settings.measurement_db_version == '1':
-                # TODO: remove when influxdb 1.8.10 issue is fixed
-                for table in data:
-                    for row in table.records:
-                        sec_recorded_on += row.values['_value']
-            elif settings.measurement_db_version == '2':
-                for table in data:
-                    for row in table.records:
-                        sec_recorded_on = row.values['_value']
+        for table in data:
+            for row in table.records:
+                sec_recorded_on = row.values['_value']
 
     sec_currently_on = 0
     if output_time_on:
@@ -594,11 +606,10 @@ def average_past_seconds(unique_id, unit, channel, past_seconds, measure=None):
         past_sec=past_seconds)
 
     if data:
-        settings = db_retrieve_table_daemon(Misc, entry='first')
-        if settings.measurement_db_name == 'influxdb':
-            for table in data:
-                for row in table.records:
-                    return row.values['_value']
+        for table in data:
+            for row in table.records:
+                return row.values['_value']
+    return None
 
 
 def average_start_end_seconds(unique_id, unit, channel, str_start, str_end, measure=None):
@@ -612,11 +623,10 @@ def average_start_end_seconds(unique_id, unit, channel, str_start, str_end, meas
         end_str=str_end)
 
     if data:
-        settings = db_retrieve_table_daemon(Misc, entry='first')
-        if settings.measurement_db_name == 'influxdb':
-            for table in data:
-                for row in table.records:
-                    return row.values['_value']
+        for table in data:
+            for row in table.records:
+                return row.values['_value']
+    return None
 
 
 def sum_past_seconds(unique_id, unit, channel, past_seconds, measure=None):
@@ -629,20 +639,10 @@ def sum_past_seconds(unique_id, unit, channel, past_seconds, measure=None):
         past_sec=past_seconds)
 
     if data:
-        total_seconds = 0
-        settings = db_retrieve_table_daemon(Misc, entry='first')
-        if settings.measurement_db_name == 'influxdb':
-            if settings.measurement_db_version == '1':
-                # TODO: remove when influxdb 1.8.10 issue is fixed
-                for table in data:
-                    for row in table.records:
-                        total_seconds += row.values['_value']
-                return total_seconds
-            elif settings.measurement_db_version == '2':
-                for table in data:
-                    for row in table.records:
-                        total_seconds = row.values['_value']
-        return total_seconds
+        for table in data:
+            for row in table.records:
+                return row.values['_value']
+    return None
 
 
 def influx_time_str_to_milliseconds(timestamp):
@@ -685,6 +685,61 @@ def influxdb_get_first_point(data):
     for table in data:
         for record in table.records:
             return record.values['_time']
+
+
+class _ManualRecord:
+    """Mimics InfluxDB record structure for manual aggregation results."""
+    def __init__(self, time, value):
+        self.values = {'_time': time, '_value': value}
+
+
+class _ManualTable:
+    """Mimics InfluxDB table structure for manual aggregation results."""
+    def __init__(self, records):
+        self.records = records
+
+
+def _manual_calculate_mean(tables):
+    """
+    Manually calculate mean of all values in query results.
+    Used as workaround for InfluxDB 1.8.10 Flux bug with mean().
+    """
+    values = []
+    last_time = None
+    for table in tables:
+        for row in table.records:
+            value = row.values['_value']
+            if value is not None:
+                values.append(value)
+                last_time = row.values['_time']
+
+    if not values:
+        return []
+
+    mean_val = sum(values) / len(values)
+    return [_ManualTable([_ManualRecord(last_time, mean_val)])]
+
+
+def _manual_calculate_sum(tables):
+    """
+    Manually calculate sum of all values in query results.
+    Used as workaround for InfluxDB 1.8.10 Flux bug with sum().
+    """
+    total = 0
+    last_time = None
+    has_values = False
+    for table in tables:
+        for row in table.records:
+            value = row.values['_value']
+            if value is not None:
+                total += value
+                last_time = row.values['_time']
+                has_values = True
+
+    if not has_values:
+        return []
+
+    return [_ManualTable([_ManualRecord(last_time, total)])]
 
 
 #
