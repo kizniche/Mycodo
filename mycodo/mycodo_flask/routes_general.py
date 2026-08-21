@@ -147,7 +147,7 @@ def send_note_attachment(filename):
     file_path = os.path.join(PATH_NOTE_ATTACHMENTS, filename)
     if file_path is not None:
         try:
-            if os.path.abspath(file_path).startswith(PATH_NOTE_ATTACHMENTS):
+            if os.path.realpath(file_path).startswith(os.path.realpath(PATH_NOTE_ATTACHMENTS) + os.sep):
                 return send_file(file_path, as_attachment=True)
         except Exception:
             logger.exception("Send note attachment")
@@ -182,11 +182,11 @@ def camera_img_return_path(unique_id, img_type, filename):
             return "Unknown Image Type"
 
         path_file = os.path.join(path, filename)
-        if os.path.isfile(path_file) and os.path.abspath(path_file).startswith(path):
+        if os.path.isfile(path_file) and os.path.realpath(path_file).startswith(os.path.realpath(path) + os.sep):
             return send_file(path_file, mimetype='image/jpeg')
 
         path_file = f"/tmp/{filename}"
-        if os.path.exists(path_file) and os.path.abspath(path_file).startswith("/tmp"):
+        if os.path.exists(path_file) and os.path.realpath(path_file).startswith("/tmp" + os.sep):
             return send_file(path_file, mimetype='image/jpeg')
 
     elif function:
@@ -220,7 +220,7 @@ def camera_img_return_path(unique_id, img_type, filename):
             return "Unknown Image Type"
 
         path_file = os.path.join(path, filename)
-        if os.path.isfile(path_file) and os.path.abspath(path_file).startswith(path):
+        if os.path.isfile(path_file) and os.path.realpath(path_file).startswith(os.path.realpath(path) + os.sep):
             if img_type == 'video':
                 return send_file(path_file, download_name=filename)
             else:
@@ -228,7 +228,7 @@ def camera_img_return_path(unique_id, img_type, filename):
 
         path_file = f"/tmp/{filename}"
         if (os.path.exists(path_file) and
-                os.path.abspath(path_file).startswith("/tmp")):
+                os.path.realpath(path_file).startswith("/tmp" + os.sep)):
             if img_type == 'video':
                 return send_file(path_file, download_name=filename)
             else:
